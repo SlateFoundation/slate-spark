@@ -3,7 +3,7 @@
  */
 Ext.define('Spark2Manager.store.Links', {
     requires: [
-        'Spark2Manager.model.Link'
+        'Spark2Manager.model.Links'
     ],
 
     extend: 'Ext.data.Store',

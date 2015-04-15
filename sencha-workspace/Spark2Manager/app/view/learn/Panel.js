@@ -8,7 +8,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.form.field.Text',
         'Ext.form.field.TextArea',
         'Ext.slider.Single',
-        'Ext.form.field.ComboBox'
+        'Ext.form.field.ComboBox',
+        'Ext.button.Button'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -16,6 +17,10 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     xtype: 's2m-learn-panel',
 
     store: 'Links',
+
+    bbar: [
+        { xtype: 'button', text: 'Add Learn', action: 'create-link' }
+    ],
 
     columns: [
         {
@@ -41,7 +46,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             dataIndex: 'Vendor',
             editor: {
                 xtype: 'combobox',
-                store: ['Crazy Town', 'Bonkers', 'Illuminate']
+                store: ['Illuminate']
             }
         },
         {
@@ -68,6 +73,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     plugins: {
         ptype: 'cellediting',
+        pluginId: 'cellediting',
         clicksToEdit: 1
     }
 });

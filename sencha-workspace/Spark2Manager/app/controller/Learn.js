@@ -8,18 +8,18 @@ Ext.define('Spark2Manager.controller.Learn', {
     extend: 'Ext.app.Controller',
 
     config: {
-        /*
-        Uncomment to add references to view components
         refs: [{
-            ref: 'list',
-            selector: 'grid'
+            ref: 'panel',
+            selector: 's2m-learn-panel'
         }],
-        */
 
         control: {
             's2m-learn-panel': {
                 activate: 'onPanelActivate',
                 edit: 'onEdit'
+            },
+            's2m-learn-panel button[action=create-link]': {
+                click: 'onCreateLinkClick'
             }
         }
     },
@@ -44,5 +44,15 @@ Ext.define('Spark2Manager.controller.Learn', {
             case 'Link':
                 e.record.set('Vendor', new URL(e.value).hostname);
         }
+    },
+
+    onCreateLinkClick: function() {
+        var newLink = this.getLinksStore().insert(0, {}),
+            p = this.getPanel(),
+            plugin = p.getPlugin('cellediting');
+
+        debugger;
+
+        plugin.startEdit(newLink[0], 0);
     }
 });
