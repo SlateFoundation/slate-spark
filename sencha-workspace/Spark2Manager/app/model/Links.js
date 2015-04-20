@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.Links', {
+Ext.define('Spark2Manager.model.Link', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
