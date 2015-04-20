@@ -1,4 +1,4 @@
-Ext.define('Ext.overrides.util.Collection', {
+Ext.define('Ext.patch.EXTJS15525', {
     requires: [
         'Ext.Error'
     ],

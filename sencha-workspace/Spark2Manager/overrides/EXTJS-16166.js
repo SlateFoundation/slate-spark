@@ -1,6 +1,7 @@
-Ext.define('Ext.patch,EXTJS16166', {
+Ext.define('Ext.patch.EXTJS16166', {
     override: 'Ext.view.View',
     compatibility: '5.1.0.107',
+
     handleEvent: function(e) {
         var me = this,
             isKeyEvent = me.keyEventRe.test(e.type),
