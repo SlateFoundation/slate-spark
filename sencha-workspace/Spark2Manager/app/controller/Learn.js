@@ -51,8 +51,6 @@ Ext.define('Spark2Manager.controller.Learn', {
             p = this.getPanel(),
             plugin = p.getPlugin('cellediting');
 
-        debugger;
-
         plugin.startEdit(newLink[0], 0);
     }
 });
