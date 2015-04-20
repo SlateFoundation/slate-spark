@@ -12,19 +12,19 @@ Ext.define('Spark2Manager.view.Main', {
     items: [
         {
             xtype: 's2m-learn-panel',
-            title: 'Learn & Practice',
+            title: 'Learn & Practice'
         },
         {
             xtype: 's2m-conference-panel',
-            title: 'Conference',
+            title: 'Conference'
         },
         {
             xtype: 's2m-apply-panel',
-            title: 'Apply',
+            title: 'Apply'
         },
         {
             xtype: 's2m-assess-panel',
-            title: 'Assess',
+            title: 'Assess'
         },
         {
             xtype: 's2m-pbl-panel',
