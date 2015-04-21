@@ -5,5 +5,5 @@
  * to the most recently built CSS file for the application to allow index.html
  * in the development directory to load properly (i.e., "dev mode").
  */
-@import '../build/production/Spark2Manager/resources/Spark2Manager-all.css';
+@import '../build/development/Spark2Manager/resources/Spark2Manager-all.css';
 
