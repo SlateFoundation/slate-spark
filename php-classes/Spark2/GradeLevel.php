@@ -68,6 +68,12 @@ class GradeLevel extends \ActiveRecord
         ],
     ];
 
+    public static $dynamicFields = [
+        'GradeLevel' => array(
+            'method' => 'getGradeRange'
+        )
+    ];
+
     public static function calcGradeRange($input) {
         $ret = [];
         $len = count($input);
