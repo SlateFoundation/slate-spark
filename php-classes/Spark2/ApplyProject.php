@@ -27,13 +27,13 @@ class ApplyProject extends \VersionedRecord
     public static $relationships = [
         'Todos' => [
             'type'    => 'one-many',
-            'class'   => 'Spark2\ApplyTodo',
+            'class'   => ApplyTodo::class,
             'local'   => 'ID',
             'foreign' => 'ApplyProjectID'
         ],
         'Link' => [
             'type'    => 'one-one',
-            'class'   => 'Spark2\ApplyLink',
+            'class'   => ApplyLink::class,
             'local'   => 'ID',
             'foreign' => 'ApplyProjectID'
         ]

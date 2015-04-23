@@ -20,7 +20,7 @@ class StandardMapping extends \ActiveRecord
     public static $relationships = [
         'Standard' => [
             'type' => 'one-one',
-            'class' => 'Spark2\Standard',
+            'class' => Standard::class,
             'local' => 'StandardID'
         ]
     ];

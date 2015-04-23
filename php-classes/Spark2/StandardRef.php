@@ -23,13 +23,13 @@ class StandardRef extends \ActiveRecord
     public static $relationships = [
         'StandardA' => [
             'type' => 'one-one',
-            'class' => 'Spark2\Standard',
+            'class' => Standard::class,
             'local' => 'StandardCodeA',
             'remote' => 'Code'
         ],
         'StandardB' => [
             'type' => 'one-one',
-            'class' => 'Spark2\Standard',
+            'class' => Standard::class,
             'local' => 'StandardCodeB',
             'remote' => 'Code'
         ]

@@ -22,7 +22,7 @@ class ApplyToDo extends \VersionedRecord
     public static $relationships = [
         'Project' => [
             'type' => 'one-one',
-            'class' => 'Spark2\ApplyProject',
+            'class' => ApplyProject::class,
             'local' => 'ApplyProjectID'
         ]
     ];

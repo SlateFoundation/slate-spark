@@ -29,7 +29,7 @@ class ApplyLink extends \VersionedRecord
     public static $relationships = [
         'Vendor' => [
             'type' => 'one-one',
-            'class' => 'Spark2\Vendor',
+            'class' => Vendor::class,
             'local' => 'VendorID'
         ]
     ];

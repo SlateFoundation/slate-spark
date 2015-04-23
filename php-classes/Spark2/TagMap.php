@@ -17,14 +17,6 @@ class TagMap extends \ActiveRecord
         'ContextID' => 'uint'
     ];
 
-    public static $relationships = [
-        'Context' => [
-            'type' => 'one-one',
-            'class' => 'Spark2\Standard',
-            'local' => 'StandardID'
-        ]
-    ];
-
     public static $indexes = [
         'TagMapIndex' => [
             'fields' => ['CreatorID', 'TagID', 'ContextClass', 'ContextID'],

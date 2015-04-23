@@ -24,7 +24,7 @@ class Vendor extends \ActiveRecord
     public static $relationships = [
         'Domains' => [
             'type' => 'one-many',
-            'class' => 'Spark2\VendorDomain',
+            'class' => VendorDomain::class,
             'foreign' => 'VendorID'
         ]
     ];

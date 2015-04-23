@@ -20,7 +20,7 @@ class VendorDomain extends \ActiveRecord
     public static $relationships = [
         'Vendor' => [
             'type' => 'one-to-one',
-            'class' => 'Vendor',
+            'class' => Vendor::class,
             'local' => 'VendorID'
         ]
     ];

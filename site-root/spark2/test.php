@@ -45,7 +45,7 @@ function testVendorDomain($vendor) {
     $vendorDomain = new VendorDomain();
     $vendorDomain->setField('VendorID', $vendor->ID);
     $vendorDomain->setField('Domain', randomString() . '.com');
-    $vendorDomain->setField('ContextClass', 'ApplyLink');
+    $vendorDomain->setField('ContextClass', ApplyLink::class);
     $vendorDomain->save();
 
     return $vendorDomain;
@@ -126,7 +126,7 @@ function testGradeLevel() {
 
     print $gradeLevel->getGradeRange();
 
-    $gradeLevel->ContextClass = 'Standard';
+    $gradeLevel->ContextClass = Standard::class;
     $gradeLevel->ContextID = 1;
     $gradeLevel->save();
 
@@ -153,7 +153,7 @@ function testStandard() {
     $standard->save();
 
     $gradeLevel = randomGradeLevel();
-    $gradeLevel->ContextClass = 'Standard';
+    $gradeLevel->ContextClass = Standard::class;
     $gradeLevel->ContextID = $standard->ID;
     $gradeLevel->save();
 
@@ -166,7 +166,7 @@ function testStandardMapping($standard) {
     $testStandardMapping = new StandardMapping();
 
     $testStandardMapping->StandardID = $standard->ID;
-    $testStandardMapping->ContextClass = 'ApplyLink';
+    $testStandardMapping->ContextClass = ApplyLink::class;
     $testApplyLink = testApplyLink(testApplyProject());
     $testStandardMapping->ContextID = $testApplyLink->ID;
 
@@ -199,13 +199,13 @@ function testRating() {
 
     $testStandard = testStandard();
     $testRating1 = new Rating();
-    $testRating1->ContextClass = $testStandard->Class;
+    $testRating1->ContextClass = Standard::class;
     $testRating1->ContextID = $testStandard->ID;
     $testRating1->Rating = rand(0, 10);
     $testRating1->save();
 
     $testRating2 = new Rating();
-    $testRating2->ContextClass = $testStandard->Class;
+    $testRating2->ContextClass = Standard::class;
     $testRating2->ContextID = $testStandard->ID;
     $testRating2->Rating = rand(0, 10);
     $testRating2->save();
@@ -327,7 +327,7 @@ function testTagMap($testTag) {
 
     $testTagMap = new TagMap();
     $testTagMap->TagID = $testTag->ID;
-    $testTagMap->ContextClass = 'ApplyLink';
+    $testTagMap->ContextClass = ApplyLink::class;
 
     $testApplyProject = testApplyProject();
     $testApplyLink = testApplyLink($testApplyProject);
