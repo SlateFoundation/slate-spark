@@ -157,11 +157,22 @@ function testStandard() {
     $gradeLevel->ContextID = $standard->ID;
     $gradeLevel->save();
 
+    $standard = Standard::getByID($standard->ID);
+
     return $standard;
 }
 
 function testStandardMapping($standard) {
-    // TODO: Implement this
+    $testStandardMapping = new StandardMapping();
+
+    $testStandardMapping->StandardID = $standard->ID;
+    $testStandardMapping->ContextClass = 'ApplyLink';
+    $testApplyLink = testApplyLink(testApplyProject());
+    $testStandardMapping->ContextID = $testApplyLink->ID;
+
+    $testStandardMapping->save();
+
+    return $testStandardMapping;
 }
 
 function testStandardRef() {
@@ -294,12 +305,51 @@ function testApplies() {
     }
 
     print '</ol><br><hr><br>';
+
+    $testApplyProject = ApplyProject::getById($testApplyProject->ID);
 }
 
-testApplies();
+function testTag() {
+    print "<h1>Tags</h1>";
+
+    $testTag = new Tag();
+    $testTag->Tag = randomString();
+    $testTag->Class = 'ApplyLink';
+    $testTag->save();
+
+    print "<hr>";
+
+    return $testTag;
+}
+
+function testTagMap($testTag) {
+    print "<h1>Tag Maps</h1>";
+
+    $testTagMap = new TagMap();
+    $testTagMap->TagID = $testTag->ID;
+    $testTagMap->ContextClass = 'ApplyLink';
+
+    $testApplyProject = testApplyProject();
+    $testApplyLink = testApplyLink($testApplyProject);
+    $testTagMap->ContextID = $testApplyLink->ID;
+
+    $testTagMap->save();
+
+    print "<hr>";
+
+    return $testTagMap;
+}
+
+function testTags() {
+    $testTag = testTag();
+    $testTagMap = testTagMap($testTag);
+}
+
 testVendors();
+testApplies();
 testAssessmentType();
 testGuidingQuestion();
 testGradeLevel();
 testStandards();
 testRating();
+testTags();
