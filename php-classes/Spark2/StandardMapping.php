@@ -16,4 +16,12 @@ class StandardMapping extends \ActiveRecord
         'ContextClass',
         'ContextID' => 'uint'
     ];
+
+    public static $relationships = [
+        'Standard' => [
+            'type' => 'one-one',
+            'class' => 'Spark2\Standard',
+            'local' => 'StandardID'
+        ]
+    ];
 }

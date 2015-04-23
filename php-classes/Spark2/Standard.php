@@ -42,9 +42,14 @@ class Standard extends \ActiveRecord
 
     public static $relationships = [
         'ParentStandard' => [
-            'type' => 'one-to-one',
-            'class' => 'Standard',
+            'type'  => 'one-one',
+            'class' => 'Spark2\Standard',
             'local' => 'ParentStandardID'
+        ],
+        'GradeLevel'=> [
+            'type'         => 'context-children',
+            'class'        => 'Spark2\GradeLevel',
+            'contextClass' => 'Spark2\Standard'
         ]
     ];
 }
