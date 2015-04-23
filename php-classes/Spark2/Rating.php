@@ -5,6 +5,7 @@ namespace Spark2;
 class Rating extends \ActiveRecord
 {
     // ActiveRecord configuration
+    public static $updateOnDuplicateKey = true;
     public static $tableName = 's2_ratings';
     public static $singularNoun = 'rating';
     public static $pluralNoun = 'ratings';
@@ -41,27 +42,5 @@ class Rating extends \ActiveRecord
 
         // save results
         return $this->finishValidation();
-    }
-
-    public function save ($deep = true)
-    {
-        // HACK: Improvised upsert
-        // TODO: If/when ORM supports upserts, we should use those
-        try {
-            parent::save($deep, true);
-        } catch(\DuplicateKeyException $e) {
-            $ogRating = Rating::getAllRecordsByWhere([
-                'ContextID'    => $this->ContextID,
-                'ContextClass' => $this->ContextClass,
-                'CreatorID'    => $this->CreatorID
-            ])[0];
-
-            $this->ID = $ogRating->ID;
-
-            // In the ORM, _isPhantom = true generates an INSERT statement, false generates an UPDATE statement
-            $this->_isPhantom = false;
-
-            parent::save($deep, true);
-        }
     }
 }

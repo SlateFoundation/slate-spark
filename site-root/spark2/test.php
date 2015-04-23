@@ -29,23 +29,35 @@ function randomGradeLevel()
     return $gradeLevel;
 }
 
-function testVendor()
-{
-    print "<h1>Vendors</h1>";
-
-    $vendors = Vendor::getAll();
-
+function testVendor() {
     $vendor = new Vendor();
     $vendor->setField('Name', randomString());
     $vendor->setField('Description', randomString());
     $vendor->setField('LogoURL', 'http://' . randomString());
     $vendor->save();
 
+    testVendorDomain($vendor);
+
+    return $vendor;
+}
+
+function testVendorDomain($vendor) {
     $vendorDomain = new VendorDomain();
     $vendorDomain->setField('VendorID', $vendor->ID);
     $vendorDomain->setField('Domain', randomString() . '.com');
     $vendorDomain->setField('ContextClass', 'ApplyLink');
     $vendorDomain->save();
+
+    return $vendorDomain;
+}
+
+function testVendors()
+{
+    print "<h1>Vendors</h1>";
+
+    $vendors = Vendor::getAll();
+
+    $vendor = testVendor();
 
     foreach($vendors as $vendor) {
         print "<h2>" . $vendor->Name ."</h2><ul>";
@@ -189,11 +201,103 @@ function testRating() {
 
     $testRating3 = Rating::getByID($testRating2->ID);
 
-    print 'Upsert: ' . ($testRating3->Rating == $testRating2->Rating ? 'Failed' : 'Succeeded');
+    print 'Upsert: ' . (($testRating3->Rating == $testRating2->Rating) ? 'Succeeded' : 'Failed');
+
+    if ($testRating3->Rating != $testRating2->Rating) {
+        print '<textarea>';
+        var_export($testRating1);
+        var_export($testRating2);
+        var_export($testRating3);
+        print '</textarea>';
+    }
+
     print "<hr>";
 }
 
-testVendor();
+function randomURL() {
+    return 'http://goo.gl/' . substr(base64_encode(randomString()), 0, 20);
+}
+
+function testApplyProject() {
+    $testApplyProject = new ApplyProject();
+    $testApplyProject->Title = randomString('Apply Project ');
+    $testApplyProject->Description = randomString("Here's what you do", "Due tomorrow!");
+    $testApplyProject->DOK = rand(1, 4);
+    $testApplyProject->save();
+
+    return $testApplyProject;
+}
+
+function testApplyLink($ApplyProject) {
+    $testApplyLink = new ApplyLink();
+    $testApplyLink->Title = randomString();
+    $testApplyLink->URL = randomURL();
+    $testVendor = testVendor();
+    $testApplyLink->VendorID = $testVendor->ID;
+    $testApplyLink->save();
+
+    return $testApplyLink;
+}
+
+function numToOrdinalWord($num)
+{
+    $first_word = ['eth', 'First', 'Second', 'Third', 'Fouth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Elevents',
+        'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth'];
+    $second_word = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty'];
+
+    if ($num <= 20) {
+        return $first_word[$num];
+    }
+
+    $first_num = substr($num, -1, 1);
+    $second_num = substr($num, -2, 1);
+
+    return $string = str_replace('y-eth', 'ieth', $second_word[$second_num] . '-' . $first_word[$first_num]);
+}
+
+function testApplyToDos($ApplyProject) {
+    $howmany = rand(0, 25);
+    $returnVal = [];
+
+    for($x = 0; $x < $howmany; $x++) {
+        $testApplyToDo = new ApplyToDo();
+        $testApplyToDo->Order = ($x + 1);
+        $testApplyToDo->Text = 'Do this ' . numToOrdinalWord($x + 1) . ' before continuing.';
+        $testApplyToDo->ApplyProjectID = $ApplyProject->ID;
+        $testApplyToDo->save();
+        $returnVal[] = $testApplyToDo;
+    }
+
+    return $returnVal;
+}
+
+function testApplies() {
+    print "<h1>Applies</h1>";
+    $testApplyProject = testApplyProject();
+    $testApplyLink = testApplyLink($testApplyProject);
+    $testApplyToDos = testApplyToDos($testApplyProject);
+    $linkProps = ['Title', 'URL', 'Vendor'];
+
+    print '<h3>' . $testApplyProject->Title . '</h3>';
+    print '<b>DOK: </b>' . $testApplyProject->DOK . '<br>';
+
+    print '<h3>Link:</h3><ul>';
+        foreach($linkProps as $key) {
+            print "<li>$key: " . $testApplyLink->{$key} . "</li>";
+        }
+    print '</ul>';
+
+    print '<h3>Todos:</h3><ol>';
+
+    foreach($testApplyToDos as $todo) {
+        print '<li>' . $todo->Text . '</li>';
+    }
+
+    print '</ol><br><hr><br>';
+}
+
+testApplies();
+testVendors();
 testAssessmentType();
 testGuidingQuestion();
 testGradeLevel();
