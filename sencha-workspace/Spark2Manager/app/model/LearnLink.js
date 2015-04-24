@@ -6,7 +6,6 @@ Ext.define('Spark2Manager.model.LearnLink', {
         'Ext.data.identifier.Negative'
     ],
 
-
     // model config
     idProperty: 'ID',
     identifier: 'negative',
@@ -60,7 +59,18 @@ Ext.define('Spark2Manager.model.LearnLink', {
         {
             name: "Metadata",
             type: "string",
-            useNull: true
+            useNull: true,
+            convert: function (value) {
+                var JSON = {};
+
+                try {
+                    JSON  = JSON.parse(value);
+                } catch(e) {
+                    // Empty catch
+                }
+
+                return JSON;
+            }
         }
     ],
 

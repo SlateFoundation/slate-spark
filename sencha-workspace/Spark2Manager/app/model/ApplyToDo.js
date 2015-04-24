@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true *//*global Ext*/
-Ext.define('Spark2Manager.model.ApplyLink', {
+Ext.define('Spark2Manager.model.ApplyToDo', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
@@ -20,7 +20,7 @@ Ext.define('Spark2Manager.model.ApplyLink', {
         {
             name: "Class",
             type: "string",
-            defaultValue: "Spark2\\ApplyLink"
+            defaultValue: "Spark2\\ApplyToDo"
         },
         {
             name: "Created",
@@ -39,38 +39,21 @@ Ext.define('Spark2Manager.model.ApplyLink', {
             useNull: true
         },
         {
-            name: "Title",
+            name: "ApplyProjectID",
+            type: "int"
+        },
+        {
+            name: "Order",
+            type: "int"
+        },
+        {
+            name: "Text",
             type: "string"
-        },
-        {
-            name: "URL",
-            type: "string"
-        },
-        {
-            name: "VendorID",
-            type: "int",
-            useNull: true
-        },
-        {
-            name: "Metadata",
-            type: "string",
-            useNull: true,
-            convert: function (value) {
-                var JSON = {};
-
-                try {
-                    JSON  = JSON.parse(value);
-                } catch(e) {
-                    // Empty catch
-                }
-
-                return JSON;
-            }
         }
     ],
 
     proxy: {
         type: 'records',
-        url: '/spark2/apply-links'
+        url: '/spark2/apply-todos'
     }
 });

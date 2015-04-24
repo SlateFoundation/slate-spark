@@ -2,8 +2,6 @@
 
 namespace Spark2;
 
-var_export($_SESSION['User']);
-
 function randomString($pre = '', $post = '')
 {
     return $pre . rtrim(base64_encode(md5(microtime())),"=") . $post;

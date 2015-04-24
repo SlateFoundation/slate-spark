@@ -19,6 +19,6 @@ requires: 'Emergence.util.API',
     
     init: function () {
         // TODO: @themightychris said that there is a better way to do this
-        Emergence.util.API.setHostname('spark2-manager.dev.jeffreymealo.com');
+        Emergence.util.API.setHostname('slate.ninja');
     }
 });

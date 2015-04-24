@@ -3,7 +3,7 @@
  */
 Ext.define('Spark2Manager.controller.Learn', {
     requires: [
-        'Spark2Manager.store.Links'
+        'Spark2Manager.store.LearnLink'
     ],
     extend: 'Ext.app.Controller',
 
@@ -25,7 +25,7 @@ Ext.define('Spark2Manager.controller.Learn', {
     },
 
     stores: [
-        'Links'
+        'LearnLink'
     ],
 
     /**
@@ -36,7 +36,7 @@ Ext.define('Spark2Manager.controller.Learn', {
     },
 
     onPanelActivate: function() {
-        this.getLinksStore().load();
+        this.getLearnLinkStore().load();
     },
 
     onEdit: function(editor, e) {
@@ -47,7 +47,7 @@ Ext.define('Spark2Manager.controller.Learn', {
     },
 
     onCreateLinkClick: function() {
-        var newLink = this.getLinksStore().insert(0, {}),
+        var newLink = this.getLearnLinkStore().insert(0, {}),
             p = this.getPanel(),
             plugin = p.getPlugin('cellediting');
 
