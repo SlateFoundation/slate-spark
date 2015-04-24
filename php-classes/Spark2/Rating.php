@@ -14,8 +14,23 @@ class Rating extends \ActiveRecord
     public static $fields = [
         'ContextClass',
         'ContextID' => 'uint',
-        'Rating' => 'tinyint',
-        'RaterContextClass'
+        'Rating'    => 'tinyint',
+        'RatingType' => [
+            'type'   => 'enum',
+            'values' => [
+                'Student',
+                'Teacher',
+                'Vendor'
+            ]
+        ],
+        'VendorID' => [
+            'type' => 'uint',
+            'notnull' => false
+        ],
+        'Ratings' => [
+            'type'    => 'uint',
+            'default' => 1
+        ]
     ];
 
     public static $relationships = [
@@ -25,9 +40,16 @@ class Rating extends \ActiveRecord
     ];
 
     public static $indexes = [
-        'RatingIndex' => [
-            'fields' => ['CreatorID', 'ContextClass', 'ContextID'],
+        'RaterIndex' => [
+            'fields' => ['CreatorID', 'ContextClass', 'ContextID', 'RatingType'],
             'unique' => true
+        ],
+        'RatingIndex' => [
+            'fields' => ['ContextClass', 'ContextID', 'VendorID'],
+            'unique' => true
+        ],
+        'RatingTypeIndex' => [
+            'fields' => ['RatingType']
         ]
     ];
 
@@ -36,9 +58,16 @@ class Rating extends \ActiveRecord
         // call parent
         parent::validate($deep);
 
-        if (empty($this->RaterContextClass) && !empty($_SESSION) && !empty($_SESSION['User'])) {
-            $this->RaterContextClass = $_SESSION['User']->Class;
+        if (empty($this->Rater) && !empty($_SESSION) && !empty($_SESSION['User'])) {
+
+            if (!$this->VendorID) {
+                $this->RatingType = $_SESSION['User']->hasAccountLevel('Teacher') ? 'Teacher' : 'Student';
+            } else {
+                $this->RatingType = 'Vendor';
+            }
         }
+
+        // TODO: if Rater === Vendor, check for VendorID
 
         // save results
         return $this->finishValidation();

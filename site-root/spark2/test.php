@@ -2,6 +2,8 @@
 
 namespace Spark2;
 
+var_export($_SESSION['User']);
+
 function randomString($pre = '', $post = '')
 {
     return $pre . rtrim(base64_encode(md5(microtime())),"=") . $post;
@@ -221,6 +223,13 @@ function testRating() {
         var_export($testRating3);
         print '</textarea>';
     }
+
+    $testVendorRating = new Rating();
+    $testVendorRating->VendorID = 1;
+    $testVendorRating->Ratings = rand(0, 100000);
+    $testVendorRating->ContextClass = Standard::class;
+    $testVendorRating->ContextID = $testStandard->ID;
+    $testVendorRating->save();
 
     print "<hr>";
 }
