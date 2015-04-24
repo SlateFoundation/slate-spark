@@ -72,4 +72,45 @@ class Rating extends \ActiveRecord
         // save results
         return $this->finishValidation();
     }
+
+    public function getRatings() {
+        // TODO: Implement getRatings()
+        return [
+            'Student' => [
+                'avg'     => rand(0, 10),
+                'ratings' => rand(0, 1000)
+            ],
+            'Teacher' => [
+                'avg'     => rand(0, 10),
+                'ratings' => rand(0, 1000)
+            ],
+            'Vendor' => [
+                'avg'     => rand(0, 10),
+                'ratings' => rand(0, 1000)
+            ]
+        ];
+    }
+
+    public static function getRatingsByContext($context) {
+        // TODO: Implement getRatingsByContext()
+        return [
+            'Student' => [
+                'avg'     => rand(0, 10),
+                'ratings' => rand(0, 1000)
+            ],
+            'Teacher' => [
+                'avg'     => rand(0, 10),
+                'ratings' => rand(0, 1000)
+            ],
+            'Vendor' => [
+                'avg'     => rand(0, 10),
+                'ratings' => rand(0, 1000)
+            ]
+        ];
+    }
+
+    public static function getRatingsFromRecord($record) {
+        // TODO: Implement getRatingsFromRecord()
+        return static::getRatingByContext();
+    }
 }
