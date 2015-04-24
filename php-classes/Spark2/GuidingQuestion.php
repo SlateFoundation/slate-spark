@@ -16,4 +16,22 @@ class GuidingQuestion extends \ActiveRecord
             'type' => 'clob'
         ]
     ];
+
+    public function getData() {
+        $data = parent::getData();
+        $data['Creator'] = $this->Creator->FirstName . ' ' . $this->Creator->LastName;
+        return $data;
+    }
+
+    public static $relationships = [
+        'Creator' => [
+            'type' => 'one-one',
+            'class' => 'Person',
+            'local' => 'CreatorID'
+        ]
+    ];
+
+    public static $dynamicFields = [
+        'Creator'
+    ];
 }

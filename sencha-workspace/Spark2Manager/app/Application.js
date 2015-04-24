@@ -14,7 +14,8 @@ Ext.define('Spark2Manager.Application', {
     name: 'Spark2Manager',
 
     controllers: [
-        'Learn'
+        'Learn',
+        'Conference'
     ],
 
     stores: [
@@ -38,6 +39,6 @@ Ext.define('Spark2Manager.Application', {
     
     init: function () {
         // TODO: @themightychris said that there is a better way to do this
-        Emergence.util.API.setHostname('slate.ninja');
+        // Emergence.util.API.setHostname('slate.ninja');
     }
 });

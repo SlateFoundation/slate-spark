@@ -33,7 +33,7 @@ Ext.define('Spark2Manager.controller.Learn', {
      * Called when the view is created
      */
     init: function() {
-        debugger;
+
     },
 
     onPanelActivate: function() {
