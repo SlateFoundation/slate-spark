@@ -1,11 +1,11 @@
 /*jslint browser: true, undef: true *//*global Ext*/
-
-Ext.define('Spark2Manager.model.Link', {
+Ext.define('Spark2Manager.model.LearnLink', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
+
 
     // model config
     idProperty: 'ID',
@@ -20,7 +20,7 @@ Ext.define('Spark2Manager.model.Link', {
         {
             name: "Class",
             type: "string",
-            defaultValue: "Spark2\\Link"
+            defaultValue: "Spark2\\LearnLink"
         },
         {
             name: "Created",
@@ -34,16 +34,21 @@ Ext.define('Spark2Manager.model.Link', {
             useNull: true
         },
         {
+            name: "RevisionID",
+            type: "int",
+            useNull: true
+        },
+        {
             name: "Title",
             type: "string"
         },
         {
-            name: "Link",
+            name: "URL",
             type: "string"
         },
         {
-            name: "Vendor",
-            type: "string",
+            name: "VendorID",
+            type: "int",
             useNull: true
         },
         {
@@ -51,13 +56,9 @@ Ext.define('Spark2Manager.model.Link', {
             type: "int",
             useNull: true
         },
+        // TODO: Figure out how to deal with nested JSON
         {
-            name: "Category",
-            type: "string",
-            useNull: true
-        },
-        {
-            name: "Notes",
+            name: "Metadata",
             type: "string",
             useNull: true
         }
@@ -65,6 +66,6 @@ Ext.define('Spark2Manager.model.Link', {
 
     proxy: {
         type: 'records',
-        url: '/spark2/links'
+        url: '/spark2/learn-links'
     }
 });
