@@ -16,7 +16,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     xtype: 's2m-learn-panel',
 
-    store: 'Links',
+    store: 'LearnLink',
 
     bbar: [
         { xtype: 'button', text: 'Add Learn', action: 'create-link' }
@@ -33,8 +33,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             }
         },
         {
-            text: 'Link',
-            dataIndex: 'Link',
+            text: 'URL',
+            dataIndex: 'URL',
             flex: 1,
             editor: {
                 xtype: 'textfield',
@@ -43,10 +43,33 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         },
         {
             text: 'Vendor',
-            dataIndex: 'Vendor',
+            dataIndex: 'VendorID',
             editor: {
                 xtype: 'combobox',
-                store: ['Illuminate']
+                store: 'Vendor',
+                queryMode: 'local',
+                displayField: 'Name',
+                valueField: 'ID',
+                /* TODO: @themightychris I don't know how Sencha Cmd builds SASS yet, can we take a look at this? */
+                tpl: Ext.create('Ext.XTemplate',
+                    '<tpl for=".">',
+                    '   <div class="x-boundlist-item" style="',
+                    '       background-position: 5px, 5px;',
+                    '       background-image: url({LogoURL});',
+                    '       background-repeat: no-repeat;' +
+                    '       padding-left: 25px">',
+                    '       {Name}',
+                    '   </div>',
+                    '</tpl>'
+                ),
+                /* TODO: @themightychris This doesn't work, also it always displays the value in the grid, not the display */
+                displayTpl: Ext.create('Ext.XTemplate',
+                    '<tpl for=".">',
+                        '<img src="{LogoURL}" class="icon"/>{Name}',
+                    '</tpl>'
+                ),
+                editable: false,
+                grow: true
             }
         },
         {
@@ -56,15 +79,6 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 xtype: 'slider',
                 minValue: 1,
                 maxValue: 4
-            }
-        },
-        {
-            text: 'Notes',
-            flex: 1,
-            dataIndex: 'Notes',
-            editor: {
-                xtype: 'textarea',
-                allowBlank: false
             }
         }
     ],

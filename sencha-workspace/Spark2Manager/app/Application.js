@@ -5,9 +5,9 @@
  */
 Ext.define('Spark2Manager.Application', {
     requires: [
-'Emergence.util.API'
-],
-requires: 'Emergence.util.API',
+        'Emergence.util.API',
+        'Spark2Manager.Util'
+    ],
 
     extend: 'Ext.app.Application',
     
@@ -15,6 +15,25 @@ requires: 'Emergence.util.API',
 
     controllers: [
         'Learn'
+    ],
+
+    stores: [
+        'ApplyLink',
+        'ApplyProject',
+        'ApplyToDo',
+        'AssessmentType',
+        'Comment',
+        'GradeLevel',
+        'GuidingQuestion',
+        'LearnLink',
+        'Rating',
+        'Standard',
+        'StandardMapping',
+        'StandardRef',
+        'Tag',
+        'TagMap',
+        'Vendor',
+        'VendorDomain'
     ],
     
     init: function () {
