@@ -29,9 +29,7 @@ class Vendor extends \ActiveRecord
         ]
     ];
 
-    public function getData() {
-        $data = parent::getData();
-        $data['Domains'] = $this->Domains;
-        return $data;
-    }
+    public static $dynamicFields = [
+        'Domains'
+    ];
 }
