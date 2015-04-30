@@ -2,7 +2,12 @@
 
 namespace Spark2;
 
-class GuidingQuestionRequestHandler extends \RecordsRequestHandler
+class GuidingQuestionsRequestHandler extends \RecordsRequestHandler
 {
     public static $recordClass = GuidingQuestion::class;
+
+    public static function handleBrowseRequest($options = [], $conditions = [], $responseID = null, $responseData = [])
+    {
+        return parent::handleBrowseRequest($options, $conditions, $responseID, $responseData);
+    }
 }
