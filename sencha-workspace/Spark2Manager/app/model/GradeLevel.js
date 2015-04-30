@@ -1,4 +1,5 @@
 /*jslint browser: true, undef: true *//*global Ext*/
+
 Ext.define('Spark2Manager.model.GradeLevel', {
     extend: 'Ext.data.Model',
     requires: [

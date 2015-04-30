@@ -1,4 +1,5 @@
 /*jslint browser: true, undef: true *//*global Ext*/
+
 Ext.define('Spark2Manager.model.StandardMapping', {
     extend: 'Ext.data.Model',
     requires: [
