@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.VendorDomain', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.VendorDomains', {
     extend: 'Ext.data.Store',
 
     requires: [

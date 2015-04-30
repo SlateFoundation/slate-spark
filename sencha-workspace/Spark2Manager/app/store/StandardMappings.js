@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.store.StandardMapping', {
+Ext.define('Spark2Manager.store.StandardMappings', {
     extend: 'Ext.data.Store',
 
     requires: [

@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.ApplyLink', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.ApplyLinks', {
     extend: 'Ext.data.Store',
 
     requires: [

@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.ApplyToDo', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.ApplyToDos', {
     extend: 'Ext.data.Store',
 
     requires: [

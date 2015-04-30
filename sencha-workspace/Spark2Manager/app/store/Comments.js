@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.Comment', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.Comments', {
     extend: 'Ext.data.Store',
 
     requires: [

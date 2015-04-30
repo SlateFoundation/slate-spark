@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.Tag', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.Tags', {
     extend: 'Ext.data.Store',
 
     requires: [

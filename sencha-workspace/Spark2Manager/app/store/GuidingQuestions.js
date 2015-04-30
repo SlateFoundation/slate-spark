@@ -1,7 +1,6 @@
-/**
- * Created by jmealo on 4/24/15.
- */
-Ext.define('Spark2Manager.store.GuidingQuestion', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.GuidingQuestions', {
     extend: 'Ext.data.Store',
 
     requires: [
@@ -9,4 +8,6 @@ Ext.define('Spark2Manager.store.GuidingQuestion', {
     ],
 
     model: 'Spark2Manager.model.GuidingQuestion',
+
+    pageSize: 5
 });

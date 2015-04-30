@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.Rating', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.Ratings', {
     extend: 'Ext.data.Store',
 
     requires: [
