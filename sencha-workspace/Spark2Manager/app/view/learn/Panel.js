@@ -35,6 +35,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 store: [ 'English', 'Math', 'Social Studies', 'Science' ]
             }
         },
+        */
         {
             text: 'Standard',
             width: 250,
@@ -50,7 +51,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 filterPickList: true,
                 multiSelect: true
             }
-        },*/
+        },
         {
             text: 'URL',
             dataIndex: 'URL',

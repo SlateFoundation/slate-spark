@@ -32,6 +32,21 @@ Ext.define('Spark2Manager.Application', {
         'Apply'
     ],
 
+    listen: {
+        controller: {
+            '#': {
+                unmatchedroute: 'onUnmatchedRoute'
+            }
+        }
+    },
+
+    defaultToken : 'learn',
+
+    // TODO: @themightychris this is a hack for routing to the tab panel, could use some help here
+    onUnmatchedRoute: function(hash) {
+        this.setDefaultToken(hash);
+    },
+
     stores: [
         'Assessments',
         'AssessmentTypes',
@@ -52,21 +67,24 @@ Ext.define('Spark2Manager.Application', {
     views: [
         'Main'
     ],
-    
-    launch: function () {
-        alert('application.js launch executed');
 
+    launch: function () {
         var me = this;
-        // TODO: @themightychris said that there is a better way to do this
+
+        // TODO: Remove this before production
         if (location.hostname.indexOf('slate.ninja') === -1) {
             Emergence.util.API.setHostname('slate.ninja');
         }
 
-        Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains'], function() {
-            alert('StoreMgr require loaded');
-            me.getMainView().create({
-                plugins: 'viewport'
-            });
+        Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardCodes'], function() {
+            var mainView = me.getMainView().create({
+                    plugins: 'viewport'
+                }),
+                tab = mainView.child('#' + me.getDefaultToken() + '-panel');
+
+            if (tab) {
+                mainView.setActiveItem(tab);
+            }
         });
     }
 });

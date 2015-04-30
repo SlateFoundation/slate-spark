@@ -1,8 +1,5 @@
 Ext.define('Spark2Manager.view.conference.Panel', {
     requires: [
-        'Ext.grid.plugin.CellEditing',
-        'Ext.selection.CellModel',
-        'Ext.form.field.Text',
         'Ext.form.field.TextArea',
         'Ext.button.Button',
         'Ext.toolbar.Paging'
@@ -30,13 +27,13 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         },
         {
             text: 'Created By',
-            dataIndex: 'CreatorFullName',
-            flex: 1
+            dataIndex: 'CreatorFullName'
         },
         {
+            xtype: 'datecolumn',
+            format:'m-d-Y',
             text: 'Created',
-            dataIndex: 'Created',
-            flex: 1
+            dataIndex: 'Created'
         }
     ],
 
