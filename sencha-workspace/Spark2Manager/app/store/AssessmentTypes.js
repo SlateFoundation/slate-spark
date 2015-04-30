@@ -1,4 +1,6 @@
-Ext.define('Spark2Manager.store.AssessmentType', {
+/*jslint browser: true, undef: true *//*global Ext*/
+
+Ext.define('Spark2Manager.store.AssessmentTypes', {
     extend: 'Ext.data.Store',
 
     requires: [
