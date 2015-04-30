@@ -19,7 +19,7 @@ class GuidingQuestion extends \ActiveRecord
 
     public function getData() {
         $data = parent::getData();
-        $data['Creator'] = $this->Creator->FirstName . ' ' . $this->Creator->LastName;
+        $data['CreatorFullName'] = $this->Creator->FullName;
         return $data;
     }
 
@@ -29,9 +29,5 @@ class GuidingQuestion extends \ActiveRecord
             'class' => 'Person',
             'local' => 'CreatorID'
         ]
-    ];
-
-    public static $dynamicFields = [
-        'Creator'
     ];
 }
