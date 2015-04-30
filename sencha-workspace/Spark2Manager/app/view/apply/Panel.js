@@ -1,9 +1,8 @@
-/**
- * Created by jmealo on 4/14/15.
- */
 Ext.define('Spark2Manager.view.apply.Panel', {
     requires: [
-        /* include classes required by this component here */
+        'Spark2Manager.store.ApplyProjects',
+        'Spark2Manager.store.ApplyLinks',
+        'Spark2Manager.store.ApplyToDos'
     ],
 
     extend: 'Ext.Container',

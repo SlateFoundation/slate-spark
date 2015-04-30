@@ -1,6 +1,6 @@
 Ext.define('Spark2Manager.controller.Conference', {
     requires: [
-        'Spark2Manager.store.GuidingQuestion'
+        'Spark2Manager.store.GuidingQuestions'
     ],
 
     extend: 'Ext.app.Controller',
@@ -23,7 +23,7 @@ Ext.define('Spark2Manager.controller.Conference', {
     },
 
     stores: [
-        'GuidingQuestion'
+        'GuidingQuestions'
     ],
 
     /**
@@ -34,7 +34,7 @@ Ext.define('Spark2Manager.controller.Conference', {
     },
 
     onPanelActivate: function() {
-        this.getGuidingQuestionStore().load();
+        this.getGuidingQuestionsStore().load();
     },
 
     onEdit: function(editor, e) {
@@ -45,7 +45,7 @@ Ext.define('Spark2Manager.controller.Conference', {
     },
 
     onCreateGuidingQuestionClick: function() {
-        var newLink = this.getGuidingQuestionStore().insert(0, {}),
+        var newLink = this.getGuidingQuestionsStore().insert(0, {}),
             p = this.getPanel(),
             plugin = p.getPlugin('cellediting');
 

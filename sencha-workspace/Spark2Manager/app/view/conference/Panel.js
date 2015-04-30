@@ -4,14 +4,15 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         'Ext.selection.CellModel',
         'Ext.form.field.Text',
         'Ext.form.field.TextArea',
-        'Ext.button.Button'
+        'Ext.button.Button',
+        'Ext.toolbar.Paging'
     ],
 
     extend: 'Ext.grid.Panel',
 
     xtype: 's2m-conference-panel',
 
-    store: 'GuidingQuestion',
+    store: 'GuidingQuestions',
 
     bbar: [
         { xtype: 'button', text: 'Add Guiding Question', action: 'create-guiding-question' }
@@ -29,7 +30,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         },
         {
             text: 'Created By',
-            dataIndex: 'Creator',
+            dataIndex: 'CreatorFullName',
             flex: 1
         },
         {
@@ -47,5 +48,12 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         ptype: 'cellediting',
         pluginId: 'cellediting',
         clicksToEdit: 1
-    }
+    },
+
+    dockedItems: [{
+        xtype: 'pagingtoolbar',
+        store: 'GuidingQuestions',
+        dock: 'bottom',
+        displayInfo: true
+    }]
 });

@@ -1,6 +1,3 @@
-/**
- * Created by jmealo on 4/14/15.
- */
 Ext.define('Spark2Manager.view.learn.Panel', {
     requires: [
         'Ext.grid.plugin.CellEditing',
@@ -9,23 +6,54 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.form.field.TextArea',
         'Ext.slider.Single',
         'Ext.form.field.ComboBox',
-        'Ext.button.Button'
+        'Ext.button.Button',
+        'Ext.form.field.Tag',
+        'Ext.toolbar.Paging'
     ],
 
     extend: 'Ext.grid.Panel',
 
     xtype: 's2m-learn-panel',
 
-    store: 'LearnLink',
+    store: 'LearnLinks',
 
     bbar: [
         { xtype: 'button', text: 'Add Learn', action: 'create-link' }
     ],
 
     columns: [
+        /*
+        HELP: @themightychris how could we chain these together to limit the standards by the subject selected here?
+        HELP: @themightychris how could we link this field's default value to a filter elsewhere on the page?
         {
-            text: 'Title',
-            dataIndex: 'Title',
+            text: 'Subject',
+            flex: 1,
+            dataIndex: 'subject',
+            editor: {
+                reference: 'subjects',
+                xtype: 'combobox',
+                store: [ 'English', 'Math', 'Social Studies', 'Science' ]
+            }
+        },
+        {
+            text: 'Standard',
+            width: 250,
+            dataIndex: 'code',
+            editor: {
+                reference: 'standards',
+                xtype: 'tagfield',
+                store: 'StandardCodes',
+                queryMode: 'local',
+                displayField: 'code',
+                valueField: 'code',
+                allowBlank: false,
+                filterPickList: true,
+                multiSelect: true
+            }
+        },*/
+        {
+            text: 'URL',
+            dataIndex: 'URL',
             flex: 1,
             editor: {
                 xtype: 'textfield',
@@ -33,8 +61,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             }
         },
         {
-            text: 'URL',
-            dataIndex: 'URL',
+            text: 'Title',
+            dataIndex: 'Title',
             flex: 1,
             editor: {
                 xtype: 'textfield',
@@ -46,7 +74,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             dataIndex: 'VendorID',
             editor: {
                 xtype: 'combobox',
-                store: 'Vendor',
+                store: 'Vendors',
                 queryMode: 'local',
                 displayField: 'Name',
                 valueField: 'ID',
@@ -62,14 +90,12 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                     '   </div>',
                     '</tpl>'
                 ),
-                /* TODO: @themightychris This doesn't work, also it always displays the value in the grid, not the display */
-                displayTpl: Ext.create('Ext.XTemplate',
-                    '<tpl for=".">',
-                        '<img src="{LogoURL}" class="icon"/>{Name}',
-                    '</tpl>'
-                ),
                 editable: false,
                 grow: true
+            },
+            renderer: function(val, col, record) {
+                var vendorRecord = Ext.getStore('Vendors').getById(val);
+                return vendorRecord ? vendorRecord.get('Name') : '';
             }
         },
         {
@@ -89,5 +115,12 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         ptype: 'cellediting',
         pluginId: 'cellediting',
         clicksToEdit: 1
-    }
+    },
+
+    dockedItems: [{
+        xtype: 'pagingtoolbar',
+        store: 'LearnLinks',
+        dock: 'bottom',
+        displayInfo: true
+    }]
 });
