@@ -1,12 +1,25 @@
-/**
- * The main application class. An instance of this class is created by app.js when it calls
- * Ext.application(). This is the ideal place to handle application launch and initialization
- * details.
- */
+/*jslint browser: true, undef: true *//*global Ext*/
+
 Ext.define('Spark2Manager.Application', {
     requires: [
+        'Spark2Manager.view.Main',
         'Emergence.util.API',
-        'Spark2Manager.Util'
+        'Spark2Manager.Util',
+        'Spark2Manager.store.Assessments',
+        'Spark2Manager.store.AssessmentTypes',
+        'Spark2Manager.store.Comments',
+        'Spark2Manager.store.GradeLevels',
+        'Spark2Manager.store.Links',
+        'Spark2Manager.store.Ratings',
+        'Spark2Manager.store.Standards',
+        'Spark2Manager.store.StandardCodes',
+        'Spark2Manager.store.StandardMappings',
+        'Spark2Manager.store.StandardRefs',
+        'Spark2Manager.store.Tags',
+        'Spark2Manager.store.TagMaps',
+        'Spark2Manager.store.Vendors',
+        'Spark2Manager.store.VendorDomains'
+
     ],
 
     extend: 'Ext.app.Application',
@@ -15,30 +28,45 @@ Ext.define('Spark2Manager.Application', {
 
     controllers: [
         'Learn',
-        'Conference'
+        'Conference',
+        'Apply'
     ],
 
     stores: [
-        'ApplyLink',
-        'ApplyProject',
-        'ApplyToDo',
-        'AssessmentType',
-        'Comment',
-        'GradeLevel',
-        'GuidingQuestion',
-        'LearnLink',
-        'Rating',
-        'Standard',
-        'StandardMapping',
-        'StandardRef',
-        'Tag',
-        'TagMap',
-        'Vendor',
-        'VendorDomain'
+        'Assessments',
+        'AssessmentTypes',
+        'Comments',
+        'GradeLevels',
+        'Links',
+        'Ratings',
+        'Standards',
+        'StandardCodes',
+        'StandardMappings',
+        'StandardRefs',
+        'Tags',
+        'TagMaps',
+        'Vendors',
+        'VendorDomains'
+    ],
+
+    views: [
+        'Main'
     ],
     
-    init: function () {
+    launch: function () {
+        alert('application.js launch executed');
+
+        var me = this;
         // TODO: @themightychris said that there is a better way to do this
-        // Emergence.util.API.setHostname('slate.ninja');
+        if (location.hostname.indexOf('slate.ninja') === -1) {
+            Emergence.util.API.setHostname('slate.ninja');
+        }
+
+        Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains'], function() {
+            alert('StoreMgr require loaded');
+            me.getMainView().create({
+                plugins: 'viewport'
+            });
+        });
     }
 });

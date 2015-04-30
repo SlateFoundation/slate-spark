@@ -6,9 +6,7 @@
 Ext.application({
     name: 'Spark2Manager',
 
-    extend: 'Spark2Manager.Application',
-    
-    autoCreateViewport: 'Main'
+    extend: 'Spark2Manager.Application'
 	
     //-------------------------------------------------------------------------
     // Most customizations should be made to Spark2Manager.Application. If you need to
