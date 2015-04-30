@@ -9,5 +9,17 @@ Ext.define('Spark2Manager.store.ApplyProjects', {
 
     model: 'Spark2Manager.model.ApplyProject',
 
-    autoSync: true
+    autoSync: true,
+
+    pageSize: 25,
+
+    sorters:[
+        {
+            property:'Created',
+            direction:'DESC'
+        }
+    ],
+
+    remoteSort: true,
+    remoteFilter: true
 });

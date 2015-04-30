@@ -9,5 +9,21 @@ Ext.define('Spark2Manager.store.GuidingQuestions', {
 
     model: 'Spark2Manager.model.GuidingQuestion',
 
-    pageSize: 5
+    autoSync: true,
+
+    pageSize: 25,
+
+    sorters:[
+        {
+            property:'Created',
+            direction:'DESC'
+        },
+        {
+            property:'Creator',
+            direction:'DESC'
+        }
+    ],
+
+    remoteSort: true,
+    remoteFilter: true
 });

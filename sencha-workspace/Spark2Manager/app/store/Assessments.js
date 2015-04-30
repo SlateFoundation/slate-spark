@@ -9,5 +9,15 @@ Ext.define('Spark2Manager.store.Assessments', {
 
     model: 'Spark2Manager.model.Assessment',
 
-    autoSync: true
+    autoSync: true,
+
+    sorters:[
+        {
+            property:'Created',
+            direction:'DESC'
+        }
+    ],
+
+    remoteSort: true,
+    remoteFilter: true
 });
