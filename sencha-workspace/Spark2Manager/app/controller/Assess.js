@@ -1,30 +1,32 @@
 Ext.define('Spark2Manager.controller.Assess', {
-    requires: [
-        'Spark2Manager.store.Assessments',
-        'Spark2Manager.store.AssessmentTypes',
-        'Spark2Manager.store.Links'
-    ],
+        requires: [
+            'Spark2Manager.store.StandardCodes',
+            'Spark2Manager.store.Assessments',
+            'Spark2Manager.store.AssessmentTypes',
+            'Spark2Manager.store.Links'
+        ],
 
-    extend: 'Ext.app.Controller',
+        extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-assess-panel'
-        }],
+        config: {
+            refs: [{
+                ref: 'panel',
+                selector: 's2m-assess-panel'
+            }],
 
-        control: {
-            's2m-assess-panel': {
-                activate: 'onPanelActivate',
-                edit: 'onEdit'
-            },
-            's2m-assess-panel button[action=create-assess]': {
-                click: 'onCreateAssessClick'
+            control: {
+                's2m-assess-panel': {
+                    activate: 'onPanelActivate',
+                    edit: 'onEdit'
+                },
+                's2m-assess-panel button[action=create-assessment]': {
+                    click: 'onCreateAssessmentClick'
+                }
             }
-        }
-    },
+        },
 
-    stores: [
+        stores: [
+        'StandardCodes',
         'Assessments',
         'AssessmentTypes',
         'Links'
@@ -50,11 +52,13 @@ Ext.define('Spark2Manager.controller.Assess', {
         }
     },
 
-    onCreateAssessClick: function() {
-        /* var newLink = this.getAssessProjectStore().insert(0, {}),
+    onCreateAssessmentClick: function() {
+        //debugger;
+
+        var newAssessment = this.getAssessmentsStore().insert(0, {}),
             p = this.getPanel(),
             plugin = p.getPlugin('cellediting');
 
-        plugin.startEdit(newLink[0], 0); */
+        plugin.startEdit(newAssessment[0], 0);
     }
 });
