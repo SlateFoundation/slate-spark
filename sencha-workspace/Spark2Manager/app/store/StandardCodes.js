@@ -4,7 +4,7 @@ Ext.define('Spark2Manager.store.StandardCodes', {
         idProperty: 'code',
         proxy: {
             type: 'ajax',
-            url: '/spark2/standards.json',
+            url: 'http://slate.ninja/spark2/standards.json',
             reader: {
                 type: 'json'
             }
