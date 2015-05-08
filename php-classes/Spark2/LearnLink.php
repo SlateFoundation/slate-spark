@@ -20,8 +20,17 @@ class LearnLink extends \VersionedRecord
             'type'    => 'uint',
             'notnull' => false
         ],
+        'GradeLevel' => [
+            'type'    => 'enum',
+            'notnull' => false,
+            'values'  => ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        ],
         'DOK' => [
             'type'    => 'tinyint',
+            'notnull' => false
+        ],
+        'Standards' => [
+            'type'    => 'json',
             'notnull' => false
         ],
         'Metadata' => [
