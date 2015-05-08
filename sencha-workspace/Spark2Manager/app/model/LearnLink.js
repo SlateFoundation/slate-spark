@@ -1,11 +1,11 @@
 /*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('Spark2Manager.model.LearnLink', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
+
 
     // model config
     idProperty: 'ID',
@@ -52,26 +52,22 @@ Ext.define('Spark2Manager.model.LearnLink', {
             useNull: true
         },
         {
+            name: "GradeLevel",
+            type: "string",
+            useNull: true
+        },
+        {
             name: "DOK",
             type: "int",
             useNull: true
         },
-        // TODO: Figure out how to deal with nested JSON
+        {
+            name: "Standards",
+            useNull: true
+        },
         {
             name: "Metadata",
-            type: "string",
-            useNull: true,
-            convert: function (value) {
-                var JSON = {};
-
-                try {
-                    JSON  = JSON.parse(value);
-                } catch(e) {
-                    // Empty catch
-                }
-
-                return JSON;
-            }
+            useNull: true
         }
     ],
 
