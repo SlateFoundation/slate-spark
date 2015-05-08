@@ -4,7 +4,7 @@ namespace Spark2;
 
 class Assessment extends \ActiveRecord
 {
-    public static $tableName = 's2_assessment';
+    public static $tableName = 's2_assessments';
 
     public static $singularNoun = 'assessment';
     public static $pluralNoun = 'assessments';
