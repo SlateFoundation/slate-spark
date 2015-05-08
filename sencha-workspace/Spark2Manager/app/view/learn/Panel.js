@@ -1,14 +1,9 @@
 Ext.define('Spark2Manager.view.learn.Panel', {
     requires: [
         'Ext.grid.plugin.CellEditing',
-        'Ext.selection.CellModel',
-        'Ext.form.field.Text',
-        'Ext.form.field.TextArea',
-        'Ext.slider.Single',
-        'Ext.form.field.ComboBox',
         'Ext.button.Button',
-        'Ext.form.field.Tag',
-        'Ext.toolbar.Paging'
+        'Ext.toolbar.Paging',
+        'Ext.XTemplate'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -22,34 +17,40 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     ],
 
     columns: [
-        /*
-        HELP: @themightychris how could we chain these together to limit the standards by the subject selected here?
-        HELP: @themightychris how could we link this field's default value to a filter elsewhere on the page?
         {
-            text: 'Subject',
-            flex: 1,
-            dataIndex: 'subject',
-            editor: {
-                reference: 'subjects',
-                xtype: 'combobox',
-                store: [ 'English', 'Math', 'Social Studies', 'Science' ]
+            xtype: 'widgetcolumn',
+            width: 90,
+            widget: {
+                xtype: 'button',
+                text: 'Align',
+                action: 'align'
             }
         },
-        */
         {
             text: 'Standard',
+            renderer: function(val, col, record) {
+                val = record.get('Standards');
+
+                if (!Array.isArray(val)) {
+                    return '';
+                }
+
+                return val.map(function(standard) {
+                    return standard.standardCode;
+                }).join(', ');
+            },
             width: 250,
-            dataIndex: 'code',
+            dataIndex: 'Standards'
+        },
+        {
+            text: 'Grade',
+            dataIndex: 'GradeLevel',
+            width: 75,
             editor: {
-                reference: 'standards',
-                xtype: 'tagfield',
-                store: 'StandardCodes',
-                queryMode: 'local',
-                displayField: 'code',
-                valueField: 'code',
-                allowBlank: false,
-                filterPickList: true,
-                multiSelect: true
+                xtype: 'combobox',
+                store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                editable: false,
+                grow: true
             }
         },
         {
@@ -95,8 +96,16 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 grow: true
             },
             renderer: function(val, col, record) {
-                var vendorRecord = Ext.getStore('Vendors').getById(val);
-                return vendorRecord ? vendorRecord.get('Name') : '';
+                var vendorRecord = Ext.getStore('Vendors').getById(val),
+                    returnVal = '',
+                    logoURL;
+
+                if (vendorRecord) {
+                    logoURL = vendorRecord.get('LogoURL');
+                    returnVal = logoURL ? '<img src="' + logoURL + '">' : vendorRecord.get('Name');
+                }
+
+                return returnVal;
             }
         },
         {
