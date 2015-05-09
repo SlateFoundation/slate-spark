@@ -59,5 +59,23 @@ Ext.define('Spark2Manager.store.StandardsTree', {
                 }
             }
         });
+    },
+
+    listeners: {
+        load: function(me, records, success, eOpts) {
+            var standardCodes = [];
+
+            if (success) {
+                me.getRoot().visitPreOrder('', function (child) {
+                    var standardCode = child.get('standardCode');
+
+                    if (standardCode) {
+                        standardCodes.push({code: standardCode});
+                    }
+                });
+
+                Ext.getStore('StandardCodes').setData(standardCodes);
+            }
+        }
     }
 });

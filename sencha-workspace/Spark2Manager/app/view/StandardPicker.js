@@ -43,7 +43,8 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         multiSelect: true,
 
         listeners: {
-            // beforedeselect: 'onBeforeTagFieldDeselect',
+            beforeSelect: 'onBeforeTagFieldSelect',
+            beforedeselect: 'onBeforeTagFieldDeselect',
             // HACK: beforedeselect doesn't fire unless the tagfield has focus, this makes removing tag items work reliably
             render: function(tagfield) {
                 tagfield.getEl().on('mouseup', function(ev, el) {

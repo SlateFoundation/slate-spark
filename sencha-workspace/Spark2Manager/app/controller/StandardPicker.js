@@ -100,7 +100,7 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
         me.getView().close();
     },
 
-    onStandardsCheck: function(node, checked, eOpts) {
+    onStandardsCheck: function(node, checked) {
         var tagField = this.lookupReference('tagfield');
 
         if (checked) {
@@ -108,10 +108,15 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
         } else {
             tagField.removeValue(node.get('standardCode'));
         }
-    }
+    },
 
-    /*
+    onBeforeTagFieldSelect: function(combo, record, index, eOpts) {
+        var node = Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true);
+        node.set('checked', true);
+        node.parentNode.expand();
+    },
+
     onBeforeTagFieldDeselect: function(combo, record, index, eOpts) {
-        Ext.getStore('StandardsTree').findRecord('standardCode', record.get('code')).set('checked', false);
-    }*/
+        Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true).set('checked', false);
+    }
 });
