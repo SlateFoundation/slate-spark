@@ -44,8 +44,11 @@ Ext.define('Spark2Manager.view.StandardPicker', {
 
         listeners: {
             beforedeselect: 'onBeforeTagFieldDeselect',
-            select: function(combo, record) {
-                console.log('select', record);
+            // HACK: beforedeselect doesn't fire unless the tagfield has focus, this forces focus on hover
+            render: function(tagfield) {
+                tagfield.getEl().on('mouseenter', function() {
+                    this.focus();
+                });
             }
         }
     },
