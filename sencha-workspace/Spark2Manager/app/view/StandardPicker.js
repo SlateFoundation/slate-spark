@@ -43,11 +43,13 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         multiSelect: true,
 
         listeners: {
-            beforedeselect: 'onBeforeTagFieldDeselect',
-            // HACK: beforedeselect doesn't fire unless the tagfield has focus, this forces focus on hover
+            // beforedeselect: 'onBeforeTagFieldDeselect',
+            // HACK: beforedeselect doesn't fire unless the tagfield has focus, this makes removing tag items work reliably
             render: function(tagfield) {
-                tagfield.getEl().on('mouseenter', function() {
-                    this.focus();
+                tagfield.getEl().on('mouseup', function(ev, el) {
+                    if (el.classList.contains('x-tagfield-item-close')) {
+                        Ext.getStore('StandardsTree').findRecord('standardCode', el.previousSibling.textContent).set('checked', false);
+                    }
                 });
             }
         }

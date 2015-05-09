@@ -108,9 +108,10 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
         } else {
             tagField.removeValue(node.get('standardCode'));
         }
-    },
+    }
 
+    /*
     onBeforeTagFieldDeselect: function(combo, record, index, eOpts) {
         Ext.getStore('StandardsTree').findRecord('standardCode', record.get('code')).set('checked', false);
-    }
+    }*/
 });
