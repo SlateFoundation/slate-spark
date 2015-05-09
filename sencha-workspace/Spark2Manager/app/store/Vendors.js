@@ -12,6 +12,7 @@ Ext.define('Spark2Manager.store.Vendors', {
     autoSync: true,
 
     proxy: {
+        noCache: false,
         type: 'records',
         url: '/spark2/vendors',
         include: 'Domains'

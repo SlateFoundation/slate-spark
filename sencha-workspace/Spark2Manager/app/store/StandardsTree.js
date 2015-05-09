@@ -1,12 +1,14 @@
 Ext.define('Spark2Manager.store.StandardsTree', {
     extend: 'Ext.data.TreeStore',
+
     config: {
         proxy: {
             type: 'ajax',
             url: '/spark2/tree.json',
             reader: {
                 type: 'json'
-            }
+            },
+            noCache: false
         },
 
         parentIdProperty: 'parentId',
