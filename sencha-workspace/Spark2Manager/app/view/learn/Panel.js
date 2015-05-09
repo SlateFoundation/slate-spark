@@ -1,9 +1,10 @@
 Ext.define('Spark2Manager.view.learn.Panel', {
     requires: [
-        'Ext.grid.plugin.CellEditing',
+        'Ext.grid.plugin.RowEditing',
         'Ext.button.Button',
         'Ext.toolbar.Paging',
-        'Ext.XTemplate'
+        'Ext.XTemplate',
+        'Ext.grid.filters.Filters'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -12,6 +13,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     store: 'LearnLinks',
 
+    columnLines: true,
+
     bbar: [
         { xtype: 'button', text: 'Add Learn', action: 'create-link' }
     ],
@@ -19,7 +22,17 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     columns: [
         {
             xtype: 'widgetcolumn',
-            width: 90,
+            editor: {
+                /* @themightychris: I couldn't get this to work, it glitches (expands) when you edit a row
+                style: {
+                    left: '10px',
+                    width: '80px'
+                },
+                */
+                xtype: 'button',
+                text: 'Align',
+                action: 'align'
+            },
             widget: {
                 xtype: 'button',
                 text: 'Align',
@@ -121,11 +134,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     selModel: 'cellmodel',
 
-    plugins: {
-        ptype: 'cellediting',
-        pluginId: 'cellediting',
-        clicksToEdit: 1
-    },
+    plugins: ['rowediting'],
 
     dockedItems: [{
         xtype: 'pagingtoolbar',

@@ -12,7 +12,7 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
 
     config: {
         control: {
-            '#': {},
+            '#': {}
         }
     },
 
@@ -47,13 +47,11 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
     },
 
     onTreeStoreLoad: function() {
-        alert('howdy guys!  ');
         // The first time the window is shown, the store isn't loaded, this makes sure we restore the state on first run
         Ext.getStore('StandardsTree').restoreState(this.getView().getRecord());
     },
 
     onPanelActivate: function () {
-        alert("hey guys");
         var me = this,
             store = Ext.getStore('StandardsTree'),
             view = me.getView(),

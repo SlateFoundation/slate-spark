@@ -111,7 +111,7 @@ Ext.define('Spark2Manager.controller.Learn', {
 
     onAlignClick: function(button) {
         var standardPicker = new Spark2Manager.view.StandardPicker({
-            record: button.getWidgetRecord()
+            record: button.getWidgetRecord ? button.getWidgetRecord() : button.up().getRecord()
         });
 
         standardPicker.show();
