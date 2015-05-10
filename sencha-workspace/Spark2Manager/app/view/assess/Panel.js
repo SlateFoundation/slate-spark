@@ -25,7 +25,6 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             editor: {
                 reference: 'standards',
                 xtype: 'tagfield',
-                store: 'StandardCodes',
                 queryMode: 'local',
                 displayField: 'code',
                 valueField: 'code',

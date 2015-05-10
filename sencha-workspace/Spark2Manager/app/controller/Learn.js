@@ -32,8 +32,7 @@ Ext.define('Spark2Manager.controller.Learn', {
     stores: [
         'Vendors',
         'VendorDomains',
-        'LearnLinks',
-        'StandardCodes'
+        'LearnLinks'
     ],
 
     /**
@@ -47,7 +46,6 @@ Ext.define('Spark2Manager.controller.Learn', {
         this.getVendorsStore().load();
         this.getVendorDomainsStore().load();
         this.getLearnLinksStore().load();
-        this.getStandardCodesStore().load();
     },
 
     onEdit: function(editor, e) {

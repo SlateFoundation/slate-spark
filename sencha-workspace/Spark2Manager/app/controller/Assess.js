@@ -1,6 +1,5 @@
 Ext.define('Spark2Manager.controller.Assess', {
         requires: [
-            'Spark2Manager.store.StandardCodes',
             'Spark2Manager.store.Assessments',
             'Spark2Manager.store.AssessmentTypes',
             'Spark2Manager.store.Links'
@@ -26,7 +25,6 @@ Ext.define('Spark2Manager.controller.Assess', {
         },
 
         stores: [
-        'StandardCodes',
         'Assessments',
         'AssessmentTypes',
         'Links'

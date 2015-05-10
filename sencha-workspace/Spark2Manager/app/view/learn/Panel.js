@@ -21,26 +21,14 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     columns: [
         {
-            xtype: 'widgetcolumn',
-            editor: {
-                /* @themightychris: I couldn't get this to work, it glitches (expands) when you edit a row
-                style: {
-                    left: '10px',
-                    width: '80px'
-                },
-                */
-                xtype: 'button',
-                text: 'Align',
-                action: 'align'
-            },
-            widget: {
-                xtype: 'button',
-                text: 'Align',
-                action: 'align'
-            }
-        },
-        {
             text: 'Standard',
+            editor: {
+                xtype: 'tagfield',
+                displayField: 'standardCode',
+                valueField: 'standardCode',
+                store: 'StandardCodes',
+                multiSelect: true
+            },
             renderer: function(val, col, record) {
                 val = record.get('Standards');
 
@@ -49,7 +37,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 }
 
                 return val.map(function(standard) {
-                    return standard.standardCode;
+                    return standard.standardCode || standard;
                 }).join(', ');
             },
             width: 250,
@@ -85,6 +73,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             }
         },
         {
+            width: 175,
             text: 'Vendor',
             dataIndex: 'VendorID',
             editor: {
@@ -106,7 +95,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                     '</tpl>'
                 ),
                 editable: false,
-                grow: true
+                grow: true,
             },
             renderer: function(val, col, record) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),

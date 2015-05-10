@@ -57,7 +57,6 @@ Ext.define('Spark2Manager.Application', {
         'Links',
         'Ratings',
         'Standards',
-        'StandardCodes',
         'StandardsTree',
         'StandardPicker',
         'StandardMappings',
@@ -80,7 +79,7 @@ Ext.define('Spark2Manager.Application', {
             Emergence.util.API.setHostname('slate.ninja');
         }
 
-        Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardCodes', 'AssessmentTypes'], function() {
+        Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardsTree', 'AssessmentTypes'], function() {
             var mainView = me.getMainView().create({
                     plugins: 'viewport'
                 }),

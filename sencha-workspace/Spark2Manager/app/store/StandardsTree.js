@@ -1,4 +1,6 @@
 Ext.define('Spark2Manager.store.StandardsTree', {
+    requires: ['Ext.data.ArrayStore'],
+
     extend: 'Ext.data.TreeStore',
 
     config: {
@@ -70,11 +72,24 @@ Ext.define('Spark2Manager.store.StandardsTree', {
                     var standardCode = child.get('standardCode');
 
                     if (standardCode) {
-                        standardCodes.push({code: standardCode});
+                        standardCodes.push({standardCode: standardCode});
                     }
                 });
 
-                Ext.getStore('StandardCodes').setData(standardCodes);
+                Ext.create('Ext.data.JsonStore', {
+                    storeId  : 'StandardCodes',
+                    data     : standardCodes,
+                    idProperty: 'standardCode',
+                    fields: ['standardCode'],
+                    proxy: {
+                        type: 'memory',
+                        reader: {
+                            type: 'json'
+                        }
+                    }
+                });
+
+                window.standardCodes = standardCodes;
             }
         }
     }

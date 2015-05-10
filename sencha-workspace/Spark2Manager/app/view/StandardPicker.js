@@ -5,8 +5,6 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         'Ext.Array',
         'Ext.window.MessageBox',
         'Ext.form.field.Tag',
-        'Spark2Manager.store.StandardCodes',
-
         'Spark2Manager.controller.StandardPicker'
     ],
 
@@ -39,7 +37,6 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         editable: false,
         grow: true,
         selectOnFocus: false,
-        store: 'StandardCodes',
         multiSelect: true,
 
         listeners: {

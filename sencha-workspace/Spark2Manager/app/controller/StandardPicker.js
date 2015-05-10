@@ -2,7 +2,6 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
     requires: [
         'Spark2Manager.store.StandardsTree',
         'Spark2Manager.store.StandardPicker',
-        'Spark2Manager.store.StandardCodes',
         'Ext.data.ArrayStore'
     ],
 
@@ -18,8 +17,7 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
 
     stores: [
         'StandardsTree',
-        'StandardPicker',
-        'StandardCodes'
+        'StandardPicker'
     ],
 
     /**

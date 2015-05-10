@@ -6,7 +6,6 @@ Ext.define('Spark2Manager.model.LearnLink', {
         'Ext.data.identifier.Negative'
     ],
 
-
     // model config
     idProperty: 'ID',
     identifier: 'negative',
@@ -63,7 +62,20 @@ Ext.define('Spark2Manager.model.LearnLink', {
         },
         {
             name: "Standards",
-            useNull: true
+            useNull: true,
+            convert: function(val) {
+                if (Array.isArray(val)) {
+                    return val.map(function(standard) {
+                        if (typeof standard === 'object') {
+                            return standard.standardCode;
+                        } else {
+                            return standard;
+                        }
+                    })
+                }
+
+                return [];
+            }
         },
         {
             name: "Metadata",
@@ -74,5 +86,26 @@ Ext.define('Spark2Manager.model.LearnLink', {
     proxy: {
         type: 'records',
         url: '/spark2/learn-links'
+    },
+
+    set: function(fieldName, newValue, options) {
+        console.log('custom setter called');
+        console.log(this.callParent);
+
+        var _value = (typeof fieldName === 'object') ? fieldName : value;
+
+        if (_value && Array.isArray(_value.Standards)) {
+            _value.Standards = _value.Standards.map(function(standard) {
+                if (typeof standard === 'string') {
+                    return { standardCode: standard };
+                }
+
+                return standard;
+            });
+
+            this.callParent([fieldName, _value, options]);
+        } else {
+            this.callParent([fieldName, value, options]);
+        }
     }
 });
