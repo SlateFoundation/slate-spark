@@ -3,7 +3,6 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         'Ext.layout.container.Fit',
         'Ext.tree.Panel',
         'Ext.Array',
-        'Ext.window.MessageBox',
         'Ext.form.field.Tag',
         'Spark2Manager.controller.StandardPicker'
     ],
@@ -30,8 +29,8 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         xtype: 'tagfield',
         fieldLabel: 'Standards Selected',
         reference: 'tagfield',
-        displayField: 'code',
-        valueField: 'code',
+        displayField: 'standardCode',
+        valueField: 'standardCode',
         queryMode: 'local',
         publishes: 'value',
         editable: false,

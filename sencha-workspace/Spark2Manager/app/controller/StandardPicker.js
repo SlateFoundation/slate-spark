@@ -61,11 +61,17 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
             store.restoreState(record);
         }
 
+        if (tagField.getStore().count() === 0) {
+            tagField.setStore(Ext.getStore('StandardCodes'));
+        }
+
         if (standards) {
             tagField.setValue(standards.map(function(standard) {
-                return standard.standardCode;
+                return standard.standardCode || standard;
             }));
         }
+
+        Ext.getStore('StandardsTree').restoreState(record);
     },
 
     onAlignStandardsClick: function () {
