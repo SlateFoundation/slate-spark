@@ -86,26 +86,5 @@ Ext.define('Spark2Manager.model.LearnLink', {
     proxy: {
         type: 'records',
         url: '/spark2/learn-links'
-    },
-
-    set: function(fieldName, newValue, options) {
-        console.log('custom setter called');
-        console.log(this.callParent);
-
-        var _value = (typeof fieldName === 'object') ? fieldName : value;
-
-        if (_value && Array.isArray(_value.Standards)) {
-            _value.Standards = _value.Standards.map(function(standard) {
-                if (typeof standard === 'string') {
-                    return { standardCode: standard };
-                }
-
-                return standard;
-            });
-
-            this.callParent([fieldName, _value, options]);
-        } else {
-            this.callParent([fieldName, value, options]);
-        }
     }
 });
