@@ -65,8 +65,7 @@ Ext.define('Spark2Manager.model.Assessment', {
         },
         {
             name: "URL",
-            type: "string",
-            allowBlank: false
+            type: "string"
         },
         {
             name: "VendorID",
@@ -74,6 +73,15 @@ Ext.define('Spark2Manager.model.Assessment', {
             useNull: true
         }
     ],
+
+    validators: {
+        URL: [
+            'presence'
+        ],
+        Title: [
+            'presence'
+        ]
+    },
 
     proxy: {
         type: 'records',

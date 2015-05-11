@@ -36,8 +36,7 @@ Ext.define('Spark2Manager.model.GuidingQuestion', {
         },
         {
             name: "Question",
-            type: "string",
-            allowBlank: false
+            type: "string"
         },
         {
             name: "Standards",
@@ -62,6 +61,12 @@ Ext.define('Spark2Manager.model.GuidingQuestion', {
             useNull: true
         }
     ],
+
+    validators: {
+        Question: [
+            'presence'
+        ]
+    },
 
     proxy: {
         autoSync: false,

@@ -191,6 +191,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
         'selectionchange': 'onSelectionChange'
     },
 
+    selType: 'rowmodel',
+
     plugins: {
         ptype: 'rowediting',
         pluginId: 'rowediting',

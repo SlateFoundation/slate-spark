@@ -85,7 +85,7 @@ Ext.define('Spark2Manager.model.LearnLink', {
 
     validators: {
         URL: [
-            'presence',
+            'presence'
         ],
         Title: [
             'presence'
