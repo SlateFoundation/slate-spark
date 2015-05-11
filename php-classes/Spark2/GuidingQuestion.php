@@ -14,6 +14,15 @@ class GuidingQuestion extends \ActiveRecord
     public static $fields = [
         'Question' => [
             'type' => 'clob'
+        ],
+        'GradeLevel' => [
+            'type'    => 'enum',
+            'notnull' => false,
+            'values'  => ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        ],
+        'Standards' => [
+            'type'    => 'json',
+            'notnull' => false
         ]
     ];
 
