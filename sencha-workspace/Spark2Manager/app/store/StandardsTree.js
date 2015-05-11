@@ -6,7 +6,7 @@ Ext.define('Spark2Manager.store.StandardsTree', {
     config: {
         proxy: {
             type: 'ajax',
-            url: '/spark2/tree.json',
+            url: 'http://slate.ninja/spark2/tree.json',
             reader: {
                 type: 'json'
             },
@@ -44,7 +44,7 @@ Ext.define('Spark2Manager.store.StandardsTree', {
 
         if (record.get('Standards')) {
             record.get('Standards').forEach(function (standard) {
-                selectedStandards[standard.standardCode] = true;
+                selectedStandards[standard.standardCode || standard] = true;
             });
         }
 
@@ -88,8 +88,6 @@ Ext.define('Spark2Manager.store.StandardsTree', {
                         }
                     }
                 });
-
-                window.standardCodes = standardCodes;
             }
         }
     }

@@ -92,6 +92,10 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
         });
 
         record.set('Standards', standards);
+
+        me.getView().fireEvent('alignstandards', record, standards);
+
+
         // Uncheck checked check boxes
         checkedItems.forEach(function (item) {
             item.set('checked', false);
