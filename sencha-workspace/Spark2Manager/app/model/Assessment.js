@@ -35,7 +35,8 @@ Ext.define('Spark2Manager.model.Assessment', {
         },
         {
             name: "AssessmentTypeID",
-            type: "int"
+            type: "int",
+            defaultValue: 1
         },
         {
             name: "Standards",
@@ -70,11 +71,12 @@ Ext.define('Spark2Manager.model.Assessment', {
         {
             name: "VendorID",
             type: "int",
-            useNull: true
+            useNull: true,
+            defaultValue: 4
         }
     ],
 
-    validators: {
+    validators: { 
         URL: [
             'presence'
         ],
