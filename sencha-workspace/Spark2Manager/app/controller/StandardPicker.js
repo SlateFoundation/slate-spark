@@ -69,8 +69,6 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
                 return standard.standardCode || standard;
             }));
         }
-
-        Ext.getStore('StandardsTree').restoreState(record);
     },
 
     onAlignStandardsClick: function () {

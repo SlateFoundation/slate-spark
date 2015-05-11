@@ -43,7 +43,8 @@ Ext.define('Spark2Manager.model.LearnLink', {
         },
         {
             name: "URL",
-            type: "string"
+            type: "string",
+            allowBlank: false
         },
         {
             name: "VendorID",
