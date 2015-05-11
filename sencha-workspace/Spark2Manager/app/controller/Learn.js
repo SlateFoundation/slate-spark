@@ -121,7 +121,6 @@ Ext.define('Spark2Manager.controller.Learn', {
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
-            store = me.getLearnLinksStore(),
             tagField,
             record;
 

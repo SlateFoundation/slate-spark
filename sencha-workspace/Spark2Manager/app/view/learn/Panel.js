@@ -112,7 +112,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 listeners: {
                     change: {
                         fn: function () {
-                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'));
+                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\LearnLink');
                         },
                         buffer: 1000
                     }

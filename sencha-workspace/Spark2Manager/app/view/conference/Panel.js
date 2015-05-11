@@ -78,15 +78,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        var buttons = this.up().getFloatingButtons(),
-                            height = this.getHeight();
-
-                        /* HACK: the height of the textarea is 60, we don't want to autosize any smaller than that */
-                        height = (height > 60) ? height: 60;
-
-                        if (buttons) {
-                            buttons.getEl().setStyle('top', (height + 11) + 'px');
-                        }
+                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
                     }
                 }
             },
@@ -140,5 +132,9 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         'selectionchange': 'onSelectionChange'
     },
 
-    plugins: ['rowediting']
+    plugins: {
+        ptype: 'rowediting',
+        pluginId: 'rowediting',
+        clicksToEdit: 2
+    }
 });
