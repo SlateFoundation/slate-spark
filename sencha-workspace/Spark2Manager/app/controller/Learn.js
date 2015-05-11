@@ -18,10 +18,13 @@ Ext.define('Spark2Manager.controller.Learn', {
         control: {
             's2m-learn-panel': {
                 activate: 'onPanelActivate',
-                edit: 'onEdit'
+                alignstandards: 'onAlignStandards'
             },
-            's2m-learn-panel button[action=create-link]': {
-                click: 'onCreateLinkClick'
+            's2m-learn-panel button[action=add]': {
+                click: 'onAddClick'
+            },
+            's2m-learn-panel button[action=delete]': {
+                click: 'onDeleteClick'
             },
             's2m-learn-panel button[action=align]': {
                 click: 'onAlignClick'
@@ -48,70 +51,61 @@ Ext.define('Spark2Manager.controller.Learn', {
         this.getLearnLinksStore().load();
     },
 
-    onEdit: function(editor, e) {
-        var panel = this.getPanel(),
-            plugin = panel.getPlugin('cellediting'),
-            self = this;
+    onAddClick: function() {
+        var me = this,
+            rowEditing = me.getPanel().plugins[0], // I used to be able to do getPlugin('cellediting') but not w/ row
+            newLink = me.getLearnLinksStore().insert(0, {});
 
-        switch(e.column.dataIndex) {
-            case 'URL':
+        rowEditing.cancelEdit();
+        rowEditing.startEdit(newLink[0], 0);
+    },
 
-                var parsedURL = Spark2Manager.Util.parseURL(e.value),
-                    // TODO: we can make a better pattern here for findRecord
-                    hostname = parsedURL ? parsedURL.hostname.replace('www.', '') : null;
+    onDeleteClick: function() {
+        me = this,
+        panel = me.getPanel(),
+        rowEditing = panel.plugins[0],
+        selectionModel = panel.getSelectionModel(),
+        selection = selectionModel.getSelection()[0],
+        learnLinkStore = me.getLearnLinksStore(),
+        title = selection.get('Title'),
+        url = selection.get('URL'),
+        descriptiveText =  ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link';
 
-                // Automatically select the vendor from the dropdown
-                if (hostname) {
-                    var vendorDomain = this.getVendorDomainsStore().findRecord('Domain', hostname);
-                    // TODO: How do we query by ContextClass = Spark2\LearnLink at the same time
-                    if (vendorDomain) {
-                        e.record.set('VendorID', vendorDomain.data.VendorID);
-                    }
+        Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
+            if (response === 'yes') {
+                rowEditing.cancelEdit();
 
-                    // Client-side title only
-                    Ext.Ajax.request({
-                        method: 'get',
+                learnLinkStore.remove(selection);
 
-                        url: 'http://slate.ninja/spark2/proxy.php',
-
-                        params: {
-                            csurl: e.value
-                        },
-
-                        success: function(response) {
-                            var html = document.createElement('div'),
-                                titles,
-                                title,
-                                vendor = (vendorDomain && vendorDomain.data) ? self.getVendorsStore().findRecord('ID', vendorDomain.data.VendorID) : null;
-
-                            html.innerHTML = response.responseText;
-                            titles = html.querySelectorAll('title');
-
-                            if (titles && titles.length >= 1) {
-                                title = Spark2Manager.Util.truncateTitle(titles[0].textContent, vendor, hostname);
-                                e.record.set('Title', title);
-                            }
-                        }
-                    });
-
-
+                if (learnLinkStore.getCount() > 0) {
+                    selectionModel.select(0);
                 }
+            }
+        });
+    },
+
+    onAlignClick: function() {
+        var me = this,
+        panel = me.getPanel(),
+        selection = panel.getSelection(),
+        standardsPicker;
+
+        selection = Array.isArray(selection) ? selection[0] : null;
+
+        if (selection) {
+            standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+                record: selection,
+                listeners: {
+                    'alignstandards': me.onAlignStandards
+                }
+            });
+
+            standardsPicker.show();
         }
     },
 
-    onCreateLinkClick: function() {
-        var newLink = this.getLearnLinksStore().insert(0, {}),
-            p = this.getPanel(),
-            plugin = p.getPlugin('cellediting');
-
-        plugin.startEdit(newLink[0], 0);
-    },
-
-    onAlignClick: function(button) {
-        var standardPicker = new Spark2Manager.view.StandardPicker({
-            record: button.getWidgetRecord ? button.getWidgetRecord() : button.up().getRecord()
-        });
-
-        standardPicker.show();
+    onAlignStandards: function(record, standards) {
+        record.set('Standards', standards);
+        debugger;
     }
 });

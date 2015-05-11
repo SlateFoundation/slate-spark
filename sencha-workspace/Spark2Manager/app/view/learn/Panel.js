@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.button.Button',
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
-        'Ext.grid.filters.Filters'
+        'Ext.grid.filters.Filters',
+        'Ext.toolbar.Toolbar'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -15,9 +16,48 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     columnLines: true,
 
-    bbar: [
-        { xtype: 'button', text: 'Add Learn', action: 'create-link' }
-    ],
+    defaultListenerScope: true,
+
+    // This view acts as a reference holder for all components below it which have a reference config
+    // For example the onSelectionChange listener accesses a button using its reference
+    referenceHolder: true,
+
+    onSelectionChange: function(sm, selections) {
+        this.getReferences().removeButton.setDisabled(selections.length === 0);
+        this.getReferences().alignButton.setDisabled(selections.length === 0);
+    },
+
+    rowEditing: Ext.create('Ext.grid.plugin.RowEditing', {
+        clicksToMoveEditor: 1,
+        autoCancel: false
+    }),
+
+    dockedItems: [{
+        xtype: 'pagingtoolbar',
+        store: 'LearnLinks',
+        dock: 'bottom',
+        displayInfo: true
+    },
+        {
+            xtype: 'toolbar',
+            items: [{
+                text: 'Add Learn',
+                tooltip: 'Add a new row',
+                action: 'add',
+            }, '-', {
+                reference: 'alignButton',
+                text: 'Align to Standards',
+                tooltip: 'Align this link to multiple standards easily using the standards picker',
+                action: 'align',
+                disabled: true
+            }, '-', {
+                reference: 'removeButton',
+                text: 'Delete Learn',
+                tooltip: 'Remove the selected learn link',
+                action: 'delete',
+                disabled: true
+            }]
+        }],
 
     columns: [
         {
@@ -27,7 +67,29 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
-                multiSelect: true
+                multiSelect: true,
+                getModelData: function() {
+                    return {
+                        'Standards':
+                            Ext.Array.map(this.valueStore.collect('standardCode'), function(code) {
+                                return {standardCode: code}
+                            })
+                    };
+                },
+                listeners: {
+                    'autosize': function() {
+                        /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
+                        var buttons = this.up().getFloatingButtons(),
+                            height = this.getHeight();
+                        buttons.getEl().setStyle('top', (height + 11) + 'px');
+                    },
+                    'change': function(tagfield, newValue) {
+                        /* HACK: if we don't commit after records are modified here, they'll show up incorrectly in the
+                                 align standards window.
+                         */
+                        this.up().getRecord().set('Standards', newValue);
+                    }
+                }
             },
             renderer: function(val, col, record) {
                 val = record.get('Standards');
@@ -60,7 +122,56 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             flex: 1,
             editor: {
                 xtype: 'textfield',
-                allowBlank: false
+                allowBlank: false,
+                listeners: {
+                    blur: function (urlField) {
+                        var me = this,
+                            record = urlField.up().getRecord(),
+                            title = record.get('Title'),
+                            url = urlField.value;
+
+                        if (title === '') {
+                            var parsedURL = Spark2Manager.Util.parseURL(url),
+                            // TODO: we can make a better pattern here for findRecord
+                                hostname = parsedURL ? parsedURL.hostname.replace('www.', '') : null;
+
+                            // Automatically select the vendor from the dropdown
+                            if (hostname) {
+                                var vendorDomain = Ext.getStore('VendorDomains').findRecord('Domain', hostname);
+                                // TODO: How do we query by ContextClass = Spark2\LearnLink at the same time
+                                if (vendorDomain) {
+                                    record.set('VendorID', vendorDomain.data.VendorID);
+                                }
+
+                                // Client-side title only
+                                Ext.Ajax.request({
+                                    method: 'get',
+
+                                    url: 'http://slate.ninja/spark2/proxy.php',
+
+                                    params: {
+                                        csurl: url
+                                    },
+
+                                    success: function (response) {
+                                        var html = document.createElement('div'),
+                                            titles,
+                                            title,
+                                            vendor = (vendorDomain && vendorDomain.data) ? Ext.getStore('Vendors').findRecord('ID', vendorDomain.data.VendorID) : null;
+
+                                        html.innerHTML = response.responseText;
+                                        titles = html.querySelectorAll('title');
+
+                                        if (titles && titles.length >= 1) {
+                                            title = Spark2Manager.Util.truncateTitle(titles[0].textContent, vendor, hostname);
+                                            record.set('Title', title);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
             }
         },
         {
@@ -82,7 +193,6 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 queryMode: 'local',
                 displayField: 'Name',
                 valueField: 'ID',
-                /* TODO: @themightychris I don't know how Sencha Cmd builds SASS yet, can we take a look at this? */
                 tpl: Ext.create('Ext.XTemplate',
                     '<tpl for=".">',
                     '   <div class="x-boundlist-item" style="',
@@ -95,7 +205,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                     '</tpl>'
                 ),
                 editable: false,
-                grow: true,
+                grow: true
             },
             renderer: function(val, col, record) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
@@ -104,7 +214,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
                 if (vendorRecord) {
                     logoURL = vendorRecord.get('LogoURL');
-                    returnVal = logoURL ? '<img src="' + logoURL + '">' : vendorRecord.get('Name');
+                    returnVal = logoURL ? '<img src="' + logoURL + '"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
                 }
 
                 return returnVal;
@@ -118,17 +228,12 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 minValue: 1,
                 maxValue: 4
             }
-        }
+        },
     ],
 
-    selModel: 'cellmodel',
+    listeners: {
+        'selectionchange': 'onSelectionChange'
+    },
 
-    plugins: ['rowediting'],
-
-    dockedItems: [{
-        xtype: 'pagingtoolbar',
-        store: 'LearnLinks',
-        dock: 'bottom',
-        displayInfo: true
-    }]
+    plugins: ['rowediting']
 });
