@@ -84,6 +84,7 @@ Ext.define('Spark2Manager.model.LearnLink', {
     ],
 
     proxy: {
+        autoSync: false,
         type: 'records',
         url: '/spark2/learn-links'
     }

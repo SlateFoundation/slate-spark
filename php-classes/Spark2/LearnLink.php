@@ -39,7 +39,18 @@ class LearnLink extends \VersionedRecord
         ]
     ];
 
+    public function getData() {
+        $data = parent::getData();
+        $data['CreatorFullName'] = $this->Creator->FullName;
+        return $data;
+    }
+
     public static $relationships = [
+        'Creator' => [
+            'type' => 'one-one',
+            'class' => 'Person',
+            'local' => 'CreatorID'
+        ],
         'Vendor' => [
             'type' => 'one-one',
             'class' => Vendor::class,
