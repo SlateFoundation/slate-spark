@@ -38,8 +38,39 @@ Ext.define('Spark2Manager.model.Assessment', {
             type: "int"
         },
         {
-            name: "LinkID",
-            type: "int"
+            name: "Standards",
+            useNull: true,
+            convert: function(val) {
+                if (Array.isArray(val)) {
+                    return val.map(function(standard) {
+                        if (typeof standard === 'object') {
+                            return standard.standardCode;
+                        } else {
+                            return standard;
+                        }
+                    })
+                }
+
+                return [];
+            }
+        },
+        {
+            name: "GradeLevel",
+            type: "string",
+            useNull: true
+        },
+        {
+            name: "Title",
+            type: "string"
+        },
+        {
+            name: "URL",
+            type: "string"
+        },
+        {
+            name: "VendorID",
+            type: "int",
+            useNull: true
         }
     ],
 

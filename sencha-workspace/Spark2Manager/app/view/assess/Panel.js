@@ -1,10 +1,9 @@
 Ext.define('Spark2Manager.view.assess.Panel', {
     requires: [
-        'Ext.grid.plugin.CellEditing',
-        'Ext.form.field.ComboBox',
-        'Ext.button.Button',
-        'Ext.form.field.Tag',
-        'Ext.toolbar.Paging'
+        'Ext.grid.plugin.RowEditing',
+        'Ext.toolbar.Paging',
+        'Ext.XTemplate',
+        'Ext.toolbar.Toolbar'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -13,24 +12,95 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
     store: 'Assessments',
 
-    bbar: [
-        { xtype: 'button', text: 'Add Assessment', action: 'create-assessment' }
-    ],
+    columnLines: true,
+
+    defaultListenerScope: true,
+
+    // This view acts as a reference holder for all components below it which have a reference config
+    // For example the onSelectionChange listener accesses a button using its reference
+    referenceHolder: true,
+
+    onSelectionChange: function(sm, selections) {
+        this.getReferences().removeButton.setDisabled(selections.length === 0);
+        this.getReferences().alignButton.setDisabled(selections.length === 0);
+    },
+
+    dockedItems: [{
+        xtype: 'pagingtoolbar',
+        store: 'Assessments',
+        dock: 'bottom',
+        displayInfo: true
+    },
+        {
+            xtype: 'toolbar',
+            items: [{
+                text: 'Add Assessment',
+                tooltip: 'Add a new assessment',
+                action: 'add'
+            }, '-', {
+                reference: 'alignButton',
+                text: 'Align to Standards',
+                tooltip: 'Align this assesment to multiple standards easily using the standards picker',
+                action: 'align',
+                disabled: true
+            }, '-', {
+                reference: 'removeButton',
+                text: 'Delete Assessment',
+                tooltip: 'Remove the selected assessment',
+                action: 'delete',
+                disabled: true
+            }]
+    }],
 
     columns: [
         {
             text: 'Standard',
-            width: 250,
-            dataIndex: 'code',
             editor: {
-                reference: 'standards',
                 xtype: 'tagfield',
-                queryMode: 'local',
-                displayField: 'code',
-                valueField: 'code',
-                allowBlank: false,
-                filterPickList: true,
-                multiSelect: true
+                displayField: 'standardCode',
+                valueField: 'standardCode',
+                store: 'StandardCodes',
+                multiSelect: true,
+                getModelData: function() {
+                    return {
+                        'Standards':
+                            Ext.Array.map(this.valueStore.collect('standardCode'), function(code) {
+                                return {standardCode: code}
+                            })
+                    };
+                },
+                listeners: {
+                    'autosize': function() {
+                        /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
+                        var buttons = this.up().getFloatingButtons(),
+                            height = this.getHeight();
+                        buttons.getEl().setStyle('top', (height + 11) + 'px');
+                    }
+                }
+            },
+            renderer: function(val, col, record) {
+                val = record.get('Standards');
+
+                if (!Array.isArray(val)) {
+                    return '';
+                }
+
+                return val.map(function(standard) {
+                    return standard.standardCode || standard;
+                }).join(', ');
+            },
+            width: 250,
+            dataIndex: 'Standards'
+        },
+        {
+            text: 'Grade',
+            dataIndex: 'GradeLevel',
+            width: 75,
+            editor: {
+                xtype: 'combobox',
+                store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                editable: false,
+                grow: true
             }
         },
         {
@@ -59,21 +129,73 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
                 return '';
             }
+        },
+        {
+            text: 'URL',
+            dataIndex: 'URL',
+            flex: 1,
+            editor: {
+                xtype: 'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            text: 'Title',
+            dataIndex: 'Title',
+            flex: 1,
+            editor: {
+                xtype: 'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            width: 175,
+            text: 'Vendor',
+            dataIndex: 'VendorID',
+            editor: {
+                xtype: 'combobox',
+                store: 'Vendors',
+                queryMode: 'local',
+                displayField: 'Name',
+                valueField: 'ID',
+                tpl: Ext.create('Ext.XTemplate',
+                    '<tpl for=".">',
+                    '   <div class="x-boundlist-item" style="',
+                    '       background-position: 5px, 5px;',
+                    '       background-image: url({LogoURL});',
+                    '       background-repeat: no-repeat;' +
+                    '       padding-left: 25px">',
+                    '       {Name}',
+                    '   </div>',
+                    '</tpl>'
+                ),
+                editable: false,
+                grow: true
+            },
+            renderer: function(val, col, record) {
+                var vendorRecord = Ext.getStore('Vendors').getById(val),
+                    returnVal = '',
+                    logoURL;
+
+                if (vendorRecord) {
+                    logoURL = vendorRecord.get('LogoURL');
+                    returnVal = logoURL ? '<img src="' + logoURL + '"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
+                }
+
+                return returnVal;
+            }
         }
     ],
 
-    selModel: 'cellmodel',
-
-    plugins: {
-        ptype: 'cellediting',
-        pluginId: 'cellediting',
-        clicksToEdit: 1
+    listeners: {
+        'selectionchange': 'onSelectionChange'
     },
 
-    dockedItems: [{
-        xtype: 'pagingtoolbar',
-        store: 'Assessments',
-        dock: 'bottom',
-        displayInfo: true
-    }]
+    plugins: {
+        ptype: 'rowediting',
+        pluginId: 'rowediting',
+        clicksToEdit: 1,
+        clicksToMoveEditor: 1,
+        autoCancel: false
+    }
 });
