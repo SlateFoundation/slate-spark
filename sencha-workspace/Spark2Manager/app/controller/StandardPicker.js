@@ -52,13 +52,12 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
     onPanelActivate: function () {
         var me = this,
             store = Ext.getStore('StandardsTree'),
-            view = me.getView(),
-            record = view.getRecord(),
+            view = me.getView();
             tagField = view.lookupReference('tagfield'),
             standards = view.getStandards();
 
         if (store.isLoaded()) {
-            store.restoreState(record);
+            store.restoreState(standards);
         }
 
         if (tagField.getStore().count() === 0) {
