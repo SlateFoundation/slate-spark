@@ -17,8 +17,7 @@ Ext.define('Spark2Manager.controller.Learn', {
 
         control: {
             's2m-learn-panel': {
-                activate: 'onPanelActivate',
-                alignstandards: 'onAlignStandards'
+                activate: 'onPanelActivate'
             },
             's2m-learn-panel button[action=add]': {
                 click: 'onAddClick'
@@ -86,25 +85,55 @@ Ext.define('Spark2Manager.controller.Learn', {
 
     onAlignClick: function() {
         var me = this,
-        panel = me.getPanel(),
-        selection = panel.getSelection(),
-        standardsPicker;
+            panel = me.getPanel(),
+            rowEditing = panel.getPlugin('rowediting'),
+            editor = rowEditing.getEditor(),
+            isEditing = rowEditing.editing,
+            tagField,
+            record = panel.getSelection()[0],
+            standards,
+            standardsPicker;
 
-        selection = Array.isArray(selection) ? selection[0] : null;
-
-        if (selection) {
-            standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
-                record: selection,
-                listeners: {
-                    'alignstandards': me.onAlignStandards
-                }
+        if (isEditing) {
+            tagField = editor.getRefItems()[0];
+            standards = tagField.getValue().map(function(standard) {
+                return standard.standardCode ? standard : { standardCode: standard };
             });
-
-            standardsPicker.show();
+        } else {
+            standards = record.get('Standards');
         }
+
+        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+            standards: standards,
+            record: record,
+            listeners: {
+                'alignstandards': 'onAlignStandards',
+                scope: me
+            }
+        });
+
+        standardsPicker.show();
     },
 
     onAlignStandards: function(record, standards) {
-        record.set('Standards', standards);
+        var me = this,
+            panel = me.getPanel(),
+            rowEditing = panel.getPlugin('rowediting'),
+            editor = rowEditing.getEditor(),
+            isEditing = rowEditing.editing,
+            store = me.getLearnLinksStore(),
+            tagField,
+            record;
+
+        if (isEditing) {
+            // HACK: @themightychris what's a better way to get a reference to the tagfield in the roweditor?
+            tagField = editor.getRefItems()[0];
+            tagField.setValue(standards.map(function(standard) {
+                return standard.standardCode;
+            }));
+        } else {
+            record = panel.getSelection()[0];
+            record.set('Standards', standards);
+        }
     }
 });

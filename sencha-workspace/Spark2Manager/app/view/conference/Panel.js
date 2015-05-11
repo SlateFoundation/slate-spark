@@ -87,12 +87,6 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                         if (buttons) {
                             buttons.getEl().setStyle('top', (height + 11) + 'px');
                         }
-                    },
-                    'change': function(tagfield, newValue) {
-                        /* HACK: if we don't commit after records are modified here, they'll show up incorrectly in the
-                         align standards window.
-                         */
-                        this.up().getRecord().set('Standards', newValue);
                     }
                 }
             },

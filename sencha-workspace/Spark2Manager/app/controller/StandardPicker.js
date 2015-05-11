@@ -55,7 +55,7 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
             view = me.getView(),
             record = view.getRecord(),
             tagField = view.lookupReference('tagfield'),
-            standards = record.get('Standards');
+            standards = view.getStandards();
 
         if (store.isLoaded()) {
             store.restoreState(record);
@@ -91,10 +91,7 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
             }
         });
 
-        record.set('Standards', standards);
-
         me.getView().fireEvent('alignstandards', record, standards);
-
 
         // Uncheck checked check boxes
         checkedItems.forEach(function (item) {

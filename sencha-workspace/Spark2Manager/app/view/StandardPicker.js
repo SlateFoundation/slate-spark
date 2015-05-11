@@ -13,6 +13,7 @@ Ext.define('Spark2Manager.view.StandardPicker', {
     controller: 'StandardPicker',
 
     config: {
+        standards: [],
         record: null,
         title: 'Align Standard'
     },
@@ -44,8 +45,12 @@ Ext.define('Spark2Manager.view.StandardPicker', {
             // HACK: beforedeselect doesn't fire unless the tagfield has focus, this makes removing tag items work reliably
             render: function(tagfield) {
                 tagfield.getEl().on('mouseup', function(ev, el) {
+                    var previousSibling;
                     if (el.classList.contains('x-tagfield-item-close')) {
-                        Ext.getStore('StandardsTree').findRecord('standardCode', el.previousSibling.textContent).set('checked', false);
+                        previousSibling = Ext.getStore('StandardsTree').findRecord('standardCode', el.previousSibling.textContent);
+                        if(previousSibling) {
+                            previousSibling.set('checked', false);
+                        }
                     }
                 });
             }

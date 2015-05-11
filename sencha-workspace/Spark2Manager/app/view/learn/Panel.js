@@ -1,11 +1,10 @@
 Ext.define('Spark2Manager.view.learn.Panel', {
     requires: [
         'Ext.grid.plugin.RowEditing',
-        'Ext.button.Button',
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
-        'Ext.grid.filters.Filters',
-        'Ext.toolbar.Toolbar'
+        'Ext.toolbar.Toolbar',
+        'Spark2Manager.Util'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -26,11 +25,6 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         this.getReferences().removeButton.setDisabled(selections.length === 0);
         this.getReferences().alignButton.setDisabled(selections.length === 0);
     },
-
-    rowEditing: Ext.create('Ext.grid.plugin.RowEditing', {
-        clicksToMoveEditor: 1,
-        autoCancel: false
-    }),
 
     dockedItems: [{
         xtype: 'pagingtoolbar',
@@ -79,15 +73,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        var buttons = this.up().getFloatingButtons(),
-                            height = this.getHeight();
-                        buttons.getEl().setStyle('top', (height + 11) + 'px');
-                    },
-                    'change': function(tagfield, newValue) {
-                        /* HACK: if we don't commit after records are modified here, they'll show up incorrectly in the
-                                 align standards window.
-                         */
-                        this.up().getRecord().set('Standards', newValue);
+                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
                     }
                 }
             },
@@ -124,52 +110,11 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 xtype: 'textfield',
                 allowBlank: false,
                 listeners: {
-                    blur: function (urlField) {
-                        var me = this,
-                            record = urlField.up().getRecord(),
-                            title = record.get('Title'),
-                            url = urlField.value;
-
-                        if (title === '') {
-                            var parsedURL = Spark2Manager.Util.parseURL(url),
-                            // TODO: we can make a better pattern here for findRecord
-                                hostname = parsedURL ? parsedURL.hostname.replace('www.', '') : null;
-
-                            // Automatically select the vendor from the dropdown
-                            if (hostname) {
-                                var vendorDomain = Ext.getStore('VendorDomains').findRecord('Domain', hostname);
-                                // TODO: How do we query by ContextClass = Spark2\LearnLink at the same time
-                                if (vendorDomain) {
-                                    record.set('VendorID', vendorDomain.data.VendorID);
-                                }
-
-                                // Client-side title only
-                                Ext.Ajax.request({
-                                    method: 'get',
-
-                                    url: 'http://slate.ninja/spark2/proxy.php',
-
-                                    params: {
-                                        csurl: url
-                                    },
-
-                                    success: function (response) {
-                                        var html = document.createElement('div'),
-                                            titles,
-                                            title,
-                                            vendor = (vendorDomain && vendorDomain.data) ? Ext.getStore('Vendors').findRecord('ID', vendorDomain.data.VendorID) : null;
-
-                                        html.innerHTML = response.responseText;
-                                        titles = html.querySelectorAll('title');
-
-                                        if (titles && titles.length >= 1) {
-                                            title = Spark2Manager.Util.truncateTitle(titles[0].textContent, vendor, hostname);
-                                            record.set('Title', title);
-                                        }
-                                    }
-                                });
-                            }
-                        }
+                    change: {
+                        fn: function () {
+                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'));
+                        },
+                        buffer: 1000
                     }
                 }
             }
@@ -198,7 +143,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                     '   <div class="x-boundlist-item" style="',
                     '       background-position: 5px, 5px;',
                     '       background-image: url({LogoURL});',
-                    '       background-repeat: no-repeat;' +
+                    '       background-repeat: no-repeat;',
+                    '       background-size: 16px 16px;',
                     '       padding-left: 25px">',
                     '       {Name}',
                     '   </div>',
@@ -214,7 +160,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
                 if (vendorRecord) {
                     logoURL = vendorRecord.get('LogoURL');
-                    returnVal = logoURL ? '<img src="' + logoURL + '"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
+                    returnVal = logoURL ? '<img src="' + logoURL + '" width="16" height="16"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
                 }
 
                 return returnVal;
@@ -227,6 +173,16 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 xtype: 'combobox',
                 store: [1,2,3,4]
             }
+        },
+        {
+            text: 'Created By',
+            dataIndex: 'CreatorFullName'
+        },
+        {
+            xtype: 'datecolumn',
+            format:'m-d-Y',
+            text: 'Created',
+            dataIndex: 'Created'
         }
     ],
 
@@ -234,5 +190,9 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'selectionchange': 'onSelectionChange'
     },
 
-    plugins: ['rowediting']
+    plugins: {
+        ptype: 'rowediting',
+        pluginId: 'rowediting',
+        clicksToEdit: 2
+    }
 });
