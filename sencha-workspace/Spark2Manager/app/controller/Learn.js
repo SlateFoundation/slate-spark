@@ -61,7 +61,7 @@ Ext.define('Spark2Manager.controller.Learn', {
     },
 
     onDeleteClick: function() {
-        me = this,
+        var me = this,
         panel = me.getPanel(),
         rowEditing = panel.plugins[0],
         selectionModel = panel.getSelectionModel(),
@@ -106,6 +106,5 @@ Ext.define('Spark2Manager.controller.Learn', {
 
     onAlignStandards: function(record, standards) {
         record.set('Standards', standards);
-        debugger;
     }
 });

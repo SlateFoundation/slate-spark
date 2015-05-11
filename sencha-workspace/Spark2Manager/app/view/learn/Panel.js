@@ -42,8 +42,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             xtype: 'toolbar',
             items: [{
                 text: 'Add Learn',
-                tooltip: 'Add a new row',
-                action: 'add',
+                tooltip: 'Add a new learn',
+                action: 'add'
             }, '-', {
                 reference: 'alignButton',
                 text: 'Align to Standards',
@@ -57,7 +57,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 action: 'delete',
                 disabled: true
             }]
-        }],
+    }],
 
     columns: [
         {
@@ -227,7 +227,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 xtype: 'combobox',
                 store: [1,2,3,4]
             }
-        },
+        }
     ],
 
     listeners: {
