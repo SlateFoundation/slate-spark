@@ -1,3 +1,3 @@
 <?php
 
-Spark2\GuidingQuestionRequestHandler::handleRequest();
+Spark2\GuidingQuestionsRequestHandler::handleRequest();

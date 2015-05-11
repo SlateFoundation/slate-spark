@@ -6,8 +6,8 @@ class StandardMapping extends \ActiveRecord
 {
     public static $tableName = 's2_standards_mappings';
 
-    public static $singularNoun = 'standard-mapping';
-    public static $pluralNoun = 'standard-mappings';
+    public static $singularNoun = 'standard mapping';
+    public static $pluralNoun = 'standard mappings';
 
     public static $collectionRoute = '/spark2/standard-mappings';
 
@@ -15,5 +15,13 @@ class StandardMapping extends \ActiveRecord
         'StandardID' => 'uint',
         'ContextClass',
         'ContextID' => 'uint'
+    ];
+
+    public static $relationships = [
+        'Standard' => [
+            'type' => 'one-one',
+            'class' => Standard::class,
+            'local' => 'StandardID'
+        ]
     ];
 }

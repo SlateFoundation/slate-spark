@@ -1,11 +1,12 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.Link', {
+Ext.define('Spark2Manager.model.StandardRef', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
+
 
     // model config
     idProperty: 'ID',
@@ -20,7 +21,7 @@ Ext.define('Spark2Manager.model.Link', {
         {
             name: "Class",
             type: "string",
-            defaultValue: "Spark2\\Link"
+            defaultValue: "Spark2\\StandardRef"
         },
         {
             name: "Created",
@@ -34,37 +35,17 @@ Ext.define('Spark2Manager.model.Link', {
             useNull: true
         },
         {
-            name: "Title",
+            name: "StandardCodeA",
             type: "string"
         },
         {
-            name: "Link",
+            name: "StandardCodeB",
             type: "string"
-        },
-        {
-            name: "Vendor",
-            type: "string",
-            useNull: true
-        },
-        {
-            name: "DOK",
-            type: "int",
-            useNull: true
-        },
-        {
-            name: "Category",
-            type: "string",
-            useNull: true
-        },
-        {
-            name: "Notes",
-            type: "string",
-            useNull: true
         }
     ],
 
     proxy: {
         type: 'records',
-        url: '/spark2/links'
+        url: '/spark2/standard-refs'
     }
 });

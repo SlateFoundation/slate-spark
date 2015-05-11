@@ -6,8 +6,8 @@ class GradeLevel extends \ActiveRecord
 {
     public static $tableName = 's2_grade_levels';
 
-    public static $singularNoun = 'grade-level';
-    public static $pluralNoun = 'grade-levels';
+    public static $singularNoun = 'grade level';
+    public static $pluralNoun = 'grade levels';
 
     public static $collectionRoute = '/spark2/grade-levels';
 

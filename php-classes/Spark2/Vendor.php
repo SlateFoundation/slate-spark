@@ -24,14 +24,12 @@ class Vendor extends \ActiveRecord
     public static $relationships = [
         'Domains' => [
             'type' => 'one-many',
-            'class' => 'Spark2\VendorDomain',
+            'class' => VendorDomain::class,
             'foreign' => 'VendorID'
         ]
     ];
 
-    public function getData() {
-        $data = parent::getData();
-        $data['Domains'] = $this->Domains;
-        return $data;
-    }
+    public static $dynamicFields = [
+        'Domains'
+    ];
 }

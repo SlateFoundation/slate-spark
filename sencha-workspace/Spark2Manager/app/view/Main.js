@@ -1,6 +1,7 @@
 Ext.define('Spark2Manager.view.Main', {
     extend: 'Ext.tab.Panel',
     xtype: 'app-main',
+
     requires: [
         'Spark2Manager.view.apply.Panel',
         'Spark2Manager.view.learn.Panel',
@@ -9,27 +10,42 @@ Ext.define('Spark2Manager.view.Main', {
         'Spark2Manager.view.pbl.Panel'
     ],
 
+    alias: 'mainview',
+    reference: 'mainview',
+    autoCreate: true,
+
     items: [
         {
             xtype: 's2m-learn-panel',
-            title: 'Learn & Practice'
+            title: 'Learn & Practice',
+            itemId: 'learn-panel'
         },
         {
             xtype: 's2m-conference-panel',
-            title: 'Conference'
+            title: 'Conference',
+            itemId: 'conference-panel'
         },
         {
             xtype: 's2m-apply-panel',
-            title: 'Apply'
+            title: 'Apply',
+            itemId: 'apply-panel'
         },
         {
             xtype: 's2m-assess-panel',
-            title: 'Assess'
+            title: 'Assess',
+            itemId: 'assess-panel'
         },
         {
             xtype: 's2m-pbl-panel',
             title: 'PBL',
+            itemId: 'pbl-panel',
             disabled: true
         }
-    ]
+    ],
+
+    listeners: {
+        tabchange: function(tabPanel, tab) {
+            Ext.History.add(tab.getItemId().replace('-panel', ''));
+        }
+    }
 });

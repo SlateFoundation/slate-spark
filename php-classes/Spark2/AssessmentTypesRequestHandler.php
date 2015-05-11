@@ -2,7 +2,7 @@
 
 namespace Spark2;
 
-class AssessmentTypeRequestHandler extends \RecordsRequestHandler
+class AssessmentTypesRequestHandler extends \RecordsRequestHandler
 {
     public static $recordClass = AssessmentType::class;
 }
