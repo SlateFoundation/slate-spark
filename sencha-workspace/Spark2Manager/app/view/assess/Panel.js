@@ -72,9 +72,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        var buttons = this.up().getFloatingButtons(),
-                            height = this.getHeight();
-                        buttons.getEl().setStyle('top', (height + 11) + 'px');
+                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
                     }
                 }
             },
@@ -115,9 +113,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 valueField: 'ID',
                 grow: true,
                 editable: false,
-                allowBlank: false,
-                emptyText: '',
-                value: ''
+                allowBlank: false
             },
             renderer: function(val, col, record) {
                 // HELP: @themightychris: is there an easier way to do this sort of thing?
@@ -136,7 +132,15 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             flex: 1,
             editor: {
                 xtype: 'textfield',
-                allowBlank: false
+                allowBlank: false,
+                listeners: {
+                    change: {
+                        fn: function () {
+                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\Assessment');
+                        },
+                        buffer: 1000
+                    }
+                }
             }
         },
         {
@@ -170,7 +174,9 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                     '</tpl>'
                 ),
                 editable: false,
-                grow: true
+                grow: true,
+                emptyText: '',
+                placeholder: ''
             },
             renderer: function(val, col, record) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
