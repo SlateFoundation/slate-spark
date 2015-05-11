@@ -224,9 +224,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             text: 'DOK',
             dataIndex: 'DOK',
             editor: {
-                xtype: 'slider',
-                minValue: 1,
-                maxValue: 4
+                xtype: 'combobox',
+                store: [1,2,3,4]
             }
         },
     ],
