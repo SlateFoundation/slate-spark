@@ -19,7 +19,7 @@ define( 'CSAJAX_FILTER_DOMAIN', false );
 /**
  * Set debugging to true to receive additional messages - really helpful on development
  */
-define( 'CSAJAX_DEBUG', false );
+define( 'CSAJAX_DEBUG', true );
 /**
  * A set of valid cross domain requests
  */
@@ -101,6 +101,7 @@ if ( $request_method == 'GET' && count( $request_params ) > 0 && (!array_key_exi
 }
 // let the request begin
 $ch = curl_init( $request_url );
+curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt( $ch, CURLOPT_HTTPHEADER, $request_headers );   // (re-)send headers
 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );	 // return response
 curl_setopt( $ch, CURLOPT_HEADER, true );	   // enabled response headers
