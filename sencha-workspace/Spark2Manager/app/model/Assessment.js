@@ -76,7 +76,7 @@ Ext.define('Spark2Manager.model.Assessment', {
         }
     ],
 
-    validators: { 
+    validators: {
         URL: [
             'presence'
         ],

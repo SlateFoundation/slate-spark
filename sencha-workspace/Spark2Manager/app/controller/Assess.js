@@ -4,8 +4,6 @@ Ext.define('Spark2Manager.controller.Assess', {
             'Spark2Manager.store.AssessmentTypes',
             'Spark2Manager.store.Vendors',
             'Spark2Manager.store.VendorDomains',
-            'Spark2Manager.Util',
-            'Ext.Ajax',
             'Spark2Manager.view.StandardPicker'
         ],
 

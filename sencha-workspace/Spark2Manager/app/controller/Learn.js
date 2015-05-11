@@ -3,8 +3,6 @@ Ext.define('Spark2Manager.controller.Learn', {
         'Spark2Manager.store.LearnLinks',
         'Spark2Manager.store.Vendors',
         'Spark2Manager.store.VendorDomains',
-        'Spark2Manager.Util',
-        'Ext.Ajax',
         'Spark2Manager.view.StandardPicker'
     ],
     extend: 'Ext.app.Controller',

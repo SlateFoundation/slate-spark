@@ -15,11 +15,7 @@ Ext.define('Spark2Manager.controller.Apply', {
 
         control: {
             's2m-apply-panel': {
-                activate: 'onPanelActivate',
-                edit: 'onEdit'
-            },
-            's2m-apply-panel button[action=create-apply]': {
-                click: 'onCreateApplyClick'
+                activate: 'onPanelActivate'
             }
         }
     },
@@ -41,20 +37,5 @@ Ext.define('Spark2Manager.controller.Apply', {
         this.getApplyProjectsStore().load();
         this.getApplyToDosStore().load();
         this.getApplyLinksStore().load();
-    },
-
-    onEdit: function(editor, e) {
-        switch(e.column.dataIndex) {
-            default:
-                console.log(arguments);
-        }
-    },
-
-    onCreateApplyClick: function() {
-        var newLink = this.getApplyProjectsStore().insert(0, {}),
-            p = this.getPanel(),
-            plugin = p.getPlugin('cellediting');
-
-        plugin.startEdit(newLink[0], 0);
     }
 });

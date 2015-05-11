@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.store.Vendors', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.Vendor'
+        'Spark2Manager.model.Vendor',
+        'Emergence.ext.proxy.Records'
     ],
 
     model: 'Spark2Manager.model.Vendor',

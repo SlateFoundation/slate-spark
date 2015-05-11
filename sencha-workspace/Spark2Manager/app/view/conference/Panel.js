@@ -2,9 +2,9 @@ Ext.define('Spark2Manager.view.conference.Panel', {
     requires: [
         'Ext.grid.plugin.RowEditing',
         'Ext.form.field.TextArea',
-        'Ext.button.Button',
         'Ext.toolbar.Paging',
-        'Ext.toolbar.Toolbar'
+        'Ext.toolbar.Toolbar',
+        'Ext.Array'
     ],
 
     extend: 'Ext.grid.Panel',

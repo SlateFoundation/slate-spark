@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
         'Ext.toolbar.Toolbar',
-        'Spark2Manager.Util'
+        'Spark2Manager.Util',
+        'Ext.Array'
     ],
 
     extend: 'Ext.grid.Panel',

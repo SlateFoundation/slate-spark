@@ -1,5 +1,10 @@
 Ext.define('Spark2Manager.store.StandardsTree', {
-    requires: ['Ext.data.ArrayStore'],
+    requires: [
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.data.JsonStore',
+        'Ext.data.proxy.Memory'
+    ],
 
     extend: 'Ext.data.TreeStore',
 
@@ -46,8 +51,6 @@ Ext.define('Spark2Manager.store.StandardsTree', {
             standards.forEach(function (standard) {
                 selectedStandards[standard.standardCode || standard] = true;
             });
-        } else {
-            standards = [];
         }
 
         root.visitPreOrder('', function (child) {

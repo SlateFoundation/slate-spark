@@ -3,7 +3,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
-        'Ext.toolbar.Toolbar'
+        'Ext.toolbar.Toolbar',
+        'Ext.Array'
     ],
 
     extend: 'Ext.grid.Panel',
