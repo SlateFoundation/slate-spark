@@ -71,8 +71,7 @@ function populateVendors() {
         'Illuminate Education' => [
             [
                 'Domain' => 'illuminateed.com',
-                'ContextClass' => Link::class /* TODO: If we use a generic link class we can't do different
-                                                 vendors by ContextClass */
+                'ContextClass' => Assessment::class
             ]
         ]
     ];
