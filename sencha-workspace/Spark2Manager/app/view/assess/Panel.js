@@ -186,7 +186,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
                 if (vendorRecord) {
                     logoURL = vendorRecord.get('LogoURL');
-                    returnVal = logoURL ? '<img src="' + logoURL + '"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
+                    returnVal = logoURL ? '<img src="' + logoURL + '" width="16" height="16"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
                 }
 
                 return returnVal;
