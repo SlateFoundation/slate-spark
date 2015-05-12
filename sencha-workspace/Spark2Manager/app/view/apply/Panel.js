@@ -34,7 +34,7 @@ Ext.define('Spark2Manager.view.apply.Panel', {
     fieldDefaults: {
         labelAlign: 'left',
         labelWidth: 90,
-        anchor: '100%',
+        anchor: '100%'
     },
 
     dockedItems: [{
