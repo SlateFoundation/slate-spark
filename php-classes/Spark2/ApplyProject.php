@@ -16,26 +16,44 @@ class ApplyProject extends \VersionedRecord
     public static $fields = [
         'Title',
         'Instructions' => 'clob',
+        'GradeLevel' => [
+            'type'    => 'enum',
+            'notnull' => false,
+            'values'  => ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        ],
         'DOK' => [
             'type'    => 'tinyint',
             'notnull' => false
         ],
-        'Order' => 'tinyint',
-        'Text' => 'clob'
+        'Standards' => [
+            'type'    => 'json',
+            'notnull' => false
+        ],
+        'Todos' => [
+            'type'    => 'json',
+            'notnull' => false
+        ],
+        'Links' => [
+            'type'    => 'json',
+            'notnull' => false
+        ],
+        'Metadata' => [
+            'type'    => 'json',
+            'notnull' => false
+        ]
     ];
 
     public static $relationships = [
-        'Todos' => [
-            'type'    => 'one-many',
-            'class'   => ApplyTodo::class,
-            'local'   => 'ID',
-            'foreign' => 'ApplyProjectID'
-        ],
-        'Link' => [
-            'type'    => 'one-one',
-            'class'   => ApplyLink::class,
-            'local'   => 'ID',
-            'foreign' => 'ApplyProjectID'
+        'Creator' => [
+            'type' => 'one-one',
+            'class' => 'Person',
+            'local' => 'CreatorID'
         ]
     ];
+
+    public function getData() {
+        $data = parent::getData();
+        $data['CreatorFullName'] = $this->Creator->FullName;
+        return $data;
+    }
 }
