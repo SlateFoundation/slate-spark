@@ -66,6 +66,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
+                forceSelection: true,
                 multiSelect: true,
                 getModelData: function() {
                     return {

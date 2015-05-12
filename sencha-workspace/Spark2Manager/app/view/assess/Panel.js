@@ -61,6 +61,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
+                forceSelection: true,
                 multiSelect: true,
                 getModelData: function() {
                     return {
@@ -168,16 +169,15 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                     '   <div class="x-boundlist-item" style="',
                     '       background-position: 5px, 5px;',
                     '       background-image: url({LogoURL});',
-                    '       background-repeat: no-repeat;' +
+                    '       background-repeat: no-repeat;',
+                    '       background-size: 16px 16px;',
                     '       padding-left: 25px">',
                     '       {Name}',
                     '   </div>',
                     '</tpl>'
                 ),
                 editable: false,
-                grow: true,
-                emptyText: '',
-                placeholder: ''
+                grow: true
             },
             renderer: function(val, col, record) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),

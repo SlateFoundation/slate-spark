@@ -34,7 +34,7 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         valueField: 'standardCode',
         queryMode: 'local',
         publishes: 'value',
-        editable: false,
+        forceSelection: true,
         grow: true,
         selectOnFocus: false,
         multiSelect: true,

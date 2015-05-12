@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.model.GuidingQuestion', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
-        'Ext.data.identifier.Negative'
+        'Ext.data.identifier.Negative',
+        'Ext.data.validator.Presence'
     ],
 
 
