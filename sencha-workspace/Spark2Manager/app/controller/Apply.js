@@ -1,8 +1,7 @@
 Ext.define('Spark2Manager.controller.Apply', {
     requires: [
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.store.ApplyToDos',
-        'Spark2Manager.store.ApplyLinks'
+        'Spark2Manager.view.StandardPicker'
     ],
 
     extend: 'Ext.app.Controller',
@@ -21,9 +20,7 @@ Ext.define('Spark2Manager.controller.Apply', {
     },
 
     stores: [
-        'ApplyProjects',
-        'ApplyToDos',
-        'ApplyLinks'
+        'ApplyProjects'
     ],
 
     /**
@@ -35,7 +32,5 @@ Ext.define('Spark2Manager.controller.Apply', {
 
     onPanelActivate: function() {
         this.getApplyProjectsStore().load();
-        this.getApplyToDosStore().load();
-        this.getApplyLinksStore().load();
     }
 });

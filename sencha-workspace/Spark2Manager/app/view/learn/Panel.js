@@ -56,7 +56,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     columns: [
         {
-            text: 'Standard',
+            text: 'Standards',
             editor: {
                 xtype: 'tagfield',
                 displayField: 'standardCode',
