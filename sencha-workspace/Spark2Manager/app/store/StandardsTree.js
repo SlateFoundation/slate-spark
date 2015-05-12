@@ -11,7 +11,7 @@ Ext.define('Spark2Manager.store.StandardsTree', {
     config: {
         proxy: {
             type: 'ajax',
-            url: 'http://slate.ninja/spark2/tree.json',
+            url: 'app/data/tree.json',
             reader: {
                 type: 'json'
             },
@@ -29,6 +29,7 @@ Ext.define('Spark2Manager.store.StandardsTree', {
             'altCode'
         ]
     },
+
 
     getChecked: function() {
         var root = this.getRoot(),
