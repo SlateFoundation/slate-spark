@@ -76,12 +76,10 @@ Ext.define('Spark2Manager.model.ApplyProject', {
         },
         {
             name: "Todos",
-            type: "string",
             useNull: true
         },
         {
             name: "Links",
-            type: "string",
             useNull: true
         },
         {
