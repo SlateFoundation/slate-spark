@@ -84,19 +84,26 @@ Ext.define('Spark2Manager.controller.Apply', {
             panel = me.getGridpanel(),
             tagField = me.getPanel().down('s2m-apply-editor').down('tagfield'),
             record = panel.getSelection()[0],
+            standards,
+            standardsPicker;
 
+        if (isEditing) {
+            tagField = editor.getRefItems()[0];
             standards = tagField.getValue().map(function(standard) {
                 return standard.standardCode ? standard : { standardCode: standard };
-            }),
-
-            standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
-                standards: standards,
-                record: record,
-                listeners: {
-                    'alignstandards': 'onAlignStandards',
-                    scope: me
-                }
             });
+        } else {
+            standards = record.get('Standards');
+        }
+
+        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+            standards: standards,
+            record: record,
+            listeners: {
+                'alignstandards': 'onAlignStandards',
+                scope: me
+            }
+        });
 
         standardsPicker.show();
     },

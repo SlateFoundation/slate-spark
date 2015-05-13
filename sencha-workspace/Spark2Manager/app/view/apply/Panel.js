@@ -6,13 +6,17 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Spark2Manager.store.ApplyProjects',
         'Spark2Manager.view.apply.Editor',
         'Ext.grid.Panel',
-        'Ext.grid.plugin.CellEditing',
+        'Ext.grid.plugin.RowEditing',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
         'Ext.layout.container.HBox',
         'Ext.grid.Panel',
         'Ext.container.Container',
-        'Ext.util.Format'
+        'Ext.util.Format',
+        'Ext.Array',
+        'Ext.grid.plugin.CellEditing',
+        'Ext.layout.container.Fit',
+        'Ext.data.ArrayStore'
     ],
 
     xtype: 's2m-apply-panel',
@@ -22,12 +26,11 @@ Ext.define('Spark2Manager.view.apply.Panel', {
     ],
 
     layout: {
-        type:  'hbox',
+        type:  'fit',
         align: 'stretch'
     },
 
     items: [{
-        flex:            3,
         xtype:           'gridpanel',
         modelValidation: false,
         store:           'ApplyProjects',
@@ -67,7 +70,7 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 }]
             }, {
                 padding: 10,
-                width: 350,
+                width: 500,
                 xtype: 's2m-apply-editor',
                 disabled: true
             }]
@@ -84,15 +87,42 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 allowBlank: false
             }
         }, {
-            text:      'Instructions',
-            flex:      3,
-            sortable:  true,
-            dataIndex: 'Instructions',
+            text:      'Standards',
             editor:    {
-                xtype:      'textarea',
-                allowBlank: false,
-                msgTarget:  'under'
-            }
+                xtype:        'tagfield',
+                displayField: 'standardCode',
+                valueField:   'standardCode',
+                store:        'StandardCodes',
+                multiSelect:  true,
+                getModelData: function () {
+                    return {
+                        'Standards': Ext.Array.map(this.valueStore.collect('standardCode'), function (code) {
+                            return {
+                                standardCode: code
+                            }
+                        })
+                    };
+                },
+                listeners:    {
+                    'autosize': function () {
+                        // HACK: when the tagfield autosizes it pushes the update/cancel roweditor button down
+                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
+                    }
+                }
+            },
+            renderer:  function (val, col, record) {
+                val = record.get('Standards');
+
+                if (!Array.isArray(val)) {
+                    return '';
+                }
+
+                return val.map(function (standard) {
+                    return standard.standardCode || standard;
+                }).join(', ');
+            },
+            dataIndex: 'Standards',
+            width:     250
         }, {
             text:      'Grade',
             dataIndex: 'GradeLevel',
@@ -127,8 +157,6 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 editor.setDisabled(hasRecords);
 
                 if (rec) {
-                    /* detailPanel.setTitle(rec.get('Title'));
-                    detailsForm.loadRecord(rec); */
                     pagingToolbar.displayMsg = 'Displaying {0} - {1} of {2} - ' + rec.get('Title') + ' created by ' + rec.get('CreatorFullName') + ' on ' + Ext.util.Format.date(rec.get('Created'), 'm-d-y');
                     pagingToolbar.updateInfo();
                     editor.setRecord(rec);
@@ -137,12 +165,11 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         },
 
         plugins: {
-            ptype:        'cellediting',
-            pluginId:     'cellediting',
+            ptype:        'rowediting',
+            pluginId:     'rowediting',
             clicksToEdit: 1,
-            errorSummary: false
-        },
-
-        selMode: 'row'
+            errorSummary: true,
+            autoCancel: false
+        }
     }]
 });
