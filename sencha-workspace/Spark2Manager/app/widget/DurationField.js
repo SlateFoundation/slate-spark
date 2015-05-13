@@ -12,10 +12,6 @@ Ext.define('Spark2Manager.widget.DurationField', {
 
     alias: 'widget.durationfield',
 
-    config: {
-        duration: 0
-    },
-
     initComponent: function() {
         var me = this,
             hourField = Ext.create('Spark2Manager.widget.PostfixField', {
@@ -26,7 +22,15 @@ Ext.define('Spark2Manager.widget.DurationField', {
                 emptyText: 'Hour(s)',
                 postfix: 'hours',
                 width: 100,
-                padding: 5
+                padding: 5,
+                defaultValue: 0,
+
+                // TODO: Learn how to "proxy" or "redirect" events
+                listeners: {
+                    blur: function () {
+                        me.fireEvent('blur', me);
+                    }
+                }
             }),
             minuteField = Ext.create('Spark2Manager.widget.PostfixField', {
                 width: 120,
@@ -35,7 +39,14 @@ Ext.define('Spark2Manager.widget.DurationField', {
                 emptyText: 'Minutes(s)',
                 postfix: 'minutes',
                 value: 0,
-                padding: 5
+                defaultValue: 0,
+                padding: 5,
+
+                listeners: {
+                    blur: function () {
+                        me.fireEvent('blur', me);
+                    }
+                }
             }),
 
             container = Ext.create('Ext.form.FieldContainer', {
