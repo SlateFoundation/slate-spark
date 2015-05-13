@@ -51,20 +51,21 @@ Ext.define('Spark2Manager.controller.Apply', {
     onAddClick: function() {
         var me = this,
             newApplyProject = me.getApplyProjectsStore().insert(0, {}),
-            plugin = me.getPanel().down('gridpanel').getPlugin('cellediting');
+            plugin = me.getPanel().down('gridpanel').getPlugin('rowediting');
 
             plugin.startEdit(newApplyProject[0], 0);
     },
 
     onDeleteClick: function() {
         var me = this,
-            panel = me.getGridpanel(),
-            rowEditing = panel.plugins[0],
+            panel = me.getPanel().down('gridpanel'),
+            rowEditing = panel.getPlugin('rowediting'),
             selectionModel = panel.getSelectionModel(),
             selection = selectionModel.getSelection()[0],
             applyProjectsStore = me.getApplyProjectsStore(),
             title = selection.get('Title'),
-            descriptiveText =  title || 'this apply project';
+            descriptiveText =  title || 'this apply project',
+            editor = panel.up().down('s2m-apply-editor');
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
@@ -81,14 +82,17 @@ Ext.define('Spark2Manager.controller.Apply', {
 
     onAlignClick: function() {
         var me = this,
-            panel = me.getGridpanel(),
-            tagField = me.getPanel().down('s2m-apply-editor').down('tagfield'),
+            panel = me.getPanel().down('gridpanel'),
+            rowEditing = panel.getPlugin('rowediting'),
+            editor = rowEditing.getEditor(),
+            isEditing = rowEditing.editing,
+            tagField,
             record = panel.getSelection()[0],
             standards,
             standardsPicker;
 
         if (isEditing) {
-            tagField = editor.getRefItems()[0];
+            tagField = editor.down('tagfield');
             standards = tagField.getValue().map(function(standard) {
                 return standard.standardCode ? standard : { standardCode: standard };
             });
@@ -114,12 +118,11 @@ Ext.define('Spark2Manager.controller.Apply', {
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
-            tagField,
+            tagField = editor.down('tagfield'),
             record;
 
         if (isEditing) {
-            // HACK: @themightychris what's a better way to get a reference to the tagfield in the roweditor?
-            tagField = editor.getRefItems()[0];
+            tagField = editor.down('tagfield');
             tagField.setValue(standards.map(function(standard) {
                 return standard.standardCode;
             }));
