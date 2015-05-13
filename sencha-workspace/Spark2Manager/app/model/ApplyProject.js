@@ -83,6 +83,11 @@ Ext.define('Spark2Manager.model.ApplyProject', {
             useNull: true
         },
         {
+            name: "TimeEstimate",
+            type: "int",
+            useNull: true
+        },
+        {
             name: "Metadata",
             type: "string",
             useNull: true
@@ -97,7 +102,6 @@ Ext.define('Spark2Manager.model.ApplyProject', {
 
     proxy: {
         type: 'records',
-        url: '/spark2/apply-projects',
-        autoSync: true
+        url: '/spark2/apply-projects'
     }
 });
