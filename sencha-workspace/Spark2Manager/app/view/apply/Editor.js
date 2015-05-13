@@ -1,17 +1,20 @@
 Ext.define('Spark2Manager.view.apply.Editor', {
     requires: [
         'Spark2Manager.widget.DurationField',
+        'Spark2Manager.plugin.FieldReplicator',
 
         'Ext.form.Panel',
         'Ext.layout.container.Anchor',
         'Ext.form.FieldSet',
         'Ext.layout.container.VBox',
         'Ext.form.field.TextArea',
-        'Spark2Manager.plugin.FieldReplicator',
-        'Ext.form.field.Text',
+
+        'Ext.form.TextField',
         'Ext.form.field.Tag',
         'Ext.Array',
-        'Ext.layout.container.Fit'
+        'Ext.layout.container.Fit',
+        'Ext.data.ArrayStore',
+        'Ext.grid.plugin.RowEditing'
     ],
     extend:   'Ext.panel.Panel',
 
@@ -37,45 +40,21 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         scrollable: true,
 
         items: [{
-            xtype:        'tagfield',
-            fieldLabel:   'Standards Met',
-            labelAlign:   'top',
-            displayField: 'standardCode',
-            valueField:   'standardCode',
-            store:        'StandardCodes',
-            anchor: '100%',
-            grow: true,
-            multiSelect:  true,
-            getModelData: function () {
-                return {
-                    'Standards': Ext.Array.map(this.valueStore.collect('standardCode'), function (code) {
-                        return {
-                            standardCode: code
-                        }
-                    })
-                };
-            },
-            renderer:     function (val, col, record) {
-                val = record.get('Standards');
+            xtype: 'textarea',
 
-                if (!Array.isArray(val)) {
-                    return '';
-                }
+            fieldLabel: 'Instructions',
+            labelAlign: 'top',
 
-                return val.map(function (standard) {
-                    return standard.standardCode || standard;
-                }).join(', ');
-            }
+            anchor: '100%'
         }, {
-            xtype: 'form',
-            id:    'details-form',
-            grow:  true,
-            items: [{
-                xtype:      'durationfield',
-                fieldLabel: 'Time Estimate',
-                labelAlign: 'top',
-                duration:   90
-            }]
+            xtype:      'durationfield',
+
+            fieldLabel: 'Time Estimate',
+            labelAlign: 'top',
+
+            duration:   90,
+
+            anchor: '100%'
         }]
     }, {
         xtype: 'fieldset',
@@ -88,19 +67,39 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         flex:       1,
         scrollable: true,
 
-        defaultType: 'textfield',
+        defaultType: 'textarea',
 
         items: [{
+            xtype: 'textarea',
             anchor: '100%',
-            xtype:         'textarea',
-            plugins:       ['fieldreplicator'],
+            plugins: {
+                ptype: 'fieldreplicator',
+                pluginId: 'fieldreplicator'
+            },
             triggerAction: 'all',
             labelAlign:    'top',
             emptyText:     'Type your todo here. When you are done typing, press tab to enter another.',
             listeners: {
                 blur: function() {
-                    if (this.isDirty()) {
-                        console.warn('We need to save a todo sir!');
+                    var me = this,
+                        rowediting,
+                        record,
+                        newVal,
+                        curVal;
+
+                    // TODO: isDirty doesn't work quite the way we want here, originalValues and the fieldreplicator
+                    // may not play nice.
+
+                    if (me.isDirty() && me.getValue() != '') {
+                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        record = rowediting.editor.getRecord();
+                        newVal = me.getPlugin('fieldreplicator').getValues();
+                        curVal = record.get('Todos');
+
+                        // HACK: Do not save if no changes have occurred
+                        if (newVal.length !== curVal.length || JSON.stringify(newVal) !== JSON.stringify(curVal)) {
+                            record.set('Todos', newVal);
+                        }
                     }
                 }
             }
@@ -118,16 +117,36 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         scrollable:  true,
 
         items: [{
+            xtype: 'textfield',
             anchor: '100%',
-            xtype:         'textfield',
-            plugins:       ['fieldreplicator'],
+            plugins: {
+                ptype: 'fieldreplicator',
+                pluginId: 'fieldreplicator'
+            },
             triggerAction: 'all',
             labelAlign:    'top',
             emptyText:     'Enter your link URL here. Press tab to enter another.',
             listeners: {
                 blur: function() {
-                    if (this.isDirty()) {
-                        console.error('We need to save a link sir!');
+                    var me = this,
+                        rowediting,
+                        record,
+                        newVal,
+                        curVal;
+
+                    // TODO: isDirty doesn't work quite the way we want here, originalValues and the fieldreplicator
+                    // may not play nice.
+
+                    if (me.isDirty() && me.getValue() != '') {
+                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        record = rowediting.editor.getRecord();
+                        newVal = me.getPlugin('fieldreplicator').getValues();
+                        curVal = record.get('Links');
+
+                        // HACK: Do not save if no changes have occurred
+                        if (newVal.length !== curVal.length || JSON.stringify(newVal) !== JSON.stringify(curVal)) {
+                            record.set('Links', newVal);
+                        }
                     }
                 }
             }
@@ -135,14 +154,19 @@ Ext.define('Spark2Manager.view.apply.Editor', {
     }],
 
     applyRecord: function(rec) {
-        debugger;
-
-        var me = this,
-            detailsFieldset = me.down('#details-fieldset');
+        var me              = this,
+            detailsFieldset = me.down('#details-fieldset'),
+            links           = rec.get('Links'),
+            todos           = rec.get('Todos');
 
         detailsFieldset.setTitle(rec.get('Title'));
-        detailsFieldset.down('tagfield').setValue(rec.get('Standards'));
 
-        console.log(rec.get('Standards'));
+        if (Array.isArray(todos)) {
+            todosFieldset.down('textarea').getPlugin('fieldreplicator').setValues(todos);
+        }
+
+        if (Array.isArray(links)) {
+            todosFieldset.down('textarea').getPlugin('fieldreplicator').setValues(links);
+        }
     }
 });
