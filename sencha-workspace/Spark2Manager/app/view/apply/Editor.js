@@ -217,8 +217,10 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             todos = [],
             title = 'Project Details';
 
-        if (!rec) {
-            me.resetFields();
+        me.resetFields();
+
+        if (rec && rec.phantom) {
+            me.setReadOnly(false);
         } else {
             title = rec.get('Title');
             links = rec.get('Links') || [];
@@ -237,6 +239,9 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         if (Array.isArray(links)) {
             linksFieldset.down('textfield').getPlugin('fieldreplicator').setValues(links);
         }
+
+        // HACK: resetFields manaully sets the nested fields under duration field
+        detailsFieldset.down('durationfield').setValue(detailsFieldset.down('durationfield').getValue(∂));
     },
 
     applyReadOnly: function(val) {
@@ -249,7 +254,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
 
     resetFields: function() {
         this.query('field').forEach(function(field) {
-            field.setValue('');
+            field.setValue(null);
         });
     }
 });

@@ -51,9 +51,12 @@ Ext.define('Spark2Manager.controller.Apply', {
     onAddClick: function() {
         var me = this,
             newApplyProject = me.getApplyProjectsStore().insert(0, {}),
-            plugin = me.getPanel().down('gridpanel').getPlugin('rowediting');
+            panel = me.getPanel(),
+            plugin = panel.down('gridpanel').getPlugin('rowediting'),
+            editor = panel.down('s2m-apply-editor');
 
-            plugin.startEdit(newApplyProject[0], 0);
+        plugin.startEdit(newApplyProject[0], 0);
+        editor.setRecord(newApplyProject[0]);
     },
 
     onDeleteClick: function() {
@@ -76,6 +79,8 @@ Ext.define('Spark2Manager.controller.Apply', {
                 if (applyProjectsStore.getCount() > 0) {
                     selectionModel.select(0);
                 }
+
+                editor.setReadOnly(true);
             }
         });
     },
