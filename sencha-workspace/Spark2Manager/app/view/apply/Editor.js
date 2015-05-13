@@ -14,7 +14,8 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         'Ext.Array',
         'Ext.layout.container.Fit',
         'Ext.data.ArrayStore',
-        'Ext.grid.plugin.RowEditing'
+        'Ext.grid.plugin.RowEditing',
+        'Ext.ComponentQuery'
     ],
     extend:   'Ext.panel.Panel',
 
@@ -26,7 +27,8 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             align: 'stretch'
         },
         scrollable: true,
-        record: null
+        record: null,
+        readOnly: false
     },
 
     items: [{
@@ -42,19 +44,66 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         items: [{
             xtype: 'textarea',
 
+            readOnly: this.readOnly,
             fieldLabel: 'Instructions',
             labelAlign: 'top',
 
-            anchor: '100%'
+            anchor: '100%',
+
+            listeners: {
+                'blur': function() {
+                    var me = this,
+                        rowediting,
+                        record,
+                        newVal,
+                        curVal;
+
+                    if (!me.readOnly && me.isDirty()) {
+                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        record = rowediting.editor.getRecord();
+                        newVal = me.getValue();
+                        curVal = record.get('Instructions');
+
+                        // HACK: Do not save if no changes have occurred
+                        if (newVal != curVal) {
+                            record.set('Instructions', newVal);
+                        }
+                    }
+                }
+            }
         }, {
             xtype:      'durationfield',
+
+            readOnly: this.readOnly,
 
             fieldLabel: 'Time Estimate',
             labelAlign: 'top',
 
             duration:   90,
 
-            anchor: '100%'
+            anchor: '100%',
+
+            listeners: {
+                'blur': function() {
+                    var me = this,
+                        rowediting,
+                        record,
+                        newVal,
+                        curVal;
+
+                    if (!me.readOnly && me.isDirty()) {
+                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        record = rowediting.editor.getRecord();
+                        newVal = me.getValue();
+                        curVal = record.get('TimeEstimate');
+
+                        // HACK: Do not save if no changes have occurred
+                        if (newVal != curVal) {
+                            record.set('TimeEstimate', newVal);
+                        }
+                    }
+                }
+            }
         }]
     }, {
         xtype: 'fieldset',
@@ -71,6 +120,9 @@ Ext.define('Spark2Manager.view.apply.Editor', {
 
         items: [{
             xtype: 'textarea',
+
+            readOnly: this.readOnly,
+
             anchor: '100%',
             plugins: {
                 ptype: 'fieldreplicator',
@@ -90,11 +142,11 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                     // TODO: isDirty doesn't work quite the way we want here, originalValues and the fieldreplicator
                     // may not play nice.
 
-                    if (me.isDirty() && me.getValue() != '') {
+                    if (!me.readOnly && me.isDirty() && me.getValue() != '') {
                         rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getPlugin('fieldreplicator').getValues();
-                        curVal = record.get('Todos');
+                        curVal = record.get('Todos') || [];
 
                         // HACK: Do not save if no changes have occurred
                         if (newVal.length !== curVal.length || JSON.stringify(newVal) !== JSON.stringify(curVal)) {
@@ -118,6 +170,9 @@ Ext.define('Spark2Manager.view.apply.Editor', {
 
         items: [{
             xtype: 'textfield',
+
+            readOnly: this.readOnly,
+
             anchor: '100%',
             plugins: {
                 ptype: 'fieldreplicator',
@@ -137,11 +192,11 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                     // TODO: isDirty doesn't work quite the way we want here, originalValues and the fieldreplicator
                     // may not play nice.
 
-                    if (me.isDirty() && me.getValue() != '') {
+                    if (!me.readOnly && me.isDirty() && me.getValue() != '') {
                         rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getPlugin('fieldreplicator').getValues();
-                        curVal = record.get('Links');
+                        curVal = record.get('Links') || [];
 
                         // HACK: Do not save if no changes have occurred
                         if (newVal.length !== curVal.length || JSON.stringify(newVal) !== JSON.stringify(curVal)) {
@@ -156,17 +211,45 @@ Ext.define('Spark2Manager.view.apply.Editor', {
     applyRecord: function(rec) {
         var me              = this,
             detailsFieldset = me.down('#details-fieldset'),
-            links           = rec.get('Links'),
-            todos           = rec.get('Todos');
+            linksFieldset   = me.down('#links-fieldset'),
+            todosFieldset   = me.down('#todos-fieldset'),
+            links = [],
+            todos = [],
+            title = 'Project Details';
 
-        detailsFieldset.setTitle(rec.get('Title'));
+        if (!rec) {
+            me.resetFields();
+        } else {
+            title = rec.get('Title');
+            links = rec.get('Links') || [];
+            todos = rec.get('Todos') || [];
+
+            detailsFieldset.down('textfield').setValue(rec.get('Instructions'));
+            detailsFieldset.down('durationfield').setValue(rec.get('TimeEstimate'));
+        }
+
+        detailsFieldset.setTitle(title);
 
         if (Array.isArray(todos)) {
             todosFieldset.down('textarea').getPlugin('fieldreplicator').setValues(todos);
         }
 
         if (Array.isArray(links)) {
-            todosFieldset.down('textarea').getPlugin('fieldreplicator').setValues(links);
+            linksFieldset.down('textfield').getPlugin('fieldreplicator').setValues(links);
         }
+    },
+
+    applyReadOnly: function(val) {
+        if (!this.isDisabled()) {
+            this.query('field').forEach(function(field) {
+                field.setReadOnly(val);
+            });
+        }
+    },
+
+    resetFields: function() {
+        this.query('field').forEach(function(field) {
+            field.setValue('');
+        });
     }
 });
