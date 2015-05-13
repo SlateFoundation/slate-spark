@@ -49,6 +49,11 @@ Ext.define('Spark2Manager.plugin.FieldReplicator', {
             idx = ownerCt.items.indexOf(field);
 
         ownerCt.add(idx + 1, clone);
+
+        if (field.onReplicate) {
+            field.onReplicate(clone, field);
+        }
+
         return clone;
     },
 
@@ -65,10 +70,6 @@ Ext.define('Spark2Manager.plugin.FieldReplicator', {
         }
         // If the field is the last in the list and has a value, add a cloned field after it
         else if(!isEmpty && isLastInGroup) {
-            if (field.onReplicate) {
-                field.onReplicate();
-            }
-
             this.replicate(field);
         }
     },
