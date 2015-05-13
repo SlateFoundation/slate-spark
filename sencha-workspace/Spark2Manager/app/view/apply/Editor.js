@@ -91,7 +91,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                         newVal,
                         curVal;
 
-                    if (!me.readOnly && me.isDirty()) {
+                    if (!me.readOnly) {
                         rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getValue();
@@ -219,9 +219,11 @@ Ext.define('Spark2Manager.view.apply.Editor', {
 
         me.resetFields();
 
-        if (rec && rec.phantom) {
-            me.setReadOnly(false);
-        } else {
+        if (rec) {
+            if (rec.phantom) {
+                me.setReadOnly(false);
+            }
+
             title = rec.get('Title');
             links = rec.get('Links') || [];
             todos = rec.get('Todos') || [];
@@ -241,7 +243,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         }
 
         // HACK: resetFields manaully sets the nested fields under duration field
-        detailsFieldset.down('durationfield').setValue(detailsFieldset.down('durationfield').getValue(∂));
+        detailsFieldset.down('durationfield').setValue(detailsFieldset.down('durationfield').getValue());
     },
 
     applyReadOnly: function(val) {
