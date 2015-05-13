@@ -1,82 +1,79 @@
 Ext.define('Spark2Manager.view.apply.Panel', {
-    requires: [
+
+    extend: 'Ext.form.Panel',
+
+    requires: [,
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.store.ApplyLinks',
-        'Spark2Manager.store.ApplyToDos',
-        'Ext.form.Panel',
+        'Spark2Manager.view.apply.Editor',
         'Ext.grid.Panel',
-        'Ext.form.FieldSet',
-        'Ext.layout.container.Column',
-        'Ext.layout.container.Anchor',
-        'Ext.layout.container.Fit',
-        'Ext.grid.plugin.RowEditing',
+        'Ext.grid.plugin.CellEditing',
         'Ext.toolbar.Paging',
-        'Ext.XTemplate',
         'Ext.toolbar.Toolbar',
-        'Spark2Manager.Util',
-        'Ext.Array',
-        'Ext.form.RadioGroup',
-        'Ext.form.field.Date'
+        'Ext.layout.container.HBox',
+        'Ext.grid.Panel',
+        'Ext.container.Container',
+        'Ext.util.Format'
     ],
+
+    xtype: 's2m-apply-panel',
 
     stores: [
         'ApplyProjects'
     ],
 
-    extend: 'Ext.form.Panel',
-
-    xtype:  's2m-apply-panel',
-
     layout: {
-        type: 'hbox',
+        type:  'hbox',
         align: 'stretch'
     },
 
-    fieldDefaults: {
-        labelAlign: 'left',
-        labelWidth: 90,
-        anchor:     '100%'
-    },
-
-    bodyPadding: 5,
-
     items: [{
-        flex: 2,
+        flex:            3,
         xtype:           'gridpanel',
         modelValidation: false,
         store:           'ApplyProjects',
 
         dockedItems: [{
+            id:          'pagingtoolbar',
             xtype:       'pagingtoolbar',
             store:       'ApplyProjects',
             dock:        'bottom',
             displayInfo: true
         }, {
-            xtype:     'toolbar',
-            id: 'gridtoolbar',
-            items:     [{
-                text:    'Add Project',
-                tooltip: 'Add a new project',
-                action:  'add'
-            }, '-', {
-                text:      'Align to Standards',
-                tooltip:   'Align this link to multiple standards easily using the standards picker',
-                action:    'align',
-                disabled:  true
-            }, '-', {
-                text:      'Delete Project',
-                tooltip:   'Remove the selected project',
-                action:    'delete',
-                disabled:  true
-            }],
-            border: 5,
-            style: {
-                borderColor: 'red',
-                borderStyle: 'solid'
-            }
+            xtype: 'container',
+
+            id: 'editorcontainer',
+
+            dock:    'right',
+
+            scrollable: true,
+
+            items: [{
+                xtype: 'toolbar',
+                id:    'gridtoolbar',
+                items: [{
+                    text:    'Add Project',
+                    tooltip: 'Add a new project',
+                    action:  'add'
+                }, '-', {
+                    text:     'Align to Standards',
+                    tooltip:  'Align this link to multiple standards easily using the standards picker',
+                    action:   'align',
+                    disabled: true
+                }, '-', {
+                    text:     'Delete Project',
+                    tooltip:  'Remove the selected project',
+                    action:   'delete',
+                    disabled: true
+                }]
+            }, {
+                padding: 10,
+                width: 350,
+                xtype: 's2m-apply-editor',
+                disabled: true
+            }]
         }],
 
-        columns:         [{
+        columns:   [{
             text:      'Project Title',
             flex:      2,
             sortable:  true,
@@ -97,43 +94,6 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 msgTarget:  'under'
             }
         }, {
-            text:      'Standards',
-            editor:    {
-                xtype:        'tagfield',
-                displayField: 'standardCode',
-                valueField:   'standardCode',
-                store:        'StandardCodes',
-                multiSelect:  true,
-                getModelData: function () {
-                    return {
-                        'Standards': Ext.Array.map(this.valueStore.collect('standardCode'), function (code) {
-                            return {
-                                standardCode: code
-                            }
-                        })
-                    };
-                },
-                listeners:    {
-                    'autosize': function () {
-                        // HACK: when the tagfield autosizes it pushes the update/cancel roweditor button down
-                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
-                    }
-                }
-            },
-            renderer:  function (val, col, record) {
-                val = record.get('Standards');
-
-                if (!Array.isArray(val)) {
-                    return '';
-                }
-
-                return val.map(function (standard) {
-                    return standard.standardCode || standard;
-                }).join(', ');
-            },
-            dataIndex: 'Standards',
-            width: 250
-        }, {
             text:      'Grade',
             dataIndex: 'GradeLevel',
             width:     60,
@@ -152,66 +112,37 @@ Ext.define('Spark2Manager.view.apply.Panel', {
             },
             width:     50
         }],
-        listeners:       {
+        listeners: {
             selectionchange: function (model, records) {
                 var me = this,
-                    panel = me.findParentByType('s2m-apply-panel'),
-                    form = panel.getForm(),
-                    rec = records[0];
+                    panel  = me.findParentByType('s2m-apply-panel'),
+                    editorContainer = me.down('#editorcontainer'),
+                    editor = me.down('s2m-apply-editor'),
+                    pagingToolbar = me.down('pagingtoolbar'),
+                    rec = records ? records[0] : null,
+                    hasRecords = records.length === 0;
+
+                me.down('#gridtoolbar button[action="delete"]').setDisabled(hasRecords);
+                me.down('#gridtoolbar button[action="align"]').setDisabled(hasRecords);
+                editor.setDisabled(hasRecords);
 
                 if (rec) {
-                    form.loadRecord(rec);
-                    me.down('#gridtoolbar button[action="delete"]').setDisabled(records.length === 0);
-                    me.down('#gridtoolbar button[action="align"]').setDisabled(records.length === 0);
+                    /* detailPanel.setTitle(rec.get('Title'));
+                    detailsForm.loadRecord(rec); */
+                    pagingToolbar.displayMsg = 'Displaying {0} - {1} of {2} - ' + rec.get('Title') + ' created by ' + rec.get('CreatorFullName') + ' on ' + Ext.util.Format.date(rec.get('Created'), 'm-d-y');
+                    pagingToolbar.updateInfo();
+                    editor.setRecord(rec);
                 }
             }
         },
 
         plugins: {
-            ptype:        'rowediting',
-            pluginId:     'rowediting',
-            clicksToEdit: 2,
+            ptype:        'cellediting',
+            pluginId:     'cellediting',
+            clicksToEdit: 1,
             errorSummary: false
-        }
-    }, {
-        flex: 1,
-        margin:      '0 0 0 10',
-        reference:   'form',
-        items: [{
-            xtype:       'fieldset',
-            title:       'Project details',
-            layout:      'anchor',
-            defaultType: 'textfield',
-            items:       []
-        }]
-    }],
+        },
 
-    changeRenderer: function (val) {
-        if (val > 0) {
-            return '<span style="color:green;">' + val + '</span>';
-        } else if (val < 0) {
-            return '<span style="color:red;">' + val + '</span>';
-        }
-        return val;
-    },
-
-    pctChangeRenderer: function (val) {
-        if (val > 0) {
-            return '<span style="color:green;">' + val + '%</span>';
-        } else if (val < 0) {
-            return '<span style="color:red;">' + val + '%</span>';
-        }
-        return val;
-    },
-
-    renderRating: function (val) {
-        switch (val) {
-            case 0:
-                return 'A';
-            case 1:
-                return 'B';
-            case 2:
-                return 'C';
-        }
-    }
+        selMode: 'row'
+    }]
 });

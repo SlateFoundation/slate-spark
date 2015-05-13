@@ -50,11 +50,10 @@ Ext.define('Spark2Manager.controller.Apply', {
 
     onAddClick: function() {
         var me = this,
-            rowEditing = me.getGridpanel().getPlugin('rowediting'),
-            newApplyProject = me.getApplyProjectsStore().insert(0, {});
+            newApplyProject = me.getApplyProjectsStore().insert(0, {}),
+            plugin = me.getPanel().down('gridpanel').getPlugin('cellediting');
 
-        rowEditing.cancelEdit();
-        rowEditing.startEdit(newApplyProject[0], 0);
+            plugin.startEdit(newApplyProject[0], 0);
     },
 
     onDeleteClick: function() {
@@ -83,31 +82,21 @@ Ext.define('Spark2Manager.controller.Apply', {
     onAlignClick: function() {
         var me = this,
             panel = me.getGridpanel(),
-            rowEditing = panel.getPlugin('rowediting'),
-            editor = rowEditing.getEditor(),
-            isEditing = rowEditing.editing,
-            tagField,
+            tagField = me.getPanel().down('s2m-apply-editor').down('tagfield'),
             record = panel.getSelection()[0],
-            standards,
-            standardsPicker;
 
-        if (isEditing) {
-            tagField = editor.getRefItems()[0];
             standards = tagField.getValue().map(function(standard) {
                 return standard.standardCode ? standard : { standardCode: standard };
-            });
-        } else {
-            standards = record.get('Standards');
-        }
+            }),
 
-        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
-            standards: standards,
-            record: record,
-            listeners: {
-                'alignstandards': 'onAlignStandards',
-                scope: me
-            }
-        });
+            standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+                standards: standards,
+                record: record,
+                listeners: {
+                    'alignstandards': 'onAlignStandards',
+                    scope: me
+                }
+            });
 
         standardsPicker.show();
     },
