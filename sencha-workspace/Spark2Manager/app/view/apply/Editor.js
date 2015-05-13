@@ -154,6 +154,14 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                         }
                     }
                 }
+            },
+
+            onReplicate: function (newField, lastField, cloneField) {
+                if (lastField && lastField.isDirty()) {
+                    window.setTimeout(function() {
+                        newField.focus();
+                    }, 10);
+                }
             }
         }]
     }, {
@@ -203,6 +211,14 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                             record.set('Links', newVal);
                         }
                     }
+                }
+            },
+
+            onReplicate: function (newField, lastField, cloneField) {
+                if (lastField && lastField.isDirty()) {
+                    window.setTimeout(function() {
+                        newField.focus();
+                    }, 10);
                 }
             }
         }]

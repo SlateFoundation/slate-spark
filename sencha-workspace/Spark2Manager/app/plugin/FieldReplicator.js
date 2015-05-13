@@ -51,7 +51,7 @@ Ext.define('Spark2Manager.plugin.FieldReplicator', {
         ownerCt.add(idx + 1, clone);
 
         if (field.onReplicate) {
-            field.onReplicate(clone, field);
+            field.onReplicate(clone, field, this.cloneField);
         }
 
         return clone;
