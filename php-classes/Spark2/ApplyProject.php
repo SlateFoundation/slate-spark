@@ -37,6 +37,10 @@ class ApplyProject extends \VersionedRecord
             'type'    => 'json',
             'notnull' => false
         ],
+        'TimeEstimate' => [
+            'type'    => 'smallint',
+            'notnull' => false
+        ],
         'Metadata' => [
             'type'    => 'json',
             'notnull' => false
