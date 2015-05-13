@@ -99,6 +99,7 @@ Ext.define('Spark2Manager.model.ApplyProject', {
 
     proxy: {
         type: 'records',
-        url: '/spark2/apply-projects'
+        url: '/spark2/apply-projects',
+        autoSync: true
     }
 });
