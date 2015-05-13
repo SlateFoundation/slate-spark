@@ -37,10 +37,17 @@ Ext.define('Spark2Manager.widget.DurationField', {
                 value: 0,
                 padding: 5
             }),
-            hours = this.duration ? Math.floor(this.duration / 60) : 0,
-            minutes = this.duration ? this.duration - (hours * 60) : 0,
+
             container = Ext.create('Ext.form.FieldContainer', {
                 layout: 'hbox',
+
+                defaults: {
+                    flex: 1
+                },
+
+                fieldDefaults: {
+                    msgTarget: 'under'
+                },
 
                 items: [
                     hourField,
@@ -48,10 +55,8 @@ Ext.define('Spark2Manager.widget.DurationField', {
                 ]
             });
 
-        if (this.duration) {
-            hourField.setValue(hours);
-            minuteField.setValue(minutes);
-        }
+        me.hourField = hourField;
+        me.minuteField = minuteField;
 
         me.items = container;
         me.callParent();
@@ -59,19 +64,20 @@ Ext.define('Spark2Manager.widget.DurationField', {
 
     layout: 'fit',
 
-    items: [{
-        xtype: 'fieldcontainer',
+    setValue: function(duration) {
+        var me = this,
+            hours = duration ? Math.floor(duration / 60) : 0,
+            minutes = duration ? duration - (hours * 60) : 0;
 
-        layout: 'fit',
+        me.hourField.setValue(hours);
+        me.minuteField.setValue(minutes);
+    },
 
-        defaults: {
-            flex: 1
-        },
+    getValue: function() {
+        var me = this,
+            hours = me.hourField.getValue(),
+            minutes = me.minuteField.getValue();
 
-        fieldDefaults: {
-            msgTarget: 'under'
-        },
-
-        items: []
-    }]
+        return (hours * 60) + minutes;
+    }
 });
