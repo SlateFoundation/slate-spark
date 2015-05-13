@@ -47,7 +47,8 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             readOnly: this.readOnly,
             fieldLabel: 'Instructions',
             labelAlign: 'top',
-
+            grow: true,
+            
             anchor: '100%',
 
             listeners: {
@@ -94,6 +95,11 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                     if (!me.readOnly) {
                         rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
+
+                        if (!record) {
+                            return;
+                        }
+
                         newVal = me.getValue();
                         curVal = record.get('TimeEstimate');
 
