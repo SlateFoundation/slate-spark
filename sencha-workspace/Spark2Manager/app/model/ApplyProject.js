@@ -4,9 +4,9 @@ Ext.define('Spark2Manager.model.ApplyProject', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
-        'Ext.data.identifier.Negative'
+        'Ext.data.identifier.Negative',
+        'Ext.data.validator.Presence'
     ],
-
 
     // model config
     idProperty: 'ID',
@@ -48,19 +48,57 @@ Ext.define('Spark2Manager.model.ApplyProject', {
             type: "string"
         },
         {
+            name: "GradeLevel",
+            type: "string",
+            useNull: true
+        },
+        {
             name: "DOK",
             type: "int",
             useNull: true
         },
         {
-            name: "Order",
-            type: "int"
+            name: "Standards",
+            useNull: true,
+            convert: function(val) {
+                if (Array.isArray(val)) {
+                    return val.map(function(standard) {
+                        if (typeof standard === 'object') {
+                            return standard.standardCode;
+                        } else {
+                            return standard;
+                        }
+                    })
+                }
+
+                return [];
+            }
         },
         {
-            name: "Text",
-            type: "string"
+            name: "Todos",
+            useNull: true
+        },
+        {
+            name: "Links",
+            useNull: true
+        },
+        {
+            name: "TimeEstimate",
+            type: "int",
+            useNull: true
+        },
+        {
+            name: "Metadata",
+            type: "string",
+            useNull: true
         }
     ],
+
+    validators: {
+        Title: [
+            'presence'
+        ]
+    },
 
     proxy: {
         type: 'records',

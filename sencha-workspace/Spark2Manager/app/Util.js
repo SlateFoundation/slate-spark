@@ -2,6 +2,7 @@ Ext.define('Spark2Manager.Util', {
     'singleton': true,
 
     'requires': [
+        'Ext.Ajax',
         'Ext.Object',
         'Spark2Manager.model.Vendor',
         'Spark2Manager.model.VendorDomain'
@@ -98,7 +99,6 @@ Ext.define('Spark2Manager.Util', {
             values = form.getFieldValues(),
             url = values.URL,
             title = values.Title,
-            vendorID = values.VendorID,
             parsedURL = me.parseURL(url),
             hostname = parsedURL ? parsedURL.hostname.replace('www.', '') : null,
             vendorsStore = Ext.getStore('Vendors'),

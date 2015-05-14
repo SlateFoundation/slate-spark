@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
         'Ext.toolbar.Toolbar',
-        'Spark2Manager.Util'
+        'Spark2Manager.Util',
+        'Ext.Array'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -55,13 +56,19 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     columns: [
         {
-            text: 'Standard',
+            text: 'Standards',
             editor: {
                 xtype: 'tagfield',
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
-                multiSelect: true,
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+                anyMatch: true,
+
                 getModelData: function() {
                     return {
                         'Standards':
@@ -70,6 +77,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                             })
                     };
                 },
+
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
@@ -77,6 +85,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                     }
                 }
             },
+
             renderer: function(val, col, record) {
                 val = record.get('Standards');
 
@@ -112,7 +121,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 listeners: {
                     change: {
                         fn: function () {
-                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'));
+                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\LearnLink');
                         },
                         buffer: 1000
                     }

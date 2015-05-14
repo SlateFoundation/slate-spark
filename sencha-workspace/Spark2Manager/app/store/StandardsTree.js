@@ -1,12 +1,17 @@
 Ext.define('Spark2Manager.store.StandardsTree', {
-    requires: ['Ext.data.ArrayStore'],
+    requires: [
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.data.JsonStore',
+        'Ext.data.proxy.Memory'
+    ],
 
     extend: 'Ext.data.TreeStore',
 
     config: {
         proxy: {
             type: 'ajax',
-            url: 'http://slate.ninja/spark2/tree.json',
+            url: 'app/data/tree.json',
             reader: {
                 type: 'json'
             },
@@ -25,6 +30,7 @@ Ext.define('Spark2Manager.store.StandardsTree', {
         ]
     },
 
+
     getChecked: function() {
         var root = this.getRoot(),
             checked = [];
@@ -38,12 +44,12 @@ Ext.define('Spark2Manager.store.StandardsTree', {
         return checked;
     },
 
-    restoreState: function (record) {
+    restoreState: function (standards) {
         var root = this.getRoot(),
             selectedStandards = {};
 
-        if (record.get('Standards')) {
-            record.get('Standards').forEach(function (standard) {
+        if (Array.isArray(standards)) {
+            standards.forEach(function (standard) {
                 selectedStandards[standard.standardCode || standard] = true;
             });
         }

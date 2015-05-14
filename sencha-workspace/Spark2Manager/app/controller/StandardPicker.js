@@ -1,8 +1,8 @@
 Ext.define('Spark2Manager.controller.StandardPicker', {
     requires: [
         'Spark2Manager.store.StandardsTree',
-        'Spark2Manager.store.StandardPicker',
-        'Ext.data.ArrayStore'
+        'Ext.data.ArrayStore',
+        'Ext.Array'
     ],
 
     extend: 'Ext.app.ViewController',
@@ -16,8 +16,7 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
     },
 
     stores: [
-        'StandardsTree',
-        'StandardPicker'
+        'StandardsTree'
     ],
 
     /**
@@ -53,12 +52,11 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
         var me = this,
             store = Ext.getStore('StandardsTree'),
             view = me.getView(),
-            record = view.getRecord(),
             tagField = view.lookupReference('tagfield'),
             standards = view.getStandards();
 
         if (store.isLoaded()) {
-            store.restoreState(record);
+            store.restoreState(standards);
         }
 
         if (tagField.getStore().count() === 0) {
@@ -70,8 +68,6 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
                 return standard.standardCode || standard;
             }));
         }
-
-        Ext.getStore('StandardsTree').restoreState(record);
     },
 
     onAlignStandardsClick: function () {

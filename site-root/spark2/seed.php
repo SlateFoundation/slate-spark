@@ -4,9 +4,7 @@ namespace Spark2;
 
 function populateAssessmentTypes() {
     $assessmentTypes = [
-        'Digital' => '0101110101010101010101010101',
-        'Teacher Directed' => 'COMING THIS FALL. DIRECTED BY A TEACHER. STARRING ROB SNYDER.',
-        'Dance off' => 'Show us your moves!'
+        'Digital' => '0101110101010101010101010101'
     ];
 
     print 'Populating assessment types<br>';

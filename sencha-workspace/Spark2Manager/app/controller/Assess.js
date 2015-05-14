@@ -4,8 +4,6 @@ Ext.define('Spark2Manager.controller.Assess', {
             'Spark2Manager.store.AssessmentTypes',
             'Spark2Manager.store.Vendors',
             'Spark2Manager.store.VendorDomains',
-            'Spark2Manager.Util',
-            'Ext.Ajax',
             'Spark2Manager.view.StandardPicker'
         ],
 
@@ -89,17 +87,53 @@ Ext.define('Spark2Manager.controller.Assess', {
     onAlignClick: function() {
         var me = this,
             panel = me.getPanel(),
-            selection = panel.getSelection(),
+            rowEditing = panel.getPlugin('rowediting'),
+            editor = rowEditing.getEditor(),
+            isEditing = rowEditing.editing,
+            tagField,
+            record = panel.getSelection()[0],
+            standards,
             standardsPicker;
 
-        selection = Array.isArray(selection) ? selection[0] : null;
-
-        if (selection) {
-            standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
-                record: selection
+        if (isEditing) {
+            tagField = editor.getRefItems()[0];
+            standards = tagField.getValue().map(function(standard) {
+                return standard.standardCode ? standard : { standardCode: standard };
             });
+        } else {
+            standards = record.get('Standards');
+        }
 
-            standardsPicker.show();
+        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+            standards: standards,
+            record: record,
+            listeners: {
+                'alignstandards': 'onAlignStandards',
+                scope: me
+            }
+        });
+
+        standardsPicker.show();
+    },
+
+    onAlignStandards: function(record, standards) {
+        var me = this,
+            panel = me.getPanel(),
+            rowEditing = panel.getPlugin('rowediting'),
+            editor = rowEditing.getEditor(),
+            isEditing = rowEditing.editing,
+            tagField,
+            record;
+
+        if (isEditing) {
+            // HACK: @themightychris what's a better way to get a reference to the tagfield in the roweditor?
+            tagField = editor.getRefItems()[0];
+            tagField.setValue(standards.map(function(standard) {
+                return standard.standardCode;
+            }));
+        } else {
+            record = panel.getSelection()[0];
+            record.set('Standards', standards);
         }
     }
 });

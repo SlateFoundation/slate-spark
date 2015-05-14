@@ -7,7 +7,8 @@ Ext.define('Spark2Manager.view.Main', {
         'Spark2Manager.view.learn.Panel',
         'Spark2Manager.view.conference.Panel',
         'Spark2Manager.view.assess.Panel',
-        'Spark2Manager.view.pbl.Panel'
+        'Spark2Manager.view.pbl.Panel',
+        'Ext.util.History'
     ],
 
     alias: 'mainview',

@@ -3,7 +3,9 @@ Ext.define('Spark2Manager.view.assess.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
-        'Ext.toolbar.Toolbar'
+        'Ext.toolbar.Toolbar',
+        'Ext.Array',
+        'Spark2Manager.Util'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -60,7 +62,13 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
-                multiSelect: true,
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+                anyMatch: true,
+
                 getModelData: function() {
                     return {
                         'Standards':
@@ -69,12 +77,11 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                             })
                     };
                 },
+
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        var buttons = this.up().getFloatingButtons(),
-                            height = this.getHeight();
-                        buttons.getEl().setStyle('top', (height + 11) + 'px');
+                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
                     }
                 }
             },
@@ -115,9 +122,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 valueField: 'ID',
                 grow: true,
                 editable: false,
-                allowBlank: false,
-                emptyText: '',
-                value: ''
+                allowBlank: false
             },
             renderer: function(val, col, record) {
                 // HELP: @themightychris: is there an easier way to do this sort of thing?
@@ -136,7 +141,15 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             flex: 1,
             editor: {
                 xtype: 'textfield',
-                allowBlank: false
+                allowBlank: false,
+                listeners: {
+                    change: {
+                        fn: function () {
+                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\Assessment');
+                        },
+                        buffer: 1000
+                    }
+                }
             }
         },
         {
@@ -163,7 +176,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                     '   <div class="x-boundlist-item" style="',
                     '       background-position: 5px, 5px;',
                     '       background-image: url({LogoURL});',
-                    '       background-repeat: no-repeat;' +
+                    '       background-repeat: no-repeat;',
+                    '       background-size: 16px 16px;',
                     '       padding-left: 25px">',
                     '       {Name}',
                     '   </div>',
@@ -179,7 +193,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
                 if (vendorRecord) {
                     logoURL = vendorRecord.get('LogoURL');
-                    returnVal = logoURL ? '<img src="' + logoURL + '"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
+                    returnVal = logoURL ? '<img src="' + logoURL + '" width="16" height="16"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
                 }
 
                 return returnVal;
@@ -190,6 +204,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
     listeners: {
         'selectionchange': 'onSelectionChange'
     },
+
+    selType: 'rowmodel',
 
     plugins: {
         ptype: 'rowediting',

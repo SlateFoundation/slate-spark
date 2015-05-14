@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.model.Assessment', {
     extend: 'Ext.data.Model',
     requires: [
         'Emergence.ext.proxy.Records',
-        'Ext.data.identifier.Negative'
+        'Ext.data.identifier.Negative',
+        'Ext.data.validator.Presence'
     ],
 
     // model config
@@ -35,7 +36,8 @@ Ext.define('Spark2Manager.model.Assessment', {
         },
         {
             name: "AssessmentTypeID",
-            type: "int"
+            type: "int",
+            defaultValue: 1
         },
         {
             name: "Standards",
@@ -70,9 +72,19 @@ Ext.define('Spark2Manager.model.Assessment', {
         {
             name: "VendorID",
             type: "int",
-            useNull: true
+            useNull: true,
+            defaultValue: 4
         }
     ],
+
+    validators: {
+        URL: [
+            'presence'
+        ],
+        Title: [
+            'presence'
+        ]
+    },
 
     proxy: {
         type: 'records',

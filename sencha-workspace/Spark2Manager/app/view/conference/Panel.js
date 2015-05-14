@@ -2,9 +2,9 @@ Ext.define('Spark2Manager.view.conference.Panel', {
     requires: [
         'Ext.grid.plugin.RowEditing',
         'Ext.form.field.TextArea',
-        'Ext.button.Button',
         'Ext.toolbar.Paging',
-        'Ext.toolbar.Toolbar'
+        'Ext.toolbar.Toolbar',
+        'Ext.Array'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -66,7 +66,13 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
-                multiSelect: true,
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+                anyMatch: true,
+
                 getModelData: function() {
                     return {
                         'Standards':
@@ -75,18 +81,11 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                             })
                     };
                 },
+
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        var buttons = this.up().getFloatingButtons(),
-                            height = this.getHeight();
-
-                        /* HACK: the height of the textarea is 60, we don't want to autosize any smaller than that */
-                        height = (height > 60) ? height: 60;
-
-                        if (buttons) {
-                            buttons.getEl().setStyle('top', (height + 11) + 'px');
-                        }
+                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
                     }
                 }
             },
@@ -140,5 +139,9 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         'selectionchange': 'onSelectionChange'
     },
 
-    plugins: ['rowediting']
+    plugins: {
+        ptype: 'rowediting',
+        pluginId: 'rowediting',
+        clicksToEdit: 2
+    }
 });
