@@ -32,6 +32,8 @@ Ext.define('Spark2Manager.view.apply.Panel', {
     },
 
     items: [{
+        id: 's2m-apply-gridpanel',
+
         xtype:           'gridpanel',
         modelValidation: false,
         store:           'ApplyProjects',
@@ -73,6 +75,7 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 padding: 10,
                 width: 500,
                 xtype: 's2m-apply-editor',
+                id: 's2m-apply-editor',
                 readOnly: true,
                 disabled: true
             }]

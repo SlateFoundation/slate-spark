@@ -113,11 +113,21 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
 
     onBeforeTagFieldSelect: function(combo, record, index, eOpts) {
         var node = Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true);
-        node.set('checked', true);
+
+        if (typeof node.get('checked') == 'boolean') {
+            node.set('checked', true);
+        }
+
         node.parentNode.expand();
     },
 
     onBeforeTagFieldDeselect: function(combo, record, index, eOpts) {
-        Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true).set('checked', false);
+        var node = Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true);
+
+        if (typeof node.get('checked') != 'undefined') {
+            node.set('checked', true);
+        }
+
+        // TODO: should we collapse the parent here if it has no other children checked?
     }
 });

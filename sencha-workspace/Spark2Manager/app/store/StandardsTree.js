@@ -55,10 +55,11 @@ Ext.define('Spark2Manager.store.StandardsTree', {
         }
 
         root.visitPreOrder('', function (child) {
-            var checked;
+            var checked,
+                standardCode = child.get('standardCode');
 
-            if (typeof child.get('standardCode') !== 'undefined') {
-                checked = selectedStandards[child.get('standardCode')] || false;
+            if (standardCode && typeof child.get('checked') == 'boolean') {
+                checked = selectedStandards[standardCode] || false;
 
                 child.set('checked', checked);
 

@@ -51,7 +51,9 @@ Ext.define('Spark2Manager.view.StandardPicker', {
                     if (el.classList.contains('x-tagfield-item-close')) {
                         previousSibling = Ext.getStore('StandardsTree').findRecord('standardCode', el.previousSibling.textContent);
                         if(previousSibling) {
-                            previousSibling.set('checked', false);
+                            if (typeof previousSibling.get('checked') == 'boolean') {
+                                previousSibling.set('checked', false);
+                            }
                         }
                     }
                 });
