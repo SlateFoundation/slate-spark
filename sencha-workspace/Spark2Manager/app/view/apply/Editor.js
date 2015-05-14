@@ -70,6 +70,27 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                             record.set('Instructions', newVal);
                         }
                     }
+                },
+
+                el: {
+                    dblclick: function(e) {
+                        var applyEditor = Ext.getCmp('s2m-apply-editor'),
+                            gridpanel, editingPlugin, record;
+
+                        if (e.currentTarget.classList.contains('x-field')) {
+                            gridpanel = Ext.getCmp('s2m-apply-gridpanel');
+                            editingPlugin = gridpanel.editingPlugin;
+
+                            if (!editingPlugin.editing) {
+                                record = applyEditor.getRecord();
+
+                                // Sanity check, do the records for the right panel and row editor match
+                                if (gridpanel.getSelection()[0] == record) {
+                                    editingPlugin.startEdit(record);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }, {
@@ -266,6 +287,8 @@ Ext.define('Spark2Manager.view.apply.Editor', {
 
         // HACK: resetFields manaully sets the nested fields under duration field
         detailsFieldset.down('durationfield').setValue(detailsFieldset.down('durationfield').getValue());
+
+        me.record = rec;
     },
 
     applyReadOnly: function(val) {
