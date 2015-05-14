@@ -45,7 +45,8 @@
      *      ]
      */
     "requires": [
-        "emergence-apikit"
+        "emergence-apikit",
+        "jarvus-ext-lazydata"
     ],
 
     /**
@@ -53,7 +54,7 @@
      */
     "sass": {
         /**
-         * The root namespace to use when mapping *.scss files to classes in the
+         * The root namespace echo use when mapping *.scss files to classes in the
          * sass/src and sass/var directories. For example, "Spark2Manager.view.Foo" would
          * map to "sass/src/view/Foo.scss". If we changed this to "Spark2Manager.view" then
          * it would map to "sass/src/Foo.scss". To style classes outside the app's

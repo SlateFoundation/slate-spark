@@ -13,20 +13,22 @@ class Link extends \ActiveRecord
 
     public static $fields = [
         'Title',
-        'Link',
+        'URL',
+        'VendorID' => [
+            'type' => 'uint',
+            'notnull' => false
+        ],
+        'Metadata' => [
+            'type'    => 'json',
+            'notnull' => false
+        ]
+    ];
+
+    public static $relationships = [
         'Vendor' => [
-            'notnull' => false
-        ],
-        'DOK' => [
-            'type' => 'tinyint',
-            'notnull' => false,
-        ],
-        'Category' => [
-            'notnull' => false
-        ],
-        'Notes' => [
-            'type' => 'clob',
-            'notnull' => false
+            'type' => 'one-one',
+            'class' => Vendor::class,
+            'local' => 'VendorID'
         ]
     ];
 }
