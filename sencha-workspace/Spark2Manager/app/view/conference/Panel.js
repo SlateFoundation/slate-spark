@@ -71,6 +71,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                 forceSelection: true,
                 selectOnFocus: false,
                 multiSelect:  true,
+                anyMatch: true,
 
                 getModelData: function() {
                     return {

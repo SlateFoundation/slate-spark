@@ -67,6 +67,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 forceSelection: true,
                 selectOnFocus: false,
                 multiSelect:  true,
+                anyMatch: true,
 
                 getModelData: function() {
                     return {
