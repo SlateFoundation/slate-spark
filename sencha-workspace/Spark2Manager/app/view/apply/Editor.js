@@ -87,6 +87,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                                 // Sanity check, do the records for the right panel and row editor match
                                 if (gridpanel.getSelection()[0] == record) {
                                     editingPlugin.startEdit(record);
+                                    this.component.focus();
                                 }
                             }
                         }
