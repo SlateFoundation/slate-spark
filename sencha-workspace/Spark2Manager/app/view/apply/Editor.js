@@ -70,28 +70,6 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                             record.set('Instructions', newVal);
                         }
                     }
-                },
-
-                el: {
-                    dblclick: function(e) {
-                        var applyEditor = Ext.getCmp('s2m-apply-editor'),
-                            gridpanel, editingPlugin, record;
-
-                        if (e.currentTarget.classList.contains('x-field')) {
-                            gridpanel = Ext.getCmp('s2m-apply-gridpanel');
-                            editingPlugin = gridpanel.editingPlugin;
-
-                            if (!editingPlugin.editing) {
-                                record = applyEditor.getRecord();
-
-                                // Sanity check, do the records for the right panel and row editor match
-                                if (gridpanel.getSelection()[0] == record) {
-                                    editingPlugin.startEdit(record);
-                                    this.component.focus();
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }, {
@@ -250,6 +228,30 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                 }
             }
         }]
+    }],
+
+    listeners: [{
+        el: {
+            dblclick: function(e, el) {
+                var applyEditor = Ext.getCmp('s2m-apply-editor'),
+                    gridpanel, editingPlugin, record;
+
+                if (el.classList.contains('x-form-field')) {
+                    gridpanel = Ext.getCmp('s2m-apply-gridpanel');
+                    editingPlugin = gridpanel.editingPlugin;
+
+                    if (!editingPlugin.editing) {
+                        record = applyEditor.getRecord();
+
+                        // Sanity check, do the records for the right panel and row editor match
+                        if (gridpanel.getSelection()[0] == record) {
+                            editingPlugin.startEdit(record);
+                            this.component.focus();
+                        }
+                    }
+                }
+            }
+        }
     }],
 
     applyRecord: function(rec) {
