@@ -78,7 +78,7 @@ Ext.define('Spark2Manager.Util', {
         var options = {
             method: 'get',
 
-            url: 'http://slate.ninja/spark2/proxy.php',
+            url: '/spark2/proxy.php',
 
             params: {
                 csurl: url

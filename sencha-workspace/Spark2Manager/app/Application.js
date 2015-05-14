@@ -73,7 +73,7 @@ Ext.define('Spark2Manager.Application', {
         var me = this;
 
         // TODO: Remove this before production
-        if (location.hostname.indexOf('slate.ninja') === -1) {
+        if (location.hostname.indexOf('slate.ninja') === -1 && location.hostname.indexOf('slatepowered') === -1) {
             Emergence.util.API.setHostname('slate.ninja');
         }
 
