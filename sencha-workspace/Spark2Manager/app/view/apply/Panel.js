@@ -95,7 +95,12 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 displayField: 'standardCode',
                 valueField:   'standardCode',
                 store:        'StandardCodes',
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
                 multiSelect:  true,
+
                 getModelData: function () {
                     return {
                         'Standards': Ext.Array.map(this.valueStore.collect('standardCode'), function (code) {

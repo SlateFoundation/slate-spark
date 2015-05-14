@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
         'Ext.toolbar.Paging',
         'Ext.XTemplate',
         'Ext.toolbar.Toolbar',
-        'Ext.Array'
+        'Ext.Array',
+        'Spark2Manager.Util'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -61,8 +62,12 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
+
+                filterPickList: true,
                 forceSelection: true,
-                multiSelect: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+
                 getModelData: function() {
                     return {
                         'Standards':
@@ -71,6 +76,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                             })
                     };
                 },
+
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */

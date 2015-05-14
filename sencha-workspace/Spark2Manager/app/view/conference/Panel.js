@@ -66,8 +66,12 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
+
+                filterPickList: true,
                 forceSelection: true,
-                multiSelect: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+
                 getModelData: function() {
                     return {
                         'Standards':
@@ -76,6 +80,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                             })
                     };
                 },
+
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */

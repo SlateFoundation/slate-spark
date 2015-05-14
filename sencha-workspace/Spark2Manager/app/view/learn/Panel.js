@@ -62,7 +62,12 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 displayField: 'standardCode',
                 valueField: 'standardCode',
                 store: 'StandardCodes',
-                multiSelect: true,
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+
                 getModelData: function() {
                     return {
                         'Standards':
@@ -71,6 +76,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                             })
                     };
                 },
+
                 listeners: {
                     'autosize': function() {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
@@ -78,6 +84,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                     }
                 }
             },
+
             renderer: function(val, col, record) {
                 val = record.get('Standards');
 
