@@ -193,13 +193,19 @@ Ext.define('Spark2Manager.view.apply.Panel', {
             errorSummary: true,
             autoCancel: false,
             listeners: {
-                canceledit: function(editor, context, eopts) {
+                canceledit: function() {
                     var editor = Ext.ComponentQuery.query('s2m-apply-editor')[0];
                     editor.setReadOnly(true);
                 },
-                beforeedit: function(editor, context, eopts) {
+
+                beforeedit: function() {
                     var editor = Ext.ComponentQuery.query('s2m-apply-editor')[0];
                     editor.setReadOnly(false);
+                },
+
+                edit: function() {
+                    var editor = Ext.ComponentQuery.query('s2m-apply-editor')[0];
+                    editor.setReadOnly(true);
                 }
             }
         }
