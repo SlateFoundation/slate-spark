@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         'Ext.form.field.TextArea',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
-        'Ext.Array'
+        'Ext.Array',
+        'Ext.grid.filters.Filters'
     ],
 
     extend: 'Ext.grid.Panel',

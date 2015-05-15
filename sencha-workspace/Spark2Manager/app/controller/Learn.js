@@ -11,6 +11,9 @@ Ext.define('Spark2Manager.controller.Learn', {
         refs: [{
             ref: 'panel',
             selector: 's2m-learn-panel'
+        }, {
+            ref: 'gridpanel',
+            selector: 's2m-learn-panel gridpanel'
         }],
 
         control: {
@@ -39,18 +42,20 @@ Ext.define('Spark2Manager.controller.Learn', {
      * Called when the view is created
      */
     init: function() {
-
+        window.me = this;
     },
 
     onPanelActivate: function() {
-        this.getVendorsStore().load();
-        this.getVendorDomainsStore().load();
-        this.getLearnLinksStore().load();
+        var me = this;
+
+        me.getVendorsStore().load();
+        me.getVendorDomainsStore().load();
+        me.getLearnLinksStore().load();
     },
 
     onAddClick: function() {
         var me = this,
-            rowEditing = me.getPanel().plugins[0], // I used to be able to do getPlugin('cellediting') but not w/ row
+            rowEditing = me.getPanel().getPlugin('rowediting'),
             newLink = me.getLearnLinksStore().insert(0, {});
 
         rowEditing.cancelEdit();
@@ -60,7 +65,7 @@ Ext.define('Spark2Manager.controller.Learn', {
     onDeleteClick: function() {
         var me = this,
         panel = me.getPanel(),
-        rowEditing = panel.plugins[0],
+        rowEditing = panel.getPlugin('rowediting'),
         selectionModel = panel.getSelectionModel(),
         selection = selectionModel.getSelection()[0],
         learnLinkStore = me.getLearnLinksStore(),

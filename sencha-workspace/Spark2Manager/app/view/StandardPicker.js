@@ -48,8 +48,10 @@ Ext.define('Spark2Manager.view.StandardPicker', {
             render: function(tagfield) {
                 tagfield.getEl().on('mouseup', function(ev, el) {
                     var previousSibling;
+
                     if (el.classList.contains('x-tagfield-item-close')) {
                         previousSibling = Ext.getStore('StandardsTree').findRecord('standardCode', el.previousSibling.textContent);
+
                         if(previousSibling) {
                             if (typeof previousSibling.get('checked') == 'boolean') {
                                 previousSibling.set('checked', false);
