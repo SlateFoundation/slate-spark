@@ -9,7 +9,9 @@
  */
 Ext.define('Jarvus.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
-    requires: ['Ext.util.Cookies'],
+    requires: ['Ext.util.Cookies', 'Ext.Ajax',
+               'Ext.Array'
+    ],
     uses: [
         'Jarvus.util.APIDomain'
     ],
