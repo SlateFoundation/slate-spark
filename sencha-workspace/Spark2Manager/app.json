@@ -45,6 +45,8 @@
      *      ]
      */
     "requires": [
+        "saki-grid-multisearch-5",
+        "ext-ux",
         "emergence-apikit",
         "jarvus-ext-lazydata"
     ],
@@ -251,7 +253,14 @@
      *
      */
     "output": {
-        "base": "${workspace.build.dir}/${build.environment}/${app.name}"
+        "base": "${workspace.build.dir}/${build.environment}/${app.name}",
+        "js": {
+            "optimize": {
+                "callParent": true,
+                "cssPrefix": true,
+                "defines": true
+            }
+        }
     },
 
     /**
