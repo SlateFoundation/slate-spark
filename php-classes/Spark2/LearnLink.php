@@ -57,4 +57,12 @@ class LearnLink extends \VersionedRecord
             'local' => 'VendorID'
         ]
     ];
+
+    public static $searchConditions = [
+        'GradeLevel' => [
+            'qualifiers' => ['grade', 'gradelevel', 'GradeLevel'],
+            'points' => 2,
+            'sql' => 'GradeLevel = "%s"'
+        ]
+    ];
 }

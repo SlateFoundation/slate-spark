@@ -5,7 +5,9 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.XTemplate',
         'Ext.toolbar.Toolbar',
         'Spark2Manager.Util',
-        'Ext.Array'
+        'Ext.Array',
+        'Ext.grid.header.Container',
+        'Ext.saki.grid.MultiSearch'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -57,6 +59,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     columns: [
         {
             text: 'Standards',
+            filterField: true,
             editor: {
                 xtype: 'tagfield',
                 displayField: 'standardCode',
@@ -105,6 +108,12 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             dataIndex: 'GradeLevel',
             width: 75,
             editor: {
+                xtype: 'combobox',
+                store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                editable: false,
+                grow: true
+            },
+            filterField : {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -173,6 +182,39 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 }
 
                 return returnVal;
+            },
+            filterField: {
+                xtype: 'combobox',
+                store: 'Vendors',
+                queryMode: 'local',
+                displayField: 'Name',
+                valueField: 'ID',
+                tpl: Ext.create('Ext.XTemplate',
+                    '<tpl for=".">',
+                    '   <div class="x-boundlist-item" style="',
+                    '       background-position: 5px, 5px;',
+                    '       background-image: url({LogoURL});',
+                    '       background-repeat: no-repeat;',
+                    '       background-size: 16px 16px;',
+                    '       padding-left: 25px">',
+                    '       {Name}',
+                    '   </div>',
+                    '</tpl>'
+                ),
+                editable: false,
+                grow: true
+            },
+            renderer: function(val, col, record) {
+                var vendorRecord = Ext.getStore('Vendors').getById(val),
+                    returnVal = '',
+                    logoURL;
+
+                if (vendorRecord) {
+                    logoURL = vendorRecord.get('LogoURL');
+                    returnVal = logoURL ? '<img src="' + logoURL + '" width="16" height="16"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
+                }
+
+                return returnVal;
             }
         },
         {
@@ -181,11 +223,16 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             editor: {
                 xtype: 'combobox',
                 store: [1,2,3,4]
+            },
+            filterField: {
+                xtype: 'combobox',
+                store: [1,2,3,4]
             }
         },
         {
             text: 'Created By',
-            dataIndex: 'CreatorFullName'
+            dataIndex: 'CreatorFullName',
+            filterField: true
         },
         {
             xtype: 'datecolumn',
@@ -196,12 +243,25 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     ],
 
     listeners: {
-        'selectionchange': 'onSelectionChange'
+        'selectionchange': 'onSelectionChange',
+        afterrender: function () {
+            var me = this,
+                columnManager = me.getColumnManager(),
+                headerCt = columnManager.headerCt;
+
+            headerCt.items.each(function(columnHeader) {
+                console.log(columnHeader);
+            });
+        }
     },
 
-    plugins: {
+    plugins: [{
         ptype: 'rowediting',
         pluginId: 'rowediting',
         clicksToEdit: 2
-    }
+    }, {
+        ptype: 'saki-gms',
+        pluginId: 'gms',
+        filterOnEnter: false
+    }]
 });
