@@ -681,7 +681,7 @@ Ext.define('Ext.saki.grid.MultiSearch', {
             if(true === preventFilter) {
                 field.suspendEvents();
             }
-            field.setValue('');
+            field.setValue(null);
             field.resetOriginalValue();
 
             if(true === preventFilter) {
