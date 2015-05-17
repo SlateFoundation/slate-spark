@@ -808,6 +808,8 @@ Ext.define('Ext.saki.grid.MultiSearch', {
             return {value:''};
         }
 
+        v = v.toString();
+
         va = v.split(re);
         if(2 > va.length) {
             return {value:v};
