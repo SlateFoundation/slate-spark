@@ -83,9 +83,18 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 anyMatch: true,
 
                 listeners: {
-                    'autosize': function(tagfield, newHeight) {
-                        var me = this,
+                    'autosize': function (tagfield, newHeight) {
+                        var me      = this,
                             ownerCt = me.ownerCt;
+
+                        /* HACK: The first time this runs, it will fail due to:
+                         https://docs.m.sencha.com/forum/showthread.php?300648-Cannot-read-property-offsetHeight-of-undefined-in-BufferedRenderer-Broken-Ext-5.1&p=1098485&langid=4
+                         */
+
+                        if (!me.autosized) {
+                            me.autosized = true;
+                            return;
+                        }
 
                         if (ownerCt.height != newHeight) {
                             ownerCt.setHeight(newHeight);

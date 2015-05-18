@@ -21,7 +21,6 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.layout.container.Fit',
         'Ext.layout.container.HBox',
-        'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
@@ -124,6 +123,15 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                     'autosize': function (tagfield, newHeight) {
                         var me      = this,
                             ownerCt = me.ownerCt;
+
+                        /* HACK: The first time this runs, it will fail due to:
+                         https://docs.m.sencha.com/forum/showthread.php?300648-Cannot-read-property-offsetHeight-of-undefined-in-BufferedRenderer-Broken-Ext-5.1&p=1098485&langid=4
+                        */
+
+                        if (!me.autosized) {
+                            me.autosized = true;
+                            return;
+                        }
 
                         if (ownerCt.height != newHeight) {
                             ownerCt.setHeight(newHeight);
