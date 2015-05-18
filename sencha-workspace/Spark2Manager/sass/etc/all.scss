@@ -22,3 +22,17 @@ $base-color: $mb-blue-4;
 .saki-gms-ct input, .saki-gms-ct div {
     background-color: #E6E6E6;
 }
+
+.saki-gms-ct .x-form-field {
+    height: 24px;
+}
+
+.saki-gms-filtered .x-column-header-text {
+    color: #666 !important;
+    font-style: normal !important;
+}
+
+.saki-gms-nofilter {
+    height: 26px !important;
+}
+
