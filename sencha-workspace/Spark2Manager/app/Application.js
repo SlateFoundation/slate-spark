@@ -2,6 +2,7 @@
 
 Ext.define('Spark2Manager.Application', {
     requires: [
+        'Spark2Manager.overrides.grid.RowEditor',
         'Emergence.util.API',
         'Spark2Manager.store.Assessments',
         'Spark2Manager.store.AssessmentTypes',
