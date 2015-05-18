@@ -1,0 +1,59 @@
+{
+    "classAlias": "plugin.saki-gms",
+    "className": "Ext.saki.grid.MultiSearch",
+    "inherits": "Ext.AbstractPlugin",
+    "autoName": "GridMultiSearchPlugin",
+    "helpText": "This plugin adds a row of form fields between the grid header and the view where user can type filter values on per-column basis. Text fields are created by default but any form field type can be configured.",
+    "validParentTypes":["gridpanel"],
+    "validChildTypes":[],
+    "disableInitialView":true,
+
+    "toolbox": {
+        "name": "Grid MultiSearch Plugin",
+        "category": "Grid",
+        "groups": ["Grids"]
+    },
+
+    "configs": [{
+        "name":"baseCls",
+        "type":"string",
+        "defaultValue":"saki-gms-ct"
+    },{
+        "name":"buffer",
+        "type":"number",
+        "defaultValue":500
+    },{
+        "name":"clearItemIconCls",
+        "type":"string",
+        "defaultValue":"icon-clear-filter"
+    },{
+        "name":"clearItemT",
+        "type":"string",
+        "defaultValue":"Clear Filter"
+    },{
+        "name":"filterOnEnter",
+        "type":"boolean",
+        "defaultValue":false
+    },{
+        "name":"height",
+        "type":"number",
+        "defaultValue":24
+    },{
+        "name":"iconColumn",
+        "type":"boolean",
+        "defaultValue":true
+    },{
+        "name":"inSeparator",
+        "type":"string",
+        "defaultValue":","
+    },{
+        "name":"operatorRe",
+        "type":"string",
+        "defaultValue":"/^(=|!=|<=|>=|<|>|in |like )/"
+    },{
+        "name":"weight",
+        "type":"number",
+        "defaultValue":1000
+    }]
+}
+
