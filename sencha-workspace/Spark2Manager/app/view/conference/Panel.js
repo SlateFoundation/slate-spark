@@ -118,7 +118,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
                         /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
                         this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
                     }
-                },
+                }
             },
 
             renderer: function(val, col, record) {
