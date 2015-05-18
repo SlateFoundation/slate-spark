@@ -1,10 +1,19 @@
 Ext.define('Spark2Manager.view.assess.Panel', {
     requires: [
-        'Ext.grid.plugin.RowEditing',
-        'Ext.toolbar.Paging',
-        'Ext.XTemplate',
-        'Ext.toolbar.Toolbar',
         'Ext.Array',
+        'Ext.XTemplate',
+        'Ext.data.JsonStore',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
+        'Ext.form.field.Tag',
+        'Ext.form.field.Text',
+        'Ext.grid.column.Date',
+        'Ext.grid.plugin.RowEditing',
+        'Ext.saki.grid.MultiSearch',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Toolbar',
         'Spark2Manager.Util'
     ],
 
@@ -18,8 +27,6 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
     defaultListenerScope: true,
 
-    // This view acts as a reference holder for all components below it which have a reference config
-    // For example the onSelectionChange listener accesses a button using its reference
     referenceHolder: true,
 
     onSelectionChange: function(sm, selections) {
@@ -56,7 +63,35 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
     columns: [
         {
-            text: 'Standard',
+            // TODO: Move to common code
+            text: 'Standards',
+            dataIndex: 'Standards',
+            width: 250,
+
+            filterField: {
+                xtype: 'tagfield',
+                displayField: 'standardCode',
+                valueField: 'standardCode',
+                store: 'StandardCodes',
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+                anyMatch: true,
+
+                listeners: {
+                    'autosize': function(tagfield, newHeight) {
+                        var me = this,
+                            ownerCt = me.ownerCt;
+
+                        if (ownerCt.height != newHeight) {
+                            ownerCt.setHeight(newHeight);
+                        }
+                    }
+                }
+            },
+
             editor: {
                 xtype: 'tagfield',
                 displayField: 'standardCode',
@@ -85,6 +120,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                     }
                 }
             },
+
             renderer: function(val, col, record) {
                 val = record.get('Standards');
 
@@ -95,15 +131,22 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 return val.map(function(standard) {
                     return standard.standardCode || standard;
                 }).join(', ');
-            },
-            width: 250,
-            dataIndex: 'Standards'
+            }
         },
         {
             text: 'Grade',
             dataIndex: 'GradeLevel',
             width: 75,
+            filterField: true,
+
             editor: {
+                xtype: 'combobox',
+                store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                editable: false,
+                grow: true
+            },
+
+            filterField : {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -139,6 +182,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             text: 'URL',
             dataIndex: 'URL',
             flex: 1,
+            filterField: true,
+
             editor: {
                 xtype: 'textfield',
                 allowBlank: false,
@@ -156,6 +201,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             text: 'Title',
             dataIndex: 'Title',
             flex: 1,
+            filterField: true,
+
             editor: {
                 xtype: 'textfield',
                 allowBlank: false
@@ -165,6 +212,29 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             width: 175,
             text: 'Vendor',
             dataIndex: 'VendorID',
+
+            filterField: {
+                xtype: 'combobox',
+                store: 'Vendors',
+                queryMode: 'local',
+                displayField: 'Name',
+                valueField: 'ID',
+                tpl: Ext.create('Ext.XTemplate',
+                    '<tpl for=".">',
+                    '   <div class="x-boundlist-item" style="',
+                    '       background-position: 5px, 5px;',
+                    '       background-image: url({LogoURL});',
+                    '       background-repeat: no-repeat;',
+                    '       background-size: 16px 16px;',
+                    '       padding-left: 25px">',
+                    '       {Name}',
+                    '   </div>',
+                    '</tpl>'
+                ),
+                editable: false,
+                grow: true
+            },
+
             editor: {
                 xtype: 'combobox',
                 store: 'Vendors',
@@ -186,6 +256,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 editable: false,
                 grow: true
             },
+
             renderer: function(val, col, record) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
                     returnVal = '',
@@ -198,20 +269,65 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
                 return returnVal;
             }
+        },
+        {
+            text: 'Created By',
+            dataIndex: 'CreatorFullName',
+            filterField: {
+                xtype: 'combobox',
+                store: Ext.data.JsonStore({
+                    // store configs
+                    storeId: 'AssessmentCreators',
+
+                    proxy: {
+                        type: 'ajax',
+                        // TODO: Remove the URL hack below before production
+                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/learn-links/creators',
+                        reader: {
+                            type: 'json',
+                            rootProperty: 'data'
+                        },
+                        extraParams: {
+                            limit: 1024
+                        }
+                    },
+
+                    fields: ['CreatorID', 'CreatorFullName']
+                }),
+                queryMode: 'local',
+                displayField: 'CreatorFullName',
+                valueField: 'CreatorID',
+                editable: false,
+                grow: true
+            }
+        },
+        {
+            xtype: 'datecolumn',
+            format:'m-d-Y',
+            text: 'Created',
+            dataIndex: 'Created',
+
+            filterField: {
+                xtype: 'datefield',
+                format: 'm-d-Y'
+            }
         }
     ],
 
     listeners: {
-        'selectionchange': 'onSelectionChange'
+        selectionchange: 'onSelectionChange'
     },
 
     selType: 'rowmodel',
 
-    plugins: {
+    plugins: [{
         ptype: 'rowediting',
         pluginId: 'rowediting',
         clicksToEdit: 1,
         clicksToMoveEditor: 1,
         autoCancel: false
-    }
+    }, {
+        ptype: 'saki-gms',
+        pluginId: 'gms'
+    }]
 });

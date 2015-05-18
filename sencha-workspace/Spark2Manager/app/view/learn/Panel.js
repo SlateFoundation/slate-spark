@@ -29,15 +29,15 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     defaultListenerScope: true,
 
-    // This view acts as a reference holder for all components below it which have a reference config
-    // For example the onSelectionChange listener accesses a button using its reference
     referenceHolder: true,
 
+    // TODO: Move to common code
     onSelectionChange: function(sm, selections) {
         this.getReferences().removeButton.setDisabled(selections.length === 0);
         this.getReferences().alignButton.setDisabled(selections.length === 0);
     },
 
+    // TODO: Move to common code
     dockedItems: [{
         xtype: 'pagingtoolbar',
         store: 'LearnLinks',
@@ -67,9 +67,11 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
     columns: [
         {
+            // TODO: Move to common code
             text: 'Standards',
             dataIndex: 'Standards',
             width: 250,
+
             filterField: {
                 xtype: 'tagfield',
                 displayField: 'standardCode',
@@ -276,11 +278,14 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
                     proxy: {
                         type: 'ajax',
-                        // TODO: Fix url
-                        url: 'http://slate.ninja/spark2/learn-links/creators',
+                        // TODO: Remove the URL hack below before production
+                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/learn-links/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'
+                        },
+                        extraParams: {
+                            limit: 1024
                         }
                     },
 
@@ -307,16 +312,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     ],
 
     listeners: {
-        'selectionchange': 'onSelectionChange',
-        afterrender: function () {
-            var me = this,
-                columnManager = me.getColumnManager(),
-                headerCt = columnManager.headerCt;
-
-            headerCt.items.each(function(columnHeader) {
-                console.log(columnHeader);
-            });
-        }
+        selectionchange: 'onSelectionChange'
     },
 
     plugins: [{
@@ -325,7 +321,6 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         clicksToEdit: 2
     }, {
         ptype: 'saki-gms',
-        pluginId: 'gms',
-        filterOnEnter: false
+        pluginId: 'gms'
     }]
 });
