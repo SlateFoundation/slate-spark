@@ -26,7 +26,8 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.apply.Editor'
+        'Spark2Manager.view.apply.Editor',
+        'Ext.saki.grid.MultiSearch'
     ],
 
     xtype: 's2m-apply-panel',
