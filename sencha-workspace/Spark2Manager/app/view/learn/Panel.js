@@ -11,11 +11,9 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.form.field.Tag',
         'Ext.form.field.Text',
         'Ext.grid.column.Date',
-        'Ext.grid.header.Container',
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
-        'Ext.toolbar.Toolbar',
         'Spark2Manager.Util'
     ],
 

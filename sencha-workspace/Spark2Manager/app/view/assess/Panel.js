@@ -282,7 +282,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                     proxy: {
                         type: 'ajax',
                         // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/learn-links/creators',
+                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/assessments/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'
