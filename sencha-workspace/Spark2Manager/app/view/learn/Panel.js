@@ -139,7 +139,6 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             text: 'Grade',
             dataIndex: 'GradeLevel',
             width: 75,
-            filterField: true,
 
             editor: {
                 xtype: 'combobox',
