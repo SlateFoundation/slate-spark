@@ -39,10 +39,24 @@ class LearnLink extends \VersionedRecord
         ]
     ];
 
-    public function getData() {
+    public function getData()
+    {
         $data = parent::getData();
         $data['CreatorFullName'] = $this->Creator->FullName;
         return $data;
+    }
+
+    public static function getStandardsConditions($handle, $matchedCondition)
+    {
+        $standards = explode(',', $handle);
+        $sql = [];
+
+        foreach ($standards as $standard) {
+            // TODO: @themightychris how do we like to escape sql?
+            $sql[] = 'INSTR(Standards, "' . $standard . '")';
+        }
+
+        return implode($sql, ' OR ');
     }
 
     public static $relationships = [
@@ -51,6 +65,7 @@ class LearnLink extends \VersionedRecord
             'class' => 'Person',
             'local' => 'CreatorID'
         ],
+
         'Vendor' => [
             'type' => 'one-one',
             'class' => Vendor::class,
@@ -61,8 +76,37 @@ class LearnLink extends \VersionedRecord
     public static $searchConditions = [
         'GradeLevel' => [
             'qualifiers' => ['grade', 'gradelevel', 'GradeLevel'],
-            'points' => 2,
             'sql' => 'GradeLevel = "%s"'
+        ],
+
+        'DOK' => [
+            'qualifiers' => ['DOK', 'dok'],
+            'sql' => 'DOK = "%s"'
+        ],
+
+        'Title' => [
+            'qualifiers' => ['title'],
+            'sql' => 'Title LIKE "%%%s%%"'
+        ],
+
+        'VendorID' => [
+            'qualifiers' => ['vendorid', 'vendor'],
+            'sql' => 'VendorID = "%s"'
+        ],
+
+        'URL' => [
+            'qualifiers' => ['URL', 'url'],
+            'sql' => 'URL LIKE "%%%s%%"'
+        ],
+
+        'Standards' => [
+            'qualifiers' => ['Standards', 'standards'],
+            'callback'   => 'getStandardsConditions'
+        ],
+
+        'CreatorID' => [
+            'qualifiers' => ['CreatorFullName', 'creatorfullname'],
+            'sql' => 'CreatorID = "%s"'
         ]
     ];
 }
