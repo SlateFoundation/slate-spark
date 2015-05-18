@@ -2,10 +2,8 @@ Ext.define('Spark2Manager.overrides.grid.RowEditor', {
     override: 'Ext.grid.RowEditor',
 
     requires: [
-        'Ext.GlobalEvents',
-        'Ext.container.Container',
-        'Ext.layout.container.HBox',
-        'Ext.tip.ToolTip'
+        'Ext.tip.ToolTip',
+        'Ext.form.Panel'
     ],
 
     loadRecord: function(record) {
@@ -141,5 +139,5 @@ Ext.define('Spark2Manager.overrides.grid.RowEditor', {
         }
 
         return '<ul class="' + Ext.baseCSSPrefix + 'list-plain">' + errors.join('') + '</ul>';
-    },
+    }
 });
