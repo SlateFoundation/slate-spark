@@ -77,8 +77,9 @@ Ext.define('Spark2Manager.Util', {
     getURLViaProxy: function (url, cb) {
         var options = {
             method: 'get',
-
-            url: '/spark2/proxy.php',
+            // TODO: Remove the URL hack below before production
+            
+            url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/proxy.php',
 
             params: {
                 csurl: url
