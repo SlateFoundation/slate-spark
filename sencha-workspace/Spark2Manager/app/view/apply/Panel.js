@@ -17,16 +17,14 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Ext.grid.Panel',
         'Ext.grid.Panel',
         'Ext.grid.column.Date',
-        'Ext.grid.plugin.CellEditing',
         'Ext.grid.plugin.RowEditing',
         'Ext.layout.container.Fit',
-        'Ext.layout.container.HBox',
+        'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.apply.Editor',
-        'Ext.saki.grid.MultiSearch'
+        'Spark2Manager.view.apply.Editor'
     ],
 
     xtype: 's2m-apply-panel',
@@ -261,27 +259,32 @@ Ext.define('Spark2Manager.view.apply.Panel', {
             selectionchange: function (model, records) {
                 var me              = this,
                     panel           = me.findParentByType('s2m-apply-panel'),
-                    editorContainer = me.down('#editorcontainer'),
                     editor          = me.down('s2m-apply-editor'),
-                    pagingToolbar   = me.down('pagingtoolbar'),
                     rec             = records ? records[0] : null,
                     hasRecords      = records.length === 0,
-                    rowediting      = me.getPlugin('rowediting');
+                    rowediting      = me.getPlugin('rowediting'),
+                    isEditing = rec && rowediting.editing;
 
                 me.down('#gridtoolbar button[action="delete"]').setDisabled(hasRecords);
                 me.down('#gridtoolbar button[action="align"]').setDisabled(hasRecords);
                 editor.setDisabled(hasRecords);
 
-                if (rec && rowediting.editing) {
-                    if (confirm('Discard any unsaved changes on current project?')) {
-                        rowediting.cancelEdit();
-                    } else {
-                        return;
-                    }
+                if (isEditing) {
+                    Ext.Msg.confirm(
+                        'Unsaved Changes',
+                        'Discard any unsaved changes on current apply?',
+                        function(response) {
+                            if (response === 'yes') {
+                                rowediting.cancelEdit();
+                                editor.setRecord(rec);
+                                editor.setReadOnly(!rowediting.editing);
+                                rowediting.startEdit(rec);
+                            }
+                    });
+                } else {
+                    editor.setRecord(rec);
+                    editor.setReadOnly(!rowediting.editing);
                 }
-
-                editor.setRecord(rec);
-                editor.setReadOnly(!rowediting.editing);
             }
         },
 
