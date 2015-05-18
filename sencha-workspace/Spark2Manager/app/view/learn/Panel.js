@@ -1,11 +1,13 @@
 Ext.define('Spark2Manager.view.learn.Panel', {
     requires: [
         'Ext.Array',
+        'Ext.Date',
         'Ext.XTemplate',
         'Ext.data.JsonStore',
         'Ext.data.proxy.Ajax',
         'Ext.data.reader.Json',
         'Ext.form.field.ComboBox',
+        'Ext.form.field.Date',
         'Ext.form.field.Tag',
         'Ext.form.field.Text',
         'Ext.grid.column.Date',
@@ -295,7 +297,12 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             xtype: 'datecolumn',
             format:'m-d-Y',
             text: 'Created',
-            dataIndex: 'Created'
+            dataIndex: 'Created',
+
+            filterField: {
+                xtype: 'datefield',
+                format: 'm-d-Y'
+            }
         }
     ],
 
