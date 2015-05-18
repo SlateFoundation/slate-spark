@@ -1,13 +1,20 @@
 Ext.define('Spark2Manager.view.learn.Panel', {
     requires: [
-        'Ext.grid.plugin.RowEditing',
-        'Ext.toolbar.Paging',
-        'Ext.XTemplate',
-        'Ext.toolbar.Toolbar',
-        'Spark2Manager.Util',
         'Ext.Array',
+        'Ext.XTemplate',
+        'Ext.data.JsonStore',
+        'Ext.data.proxy.Ajax',
+        'Ext.data.reader.Json',
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Tag',
+        'Ext.form.field.Text',
+        'Ext.grid.column.Date',
         'Ext.grid.header.Container',
-        'Ext.saki.grid.MultiSearch'
+        'Ext.grid.plugin.RowEditing',
+        'Ext.saki.grid.MultiSearch',
+        'Ext.toolbar.Paging',
+        'Ext.toolbar.Toolbar',
+        'Spark2Manager.Util'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -59,7 +66,32 @@ Ext.define('Spark2Manager.view.learn.Panel', {
     columns: [
         {
             text: 'Standards',
-            filterField: true,
+            dataIndex: 'Standards',
+            width: 250,
+            filterField: {
+                xtype: 'tagfield',
+                displayField: 'standardCode',
+                valueField: 'standardCode',
+                store: 'StandardCodes',
+
+                filterPickList: true,
+                forceSelection: true,
+                selectOnFocus: false,
+                multiSelect:  true,
+                anyMatch: true,
+
+                listeners: {
+                    'autosize': function(tagfield, newHeight) {
+                        var me = this,
+                            ownerCt = me.ownerCt;
+
+                        if (ownerCt.height != newHeight) {
+                            ownerCt.setHeight(newHeight);
+                        }
+                    }
+                }
+            },
+
             editor: {
                 xtype: 'tagfield',
                 displayField: 'standardCode',
@@ -99,20 +131,21 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 return val.map(function(standard) {
                     return standard.standardCode || standard;
                 }).join(', ');
-            },
-            width: 250,
-            dataIndex: 'Standards'
+            }
         },
         {
             text: 'Grade',
             dataIndex: 'GradeLevel',
             width: 75,
+            filterField: true,
+
             editor: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
                 grow: true
             },
+
             filterField : {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -124,6 +157,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             text: 'URL',
             dataIndex: 'URL',
             flex: 1,
+            filterField: true,
+
             editor: {
                 xtype: 'textfield',
                 allowBlank: false,
@@ -141,6 +176,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             text: 'Title',
             dataIndex: 'Title',
             flex: 1,
+            filterField: true,
+
             editor: {
                 xtype: 'textfield',
                 allowBlank: false
@@ -150,39 +187,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             width: 175,
             text: 'Vendor',
             dataIndex: 'VendorID',
-            editor: {
-                xtype: 'combobox',
-                store: 'Vendors',
-                queryMode: 'local',
-                displayField: 'Name',
-                valueField: 'ID',
-                tpl: Ext.create('Ext.XTemplate',
-                    '<tpl for=".">',
-                    '   <div class="x-boundlist-item" style="',
-                    '       background-position: 5px, 5px;',
-                    '       background-image: url({LogoURL});',
-                    '       background-repeat: no-repeat;',
-                    '       background-size: 16px 16px;',
-                    '       padding-left: 25px">',
-                    '       {Name}',
-                    '   </div>',
-                    '</tpl>'
-                ),
-                editable: false,
-                grow: true
-            },
-            renderer: function(val, col, record) {
-                var vendorRecord = Ext.getStore('Vendors').getById(val),
-                    returnVal = '',
-                    logoURL;
 
-                if (vendorRecord) {
-                    logoURL = vendorRecord.get('LogoURL');
-                    returnVal = logoURL ? '<img src="' + logoURL + '" width="16" height="16"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
-                }
-
-                return returnVal;
-            },
             filterField: {
                 xtype: 'combobox',
                 store: 'Vendors',
@@ -204,6 +209,29 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 editable: false,
                 grow: true
             },
+
+            editor: {
+                xtype: 'combobox',
+                store: 'Vendors',
+                queryMode: 'local',
+                displayField: 'Name',
+                valueField: 'ID',
+                tpl: Ext.create('Ext.XTemplate',
+                    '<tpl for=".">',
+                    '   <div class="x-boundlist-item" style="',
+                    '       background-position: 5px, 5px;',
+                    '       background-image: url({LogoURL});',
+                    '       background-repeat: no-repeat;',
+                    '       background-size: 16px 16px;',
+                    '       padding-left: 25px">',
+                    '       {Name}',
+                    '   </div>',
+                    '</tpl>'
+                ),
+                editable: false,
+                grow: true
+            },
+
             renderer: function(val, col, record) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
                     returnVal = '',
@@ -220,19 +248,48 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         {
             text: 'DOK',
             dataIndex: 'DOK',
-            editor: {
-                xtype: 'combobox',
-                store: [1,2,3,4]
-            },
+
             filterField: {
                 xtype: 'combobox',
-                store: [1,2,3,4]
+                store: [1, 2, 3, 4],
+                editable: false,
+                grow: true
+            },
+
+            editor: {
+                xtype: 'combobox',
+                store: [1, 2, 3, 4],
+                editable: false,
+                grow: true
             }
         },
         {
             text: 'Created By',
             dataIndex: 'CreatorFullName',
-            filterField: true
+            filterField: {
+                xtype: 'combobox',
+                store: Ext.data.JsonStore({
+                    // store configs
+                    storeId: 'LearnCreators',
+
+                    proxy: {
+                        type: 'ajax',
+                        // TODO: Fix url
+                        url: 'http://slate.ninja/spark2/learn-links/creators',
+                        reader: {
+                            type: 'json',
+                            rootProperty: 'data'
+                        }
+                    },
+
+                    fields: ['CreatorID', 'CreatorFullName']
+                }),
+                queryMode: 'local',
+                displayField: 'CreatorFullName',
+                valueField: 'CreatorID',
+                editable: false,
+                grow: true
+            }
         },
         {
             xtype: 'datecolumn',
