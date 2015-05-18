@@ -270,7 +270,7 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 me.down('#gridtoolbar button[action="align"]').setDisabled(hasRecords);
                 editor.setDisabled(hasRecords);
 
-                if (isEditing) {
+                if (isEditing && me.editingPlugin.editor.getForm().isDirty()) {
                     Ext.Msg.confirm(
                         'Unsaved Changes',
                         'Discard any unsaved changes on current apply?',
