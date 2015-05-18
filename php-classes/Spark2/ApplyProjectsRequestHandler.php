@@ -2,7 +2,7 @@
 
 namespace Spark2;
 
-class ApplyProjectsRequestHandler extends \RecordsRequestHandler
+class ApplyProjectsRequestHandler extends SparkPointRequestHandler
 {
     public static $recordClass = ApplyProject::class;
 }
