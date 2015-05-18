@@ -116,7 +116,7 @@ Ext.define('Emergence.ext.proxy.Records', {
             idParam = me.idParam,
             id = (typeof operation.getId == 'function' ? operation.getId() : operation.id),
             params = me.callParent(arguments),
-            filters = operation.getFilters();
+            filters = operation.getFilters ? operation.getFilters() : null;
 
         if (filters) {
             delete params.filter;
