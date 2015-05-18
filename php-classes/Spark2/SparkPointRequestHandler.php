@@ -23,7 +23,8 @@ class SparkPointRequestHandler extends \RecordsRequestHandler
                         CONCAT(p.FirstName, " ", p.LastName) as CreatorFullName
                    FROM %s r
                    JOIN people p ON p.ID = r.CreatorID
-               ORDER BY p.LastName', $recordClass::$tableName));
+               ORDER BY p.ID = "%d"
+                    AND p.LastName', $recordClass::$tableName, $GLOBALS['Session']->Person->ID));
 
         return static::respondJson('creators', array(
             'data' => $creators
