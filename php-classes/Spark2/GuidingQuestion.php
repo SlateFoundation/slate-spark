@@ -2,7 +2,7 @@
 
 namespace Spark2;
 
-class GuidingQuestion extends \ActiveRecord
+class GuidingQuestion extends SparkPointRecord
 {
     public static $tableName = 's2_guiding_questions';
 
@@ -26,17 +26,10 @@ class GuidingQuestion extends \ActiveRecord
         ]
     ];
 
-    public function getData() {
-        $data = parent::getData();
-        $data['CreatorFullName'] = $this->Creator->FullName;
-        return $data;
-    }
-
-    public static $relationships = [
-        'Creator' => [
-            'type' => 'one-one',
-            'class' => 'Person',
-            'local' => 'CreatorID'
+    public static $searchConditions = [
+        'Question' => [
+            'qualifiers' => ['Question', 'question'],
+            'sql' => 'Question LIKE "%%%s%%"'
         ]
     ];
 }

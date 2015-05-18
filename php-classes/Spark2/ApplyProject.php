@@ -2,7 +2,7 @@
 
 namespace Spark2;
 
-class ApplyProject extends \VersionedRecord
+class ApplyProject extends SparkPointRecord
 {
     public static $historyTable = 's2_history_apply_projects';
 
@@ -47,17 +47,15 @@ class ApplyProject extends \VersionedRecord
         ]
     ];
 
-    public static $relationships = [
-        'Creator' => [
-            'type' => 'one-one',
-            'class' => 'Person',
-            'local' => 'CreatorID'
+    public static $searchConditions = [
+        'DOK' => [
+            'qualifiers' => ['DOK', 'dok'],
+            'sql' => 'DOK = "%s"'
+        ],
+
+        'Title' => [
+            'qualifiers' => ['title'],
+            'sql' => 'Title LIKE "%%%s%%"'
         ]
     ];
-
-    public function getData() {
-        $data = parent::getData();
-        $data['CreatorFullName'] = $this->Creator->FullName;
-        return $data;
-    }
 }

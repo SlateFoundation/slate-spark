@@ -54,11 +54,6 @@ class LearnLink extends SparkPointRecord
     ];
 
     public static $searchConditions = [
-        'GradeLevel' => [
-            'qualifiers' => ['GradeLevel', 'gradelevel'],
-            'sql' => 'GradeLevel = "%s"'
-        ],
-
         'DOK' => [
             'qualifiers' => ['DOK', 'dok'],
             'sql' => 'DOK = "%s"'

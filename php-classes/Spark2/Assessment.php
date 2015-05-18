@@ -2,7 +2,7 @@
 
 namespace Spark2;
 
-class Assessment extends \ActiveRecord
+class Assessment extends SparkPointRecord
 {
     public static $tableName = 's2_assessments';
 
@@ -37,12 +37,6 @@ class Assessment extends \ActiveRecord
             'local' => 'AssessmentTypeID'
         ],
 
-        'Creator' => [
-            'type' => 'one-one',
-            'class' => 'Person',
-            'local' => 'CreatorID'
-        ],
-
         'Vendor' => [
             'type' => 'one-one',
             'class' => Vendor::class,
@@ -50,9 +44,25 @@ class Assessment extends \ActiveRecord
         ]
     ];
 
-    public function getData() {
-        $data = parent::getData();
-        $data['CreatorFullName'] = $this->Creator->FullName;
-        return $data;
-    }
+    public static $searchConditions = [
+        'Title' => [
+            'qualifiers' => ['Title', 'title'],
+            'sql' => 'Title LIKE "%%%s%%"'
+        ],
+
+        'VendorID' => [
+            'qualifiers' => ['vendorid', 'vendor'],
+            'sql' => 'VendorID = "%s"'
+        ],
+
+        'URL' => [
+            'qualifiers' => ['URL', 'url'],
+            'sql' => 'URL LIKE "%%%s%%"'
+        ],
+
+        'AssessmentTypeID' => [
+            'qualifiers' => ['AssessmentTypeID', 'assessmenttypeid'],
+            'sql' => 'AssessmentTypeID = "%s"'
+        ]
+    ];
 }
