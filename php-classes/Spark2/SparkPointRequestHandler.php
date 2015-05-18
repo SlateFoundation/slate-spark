@@ -16,7 +16,7 @@ class SparkPointRequestHandler extends \RecordsRequestHandler
 
     public static function handleCreatorsRequest()
     {
-        $recordClass = self::$recordClass;
+        $recordClass = static::$recordClass;
 
         $creators = \DB::allRecords(sprintf('
         SELECT DISTINCT r.CreatorID,
