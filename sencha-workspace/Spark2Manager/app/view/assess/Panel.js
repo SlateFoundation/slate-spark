@@ -332,9 +332,10 @@ Ext.define('Spark2Manager.view.assess.Panel', {
     plugins: [{
         ptype: 'rowediting',
         pluginId: 'rowediting',
-        clicksToEdit: 1,
-        clicksToMoveEditor: 1,
-        autoCancel: false
+        clicksToEdit: 2,
+        clicksToMoveEditor: 2,
+        autoCancel: false,
+        errorSummary: true
     }, {
         ptype: 'saki-gms',
         pluginId: 'gms'
