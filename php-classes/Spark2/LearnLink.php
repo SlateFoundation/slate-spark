@@ -2,7 +2,7 @@
 
 namespace Spark2;
 
-class LearnLink extends \VersionedRecord
+class LearnLink extends SparkPointRecord
 {
     public static $historyTable = 's2_history_learn_links';
 
@@ -39,26 +39,6 @@ class LearnLink extends \VersionedRecord
         ]
     ];
 
-    public function getData()
-    {
-        $data = parent::getData();
-        $data['CreatorFullName'] = $this->Creator->FullName;
-        return $data;
-    }
-
-    public static function getStandardsConditions($handle, $matchedCondition)
-    {
-        $standards = explode(',', $handle);
-        $sql = [];
-
-        foreach ($standards as $standard) {
-            // TODO: @themightychris how do we like to escape sql?
-            $sql[] = 'INSTR(Standards, "' . $standard . '")';
-        }
-
-        return implode($sql, ' OR ');
-    }
-
     public static $relationships = [
         'Creator' => [
             'type' => 'one-one',
@@ -75,7 +55,7 @@ class LearnLink extends \VersionedRecord
 
     public static $searchConditions = [
         'GradeLevel' => [
-            'qualifiers' => ['grade', 'gradelevel', 'GradeLevel'],
+            'qualifiers' => ['GradeLevel', 'gradelevel'],
             'sql' => 'GradeLevel = "%s"'
         ],
 
@@ -97,16 +77,6 @@ class LearnLink extends \VersionedRecord
         'URL' => [
             'qualifiers' => ['URL', 'url'],
             'sql' => 'URL LIKE "%%%s%%"'
-        ],
-
-        'Standards' => [
-            'qualifiers' => ['Standards', 'standards'],
-            'callback'   => 'getStandardsConditions'
-        ],
-
-        'CreatorID' => [
-            'qualifiers' => ['CreatorFullName', 'creatorfullname'],
-            'sql' => 'CreatorID = "%s"'
         ]
     ];
 }
