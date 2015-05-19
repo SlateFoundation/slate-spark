@@ -5,6 +5,7 @@ namespace Spark2;
 class GuidingQuestion extends SparkPointRecord
 {
     public static $tableName = 's2_guiding_questions';
+    public static $historyTable = 's2_history_guiding_questions';
 
     public static $singularNoun = 'guiding question';
     public static $pluralNoun = 'guiding questions';
