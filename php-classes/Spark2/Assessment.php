@@ -5,6 +5,7 @@ namespace Spark2;
 class Assessment extends SparkPointRecord
 {
     public static $tableName = 's2_assessments';
+    public static $historyTable = 's2_history_assessments';
 
     public static $singularNoun = 'assessment';
     public static $pluralNoun = 'assessments';
