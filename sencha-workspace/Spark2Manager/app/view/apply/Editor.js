@@ -167,9 +167,8 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             onReplicate: function (newField, lastField, cloneField) {
                 if (lastField && lastField.isDirty()) {
                     window.setTimeout(function() {
-                        console.log('setting focus');
                         newField.focus();
-                    }, 10);
+                    }, 5);
                 }
             }
         }]
@@ -225,13 +224,10 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             },
 
             onReplicate: function (newField, lastField, cloneField) {
-                console.log('onReplicate');
-
                 if (lastField && lastField.isDirty()) {
                     window.setTimeout(function() {
-                        console.log('setting focus');
                         newField.focus();
-                    }, 10);
+                    }, 5);
                 }
             }
         }]
