@@ -114,15 +114,38 @@ function populateLearnZillionLearns($tsvUrl = 'https://gist.githubusercontent.co
 
         foreach ($learns as $learn) {
             $gradeLevel = [];
+            $standards = [];
 
             $learnLink = new LearnLink();
-            if (preg_match("/CCSS.Math.Content.(\\d+).*.*.*/u", $learn['Standard code'], $gradeLevel)) {
-                $learnLink->setField('GradeLevel', $gradeLevel[1]);
-            } else if (preg_match("/CCSS.ELA-Literacy.\\w+.(\\d+)/u", $learn['Standard code'], $gradeLevel)) {
-                $learnLink->setField('GradeLevel', $gradeLevel[1]);
+            if (preg_match("/CCSS.Math.Content.(\\d+\\-\\d+|\\d+|).*.*.*/u", $learn['Standard code'], $gradeLevel)) {
+                $gradeLevel = $gradeLevel[1];
+            } else if (preg_match("/CCSS.ELA-Literacy.\\w+.(\\d+\\-\\d+|\\d+)/u", $learn['Standard code'], $gradeLevel)) {
+                $gradeLevel = $gradeLevel[1];
             }
 
-            $learnLink->setField('Standards',  [['standardCode' => $learn['Standard code']]]);
+            $gradeLevels = preg_replace_callback('/(\d+)-(\d+)/', function($m) {
+                return implode(',', range($m[1], $m[2]));
+            }, $gradeLevel);
+
+            if (!is_array($gradeLevels)) {
+                if (strpos($gradeLevels, ',')) {
+                    $gradeLevels = explode(',', $gradeLevels);
+                } else {
+                    $gradeLevels = [$gradeLevels];
+                }
+            }
+
+            if (count($gradeLevels) > 1) {
+                foreach($gradeLevels as $grade) {
+                    $standards[] = ['standardCode' => $learn['Standard code'] . '-G' . $grade];
+                }
+            } else {
+                $standards = [['standardCode' => $learn['Standard code']]];
+            }
+
+
+            $learnLink->setField('Standards',  $standards);
+            $learnLink->setField('GradeLevel', $gradeLevels[0]);
             $learnLink->setField('Title',      $learn['Lesson title']);
             $learnLink->setField('URL',        $learn['Student page URL']);
             $learnLink->setField('VendorID', $learnZillionVendorID);

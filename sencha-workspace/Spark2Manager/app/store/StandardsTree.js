@@ -78,7 +78,7 @@ Ext.define('Spark2Manager.store.StandardsTree', {
                 me.getRoot().visitPreOrder('', function (child) {
                     var standardCode = child.get('standardCode');
 
-                    if (standardCode) {
+                    if (standardCode && child.get('leaf')) {
                         standardCodes.push({standardCode: standardCode});
                     }
                 });
