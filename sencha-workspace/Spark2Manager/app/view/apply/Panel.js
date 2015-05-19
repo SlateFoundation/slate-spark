@@ -112,6 +112,8 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 valueField:   'standardCode',
                 store:        'StandardCodes',
 
+                queryMode: 'local',
+                publishes: 'value',
                 filterPickList: true,
                 forceSelection: true,
                 selectOnFocus:  false,
@@ -145,6 +147,8 @@ Ext.define('Spark2Manager.view.apply.Panel', {
                 valueField:   'standardCode',
                 store:        'StandardCodes',
 
+                queryMode: 'local',
+                publishes: 'value',
                 filterPickList: true,
                 forceSelection: true,
                 selectOnFocus:  false,

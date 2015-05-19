@@ -76,11 +76,13 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 valueField: 'standardCode',
                 store: 'StandardCodes',
 
+                queryMode: 'local',
+                publishes: 'value',
                 filterPickList: true,
                 forceSelection: true,
-                selectOnFocus: false,
-                multiSelect:  true,
-                anyMatch: true,
+                selectOnFocus:  false,
+                multiSelect:    true,
+                anyMatch:       true,
 
                 listeners: {
                     'autosize': function (tagfield, newHeight) {
@@ -109,6 +111,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 valueField: 'standardCode',
                 store: 'StandardCodes',
 
+                queryMode: 'local',
+                publishes: 'value',
                 filterPickList: true,
                 forceSelection: true,
                 selectOnFocus: false,
