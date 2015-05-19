@@ -125,11 +125,13 @@ Ext.define('Spark2Manager.overrides.grid.RowEditor', {
             length    = fields.length,
             i, fieldErrors, field;
 
-        for (i = 0; i < length; i++) {
-            field = fields[i];
-            fieldErrors = field.getErrors();
-            if (fieldErrors.length) {
-                errors.push(me.createErrorListItem(fieldErrors[0], field.column.text));
+        if (me.isDirty()) {
+            for (i = 0; i < length; i++) {
+                field = fields[i];
+                fieldErrors = field.getErrors();
+                if (fieldErrors.length) {
+                    errors.push(me.createErrorListItem(fieldErrors[0], field.column.text));
+                }
             }
         }
 
@@ -138,6 +140,22 @@ Ext.define('Spark2Manager.overrides.grid.RowEditor', {
             errors[0] = me.createErrorListItem(me.dirtyText);
         }
 
-        return '<ul class="' + Ext.baseCSSPrefix + 'list-plain">' + errors.join('') + '</ul>';
+        if (errors.length > 0) {
+            return '<ul class="' + Ext.baseCSSPrefix + 'list-plain">' + errors.join('') + '</ul>';
+        }
+    },
+
+    showToolTip: function() {
+        var me = this,
+            tip = me.getToolTip(),
+            errors = me.getErrors();
+
+        if (errors) {
+            tip.update(me.getErrors());
+            me.repositionTip();
+            tip.enable();
+        } else {
+            me.hideToolTip();
+        }
     }
 });
