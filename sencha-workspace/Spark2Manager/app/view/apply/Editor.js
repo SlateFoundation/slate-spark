@@ -1,21 +1,20 @@
 Ext.define('Spark2Manager.view.apply.Editor', {
     requires: [
-        'Spark2Manager.widget.DurationField',
-        'Spark2Manager.plugin.FieldReplicator',
-
-        'Ext.form.Panel',
-        'Ext.layout.container.Anchor',
+        'Ext.Array',
+        'Ext.ComponentQuery',
+        'Ext.container.Container',
+        'Ext.data.ArrayStore',
         'Ext.form.FieldSet',
-        'Ext.layout.container.VBox',
-        'Ext.form.field.TextArea',
-
+        'Ext.form.Panel',
         'Ext.form.TextField',
         'Ext.form.field.Tag',
-        'Ext.Array',
-        'Ext.layout.container.Fit',
-        'Ext.data.ArrayStore',
+        'Ext.form.field.TextArea',
         'Ext.grid.plugin.RowEditing',
-        'Ext.ComponentQuery'
+        'Ext.layout.container.Anchor',
+        'Ext.layout.container.Fit',
+        'Ext.layout.container.VBox',
+        'Spark2Manager.plugin.FieldReplicator',
+        'Spark2Manager.widget.DurationField'
     ],
     extend:   'Ext.panel.Panel',
 
@@ -26,10 +25,11 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             type: 'vbox',
             align: 'stretch'
         },
-        scrollable: true,
         record: null,
         readOnly: false
     },
+
+    padding: 5,
 
     items: [{
         xtype: 'fieldset',
@@ -60,7 +60,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                         curVal;
 
                     if (!me.readOnly && me.isDirty()) {
-                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getValue();
                         curVal = record.get('Instructions');
@@ -80,7 +80,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             fieldLabel: 'Time Estimate',
             labelAlign: 'top',
 
-            duration:   90,
+            duration:   0,
 
             anchor: '100%',
 
@@ -93,7 +93,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                         curVal;
 
                     if (!me.readOnly) {
-                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
 
                         if (!record) {
@@ -117,10 +117,12 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         id: 'todos-fieldset',
 
         title:      'Todos',
-        layout:     'anchor',
-        padding:    10,
         flex:       1,
         scrollable: true,
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
 
         defaultType: 'textarea',
 
@@ -129,11 +131,11 @@ Ext.define('Spark2Manager.view.apply.Editor', {
 
             readOnly: this.readOnly,
 
-            anchor: '100%',
             plugins: {
                 ptype: 'fieldreplicator',
                 pluginId: 'fieldreplicator'
             },
+
             triggerAction: 'all',
             labelAlign:    'top',
             emptyText:     'Type your todo here. When you are done typing, press tab to enter another.',
@@ -149,7 +151,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                     // may not play nice.
 
                     if (!me.readOnly && me.isDirty() && me.getValue() != '') {
-                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getPlugin('fieldreplicator').getValues();
                         curVal = record.get('Todos') || [];
@@ -165,6 +167,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             onReplicate: function (newField, lastField, cloneField) {
                 if (lastField && lastField.isDirty()) {
                     window.setTimeout(function() {
+                        console.log('setting focus');
                         newField.focus();
                     }, 10);
                 }
@@ -176,18 +179,19 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         id: 'links-fieldset',
 
         title:       'Links',
-        layout:      'anchor',
         defaultType: 'textfield',
-        padding:     10,
         flex:        1,
         scrollable:  true,
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
 
         items: [{
             xtype: 'textfield',
 
             readOnly: this.readOnly,
 
-            anchor: '100%',
             plugins: {
                 ptype: 'fieldreplicator',
                 pluginId: 'fieldreplicator'
@@ -207,7 +211,7 @@ Ext.define('Spark2Manager.view.apply.Editor', {
                     // may not play nice.
 
                     if (!me.readOnly && me.isDirty() && me.getValue() != '') {
-                        rowediting = me.findParentByType('gridpanel').getPlugin('rowediting');
+                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getPlugin('fieldreplicator').getValues();
                         curVal = record.get('Links') || [];
@@ -221,13 +225,19 @@ Ext.define('Spark2Manager.view.apply.Editor', {
             },
 
             onReplicate: function (newField, lastField, cloneField) {
+                console.log('onReplicate');
+
                 if (lastField && lastField.isDirty()) {
                     window.setTimeout(function() {
+                        console.log('setting focus');
                         newField.focus();
                     }, 10);
                 }
             }
         }]
+    }, {
+        xtype: 'textfield',
+        id: 'dummy-focus-field'
     }],
 
     listeners: [{
