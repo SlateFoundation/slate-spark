@@ -51,16 +51,18 @@ Ext.define('Spark2Manager.controller.Apply', {
 
     onAddClick: function() {
         var me = this,
-            newApplyProject = me.getApplyProjectsStore().insert(0, {}),
             panel = me.getPanel(),
             plugin = panel.down('gridpanel').getPlugin('rowediting'),
-            editor = panel.down('s2m-apply-editor');
+            editor = panel.down('s2m-apply-editor'),
+            rec = plugin.getEditor().getRecord(),
+            newApplyProject;
 
-        if (!plugin.editor.isDirty()) {
+        if (rec === null || rec.phantom || plugin.getEditor().isDirty()) {
+            Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new Apply.');
+        } else {
+            newApplyProject = me.getApplyProjectsStore().insert(0, {});
             plugin.startEdit(newApplyProject[0], 0);
             editor.setRecord(newApplyProject[0]);
-        } else {
-            Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new Apply.');
         }
     },
 

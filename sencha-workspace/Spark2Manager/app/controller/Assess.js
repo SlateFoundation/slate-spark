@@ -56,12 +56,14 @@ Ext.define('Spark2Manager.controller.Assess', {
     onAddClick: function() {
         var me = this,
             rowEditing = me.getPanel().getPlugin('rowediting'),
-            newLink = me.getAssessmentsStore().insert(0, {});
+            rec = rowEditing.getEditor().getRecord(),
+            newRecord;
 
-        if (!rowEditing.editor.isDirty()) {
-            rowEditing.startEdit(newLink[0], 0);
-        } else {
+        if (rec === null || rec.phantom || rowEditing.getEditor().isDirty()) {
             Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new assessment.');
+        } else {
+            newRecord = me.getAssessmentsStore().insert(0, {});
+            rowEditing.startEdit(newRecord[0], 0);
         }
     },
 
