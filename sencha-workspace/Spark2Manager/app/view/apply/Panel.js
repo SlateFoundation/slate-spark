@@ -19,13 +19,14 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Ext.grid.column.Date',
         'Ext.grid.plugin.RowEditing',
         'Ext.layout.container.Fit',
+        'Ext.layout.container.HBox',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
+        'Ext.window.MessageBox',
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.apply.Editor',
-        'Ext.window.MessageBox'
+        'Spark2Manager.view.apply.Editor'
     ],
 
     xtype: 's2m-apply-panel',
@@ -35,13 +36,13 @@ Ext.define('Spark2Manager.view.apply.Panel', {
     ],
 
     layout: {
-        type:  'fit',
+        type:  'hbox',
         align: 'stretch'
     },
 
     items: [{
         id: 's2m-apply-gridpanel',
-
+        flex: 3,
         xtype:           'gridpanel',
         modelValidation: false,
         store:           'ApplyProjects',
@@ -53,38 +54,21 @@ Ext.define('Spark2Manager.view.apply.Panel', {
             dock:        'bottom',
             displayInfo: true
         }, {
-            xtype: 'container',
-
-            id: 'editorcontainer',
-
-            dock: 'right',
-
-            scrollable: true,
-
+            xtype: 'toolbar',
+            id:    'gridtoolbar',
             items: [{
-                xtype: 'toolbar',
-                id:    'gridtoolbar',
-                items: [{
-                    text:    'Add Apply',
-                    tooltip: 'Add a new apply',
-                    action:  'add'
-                }, '-', {
-                    text:     'Align to Standards',
-                    tooltip:  'Align this link to multiple standards easily using the standards picker',
-                    action:   'align',
-                    disabled: true
-                }, '-', {
-                    text:     'Delete Apply',
-                    tooltip:  'Remove the selected apply',
-                    action:   'delete',
-                    disabled: true
-                }]
-            }, {
-                padding:  10,
-                width:    500,
-                xtype:    's2m-apply-editor',
-                id:       's2m-apply-editor',
-                readOnly: true,
+                text:    'Add Apply',
+                tooltip: 'Add a new apply',
+                action:  'add'
+            }, '-', {
+                text:     'Align to Standards',
+                tooltip:  'Align this link to multiple standards easily using the standards picker',
+                action:   'align',
+                disabled: true
+            }, '-', {
+                text:     'Delete Apply',
+                tooltip:  'Remove the selected apply',
+                action:   'delete',
                 disabled: true
             }]
         }],
@@ -263,8 +247,7 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         listeners: {
             selectionchange: function (model, records) {
                 var me              = this,
-                    panel           = me.findParentByType('s2m-apply-panel'),
-                    editor          = me.down('s2m-apply-editor'),
+                    editor          = Ext.getCmp('s2m-apply-editor'),
                     rec             = records ? records[0] : null,
                     hasRecords      = records.length === 0,
                     rowediting      = me.getPlugin('rowediting'),
@@ -319,5 +302,15 @@ Ext.define('Spark2Manager.view.apply.Panel', {
             ptype:    'saki-gms',
             pluginId: 'gms'
         }]
+    }, {
+        xtype: 's2m-apply-editor',
+        dock: 'right',
+        margin: 10,
+        width: 500,
+        id: 's2m-apply-editor',
+        readOnly: true,
+        disabled: true,
+        scrollable: false
+
     }]
 });
