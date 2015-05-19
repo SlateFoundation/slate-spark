@@ -47,10 +47,10 @@ Ext.define('Spark2Manager.controller.Conference', {
     onAddClick: function() {
         var me = this,
             rowEditing = me.getPanel().getPlugin('rowediting'),
-            rec = rowEditing.getEditor().getRecord(),
+            rec = rowEditing.editing ? rowEditing.getEditor().getRecord() : null,
             newRecord;
 
-        if (typeof rec !== 'undefined' && (rec === null || rec.phantom || rowEditing.getEditor().isDirty())) {
+        if (rec !== null && (rowEditing.getEditor().isDirty() || rec.phantom)) {
             Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new guiding question.');
         } else {
             newRecord = me.getGuidingQuestionsStore().insert(0, {});
