@@ -59,7 +59,7 @@ Ext.define('Spark2Manager.controller.Assess', {
             rec = rowEditing.getEditor().getRecord(),
             newRecord;
 
-        if (rec === null || rec.phantom || rowEditing.getEditor().isDirty()) {
+        if (typeof rec !== 'undefined' && (rec === null || rec.phantom || rowEditing.getEditor().isDirty())) {
             Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new assessment.');
         } else {
             newRecord = me.getAssessmentsStore().insert(0, {});

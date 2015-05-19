@@ -57,7 +57,7 @@ Ext.define('Spark2Manager.controller.Apply', {
             rec = plugin.getEditor().getRecord(),
             newApplyProject;
 
-        if (rec === null || rec.phantom || plugin.getEditor().isDirty()) {
+        if (typeof rec !== 'undefined' && (rec === null || rec.phantom || plugin.getEditor().isDirty())) {
             Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new Apply.');
         } else {
             newApplyProject = me.getApplyProjectsStore().insert(0, {});
