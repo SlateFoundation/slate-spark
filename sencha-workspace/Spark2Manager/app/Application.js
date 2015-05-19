@@ -85,7 +85,9 @@ Ext.define('Spark2Manager.Application', {
                 tab = mainView.child('#' + me.getDefaultToken() + '-panel');
 
             if (tab) {
+                mainView.suspendEvent('tabchange');
                 mainView.setActiveItem(tab);
+                mainView.resumeEvent('tabchange');
             }
         });
     }
