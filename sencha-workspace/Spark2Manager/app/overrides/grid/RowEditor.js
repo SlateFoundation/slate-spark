@@ -125,6 +125,7 @@ Ext.define('Spark2Manager.overrides.grid.RowEditor', {
             length    = fields.length,
             i, fieldErrors, field;
 
+        /* HACK: Disable all validator errors
         if (me.isDirty()) {
             for (i = 0; i < length; i++) {
                 field = fields[i];
@@ -133,7 +134,7 @@ Ext.define('Spark2Manager.overrides.grid.RowEditor', {
                     errors.push(me.createErrorListItem(fieldErrors[0], field.column.text));
                 }
             }
-        }
+        } */
 
         // Only complain about unsaved changes if all the fields are valid
         if (!errors.length && !me.autoCancel && me.isDirty()) {
