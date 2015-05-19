@@ -74,6 +74,10 @@ Ext.define('Spark2Manager.model.Assessment', {
             type: "int",
             useNull: true,
             defaultValue: 4
+        },
+        {
+            name: "CreatorFullName",
+            type: "string"
         }
     ],
 

@@ -60,6 +60,10 @@ Ext.define('Spark2Manager.model.GuidingQuestion', {
             name: "GradeLevel",
             type: "string",
             useNull: true
+        },
+        {
+            name: "CreatorFullName",
+            type: "string"
         }
     ],
 

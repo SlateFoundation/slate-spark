@@ -91,6 +91,10 @@ Ext.define('Spark2Manager.model.ApplyProject', {
             name: "Metadata",
             type: "string",
             useNull: true
+        },
+        {
+            name: "CreatorFullName",
+            type: "string"
         }
     ],
 
