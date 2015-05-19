@@ -177,8 +177,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 displayField: 'Name',
                 valueField: 'ID',
                 grow: true,
-                editable: false,
-                allowBlank: false
+                editable: false
             },
             renderer: function(val, col, record) {
                 // HELP: @themightychris: is there an easier way to do this sort of thing?
@@ -199,7 +198,6 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
             editor: {
                 xtype: 'textfield',
-                allowBlank: false,
                 listeners: {
                     change: {
                         fn: function () {
@@ -217,8 +215,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             filterField: true,
 
             editor: {
-                xtype: 'textfield',
-                allowBlank: false
+                xtype: 'textfield'
             }
         },
         {

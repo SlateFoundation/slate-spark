@@ -175,7 +175,6 @@ Ext.define('Spark2Manager.view.learn.Panel', {
 
             editor: {
                 xtype: 'textfield',
-                allowBlank: false,
                 listeners: {
                     change: {
                         fn: function () {
@@ -183,7 +182,9 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                         },
                         buffer: 1000
                     }
-                }
+                },
+                validationEvent: false,
+                validateOnBlur: false
             }
         },
         {
@@ -193,8 +194,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             filterField: true,
 
             editor: {
-                xtype: 'textfield',
-                allowBlank: false
+                xtype: 'textfield'
             }
         },
         {
