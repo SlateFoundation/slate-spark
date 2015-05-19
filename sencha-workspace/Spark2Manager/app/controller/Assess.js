@@ -4,7 +4,8 @@ Ext.define('Spark2Manager.controller.Assess', {
             'Spark2Manager.store.AssessmentTypes',
             'Spark2Manager.store.Vendors',
             'Spark2Manager.store.VendorDomains',
-            'Spark2Manager.view.StandardPicker'
+            'Spark2Manager.view.StandardPicker',
+            'Ext.window.MessageBox'
         ],
 
         extend: 'Ext.app.Controller',
@@ -54,11 +55,14 @@ Ext.define('Spark2Manager.controller.Assess', {
 
     onAddClick: function() {
         var me = this,
-            rowEditing = me.getPanel().plugins[0], // I used to be able to do getPlugin('cellediting') but not w/ row
+            rowEditing = me.getPanel().getPlugin('rowediting'),
             newLink = me.getAssessmentsStore().insert(0, {});
 
-        rowEditing.cancelEdit();
-        rowEditing.startEdit(newLink[0], 0);
+        if (!rowEditing.editor.isDirty()) {
+            rowEditing.startEdit(newLink[0], 0);
+        } else {
+            Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new assessment.');
+        }
     },
 
     onDeleteClick: function() {

@@ -1,8 +1,9 @@
 Ext.define('Spark2Manager.controller.Apply', {
     requires: [
+        'Ext.tip.QuickTipManager',
+        'Ext.window.MessageBox',
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.StandardPicker',
-        'Ext.tip.QuickTipManager'
+        'Spark2Manager.view.StandardPicker'
     ],
 
     extend: 'Ext.app.Controller',
@@ -55,8 +56,12 @@ Ext.define('Spark2Manager.controller.Apply', {
             plugin = panel.down('gridpanel').getPlugin('rowediting'),
             editor = panel.down('s2m-apply-editor');
 
-        plugin.startEdit(newApplyProject[0], 0);
-        editor.setRecord(newApplyProject[0]);
+        if (!plugin.editor.isDirty()) {
+            plugin.startEdit(newApplyProject[0], 0);
+            editor.setRecord(newApplyProject[0]);
+        } else {
+            Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new Apply.');
+        }
     },
 
     onDeleteClick: function() {

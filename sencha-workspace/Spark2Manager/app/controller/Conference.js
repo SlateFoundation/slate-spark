@@ -1,7 +1,8 @@
 Ext.define('Spark2Manager.controller.Conference', {
     requires: [
         'Spark2Manager.store.GuidingQuestions',
-        'Spark2Manager.view.StandardPicker'
+        'Spark2Manager.view.StandardPicker',
+        'Ext.window.MessageBox'
     ],
 
     extend: 'Ext.app.Controller',
@@ -45,11 +46,14 @@ Ext.define('Spark2Manager.controller.Conference', {
 
     onAddClick: function() {
         var me = this,
-            rowEditing = me.getPanel().plugins[0], // I used to be able to do getPlugin('cellediting') but not w/ row
+            rowEditing = me.getPanel().getPlugin('rowediting'),
             newLink = me.getGuidingQuestionsStore().insert(0, {});
 
-        rowEditing.cancelEdit();
-        rowEditing.startEdit(newLink[0], 0);
+        if (!rowEditing.editor.isDirty()) {
+            rowEditing.startEdit(newLink[0], 0);
+        } else {
+            Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new guiding question.');
+        }
     },
 
     onDeleteClick: function() {
