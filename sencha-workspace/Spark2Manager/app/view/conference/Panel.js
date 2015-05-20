@@ -65,7 +65,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
             // TODO: Move to common code
             text: 'Standards',
             dataIndex: 'Standards',
-            width: 250,
+            width: 275,
 
             filterField: {
                 xtype: 'tagfield',
