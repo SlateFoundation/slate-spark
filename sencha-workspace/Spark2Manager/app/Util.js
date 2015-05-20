@@ -112,8 +112,7 @@ Ext.define('Spark2Manager.Util', {
          // Automatically select the vendor from the dropdown
          if (hostname) {
              vendorDomain = Ext.getStore('VendorDomains').findRecord('Domain', hostname);
-             // TODO: How do we query by ContextClass = Spark2\LearnLink at the same time
-             if (vendorDomain) {
+             if (vendorDomain && vendorDomain.get('ContextClass') === linkClass) {
                  form.setValues({VendorID: vendorDomain.get('VendorID')});
              } else {
                  createNewVendor = true;
