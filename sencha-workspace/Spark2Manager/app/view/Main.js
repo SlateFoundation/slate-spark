@@ -90,7 +90,7 @@ Ext.define('Spark2Manager.view.Main', {
 
             Ext.History.add(hashbang);
 
-            if (ga) {
+            if (window.ga) {
                 ga('set', {
                     page: '/#' + hashbang,
                     title: tab.getTitle()
