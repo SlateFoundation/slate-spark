@@ -45,14 +45,14 @@ Ext.define('Spark2Manager.view.Main', {
     ],
 
     listeners: {
-        tabchange: function(tabPanel, tab, oldTab) {
-
+        beforetabchange: function(tabPanel, tab, oldTab) {
             var newGridPanel = tab.is('gridpanel') ? tab : tab.down('gridpanel'),
                 oldGridPanel  = oldTab.is('gridpanel') ? oldTab : oldTab.down('gridpanel'),
                 newFilters = [],
                 oldFilters,
                 newStore,
-                newFields;
+                newFields,
+                oldGms = oldGridPanel.getPlugin('gms');
 
             if (newGridPanel && oldGridPanel) {
                 newStore = newGridPanel.getStore();
@@ -63,7 +63,8 @@ Ext.define('Spark2Manager.view.Main', {
 
                     // Do not attempt to filter by fields that do not exist on the new tab
                     oldFilters.each(function(filter) {
-                        var prop = filter.getConfig().property;
+                        var cfg = filter.getConfig(),
+                            prop = cfg.property;
 
                         if (newFields.indexOf(prop) !== -1) {
                             newFilters.push(filter);
@@ -72,12 +73,19 @@ Ext.define('Spark2Manager.view.Main', {
 
                     if (newFilters.length > 0) {
                         newStore.setFilters(newFilters);
-
-                        // TODO: @themightychris any ideas on how I can force a resize of the row (height too small for
-                        // the tagfield) doLayout does not work. Clicking the tagfield and then clicking away does.
+                        oldGms.lastHeight = oldGms.getHeight();
                     }
                 }
             }
+        },
+
+        tabchange: function(tabPanel, tab, oldTab) {
+            var newGridPanel = tab.is('gridpanel') ? tab : tab.down('gridpanel'),
+                oldGridPanel  = oldTab.is('gridpanel') ? oldTab : oldTab.down('gridpanel'),
+                oldGms = oldGridPanel.getPlugin('gms'),
+                gms = newGridPanel.getPlugin('gms');
+
+            gms.setHeight(oldGms.lastHeight);
 
             Ext.History.add(tab.getItemId().replace('-panel', ''));
         }
