@@ -1,38 +1,38 @@
 Ext.define('Spark2Manager.controller.Assess', {
-        requires: [
-            'Spark2Manager.store.Assessments',
-            'Spark2Manager.store.AssessmentTypes',
-            'Spark2Manager.store.Vendors',
-            'Spark2Manager.store.VendorDomains',
-            'Spark2Manager.view.StandardPicker',
-            'Ext.window.MessageBox'
-        ],
+    requires: [
+        'Spark2Manager.store.Assessments',
+        'Spark2Manager.store.AssessmentTypes',
+        'Spark2Manager.store.Vendors',
+        'Spark2Manager.store.VendorDomains',
+        'Spark2Manager.view.StandardPicker',
+        'Ext.window.MessageBox'
+    ],
 
-        extend: 'Ext.app.Controller',
+    extend: 'Ext.app.Controller',
 
-        config: {
-            refs: [{
-                ref: 'panel',
-                selector: 's2m-assess-panel'
-            }],
+    config: {
+        refs: [{
+            ref: 'panel',
+            selector: 's2m-assess-panel'
+        }],
 
-            control: {
-                's2m-assess-panel': {
-                    activate: 'onPanelActivate'
-                },
-                's2m-assess-panel button[action=add]': {
-                    click: 'onAddClick'
-                },
-                's2m-assess-panel button[action=delete]': {
-                    click: 'onDeleteClick'
-                },
-                's2m-assess-panel button[action=align]': {
-                    click: 'onAlignClick'
-                }
+        control: {
+            's2m-assess-panel': {
+                activate: 'onPanelActivate'
+            },
+            's2m-assess-panel button[action=add]': {
+                click: 'onAddClick'
+            },
+            's2m-assess-panel button[action=delete]': {
+                click: 'onDeleteClick'
+            },
+            's2m-assess-panel button[action=align]': {
+                click: 'onAlignClick'
             }
-        },
+        }
+    },
 
-        stores: [
+    stores: [
         'Assessments',
         'AssessmentTypes',
         'Vendors',
@@ -47,11 +47,13 @@ Ext.define('Spark2Manager.controller.Assess', {
     },
 
     onPanelActivate: function() {
-        var me = this;
-        me.getVendorsStore().load();
-        me.getVendorDomainsStore().load();
-        me.getAssessmentsStore().load();
-        me.getAssessmentTypesStore().load();
+        this.stores.forEach(function(store) {
+            store = Ext.getStore(store);
+
+            if (!(store.isLoaded() || store.isLoading())) {
+                store.load();
+            }
+        });
     },
 
     onAddClick: function() {
