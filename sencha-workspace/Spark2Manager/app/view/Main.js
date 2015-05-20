@@ -90,12 +90,14 @@ Ext.define('Spark2Manager.view.Main', {
 
             Ext.History.add(hashbang);
 
-            ga('set', {
-                page: '/#' + hashbang,
-                title: tab.getTitle()
-            });
+            if (ga) {
+                ga('set', {
+                    page: '/#' + hashbang,
+                    title: tab.getTitle()
+                });
 
-            ga('send', 'pageview');
+                ga('send', 'pageview');
+            }
         }
     }
 });
