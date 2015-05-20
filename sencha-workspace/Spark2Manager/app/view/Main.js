@@ -83,11 +83,19 @@ Ext.define('Spark2Manager.view.Main', {
             var newGridPanel = tab.is('gridpanel') ? tab : tab.down('gridpanel'),
                 oldGridPanel  = oldTab.is('gridpanel') ? oldTab : oldTab.down('gridpanel'),
                 oldGms = oldGridPanel.getPlugin('gms'),
-                gms = newGridPanel.getPlugin('gms');
+                gms = newGridPanel.getPlugin('gms'),
+                hashbang = tab.getItemId().replace('-panel', '');
 
             gms.setHeight(oldGms.lastHeight);
 
-            Ext.History.add(tab.getItemId().replace('-panel', ''));
+            Ext.History.add(hashbang);
+
+            ga('set', {
+                page: '/#' + hashbang,
+                title: tab.getTitle()
+            });
+
+            ga('send', 'pageview');
         }
     }
 });
