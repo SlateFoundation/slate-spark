@@ -74,7 +74,7 @@ Ext.define('Spark2Manager.Application', {
     launch: function () {
         var me = this;
 
-        if (location.hostname !== 'localhost' && location.hostname.indexOf('staging') === -1) {
+        if (location.hostname !== 'localhost' && location.hostname !== 'slate.ninja') {
             (function (i, s, o, g, r, a, m) {
                 i['GoogleAnalyticsObject'] = r;
                 i[r] = i[r] || function () {
