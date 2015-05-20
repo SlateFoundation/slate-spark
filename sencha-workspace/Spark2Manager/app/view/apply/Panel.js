@@ -26,7 +26,8 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Ext.util.Format',
         'Ext.window.MessageBox',
         'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.apply.Editor'
+        'Spark2Manager.view.apply.Editor',
+        'Spark2Manager.widget.StandardField'
     ],
 
     xtype: 's2m-apply-panel',
@@ -91,68 +92,17 @@ Ext.define('Spark2Manager.view.apply.Panel', {
             width:     275,
 
             filterField: {
-                xtype:        'tagfield',
+                xtype: 'standardfield',
                 displayField: 'standardCode',
-                valueField:   'standardCode',
-                store:        'StandardCodes',
-
-                queryMode: 'local',
-                publishes: 'value',
-                filterPickList: true,
-                forceSelection: true,
-                selectOnFocus:  false,
-                multiSelect:    true,
-                anyMatch:       true,
-
-                listeners: {
-                    'autosize': function (tagfield, newHeight) {
-                        var me      = this,
-                            ownerCt = me.ownerCt;
-
-                        /* HACK: The first time this runs, it will fail due to:
-                         https://docs.m.sencha.com/forum/showthread.php?300648-Cannot-read-property-offsetHeight-of-undefined-in-BufferedRenderer-Broken-Ext-5.1&p=1098485&langid=4
-                        */
-
-                        if (!me.autosized) {
-                            me.autosized = true;
-                            return;
-                        }
-
-                        if (ownerCt.height != newHeight) {
-                            ownerCt.setHeight(newHeight);
-                        }
-                    }
-                }
+                valueField: 'standardCode',
+                store: 'StandardCodes'
             },
 
             editor: {
-                xtype:        'tagfield',
+                xtype: 'standardfield',
                 displayField: 'standardCode',
-                valueField:   'standardCode',
-                store:        'StandardCodes',
-
-                queryMode: 'local',
-                publishes: 'value',
-                filterPickList: true,
-                forceSelection: true,
-                selectOnFocus:  false,
-                multiSelect:    true,
-                anyMatch:       true,
-
-                getModelData: function () {
-                    return {
-                        'Standards': Ext.Array.map(this.valueStore.collect('standardCode'), function (code) {
-                            return {standardCode: code}
-                        })
-                    };
-                },
-
-                listeners: {
-                    'autosize': function () {
-                        /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
-                    }
-                }
+                valueField: 'standardCode',
+                store: 'StandardCodes'
             },
 
             renderer: function (val, col, record) {

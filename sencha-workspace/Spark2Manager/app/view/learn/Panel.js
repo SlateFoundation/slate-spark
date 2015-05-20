@@ -14,7 +14,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
-        'Spark2Manager.Util'
+        'Spark2Manager.Util',
+        'Spark2Manager.widget.StandardField'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -71,69 +72,17 @@ Ext.define('Spark2Manager.view.learn.Panel', {
             width: 275,
 
             filterField: {
-                xtype: 'tagfield',
+                xtype: 'standardfield',
                 displayField: 'standardCode',
                 valueField: 'standardCode',
-                store: 'StandardCodes',
-
-                queryMode: 'local',
-                publishes: 'value',
-                filterPickList: true,
-                forceSelection: true,
-                selectOnFocus:  false,
-                multiSelect:    true,
-                anyMatch:       true,
-
-                listeners: {
-                    'autosize': function (tagfield, newHeight) {
-                        var me      = this,
-                            ownerCt = me.ownerCt;
-
-                        /* HACK: The first time this runs, it will fail due to:
-                         https://docs.m.sencha.com/forum/showthread.php?300648-Cannot-read-property-offsetHeight-of-undefined-in-BufferedRenderer-Broken-Ext-5.1&p=1098485&langid=4
-                         */
-
-                        if (!me.autosized) {
-                            me.autosized = true;
-                            return;
-                        }
-
-                        if (ownerCt.height != newHeight) {
-                            ownerCt.setHeight(newHeight);
-                        }
-                    }
-                }
+                store: 'StandardCodes'
             },
 
             editor: {
-                xtype: 'tagfield',
+                xtype: 'standardfield',
                 displayField: 'standardCode',
                 valueField: 'standardCode',
-                store: 'StandardCodes',
-
-                queryMode: 'local',
-                publishes: 'value',
-                filterPickList: true,
-                forceSelection: true,
-                selectOnFocus: false,
-                multiSelect:  true,
-                anyMatch: true,
-
-                getModelData: function() {
-                    return {
-                        'Standards':
-                            Ext.Array.map(this.valueStore.collect('standardCode'), function(code) {
-                                return {standardCode: code}
-                            })
-                    };
-                },
-
-                listeners: {
-                    'autosize': function() {
-                        /* HACK: when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                        this.up('roweditor').getFloatingButtons().setButtonPosition('bottom');
-                    }
-                }
+                store: 'StandardCodes'
             },
 
             renderer: function(val, col, record) {

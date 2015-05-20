@@ -1,10 +1,11 @@
 Ext.define('Spark2Manager.view.StandardPicker', {
     requires: [
-        'Ext.layout.container.Fit',
-        'Ext.tree.Panel',
         'Ext.Array',
         'Ext.form.field.Tag',
-        'Spark2Manager.controller.StandardPicker'
+        'Ext.layout.container.Fit',
+        'Ext.tree.Panel',
+        'Spark2Manager.controller.StandardPicker',
+        'Spark2Manager.widget.StandardField'
     ],
 
     extend: 'Ext.window.Window',
@@ -27,7 +28,7 @@ Ext.define('Spark2Manager.view.StandardPicker', {
     modal: true,
 
     items: [{
-        xtype: 'tagfield',
+        xtype: 'standardfield',
         fieldLabel: 'Standards Selected',
         reference: 'tagfield',
         displayField: 'standardCode',
@@ -40,11 +41,13 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         grow: true,
         selectOnFocus: false,
         multiSelect: true,
+        store: 'StandardCodes',
 
         listeners: {
             beforeSelect: 'onBeforeTagFieldSelect',
             beforedeselect: 'onBeforeTagFieldDeselect',
-            // HACK: beforedeselect doesn't fire unless the tagfield has focus, this makes removing tag items work reliably
+            // HACK: beforedeselect doesn't fire unless the tagfield has focus, this makes removing tag items work
+            // reliably
             render: function(tagfield) {
                 tagfield.getEl().on('mouseup', function(ev, el) {
                     var previousSibling;
