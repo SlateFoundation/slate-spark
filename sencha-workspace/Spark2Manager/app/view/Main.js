@@ -35,13 +35,13 @@ Ext.define('Spark2Manager.view.Main', {
             xtype: 's2m-assess-panel',
             title: 'Assess',
             itemId: 'assess-panel'
-        },
+        }/*,
         {
             xtype: 's2m-pbl-panel',
             title: 'PBL',
             itemId: 'pbl-panel',
             disabled: true
-        }
+        }*/
     ],
 
     listeners: {
