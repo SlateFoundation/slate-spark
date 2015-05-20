@@ -5,7 +5,8 @@ Ext.define('Spark2Manager.view.StandardPicker', {
         'Ext.layout.container.Fit',
         'Ext.tree.Panel',
         'Spark2Manager.controller.StandardPicker',
-        'Spark2Manager.widget.StandardField'
+        'Spark2Manager.widget.StandardField',
+        'Spark2Manager.store.StandardsTree'
     ],
 
     extend: 'Ext.window.Window',
