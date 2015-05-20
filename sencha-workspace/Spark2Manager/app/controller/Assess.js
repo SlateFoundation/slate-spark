@@ -47,10 +47,11 @@ Ext.define('Spark2Manager.controller.Assess', {
     },
 
     onPanelActivate: function() {
-        this.getVendorsStore().load();
-        this.getVendorDomainsStore().load();
-        this.getAssessmentsStore().load();
-        this.getAssessmentTypesStore().load();
+        var me = this;
+        me.getVendorsStore().load();
+        me.getVendorDomainsStore().load();
+        me.getAssessmentsStore().load();
+        me.getAssessmentTypesStore().load();
     },
 
     onAddClick: function() {
