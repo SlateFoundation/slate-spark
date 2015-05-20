@@ -47,11 +47,13 @@ Ext.define('Spark2Manager.controller.Learn', {
     },
 
     onPanelActivate: function() {
-        var me = this;
+        this.stores.forEach(function(store) {
+            store = Ext.getStore(store);
 
-        me.getVendorsStore().load();
-        me.getVendorDomainsStore().load();
-        me.getLearnLinksStore().load();
+            if (!(store.isLoaded() || store.isLoading())) {
+                store.load();
+            }
+        });
     },
 
     onAddClick: function() {

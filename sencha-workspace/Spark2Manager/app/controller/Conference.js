@@ -41,7 +41,13 @@ Ext.define('Spark2Manager.controller.Conference', {
     },
 
     onPanelActivate: function() {
-        this.getGuidingQuestionsStore().load();
+        this.stores.forEach(function(store) {
+            store = Ext.getStore(store);
+
+            if (!(store.isLoaded() || store.isLoading())) {
+                store.load();
+            }
+        });
     },
 
     onAddClick: function() {

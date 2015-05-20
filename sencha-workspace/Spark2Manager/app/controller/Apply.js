@@ -46,7 +46,13 @@ Ext.define('Spark2Manager.controller.Apply', {
     },
 
     onPanelActivate: function() {
-        this.getApplyProjectsStore().load();
+        this.stores.forEach(function(store) {
+            store = Ext.getStore(store);
+
+            if (!(store.isLoaded() || store.isLoading())) {
+                store.load();
+            }
+        });
     },
 
     onAddClick: function() {
