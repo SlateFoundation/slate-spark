@@ -119,6 +119,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             text: 'Type',
             dataIndex: 'AssessmentTypeID',
             flex: 1,
+
             editor: {
                 xtype: 'combobox',
                 store: 'AssessmentTypes',
@@ -128,6 +129,17 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 grow: true,
                 editable: false
             },
+
+            filterField: {
+                xtype: 'combobox',
+                store: 'AssessmentTypes',
+                queryMode: 'local',
+                displayField: 'Name',
+                valueField: 'ID',
+                grow: true,
+                editable: false
+            },
+
             renderer: function(val, col, record) {
                 // HELP: @themightychris: is there an easier way to do this sort of thing?
                 var assessmentType = Ext.getStore('AssessmentTypes').getById(val);
