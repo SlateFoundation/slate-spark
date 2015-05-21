@@ -86,7 +86,11 @@ Ext.define('Spark2Manager.view.Main', {
                 gms = newGridPanel.getPlugin('gms'),
                 hashbang = tab.getItemId().replace('-panel', '');
 
-            gms.setHeight(oldGms.lastHeight);
+            window.setTimeout(function() {
+                // HACK: gms handles drawing itself and does some weird stuff, this fixes an issue where the filter
+                // row doesn't expand to the height of its children; defying normal extjs layout behavior
+                gms.setHeight(oldGms.lastHeight);
+            }, 10);
 
             Ext.History.add(hashbang);
 
