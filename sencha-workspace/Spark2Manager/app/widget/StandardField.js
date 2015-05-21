@@ -42,7 +42,7 @@ Ext.define('Spark2Manager.widget.StandardField', {
     },
 
     listeners: {
-        autosize: function (field, newHeight) {
+        change: function (field, newHeight) {
             var me      = this,
                 ownerCt = me.ownerCt,
                 rowEditor = me.up('roweditor');
