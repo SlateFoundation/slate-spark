@@ -74,7 +74,14 @@ Ext.define('Spark2Manager.Util', {
         return name ? name[0] : hostname;
     },
 
-    getMetadata: function (url, cb) {
+    getMetadata: function (url, extended, cb) {
+
+        if (typeof extended !== 'function') {
+            extended = !!extended;
+        } else {
+            cb = extended;
+        }
+
         var options = {
             method: 'get',
             // TODO: Remove the URL hack below before production
@@ -82,7 +89,8 @@ Ext.define('Spark2Manager.Util', {
             url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/metadata',
 
             params: {
-                url: url
+                url: url,
+                extended: extended
             }
         };
 
@@ -120,7 +128,7 @@ Ext.define('Spark2Manager.Util', {
            return;
          }
 
-         me.getMetadata(url, function(response) {
+         me.getMetadata(url, createNewVendor, function(response) {
              try {
                  response = JSON.parse(response.responseText);
              } catch(e) {
