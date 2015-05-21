@@ -95,6 +95,10 @@ Ext.define('Spark2Manager.controller.StandardPicker', {
         tagField.clearValue();
 
         me.getView().close();
+
+        if (window.ga) {
+            ga('send', 'event', 'standards', 'align', 'standard picker', checkedItems.length);
+        }
     },
 
     onStandardsCheck: function(node, checked) {
