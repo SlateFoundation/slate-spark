@@ -85,7 +85,7 @@ Ext.define('Spark2Manager.Application', {
                 a.async = 1;
                 a.src = g;
                 m.parentNode.insertBefore(a, m)
-            })(win, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
             if (SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
                 ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
