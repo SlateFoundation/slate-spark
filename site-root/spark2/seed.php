@@ -40,6 +40,11 @@ function populateVendors() {
             'Name'        => 'Illuminate Education',
             'LogoURL'     => 'https://www.illuminateed.com/favicon.ico',
             'Description' => 'We provide one groundbreaking system for all your K-12 data needs.'
+        ],
+        [
+            'Name'        => 'Google Drive',
+            'LogoURL'     => 'https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_4.ico',
+            'Description' => 'All your files ready where you are'
         ]
     ];
 
@@ -69,6 +74,24 @@ function populateVendors() {
         'Illuminate Education' => [
             [
                 'Domain' => 'illuminateed.com',
+                'ContextClass' => Assessment::class
+            ]
+        ],
+        'Google Drive' => [
+            [
+                'Domain' => 'docs.google.com',
+                'ContextClass' => LearnLink::class
+            ],
+            [
+                'Domain' => 'drive.google.com',
+                'ContextClass' => LearnLink::class
+            ],
+            [
+                'Domain' => 'docs.google.com',
+                'ContextClass' => Assessment::class
+            ],
+            [
+                'Domain' => 'drive.google.com',
                 'ContextClass' => Assessment::class
             ]
         ]

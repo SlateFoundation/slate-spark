@@ -5,8 +5,10 @@ if (isset($_GET['url'])) {
 
     $host = parse_url($_GET['url'])['host'];
 
-    if (!host) {
-        $response = ['success' => false, 'error' => 'invalid url'];
+    $isGoogle = strpos($host, 'google');
+
+    if (!$host) {
+        $response = ['success' => false, 'error' => 'Invalid URL'];
     } else {
         $ch = curl_init();
 
@@ -28,6 +30,23 @@ if (isset($_GET['url'])) {
             $dom = new DOMDocument;
             @$dom->loadHTML($html);
             $response['title'] = $dom->getElementsByTagName('title')->item('0')->nodeValue;
+
+            if ($isGoogle) {
+                $allowedItemScope = [
+                    "http://schema.org/CreativeWork/DocumentObject",
+                    "http://schema.org/CreativeWork/SpreadsheetObject",
+                    "http://schema.org/CreativeWork/PresentationObject",
+                    "http://schema.org/CreativeWork/DrawingObject"
+                ];
+
+                $itemScope = $dom->getElementsByTagName('body')->item('0')->getAttribute('itemscope');
+
+                if (in_array($itemScope, $allowedItemScope)) {
+                    $response['title'] = preg_replace("/\\s-\\sGoogle\\s\\w+$/u", "", $response['title']);
+                } else {
+                    $response['error'] = 'Students cannot access this link. Please share it in Google Drive. For help on sharing, please visit: https://goo.gl/WIq8KA';
+                }
+            }
 
             foreach ($dom->getElementsByTagName('link') as $link) {
                 $rel = $link->getAttribute('rel');

@@ -5,7 +5,8 @@ Ext.define('Spark2Manager.Util', {
         'Ext.Ajax',
         'Ext.Object',
         'Spark2Manager.model.Vendor',
-        'Spark2Manager.model.VendorDomain'
+        'Spark2Manager.model.VendorDomain',
+        'Ext.window.MessageBox'
     ],
 
     parseURL: function(url) {
@@ -25,6 +26,9 @@ Ext.define('Spark2Manager.Util', {
     titleTruncators: {
         'learnzillion.com': function(title) {
             return title.replace('- for students', '').trim();
+        },
+        'docs.google.com': function (title) {
+            return title.replace(/\s-\sGoogle\s\w+$/, '').trim();
         }
     },
 
@@ -133,6 +137,20 @@ Ext.define('Spark2Manager.Util', {
                  response = JSON.parse(response.responseText);
              } catch(e) {
                 return;
+             }
+
+             if (response.error) {
+                 Ext.Msg.alert(
+                     'Error Accessing Link',
+                     response.error
+                 );
+
+                 form.setValues({
+                    'URL': '',
+                     'Title': ''
+                 });
+
+                 return;
              }
 
              var title = response.title,
