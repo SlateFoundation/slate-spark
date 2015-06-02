@@ -5,7 +5,9 @@ if (isset($_GET['url'])) {
 
     $host = parse_url($_GET['url'])['host'];
 
-    $isGoogle = strpos($host, 'google');
+    if ($host == 'drive.google.com' || $host == 'docs.google.com') {
+        $isGoogle = true;
+    }
 
     if (!$host) {
         $response = ['success' => false, 'error' => 'Invalid URL'];
@@ -39,9 +41,11 @@ if (isset($_GET['url'])) {
                     "http://schema.org/CreativeWork/DrawingObject"
                 ];
 
-                $itemScope = $dom->getElementsByTagName('body')->item('0')->getAttribute('itemscope');
+                $body = $dom->getElementsByTagName('body')->item('0');
 
-                if (in_array($itemScope, $allowedItemScope)) {
+                $itemScope = $body->getAttribute('itemscope');
+
+                if (in_array($itemScope, $allowedItemScope) || $body->getAttribute('itemtype') == 'http://schema.org/CreativeWork/FileObject') {
                     $response['title'] = preg_replace("/\\s-\\sGoogle\\s\\w+$/u", "", $response['title']);
                 } else {
                     $response['error'] = 'Students cannot access this link. Please share it in Google Drive. For help on sharing, please visit: https://goo.gl/WIq8KA';
