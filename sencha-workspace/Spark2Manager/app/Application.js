@@ -20,6 +20,7 @@ Ext.define('Spark2Manager.Application', {
         'Spark2Manager.store.StandardsTree',
         'Spark2Manager.store.TagMaps',
         'Spark2Manager.store.Tags',
+        'Spark2Manager.store.TeacherResources',
         'Spark2Manager.store.VendorDomains',
         'Spark2Manager.store.Vendors'
     ],
@@ -32,7 +33,8 @@ Ext.define('Spark2Manager.Application', {
         'Learn',
         'Conference',
         'Apply',
-        'Assess'
+        'Assess',
+        'Resource'
     ],
 
     listen: {
@@ -63,6 +65,7 @@ Ext.define('Spark2Manager.Application', {
         'StandardRefs',
         'Tags',
         'TagMaps',
+        'TeacherResources',
         'Vendors',
         'VendorDomains'
     ],

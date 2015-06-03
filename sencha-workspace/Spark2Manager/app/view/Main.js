@@ -3,12 +3,14 @@ Ext.define('Spark2Manager.view.Main', {
     xtype: 'app-main',
 
     requires: [
+        'Ext.util.History',
         'Spark2Manager.view.apply.Panel',
-        'Spark2Manager.view.learn.Panel',
-        'Spark2Manager.view.conference.Panel',
         'Spark2Manager.view.assess.Panel',
+        'Spark2Manager.view.conference.Panel',
+        'Spark2Manager.view.learn.Panel',
         'Spark2Manager.view.pbl.Panel',
-        'Ext.util.History'
+        'Spark2Manager.view.resource.Panel',
+        'Spark2Manager.view.resource.Panel'
     ],
 
     alias: 'mainview',
@@ -35,6 +37,11 @@ Ext.define('Spark2Manager.view.Main', {
             xtype: 's2m-assess-panel',
             title: 'Assess',
             itemId: 'assess-panel'
+        },
+        {
+            xtype: 's2m-resource-panel',
+            title: 'Teacher Resources',
+            'itemId': 'resource-panel'
         }/*,
         {
             xtype: 's2m-pbl-panel',
