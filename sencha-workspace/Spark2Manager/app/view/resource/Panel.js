@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.assess.Panel', {
+Ext.define('Spark2Manager.view.resource.Panel', {
     requires: [
         'Ext.Array',
         'Ext.XTemplate',
@@ -20,9 +20,9 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
     extend: 'Ext.grid.Panel',
 
-    xtype: 's2m-assess-panel',
+    xtype: 's2m-resource-panel',
 
-    store: 'Assessments',
+    store: 'TeacherResources',
 
     columnLines: true,
 
@@ -37,30 +37,30 @@ Ext.define('Spark2Manager.view.assess.Panel', {
 
     dockedItems: [{
         xtype: 'pagingtoolbar',
-        store: 'Assessments',
+        store: 'TeacherResources',
         dock: 'bottom',
         displayInfo: true
     },
-        {
-            xtype: 'toolbar',
-            items: [{
-                text: 'Add Assessment',
-                tooltip: 'Add a new assessment',
-                action: 'add'
-            }, '-', {
-                reference: 'alignButton',
-                text: 'Align to Standards',
-                tooltip: 'Align this assessment to multiple standards easily using the standards picker',
-                action: 'align',
-                disabled: true
-            }, '-', {
-                reference: 'removeButton',
-                text: 'Delete Assessment',
-                tooltip: 'Remove the selected assessment',
-                action: 'delete',
-                disabled: true
-            }]
-    }],
+                  {
+                      xtype: 'toolbar',
+                      items: [{
+                          text: 'Add Teacher Resource',
+                          tooltip: 'Add a new teacher resource',
+                          action: 'add'
+                      }, '-', {
+                          reference: 'alignButton',
+                          text: 'Align to Standards',
+                          tooltip: 'Align this teacher resource to multiple standards easily using the standards picker',
+                          action: 'align',
+                          disabled: true
+                      }, '-', {
+                          reference: 'removeButton',
+                          text: 'Delete Teacher Resource',
+                          tooltip: 'Remove the teacher resource',
+                          action: 'delete',
+                          disabled: true
+                      }]
+                  }],
 
     columns: [
         {
@@ -116,42 +116,6 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             }
         },
         {
-            text: 'Type',
-            dataIndex: 'AssessmentTypeID',
-            flex: 1,
-
-            editor: {
-                xtype: 'combobox',
-                store: 'AssessmentTypes',
-                queryMode: 'local',
-                displayField: 'Name',
-                valueField: 'ID',
-                grow: true,
-                editable: false
-            },
-
-            filterField: {
-                xtype: 'combobox',
-                store: 'AssessmentTypes',
-                queryMode: 'local',
-                displayField: 'Name',
-                valueField: 'ID',
-                grow: true,
-                editable: false
-            },
-
-            renderer: function(val, col, record) {
-                // HELP: @themightychris: is there an easier way to do this sort of thing?
-                var assessmentType = Ext.getStore('AssessmentTypes').getById(val);
-
-                if (assessmentType) {
-                    return assessmentType.get('Name');
-                }
-
-                return '';
-            }
-        },
-        {
             text: 'URL',
             dataIndex: 'URL',
             flex: 1,
@@ -162,7 +126,33 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 listeners: {
                     change: {
                         fn: function () {
-                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\Assessment');
+                            var me = this,
+                                form = me.up().getForm(),
+                                error;
+
+                            Spark2Manager.Util.getMetadata(me.getValue(), false, function(response) {
+                                try {
+                                    response = JSON.parse(response.responseText);
+
+                                    if (!response.error) {
+                                        form.setValues({
+                                            'Title': response.title
+                                        })
+                                    } else {
+                                        error = response.error;
+                                    }
+                                } catch(e) {
+                                    error = e;
+                                }
+
+                                if (error) {
+                                    Ext.Msg.alert(
+                                        'Error Accessing Teacher Resource',
+                                        error
+                                    );
+                                    me.setValue('');
+                                }
+                            });
                         },
                         buffer: 1000
                     }
@@ -180,68 +170,6 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             }
         },
         {
-            width: 175,
-            text: 'Vendor',
-            dataIndex: 'VendorID',
-
-            filterField: {
-                xtype: 'combobox',
-                store: 'Vendors',
-                queryMode: 'local',
-                displayField: 'Name',
-                valueField: 'ID',
-                tpl: Ext.create('Ext.XTemplate',
-                    '<tpl for=".">',
-                    '   <div class="x-boundlist-item" style="',
-                    '       background-position: 5px, 5px;',
-                    '       background-image: url({LogoURL});',
-                    '       background-repeat: no-repeat;',
-                    '       background-size: 16px 16px;',
-                    '       padding-left: 25px">',
-                    '       {Name}',
-                    '   </div>',
-                    '</tpl>'
-                ),
-                editable: false,
-                grow: true
-            },
-
-            editor: {
-                xtype: 'combobox',
-                store: 'Vendors',
-                queryMode: 'local',
-                displayField: 'Name',
-                valueField: 'ID',
-                tpl: Ext.create('Ext.XTemplate',
-                    '<tpl for=".">',
-                    '   <div class="x-boundlist-item" style="',
-                    '       background-position: 5px, 5px;',
-                    '       background-image: url({LogoURL});',
-                    '       background-repeat: no-repeat;',
-                    '       background-size: 16px 16px;',
-                    '       padding-left: 25px">',
-                    '       {Name}',
-                    '   </div>',
-                    '</tpl>'
-                ),
-                editable: false,
-                grow: true
-            },
-
-            renderer: function(val, col, record) {
-                var vendorRecord = Ext.getStore('Vendors').getById(val),
-                    returnVal = '',
-                    logoURL;
-
-                if (vendorRecord) {
-                    logoURL = vendorRecord.get('LogoURL');
-                    returnVal = logoURL ? '<img src="' + logoURL + '" width="16" height="16"><span style="display: inline-block; top: -3px; left: 4px; position: relative;">' + vendorRecord.get('Name') + '</span>': vendorRecord.get('Name');
-                }
-
-                return returnVal;
-            }
-        },
-        {
             text: 'Created By',
             dataIndex: 'CreatorFullName',
             filterField: {
@@ -253,7 +181,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                     proxy: {
                         type: 'ajax',
                         // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/assessments/creators',
+                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/teacher-resources/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'
