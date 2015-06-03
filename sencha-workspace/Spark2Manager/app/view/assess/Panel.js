@@ -50,7 +50,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
             }, '-', {
                 reference: 'alignButton',
                 text: 'Align to Standards',
-                tooltip: 'Align this assesment to multiple standards easily using the standards picker',
+                tooltip: 'Align this assessment to multiple standards easily using the standards picker',
                 action: 'align',
                 disabled: true
             }, '-', {
