@@ -22,7 +22,7 @@ Ext.define('Spark2Manager.view.resource.Panel', {
 
     xtype: 's2m-resource-panel',
 
-    store: 'TeacherResources',
+    store: 'ConferenceResources',
 
     columnLines: true,
 
@@ -37,26 +37,26 @@ Ext.define('Spark2Manager.view.resource.Panel', {
 
     dockedItems: [{
         xtype: 'pagingtoolbar',
-        store: 'TeacherResources',
+        store: 'ConferenceResources',
         dock: 'bottom',
         displayInfo: true
     },
                   {
                       xtype: 'toolbar',
                       items: [{
-                          text: 'Add Teacher Resource',
-                          tooltip: 'Add a new teacher resource',
+                          text: 'Add Conference Resource',
+                          tooltip: 'Add a new Conference Resource',
                           action: 'add'
                       }, '-', {
                           reference: 'alignButton',
                           text: 'Align to Standards',
-                          tooltip: 'Align this teacher resource to multiple standards easily using the standards picker',
+                          tooltip: 'Align this Conference Resource to multiple standards easily using the standards picker',
                           action: 'align',
                           disabled: true
                       }, '-', {
                           reference: 'removeButton',
-                          text: 'Delete Teacher Resource',
-                          tooltip: 'Remove the teacher resource',
+                          text: 'Delete Conference Resource',
+                          tooltip: 'Remove the Conference Resource',
                           action: 'delete',
                           disabled: true
                       }]
@@ -147,7 +147,7 @@ Ext.define('Spark2Manager.view.resource.Panel', {
 
                                 if (error) {
                                     Ext.Msg.alert(
-                                        'Error Accessing Teacher Resource',
+                                        'Error Accessing Conference Resource',
                                         error
                                     );
                                     me.setValue('');
@@ -181,7 +181,7 @@ Ext.define('Spark2Manager.view.resource.Panel', {
                     proxy: {
                         type: 'ajax',
                         // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/teacher-resources/creators',
+                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/conference-resources/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'

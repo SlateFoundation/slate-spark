@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.TeacherResources', {
+Ext.define('Spark2Manager.store.ConferenceResources', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.TeacherResource'
+        'Spark2Manager.model.ConferenceResource'
     ],
 
-    model: 'Spark2Manager.model.TeacherResource',
+    model: 'Spark2Manager.model.ConferenceResource',
 
     autoSync: true,
 

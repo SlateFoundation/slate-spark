@@ -2,7 +2,7 @@ Ext.define('Spark2Manager.controller.Resource', {
     requires: [
         'Spark2Manager.store.Vendors',
         'Spark2Manager.store.VendorDomains',
-        'Spark2Manager.store.TeacherResources',
+        'Spark2Manager.store.ConferenceResources',
         'Spark2Manager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
@@ -32,7 +32,7 @@ Ext.define('Spark2Manager.controller.Resource', {
     },
 
     stores: [
-        'TeacherResources',
+        'ConferenceResources',
         'Vendors',
         'VendorDomains'
     ],
@@ -63,7 +63,7 @@ Ext.define('Spark2Manager.controller.Resource', {
         if (rec !== null && (rowEditing.getEditor().isDirty() || rec.phantom)) {
             Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new assessment.');
         } else {
-            newRecord = me.getTeacherResourcesStore().insert(0, {});
+            newRecord = me.getConferenceResourcesStore().insert(0, {});
             rowEditing.startEdit(newRecord[0], 0);
         }
     },
@@ -74,7 +74,7 @@ Ext.define('Spark2Manager.controller.Resource', {
             rowEditing = panel.plugins[0],
             selectionModel = panel.getSelectionModel(),
             selection = selectionModel.getSelection()[0],
-            TeacherResourcesStore = me.getTeacherResourcesStore(),
+            ConferenceResourcesStore = me.getConferenceResourcesStore(),
             url = selection.get('URL'),
             descriptiveText = url || 'this assessment';
 
@@ -82,9 +82,9 @@ Ext.define('Spark2Manager.controller.Resource', {
             if (response === 'yes') {
                 rowEditing.cancelEdit();
 
-                TeacherResourcesStore.remove(selection);
+                ConferenceResourcesStore.remove(selection);
 
-                if (TeacherResourcesStore.getCount() > 0) {
+                if (ConferenceResourcesStore.getCount() > 0) {
                     selectionModel.select(0);
                 }
             }

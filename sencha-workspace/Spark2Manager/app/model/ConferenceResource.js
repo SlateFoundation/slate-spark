@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.TeacherResource', {
+Ext.define('Spark2Manager.model.ConferenceResource', {
     extend:   'Ext.data.Model',
 
     requires: [
@@ -22,7 +22,7 @@ Ext.define('Spark2Manager.model.TeacherResource', {
         {
             name:         "Class",
             type:         "string",
-            defaultValue: "Spark2\\TeacherResource"
+            defaultValue: "Spark2\\ConferenceResource"
         },
         {
             name:       "Created",
@@ -83,6 +83,6 @@ Ext.define('Spark2Manager.model.TeacherResource', {
 
     proxy: {
         type: 'records',
-        url:  '/spark2/teacher-resources'
+        url:  '/spark2/conference-resources'
     }
 });

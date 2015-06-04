@@ -25,8 +25,13 @@ Ext.define('Spark2Manager.view.Main', {
         },
         {
             xtype: 's2m-conference-panel',
-            title: 'Conference',
+            title: 'Conference Questions',
             itemId: 'conference-panel'
+        },
+        {
+            xtype: 's2m-resource-panel',
+            title: 'Conference Resources',
+            'itemId': 'resource-panel'
         },
         {
             xtype: 's2m-apply-panel',
@@ -37,11 +42,6 @@ Ext.define('Spark2Manager.view.Main', {
             xtype: 's2m-assess-panel',
             title: 'Assess',
             itemId: 'assess-panel'
-        },
-        {
-            xtype: 's2m-resource-panel',
-            title: 'Teacher Resources',
-            'itemId': 'resource-panel'
         }/*,
         {
             xtype: 's2m-pbl-panel',
