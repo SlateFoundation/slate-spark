@@ -34,6 +34,8 @@ if (isset($_GET['url'])) {
             $response['title'] = $dom->getElementsByTagName('title')->item('0')->nodeValue;
 
             if ($isGoogle) {
+                $isViewable = false;
+
                 $allowedItemScope = [
                     "http://schema.org/CreativeWork/DocumentObject",
                     "http://schema.org/CreativeWork/SpreadsheetObject",
@@ -42,10 +44,31 @@ if (isset($_GET['url'])) {
                 ];
 
                 $body = $dom->getElementsByTagName('body')->item('0');
+                $metaTags = $dom->getElementsByTagName('meta');
 
-                $itemScope = $body->getAttribute('itemscope');
+                // Detection for read only Google Docs
+                foreach ($metaTags as $metaTag) {
+                    $name = $metaTag->getAttribute('name');
+                    $content = $metaTag->getAttribute('content');
 
-                if (in_array($itemScope, $allowedItemScope) || $body->getAttribute('itemtype') == 'http://schema.org/CreativeWork/FileObject') {
+                    if ($name == 'twitter:site' && $content == '@googledocs') {
+                        $isViewable = true;
+                        break;
+                    }
+
+                    if ($name == 'og:site_name' && $content == 'Google Docs') {
+                        $isViewable = true;
+                        break;
+                    }
+                }
+
+                if (!isViewable) {
+                    $itemScope = $body->getAttribute('itemscope');
+                    $isViewable = in_array($itemScope, $allowedItemScope) || // checks for editable docs
+                        $body->getAttribute('itemtype') == 'http://schema.org/CreativeWork/FileObject'; // drive files
+                }
+
+                if ($isViewable) {
                     $response['title'] = preg_replace("/\\s-\\sGoogle\\s\\w+$/u", "", $response['title']);
                 } else {
                     $response['error'] = 'Students cannot access this link. Please share it in Google Drive. For help on sharing, please visit: https://goo.gl/WIq8KA';
