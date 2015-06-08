@@ -144,7 +144,7 @@ function populateKhanAcademyLearns($tsvUrl = 'https://gist.githubusercontent.com
             $learnLink = new LearnLink();
 
             if (preg_match("/CCSS.Math.Content.(\\d+\\-\\d+|\\d+|).*.*.*/u", $learn['Code'], $gradeLevel)) {
-                $gradeLevel = $gradeLevel[1];
+                $gradeLevel = $gradeLevel[1] ?: [9, 10, 11, 12];
             }
 
             $gradeLevels = preg_replace_callback('/(\d+)-(\d+)/', function($m) {
@@ -164,12 +164,12 @@ function populateKhanAcademyLearns($tsvUrl = 'https://gist.githubusercontent.com
                     $standards[] = ['standardCode' => $learn['Code'] . '-G' . $grade];
                 }
             } else {
+                $learnLink->setField('GradeLevel', $gradeLevels[0]);
                 $standards = [['standardCode' => $learn['Code']]];
             }
 
 
             $learnLink->setField('Standards',  $standards);
-            $learnLink->setField('GradeLevel', $gradeLevels[0]);
             $learnLink->setField('Title',      $learn['Name']);
             $learnLink->setField('URL',        $learn['URL']);
             $learnLink->setField('VendorID', $khanAcademyID);
