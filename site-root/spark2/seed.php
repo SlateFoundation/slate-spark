@@ -117,6 +117,71 @@ function populateVendors() {
     }
 }
 
+function populateKhanAcademyLearns($tsvUrl = 'https://gist.githubusercontent.com/jmealo/d0925dc27a077fe07392/raw/711d508611c1021641f5d5aa41c5ce982b6c7f33/khan-academy-math-content.tsv') {
+    print 'Populating Khan Academy Learns<br>';
+
+
+    $tsvFile = file($tsvUrl);
+    $tsvHeaders = str_getcsv(array_shift($tsvFile), "\t");
+    $learns = [];
+    $khanAcademy = Vendor::getByField('Name', 'Khan Academy');
+    $khanAcademyID = $khanAcademy->ID;
+    $count = LearnLink::getCount(['VendorID' => $khanAcademyID]);
+
+    foreach ($tsvFile as $line) {
+        $learn = array_combine($tsvHeaders,  str_getcsv($line, "\t"));
+        $learns[] = $learn;
+    }
+
+    print "$count Khan Academy learns in system<br>";
+
+    if (count($learns) > $count) {
+
+        foreach ($learns as $learn) {
+            $gradeLevel = [];
+            $standards = [];
+
+            $learnLink = new LearnLink();
+
+            if (preg_match("/CCSS.Math.Content.(\\d+\\-\\d+|\\d+|).*.*.*/u", $learn['Code'], $gradeLevel)) {
+                $gradeLevel = $gradeLevel[1];
+            }
+
+            $gradeLevels = preg_replace_callback('/(\d+)-(\d+)/', function($m) {
+                return implode(',', range($m[1], $m[2]));
+            }, $gradeLevel);
+
+            if (!is_array($gradeLevels)) {
+                if (strpos($gradeLevels, ',')) {
+                    $gradeLevels = explode(',', $gradeLevels);
+                } else {
+                    $gradeLevels = [$gradeLevels];
+                }
+            }
+
+            if (count($gradeLevels) > 1) {
+                foreach($gradeLevels as $grade) {
+                    $standards[] = ['standardCode' => $learn['Code'] . '-G' . $grade];
+                }
+            } else {
+                $standards = [['standardCode' => $learn['Code']]];
+            }
+
+
+            $learnLink->setField('Standards',  $standards);
+            $learnLink->setField('GradeLevel', $gradeLevels[0]);
+            $learnLink->setField('Title',      $learn['Name']);
+            $learnLink->setField('URL',        $learn['URL']);
+            $learnLink->setField('VendorID', $khanAcademyID);
+            $learnLink->save();
+        }
+
+        print count($learns) . ' learns populated<br>';
+    } else {
+        print 'Skipped... learns already loaded<br>';
+    }
+}
+
 function populateLearnZillionLearns($tsvUrl = 'https://gist.githubusercontent.com/jmealo/511295bc5ec54cff4634/raw/0d0307e5892c0d068e40774a8e3b45331abc563f/04.13.2015-learnzillion-lesson-urls.tsv') {
     print 'Populating LearnZillion Learns<br>';
 
@@ -179,10 +244,9 @@ function populateLearnZillionLearns($tsvUrl = 'https://gist.githubusercontent.co
     } else {
         print 'Skipped... learns already loaded<br>';
     }
-
-
 }
 
 populateVendors();
 populateAssessmentTypes();
 populateLearnZillionLearns();
+populateKhanAcademyLearns();
