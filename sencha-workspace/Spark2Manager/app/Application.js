@@ -77,7 +77,7 @@ Ext.define('Spark2Manager.Application', {
     launch: function () {
         var me = this;
 
-        if (location.hostname !== 'localhost' && location.hostname !== 'slate.ninja') {
+        if (location.hostname.indexOf('matchbooklearning') !== -1) {
             (function (i, s, o, g, r, a, m) {
                 i['GoogleAnalyticsObject'] = r;
                 i[r] = i[r] || function () {
@@ -109,7 +109,9 @@ Ext.define('Spark2Manager.Application', {
         }
 
         // TODO: Remove this before production
-        if (location.hostname.indexOf('slate.ninja') === -1 && location.hostname.indexOf('slatepowered') === -1) {
+        if (location.hostname.indexOf('slate.ninja') === -1 &&
+            location.hostname.indexOf('slatepowered') === -1 &&
+            location.hostname.indexOf('matchbooklearning') === -1) {
             Emergence.util.API.setHostname('slate.ninja');
         }
 
