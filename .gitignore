@@ -1,2 +1,4 @@
 /sencha-build/
 /sencha-workspace/ext-*/
+/sencha-workspace/SparkClassroomTracker/bootstrap.*
+/sencha-workspace/SparkClassroomTracker/sass/example/bootstrap.*
