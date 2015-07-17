@@ -3,7 +3,7 @@
      * This is the folder for build outputs in the workspace.
      */
     "build": {
-        "dir": "${workspace.dir}/build"
+        "dir": "${workspace.dir}/../sencha-build"
     },
 
     /**
