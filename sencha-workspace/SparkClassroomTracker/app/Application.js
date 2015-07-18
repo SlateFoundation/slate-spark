@@ -5,16 +5,9 @@
  */
 Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
-    
-    name: 'SparkClassroomTeacher',
-
-    stores: [
-        // TODO: add global / shared stores here
+    requires: [
+        'Ext.MessageBox'
     ],
-    
-    launch: function () {
-        // TODO - Launch the application
-    },
 
     onAppUpdate: function () {
         Ext.Msg.confirm('Application Update', 'This application has an update, reload?',
