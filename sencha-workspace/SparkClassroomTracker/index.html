@@ -1,54 +1,420 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+
 <html manifest="">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title>SparkClassroomTeacher</title>
-
-    <!--
-    <script type="text/javascript">
-        var Ext = Ext || {}; // Ext namespace won't be defined yet...
-
-        // This function is called by the Microloader after it has performed basic
-        // device detection. The results are provided in the "tags" object. You can
-        // use these tags here or even add custom tags. These can be used by platform
-        // filters in your manifest or by platformConfig expressions in your app.
-        //
-        Ext.beforeLoad = function (tags) {
-            var s = location.search,  // the query string (ex "?foo=1&bar")
-                profile;
-
-            // For testing look for "?classic" or "?modern" in the URL to override
-            // device detection default.
-            //
-            if (s.match(/\bclassic\b/)) {
-                profile = 'classic';
-            }
-            else if (s.match(/\bmodern\b/)) {
-                profile = 'modern';
-            }
-            else {
-                profile = tags.desktop ? 'classic' : 'modern';
-                //profile = tags.phone ? 'modern' : 'classic';
-            }
-
-            Ext.manifest = profile; // this name must match a build profile name
-
-            // This function is called once the manifest is available but before
-            // any data is pulled from it.
-            //
-            //return function (manifest) {
-                // peek at / modify the manifest object
-            //};
-        };
-    </script>
-    -->
-    
-    <!-- The line below must be kept intact for Sencha Cmd to build your application -->
-    <script id="microloader" data-app="19198d7d-3ac8-4b69-8f6f-478691855232" type="text/javascript" src="bootstrap.js"></script>
-
+    <title>Manage Slate</title>
+    <link href='slate-frame/main.css' rel='stylesheet' type='text/css'>
+    <style>
+        #ext-viewport {
+            padding-top: 2.75em;
+        }
+    </style>
+    <link href='slate-frame/fonts/lato.css' rel='stylesheet' type='text/css'>
+    <link href='slate-frame/fonts/sanchez.css' rel='stylesheet' type='text/css'>
+    <link href='slate-frame/fonts/font-awesome.css' rel='stylesheet' type='text/css'>
 </head>
-<body></body>
+
+<body class="loading">
+    <div class="slate-omnibar site">
+        <div class="inner">
+            <ul class="omnibar-items">
+                <li class="omnibar-item">
+                    <a class="omnibar-link root-link" href="/"><img alt="Slate" class="slate-logo" height="32" src="slate-frame/img/slate-logo-white.svg" width="41"></a>
+                </li>
+
+                <li class="omnibar-item omnibar-search-item">
+                    <form action="/search" class="omnibar-search-form">
+                        <input class="omnibar-search-field" name="q" placeholder="Search" required="" type="search">
+                    </form>
+                </li>
+
+                <li class="omnibar-item icon-courses" data-href="/courses" data-icon="courses" data-label="Courses">
+                    <a class="omnibar-link" href="/courses" title="Courses">Courses</a>
+
+                    <div class="omnibar-menu-ct">
+                        <ul class="omnibar-menu">
+                            <li class="omnibar-menu-item" data-href="/sections/BIO-1" data-icon="chemistry" data-id="BIO-1" data-label="Biology" data-shortlabel="BIO-1">
+                                <a class="omnibar-menu-link" href="/sections/BIO-1" title="Biology">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        BIO-1
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/sections/ENG-1" data-icon="writing" data-id="ENG-1" data-label="English" data-shortlabel="ENG-1">
+                                <a class="omnibar-menu-link" href="/sections/ENG-1" title="English">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        ENG-1
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/sections/BIO-2" data-icon="chemistry" data-id="BIO-2" data-label="Biology" data-shortlabel="BIO-2">
+                                <a class="omnibar-menu-link" href="/sections/BIO-2" title="Biology">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        BIO-2
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="omnibar-item icon-tools" data-icon="tools" data-label="Tools">
+                    <span class="omnibar-link" title="Tools">Tools</span>
+
+                    <div class="omnibar-menu-ct">
+                        <ul class="omnibar-menu">
+                            <li class="omnibar-menu-item" data-href="/manage" data-icon="tools" data-label="Manage Slate">
+                                <a class="omnibar-menu-link" href="/manage" title="Manage Slate">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        Manage Slate
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#people" data-icon="tools" data-label="People">
+                                <a class="omnibar-menu-link" href="/manage#people" title="People">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Manage Slate</small> People
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#course-sections" data-icon="tools" data-label="Course Sections">
+                                <a class="omnibar-menu-link" href="/manage#course-sections" title="Course Sections">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Manage Slate</small> Course Sections
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#settings" data-icon="tools" data-label="Settings">
+                                <a class="omnibar-menu-link" href="/manage#settings" title="Settings">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Manage Slate</small> Settings
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/pages" data-icon="tools" data-label="Pages">
+                                <a class="omnibar-menu-link" href="/pages" title="Pages">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Manage Slate</small> Pages
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="https://admin.google.com/a/slatedemo.com" data-icon="gapps" data-label="Google Apps">
+                                <a class="omnibar-menu-link" href="https://admin.google.com/a/slatedemo.com" title="Google Apps">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        Google Apps
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="https://mail.google.com/a/slatedemo.com" data-icon="gmail" data-label="Email">
+                                <a class="omnibar-menu-link" href="https://mail.google.com/a/slatedemo.com" title="Email">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Google Apps</small> Email
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="https://drive.google.com/a/slatedemo.com" data-icon="gdrive" data-label="Drive">
+                                <a class="omnibar-menu-link" href="https://drive.google.com/a/slatedemo.com" title="Drive">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Google Apps</small> Drive
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="https://www.google.com/calendar/hosted/slatedemo.com" data-icon="gcal" data-label="Calendar">
+                                <a class="omnibar-menu-link" href="https://www.google.com/calendar/hosted/slatedemo.com" title="Calendar">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Google Apps</small> Calendar
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="https://sites.google.com/a/slatedemo.com" data-icon="gsites" data-label="Sites">
+                                <a class="omnibar-menu-link" href="https://sites.google.com/a/slatedemo.com" title="Sites">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Google Apps</small> Sites
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="https://slatedemo.instructure.com" data-icon="network" data-label="Canvas">
+                                <a class="omnibar-menu-link" href="https://slatedemo.instructure.com" title="Canvas">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        Canvas
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="http://example.com/" data-icon="tools" data-label="Example Tool">
+                                <a class="omnibar-menu-link" href="http://example.com/" title="Example Tool">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        Example Tool
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#progress/narratives" data-icon="tools" data-label="Narratives">
+                                <a class="omnibar-menu-link" href="/manage#progress/narratives" title="Narratives">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Standards-Based Grading</small> Narratives
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#progress/standards" data-icon="tools" data-label="Standards">
+                                <a class="omnibar-menu-link" href="/manage#progress/standards" title="Standards">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Standards-Based Grading</small> Standards
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#progress/interims" data-icon="tools" data-label="Interims">
+                                <a class="omnibar-menu-link" href="/manage#progress/interims" title="Interims">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Standards-Based Grading</small> Interims
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/sbg/dashboard" data-icon="tools" data-label="Growth Dashboard">
+                                <a class="omnibar-menu-link" href="/sbg/dashboard" title="Growth Dashboard">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Standards-Based Grading</small> Growth Dashboard
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/cbl/teacher-dashboard" data-icon="tools" data-label="Teacher Dashboard">
+                                <a class="omnibar-menu-link" href="/cbl/teacher-dashboard" title="Teacher Dashboard">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Competency-Based Learning</small> Teacher Dashboard
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/cbl/exports/demonstrations.csv" data-icon="tools" data-label="Demonstrations">
+                                <a class="omnibar-menu-link" href="/cbl/exports/demonstrations.csv" title="Demonstrations">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Competency-Based Learning » Exports</small> Demonstrations
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/cbl/exports/progress.csv" data-icon="tools" data-label="Progress">
+                                <a class="omnibar-menu-link" href="/cbl/exports/progress.csv" title="Progress">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Competency-Based Learning » Exports</small> Progress
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/manage#assets" data-icon="tools" data-label="Manager">
+                                <a class="omnibar-menu-link" href="/manage#assets" title="Manager">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Assets</small> Manager
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/assets?set=mine" data-icon="tools" data-label="My Assets">
+                                <a class="omnibar-menu-link" href="/assets?set=mine" title="My Assets">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Assets</small> My Assets
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/assets?set=classroom" data-icon="tools" data-label="Classroom Assets">
+                                <a class="omnibar-menu-link" href="/assets?set=classroom" title="Classroom Assets">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        <small class="muted">Assets</small> Classroom Assets
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="omnibar-item" data-href="/people/bill" data-iconsrc="http://www.fillmurray.com/48/48" data-label="Bill Murray" data-shortlabel="Bill">
+                    <a class="omnibar-link" href="/people/bill" title="Bill Murray"><img alt="Bill Murray" class="omnibar-link-image" height="24" src="http://www.fillmurray.com/48/48" width="24"> Bill</a>
+
+                    <div class="omnibar-menu-ct">
+                        <ul class="omnibar-menu">
+                            <li class="omnibar-menu-item" data-href="/people/bill" data-icon="user" data-label="My Profile">
+                                <a class="omnibar-menu-link" href="/people/bill" title="My Profile">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        My Profile
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/profile" data-icon="gearhead" data-label="Edit Profile">
+                                <a class="omnibar-menu-link" href="/profile" title="Edit Profile">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        Edit Profile
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/drafts" data-icon="writing" data-label="My Drafts">
+                                <a class="omnibar-menu-link" href="/drafts" title="My Drafts">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        My Drafts
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+
+                            <li class="omnibar-menu-item" data-href="/logout?return=%2Fprofile%3Fstatus%3DphotoUploaded" data-icon="logout" data-label="Log Out">
+                                <a class="omnibar-menu-link" href="/logout?return=%2Fprofile%3Fstatus%3DphotoUploaded" title="Log Out">
+                                <figure class="omnibar-menu-icon">
+                                    <div class="omnibar-menu-image-ct"></div>
+
+                                    <figcaption class="omnibar-menu-label">
+                                        Log Out
+                                    </figcaption>
+                                </figure></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div><!--
+        <script type="text/javascript">
+            var Ext = Ext || {}; // Ext namespace won't be defined yet...
+    
+            // This function is called by the Microloader after it has performed basic
+            // device detection. The results are provided in the "tags" object. You can
+            // use these tags here or even add custom tags. These can be used by platform
+            // filters in your manifest or by platformConfig expressions in your app.
+            //
+            Ext.beforeLoad = function (tags) {
+                var s = location.search,  // the query string (ex "?foo=1&bar")
+                    profile;
+    
+                // For testing look for "?classic" or "?modern" in the URL to override
+                // device detection default.
+                //
+                if (s.match(/\bclassic\b/)) {
+                    profile = 'classic';
+                }
+                else if (s.match(/\bmodern\b/)) {
+                    profile = 'modern';
+                }
+                else {
+                    profile = tags.desktop ? 'classic' : 'modern';
+                    //profile = tags.phone ? 'modern' : 'classic';
+                }
+    
+                Ext.manifest = profile; // this name must match a build profile name
+    
+                // This function is called once the manifest is available but before
+                // any data is pulled from it.
+                //
+                //return function (manifest) {
+                    // peek at / modify the manifest object
+                //};
+            };
+        </script>
+        -->
+    <!-- The line below must be kept intact for Sencha Cmd to build your application -->
+    <script data-app="19198d7d-3ac8-4b69-8f6f-478691855232" id="microloader" src="bootstrap.js" type="text/javascript"></script>
+</body>
 </html>
