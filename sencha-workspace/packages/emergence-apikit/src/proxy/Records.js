@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 /* This class has altered for backwards compatibility with ExtJS 4.2.1 */
-Ext.define('Emergence.ext.proxy.Records', {
-    extend: 'Jarvus.ext.proxy.API',
+Ext.define('Emergence.proxy.Records', {
+    extend: 'Jarvus.proxy.API',
     alias: 'proxy.records',
     requires: [
         'Emergence.util.API',
@@ -28,6 +28,7 @@ Ext.define('Emergence.ext.proxy.Records', {
     startParam: 'offset',
     limitParam: 'limit',
     sortParam: 'sort',
+    filterParam: 'q',
     simpleSortMode: true,
     reader: {
         type: 'json',
@@ -54,7 +55,7 @@ Ext.define('Emergence.ext.proxy.Records', {
                 params: Ext.applyIf(params, me.getParams(operation)),
                 headers: me.headers
             });
-        
+
         //compatibility for ExtJS 4.2.1
         if (Ext.isFunction(request.setMethod)) {
             request.setMethod(me.getMethod(request));
@@ -68,8 +69,7 @@ Ext.define('Emergence.ext.proxy.Records', {
             request.url = (operation.config.url || me.buildUrl(request));
         }
 
-        // compatibility with Jarvus.ext.override.proxy.DirtyParams since we're entirely replacing the buildRequest
-        // method it overrides
+        // compatibility with Jarvus.ext.override.proxy.DirtyParams since we're entirely replacing the buildRequest method it overrides
         if (Ext.isFunction(me.clearParamsDirty)) {
             me.clearParamsDirty();
         }
@@ -115,16 +115,7 @@ Ext.define('Emergence.ext.proxy.Records', {
             summary = me.getSummary(),
             idParam = me.idParam,
             id = (typeof operation.getId == 'function' ? operation.getId() : operation.id),
-            params = me.callParent(arguments),
-            filters = operation.getFilters ? operation.getFilters() : null;
-
-        if (filters) {
-            delete params.filter;
-
-            params.q = filters.map(function(filter) {
-                return filter.getProperty() + ':' + filter.getValue();
-            }).join( ' ');
-        }
+            params = me.callParent(arguments);
 
         if (id && idParam != 'ID') {
             params[idParam] = id;
@@ -143,5 +134,19 @@ Ext.define('Emergence.ext.proxy.Records', {
         }
 
         return params;
+    },
+
+    encodeFilters: function(filters) {
+        var out = [],
+            length = filters.length,
+            i = 0, filterData, filterValue;
+
+        for (; i < length; i++) {
+            filterData = filters[i].serialize();
+            filterValue = filterData.value;
+            out[i] = filterData.property+ ':' + (filterValue.match(/\s/) ? '"' + filterValue + '"' : filterValue);
+        }
+
+        return out.join(' ');
     }
 });
