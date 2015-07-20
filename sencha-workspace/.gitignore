@@ -1,3 +1,4 @@
 ext-*/
 build/
 packages/*
+!packages/saki-grid-multisearch-5/*
