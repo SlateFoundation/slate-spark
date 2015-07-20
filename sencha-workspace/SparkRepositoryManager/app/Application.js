@@ -26,7 +26,7 @@ Ext.define('SparkRepositoryManager.Application', {
     ],
 
     extend: 'Ext.app.Application',
-    
+
     name: 'SparkRepositoryManager',
 
     controllers: [
@@ -75,44 +75,50 @@ Ext.define('SparkRepositoryManager.Application', {
     ],
 
     launch: function () {
-        var me = this;
+        var me = this,
+            pageParams = Ext.Object.fromQueryString(location.search);
 
-        if (location.hostname.indexOf('matchbooklearning') !== -1) {
-            (function (i, s, o, g, r, a, m) {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function () {
-                        (i[r].q = i[r].q || []).push(arguments)
-                    }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        if (pageParams.apiHost) {
+            Emergence.util.API.setHostname(pageParams.apiHost);
+        } else {
 
-            if (SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
-                ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
-            } else {
-                ga('create', 'UA-63172269-1', 'auto');
+            if (location.hostname.indexOf('matchbooklearning') !== -1) {
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r;
+                    i[r] = i[r] || function () {
+                            (i[r].q = i[r].q || []).push(arguments)
+                        }, i[r].l = 1 * new Date();
+                    a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                    a.async = 1;
+                    a.src = g;
+                    m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                if (SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
+                    ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
+                } else {
+                    ga('create', 'UA-63172269-1', 'auto');
+                }
+
+                ga('send', 'pageview');
+
+                Ext.Error.handle = function (err) {
+                    ga('send', 'exception', {
+                        'exDescription': err.msg,
+                        'exFatal':       true,
+                        'appName':       err.sourceClass,
+                        'appVersion':    err.sourceMethod
+                    });
+                };
             }
 
-            ga('send', 'pageview');
-
-            Ext.Error.handle = function (err) {
-                ga('send', 'exception', {
-                    'exDescription': err.msg,
-                    'exFatal':       true,
-                    'appName':       err.sourceClass,
-                    'appVersion':    err.sourceMethod
-                });
-            };
-        }
-
-        // TODO: Remove this before production
-        if (location.hostname.indexOf('slate.ninja') === -1 &&
-            location.hostname.indexOf('slatepowered') === -1 &&
-            location.hostname.indexOf('matchbooklearning') === -1) {
-            Emergence.util.API.setHostname('slate.ninja');
+            // TODO: Remove this before production
+            if (location.hostname.indexOf('slate.ninja') === -1 &&
+                location.hostname.indexOf('slatepowered') === -1 &&
+                location.hostname.indexOf('matchbooklearning') === -1) {
+                Emergence.util.API.setHostname('slate.ninja');
+            }
         }
 
         Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardsTree', 'AssessmentTypes'], function() {
