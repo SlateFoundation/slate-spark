@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.widget.StandardField', {
+Ext.define('SparkRepositoryManager.widget.StandardField', {
     extend: 'Ext.form.field.Tag',
 
     xtype: 's2m.standardfield',

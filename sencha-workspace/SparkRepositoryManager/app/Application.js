@@ -1,33 +1,33 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.Application', {
+Ext.define('SparkRepositoryManager.Application', {
     requires: [
         'Emergence.util.API',
         'Ext.Error',
         'Ext.data.StoreManager',
         'Ext.plugin.Viewport',
-        'Spark2Manager.overrides.AbstractAPI',
-        'Spark2Manager.overrides.grid.RowEditor',
-        'Spark2Manager.store.AssessmentTypes',
-        'Spark2Manager.store.Assessments',
-        'Spark2Manager.store.Comments',
-        'Spark2Manager.store.GradeLevels',
-        'Spark2Manager.store.Links',
-        'Spark2Manager.store.Ratings',
-        'Spark2Manager.store.StandardMappings',
-        'Spark2Manager.store.StandardRefs',
-        'Spark2Manager.store.Standards',
-        'Spark2Manager.store.StandardsTree',
-        'Spark2Manager.store.TagMaps',
-        'Spark2Manager.store.Tags',
-        'Spark2Manager.store.ConferenceResources',
-        'Spark2Manager.store.VendorDomains',
-        'Spark2Manager.store.Vendors'
+        'SparkRepositoryManager.overrides.AbstractAPI',
+        'SparkRepositoryManager.overrides.grid.RowEditor',
+        'SparkRepositoryManager.store.AssessmentTypes',
+        'SparkRepositoryManager.store.Assessments',
+        'SparkRepositoryManager.store.Comments',
+        'SparkRepositoryManager.store.GradeLevels',
+        'SparkRepositoryManager.store.Links',
+        'SparkRepositoryManager.store.Ratings',
+        'SparkRepositoryManager.store.StandardMappings',
+        'SparkRepositoryManager.store.StandardRefs',
+        'SparkRepositoryManager.store.Standards',
+        'SparkRepositoryManager.store.StandardsTree',
+        'SparkRepositoryManager.store.TagMaps',
+        'SparkRepositoryManager.store.Tags',
+        'SparkRepositoryManager.store.ConferenceResources',
+        'SparkRepositoryManager.store.VendorDomains',
+        'SparkRepositoryManager.store.Vendors'
     ],
 
     extend: 'Ext.app.Application',
     
-    name: 'Spark2Manager',
+    name: 'SparkRepositoryManager',
 
     controllers: [
         'Learn',

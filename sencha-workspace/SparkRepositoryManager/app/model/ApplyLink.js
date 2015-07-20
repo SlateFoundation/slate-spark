@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.ApplyLink', {
+Ext.define('SparkRepositoryManager.model.ApplyLink', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.ext.proxy.Records',
+        'Emergence.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
 

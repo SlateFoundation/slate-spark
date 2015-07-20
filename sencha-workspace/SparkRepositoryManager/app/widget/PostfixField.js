@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.widget.PostfixField', {
+Ext.define('SparkRepositoryManager.widget.PostfixField', {
     extend: 'Ext.form.field.Number',
 
     xtype: 's2m.postfixfield',

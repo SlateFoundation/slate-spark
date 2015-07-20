@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.Ratings', {
+Ext.define('SparkRepositoryManager.store.Ratings', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.Rating'
+        'SparkRepositoryManager.model.Rating'
     ],
 
-    model: 'Spark2Manager.model.Rating',
+    model: 'SparkRepositoryManager.model.Rating',
 
     autoSync: true
 });

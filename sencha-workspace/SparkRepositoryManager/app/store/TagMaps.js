@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.TagMaps', {
+Ext.define('SparkRepositoryManager.store.TagMaps', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.TagMap'
+        'SparkRepositoryManager.model.TagMap'
     ],
 
-    model: 'Spark2Manager.model.TagMap',
+    model: 'SparkRepositoryManager.model.TagMap',
 
     autoSync: true
 });

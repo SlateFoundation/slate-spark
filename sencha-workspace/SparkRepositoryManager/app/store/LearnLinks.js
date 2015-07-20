@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.LearnLinks', {
+Ext.define('SparkRepositoryManager.store.LearnLinks', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.LearnLink'
+        'SparkRepositoryManager.model.LearnLink'
     ],
 
-    model: 'Spark2Manager.model.LearnLink',
+    model: 'SparkRepositoryManager.model.LearnLink',
 
     autoSync: true,
 

@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.GradeLevels', {
+Ext.define('SparkRepositoryManager.store.GradeLevels', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.GradeLevel'
+        'SparkRepositoryManager.model.GradeLevel'
     ],
 
-    model: 'Spark2Manager.model.GradeLevel',
+    model: 'SparkRepositoryManager.model.GradeLevel',
 
     autoSync: true
 });

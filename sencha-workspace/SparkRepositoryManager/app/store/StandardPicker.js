@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.store.StandardPicker', {
+Ext.define('SparkRepositoryManager.store.StandardPicker', {
     extend: 'Ext.data.ArrayStore',
 
     fields: [

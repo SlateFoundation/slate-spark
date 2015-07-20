@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.GuidingQuestions', {
+Ext.define('SparkRepositoryManager.store.GuidingQuestions', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.GuidingQuestion'
+        'SparkRepositoryManager.model.GuidingQuestion'
     ],
 
-    model: 'Spark2Manager.model.GuidingQuestion',
+    model: 'SparkRepositoryManager.model.GuidingQuestion',
 
     autoSync: true,
 

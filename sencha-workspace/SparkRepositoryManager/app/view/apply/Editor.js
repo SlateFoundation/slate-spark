@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.apply.Editor', {
+Ext.define('SparkRepositoryManager.view.apply.Editor', {
     requires: [
         'Ext.Array',
         'Ext.ComponentQuery',
@@ -13,8 +13,8 @@ Ext.define('Spark2Manager.view.apply.Editor', {
         'Ext.layout.container.Anchor',
         'Ext.layout.container.Fit',
         'Ext.layout.container.VBox',
-        'Spark2Manager.plugin.FieldReplicator',
-        'Spark2Manager.widget.DurationField'
+        'SparkRepositoryManager.plugin.FieldReplicator',
+        'SparkRepositoryManager.widget.DurationField'
     ],
     extend:   'Ext.panel.Panel',
 

@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.ApplyLinks', {
+Ext.define('SparkRepositoryManager.store.ApplyLinks', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.ApplyLink'
+        'SparkRepositoryManager.model.ApplyLink'
     ],
 
-    model: 'Spark2Manager.model.ApplyLink',
+    model: 'SparkRepositoryManager.model.ApplyLink',
 
     autoSync: true
 });

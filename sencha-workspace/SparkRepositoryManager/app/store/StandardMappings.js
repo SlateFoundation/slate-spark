@@ -1,11 +1,11 @@
-Ext.define('Spark2Manager.store.StandardMappings', {
+Ext.define('SparkRepositoryManager.store.StandardMappings', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.StandardMapping'
+        'SparkRepositoryManager.model.StandardMapping'
     ],
 
-    model: 'Spark2Manager.model.StandardMapping',
+    model: 'SparkRepositoryManager.model.StandardMapping',
 
     autoSync: true
 });

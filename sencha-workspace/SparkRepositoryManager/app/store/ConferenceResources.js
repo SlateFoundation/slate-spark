@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.ConferenceResources', {
+Ext.define('SparkRepositoryManager.store.ConferenceResources', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.ConferenceResource'
+        'SparkRepositoryManager.model.ConferenceResource'
     ],
 
-    model: 'Spark2Manager.model.ConferenceResource',
+    model: 'SparkRepositoryManager.model.ConferenceResource',
 
     autoSync: true,
 

@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.Tag', {
+Ext.define('SparkRepositoryManager.model.Tag', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.ext.proxy.Records',
+        'Emergence.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
 

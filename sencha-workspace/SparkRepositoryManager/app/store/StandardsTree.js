@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.store.StandardsTree', {
+Ext.define('SparkRepositoryManager.store.StandardsTree', {
     requires: [
         'Ext.data.proxy.Ajax',
         'Ext.data.reader.Json',

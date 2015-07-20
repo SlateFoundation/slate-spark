@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.StandardMapping', {
+Ext.define('SparkRepositoryManager.model.StandardMapping', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.ext.proxy.Records',
+        'Emergence.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
 

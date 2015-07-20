@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.Comments', {
+Ext.define('SparkRepositoryManager.store.Comments', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.Comment'
+        'SparkRepositoryManager.model.Comment'
     ],
 
-    model: 'Spark2Manager.model.Comment',
+    model: 'SparkRepositoryManager.model.Comment',
 
     autoSync: true
 });

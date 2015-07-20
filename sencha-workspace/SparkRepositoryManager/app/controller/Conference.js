@@ -1,7 +1,7 @@
-Ext.define('Spark2Manager.controller.Conference', {
+Ext.define('SparkRepositoryManager.controller.Conference', {
     requires: [
-        'Spark2Manager.store.GuidingQuestions',
-        'Spark2Manager.view.StandardPicker',
+        'SparkRepositoryManager.store.GuidingQuestions',
+        'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
 
@@ -107,7 +107,7 @@ Ext.define('Spark2Manager.controller.Conference', {
             standards = record.get('Standards');
         }
 
-        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+        standardsPicker = new Ext.create('SparkRepositoryManager.view.StandardPicker', {
             standards: standards,
             record: record,
             listeners: {

@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.overrides.AbstractAPI', {
+Ext.define('SparkRepositoryManager.overrides.AbstractAPI', {
     override: 'Jarvus.util.AbstractAPI',
 
     requires: [

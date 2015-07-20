@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.Links', {
+Ext.define('SparkRepositoryManager.store.Links', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.Link'
+        'SparkRepositoryManager.model.Link'
     ],
 
-    model: 'Spark2Manager.model.Link',
+    model: 'SparkRepositoryManager.model.Link',
 
     autoSync: true
 });

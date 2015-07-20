@@ -1,9 +1,9 @@
-Ext.define('Spark2Manager.controller.Apply', {
+Ext.define('SparkRepositoryManager.controller.Apply', {
     requires: [
         'Ext.tip.QuickTipManager',
         'Ext.window.MessageBox',
-        'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.StandardPicker'
+        'SparkRepositoryManager.store.ApplyProjects',
+        'SparkRepositoryManager.view.StandardPicker'
     ],
 
     extend: 'Ext.app.Controller',
@@ -118,7 +118,7 @@ Ext.define('Spark2Manager.controller.Apply', {
             standards = record.get('Standards');
         }
 
-        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+        standardsPicker = new Ext.create('SparkRepositoryManager.view.StandardPicker', {
             standards: standards,
             record: record,
             listeners: {

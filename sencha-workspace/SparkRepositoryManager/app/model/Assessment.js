@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.model.Assessment', {
+Ext.define('SparkRepositoryManager.model.Assessment', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.ext.proxy.Records',
+        'Emergence.proxy.Records',
         'Ext.data.identifier.Negative',
         'Ext.data.validator.Presence'
     ],

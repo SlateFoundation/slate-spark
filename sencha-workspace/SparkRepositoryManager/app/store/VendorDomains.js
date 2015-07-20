@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.VendorDomains', {
+Ext.define('SparkRepositoryManager.store.VendorDomains', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.VendorDomain'
+        'SparkRepositoryManager.model.VendorDomain'
     ],
 
-    model: 'Spark2Manager.model.VendorDomain',
+    model: 'SparkRepositoryManager.model.VendorDomain',
 
     autoSync: true
 });

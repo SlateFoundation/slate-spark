@@ -4,12 +4,12 @@
  * Sencha Cmd when upgrading.
  */
 Ext.application({
-    name: 'Spark2Manager',
+    name: 'SparkRepositoryManager',
 
-    extend: 'Spark2Manager.Application'
+    extend: 'SparkRepositoryManager.Application'
 	
     //-------------------------------------------------------------------------
-    // Most customizations should be made to Spark2Manager.Application. If you need to
+    // Most customizations should be made to SparkRepositoryManager.Application. If you need to
     // customize this file, doing so below this section reduces the likelihood
     // of merge conflicts when upgrading to new versions of Sencha Cmd.
     //-------------------------------------------------------------------------

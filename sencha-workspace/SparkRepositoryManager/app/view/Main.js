@@ -1,16 +1,16 @@
-Ext.define('Spark2Manager.view.Main', {
+Ext.define('SparkRepositoryManager.view.Main', {
     extend: 'Ext.tab.Panel',
     xtype: 'app-main',
 
     requires: [
         'Ext.util.History',
-        'Spark2Manager.view.apply.Panel',
-        'Spark2Manager.view.assess.Panel',
-        'Spark2Manager.view.conference.Panel',
-        'Spark2Manager.view.learn.Panel',
-        'Spark2Manager.view.pbl.Panel',
-        'Spark2Manager.view.resource.Panel',
-        'Spark2Manager.view.resource.Panel'
+        'SparkRepositoryManager.view.apply.Panel',
+        'SparkRepositoryManager.view.assess.Panel',
+        'SparkRepositoryManager.view.conference.Panel',
+        'SparkRepositoryManager.view.learn.Panel',
+        'SparkRepositoryManager.view.pbl.Panel',
+        'SparkRepositoryManager.view.resource.Panel',
+        'SparkRepositoryManager.view.resource.Panel'
     ],
 
     alias: 'mainview',

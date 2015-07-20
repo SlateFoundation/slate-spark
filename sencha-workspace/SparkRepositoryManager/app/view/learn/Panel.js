@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.learn.Panel', {
+Ext.define('SparkRepositoryManager.view.learn.Panel', {
     requires: [
         'Ext.Array',
         'Ext.Date',
@@ -14,8 +14,8 @@ Ext.define('Spark2Manager.view.learn.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
-        'Spark2Manager.Util',
-        'Spark2Manager.widget.StandardField'
+        'SparkRepositoryManager.Util',
+        'SparkRepositoryManager.widget.StandardField'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -127,7 +127,7 @@ Ext.define('Spark2Manager.view.learn.Panel', {
                 listeners: {
                     change: {
                         fn: function () {
-                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\LearnLink');
+                            SparkRepositoryManager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\LearnLink');
                         },
                         buffer: 1000
                     }

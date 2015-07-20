@@ -1,10 +1,10 @@
-Ext.define('Spark2Manager.controller.Assess', {
+Ext.define('SparkRepositoryManager.controller.Assess', {
     requires: [
-        'Spark2Manager.store.Assessments',
-        'Spark2Manager.store.AssessmentTypes',
-        'Spark2Manager.store.Vendors',
-        'Spark2Manager.store.VendorDomains',
-        'Spark2Manager.view.StandardPicker',
+        'SparkRepositoryManager.store.Assessments',
+        'SparkRepositoryManager.store.AssessmentTypes',
+        'SparkRepositoryManager.store.Vendors',
+        'SparkRepositoryManager.store.VendorDomains',
+        'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
 
@@ -113,7 +113,7 @@ Ext.define('Spark2Manager.controller.Assess', {
             standards = record.get('Standards');
         }
 
-        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+        standardsPicker = new Ext.create('SparkRepositoryManager.view.StandardPicker', {
             standards: standards,
             record: record,
             listeners: {

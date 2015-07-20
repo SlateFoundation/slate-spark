@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.resource.Panel', {
+Ext.define('SparkRepositoryManager.view.resource.Panel', {
     requires: [
         'Ext.Array',
         'Ext.XTemplate',
@@ -14,8 +14,8 @@ Ext.define('Spark2Manager.view.resource.Panel', {
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
-        'Spark2Manager.Util',
-        'Spark2Manager.widget.StandardField'
+        'SparkRepositoryManager.Util',
+        'SparkRepositoryManager.widget.StandardField'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -130,7 +130,7 @@ Ext.define('Spark2Manager.view.resource.Panel', {
                                 form = me.up().getForm(),
                                 error;
 
-                            Spark2Manager.Util.getMetadata(me.getValue(), false, function(response) {
+                            SparkRepositoryManager.Util.getMetadata(me.getValue(), false, function(response) {
                                 try {
                                     response = JSON.parse(response.responseText);
 

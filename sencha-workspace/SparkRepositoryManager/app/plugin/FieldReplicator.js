@@ -12,7 +12,7 @@
  }
  * </code></pre>
  */
-Ext.define('Spark2Manager.plugin.FieldReplicator', {
+Ext.define('SparkRepositoryManager.plugin.FieldReplicator', {
     requires: [
         'Ext.plugin.Abstract',
         'Ext.Function'

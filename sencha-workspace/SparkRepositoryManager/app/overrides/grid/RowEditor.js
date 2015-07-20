@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.overrides.grid.RowEditor', {
+Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
     override: 'Ext.grid.RowEditor',
 
     requires: [

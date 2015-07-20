@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.ApplyToDos', {
+Ext.define('SparkRepositoryManager.store.ApplyToDos', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.ApplyToDo'
+        'SparkRepositoryManager.model.ApplyToDo'
     ],
 
-    model: 'Spark2Manager.model.ApplyToDo',
+    model: 'SparkRepositoryManager.model.ApplyToDo',
 
     autoSync: true
 });

@@ -1,4 +1,4 @@
-# Spark2Manager
+# SparkRepositoryManager
 
 This folder is primarily a container for the top-level pieces of the application.
 While you can remove some files and folders that this application does not use,
@@ -32,21 +32,21 @@ process.
 
 # Other Folders
 
-## Spark2Manager/app
+## SparkRepositoryManager/app
 
 This folder contains the JavaScript files for the application.
 
-## Spark2Manager/resources
+## SparkRepositoryManager/resources
 
 This folder contains static resources (typically an `"images"` folder as well).
 
-## Spark2Manager/overrides
+## SparkRepositoryManager/overrides
 
 This folder contains override classes. All overrides in this folder will be 
 automatically included in application builds if the target class of the override
 is loaded.
 
-## Spark2Manager/sass
+## SparkRepositoryManager/sass
 
-This folder contains the styling for the application's views. See Spark2Manager/sass/Readme.md
+This folder contains the styling for the application's views. See SparkRepositoryManager/sass/Readme.md
 for details.

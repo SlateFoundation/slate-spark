@@ -1,9 +1,9 @@
-Ext.define('Spark2Manager.controller.Resource', {
+Ext.define('SparkRepositoryManager.controller.Resource', {
     requires: [
-        'Spark2Manager.store.Vendors',
-        'Spark2Manager.store.VendorDomains',
-        'Spark2Manager.store.ConferenceResources',
-        'Spark2Manager.view.StandardPicker',
+        'SparkRepositoryManager.store.Vendors',
+        'SparkRepositoryManager.store.VendorDomains',
+        'SparkRepositoryManager.store.ConferenceResources',
+        'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
 
@@ -111,7 +111,7 @@ Ext.define('Spark2Manager.controller.Resource', {
             standards = record.get('Standards');
         }
 
-        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+        standardsPicker = new Ext.create('SparkRepositoryManager.view.StandardPicker', {
             standards: standards,
             record: record,
             listeners: {

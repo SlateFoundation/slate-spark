@@ -1,9 +1,9 @@
-Ext.define('Spark2Manager.controller.Learn', {
+Ext.define('SparkRepositoryManager.controller.Learn', {
     requires: [
-        'Spark2Manager.store.LearnLinks',
-        'Spark2Manager.store.Vendors',
-        'Spark2Manager.store.VendorDomains',
-        'Spark2Manager.view.StandardPicker',
+        'SparkRepositoryManager.store.LearnLinks',
+        'SparkRepositoryManager.store.Vendors',
+        'SparkRepositoryManager.store.VendorDomains',
+        'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
     extend: 'Ext.app.Controller',
@@ -114,7 +114,7 @@ Ext.define('Spark2Manager.controller.Learn', {
             standards = record.get('Standards');
         }
 
-        standardsPicker = new Ext.create('Spark2Manager.view.StandardPicker', {
+        standardsPicker = new Ext.create('SparkRepositoryManager.view.StandardPicker', {
             standards: standards,
             record: record,
             listeners: {

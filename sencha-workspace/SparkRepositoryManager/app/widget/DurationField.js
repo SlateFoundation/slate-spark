@@ -1,8 +1,8 @@
-Ext.define('Spark2Manager.widget.DurationField', {
+Ext.define('SparkRepositoryManager.widget.DurationField', {
     extend: 'Ext.form.FieldContainer',
 
     requires: [
-        'Spark2Manager.widget.PostfixField',
+        'SparkRepositoryManager.widget.PostfixField',
         'Ext.form.FieldContainer',
         'Ext.layout.container.Fit',
         'Ext.layout.container.HBox'
@@ -14,7 +14,7 @@ Ext.define('Spark2Manager.widget.DurationField', {
 
     initComponent: function() {
         var me = this,
-            hourField = Ext.create('Spark2Manager.widget.PostfixField', {
+            hourField = Ext.create('SparkRepositoryManager.widget.PostfixField', {
                 maxValue: 8765,
                 name: 'hours',
                 minValue: 0,
@@ -32,7 +32,7 @@ Ext.define('Spark2Manager.widget.DurationField', {
                     }
                 }
             }),
-            minuteField = Ext.create('Spark2Manager.widget.PostfixField', {
+            minuteField = Ext.create('SparkRepositoryManager.widget.PostfixField', {
                 width: 120,
                 hourField: hourField,
                 name: 'minutes',

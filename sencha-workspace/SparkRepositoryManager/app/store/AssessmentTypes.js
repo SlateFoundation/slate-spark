@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.AssessmentTypes', {
+Ext.define('SparkRepositoryManager.store.AssessmentTypes', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.AssessmentType'
+        'SparkRepositoryManager.model.AssessmentType'
     ],
 
-    model: 'Spark2Manager.model.AssessmentType',
+    model: 'SparkRepositoryManager.model.AssessmentType',
 
     autoSync: true
 });

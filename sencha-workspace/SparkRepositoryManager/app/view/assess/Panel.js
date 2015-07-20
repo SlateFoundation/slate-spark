@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.assess.Panel', {
+Ext.define('SparkRepositoryManager.view.assess.Panel', {
     requires: [
         'Ext.Array',
         'Ext.XTemplate',
@@ -14,8 +14,8 @@ Ext.define('Spark2Manager.view.assess.Panel', {
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Toolbar',
-        'Spark2Manager.Util',
-        'Spark2Manager.widget.StandardField'
+        'SparkRepositoryManager.Util',
+        'SparkRepositoryManager.widget.StandardField'
     ],
 
     extend: 'Ext.grid.Panel',
@@ -162,7 +162,7 @@ Ext.define('Spark2Manager.view.assess.Panel', {
                 listeners: {
                     change: {
                         fn: function () {
-                            Spark2Manager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\Assessment');
+                            SparkRepositoryManager.Util.autoPopulateMetadata(this.up('roweditor'), 'Spark2\\Assessment');
                         },
                         buffer: 1000
                     }

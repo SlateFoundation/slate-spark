@@ -1,14 +1,14 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('Spark2Manager.store.Vendors', {
+Ext.define('SparkRepositoryManager.store.Vendors', {
     extend: 'Ext.data.Store',
 
     requires: [
-        'Spark2Manager.model.Vendor',
-        'Emergence.ext.proxy.Records'
+        'SparkRepositoryManager.model.Vendor',
+        'Emergence.proxy.Records'
     ],
 
-    model: 'Spark2Manager.model.Vendor',
+    model: 'SparkRepositoryManager.model.Vendor',
 
     autoSync: true,
 

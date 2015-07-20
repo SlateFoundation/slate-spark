@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.apply.Panel', {
+Ext.define('SparkRepositoryManager.view.apply.Panel', {
 
     extend: 'Ext.form.Panel',
 
@@ -25,9 +25,9 @@ Ext.define('Spark2Manager.view.apply.Panel', {
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
         'Ext.window.MessageBox',
-        'Spark2Manager.store.ApplyProjects',
-        'Spark2Manager.view.apply.Editor',
-        'Spark2Manager.widget.StandardField'
+        'SparkRepositoryManager.store.ApplyProjects',
+        'SparkRepositoryManager.view.apply.Editor',
+        'SparkRepositoryManager.widget.StandardField'
     ],
 
     xtype: 's2m-apply-panel',

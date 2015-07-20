@@ -1,4 +1,4 @@
-Ext.define('Spark2Manager.view.conference.Panel', {
+Ext.define('SparkRepositoryManager.view.conference.Panel', {
     requires: [
         'Ext.Array',
         'Ext.data.JsonStore',
@@ -12,7 +12,7 @@ Ext.define('Spark2Manager.view.conference.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
-        'Spark2Manager.widget.StandardField'
+        'SparkRepositoryManager.widget.StandardField'
     ],
 
     extend: 'Ext.grid.Panel',

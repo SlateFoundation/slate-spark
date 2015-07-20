@@ -1,12 +1,12 @@
-Ext.define('Spark2Manager.view.StandardPicker', {
+Ext.define('SparkRepositoryManager.view.StandardPicker', {
     requires: [
         'Ext.Array',
         'Ext.form.field.Tag',
         'Ext.layout.container.Fit',
         'Ext.tree.Panel',
-        'Spark2Manager.controller.StandardPicker',
-        'Spark2Manager.widget.StandardField',
-        'Spark2Manager.store.StandardsTree'
+        'SparkRepositoryManager.controller.StandardPicker',
+        'SparkRepositoryManager.widget.StandardField',
+        'SparkRepositoryManager.store.StandardsTree'
     ],
 
     extend: 'Ext.window.Window',

@@ -1,7 +1,7 @@
 /**
  * Created by jmealo on 4/14/15.
  */
-Ext.define('Spark2Manager.view.pbl.Panel', {
+Ext.define('SparkRepositoryManager.view.pbl.Panel', {
     requires: [
         /* include classes required by this component here */
     ],
