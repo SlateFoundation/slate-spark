@@ -11,9 +11,6 @@
  * break compatibility then they should be left in this class or possibly moved to the classes that use this proxy
  * and added as a config attribute (eg. filterParam)
  *
- * NOTE: the encodeFilters() function was removed in the changes made to Emergence.proxy.Records, but it shouldn't
- * be an issue for the application if using an override of Emergence.proxy.Records retores it
- *
  */
 Ext.define('SparkRepositoryManager.proxy.Records', {
     extend: 'Emergence.proxy.Records',
