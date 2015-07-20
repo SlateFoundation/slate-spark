@@ -20,7 +20,7 @@ Ext.define('SparkRepositoryManager.proxy.Records', {
     alias: 'proxy.spark-records',
 
     /*
-     * This cinfig parameter was removed in the changes made to Emergence.proxy.Records, making it default
+     * This config parameter was removed in the changes made to Emergence.proxy.Records, making it default
      * to 'filter', which is the Ext.data.proxy.Server default.
      */
     filterParam: 'filter', //overrides Emergence.proxy.Records default of 'q'
