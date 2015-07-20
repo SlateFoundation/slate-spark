@@ -48,7 +48,8 @@
         "saki-grid-multisearch-5",
         "ext-ux",
         "emergence-apikit",
-        "jarvus-lazydata"
+        "jarvus-lazydata",
+        "jarvus-ext-searchfield"
     ],
 
     /**
