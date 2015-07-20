@@ -34,7 +34,8 @@ Ext.define('SparkRepositoryManager.Application', {
         'Conference',
         'Apply',
         'Assess',
-        'Resource'
+        'Resource',
+        'Sparkpoints'
     ],
 
     listen: {

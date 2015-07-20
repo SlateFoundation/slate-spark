@@ -42,6 +42,11 @@ Ext.define('SparkRepositoryManager.view.Main', {
             xtype: 's2m-assess-panel',
             title: 'Assess',
             itemId: 'assess-panel'
+        },
+        {
+            xtype: 'sparkpoints-panel',
+            title: 'Sparkpoints',
+            itemId: 'sparkpoints-panel'
         }/*,
         {
             xtype: 's2m-pbl-panel',
