@@ -3,7 +3,7 @@
 Ext.define('SparkRepositoryManager.model.GuidingQuestion', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.proxy.Records',
+        'SparkRepositoryManager.proxy.Records',
         'Ext.data.identifier.Negative',
         'Ext.data.validator.Presence'
     ],
@@ -75,7 +75,7 @@ Ext.define('SparkRepositoryManager.model.GuidingQuestion', {
 
     proxy: {
         autoSync: false,
-        type: 'records',
+        type: 'spark-records',
         url: '/spark2/guiding-questions'
     }
 });

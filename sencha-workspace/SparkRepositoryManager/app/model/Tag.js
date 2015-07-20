@@ -3,7 +3,7 @@
 Ext.define('SparkRepositoryManager.model.Tag', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.proxy.Records',
+        'SparkRepositoryManager.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
 
@@ -41,7 +41,7 @@ Ext.define('SparkRepositoryManager.model.Tag', {
     ],
 
     proxy: {
-        type: 'records',
+        type: 'spark-records',
         url: '/spark2/tags'
     }
 });

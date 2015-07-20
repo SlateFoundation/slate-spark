@@ -5,7 +5,7 @@ Ext.define('SparkRepositoryManager.store.Vendors', {
 
     requires: [
         'SparkRepositoryManager.model.Vendor',
-        'Emergence.proxy.Records'
+        'SparkRepositoryManager.proxy.Records'
     ],
 
     model: 'SparkRepositoryManager.model.Vendor',
@@ -14,7 +14,7 @@ Ext.define('SparkRepositoryManager.store.Vendors', {
 
     proxy: {
         noCache: false,
-        type: 'records',
+        type: 'spark-records',
         url: '/spark2/vendors',
         include: 'Domains'
     }

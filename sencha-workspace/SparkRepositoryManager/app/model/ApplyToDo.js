@@ -3,7 +3,7 @@
 Ext.define('SparkRepositoryManager.model.ApplyToDo', {
     extend: 'Ext.data.Model',
     requires: [
-        'Emergence.proxy.Records',
+        'SparkRepositoryManager.proxy.Records',
         'Ext.data.identifier.Negative'
     ],
 
@@ -54,7 +54,7 @@ Ext.define('SparkRepositoryManager.model.ApplyToDo', {
     ],
 
     proxy: {
-        type: 'records',
+        type: 'spark-records',
         url: '/spark2/apply-todos'
     }
 });

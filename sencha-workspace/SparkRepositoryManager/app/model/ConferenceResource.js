@@ -4,7 +4,7 @@ Ext.define('SparkRepositoryManager.model.ConferenceResource', {
     extend:   'Ext.data.Model',
 
     requires: [
-        'Emergence.proxy.Records',
+        'SparkRepositoryManager.proxy.Records',
         'Ext.data.identifier.Negative',
         'Ext.data.validator.Presence'
     ],
@@ -82,7 +82,7 @@ Ext.define('SparkRepositoryManager.model.ConferenceResource', {
     },
 
     proxy: {
-        type: 'records',
+        type: 'spark-records',
         url:  '/spark2/conference-resources'
     }
 });
