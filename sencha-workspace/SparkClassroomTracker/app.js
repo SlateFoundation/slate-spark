@@ -20,6 +20,9 @@ Ext.application({
     views: [
         'TitleBar',
         'gps.Main',
+        'gps.tabs.StudentWork',
+        'gps.tabs.Overview',
+        'gps.tabs.Assign',
         'TabBar'
     ],
 
@@ -35,8 +38,24 @@ Ext.application({
                     xtype: 'spark-gps'
                 },
                 {
-                    xtype: 'spark-tabbar',
-                    hidden: false // TODO: hide until section selected
+                    xtype: 'container',
+                    layout: 'fit',
+                    items: [
+                        {
+                            xtype: 'tabpanel',
+                            items: [
+                                {
+                                    xtype: 'spark-gps-tabs-studentwork'
+                                },
+                                {
+                                    xtype: 'spark-gps-tabs-overview'
+                                },
+                                {
+                                    xtype: 'spark-gps-tabs-assign'
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }

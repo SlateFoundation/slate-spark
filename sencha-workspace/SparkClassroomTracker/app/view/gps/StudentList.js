@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
             '</tpl>'
         ],
         grouped: true,
-        
+
         store: {
             fields: ['FirstName', 'LastName', 'Grade', 'Level', 'Status', 'Standards', 'Flag'],
             grouper: {
