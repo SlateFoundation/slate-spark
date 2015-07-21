@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.gps.tabs.Assign', {
+Ext.define('SparkClassroomTeacher.view.tabs.Assign', {
     extend: 'Ext.Container',
-    xtype: 'spark-gps-tabs-assign',
+    xtype: 'spark-tabs-assign',
 
     config: {
         title: 'Assign SparkPoints',

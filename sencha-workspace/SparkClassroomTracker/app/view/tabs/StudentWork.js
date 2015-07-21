@@ -1,7 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.gps.tabs.StudentWork', {
+Ext.define('SparkClassroomTeacher.view.tabs.StudentWork', {
     extend: 'Ext.Container',
-    xtype: 'spark-gps-tabs-studentwork',
+    xtype: 'spark-tabs-studentwork',
+    requires: [
+        'SparkClassroomTeacher.view.tabs.studentwork.Learn',
+        'SparkClassroomTeacher.view.tabs.studentwork.Conference',
+        'SparkClassroomTeacher.view.tabs.studentwork.Apply'
+    ],
 
     config: {
         title: 'Student Work',
@@ -26,16 +31,13 @@ Ext.define('SparkClassroomTeacher.view.gps.tabs.StudentWork', {
                                 },
                                 items: [
                                     {
-                                        title: 'Learn &amp; Practice',
-                                        html: 'stuff goes here '
+                                        xtype: 'spark-tabs-studentwork-learn'
                                     },
                                     {
-                                        title: 'Conference',
-                                        html: 'stuff goes here '
+                                        xtype: 'spark-tabs-studentwork-conference'
                                     },
                                     {
-                                        title: 'Apply',
-                                        html: 'stuff goes here '
+                                        xtype: 'spark-tabs-studentwork-apply'
                                     },
                                     {
                                         title: 'Assess',

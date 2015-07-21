@@ -19,12 +19,10 @@ Ext.application({
 
     views: [
         'TitleBar',
-        'gps.Main',
-        'gps.tabs.StudentWork',
-        'gps.tabs.Overview',
-        'gps.tabs.Assign',
-        'TabBar'
+        'TabBar',
+        'gps.Main'
     ],
+    controllers: ['Viewport'],
 
     config: {
         viewport: {
@@ -38,24 +36,7 @@ Ext.application({
                     xtype: 'spark-gps'
                 },
                 {
-                    xtype: 'container',
-                    layout: 'fit',
-                    items: [
-                        {
-                            xtype: 'tabpanel',
-                            items: [
-                                {
-                                    xtype: 'spark-gps-tabs-studentwork'
-                                },
-                                {
-                                    xtype: 'spark-gps-tabs-overview'
-                                },
-                                {
-                                    xtype: 'spark-gps-tabs-assign'
-                                }
-                            ]
-                        }
-                    ]
+                    xtype: 'spark-tabbar'
                 }
             ]
         }
