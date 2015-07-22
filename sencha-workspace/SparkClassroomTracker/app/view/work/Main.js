@@ -1,11 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.tabs.StudentWork', {
+Ext.define('SparkClassroomTeacher.view.work.Main', {
     extend: 'Ext.Container',
-    xtype: 'spark-tabs-studentwork',
+    xtype: 'spark-work',
     requires: [
-        'SparkClassroomTeacher.view.tabs.studentwork.Learn',
-        'SparkClassroomTeacher.view.tabs.studentwork.Conference',
-        'SparkClassroomTeacher.view.tabs.studentwork.Apply'
+        'SparkClassroomTeacher.view.work.learn.Main',
+        'SparkClassroomTeacher.view.work.conference.Main',
+        'SparkClassroomTeacher.view.work.apply.Main',
+        'SparkClassroomTeacher.view.work.assess.Main'
     ],
 
     config: {
@@ -31,17 +32,16 @@ Ext.define('SparkClassroomTeacher.view.tabs.StudentWork', {
                                 },
                                 items: [
                                     {
-                                        xtype: 'spark-tabs-studentwork-learn'
+                                        xtype: 'spark-work-learn'
                                     },
                                     {
-                                        xtype: 'spark-tabs-studentwork-conference'
+                                        xtype: 'spark-work-conference'
                                     },
                                     {
-                                        xtype: 'spark-tabs-studentwork-apply'
+                                        xtype: 'spark-work-apply'
                                     },
                                     {
-                                        title: 'Assess',
-                                        html: 'stuff goes here '
+                                        xtype: 'spark-work-assess'
                                     }
                                 ]
                             }

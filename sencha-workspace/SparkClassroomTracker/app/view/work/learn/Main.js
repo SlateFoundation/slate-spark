@@ -1,10 +1,13 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Conference', {
+Ext.define('SparkClassroomTeacher.view.work.learn.Main', {
     extend: 'Ext.Container',
-    xtype: 'spark-tabs-studentwork-conference',
+    xtype: 'spark-work-learn',
+    requires: [
+        'SparkClassroomTeacher.view.work.learn.AssignmentGrid'
+    ],
 
     config: {
-        title: 'Conference',
+        title: 'Learn &amp; Practice',
         items: [
             {
                 layout: 'hbox',
@@ -14,8 +17,7 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Conference', {
                         flex: 1,
                         items: [
                             {
-                                xtype: 'component',
-                                html: 'lets of standards stuff'
+                                xtype: 'spark-work-learn-assignmentgrid'
                             },
                             {
                                 xtype: 'component',
@@ -33,18 +35,12 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Conference', {
                         layout: 'vbox',
                         items: [
                             {
-                                xtype: 'container',
-                                layout: 'hbox',
-                                items: [
-                                    {
-                                        xtype: 'component',
-                                        html: 'timer'
-                                    },
-                                    {
-                                        xtype: 'button',
-                                        text: 'Pause Conference'
-                                    }
-                                ]
+                                xtype: 'component',
+                                html: 'required learns'
+                            },
+                            {
+                                xtype: 'component',
+                                html: 'mastery score'
                             },
                             {
                                 xtype: 'formpanel',
@@ -85,10 +81,6 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Conference', {
                                         text: 'Log'
                                     }
                                 ]
-                            },
-                            {
-                                xtype: 'component',
-                                html: 'mastery score'
                             }
                         ]
                     }

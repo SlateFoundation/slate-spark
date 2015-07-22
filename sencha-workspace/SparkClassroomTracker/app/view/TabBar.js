@@ -12,15 +12,15 @@ Ext.define('SparkClassroomTeacher.view.TabBar', {
         items: [
             {
                 title: 'Student Work',
-                section: 'student-work'
+                section: 'work'
             },
             {
                 title: 'Competency Overview',
-                section: 'competency-overview'
+                section: 'competencies'
             },
             {
                 title: 'Assign',
-                section: 'sparkpoints-assign'
+                section: 'assign'
             }
         ]
     }

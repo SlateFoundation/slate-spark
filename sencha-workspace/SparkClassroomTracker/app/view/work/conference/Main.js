@@ -1,10 +1,10 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Apply', {
+Ext.define('SparkClassroomTeacher.view.work.conference.Main', {
     extend: 'Ext.Container',
-    xtype: 'spark-tabs-studentwork-apply',
+    xtype: 'spark-work-conference',
 
     config: {
-        title: 'Apply',
+        title: 'Conference',
         items: [
             {
                 layout: 'hbox',
@@ -12,56 +12,18 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Apply', {
                     {
                         xtype: 'container',
                         flex: 1,
-                        layout: 'vbox',
                         items: [
                             {
                                 xtype: 'component',
-                                flex: 1,
-                                html: 'write it!'
-                            },
-                            {
-                                xtype: 'container',
-                                layout: 'hbox',
-                                items: [
-                                    {
-                                        xtype: 'container',
-                                        flex: 1,
-                                        layout: 'hbox',
-                                        html: 'submitted docs',
-                                        items: [
-                                            {
-                                                xtype: 'component',
-                                                flex: 1,
-                                                html: 'standards being applied'
-                                            },
-                                            {
-                                                xtype: 'component',
-                                                flex: 1,
-                                                html: 'related docs'
-                                            }
-                                        ]
-                                    }
-                                ]
+                                html: 'lets of standards stuff'
                             },
                             {
                                 xtype: 'component',
-                                html: 'TODOs'
+                                html: 'Standard 2'
                             },
                             {
-                                xtype: 'container',
-                                layout: 'hbox',
-                                items: [
-                                    {
-                                        xtype: 'component',
-                                        flex: 1,
-                                        html: 'reflection'
-                                    },
-                                    {
-                                        xtype: 'component',
-                                        flex: 1,
-                                        html: 'submitted docs'
-                                    }
-                                ]
+                                xtype: 'component',
+                                html: 'Standard 1'
                             }
                         ]
                     },
@@ -71,12 +33,18 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Apply', {
                         layout: 'vbox',
                         items: [
                             {
-                                xtype: 'component',
-                                html: 'required learns'
-                            },
-                            {
-                                xtype: 'component',
-                                html: 'mastery score'
+                                xtype: 'container',
+                                layout: 'hbox',
+                                items: [
+                                    {
+                                        xtype: 'component',
+                                        html: 'timer'
+                                    },
+                                    {
+                                        xtype: 'button',
+                                        text: 'Pause Conference'
+                                    }
+                                ]
                             },
                             {
                                 xtype: 'formpanel',
@@ -120,7 +88,7 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.Apply', {
                             },
                             {
                                 xtype: 'component',
-                                html: 'grade the reply'
+                                html: 'mastery score'
                             }
                         ]
                     }

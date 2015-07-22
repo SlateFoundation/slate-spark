@@ -6,61 +6,62 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         activeTab: null
     },
     views: [
-        'tabs.Assign',
-        'tabs.StudentWork',
-        'tabs.Overview'
+        'work.Main',
+        'assign.points.Main',
+        'competencies.Main'
     ],
     refs:{
-        studentWorkView: {
-            selector: 'spark-tabs-studentwork',
+        workMainCt: {
+            selector: 'spark-work',
             autoCreate: true,
-            
-            xtype: 'spark-tabs-studentwork'
+
+            xtype: 'spark-work'
         },
-        competencyOverviewView: {
-            selector: 'spark-tabs-overview',
+        competenciesMainCt: {
+            selector: 'spark-competencies',
             autoCreate: true,
-            
-            xtype: 'spark-tabs-overview'
+
+            xtype: 'spark-competencies'
         },
-        sparkAssignView: {
-            selector: 'spark-tabs-assign',
+        assignMainCt: {
+            selector: 'spark-assign-points',
             autoCreate: true,
-            
-            xtype: 'spark-tabs-assign'
+
+            xtype: 'spark-assign-points'
         }
     },
+
     control: {
         'viewport spark-tabbar': {
             activetabchange: 'onTabChange'
         }
     },
-    
+
     applyActiveTab: function(tab) {
         var me = this,
             section;
-        
+
         if (Ext.isString(tab)) {
             section = tab;
         } else if (tab.isXtype('button')) {
             section = tab.config.section;
         }
-        
+
         switch(section) {
-            case 'student-work':
-                tab = me.getStudentWorkView();
+            case 'work':
+                tab = me.getWorkMainCt();
                 break;
-            case 'competency-overview':
-                tab = me.getCompetencyOverviewView();
+            case 'competencies':
+                tab = me.getCompetenciesMainCt();
                 break;
-            case 'sparkpoints-assign':
-                tab = me.getSparkAssignView();
+            case 'assign':
+                tab = me.getAssignMainCt();
                 break;
         }
 
         return tab;
     },
-    
+
     updateActiveTab: function(newTab, oldTab) {
         //initial load contains no tab
         if (oldTab) {

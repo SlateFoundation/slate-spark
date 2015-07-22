@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.tabs.studentwork.AssignmentGrid', {
+Ext.define('SparkClassroomTeacher.view.work.learn.AssignmentGrid', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-tabs-studentwork-assignmentgrid',
+    xtype: 'spark-work-learn-assignmentgrid',
 
     config: {
 
@@ -48,11 +48,11 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.AssignmentGrid', {
                 text: 'Attachment',
             }
         ],
-        
+
         store: {
             fields: ['Group', 'Completed', 'Title', 'Link', 'DOK', 'Category', 'SRating', 'TRating',  'Score', 'Attachment'],
-            
-           
+
+
             data: [
                 {Group: 'Required', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: 1},
                 {Completed: true, Group: 'Required', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Article', SRating: 3, TRating: 3, Score: 1},
@@ -62,8 +62,7 @@ Ext.define('SparkClassroomTeacher.view.tabs.studentwork.AssignmentGrid', {
                 {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Practice Problems', SRating: 3, TRating: 3, Score: 1, Attachment: 'A link of doc'},
                 {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: 1},
                 {Completed: true, Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Reading', SRating: 3, TRating: 3, Score: 1},
-                {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: 1, Attachment: 'A link of doc'},
-                
+                {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: 1, Attachment: 'A link of doc'}
             ]
         }
     }
