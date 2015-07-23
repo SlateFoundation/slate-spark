@@ -11,6 +11,28 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
             '</tpl>'
         ],
         grouped: true,
+        removeEmptyHeaders: true,
+        
+        initialize: function () {
+            this.callParent(arguments);
+
+            this.pinnedHeader = Ext.factory({
+                xtype: 'listitemheader',
+                translatable: {
+                    translationMethod: this.translationMethod
+                },
+                cls: [baseCls + '-header', baseCls + '-header-swap'],
+                config: {
+                    initialize: function () {
+                        this.callParent(arguments);
+                        debugger;
+                        if (Ext.isEmpty(this.getInnerHtmlElement().dom.innerHTML)) {
+                            this.hide();
+                        }
+                    }
+                }
+            });
+        },
 
         store: {
             fields: ['FirstName', 'LastName', 'Grade', 'Level', 'Status', 'Standards', 'Flag'],
@@ -47,6 +69,6 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 {FirstName: "Reanna", LastName: 'Jossund', Grade: 'IT', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content']},
                 {FirstName: "Kimiko", LastName: 'Heimbuch', Grade: '*', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content']},
             ]
-        },
+        }
     }
 });

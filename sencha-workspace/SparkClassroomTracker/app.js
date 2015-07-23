@@ -22,7 +22,11 @@ Ext.application({
         'TabBar',
         'gps.Main'
     ],
-    controllers: ['Viewport'],
+    controllers: [
+        'Viewport',
+        'Work',
+        'assign.Points'
+    ],
 
     config: {
         viewport: {

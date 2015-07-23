@@ -2,56 +2,47 @@
 Ext.define('SparkClassroomTeacher.view.work.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work',
-    requires: [
-        'SparkClassroomTeacher.view.work.learn.Main',
-        'SparkClassroomTeacher.view.work.conference.Main',
-        'SparkClassroomTeacher.view.work.apply.Main',
-        'SparkClassroomTeacher.view.work.assess.Main'
-    ],
 
     config: {
+        layout: 'vbox',
         title: 'Student Work',
-        height: 500,
-        layout: 'fit',
         items: [
             {
-                xtype: 'tabpanel',
-                activeItem: 1,
+                xtype: 'tabbar',
+                activeTab: 1,
                 items: [
                     {
                         title: 'Chistopher A.'
                     },
                     {
-                        title: 'Alexandra W.',
-                        layout: 'fit',
-                        items: [
-                            {
-                                xtype: 'tabpanel',
-                                defaults: {
-                                    styleHtmlContent: true
-                                },
-                                items: [
-                                    {
-                                        xtype: 'spark-work-learn'
-                                    },
-                                    {
-                                        xtype: 'spark-work-conference'
-                                    },
-                                    {
-                                        xtype: 'spark-work-apply'
-                                    },
-                                    {
-                                        xtype: 'spark-work-assess'
-                                    }
-                                ]
-                            }
-                        ]
+                        title: 'Alexandra W.'                   
                     },
                     {
                         title: 'Lucy D.'
                     },
                     {
                         title: 'Trevor K.'
+                    }
+                ]
+            },
+            {
+                xtype: 'tabbar',
+                items: [
+                    {
+                        title: 'Learn &amp; Practice',
+                        section: 'learn'
+                    },
+                    {
+                        title: 'Conference',
+                        section: 'conference'
+                    },
+                    {
+                        title: 'Apply',
+                        section: 'apply'
+                    },
+                    {
+                        title: 'Assess',
+                        section: 'assess'
                     }
                 ]
             }

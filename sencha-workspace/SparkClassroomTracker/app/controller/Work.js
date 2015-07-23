@@ -1,38 +1,46 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.controller.Viewport', {
+Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
 
     config: {
         activeTab: null
     },
     views: [
-        'work.Main',
-        'assign.points.TabBar',
-        'competencies.Main'
+        'work.learn.Main',
+        'work.conference.Main',
+        'work.apply.Main',
+        'work.assess.Main'
     ],
     refs:{
-        workMainCt: {
-            selector: 'spark-work',
+        workMainCt: 'spark-work',
+        learnCt: {
+            selector: 'spark-work-learn',
             autoCreate: true,
 
-            xtype: 'spark-work'
+            xtype: 'spark-work-learn'
         },
-        competenciesMainCt: {
-            selector: 'spark-competencies',
+        conferenceCt: {
+            selector: 'spark-work-conference',
             autoCreate: true,
 
-            xtype: 'spark-competencies'
+            xtype: 'spark-work-conference'
         },
-        assignMainTabbar: {
-            selector: 'spark-assign-points-tabbar',
+        applyCt: {
+            selector: 'spark-work-apply',
             autoCreate: true,
 
-            xtype: 'spark-assign-points-tabbar'
+            xtype: 'spark-work-apply'
+        },
+        assessCt: {
+            selector: 'spark-work-assess',
+            autoCreate: true,
+
+            xtype: 'spark-work-assess'
         }
     },
 
     control: {
-        'viewport spark-tabbar': {
+        'spark-work tabbar': {
             activetabchange: 'onTabChange'
         }
     },
@@ -48,14 +56,17 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         }
 
         switch(section) {
-            case 'work':
-                tab = me.getWorkMainCt();
+            case 'learn':
+                tab = me.getLearnCt();
                 break;
-            case 'competencies':
-                tab = me.getCompetenciesMainCt();
+            case 'conference':
+                tab = me.getConferenceCt();
                 break;
-            case 'assign':
-                tab = me.getAssignMainTabbar();
+            case 'apply':
+                tab = me.getApplyCt();
+                break;
+            case 'assess':
+                tab = me.getAssessCt();
                 break;
         }
 
