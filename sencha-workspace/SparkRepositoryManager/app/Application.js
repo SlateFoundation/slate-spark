@@ -6,7 +6,6 @@ Ext.define('SparkRepositoryManager.Application', {
         'Ext.Error',
         'Ext.data.StoreManager',
         'Ext.plugin.Viewport',
-        'SparkRepositoryManager.overrides.AbstractAPI',
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.overrides.grid.RowEditor',
         'SparkRepositoryManager.store.AssessmentTypes',
