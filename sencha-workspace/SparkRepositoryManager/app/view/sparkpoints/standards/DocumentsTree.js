@@ -26,7 +26,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
     columns: [{
         xtype: 'treecolumn',
         flex: 5,
-        dataIndex: 'Title'
+        dataIndex: 'title'
     },{
         text: 'X',
         flex: 2,
