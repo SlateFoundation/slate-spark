@@ -1,6 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.Jurisdiction', {
     extend: 'Ext.data.Model',
+    requires: [
+        'SparkRepositoryManager.proxy.Jurisdictions'
+    ],
 
     // model config
     idProperty: 'id',
@@ -18,19 +21,8 @@ Ext.define('SparkRepositoryManager.model.Jurisdiction', {
     ],
 
     proxy: {
-        type:    'rest',
-        url:     'http://commonstandardsproject.com/api/v1/jurisdictions',
-
-        headers: {
-            'Api-Key': '<<< HERE CHRIS >>>>'
-        },
-
-        reader: {
-            type: 'json',
-            root: 'data'
-        },
-
-        noCache: false
+        type: 'spark-jurisdictions',
+        url: 'http://commonstandardsproject.com/api/v1/jurisdictions'
     }
 });
 
