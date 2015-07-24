@@ -26,7 +26,8 @@ Ext.define('SparkRepositoryManager.Application', {
         // framework features
         'Ext.Error',
         'Ext.data.StoreManager',
-        'Ext.plugin.Viewport'
+        'Ext.plugin.Viewport',
+        'Ext.state.LocalStorageProvider'
     ],
 
     extend: 'Ext.app.Application',
@@ -78,6 +79,12 @@ Ext.define('SparkRepositoryManager.Application', {
     views: [
         'Main'
     ],
+
+    init: function() {
+        Ext.state.Manager.setProvider(Ext.create('Ext.state.LocalStorageProvider', {
+            prefix: 'srm-'
+        }));
+    },
 
     launch: function () {
         var me = this,
