@@ -1,4 +1,4 @@
 /sencha-workspace/build/
 /sencha-workspace/ext-*/
-/sencha-workspace/SparkClassroomTracker/bootstrap.*
-/sencha-workspace/SparkClassroomTracker/sass/example/bootstrap.*
+/sencha-workspace/SparkClassroomStudent/bootstrap.*
+/sencha-workspace/SparkClassroomStudent/sass/example/bootstrap.*
