@@ -238,8 +238,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
 
                     proxy: {
                         type: 'ajax',
-                        // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/learn-links/creators',
+                        url: Emergence.util.API.buildUrl('/spark2/learn-links/creators'),
                         reader: {
                             type: 'json',
                             rootProperty: 'data'

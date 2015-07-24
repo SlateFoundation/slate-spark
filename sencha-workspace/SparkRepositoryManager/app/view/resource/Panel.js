@@ -181,8 +181,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
 
                     proxy: {
                         type: 'ajax',
-                        // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/conference-resources/creators',
+                        url: Emergence.util.API.buildUrl('/spark2/conference-resources/creators'),
                         reader: {
                             type: 'json',
                             rootProperty: 'data'

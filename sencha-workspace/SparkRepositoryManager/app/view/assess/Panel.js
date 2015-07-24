@@ -253,8 +253,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
 
                     proxy: {
                         type: 'ajax',
-                        // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/assessments/creators',
+                        url: Emergence.util.API.buildUrl('/spark2/assessments/creators'),
                         reader: {
                             type: 'json',
                             rootProperty: 'data'
