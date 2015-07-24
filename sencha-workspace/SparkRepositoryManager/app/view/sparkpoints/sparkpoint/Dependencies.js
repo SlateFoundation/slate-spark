@@ -2,7 +2,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
     extend: 'Ext.tree.Panel',
     xtype: 'srm-sparkpoints-sparkpointdependencies',
 
-    scrollable: true,
 
     //store: 'StandardsCategories',
     store:{

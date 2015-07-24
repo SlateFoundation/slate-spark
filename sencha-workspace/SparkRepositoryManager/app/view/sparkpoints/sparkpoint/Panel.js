@@ -1,5 +1,5 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     xtype: 'srm-sparkpoints-sparkpointspanel',
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Form',
@@ -10,22 +10,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
 
     title: 'Selected Sparkpoint',
 
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
+    scrollable: 'y',
 
     items: [{
-        xtype: 'srm-sparkpoints-sparkpointform',
-        flex: 10
+        xtype: 'srm-sparkpoints-sparkpointform'
     },{
-        xtype: 'srm-sparkpoints-sparkpointdependencies',
-        flex: 10
+        xtype: 'srm-sparkpoints-sparkpointdependencies'
     },{
-        xtype: 'srm-sparkpoints-sparkpointdependents',
-        flex: 10
+        xtype: 'srm-sparkpoints-sparkpointdependents'
     },{
-        xtype: 'srm-sparkpoints-sparkpointimplements',
-        flex: 10
+        xtype: 'srm-sparkpoints-sparkpointimplements'
     }]
 });
