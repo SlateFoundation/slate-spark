@@ -9,10 +9,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
         root: {
             expanded: true,
             children: [
-                { Title: 'some text', leaf: true },
-                { Title: 'some text', leaf: true },
-                { Title: 'some text', leaf: true },
-                { Title: 'some text', leaf: true }
+                { Title: 'K.CC.JK.1', leaf: true },
+                { Title: 'K.CC.JK.2', leaf: true },
+                { Title: 'K.CC.JK.3', leaf: true },
+                { Title: 'K.CC.JK.4', leaf: true }
             ]
         }
     },
