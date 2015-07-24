@@ -11,14 +11,13 @@
  * @cfg {Ext.tree.Panel} items.treepanel A treepanel
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.tree.Panel',
     xtype: 'srm-sparkpoints-contentareastree',
     requires: [
         'Jarvus.ext.form.field.Search'
     ],
 
     title: 'Content Areas',
-    autoScroll: true,
 
     dockedItems: [{
         dock: 'top',
@@ -32,51 +31,39 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
         }]
     }],
 
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
+    // treepanel config
+    //store: 'SparkpointCategories',
+    store:{
+        type: 'tree',
+        root: {
+            expanded: true,
+            children: [
+                { Title: 'Math', Total: 35, leaf: true },
+                { Title: 'Reading', Total: 21, leaf: true },
+                { Title: 'Science', Total: 25, leaf: true },
+                { Title: 'Puppies', Total: 17, expanded: true, children: [
+                    { Title: 'Orphans', Total: 8, leaf: true },
+                    { Title: 'Needs something', Total: 9, leaf: true}
+                ]}
+            ]
+        }
     },
 
-    /**
-     */
-    items: [{
-        xtype: 'treepanel',
-        itemId: 'content',
+    rootVisible: false,
+    useArrows: true,
+    singleExpand: true,
+    hideHeaders: true,
+    viewConfig: {
+        toggleOnDblClick: false
+    },
 
-        // treepanel config
-        //store: 'SparkpointCategories',
-        store:{
-            type: 'tree',
-            root: {
-                expanded: true,
-                children: [
-                    { Title: 'Math', Total: 35, leaf: true },
-                    { Title: 'Reading', Total: 21, leaf: true },
-                    { Title: 'Science', Total: 25, leaf: true },
-                    { Title: 'Puppies', Total: 17, expanded: true, children: [
-                        { Title: 'Orphans', Total: 8, leaf: true },
-                        { Title: 'Needs something', Total: 9, leaf: true}
-                    ]}
-                ]
-            }
-        },
-
-        scroll: false,
-        rootVisible: false,
-        useArrows: true,
-        singleExpand: true,
-        hideHeaders: true,
-        viewConfig: {
-            toggleOnDblClick: false
-        },
-        columns: [{
-            xtype: 'treecolumn',
-            flex: 1,
-            dataIndex: 'Title'
-        },{
-            width: 32,
-            align: 'right',
-            dataIndex: 'Total'
-        }]
+    columns: [{
+        xtype: 'treecolumn',
+        flex: 1,
+        dataIndex: 'Title'
+    },{
+        width: 32,
+        align: 'right',
+        dataIndex: 'Total'
     }]
 });
