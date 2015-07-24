@@ -1,3 +1,7 @@
+/**
+ * TODO:
+ * - Eliminate double-bagging component in container
+ */
 Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
     extend: 'Ext.container.Container',
     xtype: 'srm-sparkpoints-graph',
@@ -13,6 +17,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
 
     items: [{
         xtype: 'jarvus-draw-dagcontainer',
+        // TODO: settings -> config?
         settings: {
             nodes: {
                 label: {
