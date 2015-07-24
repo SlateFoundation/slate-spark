@@ -1,45 +1,48 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
     extend: 'Ext.panel.Panel',
-    xtype: 'sparkpoints-panel',
+    xtype: 'srm-sparkpoints-panel',
+    requires: [
+        'SparkRepositoryManager.view.sparkpoints.ContentAreasTree',
+        'SparkRepositoryManager.view.sparkpoints.TabPanel',
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel',
+        'SparkRepositoryManager.view.sparkpoints.standards.Grid'
+    ],
 
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
+    layout: 'border',
 
     items: [{
-        xtype: 'container',
-        flex: 6,
-        layout: {
-            type: 'hbox',
-            align: 'stretch'
-        },
-        items: [{
-            xtype: 'sparkpoints-navpanel',
-            flex: 20
-        },{
-            xtype: 'sparkpoints-content-tabpanel',
-            flex: 55
-        },{
-            xtype: 'sparkpoints-content-detailsview',
-            flex: 25
-        }]
+        region: 'south',
+        split: true,
+
+        xtype: 'srm-sparkpoints-standardsgrid',
+        height: 300,
+        collapsible: true,
+
+        stateful: true,
+        stateId: 'srm-sparkpoints-standardsgrid'
     },{
-        xtype: 'panel',
-        flex: 3,
-        title: 'External Standards',
-        layout: {
-            type: 'hbox',
-            align: 'stretch'
-        },
-        items: [{
-            xtype: 'sparkpoints-standards-navpanel',
-            flex: 20
-        },{
-            xtype: 'sparkpoints-standards-grid',
-            flex: 80
-        }]
+        region: 'west',
+        split: true,
+
+        xtype: 'srm-sparkpoints-contentareastree',
+        width: 300,
+        collapsible: true,
+
+        stateful: true,
+        stateId: 'srm-sparkpoints-contentareastree'
+    },,{
+        region: 'east',
+        split: true,
+
+        xtype: 'srm-sparkpoints-sparkpointspanel',
+        width: 300,
+        collapsible: true,
+
+        stateful: true,
+        stateId: 'srm-sparkpoints-sparkpointspanel'
+    },{
+        region: 'center',
+
+        xtype: 'srm-sparkpoints-tabpanel'
     }]
-
-
 });

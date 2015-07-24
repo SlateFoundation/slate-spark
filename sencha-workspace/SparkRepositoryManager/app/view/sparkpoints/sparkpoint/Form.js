@@ -1,6 +1,6 @@
-Ext.define('SparkRepositoryManager.view.sparkpoints.content.DetailsForm', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     extend: 'Ext.form.Panel',
-    xtype: 'sparkpoints-content-detailsform',
+    xtype: 'srm-sparkpoints-sparkpointform',
 
     items: [{
         xtype: 'textfield',
@@ -22,5 +22,4 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.content.DetailsForm', {
         name: 'dummy',
         fieldLabel: 'some text'
     }]
-
 });

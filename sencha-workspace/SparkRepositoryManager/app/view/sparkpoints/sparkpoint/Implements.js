@@ -1,10 +1,6 @@
-Ext.define('SparkRepositoryManager.view.sparkpoints.content.Dependents', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
     extend: 'Ext.tree.Panel',
-    xtype: 'sparkpoints-content-dependents',
-
-    requires: [
-
-    ],
+    xtype: 'srm-sparkpoints-sparkpointimplements',
 
     scrollable: true,
 
@@ -36,7 +32,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.content.Dependents', {
     dockedItems: [{
         dock: 'top',
         xtype: 'container',
-        html: 'Dependents'
+        html: 'Implements'
     },{
         dock: 'bottom',
         xtype: 'form',

@@ -10,10 +10,9 @@
  * @cfg {Object[]} items An array of child Components to be added to this container
  * @cfg {Ext.tree.Panel} items.treepanel A treepanel
  */
-Ext.define('SparkRepositoryManager.view.sparkpoints.NavPanel', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
     extend: 'Ext.panel.Panel',
-    xtype: 'sparkpoints-navpanel',
-
+    xtype: 'srm-sparkpoints-contentareastree',
     requires: [
         'Ext.form.Panel',
         'Jarvus.ext.form.field.Search'

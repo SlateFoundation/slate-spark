@@ -1,7 +1,6 @@
-Ext.define('SparkRepositoryManager.view.sparkpoints.content.Graph', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
     extend: 'Ext.container.Container',
-    xtype: 'sparkpoints-content-graph',
-
+    xtype: 'srm-sparkpoints-graph',
     requires: [
         'Jarvus.draw.DagContainer',
         'Jarvus.draw.layout.MaxUpOrDown',
@@ -9,6 +8,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.content.Graph', {
         'Jarvus.draw.layout.BottomUp'
     ],
 
+    title: 'Graph',
     layout: 'fit',
 
     items: [{

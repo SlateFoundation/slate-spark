@@ -4,9 +4,9 @@
  *
  * @cfg title="ContentAreas"
  */
-Ext.define('SparkRepositoryManager.view.sparkpoints.standards.NavPanel', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
     extend: 'Ext.tree.Panel',
-    xtype: 'sparkpoints-standards-navpanel',
+    xtype: 'srm-sparkpoints-standarddocumentstree',
 
     title: 'Standards Documents',
     scrollable: true,

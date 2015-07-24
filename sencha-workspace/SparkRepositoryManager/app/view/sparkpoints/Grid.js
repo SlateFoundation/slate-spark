@@ -1,7 +1,8 @@
-Ext.define('SparkRepositoryManager.view.sparkpoints.content.Grid', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     extend: 'Ext.grid.Panel',
-    xtype: 'sparkpoints-content-grid',
+    xtype: 'srm-sparkpoints-grid',
 
+    title: 'Grid',
     //store: Ext.data.StoreManager.lookup('Content'),
     store:{
         fields: [
@@ -19,6 +20,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.content.Grid', {
 
     dockedItems: [{
         dock: 'top',
+
         xtype: 'form',
         layout: {
             type: 'hbox'
@@ -67,5 +69,4 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.content.Grid', {
         text: 'Forward?',
         dataIndex: 'M'
     }]
-
 });

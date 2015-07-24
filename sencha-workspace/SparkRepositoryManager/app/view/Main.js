@@ -10,7 +10,8 @@ Ext.define('SparkRepositoryManager.view.Main', {
         'SparkRepositoryManager.view.learn.Panel',
         'SparkRepositoryManager.view.pbl.Panel',
         'SparkRepositoryManager.view.resource.Panel',
-        'SparkRepositoryManager.view.resource.Panel'
+        'SparkRepositoryManager.view.resource.Panel',
+        'SparkRepositoryManager.view.sparkpoints.Panel'
     ],
 
     alias: 'mainview',
