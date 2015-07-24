@@ -9,10 +9,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
         root: {
             expanded: true,
             children: [
-                { Title: 'some text', leaf: true },
-                { Title: 'some text', leaf: true },
-                { Title: 'some text', leaf: true },
-                { Title: 'some text', leaf: true }
+                { Title: 'K.CC.4a', leaf: true },
+                { Title: 'K.CC.4b', leaf: true },
+                { Title: 'K.CC.4c', leaf: true },
+                { Title: 'K.CC.4d', leaf: true }
             ]
         }
     },

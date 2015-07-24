@@ -11,10 +11,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
          {name: 'Mapped',  type: 'string'}
         ],
         data: [
-            { Code: 'DFD50-A', Description: 'This is an example description', M: 'some text' },
-            { Code: 'DFD50-A', Description: 'This is an example description', M: 'some text' },
-            { Code: 'DFD50-A', Description: 'This is an example description', M: 'some text' },
-            { Code: 'DFD50-A', Description: 'This is an example description', M: 'some text' }
+            { Code: 'K.CC.1', Description: 'Count to 100 by ones and by tens.', M: 'K.CC.4a' },
+            { Code: 'K.CC.4a', Description: 'Understand how to stop counting', M: 'K.CC.3a' },
+            { Code: 'K.CC.4b', Description: 'Counting tiny numbers', M: 'K.G.1,2' },
+            { Code: 'K.G.1,2', Description: 'Counting big numbers', M: 'K.G.2,1' }
         ]
     },
 

@@ -11,15 +11,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
         forceSelection: true,
         editable: false,
         triggerAction: 'all',
-        store: [ 7,8,9,10,11,12 ],
-        fieldLabel: 'Grade'
+        store: [ 'K-2', '3-4', '5-6', '7-8', '9-12' ],
+        fieldLabel: 'Target Level Range'
     },{
         xtype: 'textfield',
         name: 'dummy',
-        fieldLabel: 'some text'
+        fieldLabel: 'Jurisdiction'
     },{
         xtype: 'textfield',
         name: 'dummy',
-        fieldLabel: 'some text'
+        fieldLabel: 'Anchor'
     }]
 });
