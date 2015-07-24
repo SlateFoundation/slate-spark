@@ -69,7 +69,8 @@
      *      ]
      */
     "requires": [
-        "font-awesome"
+        "font-awesome",
+        "spark-classroom"
     ],
 
     /**
