@@ -19,10 +19,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.Grid', {
          {name: 'Mapped',  type: 'string'}
         ],
         data: [
-            { Code: 'DFD50-A', Description: 'This is an example description', Mapped: 'is this an array?' },
-            { Code: 'DFD50-A', Description: 'This is an example description', Mapped: 'is this an array?' },
-            { Code: 'DFD50-A', Description: 'This is an example description', Mapped: 'is this an array?' },
-            { Code: 'DFD50-A', Description: 'This is an example description', Mapped: 'is this an array?' }
+            { Code: 'K.CC.4.1c', Description: 'Counting numbers up to 10', Mapped: 'K.CC.4.1a' },
+            { Code: 'K.CC.4.1c', Description: 'Counting numbers up to 20', Mapped: 'K.CC.2.1b' },
+            { Code: 'K.CC.4.1c', Description: 'Counting numbers up to 30', Mapped: 'K.CC.4.1c' },
+            { Code: 'K.CC.4.1a', Description: 'Counting numbers up to 40', Mapped: 'K.CC.4.1d' }
         ]
     },
 
