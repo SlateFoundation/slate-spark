@@ -1,5 +1,6 @@
 Ext.define('SparkRepositoryManager.view.conference.Panel', {
     requires: [
+        'Array',
         'Ext.Array',
         'Ext.data.JsonStore',
         'Ext.data.proxy.Ajax',
@@ -12,6 +13,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
         'SparkRepositoryManager.widget.StandardField'
     ],
 
@@ -136,7 +138,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
                     proxy: {
                         type: 'ajax',
                         // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/guiding-questions/creators',
+                        url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/guiding-questions/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'

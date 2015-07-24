@@ -89,8 +89,8 @@ Ext.define('SparkRepositoryManager.Util', {
         var options = {
             method: 'get',
             // TODO: Remove the URL hack below before production
-            
-            url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/metadata',
+
+            url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/metadata',
 
             params: {
                 url: url,

@@ -1,5 +1,6 @@
 Ext.define('SparkRepositoryManager.view.assess.Panel', {
     requires: [
+        'Array',
         'Ext.Array',
         'Ext.XTemplate',
         'Ext.data.JsonStore',
@@ -13,6 +14,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
         'SparkRepositoryManager.Util',
         'SparkRepositoryManager.widget.StandardField'
@@ -253,7 +255,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
                     proxy: {
                         type: 'ajax',
                         // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/assessments/creators',
+                        url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/assessments/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'

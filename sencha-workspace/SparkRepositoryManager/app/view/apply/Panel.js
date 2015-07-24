@@ -3,6 +3,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
     extend: 'Ext.form.Panel',
 
     requires: [
+        'Array',
         'Ext.Array',
         'Ext.ComponentQuery',
         'Ext.container.Container',
@@ -22,6 +23,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         'Ext.layout.container.HBox',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
         'Ext.window.MessageBox',
@@ -163,7 +165,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
                     proxy: {
                         type:        'ajax',
                         // TODO: Remove the URL hack below before production
-                        url:         ((location.hostname === 'localhost') ? 'http://slate.ninja'
+                        url:         ((location.hostname === 'localhost') ? Emergence.util.API.getHostname()
                             : '') + '/spark2/apply-projects/creators',
                         reader:      {
                             type:         'json',

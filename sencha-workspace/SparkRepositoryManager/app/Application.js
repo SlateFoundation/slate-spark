@@ -129,7 +129,7 @@ Ext.define('SparkRepositoryManager.Application', {
             if (location.hostname.indexOf('slate.ninja') === -1 &&
                 location.hostname.indexOf('slatepowered') === -1 &&
                 location.hostname.indexOf('matchbooklearning') === -1) {
-                Emergence.util.API.setHostname('slate.ninja');
+                Emergence.util.API.setHostname('staging.sparkpoint.slatepowered.net');
             }
         }
 

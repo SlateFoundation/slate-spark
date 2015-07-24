@@ -1,5 +1,6 @@
 Ext.define('SparkRepositoryManager.view.learn.Panel', {
     requires: [
+        'Array',
         'Ext.Array',
         'Ext.Date',
         'Ext.XTemplate',
@@ -14,6 +15,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
+        'Ext.toolbar.Separator',
         'SparkRepositoryManager.Util',
         'SparkRepositoryManager.widget.StandardField'
     ],
@@ -238,7 +240,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                     proxy: {
                         type: 'ajax',
                         // TODO: Remove the URL hack below before production
-                        url: ((location.hostname === 'localhost') ? 'http://slate.ninja' : '') + '/spark2/learn-links/creators',
+                        url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/learn-links/creators',
                         reader: {
                             type: 'json',
                             rootProperty: 'data'
