@@ -1,0 +1,16 @@
+[submodule "sencha-workspace/packages/emergence-apikit"]
+	path = sencha-workspace/packages/emergence-apikit
+	url = git@github.com:JarvusInnovations/emergence-apikit.git
+[submodule "sencha-workspace/packages/jarvus-apikit"]
+	path = sencha-workspace/packages/jarvus-apikit
+	url = git@github.com:JarvusInnovations/jarvus-apikit.git
+[submodule "sencha-workspace/packages/jarvus-lazydata"]
+	path = sencha-workspace/packages/jarvus-lazydata
+	url = git@github.com:JarvusInnovations/jarvus-lazydata.git
+	branch = ext/5/1/1/451
+[submodule "sencha-workspace/packages/jarvus-ext-searchfield"]
+	path = sencha-workspace/packages/jarvus-ext-searchfield
+	url = git@github.com:JarvusInnovations/jarvus-ext-searchfield.git
+[submodule "sencha-workspace/packages/jarvus-draw-dag"]
+	path = sencha-workspace/packages/jarvus-draw-dag
+	url = git@github.com:JarvusInnovations/jarvus-draw-dag.git

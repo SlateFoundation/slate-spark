@@ -2,11 +2,13 @@
 
 ## Getting started with development
 1. Install latest 5.x Sencha CMD
-2. Clone this repository
-3. `cd spark-repository-manager/sencha-workspace/packages`
-4. `./get-packages.sh`
-5. `cd ../SparkRepositoryManager`
-6. `sencha app build`
+2. `git clone git@github.com:JarvusInnovations/spark-repository-manager.git --recursive` or `git clone --recursive https://github.com/JarvusInnovations/spark-repository-manager.git`
+3. `cd spark-repository-manager/sencha-workspace/SparkRepositoryManager`
+4. `sencha app build`
+
+If you have a version of GIT older than 1.6, you'll need to manually initialize/update the submodules (packages):
+1. `git submodule init`
+2. `git submodule update`
 
 Then run a web server from `spark-repository-manager/sencha-workspace` or higher in your file tree and navigate to the
 `sencha-workspace/SparkRepositoryManager` folder in your browser. If you don't have a server you can run `sencha web start`
