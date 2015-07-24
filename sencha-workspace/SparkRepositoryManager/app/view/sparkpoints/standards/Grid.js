@@ -36,29 +36,29 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.Grid', {
     },{
         text: 'Mapped to',
         dataIndex: 'Mapped'
+    },{
+        xtype: 'actioncolumn',
+        width: 32,
+        icon: 'http://i.imgur.com/wb1NW8I.png'
     }],
 
     dockedItems: [{
         dock: 'left',
-        
+
         xtype: 'srm-sparkpoints-standarddocumentstree',
         width: 300
     },{
         dock: 'top',
         weight: 10,
 
-        xtype: 'form',
-        layout: {
-            type: 'hbox'
-        },
-        cls: 'navpanel-search-form',
+        xtype: 'toolbar',
         items: [{
+            flex: 1,
+
             xtype: 'jarvus-searchfield',
-            flex: 5,
             emptyText: 'Search all standards…'
         },{
             xtype: 'checkboxfield',
-            flex: 5,
             boxLabel: 'Unmapped only'
         }]
     }]
