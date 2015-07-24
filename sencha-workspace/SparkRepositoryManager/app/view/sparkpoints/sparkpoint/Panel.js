@@ -11,6 +11,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
     title: 'Selected Sparkpoint',
 
     scrollable: 'y',
+    bodyPadding: 10,
 
     items: [{
         xtype: 'srm-sparkpoints-sparkpointform'
