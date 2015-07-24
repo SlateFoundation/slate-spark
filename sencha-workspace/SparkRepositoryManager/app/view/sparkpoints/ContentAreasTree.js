@@ -14,7 +14,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
     extend: 'Ext.panel.Panel',
     xtype: 'srm-sparkpoints-contentareastree',
     requires: [
-        'Ext.form.Panel',
         'Jarvus.ext.form.field.Search'
     ],
 
@@ -23,11 +22,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
 
     dockedItems: [{
         dock: 'top',
-        xtype: 'form',
-        cls: 'navpanel-search-form',
+
+        xtype: 'toolbar',
         items: [{
+            flex: 1,
+
             xtype: 'jarvus-searchfield',
-            anchor: '100%',
             emptyText: 'Search all content…'
         }]
     }],
