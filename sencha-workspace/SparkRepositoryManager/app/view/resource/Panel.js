@@ -1,6 +1,5 @@
 Ext.define('SparkRepositoryManager.view.resource.Panel', {
     requires: [
-        'Array',
         'Ext.Array',
         'Ext.XTemplate',
         'Ext.data.JsonStore',

@@ -1,6 +1,5 @@
 Ext.define('SparkRepositoryManager.view.learn.Panel', {
     requires: [
-        'Array',
         'Ext.Array',
         'Ext.Date',
         'Ext.XTemplate',

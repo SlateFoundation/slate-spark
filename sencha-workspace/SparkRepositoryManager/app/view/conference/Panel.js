@@ -1,6 +1,5 @@
 Ext.define('SparkRepositoryManager.view.conference.Panel', {
     requires: [
-        'Array',
         'Ext.Array',
         'Ext.data.JsonStore',
         'Ext.data.proxy.Ajax',

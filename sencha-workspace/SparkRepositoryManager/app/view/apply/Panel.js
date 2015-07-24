@@ -3,7 +3,6 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
     extend: 'Ext.form.Panel',
 
     requires: [
-        'Array',
         'Ext.Array',
         'Ext.ComponentQuery',
         'Ext.container.Container',
