@@ -2,10 +2,6 @@
 
 Ext.define('SparkRepositoryManager.Application', {
     requires: [
-        'Emergence.util.API',
-        'Ext.Error',
-        'Ext.data.StoreManager',
-        'Ext.plugin.Viewport',
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.overrides.grid.RowEditor',
         'SparkRepositoryManager.store.AssessmentTypes',
@@ -22,7 +18,15 @@ Ext.define('SparkRepositoryManager.Application', {
         'SparkRepositoryManager.store.Tags',
         'SparkRepositoryManager.store.ConferenceResources',
         'SparkRepositoryManager.store.VendorDomains',
-        'SparkRepositoryManager.store.Vendors'
+        'SparkRepositoryManager.store.Vendors',
+
+        // package features
+        'Emergence.util.API',
+
+        // framework features
+        'Ext.Error',
+        'Ext.data.StoreManager',
+        'Ext.plugin.Viewport'
     ],
 
     extend: 'Ext.app.Application',
