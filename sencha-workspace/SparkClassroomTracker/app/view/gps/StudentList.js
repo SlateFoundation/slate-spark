@@ -25,7 +25,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 config: {
                     initialize: function () {
                         this.callParent(arguments);
-                        debugger;
+
                         if (Ext.isEmpty(this.getInnerHtmlElement().dom.innerHTML)) {
                             this.hide();
                         }
