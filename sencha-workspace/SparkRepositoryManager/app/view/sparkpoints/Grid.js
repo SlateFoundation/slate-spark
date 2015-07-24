@@ -21,37 +21,28 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     dockedItems: [{
         dock: 'top',
 
-        xtype: 'form',
-        layout: {
-            type: 'hbox'
-        },
-        cls: 'navpanel-search-form',
+        xtype: 'toolbar',
         items: [{
+            flex: 1,
+
             xtype: 'jarvus-searchfield',
-            flex: 5,
-            emptyText: 'Search sparkpoints...'
+            emptyText: 'Search sparkpoints…'
         },{
-            xtype: 'container',
-            title: 'Show',
-            flex: 5,
-            layout: 'hbox',
-            items: [{
-                xtype: 'box',
-                html: 'Show: '
-            },{
-                xtype: 'button',
-                toggleGroup: 'show',
-                pressed: true,
-                text: 'All'
-            },{
-                xtype: 'button',
-                toggleGroup: 'show',
-                text: 'Orphans'
-            },{
-                xtype: 'button',
-                toggleGroup: 'show',
-                text: 'Unmapped'
-            }]
+            xtype: 'tbtext',
+            html: 'Show: '
+        },{
+            xtype: 'button',
+            toggleGroup: 'show',
+            pressed: true,
+            text: 'All'
+        },{
+            xtype: 'button',
+            toggleGroup: 'show',
+            text: 'Orphans'
+        },{
+            xtype: 'button',
+            toggleGroup: 'show',
+            text: 'Unmapped'
         }]
     }],
 
