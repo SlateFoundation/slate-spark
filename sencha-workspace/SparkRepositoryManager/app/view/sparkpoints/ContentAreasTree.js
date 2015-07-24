@@ -6,13 +6,14 @@
  * @cfg title="ContentAreas"
  * @cfg {Object[]} dockedItems components to be added as docked items to this panel
  * @cfg {Ext.form.Panel} dockedItems.top A search form docked to top of container
- * @cfg {Jarvus.ext.form.field.Search} dockedItems.top.field  A field of xtype jarvus-searchfield from jarvus-ext-search package
+ * @cfg {Jarvus.ext.form.field.Search} dockedItems.top.field  A field of xtype jarvus-searchfield from
+ *     jarvus-ext-search package
  * @cfg {Object[]} items An array of child Components to be added to this container
  * @cfg {Ext.tree.Panel} items.treepanel A treepanel
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
-    extend: 'Ext.tree.Panel',
-    xtype: 'srm-sparkpoints-contentareastree',
+    extend:   'Ext.tree.Panel',
+    xtype:    'srm-sparkpoints-contentareastree',
     requires: [
         'Jarvus.ext.form.field.Search'
     ],
@@ -26,44 +27,97 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTree', {
         items: [{
             flex: 1,
 
-            xtype: 'jarvus-searchfield',
+            xtype:     'jarvus-searchfield',
             emptyText: 'Search all content…'
         }]
     }],
 
     // treepanel config
     //store: 'SparkpointCategories',
-    store:{
+    store: {
         type: 'tree',
         root: {
             expanded: true,
             children: [
-                { Title: 'Math', Total: 35, leaf: true },
-                { Title: 'Reading', Total: 21, leaf: true },
-                { Title: 'Science', Total: 25, leaf: true },
-                { Title: 'Puppies', Total: 17, expanded: true, children: [
-                    { Title: 'Orphans', Total: 8, leaf: true },
-                    { Title: 'Needs something', Total: 9, leaf: true}
-                ]}
+                {Title: 'Math', Total: 35, leaf: true},
+                {Title: 'Science', Total: 21, leaf: true},
+                {Title: 'English', Total: 25, leaf: true},
+                {Title: 'Art', Total: 21, leaf: true},
+                {Title: 'Health', Total: 13, leaf: true},
+                {
+                    Title: 'World Language', Total: 32, expanded: true, children: [
+                    {
+                        Title: 'Reading', Total: 12, expanded: true, children: [
+                        {Title: 'Between the lines', Total: 20, leaf: true}
+                    ]
+                    },
+                    {
+                        Title: 'Speaking', Total: 20, expanded: true, children: [
+                        {Title: 'Greetings and Salutations', Total: 12, leaf: true},
+                        {Title: 'Where\'s the bathroom?', Total: 20, leaf: true},
+                        {Title: 'Bomb defusal', Total: 12, leaf: true},
+                        {Title: 'Handling a hostage crisis', Total: 12, leaf: true}
+                    ]
+                    },
+                    {Title: 'Culture', Total: 12, leaf: true}
+                ]
+                },
+                {
+                    Title: 'French', Total: 9, expanded: true, children: [
+                    {
+                        Title: 'Reading', Total: 12, expanded: true, children: [
+                        {Title: 'Between the lines', Total: 20, leaf: true}
+                    ]
+                    },
+                    {
+                        Title: 'Speaking', Total: 20, expanded: true, children: [
+                        {Title: 'Greetings and Salutations', Total: 12, leaf: true},
+                        {Title: 'Where\'s the bathroom?', Total: 20, leaf: true},
+                        {Title: 'Bomb defusal', Total: 12, leaf: true},
+                        {Title: 'Handling a hostage crisis', Total: 12, leaf: true}
+                    ]
+                    },
+                    {Title: 'Culture', Total: 12, leaf: true}
+                ]
+                },
+                {
+                    Title: 'German', Total: 12, expanded: true, children: [
+                    {
+                        Title: 'Reading', Total: 12, expanded: true, children: [
+                        {Title: 'Between the lines', Total: 20, leaf: true}
+                    ]
+                    },
+                    {
+                        Title: 'Speaking', Total: 20, expanded: true, children: [
+                        {Title: 'Greetings and Salutations', Total: 12, leaf: true},
+                        {Title: 'Where\'s the bathroom?', Total: 20, leaf: true},
+                        {Title: 'Bomb defusal', Total: 12, leaf: true},
+                        {Title: 'Handling a hostage crisis', Total: 12, leaf: true}
+                    ]
+                    },
+                    {Title: 'Culture', Total: 12, leaf: true}
+                ]
+                }
             ]
         }
     },
 
-    rootVisible: false,
-    useArrows: true,
+    rootVisible:  false,
+    useArrows:    true,
     singleExpand: true,
-    hideHeaders: true,
-    viewConfig: {
+    hideHeaders:  true,
+    viewConfig:   {
         toggleOnDblClick: false
-    },
+    }
+    ,
 
     columns: [{
-        xtype: 'treecolumn',
-        flex: 1,
+        xtype:     'treecolumn',
+        flex:      1,
         dataIndex: 'Title'
-    },{
-        width: 32,
-        align: 'right',
+    }, {
+        width:     32,
+        align:     'right',
         dataIndex: 'Total'
     }]
 });
