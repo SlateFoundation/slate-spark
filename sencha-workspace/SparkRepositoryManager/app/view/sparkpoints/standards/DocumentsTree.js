@@ -24,17 +24,18 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
 */
 
     columns: [{
+        text: 'Jurisdiction',
         xtype: 'treecolumn',
-        flex: 5,
+        flex: 7,
         dataIndex: 'title'
     },{
         text: 'X',
-        flex: 2,
+        flex: 1,
         align: 'right',
         dataIndex: 'Total'
     },{
         text: 'O',
-        flex: 2,
+        flex: 1,
         align: 'right',
         dataIndex: 'Total2'
     }]
