@@ -3,8 +3,8 @@
  * - Eliminate double-bagging component in container
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
-    extend: 'Ext.container.Container',
-    xtype: 'srm-sparkpoints-graph',
+    extend:   'Ext.container.Container',
+    xtype:    'srm-sparkpoints-graph',
     requires: [
         'Jarvus.draw.DagContainer',
         'Jarvus.draw.layout.MaxUpOrDown',
@@ -12,38 +12,49 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
         'Jarvus.draw.layout.BottomUp'
     ],
 
-    title: 'Graph',
+    title:  'Graph',
     layout: 'fit',
 
     items: [{
-        xtype: 'jarvus-draw-dagcontainer',
+        xtype:    'jarvus-draw-dagcontainer',
         // TODO: settings -> config?
         settings: {
             nodes: {
                 label: {
-                    marginWidth: 10,
+                    marginWidth:  10,
                     marginHeight: 5
                 },
-                rect: {
-                    width: 50,
+                rect:  {
+                    width:  50,
                     height: 50,
                     stroke: 'green'
                 }
             }
         },
-        dag: {
-            nodes : {
-                // TODO: I think we just want to remove the link stuff... we can listen for events in controller
-                '1':{'link':'javascript:alert(\"Link 1\")','label': 'You can custom'},
-                '2':{'link':'javascript:alert(\"Link 2\")','label': 'an ExtJs drawComponent'},
-                '3':{'link':'javascript:alert(\"Link 3\")','label': 'the component like',"highlighted":1},
-                '4':{'link':'javascript:alert(\"Link 4\")','label': 'and every cell'},
-                '5':{'link':'javascript:alert(\"Link 5\")','label': 'and animations'},
-                '6':{'link':'javascript:alert(\"Link 6\")','label': 'in a lot of'},
-                '7':{'link':'javascript:alert(\"Link 7\")','label': 'different ways.'},
-                '8':{'link':'javascript:alert(\"Link 8\")','label': 'Do it like you want !'}
+        dag:      {
+            nodes: {
+                '1': { label: 'Count to 100 by ones and by tens. K.CC.1', highlighted: 1 },
+                '2': { label: 'Number permanence K.CC.4a' },
+                '3': { label: 'Understand how to stop counting K.CC.4b' },
+                '4': { label: 'Do you have a problem with counting? K.G.1,2' },
+                '5': { label: 'Get help. Call 1-800-GAMBLING KG.G.3,4' },
+                '6': { label: 'Math K.CC.2' },
+                '7': { label: 'Hard Math K.CC.3'},
+                '8': { label: 'Harder Math K.CC.4c' }
             },
-            edges : [ [3,5],[2,7],[4,6],[6,8],[2,4],[5,7],[1,3],[2,8],[1,2],[7,8],[3,4] ]
+            edges: [
+                [3, 5],
+                [2, 7],
+                [4, 6],
+                [6, 8],
+                [2, 4],
+                [5, 7],
+                [1, 3],
+                [2, 8],
+                [1, 2],
+                [7, 8],
+                [3, 4]
+            ]
         },
 
         computeLayout: 'maxupordown'
