@@ -11,18 +11,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
     title: 'Standards Documents',
     scrollable: true,
 
-    //store: 'StandardsCategories',
-    store:{
-        type: 'tree',
-        root: {
-            expanded: true,
-            children: [
-                { Title: 'Common Core', Total: 35, Total2: 3921, leaf: true },
-                { Title: 'NJ State', Total: 21, Total2: 879, leaf: true },
-                { Title: 'PA State', Total: 25, Total2: 126, leaf: true }
-            ]
-        }
-    },
+    store: 'Jurisdictions',
 
     rootVisible: false,
     useArrows: true,

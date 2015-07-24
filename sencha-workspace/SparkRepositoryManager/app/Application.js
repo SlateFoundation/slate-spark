@@ -2,11 +2,26 @@
 
 Ext.define('SparkRepositoryManager.Application', {
     requires: [
-        'SparkRepositoryManager.proxy.Records',
+        // package features
+        'Emergence.util.API',
+        // package features
+        'Emergence.util.API',
+        // framework features
+        'Ext.Error',
+        'Ext.data.StoreManager',
+        'Ext.plugin.Viewport',
+        'Ext.plugin.Viewport',
+        'Ext.state.LocalStorageProvider',
+        'Ext.state.LocalStorageProvider',
+        'Ext.state.Manager',
+        'Ext.state.Manager',
+        'Ext.state.Manager',
         'SparkRepositoryManager.overrides.grid.RowEditor',
+        'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.store.AssessmentTypes',
         'SparkRepositoryManager.store.Assessments',
         'SparkRepositoryManager.store.Comments',
+        'SparkRepositoryManager.store.ConferenceResources',
         'SparkRepositoryManager.store.GradeLevels',
         'SparkRepositoryManager.store.Links',
         'SparkRepositoryManager.store.Ratings',
@@ -16,18 +31,9 @@ Ext.define('SparkRepositoryManager.Application', {
         'SparkRepositoryManager.store.StandardsTree',
         'SparkRepositoryManager.store.TagMaps',
         'SparkRepositoryManager.store.Tags',
-        'SparkRepositoryManager.store.ConferenceResources',
         'SparkRepositoryManager.store.VendorDomains',
         'SparkRepositoryManager.store.Vendors',
-
-        // package features
-        'Emergence.util.API',
-
-        // framework features
-        'Ext.Error',
-        'Ext.data.StoreManager',
-        'Ext.plugin.Viewport',
-        'Ext.state.LocalStorageProvider'
+        'SparkRepositoryManager.store.Jurisdictions'
     ],
 
     extend: 'Ext.app.Application',
@@ -73,7 +79,8 @@ Ext.define('SparkRepositoryManager.Application', {
         'TagMaps',
         'ConferenceResources',
         'Vendors',
-        'VendorDomains'
+        'VendorDomains',
+        'Jurisdictions'
     ],
 
     views: [
