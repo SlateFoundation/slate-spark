@@ -39,7 +39,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.Grid', {
     },{
         xtype: 'actioncolumn',
         width: 32,
-        icon: 'http://i.imgur.com/wb1NW8I.png'
+        icon: 'http://i.imgur.com/k4BSyFG.png'
     }],
 
     dockedItems: [{
