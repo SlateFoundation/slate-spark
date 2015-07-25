@@ -8,7 +8,7 @@ Ext.define('SparkClassroomStudent.view.assess.AssignmentGrid', {
             {
                 dataIndex: 'Title',
                 flex: 1,
-                text: 'Assessment',
+                text: 'Assessment'
             },
             {
                 dataIndex: 'Completed',

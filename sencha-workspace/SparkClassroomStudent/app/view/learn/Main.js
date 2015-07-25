@@ -3,15 +3,17 @@ Ext.define('SparkClassroomStudent.view.learn.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-learn',
     requires: [
-        'SparkClassroomStudent.view.learn.AssignmentGrid'
+        'SparkClassroomStudent.view.learn.AssignmentGrid',
+        'Jarvus.touch.layout.Accordion'
     ],
 
     config: {
         title: 'Learn &amp; Practice',
-        layout: 'vbox',
+        layout: 'accordion',
         items: [
             {
                 xtype: 'container',
+                title: 'Standards Desu',
                 items: [
                     {
                         xtype: 'component',
@@ -24,11 +26,13 @@ Ext.define('SparkClassroomStudent.view.learn.Main', {
             },
             {
                 xtype: 'component',
-                html: 'Standard 2'
+                html: 'stuff',
+                title: 'Standard 2'
             },
             {
                 xtype: 'component',
-                html: 'Standard 1'
+                html: 'stuff',
+                title: 'Standard 1'
             }
         ]
     }
