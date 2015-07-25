@@ -1,5 +1,8 @@
 # spark-repository-manager
 
+This emergence backend and ExtJS 5 app provide the datastore and user interface for a central server in the Spark ecosystem
+that provides a shared content repository to a multitude of schools running Slate+Spark.
+
 ## Getting started with development
 1. [Install latest 5.x or 6.x Sencha CMD](https://www.sencha.com/products/extjs/cmd-download/)
 2. `git clone --recursive -b develop git@github.com:JarvusInnovations/spark-repository-manager.git`
