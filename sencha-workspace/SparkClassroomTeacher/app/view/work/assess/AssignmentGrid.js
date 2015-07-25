@@ -9,17 +9,17 @@ Ext.define('SparkClassroomTeacher.view.work.assess.AssignmentGrid', {
             {
                 dataIndex: 'Title',
                 flex: 1,
-                text: 'Playist',
+                text: 'Playist'
             },
             {
                 dataIndex: 'Rating',
                 flex: 1,
-                text: 'Rating',
+                text: 'Rating'
             },
             {
                 dataIndex: 'Comment',
                 text: 'Comment',
-                flex: 1,
+                flex: 1
             },
             {
                 dataIndex: 'VendorTitle',

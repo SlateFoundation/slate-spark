@@ -17,18 +17,18 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
             {
                 dataIndex: 'Grade',
                 flex: 1,
-                text: 'Grade',
+                text: 'Grade'
             },
             {
 
                 dataIndex: 'Title',
                 flex: 1,
-                text: 'Playist',
+                text: 'Playist'
             },
             {
                 dataIndex: 'Link',
                 flex: 1,
-                text: 'Url',
+                text: 'Url'
             },
             {
                 dataIndex: 'Vendor',
@@ -41,12 +41,12 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
             {
                 dataIndex: 'DOK',
                 flex: 1,
-                text: 'DOK',
+                text: 'DOK'
             },
             {
                 dataIndex: 'Category',
                 text: 'Category',
-                flex: 1,
+                flex: 1
             },
             {
                 dataIndex: 'SRating',
@@ -59,7 +59,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
             {
                 dataIndex: 'Attachment',
                 flex: 1,
-                text: 'Attachment',
+                text: 'Attachment'
             },
             {
                 dataIndex: 'Assign',

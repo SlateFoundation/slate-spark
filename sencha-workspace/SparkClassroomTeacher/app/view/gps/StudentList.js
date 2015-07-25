@@ -67,7 +67,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 {FirstName: "Milton", LastName: 'Catherwood', Status: 'Needs Grading', Grade: 'A?', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content']},
                 {FirstName: "Brendan", LastName: 'Vanvorst', Grade: '*', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content'], Flag: 'Help'},
                 {FirstName: "Reanna", LastName: 'Jossund', Grade: 'IT', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content']},
-                {FirstName: "Kimiko", LastName: 'Heimbuch', Grade: '*', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content']},
+                {FirstName: "Kimiko", LastName: 'Heimbuch', Grade: '*', Level: 'Assess', Standards: ['CC.Content', 'CC.SS.Math.Content']}
             ]
         }
     }
