@@ -14,7 +14,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
             {
                 dataIndex: 'Standard',
                 flex: 1,
-                text: 'Standards',
+                text: 'Standards'
             },
             {
                 dataIndex: 'Grade',
@@ -55,7 +55,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
                 {Standard: '3.LA.M.B', Title: 'Playlist Title', DOK: 3, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
                 {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 1, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
                 {Standard: 'e.LA.M.B', Title: 'Playlist Title', DOK: 2, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 1, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
+                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 1, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true}
             ]
         }
     }

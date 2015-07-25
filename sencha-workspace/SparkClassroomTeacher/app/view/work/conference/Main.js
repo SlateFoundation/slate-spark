@@ -2,6 +2,9 @@
 Ext.define('SparkClassroomTeacher.view.work.conference.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work-conference',
+    requires: [
+        'Jarvus.touch.layout.Accordion'
+    ],
 
     config: {
         title: 'Conference',
@@ -11,19 +14,23 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Main', {
                 items: [
                     {
                         xtype: 'container',
+                        layout: 'accordion',
                         flex: 1,
                         items: [
                             {
                                 xtype: 'component',
-                                html: 'lets of standards stuff'
+                                html: 'lets of standards stuff',
+                                title: 'Stanards Breh'
                             },
                             {
                                 xtype: 'component',
-                                html: 'Standard 2'
+                                html: 'check me out',
+                                title: 'Standard 2'
                             },
                             {
                                 xtype: 'component',
-                                html: 'Standard 1'
+                                html: 'I\'m a standard',
+                                title: 'Standard 1'
                             }
                         ]
                     },

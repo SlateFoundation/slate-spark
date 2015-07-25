@@ -9,7 +9,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
             {
                 dataIndex: 'Standard',
                 flex: 1,
-                text: 'Standards',
+                text: 'Standards'
             },
             {
                 dataIndex: 'Grade',
@@ -24,12 +24,12 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
             {
                 dataIndex: 'Created',
                 text: 'Created',
-                flex: 1,
+                flex: 1
             },
             {
                 dataIndex: 'CreatedBy',
                 text: 'Created By',
-                flex: 1,
+                flex: 1
             },
             {
                 dataIndex: 'Assign',
@@ -55,7 +55,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
                 {Standard: '3.LA.M.B', Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
                 {Standard: '5.LA.M.B', Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
                 {Standard: 'e.LA.M.B', Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
+                {Standard: '5.LA.M.B', Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true}
             ]
         }
     }

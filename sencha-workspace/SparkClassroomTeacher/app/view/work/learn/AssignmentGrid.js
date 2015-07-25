@@ -17,17 +17,17 @@ Ext.define('SparkClassroomTeacher.view.work.learn.AssignmentGrid', {
             {
                 dataIndex: 'Title',
                 flex: 1,
-                text: 'Playist',
+                text: 'Playist'
             },
             {
                 dataIndex: 'DOK',
                 flex: 1,
-                text: 'DOK',
+                text: 'DOK'
             },
             {
                 dataIndex: 'Category',
                 text: 'Category',
-                flex: 1,
+                flex: 1
             },
             {
                 dataIndex: 'SRating',
@@ -40,12 +40,12 @@ Ext.define('SparkClassroomTeacher.view.work.learn.AssignmentGrid', {
             {
                 dataIndex: 'Score',
                 flex: 1,
-                text: 'Score',
+                text: 'Score'
             },
             {
                 dataIndex: 'Attachment',
                 flex: 1,
-                text: 'Attachment',
+                text: 'Attachment'
             }
         ],
 

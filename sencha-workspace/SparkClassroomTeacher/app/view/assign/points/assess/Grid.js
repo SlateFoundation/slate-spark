@@ -9,7 +9,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
             {
                 dataIndex: 'Standard',
                 flex: 1,
-                text: 'Standards',
+                text: 'Standards'
             },
             {
                 dataIndex: 'Grade',
@@ -66,7 +66,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
                 {Standard: '3.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Digital', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: false},
                 {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Paper Quiz', Grade: 9, Assign: true, Vendor: 'Illuminate', Issue: true},
                 {Standard: 'e.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Digital', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Paper Quiz', Grade: 9, Assign: true, Vendor: 'Youtube', Issue: false},
+                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Paper Quiz', Grade: 9, Assign: true, Vendor: 'Youtube', Issue: false}
             ]
         }
     }

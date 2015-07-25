@@ -3,7 +3,8 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work-learn',
     requires: [
-        'SparkClassroomTeacher.view.work.learn.AssignmentGrid'
+        'SparkClassroomTeacher.view.work.learn.AssignmentGrid',
+        'Jarvus.touch.layout.Accordion'
     ],
 
     config: {
@@ -14,18 +15,22 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Main', {
                 items: [
                     {
                         xtype: 'container',
+                        layout: 'accordion',
                         flex: 1,
                         items: [
                             {
-                                xtype: 'spark-work-learn-assignmentgrid'
+                                xtype: 'spark-work-learn-assignmentgrid',
+                                title: 'Standards Blarg'
                             },
                             {
                                 xtype: 'component',
-                                html: 'Standard 2'
+                                html: 'stuff',
+                                title: 'Standard 2'
                             },
                             {
                                 xtype: 'component',
-                                html: 'Standard 1'
+                                html: 'stuff',
+                                title: 'Standard 1'
                             }
                         ]
                     },

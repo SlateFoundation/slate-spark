@@ -14,7 +14,6 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                 items: [
                     {
                         xtype: 'component',
-                        flex: 1,
                         html: 'write it!'
                     },
                     {
@@ -23,19 +22,49 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                         items: [
                             {
                                 xtype: 'container',
-                                flex: 1,
                                 layout: 'hbox',
-                                html: 'submitted docs',
                                 items: [
                                     {
-                                        xtype: 'component',
+                                        xtype: 'container',
                                         flex: 1,
-                                        html: 'standards being applied'
+                                        items: [
+                                            {
+                                                xtype: 'component',
+                                                html: 'Standards Being Applied'
+                                            },
+                                            {
+                                                xtype: 'component',
+                                                html: 'CCSS.ELA.4.CC.4.A'
+                                            },
+                                            {
+                                                xtype: 'component',
+                                                html: 'CCSS.ELA.4.CC.4.A'
+                                            },
+                                            {
+                                                xtype: 'component',
+                                                html: 'CCSS.ELA.4.CC.4.A'
+                                            }
+                                        ]
                                     },
                                     {
-                                        xtype: 'component',
+                                        xtype: 'container',
                                         flex: 1,
-                                        html: 'related docs'
+                                        items: [
+                                            {
+                                                xtype: 'component',
+                                                html: 'Related docs'
+                                            },
+                                            {
+                                                xtype: 'component',
+                                                html: [
+                                                    '<ol>',
+                                                        '<li>Link to Google Doc</li>',
+                                                        '<li>Link to Google Doc</li>',
+                                                        '<li>Link to Google Doc</li>',
+                                                    '</ol>'
+                                                ].join('')
+                                            }
+                                        ]
                                     }
                                 ]
                             }
@@ -78,7 +107,6 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                     },
                     {
                         xtype: 'formpanel',
-                        flex: 1,
                         items: [
                             {
                                 xtype: 'textfield',

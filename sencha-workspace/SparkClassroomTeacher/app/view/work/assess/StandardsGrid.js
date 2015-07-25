@@ -9,7 +9,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.StandardsGrid', {
             {
                 dataIndex: 'Standard',
                 flex: 1,
-                text: 'Assessment Selected',
+                text: 'Assessment Selected'
             },
             {
                 dataIndex: 'Completed',
@@ -17,7 +17,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.StandardsGrid', {
                 text: 'Completed',
                 renderTpl: function(v, m, r) {
                     return v ? '<input type="checkbox" checked>' : '';
-                },
+                }
             },
             {
                 dataIndex: 'Score',
@@ -25,7 +25,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.StandardsGrid', {
                 renderTpl: function(v, m, r) {
                     return v ? v+'/5' : '';
                 },
-                flex: 1,
+                flex: 1
             }
         ],
 
