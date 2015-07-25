@@ -31,7 +31,7 @@ Ext.define('SparkClassroomStudent.view.apply.SuggestionTable', {
                         html: [
                             '<input type="checkbox"><h5>Write it</h5>',
                             '<span>Write A paragraph that has both active and passive voice sentences. Be sure to underline your sentences that display the learning target</span>'
-                        ].join(''),
+                        ].join('')
                     },
                     {
                         xtype: 'component',
@@ -54,7 +54,7 @@ Ext.define('SparkClassroomStudent.view.apply.SuggestionTable', {
                         html: [
                             '<input type="checkbox"><h5>Create it</h5>',
                             '<span>Create a powerpoint or prezi to teach this learning target to your peers. Don\'t limit yourself. Be creative and be sure to include practice activities. You may even decide to use Storybird or Storeboard</span>'
-                        ].join(''),
+                        ].join('')
                     },
                     {
                         xtype: 'component',
@@ -83,7 +83,7 @@ Ext.define('SparkClassroomStudent.view.apply.SuggestionTable', {
                         width: '20%',
                         html: [
                             'None'
-                        ].join(''),
+                        ].join('')
                     }
                 ]
             },
@@ -97,7 +97,7 @@ Ext.define('SparkClassroomStudent.view.apply.SuggestionTable', {
                         html: [
                             '<input type="checkbox"><h5>Suggest my own:</h5>',
                             '<textarea></textarea>'
-                        ].join(''),
+                        ].join('')
                     }
                 ]
             }

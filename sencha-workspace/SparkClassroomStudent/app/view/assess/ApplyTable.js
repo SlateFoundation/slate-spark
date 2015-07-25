@@ -36,7 +36,7 @@ Ext.define('SparkClassroomStudent.view.assess.ApplyTable', {
                         html: [
                             '<img src="http://plachold.it/25x25"><h5> Playlist Title</h5>',
                             '<span>Project Name of Apply</span>'
-                        ].join(''),
+                        ].join('')
                     },
                     {
                         xtype: 'selectfield',
