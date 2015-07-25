@@ -52,7 +52,7 @@ Ext.define('SparkClassroomStudent.view.learn.AssignmentGrid', {
                 dataIndex: 'Flag',
                 flex: 1,
                 text: 'Flag',
-                renderTpl(v, m, r) {
+                renderTpl: function(v, m, r) {
                     return  v ? '<img src="http://placehold.it/25x25">' : '';
                 }
             }
