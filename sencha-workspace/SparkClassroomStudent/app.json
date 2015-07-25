@@ -70,7 +70,8 @@
      */
     "requires": [
         "font-awesome",
-        "spark-classroom"
+        "spark-classroom",
+        "jarvus-touch-accordion"
     ],
 
     /**
