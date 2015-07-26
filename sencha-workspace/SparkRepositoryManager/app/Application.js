@@ -5,16 +5,10 @@ Ext.define('SparkRepositoryManager.Application', {
     requires: [
         'SparkRepositoryManager.API',
 
-        // package features
-
         // framework features
-        'Ext.Error',
-        'Ext.data.StoreManager',
-        'Ext.plugin.Viewport',
         'Ext.state.LocalStorageProvider',
 
-        'SparkRepositoryManager.overrides.grid.RowEditor',
-        'SparkRepositoryManager.proxy.Records'
+        'SparkRepositoryManager.overrides.grid.RowEditor'
     ],
 
     name: 'SparkRepositoryManager',
@@ -26,9 +20,9 @@ Ext.define('SparkRepositoryManager.Application', {
 
         'Learn',
         'Conference',
+        'Resource',
         'Apply',
         'Assess',
-        'Resource',
         'Sparkpoints'
     ],
 
