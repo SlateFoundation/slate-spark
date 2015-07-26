@@ -6,6 +6,23 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         'Ext.form.Panel'
     ],
 
+    // TODO: test if this can be removed in framework > 5.1.1.451, seems like it was worked on
+    insertColumnEditor: function(column) {
+        var floatingButtons = this.getFloatingButtons(),
+            field = column.field,
+            _syncButtons = function() {
+                if (floatingButtons.rendered) {
+                    floatingButtons.setButtonPosition(floatingButtons.position);
+                }
+            };
+
+        this.callParent(arguments);
+
+        if (field) {
+            field.on('autosize', _syncButtons);
+        }
+    },
+
     loadRecord: function(record) {
         var me     = this,
             form   = me.getForm(),
@@ -153,5 +170,36 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         } else {
             me.hideToolTip();
         }
-    }
+    },
+
+    // determines the amount by which the row editor will overflow, and flips the buttons
+    // to the top of the editor if the required scroll amount is greater than the available
+    // scroll space. Returns the scrollDelta required to scroll the editor into view after
+    // adjusting the button position.
+    syncButtonPosition: function(scrollDelta) {
+        var me = this,
+            floatingButtons = me.getFloatingButtons(),
+            scrollingView = me.scrollingView,
+            overflow = me.getScrollDelta() - (scrollingView.getScrollable().getSize().y -
+                scrollingView.getScrollY() - me.scrollingViewEl.dom.clientHeight);
+
+        if (overflow > 0) {
+            if (!me._buttonsOnTop) {
+                floatingButtons.setButtonPosition('top');
+                me._buttonsOnTop = true;
+            }
+            scrollDelta = 0;
+        } else if (me._buttonsOnTop !== false) {
+            floatingButtons.setButtonPosition('bottom');
+            me._buttonsOnTop = false;
+        }
+        // Ensure button Y position is synced with Editor height even if button
+        // orientation doesn't change
+        else {
+            floatingButtons.setButtonPosition(floatingButtons.position);
+        }
+
+        return scrollDelta;
+    },
+
 });

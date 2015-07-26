@@ -34,18 +34,6 @@ Ext.define('SparkRepositoryManager.widget.StandardField', {
         me.callParent();
     },
 
-    listeners: {
-        change: function (field, newHeight) {
-            var me      = this,
-                rowEditor = me.up('roweditor');
-
-            if (rowEditor) {
-                /* HACK: while rowediting, when the tagfield autosizes it pushes the update/cancel roweditor buttons down */
-                rowEditor.getFloatingButtons().setButtonPosition('bottom');
-            }
-        }
-    },
-
     getModelData: function() {
         return {
             'Standards':
