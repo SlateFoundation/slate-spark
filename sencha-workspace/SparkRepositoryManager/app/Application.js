@@ -98,7 +98,7 @@ Ext.define('SparkRepositoryManager.Application', {
             var mainView = me.getMainView().create({
                     plugins: 'viewport'
                 }),
-                tab = mainView.child('#' + me.getDefaultToken() + '-panel');
+                tab = mainView.child('#' + me.getDefaultToken());
 
             if (tab) {
                 mainView.suspendEvent('tabchange');

@@ -20,34 +20,40 @@ Ext.define('SparkRepositoryManager.view.Main', {
 
     items: [
         {
+            itemId: 'learn',
+
             xtype: 's2m-learn-panel',
-            title: 'Learn & Practice',
-            itemId: 'learn-panel'
+            title: 'Learn & Practice'
         },
         {
+            itemId: 'conference',
+
             xtype: 's2m-conference-panel',
-            title: 'Conference Questions',
-            itemId: 'conference-panel'
+            title: 'Conference Questions'
         },
         {
+            itemId: 'resource',
+
             xtype: 's2m-resource-panel',
-            title: 'Conference Resources',
-            'itemId': 'resource-panel'
+            title: 'Conference Resources'
         },
         {
+            itemId: 'apply',
+
             xtype: 's2m-apply-panel',
-            title: 'Apply',
-            itemId: 'apply-panel'
+            title: 'Apply'
         },
         {
+            itemId: 'assess',
+
             xtype: 's2m-assess-panel',
-            title: 'Assess',
-            itemId: 'assess-panel'
+            title: 'Assess'
         },
         {
+            itemId: 'sparkpoints',
+
             xtype: 'srm-sparkpoints-panel',
-            title: 'Sparkpoints',
-            itemId: 'sparkpoints-panel'
+            title: 'Sparkpoints'
         }/*,
         {
             xtype: 's2m-pbl-panel',
@@ -96,8 +102,7 @@ Ext.define('SparkRepositoryManager.view.Main', {
             var newGridPanel = tab.is('gridpanel') ? tab : tab.down('gridpanel'),
                 oldGridPanel  = oldTab.is('gridpanel') ? oldTab : oldTab.down('gridpanel'),
                 oldGms = oldGridPanel.getPlugin('gms'),
-                gms = newGridPanel.getPlugin('gms'),
-                hashbang = tab.getItemId().replace('-panel', '');
+                gms = newGridPanel.getPlugin('gms');
 
             if (gms && oldGms) {
                 window.setTimeout(function() {
@@ -107,7 +112,7 @@ Ext.define('SparkRepositoryManager.view.Main', {
                 }, 10);
             }
 
-            Ext.History.add(hashbang);
+            Ext.History.add(tab.getItemId());
         }
     }
 });

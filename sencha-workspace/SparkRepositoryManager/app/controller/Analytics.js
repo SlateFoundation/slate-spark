@@ -51,7 +51,7 @@ Ext.define('SparkRepositoryManager.controller.Analytics', {
 
     onMainTabChange: function(mainView, tab, oldTab) {
         ga('set', {
-            page: '/#' + tab.getItemId().replace('-panel', ''), // TODO: get rid of -panel
+            page: '/#' + tab.getItemId(),
             title: tab.getTitle()
         });
 
