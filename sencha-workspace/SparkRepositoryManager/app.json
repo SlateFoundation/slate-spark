@@ -45,6 +45,7 @@
      *      ]
      */
     "requires": [
+        "jarvus-hotfixes",
         "saki-grid-multisearch-5",
         "ext-ux",
         "emergence-apikit",

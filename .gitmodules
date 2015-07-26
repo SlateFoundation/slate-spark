@@ -18,3 +18,7 @@
 	path = sencha-workspace/packages/slate-theme
 	url = git@github.com:SlateFoundation/slate-theme.git
 	branch = releases/v2
+[submodule "sencha-workspace/packages/jarvus-hotfixes"]
+	path = sencha-workspace/packages/jarvus-hotfixes
+	url = git@github.com:JarvusInnovations/sencha-hotfixes.git
+	branch = ext/5/1/1/451
