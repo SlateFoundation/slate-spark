@@ -1,15 +1,15 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     extend: 'Ext.grid.Panel',
     xtype: 'srm-sparkpoints-grid',
+    requires: [
+        'SparkRepositoryManager.model.Sparkpoint',
+        'SparkRepositoryManager.column.Sparkpoint'
+    ],
 
     title: 'Grid',
     //store: Ext.data.StoreManager.lookup('Content'),
     store:{
-        fields: [
-         {name: 'Code', type: 'string'},
-         {name: 'Description',  type: 'string'},
-         {name: 'Mapped',  type: 'string'}
-        ],
+        model: 'SparkRepositoryManager.model.Sparkpoint',
         data: [
             { Code: 'K.CC.1', Description: 'Count to 100 by ones and by tens.', M: 'K.CC.4a' },
             { Code: 'K.CC.4a', Description: 'Understand how to stop counting', M: 'K.CC.3a' },
@@ -47,8 +47,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     }],
 
     columns: [{
-        text: 'Sparkpoint',
-        dataIndex: 'Code'
+        xtype: 'srm-sparkpointcolumn'
     },{
         text: 'Title',
         dataIndex: 'Description',
