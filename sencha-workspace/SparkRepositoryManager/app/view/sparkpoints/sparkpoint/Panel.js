@@ -8,7 +8,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements'
     ],
 
-    title: 'Selected Sparkpoint',
+    title: 'Selected Sparkpoint: K.CC.1',
 
     scrollable: 'y',
     bodyPadding: 10,
