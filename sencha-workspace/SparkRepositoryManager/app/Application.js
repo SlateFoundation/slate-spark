@@ -13,23 +13,7 @@ Ext.define('SparkRepositoryManager.Application', {
         'Ext.state.LocalStorageProvider',
 
         'SparkRepositoryManager.overrides.grid.RowEditor',
-        'SparkRepositoryManager.proxy.Records',
-        'SparkRepositoryManager.store.AssessmentTypes',
-        'SparkRepositoryManager.store.Assessments',
-        'SparkRepositoryManager.store.Comments',
-        'SparkRepositoryManager.store.ConferenceResources',
-        'SparkRepositoryManager.store.GradeLevels',
-        'SparkRepositoryManager.store.Links',
-        'SparkRepositoryManager.store.Ratings',
-        'SparkRepositoryManager.store.StandardMappings',
-        'SparkRepositoryManager.store.StandardRefs',
-        'SparkRepositoryManager.store.Standards',
-        'SparkRepositoryManager.store.StandardsTree',
-        'SparkRepositoryManager.store.TagMaps',
-        'SparkRepositoryManager.store.Tags',
-        'SparkRepositoryManager.store.VendorDomains',
-        'SparkRepositoryManager.store.Vendors',
-        'SparkRepositoryManager.store.Jurisdictions'
+        'SparkRepositoryManager.proxy.Records'
     ],
 
     extend: 'Ext.app.Application',
