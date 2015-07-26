@@ -14,3 +14,7 @@
 [submodule "sencha-workspace/packages/jarvus-draw-dag"]
 	path = sencha-workspace/packages/jarvus-draw-dag
 	url = git@github.com:JarvusInnovations/jarvus-draw-dag.git
+[submodule "sencha-workspace/packages/slate-theme"]
+	path = sencha-workspace/packages/slate-theme
+	url = git@github.com:SlateFoundation/slate-theme.git
+	branch = releases/v2
