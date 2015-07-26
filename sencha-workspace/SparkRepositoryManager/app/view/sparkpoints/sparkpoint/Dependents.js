@@ -8,7 +8,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
 
     title: 'Dependents',
 
-    controller: 'srm-sparkpoints-sparkpointdependents-controller',
+    controller: 'srm-sparkpoints-sparkpointdependents',
 
     config: {
         tooltip: null,

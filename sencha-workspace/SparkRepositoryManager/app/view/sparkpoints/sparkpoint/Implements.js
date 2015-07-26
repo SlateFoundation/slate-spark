@@ -8,7 +8,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
 
     title: 'Implements',
 
-    controller: 'srm-sparkpoints-sparkpointimplements-controller',
+    controller: 'srm-sparkpoints-sparkpointimplements',
 
     config: {
         tooltip: null,

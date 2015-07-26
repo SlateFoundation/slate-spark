@@ -1,6 +1,6 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.srm-sparkpoints-sparkpointdependencies-controller',
+    alias: 'controller.srm-sparkpoints-sparkpointdependencies',
 
 
     control: {

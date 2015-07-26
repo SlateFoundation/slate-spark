@@ -8,7 +8,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
 
     title: 'Dependencies',
 
-    controller: 'srm-sparkpoints-sparkpointdependencies-controller',
 
     config: {
         tooltip: null,
@@ -17,6 +16,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
             '<p>line 1.....</p>'
         ]
     },
+    controller: 'srm-sparkpoints-sparkpointdependencies',
 
     store:{
         type: 'tree',

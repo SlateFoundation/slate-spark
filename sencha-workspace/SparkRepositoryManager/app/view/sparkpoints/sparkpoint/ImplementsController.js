@@ -1,6 +1,6 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.srm-sparkpoints-sparkpointimplements-controller',
+    alias: 'controller.srm-sparkpoints-sparkpointimplements',
 
 
     control: {
