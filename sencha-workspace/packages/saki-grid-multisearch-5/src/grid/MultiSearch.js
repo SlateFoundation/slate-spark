@@ -937,13 +937,11 @@ Ext.define('Ext.saki.grid.MultiSearch', {
     ,updateClearIcon:function(field) {
         var  me = this
             ,cls = 'saki-gms-hasvalue'
-            ,body = field.bodyEl ? field.bodyEl.down('input') : null//.up('div')
+            ,body = field.bodyEl
             ,value = field.getValue ? field.getValue() : null
         ;
 
         if(body) {
-            body = me.extVersion === 4 ? body.up('td') : body.up('div');
-
             if (false !== field.clearIcon) {
                 if (!field.clearIcon) {
                     field.clearIcon = body.createChild({

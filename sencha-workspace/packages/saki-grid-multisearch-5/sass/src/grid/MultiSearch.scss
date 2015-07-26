@@ -96,6 +96,10 @@ input[role=combobox] + div.saki-gms-clear {
   right: $gms-clear-combo-right;
 }
 
+.saki-gms-hasvalue {
+  padding-right: 18px;
+}
+
 .saki-gms-hasvalue:hover .saki-gms-clear {
   visibility:visible;
   -webkit-transition:all $gms-clear-duration $gms-clear-transition;
