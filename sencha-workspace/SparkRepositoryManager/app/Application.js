@@ -37,6 +37,8 @@ Ext.define('SparkRepositoryManager.Application', {
     name: 'SparkRepositoryManager',
 
     controllers: [
+        'Analytics',
+
         'Learn',
         'Conference',
         'Apply',
@@ -91,37 +93,6 @@ Ext.define('SparkRepositoryManager.Application', {
 
     launch: function () {
         var me = this;
-
-        if (location.hostname.indexOf('matchbooklearning') !== -1) {
-            (function (i, s, o, g, r, a, m) {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function () {
-                        (i[r].q = i[r].q || []).push(arguments)
-                    }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-            if (window.SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
-                ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
-            } else {
-                ga('create', 'UA-63172269-1', 'auto');
-            }
-
-            ga('send', 'pageview');
-
-            Ext.Error.handle = function (err) {
-                ga('send', 'exception', {
-                    'exDescription': err.msg,
-                    'exFatal':       true,
-                    'appName':       err.sourceClass,
-                    'appVersion':    err.sourceMethod
-                });
-            };
-        }
 
         Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardsTree', 'AssessmentTypes'], function() {
             var mainView = me.getMainView().create({

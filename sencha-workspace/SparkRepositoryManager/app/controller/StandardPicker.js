@@ -28,7 +28,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
             record = view.getRecord(),
             title = record.data.Title,
             treeStore = me.lookupReference('tree').getStore();
-
+        // TODO: find where this is being relied on and eliminate it
         window.treeStore = treeStore;
         window.view = view;
 
@@ -95,10 +95,6 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
         tagField.clearValue();
 
         me.getView().close();
-
-        if (window.ga) {
-            ga('send', 'event', 'standards', 'align', 'standard picker', checkedItems.length);
-        }
     },
 
     onStandardsCheck: function(node, checked) {

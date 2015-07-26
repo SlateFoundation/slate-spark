@@ -10,7 +10,7 @@ Ext.define('SparkRepositoryManager.view.StandardPicker', {
     ],
 
     extend: 'Ext.window.Window',
-    xtype: 'basic-window',
+    xtype: 'spark-standardpicker',
 
     controller: 'StandardPicker',
 

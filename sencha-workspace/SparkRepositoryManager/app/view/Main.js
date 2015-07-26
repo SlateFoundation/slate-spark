@@ -1,6 +1,6 @@
 Ext.define('SparkRepositoryManager.view.Main', {
     extend: 'Ext.tab.Panel',
-    xtype: 'app-main',
+    xtype: 'spark-main',
 
     requires: [
         'Ext.util.History',
@@ -108,15 +108,6 @@ Ext.define('SparkRepositoryManager.view.Main', {
             }
 
             Ext.History.add(hashbang);
-
-            if (window.ga) {
-                ga('set', {
-                    page: '/#' + hashbang,
-                    title: tab.getTitle()
-                });
-
-                ga('send', 'pageview');
-            }
         }
     }
 });
