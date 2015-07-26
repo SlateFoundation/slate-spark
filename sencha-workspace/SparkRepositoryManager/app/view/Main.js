@@ -99,11 +99,13 @@ Ext.define('SparkRepositoryManager.view.Main', {
                 gms = newGridPanel.getPlugin('gms'),
                 hashbang = tab.getItemId().replace('-panel', '');
 
-            window.setTimeout(function() {
-                // HACK: gms handles drawing itself and does some weird stuff, this fixes an issue where the filter
-                // row doesn't expand to the height of its children; defying normal extjs layout behavior
-                gms.setHeight(oldGms.lastHeight);
-            }, 10);
+            if (gms && oldGms) {
+                window.setTimeout(function() {
+                    // HACK: gms handles drawing itself and does some weird stuff, this fixes an issue where the filter
+                    // row doesn't expand to the height of its children; defying normal extjs layout behavior
+                    gms.setHeight(oldGms.lastHeight);
+                }, 10);
+            }
 
             Ext.History.add(hashbang);
 
