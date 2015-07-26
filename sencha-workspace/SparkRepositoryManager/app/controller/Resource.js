@@ -129,8 +129,7 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
-            tagField,
-            record;
+            tagField;
 
         if (isEditing) {
             // HACK: @themightychris what's a better way to get a reference to the tagfield in the roweditor?
