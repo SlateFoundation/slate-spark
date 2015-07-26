@@ -12,7 +12,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
                 { Title: 'K.CC.3a', leaf: true },
                 { Title: 'K.CC.3b', leaf: true },
                 { Title: 'K.CC.3c', leaf: true },
-                { Title: 'K.CC.3d', leaf: true }
+                {
+                    Title: 'K.CC.3d',
+                    children: [
+                        { Title: 'K.CC.1a', leaf: true },
+                        { Title: 'K.CC.1b', leaf: true },
+                        { Title: 'K.CC.2d', leaf: true }
+                    ]
+                },
             ]
         }
     },
