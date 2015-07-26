@@ -18,10 +18,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
         ]
     },
 
-    listeners: {
-        afterrender: 'onAfterrender'
-    },
-
     store:{
         fields: [
              {name: 'Title', type: 'string'}

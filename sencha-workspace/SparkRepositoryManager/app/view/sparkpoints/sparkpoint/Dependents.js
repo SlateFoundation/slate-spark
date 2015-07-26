@@ -18,10 +18,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
         ]
     },
 
-    listeners: {
-        afterrender: 'onAfterrender'
-    },
-
     store:{
         type: 'tree',
         root: {

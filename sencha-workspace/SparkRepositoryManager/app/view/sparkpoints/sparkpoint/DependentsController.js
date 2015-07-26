@@ -2,7 +2,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
     extend: 'Ext.app.ViewController',
     alias: 'controller.srm-sparkpoints-sparkpointdependents-controller',
 
-    onAfterrender: function(grid) {
+
+    control: {
+        '#': {
+            afterrender: 'onAfterRender'
+        }
+    },
+
+    onAfterRender: function(grid) {
         var view = grid.getView(),
             tip;
 
