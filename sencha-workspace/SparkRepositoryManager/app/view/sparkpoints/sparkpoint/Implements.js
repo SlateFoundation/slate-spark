@@ -2,7 +2,25 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
     extend: 'Ext.grid.Panel',
     xtype: 'srm-sparkpoints-sparkpointimplements',
 
+    requires: [
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsController'
+    ],
+
     title: 'Implements',
+
+    controller: 'srm-sparkpoints-sparkpointimplements-controller',
+
+    config: {
+        tooltip: null,
+        tooltipTemplate: [
+            '<h6>{Title}</h6>',
+            '<p>line 1.....</p>'
+        ]
+    },
+
+    listeners: {
+        afterrender: 'onAfterrender'
+    },
 
     store:{
         fields: [

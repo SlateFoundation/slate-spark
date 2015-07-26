@@ -2,7 +2,25 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     extend: 'Ext.tree.Panel',
     xtype: 'srm-sparkpoints-sparkpointdependents',
 
+    requires: [
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController'
+    ],
+
     title: 'Dependents',
+
+    controller: 'srm-sparkpoints-sparkpointdependents-controller',
+
+    config: {
+        tooltip: null,
+        tooltipTemplate: [
+            '<h6>{Title}</h6>',
+            '<p>line 1.....</p>'
+        ]
+    },
+
+    listeners: {
+        afterrender: 'onAfterrender'
+    },
 
     store:{
         type: 'tree',
@@ -19,7 +37,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
                         { Title: 'K.CC.1b', leaf: true },
                         { Title: 'K.CC.2d', leaf: true }
                     ]
-                },
+                }
             ]
         }
     },
