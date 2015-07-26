@@ -114,7 +114,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
             standards = record.get('Standards');
         }
 
-        standardsPicker = new Ext.create('SparkRepositoryManager.view.StandardPicker', {
+        standardsPicker = Ext.create('SparkRepositoryManager.view.StandardPicker', {
             standards: standards,
             record: record,
             listeners: {
