@@ -1,6 +1,7 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
 Ext.define('SparkRepositoryManager.Application', {
+    extend: 'Ext.app.Application',
     requires: [
         'SparkRepositoryManager.API',
 
@@ -15,8 +16,6 @@ Ext.define('SparkRepositoryManager.Application', {
         'SparkRepositoryManager.overrides.grid.RowEditor',
         'SparkRepositoryManager.proxy.Records'
     ],
-
-    extend: 'Ext.app.Application',
 
     name: 'SparkRepositoryManager',
 
