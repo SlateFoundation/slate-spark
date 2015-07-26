@@ -109,7 +109,7 @@ Ext.define('SparkRepositoryManager.Application', {
                     m.parentNode.insertBefore(a, m)
                 })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-                if (SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
+            if (window.SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
                     ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
                 } else {
                     ga('create', 'UA-63172269-1', 'auto');
