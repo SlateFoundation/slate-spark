@@ -1,40 +1,33 @@
 Ext.define('SparkRepositoryManager.widget.StandardField', {
     extend: 'Ext.form.field.Tag',
-
-    xtype: 's2m.standardfield',
-
-    alias: 'widget.standardfield',
-
+    xtype: 'spark-standardfield',
     requires: [
-        'Ext.Array',
         'Ext.data.ChainedStore'
     ],
 
     lazyAutoLoad: false,
 
     config: {
+        // store: 'StandardCodes',
+        displayField: 'standardCode',
+        valueField: 'standardCode',
         queryMode: 'local',
         publishes: 'value',
         filterPickList: true,
         forceSelection: true,
         selectOnFocus: false,
         multiSelect:  true,
-        anyMatch: true
+        anyMatch: true,
+        stacked: true,
+        triggerAction: 'query'
     },
 
     initComponent: function() {
-        var me = this,
-            store;
+        var me = this;
 
-        if (typeof me.store === 'string') {
-            store = Ext.getStore(me.store);
-        }
-
-        // Chain the passed in store if it's not already
-        if (store.$className !== 'Ext.data.ChainedStore') {
-            // HACK: do not use setStore() here as it will try to perform store like activities upon a string
+        if (!me.store) {
             me.store = Ext.create('Ext.data.ChainedStore', {
-                source: store
+                source: 'StandardCodes'
             });
         }
 

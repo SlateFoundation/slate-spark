@@ -29,20 +29,10 @@ Ext.define('SparkRepositoryManager.view.StandardPicker', {
     modal: true,
 
     items: [{
-        xtype: 'standardfield',
+        xtype: 'spark-standardfield',
         fieldLabel: 'Standards Selected',
         reference: 'tagfield',
-        displayField: 'standardCode',
-        valueField: 'standardCode',
-        queryMode: 'local',
-        publishes: 'value',
-        filterPickList: true,
-        forceSelection: true,
-        anyMatch: true,
         grow: true,
-        selectOnFocus: false,
-        multiSelect: true,
-        store: 'StandardCodes',
 
         listeners: {
             beforeSelect: 'onBeforeTagFieldSelect',

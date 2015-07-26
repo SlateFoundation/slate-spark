@@ -68,17 +68,11 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
             width: 275,
 
             filterField: {
-                xtype: 'standardfield',
-                displayField: 'standardCode',
-                valueField: 'standardCode',
-                store: 'StandardCodes'
+                xtype: 'spark-standardfield'
             },
 
             editor: {
-                xtype: 'standardfield',
-                displayField: 'standardCode',
-                valueField: 'standardCode',
-                store: 'StandardCodes'
+                xtype: 'spark-standardfield'
             },
 
             renderer: function(val, col, record) {
