@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 
-Ext.define('SparkRepositoryManager.store.StandardDocuments', {
+Ext.define('SparkRepositoryManager.store.Jurisdictions', {
     extend: 'Ext.data.TreeStore',
 
     requires: [
