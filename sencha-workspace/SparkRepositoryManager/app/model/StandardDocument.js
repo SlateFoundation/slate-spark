@@ -10,13 +10,13 @@ Ext.define('SparkRepositoryManager.model.StandardDocument', {
 
     fields: [
         {
-            name: "id",
-            type: "string"
+            name: 'id',
+            type: 'string'
         },
 
         {
-            name: "title",
-            type: "string"
+            name: 'title',
+            type: 'string'
         }
     ],
 
