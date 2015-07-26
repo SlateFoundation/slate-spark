@@ -11,7 +11,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
     config: {
         proxy: {
             type: 'ajax',
-            url: 'app/data/tree.json',
+            url: 'data/tree.json',
             reader: {
                 type: 'json'
             },
