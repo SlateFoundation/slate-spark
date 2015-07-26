@@ -3,30 +3,22 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
     xtype: 'srm-sparkpoints-sparkpointimplements',
 
     requires: [
-        'SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsController'
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsController',
+        'SparkRepositoryManager.model.Standard',
+        'SparkRepositoryManager.column.Standard'
     ],
 
     title: 'Implements',
 
     controller: 'srm-sparkpoints-sparkpointimplements',
 
-    config: {
-        tooltip: null,
-        tooltipTemplate: [
-            '<h6>{Title}</h6>',
-            '<p>line 1.....</p>'
-        ]
-    },
-
     store:{
-        fields: [
-             {name: 'Title', type: 'string'}
-        ],
+        model: 'SparkRepositoryManager.model.Standard',
         data: [
-            { Title: 'K.CC.JK.1' },
-            { Title: 'K.CC.JK.2' },
-            { Title: 'K.CC.JK.3' },
-            { Title: 'K.CC.JK.4' }
+            { Code: 'K.CC.JK.1' },
+            { Code: 'K.CC.JK.2' },
+            { Code: 'K.CC.JK.3' },
+            { Code: 'K.CC.JK.4' }
         ]
     },
 
@@ -36,9 +28,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
     hideHeaders: true,
 
     columns: [{
-        name: 'Title',
+        xtype: 'srm-standardcolumn',
+        name: 'Code',
         flex: 5,
-        dataIndex: 'Title'
+        dataIndex: 'Code'
     },{
         xtype: 'actioncolumn',
         width: 32,
