@@ -44,17 +44,5 @@ Ext.define('SparkRepositoryManager.controller.Viewport', {
                 mainView.setActiveTab(token);
             });
         });
-    },
-
-
-    // controller methods
-    loadCard: function(card) {
-        var ct = this.getCardCt(),
-            layout = ct.getLayout();
-
-        if(layout.getActiveItem() !== card) {
-            layout.setActiveItem(card);
-            ct.remove(layout.getPrev());
-        }
     }
 });
