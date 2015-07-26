@@ -34,7 +34,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
     items: [{
         xtype: 'fieldset',
 
-        id: 'details-fieldset',
+        itemId: 'details-fieldset',
 
         title:      'Project Details',
         layout:     'anchor',
@@ -60,7 +60,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                         curVal;
 
                     if (!me.readOnly && me.isDirty()) {
-                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
+                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getValue();
                         curVal = record.get('Instructions');
@@ -70,7 +70,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                             record.set('Instructions', newVal);
                         }
                     }
-                }
+                },
+                scope: 'this'
             }
         }, {
             xtype:      'durationfield',
@@ -93,7 +94,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                         curVal;
 
                     if (!me.readOnly) {
-                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
+                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
 
                         if (!record) {
@@ -151,7 +152,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                     // may not play nice.
 
                     if (!me.readOnly && me.isDirty() && me.getValue() != '') {
-                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
+                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getPlugin('fieldreplicator').getValues();
                         curVal = record.get('Todos') || [];
@@ -210,7 +211,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                     // may not play nice.
 
                     if (!me.readOnly && me.isDirty() && me.getValue() != '') {
-                        rowediting = Ext.getCmp('s2m-apply-gridpanel').getPlugin('rowediting');
+                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
                         record = rowediting.editor.getRecord();
                         newVal = me.getPlugin('fieldreplicator').getValues();
                         curVal = record.get('Links') || [];
@@ -236,29 +237,25 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
         id: 'dummy-focus-field'
     }],
 
-    listeners: [{
-        el: {
-            dblclick: function(e, el) {
-                var applyEditor = Ext.getCmp('s2m-apply-editor'),
-                    gridpanel, editingPlugin, record;
+    listeners: {
+        element: 'el',
+        delegate: '.x-field',
+        dblclick: function(ev, t) {
+            var applyEditor = this.component,
+                gridPanel = applyEditor.up('s2m-apply-panel'),
+                editingPlugin = gridPanel.editingPlugin,
+                record = applyEditor.getRecord(),
+                field = Ext.get(t).component;
 
-                if (el.classList.contains('x-form-field')) {
-                    gridpanel = Ext.getCmp('s2m-apply-gridpanel');
-                    editingPlugin = gridpanel.editingPlugin;
+            if (!editingPlugin.editing && gridPanel.getSelection()[0] == record) {
+                editingPlugin.startEdit(record);
 
-                    if (!editingPlugin.editing) {
-                        record = applyEditor.getRecord();
-
-                        // Sanity check, do the records for the right panel and row editor match
-                        if (gridpanel.getSelection()[0] == record) {
-                            editingPlugin.startEdit(record);
-                            this.component.focus();
-                        }
-                    }
+                if (field) {
+                    field.focus();
                 }
             }
         }
-    }],
+    },
 
     applyRecord: function(rec) {
         var me              = this,
