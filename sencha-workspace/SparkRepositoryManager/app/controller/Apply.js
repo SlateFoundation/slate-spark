@@ -8,11 +8,8 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-            ref:      'panel',
-            selector: 's2m-apply-panel'
-        }, {
-           ref:      'gridpanel',
-           selector: 's2m-apply-panel gridpanel'
+        ref:      'panel',
+        selector: 's2m-apply-panel'
     }],
 
     config: {
@@ -49,30 +46,30 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     onAddClick: function() {
         var me = this,
             panel = me.getPanel(),
-            plugin = panel.down('gridpanel').getPlugin('rowediting'),
+            rowEditing = panel.getPlugin('rowediting'),
             editor = panel.down('s2m-apply-editor'),
-            rec = plugin.editing ? plugin.getEditor().getRecord() : null,
+            rec = rowEditing.editing ? rowEditing.getEditor().getRecord() : null,
             newApplyProject;
 
-        if (rec !== null && (plugin.getEditor().isDirty() || rec.phantom)) {
+        if (rec !== null && (rowEditing.getEditor().isDirty() || rec.phantom)) {
             Ext.Msg.alert('Unsaved changes', 'You must save or cancel your changes before creating a new Apply.');
         } else {
             newApplyProject = me.getApplyProjectsStore().insert(0, {});
-            plugin.startEdit(newApplyProject[0], 0);
+            rowEditing.startEdit(newApplyProject[0], 0);
             editor.setRecord(newApplyProject[0]);
         }
     },
 
     onDeleteClick: function() {
         var me = this,
-            panel = me.getPanel().down('gridpanel'),
+            panel = me.getPanel(),
             rowEditing = panel.getPlugin('rowediting'),
             selectionModel = panel.getSelectionModel(),
             selection = selectionModel.getSelection()[0],
             applyProjectsStore = me.getApplyProjectsStore(),
             title = selection.get('Title'),
             descriptiveText =  title || 'this apply project',
-            editor = panel.up().down('s2m-apply-editor');
+            editor = panel.down('s2m-apply-editor');
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
@@ -91,7 +88,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
 
     onAlignClick: function() {
         var me = this,
-            panel = me.getPanel().down('gridpanel'),
+            panel = me.getPanel(),
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
@@ -123,7 +120,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
 
     onAlignStandards: function(record, standards) {
         var me = this,
-            panel = me.getGridpanel(),
+            panel = me.getPanel(),
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
