@@ -3,35 +3,38 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     xtype: 'srm-sparkpoints-sparkpointdependents',
 
     requires: [
-        'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController'
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesController',
+        'SparkRepositoryManager.model.Sparkpoint',
+        'SparkRepositoryManager.column.Sparkpoint'
     ],
 
     title: 'Dependents',
 
     controller: 'srm-sparkpoints-sparkpointdependents',
 
-    config: {
-        tooltip: null,
-        tooltipTemplate: [
-            '<h6>{Title}</h6>',
-            '<p>line 1.....</p>'
-        ]
-    },
-
     store:{
         type: 'tree',
+        model: 'SparkRepositoryManager.model.Sparkpoint',
         root: {
             expanded: true,
             children: [
-                { Title: 'K.CC.3a', leaf: true },
-                { Title: 'K.CC.3b', leaf: true },
-                { Title: 'K.CC.3c', leaf: true },
+                {Code: 'K.CC.4a', leaf: true },
                 {
-                    Title: 'K.CC.3d',
+                    Code: 'K.CC.4b',
+                    Description: 'This is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b',
                     children: [
-                        { Title: 'K.CC.1a', leaf: true },
-                        { Title: 'K.CC.1b', leaf: true },
-                        { Title: 'K.CC.2d', leaf: true }
+                        { Code: 'K.CC.1a', leaf: true },
+                        { Code: 'K.CC.1b', leaf: true },
+                        { Code: 'K.CC.2b', leaf: true },
+                        { Code: 'K.CC.3b', leaf: true }
+                    ]
+                },
+                { Code: 'K.CC.4c', leaf: true },
+                {
+                    Code: 'K.CC.4d',
+                    children: [
+                        { Code: 'K.CC.1c', leaf: true },
+                        { Code: 'K.CC.1d', leaf: true }
                     ]
                 }
             ]
@@ -44,9 +47,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     hideHeaders: true,
 
     columns: [{
-        xtype: 'treecolumn',
+        xtype: 'treecolumn', // can't use sparkpointcolumn directly because we need a treecolumn here
         flex: 5,
-        dataIndex: 'Title'
+        dataIndex: 'Code',
+        renderer: function() {
+            return SparkRepositoryManager.column.Sparkpoint.prototype.renderer.apply(this, arguments);
+        }
     },{
         xtype: 'actioncolumn',
         width: 32,
