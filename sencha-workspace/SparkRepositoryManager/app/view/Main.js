@@ -1,7 +1,6 @@
 Ext.define('SparkRepositoryManager.view.Main', {
     extend: 'Ext.tab.Panel',
     xtype: 'spark-main',
-
     requires: [
         'Ext.util.History',
         'SparkRepositoryManager.view.apply.Panel',
@@ -14,9 +13,9 @@ Ext.define('SparkRepositoryManager.view.Main', {
         'SparkRepositoryManager.view.sparkpoints.Panel'
     ],
 
-    alias: 'mainview',
-    reference: 'mainview',
-    autoCreate: true,
+
+    autoEl: 'main',
+    componentCls: 'app-main',
 
     items: [
         {
@@ -63,6 +62,7 @@ Ext.define('SparkRepositoryManager.view.Main', {
         }*/
     ],
 
+    // TODO: move these listeners to the viewport controller
     listeners: {
         beforetabchange: function(tabPanel, tab, oldTab) {
             var newGridPanel = tab.is('gridpanel') ? tab : tab.down('gridpanel'),

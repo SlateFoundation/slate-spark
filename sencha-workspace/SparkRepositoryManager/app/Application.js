@@ -39,6 +39,8 @@ Ext.define('SparkRepositoryManager.Application', {
     controllers: [
         'Analytics',
 
+        'Viewport',
+
         'Learn',
         'Conference',
         'Apply',
@@ -47,64 +49,25 @@ Ext.define('SparkRepositoryManager.Application', {
         'Sparkpoints'
     ],
 
-    listen: {
-        controller: {
-            '#': {
-                unmatchedroute: 'onUnmatchedRoute'
-            }
-        }
-    },
-
-    defaultToken : 'learn',
-
-    // TODO: @themightychris this is a hack for routing to the tab panel, could use some help here
-    onUnmatchedRoute: function(hash) {
-        this.setDefaultToken(hash);
-    },
-
+    // TODO: move all these to the controllers that actually use them
     stores: [
         'Assessments',
-        'AssessmentTypes',
         'Comments',
         'GradeLevels',
         'Links',
         'Ratings',
         'Standards',
-        'StandardsTree',
         'StandardMappings',
         'StandardRefs',
         'Tags',
         'TagMaps',
         'ConferenceResources',
-        'Vendors',
-        'VendorDomains',
         'Jurisdictions'
-    ],
-
-    views: [
-        'Main'
     ],
 
     init: function() {
         Ext.state.Manager.setProvider(Ext.create('Ext.state.LocalStorageProvider', {
             prefix: 'srm-'
         }));
-    },
-
-    launch: function () {
-        var me = this;
-
-        Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardsTree', 'AssessmentTypes'], function() {
-            var mainView = me.getMainView().create({
-                    plugins: 'viewport'
-                }),
-                tab = mainView.child('#' + me.getDefaultToken());
-
-            if (tab) {
-                mainView.suspendEvent('tabchange');
-                mainView.setActiveItem(tab);
-                mainView.resumeEvent('tabchange');
-            }
-        });
     }
 });
