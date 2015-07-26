@@ -2,9 +2,6 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
     requires: [
         'Ext.Array',
         'Ext.XTemplate',
-        'Ext.data.JsonStore',
-        'Ext.data.proxy.Ajax',
-        'Ext.data.reader.Json',
         'Ext.form.field.ComboBox',
         'Ext.form.field.Date',
         'Ext.form.field.Tag',
@@ -15,6 +12,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
+        'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.Util',
         'SparkRepositoryManager.widget.StandardField'
     ],
@@ -247,24 +245,19 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
             dataIndex: 'CreatorFullName',
             filterField: {
                 xtype: 'combobox',
-                store: Ext.data.JsonStore({
-                    // store configs
-                    storeId: 'AssessmentCreators',
+                store: {
+                    xclass: 'Ext.data.Store',
 
                     proxy: {
-                        type: 'ajax',
-                        url: Emergence.util.API.buildUrl('/spark2/assessments/creators'),
-                        reader: {
-                            type: 'json',
-                            rootProperty: 'data'
-                        },
+                        type: 'spark-records',
+                        url: '/spark2/assessments/creators',
                         extraParams: {
                             limit: 1024
                         }
                     },
 
                     fields: ['CreatorID', 'CreatorFullName']
-                }),
+                },
                 queryMode: 'local',
                 displayField: 'CreatorFullName',
                 valueField: 'CreatorID',

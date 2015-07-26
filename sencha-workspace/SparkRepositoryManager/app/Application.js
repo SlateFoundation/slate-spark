@@ -2,8 +2,9 @@
 
 Ext.define('SparkRepositoryManager.Application', {
     requires: [
+        'SparkRepositoryManager.API',
+
         // package features
-        'Emergence.util.API',
 
         // framework features
         'Ext.Error',
@@ -89,50 +90,37 @@ Ext.define('SparkRepositoryManager.Application', {
     },
 
     launch: function () {
-        var me = this,
-            pageParams = Ext.Object.fromQueryString(location.search);
+        var me = this;
 
-        if (pageParams.apiHost) {
-            Emergence.util.API.setHostname(pageParams.apiHost);
-        } else {
-
-            if (location.hostname.indexOf('matchbooklearning') !== -1) {
-                (function (i, s, o, g, r, a, m) {
-                    i['GoogleAnalyticsObject'] = r;
-                    i[r] = i[r] || function () {
-                            (i[r].q = i[r].q || []).push(arguments)
-                        }, i[r].l = 1 * new Date();
-                    a = s.createElement(o),
-                        m = s.getElementsByTagName(o)[0];
-                    a.async = 1;
-                    a.src = g;
-                    m.parentNode.insertBefore(a, m)
-                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        if (location.hostname.indexOf('matchbooklearning') !== -1) {
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
             if (window.SiteEnvironment && SiteEnvironment.user && SiteEnvironment.user.Username) {
-                    ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
-                } else {
-                    ga('create', 'UA-63172269-1', 'auto');
-                }
-
-                ga('send', 'pageview');
-
-                Ext.Error.handle = function (err) {
-                    ga('send', 'exception', {
-                        'exDescription': err.msg,
-                        'exFatal':       true,
-                        'appName':       err.sourceClass,
-                        'appVersion':    err.sourceMethod
-                    });
-                };
+                ga('create', 'UA-63172269-1', { 'userId': SiteEnvironment.user.Username });
+            } else {
+                ga('create', 'UA-63172269-1', 'auto');
             }
 
-            // TODO: Remove this before production
-            if (location.hostname.indexOf('slate.ninja') === -1 &&
-                location.hostname.indexOf('slatepowered') === -1 &&
-                location.hostname.indexOf('matchbooklearning') === -1) {
-                Emergence.util.API.setHostname('staging.sparkpoint.slatepowered.net');
-            }
+            ga('send', 'pageview');
+
+            Ext.Error.handle = function (err) {
+                ga('send', 'exception', {
+                    'exDescription': err.msg,
+                    'exFatal':       true,
+                    'appName':       err.sourceClass,
+                    'appVersion':    err.sourceMethod
+                });
+            };
         }
 
         Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardsTree', 'AssessmentTypes'], function() {

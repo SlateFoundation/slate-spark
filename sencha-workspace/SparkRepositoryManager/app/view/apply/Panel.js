@@ -3,18 +3,11 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
     extend: 'Ext.form.Panel',
 
     requires: [
-        'Ext.Array',
-        'Ext.ComponentQuery',
-        'Ext.container.Container',
-        'Ext.data.ArrayStore',
-        'Ext.data.JsonStore',
-        'Ext.data.proxy.Ajax',
-        'Ext.data.reader.Json',
+        'Ext.data.Store',
         'Ext.form.field.ComboBox',
         'Ext.form.field.Date',
         'Ext.form.field.Tag',
         'Ext.form.field.Text',
-        'Ext.grid.Panel',
         'Ext.grid.Panel',
         'Ext.grid.column.Date',
         'Ext.grid.plugin.RowEditing',
@@ -26,6 +19,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         'Ext.toolbar.Toolbar',
         'Ext.util.Format',
         'Ext.window.MessageBox',
+        'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.store.ApplyProjects',
         'SparkRepositoryManager.view.apply.Editor',
         'SparkRepositoryManager.widget.StandardField'
@@ -157,24 +151,19 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
             dataIndex:   'CreatorFullName',
             filterField: {
                 xtype:        'combobox',
-                store:        Ext.data.JsonStore({
-                    // store configs
-                    storeId: 'LearnCreators',
+                store:        {
+                    xclass: 'Ext.data.Store',
 
                     proxy: {
-                        type:        'ajax',
-                        url:  Emergence.util.API.buildUrl('/spark2/apply-projects/creators'),
-                        reader:      {
-                            type:         'json',
-                            rootProperty: 'data'
-                        },
+                        type: 'spark-records',
+                        url: '/spark2/apply-projects/creators',
                         extraParams: {
                             limit: 1024
                         }
                     },
 
                     fields: ['CreatorID', 'CreatorFullName']
-                }),
+                },
                 queryMode:    'local',
                 displayField: 'CreatorFullName',
                 valueField:   'CreatorID',

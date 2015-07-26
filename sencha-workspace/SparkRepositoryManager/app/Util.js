@@ -1,9 +1,10 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.Util', {
     'singleton': true,
 
     'requires': [
-        'Ext.Ajax',
         'Ext.Object',
+        'SparkRepositoryManager.API',
         'SparkRepositoryManager.model.Vendor',
         'SparkRepositoryManager.model.VendorDomain',
         'Ext.window.MessageBox'
@@ -78,33 +79,6 @@ Ext.define('SparkRepositoryManager.Util', {
         return name ? name[0] : hostname;
     },
 
-    getMetadata: function (url, extended, cb) {
-
-        if (typeof extended !== 'function') {
-            extended = !!extended;
-        } else {
-            cb = extended;
-        }
-
-        var options = {
-            method: 'get',
-            // TODO: Remove the URL hack below before production
-
-            url: ((location.hostname === 'localhost') ? Emergence.util.API.getHostname() : '') + '/spark2/metadata',
-
-            params: {
-                url: url,
-                extended: extended
-            }
-        };
-
-        if (typeof cb === 'function') {
-            options.success = cb;
-        }
-
-        Ext.Ajax.request(options);
-    },
-
     autoPopulateMetadata: function(editor, linkClass) {
         // TODO: this should remove the vendor if the editor is cancelled
         var me = this,
@@ -132,7 +106,7 @@ Ext.define('SparkRepositoryManager.Util', {
            return;
          }
 
-         me.getMetadata(url, createNewVendor, function(response) {
+         SparkRepositoryManager.API.getMetadata(url, createNewVendor, function(response) {
              try {
                  response = JSON.parse(response.responseText);
              } catch(e) {

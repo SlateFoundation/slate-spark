@@ -1,11 +1,5 @@
 Ext.define('SparkRepositoryManager.view.learn.Panel', {
     requires: [
-        'Ext.Array',
-        'Ext.Date',
-        'Ext.XTemplate',
-        'Ext.data.JsonStore',
-        'Ext.data.proxy.Ajax',
-        'Ext.data.reader.Json',
         'Ext.form.field.ComboBox',
         'Ext.form.field.Date',
         'Ext.form.field.Tag',
@@ -15,6 +9,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
+        'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.Util',
         'SparkRepositoryManager.widget.StandardField'
     ],
@@ -232,24 +227,19 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
             dataIndex: 'CreatorFullName',
             filterField: {
                 xtype: 'combobox',
-                store: Ext.data.JsonStore({
-                    // store configs
-                    storeId: 'LearnCreators',
+                store: {
+                    xclass: 'Ext.data.Store',
 
                     proxy: {
-                        type: 'ajax',
-                        url: Emergence.util.API.buildUrl('/spark2/learn-links/creators'),
-                        reader: {
-                            type: 'json',
-                            rootProperty: 'data'
-                        },
+                        type: 'spark-records',
+                        url: '/spark2/learn-links/creators',
                         extraParams: {
                             limit: 1024
                         }
                     },
 
                     fields: ['CreatorID', 'CreatorFullName']
-                }),
+                },
                 queryMode: 'local',
                 displayField: 'CreatorFullName',
                 valueField: 'CreatorID',

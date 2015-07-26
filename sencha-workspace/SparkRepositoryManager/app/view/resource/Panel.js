@@ -15,7 +15,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
-        'SparkRepositoryManager.Util',
+        'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.widget.StandardField'
     ],
 
@@ -100,7 +100,6 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
             text: 'Grade',
             dataIndex: 'GradeLevel',
             width: 75,
-            filterField: true,
 
             editor: {
                 xtype: 'combobox',
@@ -131,7 +130,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
                                 form = me.up().getForm(),
                                 error;
 
-                            SparkRepositoryManager.Util.getMetadata(me.getValue(), false, function(response) {
+                            SparkRepositoryManager.API.getMetadata(me.getValue(), false, function(response) {
                                 try {
                                     response = JSON.parse(response.responseText);
 
@@ -175,24 +174,19 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
             dataIndex: 'CreatorFullName',
             filterField: {
                 xtype: 'combobox',
-                store: Ext.data.JsonStore({
-                    // store configs
-                    storeId: 'AssessmentCreators',
+                store: {
+                    xclass: 'Ext.data.Store',
 
                     proxy: {
-                        type: 'ajax',
-                        url: Emergence.util.API.buildUrl('/spark2/conference-resources/creators'),
-                        reader: {
-                            type: 'json',
-                            rootProperty: 'data'
-                        },
+                        type: 'spark-records',
+                        url: '/spark2/conference-resources/creators',
                         extraParams: {
                             limit: 1024
                         }
                     },
 
                     fields: ['CreatorID', 'CreatorFullName']
-                }),
+                },
                 queryMode: 'local',
                 displayField: 'CreatorFullName',
                 valueField: 'CreatorID',

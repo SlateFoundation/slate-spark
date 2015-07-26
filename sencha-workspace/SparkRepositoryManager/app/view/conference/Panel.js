@@ -1,9 +1,5 @@
 Ext.define('SparkRepositoryManager.view.conference.Panel', {
     requires: [
-        'Ext.Array',
-        'Ext.data.JsonStore',
-        'Ext.data.proxy.Ajax',
-        'Ext.data.reader.Json',
         'Ext.form.field.ComboBox',
         'Ext.form.field.Date',
         'Ext.form.field.Tag',
@@ -13,6 +9,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
+        'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.widget.StandardField'
     ],
 
@@ -98,7 +95,6 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
             text: 'Grade',
             dataIndex: 'GradeLevel',
             width: 75,
-            filterField: true,
 
             editor: {
                 xtype: 'combobox',
@@ -130,24 +126,19 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
             dataIndex: 'CreatorFullName',
             filterField: {
                 xtype: 'combobox',
-                store: Ext.data.JsonStore({
-                    // store configs
-                    storeId: 'LearnCreators',
+                store: {
+                    xclass: 'Ext.data.Store',
 
                     proxy: {
-                        type: 'ajax',
-                        url: Emergence.util.API.buildUrl('/spark2/guiding-questions/creators'),
-                        reader: {
-                            type: 'json',
-                            rootProperty: 'data'
-                        },
+                        type: 'spark-records',
+                        url: '/spark2/guiding-questions/creators',
                         extraParams: {
                             limit: 1024
                         }
                     },
 
                     fields: ['CreatorID', 'CreatorFullName']
-                }),
+                },
                 queryMode: 'local',
                 displayField: 'CreatorFullName',
                 valueField: 'CreatorID',
