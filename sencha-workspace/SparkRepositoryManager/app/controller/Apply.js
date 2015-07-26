@@ -1,6 +1,5 @@
 Ext.define('SparkRepositoryManager.controller.Apply', {
     requires: [
-        'Ext.tip.QuickTipManager',
         'Ext.window.MessageBox',
         'SparkRepositoryManager.store.ApplyProjects',
         'SparkRepositoryManager.view.StandardPicker'
@@ -36,14 +35,6 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     stores: [
         'ApplyProjects'
     ],
-
-    /**
-     * Called when the view is created
-     */
-    init: function() {
-        Ext.tip.QuickTipManager.init();
-        Ext.tip.QuickTipManager.disable();
-    },
 
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
