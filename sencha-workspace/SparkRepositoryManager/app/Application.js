@@ -4,18 +4,13 @@ Ext.define('SparkRepositoryManager.Application', {
     requires: [
         // package features
         'Emergence.util.API',
-        // package features
-        'Emergence.util.API',
+
         // framework features
         'Ext.Error',
         'Ext.data.StoreManager',
         'Ext.plugin.Viewport',
-        'Ext.plugin.Viewport',
         'Ext.state.LocalStorageProvider',
-        'Ext.state.LocalStorageProvider',
-        'Ext.state.Manager',
-        'Ext.state.Manager',
-        'Ext.state.Manager',
+
         'SparkRepositoryManager.overrides.grid.RowEditor',
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.store.AssessmentTypes',
