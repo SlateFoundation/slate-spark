@@ -192,11 +192,10 @@ Ext.define('Ext.saki.grid.MultiSearch', {
 
     /**
      * @cfg {Number}
-     * Height of the row with filter fields. Change this value depending on the
-     * theme you use in your application. The default value looks good with
-     * Ext 5 Crisp Theme. Set it to 21 for Ext 4 classic and gray themes.
+     * Height of the row with filter fields. Best to leave this null and let the framework 
+     * measure the rendered form components naturally.
      */
-    ,height:24
+    ,height:null
 
     /**
      * @cfg {Boolean}
