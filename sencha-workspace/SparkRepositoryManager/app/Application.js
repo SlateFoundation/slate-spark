@@ -8,6 +8,7 @@ Ext.define('SparkRepositoryManager.Application', {
         // framework features
         'Ext.state.LocalStorageProvider',
 
+        // app overrides
         'SparkRepositoryManager.overrides.grid.RowEditor'
     ],
 
