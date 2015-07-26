@@ -2,6 +2,7 @@
 Ext.define('SparkRepositoryManager.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
+        'Ext.util.History',
         'Ext.container.Viewport'
     ],
 
@@ -33,11 +34,14 @@ Ext.define('SparkRepositoryManager.controller.Viewport', {
         var me = this;
 
         Ext.StoreMgr.requireLoaded(['Vendors', 'VendorDomains', 'StandardsTree', 'AssessmentTypes'], function() {
-            var viewport = me.getViewport();
+            var viewport = me.getViewport(),
+                mainView = viewport.add({
+                    xtype: 'spark-main',
+                    activeTab: Ext.util.History.getToken()
+                });
 
-            viewport.add({
-                xtype: 'spark-main',
-                activeTab: Ext.util.History.getToken()
+            Ext.util.History.on('change', function(token) {
+                mainView.setActiveTab(token);
             });
         });
     },
