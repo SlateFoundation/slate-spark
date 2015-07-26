@@ -2,7 +2,6 @@
 Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     extend: 'Ext.data.Model',
 
-
     tooltipTpl: [
         '<p>The full description of <em>{Code}</em> can be displayed here <strong>with arbitrary markup</strong></p>',
         '<tpl if="Description">',
@@ -22,7 +21,7 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
             name: 'Description',
             type: 'string'
         }
-        
+
         // tree meta-fields
     ]
 });
