@@ -11,7 +11,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
     title: 'Standards Documents',
     scrollable: true,
 
-    store: 'Jurisdictions',
+    store: 'StandardDocuments',
 
     rootVisible: false,
     useArrows: true,

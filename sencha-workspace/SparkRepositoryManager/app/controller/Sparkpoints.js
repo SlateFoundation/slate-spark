@@ -2,11 +2,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'SparkRepositoryManager.store.Jurisdictions'
+        'SparkRepositoryManager.store.StandardDocuments'
     ],
 
     stores: [
-        'Jurisdictions'
+        'StandardDocuments'
     ],
 
     config: {

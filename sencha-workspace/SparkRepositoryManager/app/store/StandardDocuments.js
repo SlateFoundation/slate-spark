@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 // TODO: change this file name to StandardDocuments and also needs further development- bc
-Ext.define('SparkRepositoryManager.store.Jurisdictions', {
+Ext.define('SparkRepositoryManager.store.StandardDocuments', {
     extend: 'Ext.data.TreeStore',
 
     requires: [
