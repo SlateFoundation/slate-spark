@@ -8,97 +8,92 @@ Ext.define('SparkClassroom.view.work.learn.Main', {
     ],
 
     config: {
-        title: 'Learn &amp; Practice',
+        layout: 'hbox',
         items: [
             {
-                layout: 'hbox',
+                xtype: 'container',
+                layout: 'vbox',
+                flex: 1,
                 items: [
                     {
-                        xtype: 'container',
-                        layout: 'vbox',
-                        flex: 1,
-                        items: [
-                            {
-                                xtype: 'component',
-                                html: 'Alexandra W has 3 out of 5 stars',
-                                userClass: 'Student'
-                            },
-                            {
-                                xtype: 'container',
-                                layout: 'accordion',
-                                flex: 1,
-                                items: [
-                                    {
-                                        xtype: 'spark-work-learn-assignmentgrid',
-                                        title: 'Standards Blarg'
-                                    },
-                                    {
-                                        xtype: 'component',
-                                        html: 'stuff',
-                                        title: 'Standard 2'
-                                    },
-                                    {
-                                        xtype: 'component',
-                                        html: 'stuff',
-                                        title: 'Standard 1'
-                                    }
-                                ]
-                            }
-                        ]
+                        xtype: 'component',
+                        html: 'Alexandra W has 3 out of 5 stars',
+                        userClass: 'Student'
                     },
                     {
                         xtype: 'container',
-                        width: '30%',
-                        userClass: 'Mentor',
-                        layout: 'vbox',
+                        layout: 'accordion',
+                        flex: 1,
                         items: [
                             {
-                                xtype: 'component',
-                                html: 'required learns'
+                                xtype: 'spark-work-learn-assignmentgrid',
+                                title: 'Standards Blarg'
                             },
                             {
                                 xtype: 'component',
-                                html: 'mastery score'
+                                html: 'stuff',
+                                title: 'Standard 2'
                             },
                             {
-                                xtype: 'formpanel',
-                                flex: 1,
+                                xtype: 'component',
+                                html: 'stuff',
+                                title: 'Standard 1'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                xtype: 'container',
+                width: '30%',
+                userClass: 'Teacher',
+                layout: 'vbox',
+                items: [
+                    {
+                        xtype: 'component',
+                        html: 'required learns'
+                    },
+                    {
+                        xtype: 'component',
+                        html: 'mastery score'
+                    },
+                    {
+                        xtype: 'formpanel',
+                        flex: 1,
+                        items: [
+                            {
+                                xtype: 'textfield',
+                                placeHolder: 'Subject'
+                            },
+                            {
+                                xtype: 'textareafield',
+                                placeHolder: 'Message'
+                            },
+                            {
+                                xtype: 'fieldset',
+                                label: 'To',
                                 items: [
                                     {
-                                        xtype: 'textfield',
-                                        placeHolder: 'Subject'
+                                        xtype: 'radiofield',
+                                        label: 'Alexandra W'
                                     },
                                     {
-                                        xtype: 'textareafield',
-                                        placeHolder: 'Message'
+                                        xtype: 'radiofield',
+                                        label: 'Current Standard'
                                     },
                                     {
-                                        xtype: 'fieldset',
-                                        label: 'To',
-                                        items: [
-                                            {
-                                                xtype: 'radiofield',
-                                                label: 'Alexandra W'
-                                            },
-                                            {
-                                                xtype: 'radiofield',
-                                                label: 'Current Standard'
-                                            },
-                                            {
-                                                xtype: 'radiofield',
-                                                label: 'All in group'
-                                            },
-                                            {
-                                                xtype: 'radiofield',
-                                                label: 'All in Conference'
-                                            }
-                                        ]
+                                        xtype: 'radiofield',
+                                        label: 'All in group'
                                     },
                                     {
-                                        xtype: 'button',
-                                        text: 'Log'
+                                        xtype: 'radiofield',
+                                        label: 'All in Conference'
                                     }
                                 ]
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Log'
                             }
                         ]
                     }

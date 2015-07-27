@@ -1,36 +1,65 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+
 Ext.define('SparkClassroom.view.work.conference.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work-conference',
     requires: [
-        'Jarvus.touch.layout.Accordion'
+        'Jarvus.touch.layout.Accordion',
+        'SparkClassroom.view.work.conference.peer.Form',
+        'SparkClassroom.view.work.conference.peer.Component'
     ],
 
     config: {
-        title: 'Conference',
         items: [
             {
                 layout: 'hbox',
                 items: [
                     {
                         xtype: 'container',
-                        layout: 'accordion',
                         flex: 1,
                         items: [
                             {
-                                xtype: 'component',
-                                html: 'lets of standards stuff',
-                                title: 'Stanards Breh'
+                                xtype: 'container',
+                                layout: 'accordion',
+                                items: [
+                                    {
+                                        xtype: 'component',
+                                        title: 'Standard 2 - CCSS.ELA.3.CC.4.A',
+                                        html: [
+                                            '<h5>Guiding Questions</h5>',
+                                            '<ol>',
+                                                '<li>Example of a first guiding question that a student should me prepared to respond to.</li>',
+                                                '<li>Example of a second guiding question that a student should me prepared to respond to.</li>',
+                                                '<li>Example of a third guiding question that a student should me prepared to respond to.</li>',
+                                                //FIXME: Replace with custod add with textfield
+                                                '<li><input type="text"><span class="button">Add</span></li>',
+                                            '</ol>',
+                                            '<hr>',
+                                            '<h5>Resources</h5>',
+                                            '<ol>',
+                                                '<li>Title of Resource - <a href="#">documenttoshare.pdf</a></li>',
+                                                '<li>Title of Resource - <a href="#">http://webpage.com</a></li>',
+                                            '</ol>'
+                                        ].join('')
+                                    },
+                                    {
+                                        xtype: 'component',
+                                        html: 'stuff',
+                                        title: 'Standard 2 - CCSS.ELA.3.CC.4.A'
+                                    },
+                                    {
+                                        xtype: 'component',
+                                        html: 'stuff',
+                                        title: 'Standard 3 - CCSS.ELA.3.CC.4.A'
+                                    }
+                                ]
                             },
                             {
-                                xtype: 'component',
-                                html: 'check me out',
-                                title: 'Standard 2'
+                                xtype: 'spark-work-conference-peer-form',
+                                userClass: 'Student'
                             },
                             {
-                                xtype: 'component',
-                                html: 'I\'m a standard',
-                                title: 'Standard 1'
+                                xtype: 'spark-work-conference-peer-component',
+                                userClass: 'Teacher'
                             }
                         ]
                     },
@@ -38,6 +67,7 @@ Ext.define('SparkClassroom.view.work.conference.Main', {
                         xtype: 'container',
                         width: '30%',
                         layout: 'vbox',
+                        userClass: 'Teacher',
                         items: [
                             {
                                 xtype: 'container',
