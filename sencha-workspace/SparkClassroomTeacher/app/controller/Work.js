@@ -3,9 +3,12 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
     requires: [
         'SparkClassroom.view.work.learn.Main',
-        'SparkClassroom.view.work.conference.Main', 
-        'SparkClassroom.view.work.apply.Main', 
-        'SparkClassroom.view.work.assess.Main',  
+        'SparkClassroom.view.work.conference.Main'
+    ],
+    
+    views: [
+        'work.apply.Main',
+        'work.assess.Main'
     ],
 
     config: {
@@ -43,7 +46,16 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     control: {
         'spark-work tabbar': {
             activetabchange: 'onTabChange'
+        },
+        'viewport': {
+            add: 'onViewportItemAdd'
         }
+    },
+    
+    onViewportItemAdd: function(viewport, view) {
+          Ext.Array.each(view.query('[userClass]'), function(component) {
+            component.setHidden(component.config.userClass != "Teacher");
+        });
     },
 
     applyActiveTab: function(tab) {
