@@ -21,7 +21,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Main', {
                         options: [
                             {text: 'Between 1-2', value: 1},
                             {text: 'Between 3-7', value: 1},
-                            {text: 'Between 8-12', value: 1},
+                            {text: 'Between 8-12', value: 1}
                         ]
                     },
                     {

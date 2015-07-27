@@ -71,7 +71,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                         '<input type="radio" '+(number == 1 ? 'checked' : '')+'>',
                         '<input type="radio" '+(number == 2 ? 'checked' : '')+'>',
                         '<input type="radio" '+(number == 3 ? 'checked' : '')+'>',
-                        '<input type="radio" '+(number == 4 ? 'checked' : '')+'>',
+                        '<input type="radio" '+(number == 4 ? 'checked' : '')+'>'
                     ].join('');
                 }
             },
