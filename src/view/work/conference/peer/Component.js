@@ -18,9 +18,10 @@ Ext.define('SparkClassroom.view.work.conference.peer.Component', {
                 '<li>Real world example</li>',
             '</ol>',
             '<hr>',
+            
             '<h4>Peer Conference:</h4> (optional)',
             '<span>Peer: Peer Name</span>',
-            '<span> Feedback from Peer: Student\'s restatement</span>',
+            '<span> Feedback from Peer: Student\'s restatement</span>'
         ].join('')
     }
 });
