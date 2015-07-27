@@ -245,5 +245,7 @@
      *          }
      *      }
      */
-    "requires": []
+    "requires": [
+        "jarvus-touch-accordion"
+    ]
 }
