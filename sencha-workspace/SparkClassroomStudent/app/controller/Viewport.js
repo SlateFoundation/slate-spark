@@ -1,16 +1,17 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.view.work.learn.Main',
+        'SparkClassroom.view.work.conference.Main',
+        'SparkClassroom.view.work.apply.Main',
+        'SparkClassroom.view.work.assess.Main',
+    ],
 
     config: {
         activeTab: null
     },
-    views: [
-        'learn.Main',
-        'conference.Main',
-        'apply.Main',
-        'assess.Main'
-    ],
+    
     refs:{
         learnMainCt: {
             selector: 'spark-learn',
