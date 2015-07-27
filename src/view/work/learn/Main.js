@@ -15,28 +15,41 @@ Ext.define('SparkClassroom.view.work.learn.Main', {
                 items: [
                     {
                         xtype: 'container',
-                        layout: 'accordion',
+                        layout: 'vbox',
                         flex: 1,
                         items: [
                             {
-                                xtype: 'spark-work-learn-assignmentgrid',
-                                title: 'Standards Blarg'
+                                xtype: 'component',
+                                html: 'Alexandra W has 3 out of 5 stars',
+                                userClass: 'Student'
                             },
                             {
-                                xtype: 'component',
-                                html: 'stuff',
-                                title: 'Standard 2'
-                            },
-                            {
-                                xtype: 'component',
-                                html: 'stuff',
-                                title: 'Standard 1'
+                                xtype: 'container',
+                                layout: 'accordion',
+                                flex: 1,
+                                items: [
+                                    {
+                                        xtype: 'spark-work-learn-assignmentgrid',
+                                        title: 'Standards Blarg'
+                                    },
+                                    {
+                                        xtype: 'component',
+                                        html: 'stuff',
+                                        title: 'Standard 2'
+                                    },
+                                    {
+                                        xtype: 'component',
+                                        html: 'stuff',
+                                        title: 'Standard 1'
+                                    }
+                                ]
                             }
                         ]
                     },
                     {
                         xtype: 'container',
                         width: '30%',
+                        userClass: 'Mentor',
                         layout: 'vbox',
                         items: [
                             {
