@@ -69,7 +69,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Main', {
                                 placeHolder: 'http://youtube.com'
                             }
                         ]
-                    },
+                    }
                 ]
             }
         ]
