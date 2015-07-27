@@ -55,6 +55,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
         }
     },{
         xtype: 'actioncolumn',
+        action: 'delete',
         width: 32,
         icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
         tooltip: 'Delete'
