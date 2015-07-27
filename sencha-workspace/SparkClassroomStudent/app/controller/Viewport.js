@@ -3,9 +3,12 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
         'SparkClassroom.view.work.learn.Main',
-        'SparkClassroom.view.work.conference.Main',
-        'SparkClassroom.view.work.apply.Main',
-        'SparkClassroom.view.work.assess.Main',
+        'SparkClassroom.view.work.conference.Main'
+    ],
+    
+    views: [
+        'work.apply.Main',
+        'work.assess.Main'
     ],
 
     config: {
@@ -14,35 +17,44 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     
     refs:{
         learnMainCt: {
-            selector: 'spark-learn',
+            selector: 'spark-work-learn',
             autoCreate: true,
 
-            xtype: 'spark-learn'
+            xtype: 'spark-work-learn'
         },
         conferenceMainCt: {
-            selector: 'spark-conference',
+            selector: 'spark-work-conference',
             autoCreate: true,
 
-            xtype: 'spark-conference'
+            xtype: 'spark-work-conference'
         },
         applyMainCt: {
-            selector: 'spark-apply',
+            selector: 'spark-work-apply',
             autoCreate: true,
 
-            xtype: 'spark-apply'
+            xtype: 'spark-work-apply'
         },
         assessMainCt: {
-            selector: 'spark-assess',
+            selector: 'spark-work-assess',
             autoCreate: true,
 
-            xtype: 'spark-assess'
+            xtype: 'spark-work-assess'
         }
     },
 
     control: {
         'viewport spark-tabbar': {
             activetabchange: 'onTabChange'
+        },
+        'viewport': {
+            add: 'onViewportAdd'
         }
+    },
+    
+    onViewportAdd: function(viewport, view) {
+          Ext.Array.each(view.query('[userClass]'), function(component) {
+            component.setHidden(component.config.userClass != "Student");
+        });
     },
 
     applyActiveTab: function(tab) {

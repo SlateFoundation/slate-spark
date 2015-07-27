@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.view.assess.RatingTable', {
+Ext.define('SparkClassroomStudent.view.work.assess.RatingTable', {
     extend: 'Ext.Container',
-    xtype: 'spark-assess-ratingtable',
+    xtype: 'spark-work-assess-ratingtable',
 
     config: {
         layout: 'vbox',

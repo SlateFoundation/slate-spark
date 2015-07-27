@@ -1,11 +1,11 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.view.assess.Main', {
+Ext.define('SparkClassroomStudent.view.work.assess.Main', {
     extend: 'Ext.Container',
-    xtype: 'spark-assess',
+    xtype: 'spark-work-assess',
     requires: [
-        'SparkClassroomStudent.view.assess.AssignmentGrid',
-        'SparkClassroomStudent.view.assess.RatingTable',
-        'SparkClassroomStudent.view.assess.ApplyTable',
+        'SparkClassroom.view.work.assess.StandardsGrid',
+        'SparkClassroomStudent.view.work.assess.RatingTable',
+        'SparkClassroomStudent.view.work.assess.ApplyTable',
     ],
 
     config: {
@@ -17,7 +17,7 @@ Ext.define('SparkClassroomStudent.view.assess.Main', {
                 html: 'Select an Assessment'
             },
             {
-                xtype: 'spark-assess-assignmentgrid'
+                xtype: 'spark-work-assess-standardsgrid'
             },
             {
                 xtype: 'container',
@@ -36,14 +36,19 @@ Ext.define('SparkClassroomStudent.view.assess.Main', {
                 ]
             },
             {
-                xtype: 'spark-assess-ratingtable'
+                xtype: 'spark-work-assess-ratingtable'
             },
             {
-                xtype: 'spark-assess-applytable'
+                xtype: 'spark-work-assess-applytable'
             },
             {
-                xtype: 'button',
-                text: 'Submit for Grading'
+                xtype: 'toolbar',
+                items: [
+                    {
+                        xtype: 'button',
+                        text: 'Submit for Grading'
+                    }
+                ]
             }
         ]
     }

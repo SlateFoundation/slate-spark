@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.view.assess.ApplyTable', {
+Ext.define('SparkClassroomStudent.view.work.assess.ApplyTable', {
     extend: 'Ext.Container',
-    xtype: 'spark-assess-applytable',
+    xtype: 'spark-work-assess-applytable',
 
     config: {
         layout: 'vbox',
