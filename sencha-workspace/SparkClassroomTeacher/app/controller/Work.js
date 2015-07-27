@@ -1,6 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.view.work.learn.Main',
+        'SparkClassroom.view.work.conference.Main', 
+        'SparkClassroom.view.work.apply.Main', 
+        'SparkClassroom.view.work.assess.Main',  
+    ],
 
     config: {
         activeTab: null
