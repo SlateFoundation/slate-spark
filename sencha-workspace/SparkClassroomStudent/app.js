@@ -19,7 +19,7 @@ Ext.application({
 
     views: [
         'TitleBar',
-        'TabBar',
+        'TabBar'
     ],
     controllers: [
         'Viewport'

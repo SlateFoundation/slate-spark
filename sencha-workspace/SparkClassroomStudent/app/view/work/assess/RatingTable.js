@@ -36,7 +36,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.RatingTable', {
                         html: [
                             '<img src="http://plachold.it/25x25"><h5> Playlist Title</h5>',
                             '<a hrer="#">http://pbs.com/videos/science/geo4</a>'
-                        ].join(''),
+                        ].join('')
                     },
                     {
                         xtype: 'selectfield',

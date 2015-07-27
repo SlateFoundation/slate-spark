@@ -5,7 +5,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.Main', {
     requires: [
         'SparkClassroom.view.work.assess.StandardsGrid',
         'SparkClassroomStudent.view.work.assess.RatingTable',
-        'SparkClassroomStudent.view.work.assess.ApplyTable',
+        'SparkClassroomStudent.view.work.assess.ApplyTable'
     ],
 
     config: {

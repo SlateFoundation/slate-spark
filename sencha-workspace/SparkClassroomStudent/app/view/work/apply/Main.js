@@ -40,7 +40,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Main', {
                             '<span>8.L.0.B</span> ',
                             '<span>8.L.7.B</span> ',
                             '<span>8.L.5.B</span> '
-                        ].join(''),
+                        ].join('')
                     }
                 ]
             },
@@ -62,7 +62,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Main', {
                         html: [
                             '<span>8.L.7</span> ',
                             '<span>8.L.3</span> '
-                        ].join(''),
+                        ].join('')
                     }
                 ]
             },
@@ -76,7 +76,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Main', {
                         html: [
                             '<input type="checkbox"><h5>Wild Card</h5>',
                             '<span>Record a video on teaching students how to use active and passive voice. In your video, be sure to identify what is active and passive voice.</span>'
-                        ].join(''),
+                        ].join('')
                     },
                     {
                         xtype: 'component',
