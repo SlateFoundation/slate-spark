@@ -4,11 +4,20 @@
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.srm-sparkpoints-sparkpointdependents'
+    alias: 'controller.srm-sparkpoints-sparkpointdependents',
 
+    control: {
+        '#': {
+            deleteclick: 'onDeleteClick'
+        }
+    },
 
-    // control: {
-    //     '#': {
-    //     }
-    // }
+    onDeleteClick: function(grid,rec) {
+        Ext.Msg.confirm('Deleting Dependent', 'Are you sure you want to delete this dependent?', function(btn) {
+            if (btn == 'yes') {
+                rec.erase();
+            }
+        });
+    }
+
 });
