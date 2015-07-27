@@ -51,7 +51,8 @@
         "emergence-apikit",
         "jarvus-lazydata",
         "jarvus-ext-searchfield",
-        "jarvus-draw-dag"
+        "jarvus-draw-dag",
+        "jarvus-ext-actionevents"
     ],
 
     /**
