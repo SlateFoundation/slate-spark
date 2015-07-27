@@ -5,12 +5,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     config: {
         activeTab: null
     },
-    views: [
-        'work.learn.Main',
-        'work.conference.Main',
-        'work.apply.Main',
-        'work.assess.Main'
-    ],
+
     refs:{
         workMainCt: 'spark-work',
         learnCt: {
