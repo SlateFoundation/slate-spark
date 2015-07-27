@@ -56,7 +56,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
     },{
         xtype: 'actioncolumn',
         width: 32,
-        icon: 'http://i.imgur.com/wb1NW8I.png'
+        icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
+        tooltip: 'Delete'
     }],
 
     dockedItems: [{

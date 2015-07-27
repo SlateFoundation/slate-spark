@@ -35,8 +35,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
     },{
         xtype: 'actioncolumn',
         width: 32,
-        // TODO: replace placeholder image
-        icon: 'http://i.imgur.com/wb1NW8I.png'
+        icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
+        tooltip: 'Delete'
     }],
 
     dockedItems: [{
