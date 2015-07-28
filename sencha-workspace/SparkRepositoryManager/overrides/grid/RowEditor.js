@@ -200,6 +200,6 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         }
 
         return scrollDelta;
-    },
+    }
 
 });

@@ -66,7 +66,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
             dataIndex: 'Standards',
             width: 275,
             filterField: {
-                xtype: 'spark-standardfield',
+                xtype: 'spark-standardfield'
             },
 
             editor: {

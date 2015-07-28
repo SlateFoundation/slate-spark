@@ -19,7 +19,7 @@ Ext.define('SparkRepositoryManager.API', {
                 extended: extended
             }
         });
-    },
+    }
 }, function(API) {
     var pageParams = Ext.Object.fromQueryString(location.search);
 
