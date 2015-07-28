@@ -7,4 +7,4 @@
 	branch = ext/6
 [submodule "sencha-workspace/packages/slate-core-data"]
 	path = sencha-workspace/packages/slate-core-data
-	url = https://github.com/SlateFoundation/slate-core-data.git
+	url = https://github.com/aharley40/slate-core-data.git
