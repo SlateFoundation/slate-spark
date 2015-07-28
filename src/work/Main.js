@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroom.view.work.Main', {
+Ext.define('SparkClassroom.work.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work',
 
@@ -7,27 +7,11 @@ Ext.define('SparkClassroom.view.work.Main', {
         layout: 'vbox',
         title: 'Student Work',
         items: [
+            // TODO: add a config option to the Teacher version of this class that, if set to an array of students, causes
+            // this toolbar to be inserted 
             {
                 xtype: 'tabbar',
-                activeTab: 1,
-                userClass: 'Teacher',
-                items: [
-                    {
-                        title: 'Chistopher A.'
-                    },
-                    {
-                        title: 'Alexandra W.'                   
-                    },
-                    {
-                        title: 'Lucy D.'
-                    },
-                    {
-                        title: 'Trevor K.'
-                    }
-                ]
-            },
-            {
-                xtype: 'tabbar',
+                tabType: 'mainTab',
                 items: [
                     {
                         title: 'Learn &amp; Practice',

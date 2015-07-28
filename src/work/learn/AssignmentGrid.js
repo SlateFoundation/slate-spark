@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroom.view.work.learn.AssignmentGrid', {
+Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-assignmentgrid',
 
