@@ -1,14 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
-    requires: [
-        'SparkClassroom.view.work.learn.Main',
-        'SparkClassroom.view.work.conference.Main'
-    ],
-    
+ 
     views: [
         'work.apply.Main',
-        'work.assess.Main'
+        'work.learn.Main',
+        'work.conference.Main',
+        'work.assess.Main'   
     ],
 
     config: {
@@ -17,44 +15,35 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     
     refs:{
         learnMainCt: {
-            selector: 'spark-work-learn',
+            selector: 'spark-student-work-learn',
             autoCreate: true,
 
-            xtype: 'spark-work-learn'
+            xtype: 'spark-student-work-learn'
         },
         conferenceMainCt: {
-            selector: 'spark-work-conference',
+            selector: 'spark-student-work-conference',
             autoCreate: true,
 
-            xtype: 'spark-work-conference'
+            xtype: 'spark-student-work-conference'
         },
         applyMainCt: {
-            selector: 'spark-work-apply',
+            selector: 'spark-student-work-apply',
             autoCreate: true,
 
-            xtype: 'spark-work-apply'
+            xtype: 'spark-student-work-apply'
         },
         assessMainCt: {
-            selector: 'spark-work-assess',
+            selector: 'spark-student-work-assess',
             autoCreate: true,
 
-            xtype: 'spark-work-assess'
+            xtype: 'spark-student-work-assess'
         }
     },
 
     control: {
         'viewport spark-tabbar': {
             activetabchange: 'onTabChange'
-        },
-        'viewport': {
-            add: 'onViewportAdd'
         }
-    },
-    
-    onViewportAdd: function(viewport, view) {
-          Ext.Array.each(view.query('[userClass]'), function(component) {
-            component.setHidden(component.config.userClass != "Student");
-        });
     },
 
     applyActiveTab: function(tab) {
