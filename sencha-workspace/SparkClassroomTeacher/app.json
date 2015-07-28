@@ -71,7 +71,8 @@
     "requires": [
         "font-awesome",
         "spark-classroom",
-        "jarvus-touch-accordion"
+        "jarvus-touch-accordion",
+        "slate-core-data"
     ],
 
     /**
