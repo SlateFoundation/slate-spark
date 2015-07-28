@@ -13,13 +13,9 @@ Ext.define('SparkClassroom.work.learn.Main', {
             {
                 xtype: 'container',
                 layout: 'vbox',
+                itemId: 'standardGrid',
                 flex: 1,
                 items: [
-                    {
-                        xtype: 'component',
-                        html: 'Alexandra W has 3 out of 5 stars',
-                        userClass: 'Student'
-                    },
                     {
                         xtype: 'container',
                         layout: 'accordion',
