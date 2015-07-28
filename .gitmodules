@@ -25,3 +25,6 @@
 [submodule "sencha-workspace/packages/jarvus-ext-actionevents"]
 	path = sencha-workspace/packages/jarvus-ext-actionevents
 	url = https://github.com/JarvusInnovations/jarvus-ext-actionevents.git
+[submodule "sencha-workspace/packages/jarvus-ext-glyphs"]
+	path = sencha-workspace/packages/jarvus-ext-glyphs
+	url = https://github.com/JarvusInnovations/jarvus-ext-glyphs.git
