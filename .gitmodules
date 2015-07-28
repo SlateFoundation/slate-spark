@@ -22,3 +22,6 @@
 	path = sencha-workspace/packages/jarvus-hotfixes
 	url = git@github.com:JarvusInnovations/sencha-hotfixes.git
 	branch = ext/5/1/1/451
+[submodule "sencha-workspace/packages/jarvus-ext-actionevents"]
+	path = sencha-workspace/packages/jarvus-ext-actionevents
+	url = https://github.com/JarvusInnovations/jarvus-ext-actionevents.git
