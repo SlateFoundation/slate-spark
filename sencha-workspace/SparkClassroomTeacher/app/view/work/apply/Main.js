@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
     extend: 'Ext.Container',
-    xtype: 'spark-work-apply',
+    xtype: 'spark-teacher-work-apply',
 
     config: {
         layout: 'hbox',

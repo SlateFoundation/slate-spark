@@ -1,14 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
-    requires: [
-        'SparkClassroom.view.work.learn.Main',
-        'SparkClassroom.view.work.conference.Main'
-    ],
     
     views: [
         'work.apply.Main',
-        'work.assess.Main'
+        'work.assess.Main',
+        'work.learn.Main',
+        'work.conference.Main'
     ],
 
     config: {
@@ -18,44 +16,35 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     refs:{
         workMainCt: 'spark-work',
         learnCt: {
-            selector: 'spark-work-learn',
+            selector: 'spark-teacher-work-learn',
             autoCreate: true,
 
-            xtype: 'spark-work-learn'
+            xtype: 'spark-teacher-work-learn'
         },
         conferenceCt: {
-            selector: 'spark-work-conference',
+            selector: 'spark-teacher-work-conference',
             autoCreate: true,
 
-            xtype: 'spark-work-conference'
+            xtype: 'spark-teacher-work-conference'
         },
         applyCt: {
-            selector: 'spark-work-apply',
+            selector: 'spark-teacher-work-apply',
             autoCreate: true,
 
-            xtype: 'spark-work-apply'
+            xtype: 'spark-teacher-work-apply'
         },
         assessCt: {
-            selector: 'spark-work-assess',
+            selector: 'spark-teacher-work-assess',
             autoCreate: true,
 
-            xtype: 'spark-work-assess'
+            xtype: 'spark-teacher-work-assess'
         }
     },
 
     control: {
-        'spark-work tabbar': {
+        'spark-work tabbar[tabType=mainTab]': {
             activetabchange: 'onTabChange'
-        },
-        'viewport': {
-            add: 'onViewportItemAdd'
         }
-    },
-    
-    onViewportItemAdd: function(viewport, view) {
-          Ext.Array.each(view.query('[userClass]'), function(component) {
-            component.setHidden(component.config.userClass != "Teacher");
-        });
     },
 
     applyActiveTab: function(tab) {

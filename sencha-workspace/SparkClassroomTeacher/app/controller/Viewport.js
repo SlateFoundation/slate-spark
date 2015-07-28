@@ -1,23 +1,21 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
-    requires: [
-        'SparkClassroom.view.work.Main'
-    ],
     
     config: {
         activeTab: null
     },
     views: [
         'assign.points.TabBar',
-        'competencies.Main'
+        'competencies.Main',
+        'work.Main'
     ],
     refs:{
         workMainCt: {
-            selector: 'spark-work',
+            selector: 'spark-teacher-work',
             autoCreate: true,
 
-            xtype: 'spark-work'
+            xtype: 'spark-teacher-work'
         },
         competenciesMainCt: {
             selector: 'spark-competencies',
