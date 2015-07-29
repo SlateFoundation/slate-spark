@@ -9,7 +9,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         'gps.Learn',
         'gps.Conference',
         'gps.Apply',
-        'gps.Assess',
+        'gps.Assess'
     ],
     views: [
         'gps.Main'

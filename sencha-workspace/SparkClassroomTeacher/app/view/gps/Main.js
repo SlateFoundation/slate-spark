@@ -65,47 +65,14 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                             {
                                 xtype: 'spark-gps-studentList',
                                 store: 'gps.Help',
-                                grouped: true,
+                                grouped: true
                             }
                         ]
                     }
                 ]
                 
             }
-        ],
-        
-        privates: {
-            handleGroupChange: function() {
-                var me = this,
-                    grouped = me.isGrouping(),
-                    baseCls = this.getBaseCls(),
-                    infinite = me.getInfinite(),
-                    pinnedHeader = me.pinnedHeader,
-                    cls = baseCls + '-grouped',
-                    unCls = baseCls + '-ungrouped';
-    
-                if (pinnedHeader) {
-                    pinnedHeader.translate(0, -10000);
-                }
-    
-                if (grouped) {
-                    me.addCls(cls);
-                    me.removeCls(unCls);
-                } else {
-                    me.addCls(unCls);
-                    me.removeCls(cls);
-                }
-                debugger;
-                if (infinite) {
-                    me.refreshHeaderIndices();
-                    me.handleItemHeights();
-                }
-                me.updateAllListItems();
-                if (infinite) {
-                    me.handleItemTransforms();
-                }
-            }
-        }
+        ]
     },
     
     initialize: function () {
