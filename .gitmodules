@@ -8,9 +8,9 @@
 [submodule "sencha-workspace/packages/slate-core-data"]
 	path = sencha-workspace/packages/slate-core-data
 	url = https://github.com/aharley40/slate-core-data.git
-[submodule "sencha-workspace/packages/jarvus-apikit"]
-	path = sencha-workspace/packages/jarvus-apikit
-	url = https://aharley40@github.com/JarvusInnovations/jarvus-apikit.git
 [submodule "sencha-workspace/packages/emergence-apikit"]
 	path = sencha-workspace/packages/emergence-apikit
 	url = https://aharley40@github.com/JarvusInnovations/emergence-apikit.git
+[submodule "sencha-workspace/packages/jarvus-apikit"]
+	path = sencha-workspace/packages/jarvus-apikit
+	url = https://aharley40@github.com/aharley40/jarvus-apikit.git
