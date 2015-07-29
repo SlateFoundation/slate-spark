@@ -3,7 +3,7 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     xtype: 'srm-sparkpointcolumn',
 
     text: 'Sparkpoint',
-    dataIndex: 'Code',
+    dataIndex: 'code',
     renderer: function(value, metaData, record) {
         metaData.tdAttr += Ext.util.Format.attributes({
             'data-qtitle': value,

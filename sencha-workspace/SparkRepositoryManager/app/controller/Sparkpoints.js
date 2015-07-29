@@ -1,41 +1,29 @@
 Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     extend: 'Ext.app.Controller',
 
-    requires: [
-        'SparkRepositoryManager.store.StandardDocuments'
-    ],
-
     stores: [
         'StandardDocuments'
     ],
 
     config: {
-        refs: [{
-            ref: 'panel',
-            selector: 'srm-sparkpoints-panel'
-        }],
+        refs: {
+            panel: 'srm-sparkpoints-panel',
+            grid: 'srm-sparkpoints-grid'
+        },
 
         control: {
-            'srm-sparkpoints-panel': {
-                activate: 'onPanelActivate'
+            grid: {
+                activate: 'onGridActivate'
             }
         }
     },
 
-    /**
-     * Called when the view is created
-     */
-    init: function() {
-        window.me = this;
-    },
 
-    onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store);
-
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+    onGridActivate: function(gridPanel) {
+        var store = gridPanel.getStore();
+        
+        if (!store.isLoaded() || !store.isLoading()) {
+            store.load();
+        }
     }
 });
