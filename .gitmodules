@@ -28,3 +28,6 @@
 [submodule "sencha-workspace/packages/jarvus-ext-glyphs"]
 	path = sencha-workspace/packages/jarvus-ext-glyphs
 	url = https://github.com/JarvusInnovations/jarvus-ext-glyphs.git
+[submodule "sencha-workspace/packages/jarvus-postgrest-apikit"]
+	path = sencha-workspace/packages/jarvus-postgrest-apikit
+	url = git@github.com:JarvusInnovations/jarvus-postgrest-apikit.git
