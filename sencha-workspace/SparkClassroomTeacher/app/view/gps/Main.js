@@ -10,9 +10,6 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
     config: {
         items: [
             {
-                xtype: 'spark-gps-header'
-            },
-            {
                 xtype: 'container',
                 layout: 'hbox',
                 items: [
@@ -23,61 +20,111 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                         items: [
                             {
                                 xtype: 'spark-gps-studentList',
+                                grouped: true,
+                                store: 'gps.Learn',
                                 itemId: 'learnList',
-                                flex: 1
+                                flex: 1,
+                                title: 'Learn and Practice'
                             },
                             {
                                 xtype: 'spark-gps-studentList',
+                                grouped: true,
+                                store: 'gps.Conference',
                                 itemId: 'conferenceList',
-                                flex: 1
+                                flex: 1,
+                                title: 'Conference'
                             },
                             {
                                 xtype: 'spark-gps-studentList',
+                                grouped: true,
+                                store: 'gps.Apply',
                                 itemId: 'applyList',
-                                flex: 1
+                                flex: 1,
+                                title: 'Apply'
                             },
                             {
                                 xtype: 'spark-gps-studentList',
+                                grouped: true,
+                                store: 'gps.Assess',
                                 itemId: 'assessList',
-                                flex: 1
+                                flex: 1,
+                                title: 'Assess'
                             }
                         ]
                     },
                     {
-                        xtype: 'spark-gps-studentList',
-                        flex: 1
+                        xtype: 'container',
+                        layout: 'vbox',
+                        width: '35%',
+                        items: [
+                            {
+                                xtype: 'spark-gps-studentList',
+                                store: 'gps.Priorities',
+                                title: 'Priorities'
+                            },
+                            {
+                                xtype: 'spark-gps-studentList',
+                                store: 'gps.Help',
+                                grouped: true,
+                            }
+                        ]
                     }
                 ]
                 
             }
-        ]
+        ],
+        
+        privates: {
+            handleGroupChange: function() {
+                var me = this,
+                    grouped = me.isGrouping(),
+                    baseCls = this.getBaseCls(),
+                    infinite = me.getInfinite(),
+                    pinnedHeader = me.pinnedHeader,
+                    cls = baseCls + '-grouped',
+                    unCls = baseCls + '-ungrouped';
+    
+                if (pinnedHeader) {
+                    pinnedHeader.translate(0, -10000);
+                }
+    
+                if (grouped) {
+                    me.addCls(cls);
+                    me.removeCls(unCls);
+                } else {
+                    me.addCls(unCls);
+                    me.removeCls(cls);
+                }
+                debugger;
+                if (infinite) {
+                    me.refreshHeaderIndices();
+                    me.handleItemHeights();
+                }
+                me.updateAllListItems();
+                if (infinite) {
+                    me.handleItemTransforms();
+                }
+            }
+        }
     },
     
     initialize: function () {
         var me = this,
-        list = {
+        componentList = {
             Learn: 'learnList',
             Conference: 'conferenceList',
             Apply: 'applyList',
             Assess: 'assessList'
-        }, store;
-        
+        }, store, list;
+
         me.callParent(arguments);
-        
-        for (var key in list) {
-            store = me.down('spark-gps-studentList[itemId='+list[key]+']').getStore();
+
+        for (var key in componentList) {
+            list = me.down('spark-gps-studentList[itemId='+componentList[key]+']');    
+            store = list.getStore();
             
-            me.down('spark-gps-studentList[itemId='+list[key]+']').getStore().filter({
-                filterFn: function(item) {
-                    return item.get('Level') == key;
-                }
-            });
+            store.group('GPSStatusGroup');
             
-            store.setGrouper({
-                property: 'Status'
-            });
-            
-            store.group('Status');
         }
     }
 });

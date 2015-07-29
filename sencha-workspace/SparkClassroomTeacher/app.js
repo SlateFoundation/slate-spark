@@ -19,12 +19,12 @@ Ext.application({
 
     views: [
         'TitleBar',
-        'TabBar',
-        'gps.Main'
+        'TabBar'
     ],
     controllers: [
         'Viewport',
         'Work',
+        'GPS',
         'assign.Points'
     ],
 
@@ -37,12 +37,18 @@ Ext.application({
                     xtype: 'spark-titlebar'
                 },
                 {
-                    xtype: 'spark-gps'
-                },
-                {
                     xtype: 'spark-tabbar'
                 }
             ]
         }
+    },
+    
+    launch: function() {
+        Ext.Viewport.insert(1,[
+            {
+                xtype: 'spark-gps'
+            }
+        ]);
     }
+    
 });
