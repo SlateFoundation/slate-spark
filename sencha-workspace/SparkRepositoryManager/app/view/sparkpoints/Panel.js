@@ -30,7 +30,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
 
         stateful: true,
         stateId: 'srm-sparkpoints-contentareastree'
-    },,{
+    },{
         region: 'east',
         split: true,
 
