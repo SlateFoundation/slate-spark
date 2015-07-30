@@ -13,7 +13,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
         'combo': {
             // TODO: on focus? maybe not, but works for now
             focus: 'onComboFocus',
-            select: 'onComboSelect'
+            select: 'onComboSelect',
+            change: 'onComboChange'
         },
         'button[action="add"]': {
             click: 'onAddClick'
@@ -33,7 +34,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             treeStore = combo.up('treepanel').getStore();
 
         comboStore.filterBy(function(comboRec) {
-            if (treeStore.find('Code',comboRec.get('Code')) !== -1) {
+            if (treeStore.find('code',comboRec.get('code')) !== -1) {
                 return false;
             }
             return true;
@@ -47,6 +48,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
         addButton.enable();
     },
 
+    onComboChange: function(combo) {
+        var button = combo.up('toolbar').down('button');
+
+        if (!combo.findRecordByValue(combo.getValue())) {
+            button.disable();
+        }
+    },
+
     // TODO: just adding rec to root for now, but I would think this will require a server reload to rebuild tree store.
     onAddClick: function(button) {
         var treepanel = button.up('treepanel'),
@@ -54,11 +63,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             root = treeStore.getRoot(),
             combo = treepanel.down('combo'),
             comboStore = combo.getStore(),
-            comboIdx = comboStore.find('Code',combo.getValue()),
+            comboIdx = comboStore.find('code',combo.getValue()),
             comboRec = comboStore.getAt(comboIdx);
 
         root.set('leaf', false);
 
         root.appendChild(Ext.apply(comboRec.getData(),{leaf:true}));
+
+        combo.clearValue();
+        button.disable();
     }
 });
