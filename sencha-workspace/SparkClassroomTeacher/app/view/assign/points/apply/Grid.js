@@ -2,39 +2,35 @@
 Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-points-apply-grid',
-
+    //NOTE: div.inner doesn't use full hight of div.x-grid. This in tandom with the width errors seems to cause cells to hide.
     config: {
 
         columns:[
             {
                 dataIndex: 'Title',
-                flex: 1,
+                //NOTE: x-grid-cells width broken and can only be set in the inspector
+                width: 100,
                 text: 'Title'
             },
             {
                 dataIndex: 'Standard',
-                flex: 1,
                 text: 'Standards'
             },
             {
                 dataIndex: 'Grade',
-                flex: 1,
                 text: 'Grade'
             },
             {
                 dataIndex: 'DOK',
-                flex: 1,
                 text: 'DOK'
             },
             {
                 dataIndex: 'CreatedBy',
-                flex: 1,
                 text: 'Created By'
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                flex: 1,
                 renderer: function(v, r) {
                     return '<input type="checkbox" checked="'+v+'">';
                 }

@@ -8,14 +8,15 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Main', {
 
     config: {
         title: 'Apply',
-        height: 500,
-        layout: 'fit',
+        layout: 'hbox',
         items: [
             {
-                xtype: 'spark-assign-points-apply-grid'
+                xtype: 'spark-assign-points-apply-grid',
+                flex: 1
             },
             {
                 xtype: 'formpanel',
+                width: '25%',
                 items: [
                     {
                         xtype: 'textareafield',
