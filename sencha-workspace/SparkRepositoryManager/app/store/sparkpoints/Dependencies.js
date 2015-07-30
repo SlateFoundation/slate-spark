@@ -3,43 +3,30 @@ Ext.define('SparkRepositoryManager.store.sparkpoints.Dependencies', {
     extend: 'Ext.data.TreeStore',
     storeId: 'sparkpoints.Dependencies',
 
-    requires: [
-        'SparkRepositoryManager.model.Sparkpoint',
-        'SparkRepositoryManager.proxy.Records' // TODO: assuming we will need this when store is real, delete if not
-    ],
-
-    model: 'SparkRepositoryManager.model.Sparkpoint',
+    model: 'SparkRepositoryManager.model.sparkpoint.Sparkpoint',
 
     root: {
         expanded: true,
         children: [
-            {Code: 'K.CC.4a', leaf: true },
+            {code: 'K.CC.4a', leaf: true },
             {
-                Code: 'K.CC.4b',
+                code: 'K.CC.4b',
                 Description: 'This is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b',
                 children: [
-                    { Code: 'K.CC.1a', leaf: true },
-                    { Code: 'K.CC.1b', leaf: true },
-                    { Code: 'K.CC.2b', leaf: true },
-                    { Code: 'K.CC.3b', leaf: true }
+                    { code: 'K.CC.1a', leaf: true },
+                    { code: 'K.CC.1b', leaf: true },
+                    { code: 'K.CC.2b', leaf: true },
+                    { code: 'K.CC.3b', leaf: true }
                 ]
             },
-            { Code: 'K.CC.4c', leaf: true },
+            { code: 'K.CC.4c', leaf: true },
             {
-                Code: 'K.CC.4d',
+                code: 'K.CC.4d',
                 children: [
-                    { Code: 'K.CC.1c', leaf: true },
-                    { Code: 'K.CC.1d', leaf: true }
+                    { code: 'K.CC.1c', leaf: true },
+                    { code: 'K.CC.1d', leaf: true }
                 ]
             }
         ]
     }
-
-/*
-    // TODO: make this store real
-    proxy: {
-        type: 'spark-records',
-        url: '/sparkpoints/dependents'
-    }
-*/
 });
