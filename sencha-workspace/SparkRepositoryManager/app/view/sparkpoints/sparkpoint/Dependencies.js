@@ -1,10 +1,11 @@
+/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
     extend: 'Ext.tree.Panel',
     xtype: 'srm-sparkpoints-sparkpointdependencies',
 
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesController',
-        'SparkRepositoryManager.model.Sparkpoint',
+        'SparkRepositoryManager.store.sparkpoints.Dependencies',
         'SparkRepositoryManager.column.Sparkpoint'
     ],
 
@@ -12,34 +13,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
 
     controller: 'srm-sparkpoints-sparkpointdependencies',
 
-    store:{
-        type: 'tree',
-        model: 'SparkRepositoryManager.model.Sparkpoint',
-        root: {
-            expanded: true,
-            children: [
-                {Code: 'K.CC.4a', leaf: true },
-                {
-                    Code: 'K.CC.4b',
-                    Description: 'This is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b; this is some long description of K.CC.4b',
-                    children: [
-                        { Code: 'K.CC.1a', leaf: true },
-                        { Code: 'K.CC.1b', leaf: true },
-                        { Code: 'K.CC.2b', leaf: true },
-                        { Code: 'K.CC.3b', leaf: true }
-                    ]
-                },
-                { Code: 'K.CC.4c', leaf: true },
-                {
-                    Code: 'K.CC.4d',
-                    children: [
-                        { Code: 'K.CC.1c', leaf: true },
-                        { Code: 'K.CC.1d', leaf: true }
-                    ]
-                }
-            ]
-        }
-    },
+    store: 'sparkpoints.Dependencies',
 
     rootVisible: false,
     useArrows: true,
@@ -57,6 +31,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
         xtype: 'actioncolumn',
         action: 'delete',
         width: 32,
+        // TODO: remove icon config and uncomment glyph config when glyphs are working
+        // glyph: 0xf056, // fa-minus-circle
         icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
         tooltip: 'Delete'
     }],
