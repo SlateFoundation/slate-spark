@@ -25,7 +25,7 @@ Ext.define('SparkClassroom.work.assess.AssignmentGrid', {
                 dataIndex: 'VendorTitle',
                 text: 'Vendor',
                 flex: 1,
-                renderTpl: function(v,m,r ) {
+                renderer: function(v, r) {
                     return '<img src="'+r.get('VendorImageUrl')+'">'+v;
                 }
             }

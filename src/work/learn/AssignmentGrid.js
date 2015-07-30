@@ -10,7 +10,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
                 dataIndex: 'Completed',
                 text: 'Completed',
                 flex: 1,
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<input type="checkbox" checked='+v+'>';
                 }
             },
@@ -33,7 +33,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
                 dataIndex: 'SRating',
                 text: 'ActiveRating',
                 flex: 1,
-                renderTpl: function(v,m,r ) {
+                renderer: function(v, r) {
                     return r.get('SRating') + ' ' + r.get('TRating');
                 }
             },

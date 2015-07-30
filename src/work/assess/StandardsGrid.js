@@ -15,14 +15,14 @@ Ext.define('SparkClassroom.work.assess.StandardsGrid', {
                 dataIndex: 'Completed',
                 flex: 1,
                 text: 'Completed',
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return v ? '<input type="checkbox" checked>' : '';
                 }
             },
             {
                 dataIndex: 'Score',
                 text: 'Score',
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return v ? v+'/5' : '';
                 },
                 flex: 1
