@@ -35,7 +35,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
                 dataIndex: 'Assign',
                 text: 'Assign',
                 flex: 1,
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<input type="checkbox" checked="'+v+'">';
                 }
             }

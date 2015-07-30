@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
                 dataIndex: 'Vendor',
                 flex: 1,
                 text: 'Vendor',
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">'+v;
                 }
             },
@@ -38,7 +38,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
                 dataIndex: 'Assign',
                 text: 'Assign',
                 flex: 1,
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<input type="checkbox" checked="'+v+'">';
                 }
             },
@@ -46,7 +46,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
                 dataIndex: 'Issue',
                 text: 'Issue',
                 flex: 1,
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">';
                 }
             }

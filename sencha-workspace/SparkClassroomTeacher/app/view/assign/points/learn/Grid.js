@@ -4,13 +4,12 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
     xtype: 'spark-assign-points-learn-grid',
 
     config: {
-
         columns:[
             {
                 dataIndex: 'Standard',
                 text: 'Standards',
                 flex: 1,
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<input type="checkbox" checked="'+v+'">';
                 }
             },
@@ -34,7 +33,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                 dataIndex: 'Vendor',
                 flex: 1,
                 text: 'Vendor',
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">'+v;
                 }
             },
@@ -52,7 +51,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                 dataIndex: 'SRating',
                 text: 'ActiveRating',
                 flex: 1,
-                renderTpl: function(v,m,r ) {
+                renderer: function(v, r) {
                     return r.get('SRating') + ' ' + r.get('TRating');
                 }
             },
@@ -65,7 +64,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                 dataIndex: 'Assign',
                 flex: 1,
                 text: 'Url',
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     var number = Math.floor((Math.random() * 4) + 1);
                     return [
                         '<input type="radio" '+(number == 1 ? 'checked' : '')+'>',
@@ -79,7 +78,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                 dataIndex: 'Flag',
                 flex: 1,
                 text: 'Issue',
-                renderTpl: function(v, m, r) {
+                renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">';
                 }
             }
