@@ -2,12 +2,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     extend: 'Ext.grid.Panel',
     xtype: 'srm-sparkpoints-grid',
     requires: [
-        'SparkRepositoryManager.store.sparkpoints.Selected',
+        //'SparkRepositoryManager.store.sparkpoints.Selected',
+        'SparkRepositoryManager.store.sparkpoints.Sparkpoints',
         'SparkRepositoryManager.column.Sparkpoint'
     ],
 
     title: 'Grid',
-    store: 'sparkpoints-selected',
+    store: 'sparkpoints.Sparkpoints',
+    //store: 'sparkpoints-selected',
 
     dockedItems: [{
         dock: 'top',
