@@ -4,6 +4,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     stores: [
         'sparkpoints.Sparkpoints',
         'sparkpoints.Dependencies',
+        'sparkpoints.Dependents',
         'StandardDocuments'
     ],
 
@@ -19,7 +20,6 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             }
         }
     },
-
 
     onGridActivate: function(gridPanel) {
         var store = gridPanel.getStore();
