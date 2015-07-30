@@ -23,7 +23,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
     columns: [{
         xtype: 'treecolumn', // can't use sparkpointcolumn directly because we need a treecolumn here
         flex: 5,
-        dataIndex: 'Code',
+        dataIndex: 'code',
         renderer: function() {
             return SparkRepositoryManager.column.Sparkpoint.prototype.renderer.apply(this, arguments);
         }
@@ -42,11 +42,22 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies', {
 
         xtype: 'toolbar',
         items: [{
+            xtype: 'combobox',
             flex: 1,
-
-            xtype: 'textfield'
+            store: {
+                type: 'chained',
+                source: 'sparkpoints.Sparkpoints'
+            },
+            queryMode: 'local',
+            displayField: 'code',
+            valueField: 'code',
+            forceSelecton: true,
+            typeAhead: true,
+            allowBlank: true
         },{
             xtype: 'button',
+            action: 'add',
+            disabled: true,
             text: 'Add'
         }]
     }]
