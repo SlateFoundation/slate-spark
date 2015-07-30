@@ -1,5 +1,5 @@
 /**
- * An extionsion of Ext.slider.Multi that uses a range of -1 to 12 and labels the first two values as "P" and K",
+ * An extension of Ext.slider.Multi that uses a range of -1 to 12 and labels the first two values as "P" and K",
  * and shows the value consistantly below the thumb slider rather than using tooltips
  *
  * This requires a css class for .thumb-label for formatting and positioning the label, eg:
