@@ -1,35 +1,14 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.StandardDocument', {
-    extend: 'Ext.data.Model',
-    requires: [
-        'SparkRepositoryManager.proxy.StandardDocuments'
-    ],
+    extend: 'Jarvus.model.Postgrest',
 
-    // model config
-    idProperty: 'id',
 
+    tableUrl: '/mock-standard_documents',
     fields: [
-        {
-            name: 'id',
-            type: 'string'
-        },
-        {
-            name: 'title',
-            type: 'string',
-            // TODO: this is still in development - bc
-            convert: function(val,rec) {
-                if (rec.get('document')) {
-                    return rec.get('document').title;
-                }
-                return val;
-            }
-        }
-    ],
-
-    proxy: {
-        type: 'spark-standarddocuments',
-        url: 'http://commonstandardsproject.com/api/v1/jurisdictions'
-    }
+        'asn_id',
+        'name',
+        'subject',
+        'jurisdiction',
+        'grades'
+    ]
 });
-
-
