@@ -1,0 +1,23 @@
+$button-default-base-color: #2ea0b3 !default;
+$button-default-base-color-disabled: lighten($neutral-color, 24) !default;
+$button-default-base-color-over: lighten($button-default-base-color, 4) !default;
+$button-default-border-color: $button-default-base-color !default;
+$button-default-color: white !default;
+$button-default-color-diabled: white !default;
+
+$button-large-font-size: 24px !default;
+$button-large-line-height: 28px !default;
+$button-large-padding: floor((44px - $button-large-line-height) / 2) !default;
+
+$button-medium-font-size: 18px !default;
+$button-medium-line-height: 22px!default;
+$button-medium-padding: floor((34px - $button-medium-line-height) / 2) !default;
+
+$button-small-font-size: 14px !default;
+$button-small-line-height: 18px !default;
+$button-small-padding: floor((26px - $button-small-line-height) / 2) !default;
+
+$button-toolbar-background-color: $button-default-base-color !default;
+$button-toolbar-background-color-disabled: $button-default-base-color-disabled !default;
+$button-toolbar-background-color-over: $button-default-base-color-over !default;
+$button-toolbar-color: $button-default-color !default;
