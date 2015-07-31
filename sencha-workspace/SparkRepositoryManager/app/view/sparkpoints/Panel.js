@@ -2,10 +2,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
     extend: 'Ext.panel.Panel',
     xtype: 'srm-sparkpoints-panel',
     requires: [
-        'SparkRepositoryManager.view.sparkpoints.ContentAreasTree',
+        'SparkRepositoryManager.view.sparkpoints.ContentAreasTable',
         'SparkRepositoryManager.view.sparkpoints.TabPanel',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel',
-        'SparkRepositoryManager.view.sparkpoints.standards.Grid'
+        'SparkRepositoryManager.view.sparkpoints.standards.StandardsTable'
     ],
 
     layout: 'border',
@@ -14,22 +14,22 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         region: 'south',
         split: true,
 
-        xtype: 'srm-sparkpoints-standardsgrid',
+        xtype: 'srm-sparkpoints-standardstable',
         height: 300,
         collapsible: true,
 
         stateful: true,
-        stateId: 'srm-sparkpoints-standardsgrid'
+        stateId: 'srm-sparkpoints-standardstable'
     },{
         region: 'west',
         split: true,
 
-        xtype: 'srm-sparkpoints-contentareastree',
+        xtype: 'srm-sparkpoints-contentareastable',
         width: 300,
         collapsible: true,
 
         stateful: true,
-        stateId: 'srm-sparkpoints-contentareastree'
+        stateId: 'srm-sparkpoints-contentareastable'
     },{
         region: 'east',
         split: true,

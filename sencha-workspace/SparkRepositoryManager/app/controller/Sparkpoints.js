@@ -10,32 +10,45 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
     config: {
         refs: {
-            panel: 'srm-sparkpoints-panel',
-            contentAreasTree: 'srm-sparkpoints-contentareastree',
-            gridPanel: 'srm-sparkpoints-grid'
+            mainPanel: 'srm-sparkpoints-panel',
+            contentAreasTable: 'srm-sparkpoints-contentareastable',
+            sparkpointsTable: 'srm-sparkpoints-grid',
+            documentsTable: 'srm-sparkpoints-documentstable',
+            standardsTable: 'srm-sparkpoints-standardstable',
         },
 
         control: {
-            panel: {
-                activate: 'onPanelActivate'
+            contentAreasTable: {
+                boxready: 'onContentAreasTableReady'
             },
-            gridPanel: {
-                activate: 'onGridPanelActivate'
+            sparkpointsTable: {
+                boxready: 'onSparkpointsTableReady'
+            },
+            documentsTable: {
+                boxready: 'onDocumentsTableReady'
             }
         }
     },
 
 
-    onPanelActivate: function(panel) {
-        var store = this.getContentAreasTree().getStore();
-        
+    onContentAreasTableReady: function(contentAreasTable) {
+        var store = contentAreasTable.getStore();
+
         if (!store.isLoaded() || !store.isLoading()) {
             store.load();
         }
     },
 
-    onGridPanelActivate: function(gridPanel) {
-        var store = gridPanel.getStore();
+    onSparkpointsTableReady: function(sparkpointsTable) {
+        var store = sparkpointsTable.getStore();
+
+        if (!store.isLoaded() || !store.isLoading()) {
+            store.load();
+        }
+    },
+
+    onDocumentsTableReady: function(contentAreasTable) {
+        var store = contentAreasTable.getStore();
 
         if (!store.isLoaded() || !store.isLoading()) {
             store.load();

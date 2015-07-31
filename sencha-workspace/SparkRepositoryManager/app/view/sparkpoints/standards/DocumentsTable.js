@@ -4,9 +4,9 @@
  *
  * @cfg title="ContentAreas"
  */
-Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
-    extend: 'Ext.tree.Panel',
-    xtype: 'srm-sparkpoints-standarddocumentstree',
+Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
+    extend: 'Ext.grid.Panel',
+    xtype: 'srm-sparkpoints-documentstable',
 
     title: 'Standards Documents',
     scrollable: true,
@@ -24,19 +24,24 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree', {
 */
 
     columns: [{
-        text: 'Jurisdiction',
-        xtype: 'treecolumn',
+        flex: 4,
+
+        text: 'Subject',
+        dataIndex: 'subject'
+    },{
         flex: 7,
-        dataIndex: 'title'
+
+        text: 'Document',
+        dataIndex: 'name'
     },{
-        text: 'X',
-        flex: 1,
-        align: 'right',
-        dataIndex: 'Total'
+        flex: 3,
+
+        text: 'Body',
+        dataIndex: 'jurisdiction'
     },{
-        text: 'O',
-        flex: 1,
-        align: 'right',
-        dataIndex: 'Total2'
+        flex: 3,
+
+        text: 'Grades',
+        dataIndex: 'grades'
     }]
 });

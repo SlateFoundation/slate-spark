@@ -2,11 +2,11 @@
 /**
  * Standards Grid, an extension of Ext.grid.Panel
  */
-Ext.define('SparkRepositoryManager.view.sparkpoints.standards.Grid', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     extend: 'Ext.grid.Panel',
-    xtype: 'srm-sparkpoints-standardsgrid',
+    xtype: 'srm-sparkpoints-standardstable',
     requires: [
-        'SparkRepositoryManager.view.sparkpoints.standards.DocumentsTree'
+        'SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable'
     ],
 
     title: 'External standards',
@@ -14,9 +14,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.Grid', {
     //store: Ext.data.StoreManager.lookup('Standards'),
     store:{
         fields: [
-         {name: 'Code', type: 'string'},
-         {name: 'Description',  type: 'string'},
-         {name: 'Mapped',  type: 'string'}
+            {name: 'Code', type: 'string'},
+            {name: 'Description',  type: 'string'},
+            {name: 'Mapped',  type: 'string'}
         ],
         data: [
             { Code: 'K.CC.1.2c', Description: 'Counting numbers up to 10',  Mapped: 'K.CC.4.1a' },
@@ -51,8 +51,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.Grid', {
     dockedItems: [{
         dock: 'left',
 
-        xtype: 'srm-sparkpoints-standarddocumentstree',
-        width: 300
+        xtype: 'srm-sparkpoints-documentstable',
+        width: 450
     },{
         dock: 'top',
         weight: 10,
