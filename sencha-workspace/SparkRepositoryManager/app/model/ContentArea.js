@@ -8,6 +8,7 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
 
     proxy: 'spark-contentareas',
     tableUrl: '/mock-content_areas',
+    fetchRemoteFields: true,
     idProperty: 'code',
     fields: [
         {
