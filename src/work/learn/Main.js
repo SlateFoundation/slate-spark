@@ -4,7 +4,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
     xtype: 'spark-work-learn',
     requires: [
         'SparkClassroom.work.learn.AssignmentGrid',
-        'Jarvus.touch.layout.Accordion'
+        'Jarvus.layout.Accordion'
     ],
 
     config: {

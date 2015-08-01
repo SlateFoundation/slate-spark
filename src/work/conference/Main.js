@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.work.conference.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work-conference',
     requires: [
-        'Jarvus.touch.layout.Accordion'
+        'Jarvus.layout.Accordion'
     ],
 
     config: {
