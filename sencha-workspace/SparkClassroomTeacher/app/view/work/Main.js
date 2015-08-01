@@ -2,6 +2,9 @@
 Ext.define('SparkClassroomTeacher.view.work.Main', {
     extend: 'SparkClassroom.work.Main',
     xtype: 'spark-teacher-work',
+    requires: [
+        'Ext.tab.Bar'
+    ],
 
     config: {
         students: [
@@ -20,6 +23,7 @@ Ext.define('SparkClassroomTeacher.view.work.Main', {
     updateStudents: function(students) {
         var studentTabs = Ext.Array.map(students, function(student) {
             return {
+                // TODO: when student becomes a model, use a calculated field for FullName instead
                 title: student.FirstName + ' ' + student.LastName.substr(0,1) + '.'
             }
         });
