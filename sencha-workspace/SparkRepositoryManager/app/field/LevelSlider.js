@@ -45,9 +45,8 @@
 
     getLabel: function(val) {
         var me = this,
-            pos = ((val - me.minValue) / me.increment),
-            labels = me.displayValues;
+            pos = ((val - me.minValue) / me.increment);
 
-        return labels[pos] || val;
+        return me.displayValues[pos] || val;
     }
 });
