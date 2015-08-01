@@ -45,14 +45,9 @@
 
     getLabel: function(val) {
         var me = this,
-            min = me.minValue,
-            inc = me.increment,
-            pos = ((val - min)/inc),
+            pos = ((val - me.minValue) / me.increment),
             labels = me.displayValues;
 
-        if (labels[pos]) {
-            return labels[pos];
-        }
-        return val;
+        return labels[pos] || val;
     }
 });
