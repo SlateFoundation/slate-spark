@@ -29,36 +29,21 @@
         var me = this,
             thumbs = me.thumbs,
             thumbsLength = thumbs.length,
-            thumbElementId,
-            i;
+            i = 0,
+            thumb;
 
-        for(i=0; i<thumbsLength; i++){
-            thumbElementId= thumbs[i].el.id;
+        for(i; i<thumbsLength; i++){
+            thumb = thumbs[i];
 
-            Ext.DomHelper.append(thumbElementId, {
-                tag: 'div',
+            thumb.labelEl = thumb.el.appendChild({
                 cls: 'thumb-label',
-                html: me.getLabel(thumbs[i].value)
+                html: me.getLabel(thumb.value)
             });
         }
     },
 
-    onChange: function() {
-        var me = this,
-            thumbs = me.thumbs,
-            thumbsLength = thumbs.length,
-            thumbElementId,
-            i;
-
-        for(i=0; i<thumbsLength; i++){
-            thumbElementId= thumbs[i].el.id;
-
-            Ext.DomHelper.overwrite(thumbElementId, {
-                tag: 'div',
-                cls: 'thumb-label',
-                html: me.getLabel(thumbs[i].value)
-            });
-        }
+    onChange: function(me, value, thumb) {
+        thumb.labelEl.setHtml(me.getLabel(value));
     },
 
     getLabel: function(val) {
