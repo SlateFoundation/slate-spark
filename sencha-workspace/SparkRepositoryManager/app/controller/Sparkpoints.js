@@ -25,7 +25,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 boxready: 'onSparkpointsTableReady'
             },
             documentsTable: {
-                boxready: 'onDocumentsTableReady'
+                boxready: 'onDocumentsTableReady',
+                select: 'onDocumentSelect'
             }
         }
     },
@@ -53,5 +54,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         if (!store.isLoaded() || !store.isLoading()) {
             store.load();
         }
+    },
+
+    onDocumentSelect: function(contentAreasTable, document) {
+        debugger;
     }
 });

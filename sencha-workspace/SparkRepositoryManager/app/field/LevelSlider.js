@@ -18,6 +18,12 @@
     maxValue: 12,
     displayValues: ['P','K','1','2','3','4','5','6','7','8','9','10','11','12'],
 
+    listeners: {
+        change: function(me, value, thumb) {
+            thumb.labelEl.setHtml(me.getLabel(value));
+        }
+    },
+
     afterRender: function() {
         var me = this,
             thumbs = me.thumbs,
@@ -34,12 +40,6 @@
                 cls: 'thumb-label',
                 html: me.getLabel(thumb.value)
             });
-        }
-    },
-
-    listeners: {
-        change: function(me, value, thumb) {
-            thumb.labelEl.setHtml(me.getLabel(value));
         }
     },
 
