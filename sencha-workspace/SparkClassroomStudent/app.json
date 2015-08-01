@@ -119,8 +119,7 @@
          */
         "etc": [
             "sass/etc/all.scss",
-            "${toolkit.name}/sass/etc/all.scss",
-            "../packages/jarvus-touch-accordion/sass/package.scss"
+            "${toolkit.name}/sass/etc/all.scss"
         ],
 
         /**
