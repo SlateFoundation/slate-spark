@@ -37,7 +37,6 @@
 
             Ext.DomHelper.append(thumbElementId, {
                 tag: 'div',
-                id: 'thumb-label-'+i,
                 cls: 'thumb-label',
                 html: me.getLabel(thumbs[i].value)
             });
@@ -54,9 +53,8 @@
         for(i=0; i<thumbsLength; i++){
             thumbElementId= thumbs[i].el.id;
 
-            Ext.DomHelper.overwrite(thumbElementId, {
+            Ext.DomHelper.append(thumbElementId, {
                 tag: 'div',
-                id: 'thumb-label-'+i,
                 cls: 'thumb-label',
                 html: me.getLabel(thumbs[i].value)
             });
