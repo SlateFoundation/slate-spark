@@ -18,21 +18,16 @@
     maxValue: 12,
     displayValues: ['P','K','1','2','3','4','5','6','7','8','9','10','11','12'],
 
-    initComponent: function() {
-        this.on('afterrender', this.onAfterRender);
-        this.on('change', this.onChange);
-
-        this.callParent();
-    },
-
-    onAfterRender: function() {
+    afterRender: function() {
         var me = this,
             thumbs = me.thumbs,
             thumbsLength = thumbs.length,
             i = 0,
             thumb;
 
-        for(i; i<thumbsLength; i++){
+        me.callParent(arguments);
+
+        for (i; i<thumbsLength; i++){
             thumb = thumbs[i];
 
             thumb.labelEl = thumb.el.appendChild({
@@ -42,8 +37,10 @@
         }
     },
 
-    onChange: function(me, value, thumb) {
-        thumb.labelEl.setHtml(me.getLabel(value));
+    listeners: {
+        change: function(me, value, thumb) {
+            thumb.labelEl.setHtml(me.getLabel(value));
+        }
     },
 
     getLabel: function(val) {
