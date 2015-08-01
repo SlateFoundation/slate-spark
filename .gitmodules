@@ -4,3 +4,4 @@
 [submodule "sencha-workspace/packages/jarvus-touch-accordion"]
 	path = sencha-workspace/packages/jarvus-touch-accordion
 	url = https://aharley40@github.com/JarvusInnovations/jarvus-touch-accordion.git
+	branch = ext/6
