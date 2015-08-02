@@ -53,7 +53,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
                     { code: 'K.CC.JK.1' },
                     { code: 'K.CC.JK.2' },
                     { code: 'K.CC.JK.3' },
-                    { code: 'K.CC.JK.4' }
+                    { code: 'K.CC.JK.4' },
+                    { code: 'K.CC.JK.5' },
+                    { code: 'K.CC.JK.6' },
+                    { code: 'K.CC.JK.7' },
+                    { code: 'K.CC.JK.8' }
                 ]
             },
             queryMode: 'local',
