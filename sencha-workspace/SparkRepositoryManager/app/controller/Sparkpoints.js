@@ -57,6 +57,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onDocumentSelect: function(contentAreasTable, document) {
-        debugger;
+        // debugger;
+        console.log('onDocumentSelect(%o, %o)', contentAreasTable, document);
     }
 });
