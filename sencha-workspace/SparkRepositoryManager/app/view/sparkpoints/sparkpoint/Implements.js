@@ -15,10 +15,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
     store:{
         model: 'SparkRepositoryManager.model.Standard',
         data: [
-            { Code: 'K.CC.JK.1' },
-            { Code: 'K.CC.JK.2' },
-            { Code: 'K.CC.JK.3' },
-            { Code: 'K.CC.JK.4' }
+            { code: 'K.CC.JK.1' },
+            { code: 'K.CC.JK.2' },
+            { code: 'K.CC.JK.3' },
+            { code: 'K.CC.JK.4' }
         ]
     },
 
@@ -29,9 +29,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
 
     columns: [{
         xtype: 'srm-standardcolumn',
-        name: 'Code',
+        name: 'code',
         flex: 5,
-        dataIndex: 'Code'
+        dataIndex: 'code'
     },{
         xtype: 'actioncolumn',
         action: 'delete',
@@ -45,11 +45,27 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
 
         xtype: 'toolbar',
         items: [{
+            xtype: 'combobox',
             flex: 1,
-
-            xtype: 'textfield'
+            store:{
+                model: 'SparkRepositoryManager.model.Standard',
+                data: [
+                    { code: 'K.CC.JK.1' },
+                    { code: 'K.CC.JK.2' },
+                    { code: 'K.CC.JK.3' },
+                    { code: 'K.CC.JK.4' }
+                ]
+            },
+            queryMode: 'local',
+            displayField: 'code',
+            valueField: 'code',
+            forceSelecton: true,
+            typeAhead: true,
+            allowBlank: true
         },{
             xtype: 'button',
+            action: 'add',
+            disabled: true,
             text: 'Add'
         }]
     }]
