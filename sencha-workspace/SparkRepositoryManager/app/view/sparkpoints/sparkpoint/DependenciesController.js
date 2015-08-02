@@ -6,10 +6,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
     extend: 'Ext.app.ViewController',
     alias: 'controller.srm-sparkpoints-sparkpointdependencies',
 
-    refs: {
-        tree: 'srm-sparkpoints-sparkpointdependencies'
-    },
-
     control: {
         '#': {
             deleteclick: 'onDeleteClick'
