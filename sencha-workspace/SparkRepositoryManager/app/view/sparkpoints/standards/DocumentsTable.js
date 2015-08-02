@@ -7,6 +7,10 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
     extend: 'Ext.grid.Panel',
     xtype: 'srm-sparkpoints-documentstable',
+    requires: [
+        'Ext.grid.feature.Grouping'
+    ],
+
 
     title: 'Standards Documents',
     scrollable: true,
@@ -22,26 +26,33 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         toggleOnDblClick: false
     },
 */
+    features: [{
+        ftype:'grouping',
+        groupHeaderTpl: '{name}'
+    }],
 
     columns: [{
-        flex: 4,
+        flex: 1,
 
         text: 'Subject',
         dataIndex: 'subject'
     },{
-        flex: 7,
+        flex: 1,
 
         text: 'Document',
         dataIndex: 'name'
     },{
-        flex: 3,
+        width: 70,
 
         text: 'Body',
         dataIndex: 'jurisdiction'
     },{
-        flex: 3,
+        width: 100,
 
-        text: 'Grades',
-        dataIndex: 'grades'
+        xtype: 'numbercolumn',
+        text: 'Standards',
+        dataIndex: 'standards_count',
+        format: '0,000',
+        align: 'right'
     }]
 });

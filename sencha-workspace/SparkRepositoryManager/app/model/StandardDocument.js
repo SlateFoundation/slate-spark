@@ -5,10 +5,20 @@ Ext.define('SparkRepositoryManager.model.StandardDocument', {
 
     tableUrl: '/mock-standard_documents',
     fields: [
-        'asn_id',
-        'name',
-        'subject',
+        {
+            name: 'name',
+            sortType: function (v) {
+                return v.replace(/^\([^)]+\)\s*/i, '');
+            }
+        },
+        {
+            name: 'subject',
+            sortType: function (v) {
+                // TODO: convert to a reusable sortType
+                return v.replace(/^the\s+/i, '');
+            }
+        },
         'jurisdiction',
-        'grades'
+        'standards_count'
     ]
 });
