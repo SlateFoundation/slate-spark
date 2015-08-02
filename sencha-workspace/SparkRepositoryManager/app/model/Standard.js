@@ -1,6 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.Standard', {
-    extend: 'Ext.data.Model',
+    extend: 'Jarvus.model.Postgrest',
+
+
+    tableUrl: '/standards',
 
     tooltipTpl: [
         '<p>The full description of <em>{Code}</em> can be displayed here <strong>with arbitrary markup</strong></p>',
@@ -9,13 +12,10 @@ Ext.define('SparkRepositoryManager.model.Standard', {
         '</tpl>'
     ],
 
-    // model config
-    idProperty: 'Title',
-    fields: [
-        // sparkpoint fields
-        {
-            name: 'Code',
-            type: 'string'
+    fields: [{
+        name: 'alt_code',
+        convert: function(v, r) {
+            return v || r.get('code');
         }
-    ]
+    }]
 });

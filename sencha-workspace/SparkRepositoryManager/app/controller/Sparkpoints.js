@@ -5,7 +5,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         'sparkpoints.Sparkpoints',
         'sparkpoints.Dependencies',
         'sparkpoints.Dependents',
-        'StandardDocuments'
+        'StandardDocuments',
+        'Standards'
     ],
 
     config: {
@@ -57,7 +58,15 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onDocumentSelect: function(contentAreasTable, document) {
-        // debugger;
-        console.log('onDocumentSelect(%o, %o)', contentAreasTable, document);
+        this.getStandardsStore().setFilters([{
+            property: 'subject',
+            value: document.get('subject')
+        },{
+            property: 'jurisdiction',
+            value: document.get('jurisdiction')
+        },{
+            property: 'standard_document',
+            value: document.get('name')
+        }]);
     }
 });
