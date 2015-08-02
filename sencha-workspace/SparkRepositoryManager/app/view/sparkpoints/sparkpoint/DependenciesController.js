@@ -15,8 +15,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             deleteclick: 'onDeleteClick'
         },
         'combo': {
-            // TODO: on focus? maybe not, but works for now
-            focus: 'onComboFocus',
+            afterrender: 'onComboAfterRender',
             select: 'onComboSelect',
             change: 'onComboChange',
             specialKey: 'onComboSpecialKey'
@@ -27,23 +26,18 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
     },
 
     onDeleteClick: function(grid,rec) {
+        var me = this;
+
         Ext.Msg.confirm('Deleting Dependency', 'Are you sure you want to delete this dependency?', function(btn) {
             if (btn == 'yes') {
                 rec.erase();
+                me.filterCombo();
             }
         });
     },
 
-    onComboFocus: function(combo) {
-        var comboStore = combo.getStore(),
-            treeStore = combo.up('treepanel').getStore();
-
-        comboStore.filterBy(function(comboRec) {
-            if (treeStore.find('code',comboRec.get('code')) !== -1) {
-                return false;
-            }
-            return true;
-        });
+    onComboAfterRender: function() {
+        this.filterCombo();
     },
 
     onComboSelect: function(combo) {
@@ -89,5 +83,20 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
         // TODO: These statements would be done in a callback if we reload this tree panel's store
         combo.clearValue();
         button.disable();
+        this.filterCombo();
+    },
+
+    filterCombo: function() {
+        var treepanel = this.getView(),
+            treeStore = treepanel.getStore(),
+            combo = treepanel.down('combo'),
+            comboStore = combo.getStore();
+
+        comboStore.filterBy(function(comboRec) {
+            if (treeStore.find('code',comboRec.get('code')) !== -1) {
+                return false;
+            }
+            return true;
+        });
     }
 });
