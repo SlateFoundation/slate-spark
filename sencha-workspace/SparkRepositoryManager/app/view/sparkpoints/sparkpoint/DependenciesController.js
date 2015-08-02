@@ -6,6 +6,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
     extend: 'Ext.app.ViewController',
     alias: 'controller.srm-sparkpoints-sparkpointdependencies',
 
+    refs: {
+        tree: 'srm-sparkpoints-sparkpointdependencies'
+    },
+
     control: {
         '#': {
             deleteclick: 'onDeleteClick'
@@ -14,7 +18,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             // TODO: on focus? maybe not, but works for now
             focus: 'onComboFocus',
             select: 'onComboSelect',
-            change: 'onComboChange'
+            change: 'onComboChange',
+            specialKey: 'onComboSpecialKey'
         },
         'button[action="add"]': {
             click: 'onAddClick'
@@ -56,11 +61,22 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
         }
     },
 
+    onComboSpecialKey: function(combo, e) {
+        if (e.getKey() == e.ENTER && combo.findRecordByValue(combo.getValue())) {
+            this.addRecord();
+        }
+    },
+
+    onAddClick: function() {
+        this.addRecord();
+    },
+
     // TODO: just adding rec to root for now, but I would think this will require a server reload to rebuild tree store.
-    onAddClick: function(button) {
-        var treepanel = button.up('treepanel'),
+    addRecord: function() {
+        var treepanel = this.getView(),
             treeStore = treepanel.getStore(),
             root = treeStore.getRoot(),
+            button = treepanel.down('button'),
             combo = treepanel.down('combo'),
             comboStore = combo.getStore(),
             comboIdx = comboStore.find('code',combo.getValue()),
@@ -70,6 +86,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
 
         root.appendChild(Ext.apply(comboRec.getData(),{leaf:true}));
 
+        // TODO: These statements would be done in a callback if we reload this tree panel's store
         combo.clearValue();
         button.disable();
     }
