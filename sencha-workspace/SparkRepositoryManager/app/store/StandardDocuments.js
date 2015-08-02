@@ -3,7 +3,14 @@ Ext.define('SparkRepositoryManager.store.StandardDocuments', {
     extend: 'Ext.data.Store',
 
     model: 'SparkRepositoryManager.model.StandardDocument',
-    groupField: 'subject',
+    grouper: {
+        property: 'subject',
+
+        sortProperty: 'subject',
+        transform: function(v) {
+            return SparkRepositoryManager.model.StandardDocument.fieldsMap.subject.sortType(v);
+        }
+    },
     sorters: [{
         property: 'name'
     }]
