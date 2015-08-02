@@ -17,15 +17,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
 
     store: 'StandardDocuments',
 
+    stateful: true,
+    stateId: 'srm-sparkpoints-documentstable',
+
     rootVisible: false,
     useArrows: true,
     singleExpand: true,
 
-/*
-    viewConfig: {
-        toggleOnDblClick: false
-    },
-*/
     features: [{
         ftype:'grouping',
         groupHeaderTpl: '{name}'
@@ -35,7 +33,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         flex: 1,
 
         text: 'Subject',
-        dataIndex: 'subject'
+        dataIndex: 'subject',
+        hidden: true
     },{
         flex: 1,
 
