@@ -6,12 +6,16 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     extend: 'Ext.grid.Panel',
     xtype: 'srm-sparkpoints-standardstable',
     requires: [
-        'SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable'
+        'SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable',
+        'Ext.data.ChainedStore'
     ],
 
     title: 'External standards',
 
-    store: 'Standards',
+    store: {
+        type: 'chained',
+        source: 'Standards'
+    },
     // store:{
     //     fields: [
     //         {name: 'Code', type: 'string'},

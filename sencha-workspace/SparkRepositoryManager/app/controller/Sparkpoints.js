@@ -28,6 +28,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             documentsTable: {
                 boxready: 'onDocumentsTableReady',
                 select: 'onDocumentSelect'
+            },
+            'srm-sparkpoints-standardstable jarvus-searchfield': {
+                change: 'onStandardsSearchChange'
             }
         }
     },
@@ -58,7 +61,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onDocumentSelect: function(contentAreasTable, document) {
-        this.getStandardsStore().setFilters([{
+        var store = this.getStandardsStore();
+
+        store.clearFilter(true);
+
+        store.filter([{
             property: 'subject',
             value: document.get('subject')
         },{
@@ -68,5 +75,18 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             property: 'standard_document',
             value: document.get('name')
         }]);
+    },
+
+    onStandardsSearchChange: function(field, query) {
+        var store = this.getStandardsTable().getStore(),
+            queryRe = Ext.String.createRegex(query, false, false);
+
+        store.clearFilter(true);
+
+        store.filter(function(item) {
+            var data = item.getData();
+
+            return queryRe.test(data.code) || queryRe.test(data.name)
+        });
     }
 });
