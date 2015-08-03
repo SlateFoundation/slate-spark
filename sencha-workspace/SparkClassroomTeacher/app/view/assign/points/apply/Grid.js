@@ -12,9 +12,10 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
                 text: 'Title'
             },
             {
-                dataIndex: 'Standard',
-                width: 100,
-                text: 'Standards'
+                dataIndex: 'Standards',
+                text: 'Standards',
+                tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}',
+                width: 100
             },
             {
                 dataIndex: 'Grade',
