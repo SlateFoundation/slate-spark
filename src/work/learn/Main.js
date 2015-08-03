@@ -19,7 +19,6 @@ Ext.define('SparkClassroom.work.learn.Main', {
                     {
                         xtype: 'container',
                         layout: 'accordion',
-                        flex: 1,
                         items: [
                             {
                                 xtype: 'spark-work-learn-assignmentgrid',

@@ -4,20 +4,20 @@ Ext.define('SparkClassroom.work.assess.StandardsGrid', {
     xtype: 'spark-work-assess-standardsgrid',
 
     config: {
-
+        width: 500,
+        height: 200,
+        titleBar: null,
         columns:[
             {
                 dataIndex: 'Standard',
-                flex: 1,
+                width: 150,
                 text: 'Assessment Selected'
             },
             {
                 dataIndex: 'Completed',
-                flex: 1,
+                width: 50,
                 text: 'Completed',
-                renderer: function(v, r) {
-                    return v ? '<input type="checkbox" checked>' : '';
-                }
+                tpl: '<input type="checkbox" checked="{Completed}">'
             },
             {
                 dataIndex: 'Score',
@@ -25,7 +25,7 @@ Ext.define('SparkClassroom.work.assess.StandardsGrid', {
                 renderer: function(v, r) {
                     return v ? v+'/5' : '';
                 },
-                flex: 1
+                width: 50
             }
         ],
 
@@ -33,8 +33,8 @@ Ext.define('SparkClassroom.work.assess.StandardsGrid', {
             fields: ['Standard', 'Completed', 'Score'],
 
             data: [
-                {Standard: 'Playlist Title', Rating: false, Comleted: false},
-                {Standard: 'Playlist Title', Rating: 2, Completed: true}
+                {Standard: 'Playlist Title', Score: false, Comleted: false},
+                {Standard: 'Playlist Title', Score: 2, Completed: true}
             ]
         }
     }

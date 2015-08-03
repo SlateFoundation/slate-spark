@@ -4,29 +4,32 @@ Ext.define('SparkClassroom.work.assess.AssignmentGrid', {
     xtype: 'spark-work-assess-assignmentgrid',
 
     config: {
-
+        height: 200,
+        titleBar: null,
+        width: 500,
         columns:[
             {
                 dataIndex: 'Title',
-                flex: 1,
+                width: 150,
                 text: 'Playist'
             },
             {
                 dataIndex: 'Rating',
-                flex: 1,
+                width: 50,
                 text: 'Rating'
             },
             {
                 dataIndex: 'Comment',
                 text: 'Comment',
-                flex: 1
+                width: 100
             },
             {
                 dataIndex: 'VendorTitle',
                 text: 'Vendor',
-                flex: 1,
-                renderer: function(v, r) {
-                    return '<img src="'+r.get('VendorImageUrl')+'">'+v;
+                width: 75,
+                tpl: '<img src="http://placehold.it/15x15"> {VendorTitle}',
+                cell: {
+                    encodeHtml: false
                 }
             }
         ],
