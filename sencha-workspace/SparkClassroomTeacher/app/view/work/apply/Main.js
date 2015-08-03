@@ -2,13 +2,16 @@
 Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-apply',
+    requires: [
+        'SparkClassroomTeacher.view.work.apply.TaskGrid'
+    ],
 
     config: {
         layout: 'hbox',
         items: [
             {
                 xtype: 'container',
-                flex: 1,
+                width: '100%',
                 layout: 'vbox',
                 items: [
                     {
@@ -70,8 +73,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                         ]
                     },
                     {
-                        xtype: 'component',
-                        html: 'TODOs'
+                        xtype: 'spark-teacher-work-apply-taskgrid'
                     },
                     {
                         xtype: 'container',

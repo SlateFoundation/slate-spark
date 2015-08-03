@@ -6,6 +6,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
     config: {
         title: 'Conference Questions',
         height: 500,
+        titleBar: null,
         columns:[
             {
                 dataIndex: 'Standards',

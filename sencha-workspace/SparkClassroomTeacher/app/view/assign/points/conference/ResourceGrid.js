@@ -6,6 +6,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.ResourceGrid', {
     config: {
         title: 'Conference Resources',
         height: 500,
+        titleBar: null,
         columns:[
             {
                 dataIndex: 'Standards',

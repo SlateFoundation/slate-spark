@@ -8,7 +8,11 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         'work.learn.Main',
         'work.conference.Main'
     ],
-
+    
+    stores: [
+        'apply.Tasks'
+    ],
+    
     config: {
         activeTab: null
     },

@@ -4,6 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
     xtype: 'spark-assign-points-apply-grid',
     config: {
         height: 500,
+        titleBar: null,
         columns:[
             {
                 dataIndex: 'Title',
@@ -36,7 +37,10 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
                 dataIndex: 'Assign',
                 width: 100,
                 text: 'Assign',
-                tpl: '<input type="checkbox" checked="{Assign}">'
+                tpl: '<input type="checkbox" checked="{Assign}">',
+                cell: {
+                    encodeHtml: false
+                }
             }
         ],
 

@@ -6,6 +6,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
     config: {
         title: 'Assess',
         height: 500,
+        titleBar: null,
         columns:[
             {
                 dataIndex: 'Standards',

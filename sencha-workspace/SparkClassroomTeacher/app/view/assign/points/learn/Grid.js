@@ -4,13 +4,18 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
     xtype: 'spark-assign-points-learn-grid',
 
     config: {
-        height: 500,
+        // height: 500,
+        // layout: 'fit',
+        titleBar: false,
+        // scrollable: false,
+        // infinite: false,
+        // variableHeights: false,
         store: 'assign.Learn',
         columns:[
             {
                 dataIndex: 'Standards',
                 text: 'Standards',
-                width: 100,
+                flex: 1,
                 tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}',
                 cell: {
                     encodeHtml: false
@@ -100,5 +105,16 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                 }
             }
         ]
-    }
+    },
+    
+    // createContainer: function() {
+    //     debugger
+    //     return Ext.factory({
+    //         xtype: 'container',
+    //         scrollable: {
+    //             y: false,
+    //             x: false
+    //         }
+    //     });
+    // },
 });
