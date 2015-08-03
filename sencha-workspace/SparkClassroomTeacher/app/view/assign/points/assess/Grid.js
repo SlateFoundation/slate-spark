@@ -5,69 +5,59 @@ Ext.define('SparkClassroomTeacher.view.assign.points.assess.Grid', {
 
     config: {
         title: 'Assess',
+        height: 500,
         columns:[
             {
-                dataIndex: 'Standard',
-                flex: 1,
-                text: 'Standards'
+                dataIndex: 'Standards',
+                width: 100,
+                text: 'Standards',
+                tpl: '{[values.Standards.join(", ")]}'
             },
             {
                 dataIndex: 'Grade',
-                flex: 1,
+                width: 100,
                 text: 'Grade'
             },
             {
                 dataIndex: 'Link',
-                flex: 1,
+                width: 100,
                 text: 'Url'
             },
             {
                 dataIndex: 'Title',
-                flex: 1,
+                width: 100,
                 text: 'Title'
             },
             {
                 dataIndex: 'Vendor',
                 flex: 1,
+                width: 100,
                 text: 'Vendor',
-                renderer: function(v, r) {
-                    return '<img src="http://placehold.it/25x25">'+v;
+                tpl: '<img src="http://placehold.it/25x25">{Vendor}',
+                cell: {
+                    encodeHtml: false
                 }
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                flex: 1,
-                renderer: function(v, r) {
-                    return '<input type="checkbox" checked="'+v+'">';
+                width: 100,
+                tpl: '<input type="checkbox" checked="{Assign}">',
+                cell: {
+                    encodeHtml: false
                 }
             },
             {
                 dataIndex: 'Issue',
                 text: 'Issue',
-                flex: 1,
-                renderer: function(v, r) {
-                    return '<img src="http://placehold.it/25x25">';
+                width: 100,
+                tpl: '<img src="http://placehold.it/25x25">',
+                cell: {
+                    encodeHtml: false
                 }
             }
         ],
 
-        store: {
-            fields: ['Standard','Link', 'Title', 'Grade', 'Type', 'Assign', 'Vendor', 'Issue'],
-
-
-            data: [
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'What is this?', Type: 'Digital', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: true},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Teacher Directed', Grade: 9, Assign: true, Vendor: 'Youtube', Issue: true},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Teacher Directed', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Digital', Grade: 9, Assign: true, Vendor: 'Youtube', Issue: false},
-                {Standard: '6.LA.M.B', Link: 'http://link.com', Title: 'What is that?', Type: 'Digital', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Teacher Directed', Grade: 9, Assign: true, Vendor: 'PBS', Issue: true},
-                {Standard: '3.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Digital', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Paper Quiz', Grade: 9, Assign: true, Vendor: 'Illuminate', Issue: true},
-                {Standard: 'e.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Digital', Grade: 11, Assign: false, Vendor: 'Brainpop', Issue: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Type: 'Paper Quiz', Grade: 9, Assign: true, Vendor: 'Youtube', Issue: false}
-            ]
-        }
+        store: 'assign.Assess'
     }
 });

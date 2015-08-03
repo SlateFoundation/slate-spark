@@ -12,6 +12,15 @@ Ext.define('SparkClassroomTeacher.controller.assign.Points', {
         'assign.points.apply.Main',
         'assign.points.assess.Grid'
     ],
+    
+    stores: [
+        'assign.Learn',
+        'assign.Questions',
+        'assign.Resources',
+        'assign.Apply',
+        'assign.Assess'
+    ],
+    
     refs:{
         pointsTabbar: 'spark-assign-points-tabbar',
         learnCt: {

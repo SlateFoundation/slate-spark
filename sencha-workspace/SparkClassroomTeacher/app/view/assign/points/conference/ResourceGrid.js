@@ -5,63 +5,50 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.ResourceGrid', {
 
     config: {
         title: 'Conference Resources',
+        height: 500,
         columns:[
             {
-                dataIndex: 'Standard',
-                flex: 1,
-                text: 'Standards'
+                dataIndex: 'Standards',
+                width: 100,
+                text: 'Standards',
+                tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}'
             },
             {
                 dataIndex: 'Grade',
-                flex: 1,
+                width: 50,
                 text: 'Grade'
             },
             {
                 dataIndex: 'Link',
-                flex: 1,
+                width: 100,
                 text: 'Url'
             },
             {
                 dataIndex: 'Title',
-                flex: 1,
+                width: 100,
                 text: 'Title'
             },
             {
                 dataIndex: 'Created',
                 text: 'Created',
-                flex: 1
+                width: 100
             },
             {
                 dataIndex: 'CreatedBy',
                 text: 'Created By',
-                flex: 1
+                width: 100
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                flex: 1,
-                renderer: function(v, r) {
-                    return '<input type="checkbox" checked="'+v+'">';
+                width: 100,
+                tpl: '<input type="checkbox" checked="{Assign}}">',
+                cell: {
+                    encodeHtml: false
                 }
             }
         ],
 
-        store: {
-            fields: ['Standard','Link', 'Title', 'Grade', 'Created', 'CreatedBy', 'Assign'],
-
-
-            data: [
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'What is this?', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: '6.LA.M.B', Link: 'http://link.com', Title: 'What is that?', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: '3.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: 'e.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true}
-            ]
-        }
+        store: 'assign.Resources'
     }
 });

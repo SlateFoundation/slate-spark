@@ -2,57 +2,43 @@
 Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-points-apply-grid',
-    //NOTE: div.inner doesn't use full hight of div.x-grid. This in tandom with the width errors seems to cause cells to hide.
     config: {
-
+        height: 500,
         columns:[
             {
                 dataIndex: 'Title',
-                //NOTE: x-grid-cells width broken and can only be set in the inspector
+                //NOTE: x-grid horizontal flex broken 
                 width: 100,
                 text: 'Title'
             },
             {
                 dataIndex: 'Standard',
+                width: 100,
                 text: 'Standards'
             },
             {
                 dataIndex: 'Grade',
+                width: 100,
                 text: 'Grade'
             },
             {
                 dataIndex: 'DOK',
+                width: 100,
                 text: 'DOK'
             },
             {
                 dataIndex: 'CreatedBy',
+                width: 100,
                 text: 'Created By'
             },
             {
                 dataIndex: 'Assign',
+                width: 100,
                 text: 'Assign',
-                renderer: function(v, r) {
-                    return '<input type="checkbox" checked="'+v+'">';
-                }
+                tpl: '<input type="checkbox" checked="{Assign}">'
             }
         ],
 
-        store: {
-            fields: ['Standard', 'Title', 'Grade', 'Assign', 'CreatedBy', 'DOK'],
-
-
-            data: [
-                {Standard: '5.LA.M.B', Title: 'What is this?', DOK: 3, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 2, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 3, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 1, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: '6.LA.M.B', Title: 'What is that?', DOK: 3, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 3, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: '3.LA.M.B', Title: 'Playlist Title', DOK: 3, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 1, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-                {Standard: 'e.LA.M.B', Title: 'Playlist Title', DOK: 2, CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-                {Standard: '5.LA.M.B', Title: 'Playlist Title', DOK: 1, CreatedBy: 'Milton Jossund', Grade: 9, Assign: true}
-            ]
-        }
+        store: 'assign.Apply'
     }
 });
