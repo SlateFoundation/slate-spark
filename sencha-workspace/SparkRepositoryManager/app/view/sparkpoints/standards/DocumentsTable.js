@@ -20,9 +20,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
     stateful: true,
     stateId: 'srm-sparkpoints-documentstable',
 
-    rootVisible: false,
-    useArrows: true,
-    singleExpand: true,
+    // rootVisible: false,
+    // useArrows: true,
+    // singleExpand: true,
 
     features: [{
         ftype:'grouping',
