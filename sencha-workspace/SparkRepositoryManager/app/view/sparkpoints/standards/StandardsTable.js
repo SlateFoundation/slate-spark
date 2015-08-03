@@ -12,6 +12,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
 
     title: 'External standards',
 
+    emptyText: 'No standards found matching your filter',
+
     store: {
         type: 'chained',
         source: 'Standards'
