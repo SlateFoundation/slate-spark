@@ -1,5 +1,9 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.overrides.PostgrestConnection', {
-	override: 'Jarvus.connection.Postgrest'
+	override: 'Jarvus.connection.Postgrest',
+    requires: [
+        'SparkRepositoryManager.API'
+    ]
 }, function(PostgrestConnection) {
     var pageParams = Ext.Object.fromQueryString(location.search);
 
@@ -7,7 +11,7 @@ Ext.define('SparkRepositoryManager.overrides.PostgrestConnection', {
     if (pageParams.postgrestHost) {
         PostgrestConnection.setHost(pageParams.postgrestHost);
     } else {
-        PostgrestConnection.setHost('staging.sparkpoint.slatepowered.net');
-        PostgrestConnection.setPathPrefix('/spark2/postgrest');
+        PostgrestConnection.setHost(SparkRepositoryManager.API.getHost());
+        PostgrestConnection.setPathPrefix('/postgrest');
     }
 });
