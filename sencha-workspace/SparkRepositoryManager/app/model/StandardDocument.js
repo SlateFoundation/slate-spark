@@ -3,8 +3,10 @@ Ext.define('SparkRepositoryManager.model.StandardDocument', {
     extend: 'Jarvus.model.Postgrest',
 
 
-    tableUrl: '/mock-standard_documents',
+    tableUrl: '/mock-standards_documents',
+    idProperty: 'asn_id',
     fields: [
+        'asn_id',
         {
             name: 'name',
             sortType: function (v) {
@@ -19,6 +21,6 @@ Ext.define('SparkRepositoryManager.model.StandardDocument', {
             }
         },
         'jurisdiction',
-        'standards_count'
+        'children_count'
     ]
 });

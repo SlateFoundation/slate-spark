@@ -20,10 +20,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
     stateful: true,
     stateId: 'srm-sparkpoints-documentstable',
 
-    // rootVisible: false,
-    // useArrows: true,
-    // singleExpand: true,
-
     features: [{
         ftype:'grouping',
         groupHeaderTpl: '{name}'
@@ -49,8 +45,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         width: 100,
 
         xtype: 'numbercolumn',
-        text: 'Standards',
-        dataIndex: 'standards_count',
+        text: 'Lines',
+        dataIndex: 'children_count',
         format: '0,000',
         align: 'right'
     }]

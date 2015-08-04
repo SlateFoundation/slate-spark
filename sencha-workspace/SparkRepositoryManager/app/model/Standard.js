@@ -12,7 +12,14 @@ Ext.define('SparkRepositoryManager.model.Standard', {
         '</tpl>'
     ],
 
+    idProperty: 'asn_id',
     fields: [{
+        name: 'parent_asn_id',
+        convert: function(v) {
+            //  if the parent is a document, it's a root node and has no parent
+            return !v || v[0] == 'D' ? null : v;
+        }
+    },{
         name: 'alt_code',
         convert: function(v, r) {
             return v || r.get('code');
