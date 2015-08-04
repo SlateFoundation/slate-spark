@@ -28,9 +28,11 @@ Ext.define('SparkRepositoryManager.Application', {
     ],
 
     init: function() {
-        Ext.state.Manager.setProvider(Ext.create('Ext.state.LocalStorageProvider', {
-            prefix: 'srm-'
-        }));
+        if (!location.search.match(/\Wnostate(\W|$)/)) {
+            Ext.state.Manager.setProvider(Ext.create('Ext.state.LocalStorageProvider', {
+                prefix: 'srm-'
+            }));
+        }
     },
 
     initQuickTips: function() {
