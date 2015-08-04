@@ -61,12 +61,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onDocumentSelect: function(contentAreasTable, document) {
-        var store = this.getDocumentStandardsStore(),
-            rootNode = store.getRootNode();
-
-        rootNode.removeAll();
-        rootNode.setId(document.get('asn_id'));
-        store.load();
+        this.getDocumentStandardsStore().setRootNode(Ext.applyIf({
+            expanded: true
+        }, document.getData()));
     },
 
     onStandardsSearchChange: function(field, query) {

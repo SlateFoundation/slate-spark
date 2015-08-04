@@ -2,32 +2,37 @@
 Ext.define('SparkRepositoryManager.store.DocumentStandards', {
     extend: 'Ext.data.TreeStore',
     requires: [
-        'Jarvus.proxy.Postgrest',
-        'Jarvus.reader.Postgrest'
+        'SparkRepositoryManager.proxy.Standards'
     ],
 
     model: 'SparkRepositoryManager.model.Standard',
     pageSize: 0,
     remoteFilter: false,
     remoteSort: false,
-    nodeParam: 'asn_id',
     parentIdProperty: 'parent_asn_id',
     proxy: {
-        type: 'postgrest',
-        url: '/mock-standards_documents_full',
-        sortParam: false,
-        reader: {
-            type: 'postgrest',
-            transform: function(data) {
-                return data[0].children;
-            }
-        }
+        type: 'spark-standards'
     },
     root: {
-        // asn_id: 'D10003FC',
-        expanded: true
-    },
-    sorters: [{
-        property: 'alt_code'
-    }]
+        expanded: true,
+        children: []
+    }
+
+    /**
+     * Go through records after treeify runs and mark all nodes withouth children as leafs
+     * 
+     * Disabled for now because the current API is doing this for us
+     */
+    // treeify: function(parentNode, records) {
+    //     var result = this.callParent(arguments),
+    //         recordsLength = records.length,
+    //         recordIndex = 0, record;
+
+    //     for (; recordIndex < recordsLength; recordIndex++) {
+    //         record = records[recordIndex];
+    //         record.set('leaf', !record.childNodes.length);
+    //     }
+
+    //     return result;
+    // }
 });

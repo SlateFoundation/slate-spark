@@ -1,26 +1,26 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.StandardDocument', {
-    extend: 'Jarvus.model.Postgrest',
+    extend: 'Ext.data.Model',
 
-
-    tableUrl: '/mock-standards_documents',
     idProperty: 'asn_id',
     fields: [
-        'asn_id',
         {
             name: 'name',
             sortType: function (v) {
-                return v.replace(/^\([^)]+\)\s*/i, '');
+                return v ? v.replace(/^\([^)]+\)\s*/i, '') : null;
             }
         },
         {
             name: 'subject',
             sortType: function (v) {
                 // TODO: convert to a reusable sortType
-                return v.replace(/^the\s+/i, '');
+                return v ? v.replace(/^the\s+/i, '') : null;
             }
-        },
-        'jurisdiction',
-        'children_count'
-    ]
+        }
+    ],
+
+    proxy: {
+        type: 'spark-api',
+        url: '/standards/documents'
+    }
 });

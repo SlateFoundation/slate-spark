@@ -35,7 +35,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         flex: 1,
 
         text: 'Document',
-        dataIndex: 'name'
+        dataIndex: 'title'
     },{
         width: 70,
 
@@ -45,9 +45,22 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         width: 100,
 
         xtype: 'numbercolumn',
-        text: 'Lines',
-        dataIndex: 'children_count',
+        text: 'Standards',
+        dataIndex: 'standards_count',
         format: '0,000',
         align: 'right'
+    },{
+        width: 80,
+
+        xtype: 'numbercolumn',
+        text: 'Groups',
+        dataIndex: 'groups_count',
+        format: '0,000',
+        align: 'right',
+        hidden: true
+    },{
+        text: 'Grades',
+        dataIndex: 'grades',
+        hidden: true
     }]
 });

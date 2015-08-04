@@ -17,6 +17,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     store: 'DocumentStandards',
     rootVisible: false,
     useArrows: true,
+    sortableColumns: false,
     // singleExpand: true,
     // store: {
     //     type: 'chained',
@@ -26,12 +27,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     columns: [{
         xtype: 'treecolumn',
         text: 'Name',
-        dataIndex: 'name',
+        dataIndex: 'title',
         flex: 1
     },{
         text: 'Code',
         dataIndex: 'alt_code',
-        width: 100
+        width: 100,
+        renderer: function(v, metaData, record) {
+            return v || record.get('code');
+        }
     },{
         text: 'ASN ID',
         dataIndex: 'asn_id',
