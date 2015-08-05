@@ -29,6 +29,14 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             standardsTable: 'srm-sparkpoints-standardstable',
         },
 
+        listen: {
+            store: {
+                '#sparkpoints.Sparkpoints': {
+                    update: 'onSparkpointUpdate'
+                }
+            }
+        },
+
         control: {
             contentAreasTable: {
                 boxready: 'onContentAreasTableReady',
@@ -146,6 +154,16 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
     onSparkpointSaveClick: function() {
         this.getSparkpointForm().updateRecord();
+    },
+
+    onSparkpointUpdate: function(sparkpointsStore, sparkpoint, operation) {
+        var sparkpointForm = this.getSparkpointForm(),
+            loadedSparkpoint = sparkpointForm.getRecord();
+
+        if (operation == 'commit' && sparkpoint === loadedSparkpoint) {
+            // re-load record after commit to reset form dirty tracking and load any server-modified values
+            sparkpointForm.loadRecord(sparkpoint);
+        }
     },
 
     onDocumentsTableReady: function(documentsTable) {
