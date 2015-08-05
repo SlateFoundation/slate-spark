@@ -3,7 +3,6 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-gps',
     requires: [
-        'SparkClassroomTeacher.view.gps.Header',
         'SparkClassroomTeacher.view.gps.StudentList'
     ],
 
