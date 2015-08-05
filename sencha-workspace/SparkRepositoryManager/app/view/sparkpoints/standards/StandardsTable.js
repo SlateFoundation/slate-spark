@@ -11,18 +11,20 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         // 'Ext.data.ChainedStore'
     ],
 
-    title: 'External standards',
 
     config: {
         expandAllThreshold: 10
     },
 
-    emptyText: 'No standards found matching your filter',
+    disabled: true, // disabled until loaded
+    stateful: true,
+    stateId: 'srm-sparkpoints-standardstable',
 
     store: 'DocumentStandards',
     rootVisible: false,
     useArrows: true,
     sortableColumns: false,
+    emptyText: 'No standards found matching your filter',
     viewConfig: {
         stripeRows: true
     },
@@ -55,11 +57,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     }],
 
     dockedItems: [{
-        dock: 'left',
-
-        xtype: 'srm-sparkpoints-documentstable',
-        width: 450
-    },{
         dock: 'top',
         weight: 10,
 
@@ -127,6 +124,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
 
     listeners: {
         load: function() {
+            this.enable();
             this.autoExpand();
         }
     }

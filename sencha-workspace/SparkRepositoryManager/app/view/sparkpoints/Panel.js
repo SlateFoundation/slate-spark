@@ -13,13 +13,26 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
     items: [{
         region: 'south',
         split: true,
-
-        xtype: 'srm-sparkpoints-standardstable',
-        height: 300,
         collapsible: true,
 
+        xtype: 'panel',
+        title: 'Standards',
+        height: 300,
         stateful: true,
-        stateId: 'srm-sparkpoints-standardstable'
+        stateId: 'srm-sparkpoints-standardsct',
+        layout: 'border',
+        items: [{
+            region: 'west',
+            split: true,
+            collapsible: true,
+
+            xtype: 'srm-sparkpoints-documentstable',
+            width: 450
+        },{
+            region: 'center',
+
+            xtype: 'srm-sparkpoints-standardstable',
+        }]
     },{
         region: 'west',
         split: true,

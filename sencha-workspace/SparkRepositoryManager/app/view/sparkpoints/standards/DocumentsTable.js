@@ -12,13 +12,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
     ],
 
 
-    title: 'Standards Documents',
+    title: 'Documents',
     scrollable: true,
-
-    store: 'StandardDocuments',
 
     stateful: true,
     stateId: 'srm-sparkpoints-documentstable',
+
+    store: 'StandardDocuments',
 
     features: [{
         ftype:'grouping',
