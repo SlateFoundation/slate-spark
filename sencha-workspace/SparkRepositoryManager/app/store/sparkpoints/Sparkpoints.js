@@ -3,6 +3,6 @@ Ext.define('SparkRepositoryManager.store.sparkpoints.Sparkpoints', {
     extend: 'Ext.data.Store',
     storeId: 'sparkpoints.Sparkpoints',
 
-    model: 'SparkRepositoryManager.model.sparkpoint.Sparkpoint',
+    model: 'SparkRepositoryManager.model.Sparkpoint',
     remoteFilter: true
 });

@@ -3,7 +3,7 @@ Ext.define('SparkRepositoryManager.store.sparkpoints.Dependents', {
     extend: 'Ext.data.TreeStore',
     storeId: 'sparkpoints.Dependents',
 
-    model: 'SparkRepositoryManager.model.sparkpoint.Sparkpoint',
+    model: 'SparkRepositoryManager.model.Sparkpoint',
 
     root: {
         expanded: true,
