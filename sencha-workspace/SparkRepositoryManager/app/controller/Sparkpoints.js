@@ -1,5 +1,9 @@
 Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Ext.window.MessageBox'
+    ],
+
 
     stores: [
         'sparkpoints.Sparkpoints',
@@ -34,6 +38,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 click: 'onCreateContentAreaClick'
             },
             sparkpointsTable: {
+                beforedeselect: 'onSparkpointBeforeDeselect',
                 select: 'onSparkpointSelect'
             },
             'srm-sparkpoints-grid button[action=create]': {
@@ -95,6 +100,13 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 content_area_id: contentArea.getId()
             })
         );
+    },
+
+    onSparkpointBeforeDeselect: function(sparkpointTable, sparkpoint) {
+        if (this.getSparkpointForm().isDirty()) {
+            Ext.Msg.alert('Unsaved changes', '<p>You have unsaved changes in the sparkpoint editor.</p><p>Please save or discard them before moving to another sparkpoint</p>');
+            return false;
+        }
     },
 
     onSparkpointSelect: function(sparkpointsTable, sparkpoint) {
