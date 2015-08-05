@@ -7,15 +7,24 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
 
 
     proxy: 'spark-contentareas',
-    tableUrl: '/mock-content_areas',
-    fetchRemoteFields: true,
-    idProperty: 'code',
+    tableUrl: '/content_areas',
     fields: [
+        {
+            name: 'title'
+        },
         {
             name: 'leaf',
             convert: function(v, r) {
                 return !r.get('root');
             }
+        },
+        {
+            name: 'parentId',
+            persist: false
         }
-    ]
+    ],
+    
+    validators: {
+        title: 'presence'
+    }
 });

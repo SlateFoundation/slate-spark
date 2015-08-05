@@ -16,44 +16,72 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
     xtype: 'srm-sparkpoints-contentareastable',
     requires: [
         'Jarvus.ext.form.field.Search',
-        'SparkRepositoryManager.store.sparkpoints.ContentAreas'
+        'SparkRepositoryManager.model.ContentArea'
     ],
 
     title: 'Content Areas',
 
     dockedItems: [{
-        dock: 'top',
+    //     dock: 'top',
+
+    //     xtype: 'toolbar',
+    //     items: [{
+    //         flex: 1,
+
+    //         xtype: 'jarvus-searchfield',
+    //         emptyText: 'Search all content…'
+    //     }]
+    // },{
+        dock: 'bottom',
 
         xtype: 'toolbar',
         items: [{
-            flex: 1,
-
-            xtype: 'jarvus-searchfield',
-            emptyText: 'Search all content…'
+            xtype: 'button',
+            text: 'New Content Area',
+            action: 'create'
         }]
     }],
 
     // treepanel config
-    store: 'sparkpoints-contentareas',
+    store: {
+        xclass: 'Ext.data.TreeStore',
+        model: 'SparkRepositoryManager.model.ContentArea',
+        proxy: undefined, // force store to use model's proxy
+    	remoteSort: true,
+    	sorters: 'code',
+    	nodeParam: null,
+        autoSync: true
+    },
 
     rootVisible: false,
-    useArrows: true,
     singleExpand: true,
     hideHeaders: true,
-    viewConfig: {
-        toggleOnDblClick: false
-    },
 
     columns: [
         {
-            xtype: 'treecolumn',
             flex: 1,
-            dataIndex: 'title'
+
+            xtype: 'treecolumn',
+            dataIndex: 'title',
+            editor: {
+                xtype: 'textfield',
+                allowBlank: false
+            }
         // },
         // {
         //     width: 32,
         //     align: 'right',
         //     dataIndex: 'Total'
         }
-    ]
+    ],
+
+    selModel: {
+        selType: 'cellmodel'
+    },
+
+    plugins: [{
+        pluginId: 'cellediting',
+        ptype: 'cellediting',
+        clicksToEdit: 2
+    }],
 });

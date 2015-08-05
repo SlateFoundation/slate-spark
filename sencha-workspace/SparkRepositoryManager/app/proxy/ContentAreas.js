@@ -7,7 +7,7 @@ Ext.define('SparkRepositoryManager.proxy.ContentAreas', {
         var params = this.callParent(arguments),
             node = operation.node;
 
-        if (!node.get('root')) {
+        if (node && !node.get('root')) {
             // TODO: custom logic for expanding tree
         }
 

@@ -25,6 +25,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointsTable: {
                 boxready: 'onSparkpointsTableReady'
             },
+            'srm-sparkpoints-contentareastable button[action=create]': {
+                click: 'onCreateContentAreaClick'
+            },
+
+
             documentsTable: {
                 boxready: 'onDocumentsTableReady',
                 select: 'onDocumentSelect'
@@ -50,6 +55,18 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         if (!store.isLoaded() || !store.isLoading()) {
             store.load();
         }
+    },
+
+    onCreateContentAreaClick: function() {
+        var contentAreasTable = this.getContentAreasTable();
+
+        contentAreasTable.getPlugin('cellediting').startEdit(
+            contentAreasTable.getRootNode().appendChild({
+                leaf: true,
+                title: ''
+            }),
+            0 // first column
+        );
     },
 
     onDocumentsTableReady: function(contentAreasTable) {
