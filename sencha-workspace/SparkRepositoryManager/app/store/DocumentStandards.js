@@ -38,16 +38,25 @@ Ext.define('SparkRepositoryManager.store.DocumentStandards', {
      * 
      * Disabled for now because the current API is doing this for us
      */
-    // treeify: function(parentNode, records) {
-    //     var result = this.callParent(arguments),
-    //         recordsLength = records.length,
-    //         recordIndex = 0, record;
+    treeify: function(parentNode, records) {
+        var result = this.callParent(arguments),
+            recordsLength = records.length,
+            recordIndex = 0, record, isLeaf, shouldBeLeaf;
 
-    //     for (; recordIndex < recordsLength; recordIndex++) {
-    //         record = records[recordIndex];
-    //         record.set('leaf', !record.childNodes.length);
-    //     }
+        for (; recordIndex < recordsLength; recordIndex++) {
+            record = records[recordIndex];
+            isLeaf = record.get('leaf');
+            shouldBeLeaf = !record.childNodes.length;
+            
+            if (isLeaf != shouldBeLeaf) {
+                record.set('leaf', shouldBeLeaf);
+                
+                // <debug>
+                console.warn('Statement %o has leaf=%o but according to loaded tree it should have leaf=%o', record.getId(), isLeaf, shouldBeLeaf);
+                // </debug>
+            }
+        }
 
-    //     return result;
-    // }
+        return result;
+    }
 });
