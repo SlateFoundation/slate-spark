@@ -19,7 +19,7 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
             }
         },
         {
-            name: 'parentId',
+            name: 'parent_id',
             persist: false
         }
     ],
