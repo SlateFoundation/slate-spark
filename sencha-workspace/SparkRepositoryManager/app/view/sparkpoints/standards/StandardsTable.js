@@ -79,6 +79,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         }]
     }],
 
+
     onRootChange: function(root, oldRoot) {
         oldRoot.un('filterchange', 'onFilterChange', this);
         root.on('filterchange', 'onFilterChange', this);
@@ -123,6 +124,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         // ensure at least the first match is visible
         if (firstVisibleLeaf) {
             me.ensureVisible(firstVisibleLeaf.getPath());
+        }
+    },
+
+
+    listeners: {
+        load: function() {
+            this.autoExpand();
         }
     }
 });
