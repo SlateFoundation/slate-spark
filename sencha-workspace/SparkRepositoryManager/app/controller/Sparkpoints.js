@@ -93,13 +93,15 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
     onCreateSparkpointClick: function() {
         var sparkpointsTable = this.getSparkpointsTable(),
-            contentArea = this.getContentAreasTable().getSelection()[0];
+            contentArea = this.getContentAreasTable().getSelection()[0],
+            sparkpoint;
 
-        sparkpointsTable.setSelection(
-            sparkpointsTable.getStore().insert(0, {
-                content_area_id: contentArea.getId()
-            })
-        );
+        sparkpoint = sparkpointsTable.getStore().insert(0, { })[0];
+
+        // set content_area_id after instantiating record so it is treated as a dirty value
+        sparkpoint.set('content_area_id', contentArea.getId());
+
+        sparkpointsTable.setSelection(sparkpoint);
     },
 
     onSparkpointBeforeDeselect: function(sparkpointTable, sparkpoint) {
@@ -116,20 +118,30 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
     onSparkpointDirtyChange: function(sparkpointForm, dirty) {
         var valid = sparkpointForm.isValid();
-        
-        this.getSparkpointDiscardButton().setDisabled(!dirty);
+
+        this.getSparkpointDiscardButton().setDisabled(!dirty && !sparkpointForm.getRecord().phantom);
         this.getSparkpointSaveButton().setDisabled(!valid || !dirty);
     },
 
     onSparkpointValidityChange: function(sparkpointForm, valid) {
         var dirty = sparkpointForm.isDirty();
 
-        this.getSparkpointDiscardButton().setDisabled(!dirty);
+        this.getSparkpointDiscardButton().setDisabled(!dirty && !sparkpointForm.getRecord().phantom);
         this.getSparkpointSaveButton().setDisabled(!valid || !dirty);
     },
 
     onSparkpointDiscardClick: function() {
-        this.getSparkpointForm().reset();
+        var me = this,
+            sparkpointForm = me.getSparkpointForm(),
+            sparkpoint = sparkpointForm.getRecord(),
+            phantom = sparkpoint.phantom;
+
+        sparkpointForm.reset(phantom);
+        
+        if (phantom) {
+            me.getSparkpointsTable().getStore().remove(sparkpoint);
+            me.getSparkpointPanel().disable();
+        }
     },
 
     onSparkpointSaveClick: function() {
