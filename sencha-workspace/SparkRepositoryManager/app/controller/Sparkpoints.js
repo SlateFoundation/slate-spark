@@ -20,10 +20,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         control: {
             contentAreasTable: {
-                boxready: 'onContentAreasTableReady'
-            },
-            sparkpointsTable: {
-                boxready: 'onSparkpointsTableReady'
+                boxready: 'onContentAreasTableReady',
+                select: 'onContentAreaSelect'
             },
             'srm-sparkpoints-contentareastable button[action=create]': {
                 click: 'onCreateContentAreaClick'
@@ -49,12 +47,10 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onSparkpointsTableReady: function(sparkpointsTable) {
-        var store = sparkpointsTable.getStore();
+    onContentAreaSelect: function(contentAreasTable, contentArea) {
+        var sparkpointsStore = this.getSparkpointsSparkpointsStore();
 
-        if (!store.isLoaded() || !store.isLoading()) {
-            store.load();
-        }
+        sparkpointsStore.filter('content_area_id', contentArea.getId());
     },
 
     onCreateContentAreaClick: function() {
@@ -69,15 +65,15 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         );
     },
 
-    onDocumentsTableReady: function(contentAreasTable) {
-        var store = contentAreasTable.getStore();
+    onDocumentsTableReady: function(documentsTable) {
+        var store = documentsTable.getStore();
 
         if (!store.isLoaded() || !store.isLoading()) {
             store.load();
         }
     },
 
-    onDocumentSelect: function(contentAreasTable, document) {
+    onDocumentSelect: function(documentsTable, document) {
         this.getDocumentStandardsStore().setRootNode(Ext.applyIf({
             expanded: true
         }, document.getData()));

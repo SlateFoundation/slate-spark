@@ -25,7 +25,7 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
             persist: false
         }
     ],
-    
+
     validators: {
         title: 'presence'
     }
