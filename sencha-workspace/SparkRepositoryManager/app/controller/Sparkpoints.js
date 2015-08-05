@@ -14,6 +14,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             mainPanel: 'srm-sparkpoints-panel',
             contentAreasTable: 'srm-sparkpoints-contentareastable',
             sparkpointsTable: 'srm-sparkpoints-grid',
+            sparkpointForm: 'srm-sparkpoints-sparkpointform',
             documentsTable: 'srm-sparkpoints-documentstable',
             standardsTable: 'srm-sparkpoints-standardstable',
         },
@@ -26,7 +27,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             'srm-sparkpoints-contentareastable button[action=create]': {
                 click: 'onCreateContentAreaClick'
             },
-
+            sparkpointsTable: {
+                select: 'onSparkpointSelect'
+            },
 
             documentsTable: {
                 boxready: 'onDocumentsTableReady',
@@ -63,6 +66,10 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             }),
             0 // first column
         );
+    },
+
+    onSparkpointSelect: function(sparkpointsTable, sparkpoint) {
+        this.getSparkpointForm().loadRecord(sparkpoint);
     },
 
     onDocumentsTableReady: function(documentsTable) {
