@@ -18,6 +18,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointsTable: 'srm-sparkpoints-grid',
             sparkpointPanel: 'srm-sparkpoints-sparkpointpanel',
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
+            sparkpointDiscardButton: 'srm-sparkpoints-sparkpointform button#discard',
+            sparkpointSaveButton: 'srm-sparkpoints-sparkpointform button#save',
 
             documentsTable: 'srm-sparkpoints-documentstable',
             standardsTable: 'srm-sparkpoints-standardstable',
@@ -36,6 +38,16 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             'srm-sparkpoints-grid button[action=create]': {
                 click: 'onCreateSparkpointClick'
+            },
+            sparkpointForm: {
+                dirtychange: 'onSparkpointDirtyChange',
+                validitychange: 'onSparkpointValidityChange'
+            },
+            sparkpointDiscardButton: {
+                click: 'onSparkpointDiscardClick'
+            },
+            sparkpointSaveButton: {
+                click: 'onSparkpointSaveClick'
             },
 
             documentsTable: {
@@ -85,6 +97,28 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     onSparkpointSelect: function(sparkpointsTable, sparkpoint) {
         this.getSparkpointForm().loadRecord(sparkpoint);
         this.getSparkpointPanel().enable();
+    },
+    
+    onSparkpointDirtyChange: function(sparkpointForm, dirty) {
+        var valid = sparkpointForm.isValid();
+        
+        this.getSparkpointDiscardButton().setDisabled(!dirty);
+        this.getSparkpointSaveButton().setDisabled(!valid || !dirty);
+    },
+    
+    onSparkpointValidityChange: function(sparkpointForm, valid) {
+        var dirty = sparkpointForm.isDirty();
+
+        this.getSparkpointDiscardButton().setDisabled(!dirty);
+        this.getSparkpointSaveButton().setDisabled(!valid || !dirty);
+    },
+
+    onSparkpointDiscardClick: function() {
+        this.getSparkpointForm().reset();
+    },
+
+    onSparkpointSaveClick: function() {
+        // debugger; // TODO: save
     },
 
     onDocumentsTableReady: function(documentsTable) {

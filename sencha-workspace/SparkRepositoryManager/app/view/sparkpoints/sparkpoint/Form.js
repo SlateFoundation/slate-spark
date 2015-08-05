@@ -1,11 +1,13 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     extend: 'Ext.form.Panel',
     xtype: 'srm-sparkpoints-sparkpointform',
-
     requires: [
         'Ext.form.field.Checkbox',
         'SparkRepositoryManager.field.LevelSlider'
     ],
+
+
+    trackResetOnLoad: true,
 
     defaults: {
         anchor: '100%'
@@ -33,5 +35,22 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
         xtype: 'textarea',
         fieldLabel: 'Editor\'s Memo',
         name: 'note'
+    }],
+
+    dockedItems: [{
+        dock: 'bottom',
+
+        xtype: 'toolbar',
+        items: [{
+            xtype: 'button',
+            text: 'Discard changes',
+            itemId: 'discard',
+            disabled: true
+        },{
+            xtype: 'button',
+            text: 'Save changes',
+            itemId: 'save',
+            disabled: true
+        }]
     }]
 });
