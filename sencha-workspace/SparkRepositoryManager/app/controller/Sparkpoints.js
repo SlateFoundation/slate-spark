@@ -70,12 +70,34 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         var store = this.getStandardsTable().getStore(),
             queryRe = Ext.String.createRegex(query, false, false);
 
-        store.clearFilter(true);
+        Ext.suspendLayouts();
 
-        store.filter(function(item) {
-            var data = item.getData();
+        if (query) {
+            store.filter({
+                id: 'search',
+                filterFn: function(node) {
+                    if (node.isLeaf()) {
+                        return queryRe.test(node.get('asn_id'))
+                               || queryRe.test(node.get('code'))
+                               || queryRe.test(node.get('alt_code'))
+                               || queryRe.test(node.get('title'));
+                    }
+    
+                    var children = node.childNodes,
+                        len = children && children.length,
+                        i = 0;
+                        
+                    for (; i < len; i++) {
+                        if (children[i].get('visible')) {
+                            return true;
+                        }
+                    }
+                }
+            });
+        } else {
+            store.clearFilter();
+        }
 
-            return queryRe.test(data.code) || queryRe.test(data.name)
-        });
+        Ext.resumeLayouts(true);
     }
 });

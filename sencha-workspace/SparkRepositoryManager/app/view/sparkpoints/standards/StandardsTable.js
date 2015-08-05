@@ -12,12 +12,19 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
 
     title: 'External standards',
 
+    config: {
+        expandAllThreshold: 10
+    },
+
     emptyText: 'No standards found matching your filter',
 
     store: 'DocumentStandards',
     rootVisible: false,
     useArrows: true,
     sortableColumns: false,
+    viewConfig: {
+        stripeRows: true
+    },
     // singleExpand: true,
     // store: {
     //     type: 'chained',
@@ -28,6 +35,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         xtype: 'treecolumn',
         text: 'Name',
         dataIndex: 'title',
+        cellWrap: true,
         flex: 1
     },{
         text: 'Code',
@@ -66,7 +74,55 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
             emptyText: 'Search all standards…'
         },{
             xtype: 'checkboxfield',
-            boxLabel: 'Unmapped only'
+            boxLabel: 'Unmapped only',
+            disabled: true // TODO: implement
         }]
-    }]
+    }],
+
+    onRootChange: function(root, oldRoot) {
+        oldRoot.un('filterchange', 'onFilterChange', this);
+        root.on('filterchange', 'onFilterChange', this);
+
+        this.callParent(arguments);
+    },
+
+    onFilterChange: function(store, filterNodes) {
+        this.autoExpand();
+    },
+
+    autoExpand: function() {
+        var me = this,
+            rootNode = me.getRootNode(),
+            visibleLeafs = [],
+            firstVisibleLeaf;
+
+        // collapse all if there is no filter
+        if (!me.getStore().getFilters().getCount()) {
+            rootNode.collapseChildren(true);
+            return;
+        }
+
+        // compile list of all matched leafs
+        rootNode.cascadeBy(function(node) {
+            if (node.get('visible') && node.isLeaf()) {
+                visibleLeafs.push(node);
+
+                if (!firstVisibleLeaf) {
+                    firstVisibleLeaf = node;
+                }
+            }
+        });
+
+        // if there are matches and its less than the threshold, expand all
+        if (visibleLeafs.length && visibleLeafs.length <= me.getExpandAllThreshold()) {
+            rootNode.expandChildren(true);
+        } else {
+            rootNode.collapseChildren(true);
+        }
+
+        // ensure at least the first match is visible
+        if (firstVisibleLeaf) {
+            me.ensureVisible(firstVisibleLeaf.getPath());
+        }
+    }
 });

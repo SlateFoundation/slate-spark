@@ -16,7 +16,22 @@ Ext.define('SparkRepositoryManager.store.DocumentStandards', {
     root: {
         expanded: true,
         children: []
-    }
+    },
+
+    /**
+     * Expand all nodes by default
+     */
+    // onProxyLoad: function(operation) {
+    //     var records = operation.getRecords(),
+    //         recordsLength = records.length,
+    //         recordIndex = 0;
+
+    //     for (; recordIndex < recordsLength; recordIndex++) {
+    //         records[recordIndex].set('expanded', true);
+    //     }
+
+    //     this.callParent(arguments);
+    // },
 
     /**
      * Go through records after treeify runs and mark all nodes withouth children as leafs
