@@ -3,11 +3,15 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-gps',
     requires: [
+        'SparkClassroomTeacher.view.NavBar',
         'SparkClassroomTeacher.view.gps.StudentList'
     ],
 
     config: {
         items: [
+            {
+                xtype: 'spark-navbar'
+            },
             {
                 xtype: 'container',
                 layout: 'hbox',
