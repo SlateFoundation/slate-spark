@@ -13,6 +13,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
     disabled: true,
     scrollable: 'y',
     bodyPadding: 10,
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+    },
 
     stateful: true,
     stateId: 'srm-sparkpoints-sparkpointpanel',
