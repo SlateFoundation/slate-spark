@@ -1,0 +1,27 @@
+html,
+body {
+    font-family: $font-family;
+}
+
+.slate-omnibar {
+    .inner {
+        padding: 0 1em;
+        width: 100%;
+    }
+
+    .omnibar-menu {
+        padding: 1.5em 3em;
+        width: 100%;
+    }
+}
+
+.visually-hidden {
+    border: 0; 
+    clip: rect(0 0 0 0); 
+    height: 1px;
+    position: absolute; 
+    margin: -1px;
+    overflow: hidden; 
+    padding: 0;
+    width: 1px; 
+}
