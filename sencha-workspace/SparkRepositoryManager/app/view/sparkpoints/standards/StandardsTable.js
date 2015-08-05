@@ -7,7 +7,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     xtype: 'srm-sparkpoints-standardstable',
     requires: [
         'SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable',
-        'Ext.data.ChainedStore'
+        'SparkRepositoryManager.column.StatementTree'
+        // 'Ext.data.ChainedStore'
     ],
 
     title: 'External standards',
@@ -32,11 +33,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
     // },
 
     columns: [{
-        xtype: 'treecolumn',
-        text: 'Name',
-        dataIndex: 'title',
-        cellWrap: true,
-        flex: 1
+        xtype: 'srm-statementtreecolumn'
     },{
         text: 'Code',
         dataIndex: 'alt_code',

@@ -1,0 +1,20 @@
+.statementtree-inner-treecolumn {
+    display: flex;
+    align-items: stretch;
+
+	.x-tree-elbow, .x-tree-icon {
+	    flex-shrink: 0;
+	    height: auto;
+	    margin: 0;
+	    background-repeat: no-repeat;
+	    background-position-y: top !important;
+	}
+
+	.x-tree-elbow {
+	    width: 18px; /* sized to accomodate arrow sprite */
+	}
+
+	.x-tree-node-text {
+	    flex-grow: 1;
+	}
+}
