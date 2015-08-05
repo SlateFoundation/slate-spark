@@ -46,7 +46,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         collapsible: true,
 
         xtype: 'srm-sparkpoints-sparkpointpanel',
-        width: 300
+        width: 400
     },{
         region: 'center',
 

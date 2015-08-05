@@ -87,10 +87,13 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onCreateSparkpointClick: function() {
-        var sparkpointsTable = this.getSparkpointsTable();
+        var sparkpointsTable = this.getSparkpointsTable(),
+            contentArea = this.getContentAreasTable().getSelection()[0];
 
         sparkpointsTable.setSelection(
-            sparkpointsTable.getStore().insert(0, { })
+            sparkpointsTable.getStore().insert(0, {
+                content_area_id: contentArea.getId()
+            })
         );
     },
 
@@ -98,14 +101,14 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         this.getSparkpointForm().loadRecord(sparkpoint);
         this.getSparkpointPanel().enable();
     },
-    
+
     onSparkpointDirtyChange: function(sparkpointForm, dirty) {
         var valid = sparkpointForm.isValid();
         
         this.getSparkpointDiscardButton().setDisabled(!dirty);
         this.getSparkpointSaveButton().setDisabled(!valid || !dirty);
     },
-    
+
     onSparkpointValidityChange: function(sparkpointForm, valid) {
         var dirty = sparkpointForm.isDirty();
 
@@ -118,7 +121,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onSparkpointSaveClick: function() {
-        // debugger; // TODO: save
+        this.getSparkpointForm().updateRecord();
     },
 
     onDocumentsTableReady: function(documentsTable) {
@@ -151,7 +154,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                                || queryRe.test(node.get('alt_code'))
                                || queryRe.test(node.get('title'));
                     }
-    
+
                     var children = node.childNodes,
                         len = children && children.length,
                         i = 0;

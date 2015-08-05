@@ -9,5 +9,31 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
         '</tpl>'
     ],
 
-    tableUrl: '/mock-sparkpoints'
+    tableUrl: '/mock-sparkpoints',
+
+    fields: [
+        'id',
+        'content_area_id',
+        { name: 'code', defaultValue: '' },
+        { name: 'power', defaultValue: false },
+        { name: 'teacher_title', defaultValue: '' },
+        { name: 'student_title', defaultValue: '' },
+        { name: 'teacher_description', defaultValue: '' },
+        { name: 'student_description', defaultValue: '' }
+    ],
+
+    validators: {
+        content_area_id: {
+            type: 'range',
+            min: 1
+        },
+        code: {
+            type: 'length',
+            min: 1
+        },
+        teacher_title: {
+            type: 'length',
+            min: 2
+        }
+    }
 });

@@ -52,7 +52,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
         xtype: 'srm-sparkpointcolumn'
     },{
         text: 'Title',
-        dataIndex: 'title',
+        dataIndex: 'teacher_title',
         flex: 1
     },{
         text: 'Previous?',
