@@ -21,6 +21,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
 
     title: 'Content Areas',
 
+    stateful: true,
+    stateId: 'srm-sparkpoints-contentareastable',
+
     dockedItems: [{
     //     dock: 'top',
 

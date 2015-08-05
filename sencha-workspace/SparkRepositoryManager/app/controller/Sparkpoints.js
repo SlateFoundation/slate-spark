@@ -12,9 +12,13 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     config: {
         refs: {
             mainPanel: 'srm-sparkpoints-panel',
+
             contentAreasTable: 'srm-sparkpoints-contentareastable',
+            contentAreaPanel: 'srm-sparkpoints-contentareapanel',
             sparkpointsTable: 'srm-sparkpoints-grid',
+            sparkpointPanel: 'srm-sparkpoints-sparkpointpanel',
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
+
             documentsTable: 'srm-sparkpoints-documentstable',
             standardsTable: 'srm-sparkpoints-standardstable',
         },
@@ -29,6 +33,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             sparkpointsTable: {
                 select: 'onSparkpointSelect'
+            },
+            'srm-sparkpoints-grid button[action=create]': {
+                click: 'onCreateSparkpointClick'
             },
 
             documentsTable: {
@@ -50,12 +57,6 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onContentAreaSelect: function(contentAreasTable, contentArea) {
-        var sparkpointsStore = this.getSparkpointsSparkpointsStore();
-
-        sparkpointsStore.filter('content_area_id', contentArea.getId());
-    },
-
     onCreateContentAreaClick: function() {
         var contentAreasTable = this.getContentAreasTable();
 
@@ -68,8 +69,22 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         );
     },
 
+    onContentAreaSelect: function(contentAreasTable, contentArea) {
+        this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
+        this.getContentAreaPanel().enable();
+    },
+
+    onCreateSparkpointClick: function() {
+        var sparkpointsTable = this.getSparkpointsTable();
+
+        sparkpointsTable.setSelection(
+            sparkpointsTable.getStore().insert(0, { })
+        );
+    },
+
     onSparkpointSelect: function(sparkpointsTable, sparkpoint) {
         this.getSparkpointForm().loadRecord(sparkpoint);
+        this.getSparkpointPanel().enable();
     },
 
     onDocumentsTableReady: function(documentsTable) {

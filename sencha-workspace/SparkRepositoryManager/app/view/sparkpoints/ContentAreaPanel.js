@@ -1,11 +1,13 @@
-Ext.define('SparkRepositoryManager.view.sparkpoints.TabPanel', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreaPanel', {
     extend:   'Ext.tab.Panel',
-    xtype:    'srm-sparkpoints-tabpanel',
+    xtype:    'srm-sparkpoints-contentareapanel',
     requires: [
         'SparkRepositoryManager.view.sparkpoints.Grid',
         'SparkRepositoryManager.view.sparkpoints.Graph',
         'SparkRepositoryManager.view.sparkpoints.Coverage'
     ],
+
+    disabled: true,
 
     items: [{
         xtype: 'srm-sparkpoints-grid'

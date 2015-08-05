@@ -1,6 +1,6 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
     extend: 'Ext.panel.Panel',
-    xtype: 'srm-sparkpoints-sparkpointspanel',
+    xtype: 'srm-sparkpoints-sparkpointpanel',
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Form',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies',
@@ -10,8 +10,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
 
     title: 'Selected Sparkpoint: K.CC.1',
 
+    disabled: true,
     scrollable: 'y',
     bodyPadding: 10,
+
+    stateful: true,
+    stateId: 'srm-sparkpoints-sparkpointpanel',
 
     items: [{
         xtype: 'srm-sparkpoints-sparkpointform'

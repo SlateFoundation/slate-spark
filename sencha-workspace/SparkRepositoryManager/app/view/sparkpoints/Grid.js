@@ -37,6 +37,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
             toggleGroup: 'show',
             text: 'Unmapped'
         }]
+    },{
+        dock: 'bottom',
+
+        xtype: 'toolbar',
+        items: [{
+            xtype: 'button',
+            text: 'New Sparkpoint',
+            action: 'create'
+        }]
     }],
 
     columns: [{
