@@ -50,8 +50,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
     	remoteSort: true,
     	sorters: 'code',
     	nodeParam: null,
-        autoSync: true,
-        defaultRootId: null
+        autoSync: true
     },
 
     rootVisible: false,
