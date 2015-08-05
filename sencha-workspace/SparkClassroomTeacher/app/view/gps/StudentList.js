@@ -2,6 +2,7 @@
 Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     extend: 'Ext.dataview.List',
     xtype: 'spark-gps-studentList',
+    cls: 'spark-gps-student-list',
 
     config: {
         title: null,

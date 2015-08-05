@@ -1,0 +1,23 @@
+.spark-titlebar {
+    background: $base-light-color no-repeat center;
+    background-size: cover;
+    border: none;
+    padding: 0;
+
+    > .x-toolbar-inner {
+        background-color: rgba(white, .8);
+        padding: 1.5em 7.5%;
+    }
+
+    .spark-course-selector,
+    .spark-course-selector input {
+        background: none;
+        border: none;
+        font-size: large;
+        padding: 0;
+    }
+
+    .spark-course-selector {
+        border-bottom: 1px solid #ccc;
+    }
+}

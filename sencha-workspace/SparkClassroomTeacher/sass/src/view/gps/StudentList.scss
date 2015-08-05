@@ -1,0 +1,34 @@
+.spark-gps-student-list-group {
+    border: 1px solid #ccc;
+    border-top: none;
+    box-shadow: 0 2px 5px rgba(black, .1);
+
+    & + & {
+        margin-left: 1em;
+    }
+}
+
+.spark-gps-student-list {
+    .x-title {
+        background-color: white;
+        border-bottom: 1px solid #999;
+        font-size: 15px;
+        font-weight: bold;
+        padding: .4em .8em;
+        text-align: left;
+
+        .count {
+            background-color: #a3a610;
+            border-radius: 1em;
+            color: white;
+            float: right;
+            font-size: smaller;
+            height: 1.625em;
+            line-height: 1.625;
+            margin-top: .125em;
+            min-width: 1.625em;
+            padding: 0 .5em;
+            text-align: center;
+        }
+    }
+}

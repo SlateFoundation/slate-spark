@@ -1,0 +1,25 @@
+.spark-navbar {
+    background-color: $base-color;
+    border: 1px solid $base-dark-color;
+    border-width: 1px 0;
+    padding: 0 .9em;
+
+    .x-toolbar-inner > .x-button {
+        background-color: $base-color;
+        border: 1px solid #98d7d9;
+        border-width: 0 1px;
+        color: white;
+        cursor: pointer;
+        font-size: medium;
+        font-weight: bold;
+        margin: 0 0 0 -1px;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.is-selected {
+            background-color: #98d7d9;
+            color: inherit;
+        }
+    }
+}

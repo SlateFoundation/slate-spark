@@ -2,11 +2,16 @@
 Ext.define('SparkClassroomTeacher.view.TabBar', {
     extend: 'Ext.tab.Bar',
     xtype: 'spark-tabbar',
+    cls: 'spark-tabbar',
 
     config: {
         layout: {
             type: 'hbox',
             pack: 'center'
+        },
+
+        defaults: {
+            flex: 1
         },
 
         items: [

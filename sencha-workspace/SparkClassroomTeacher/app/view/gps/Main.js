@@ -2,6 +2,7 @@
 Ext.define('SparkClassroomTeacher.view.gps.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-gps',
+    cls: 'spark-gps',
     requires: [
         'SparkClassroomTeacher.view.NavBar',
         'SparkClassroomTeacher.view.gps.StudentList'
@@ -14,56 +15,53 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
             },
             {
                 xtype: 'container',
-                layout: 'hbox',
+                layout: {
+                    type: 'hbox',
+                    align: 'start'
+                },
                 items: [
                     {
                         xtype: 'container',
-                        flex: 1,
+                        flex: 4,
+                        cls: 'spark-gps-student-list-group',
                         layout: 'hbox',
+                        defaults: {
+                            xtype: 'spark-gps-studentList',
+                            grouped: true,
+                            flex: 1
+                        },
                         items: [
                             {
-                                xtype: 'spark-gps-studentList',
-                                grouped: true,
                                 store: 'gps.Learn',
                                 itemId: 'learnList',
-                                flex: 1,
-                                title: 'Learn and Practice'
+                                title: 'Learn and Practice <span class="count">5</span>'
                             },
                             {
-                                xtype: 'spark-gps-studentList',
-                                grouped: true,
                                 store: 'gps.Conference',
                                 itemId: 'conferenceList',
-                                flex: 1,
-                                title: 'Conference'
+                                title: 'Conference <span class="count">9</span>'
                             },
                             {
-                                xtype: 'spark-gps-studentList',
-                                grouped: true,
                                 store: 'gps.Apply',
                                 itemId: 'applyList',
-                                flex: 1,
-                                title: 'Apply'
+                                title: 'Apply <span class="count">8</span>'
                             },
                             {
-                                xtype: 'spark-gps-studentList',
-                                grouped: true,
                                 store: 'gps.Assess',
                                 itemId: 'assessList',
-                                flex: 1,
-                                title: 'Assess'
+                                title: 'Assess <span class="count">8</span>'
                             }
                         ]
                     },
                     {
                         xtype: 'container',
-                        layout: 'vbox',
-                        width: '35%',
+                        cls: 'spark-gps-student-list-group',
+                        flex: 2,
                         items: [
                             {
                                 xtype: 'spark-gps-studentList',
                                 store: 'gps.Priorities',
-                                title: 'Priorities'
+                                title: 'Priorities <span class="count">23</span>'
                             },
                             {
                                 xtype: 'spark-gps-studentList',
