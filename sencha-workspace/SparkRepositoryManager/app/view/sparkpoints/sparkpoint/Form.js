@@ -28,10 +28,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     },{
         xtype: 'checkboxgroup',
         items: [{
-            boxLabel: 'Anchor',
-            name: 'anchor',
-            inputValue: true
-        },{
+        //     boxLabel: 'Anchor',
+        //     name: 'anchor',
+        //     inputValue: true
+        // },{
             boxLabel: 'Power',
             name: 'power',
             inputValue: true
