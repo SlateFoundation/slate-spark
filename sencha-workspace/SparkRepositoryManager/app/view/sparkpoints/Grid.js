@@ -51,14 +51,19 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     columns: [{
         xtype: 'srm-sparkpointcolumn'
     },{
+        flex: 1,
+
         text: 'Title',
-        dataIndex: 'teacher_title',
-        flex: 1
+        dataIndex: 'teacher_title'
     },{
-        text: 'Previous?',
-        dataIndex: 'M'
+        width: 50,
+
+        text: '<-',
+        dataIndex: 'dependencies_count'
     },{
-        text: 'Forward?',
-        dataIndex: 'M'
+        width: 50,
+
+        text: '->',
+        dataIndex: 'dependents_count'
     }]
 });

@@ -1,25 +1,39 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.Sparkpoint', {
-    extend: 'Jarvus.model.Postgrest',
+    extend: 'Ext.data.Model',
+    requires: [
+        'SparkRepositoryManager.proxy.Sparkpoints'
+    ],
+
 
     tooltipTpl: [
-        '<p>The full description of <em>{Code}</em> can be displayed here <strong>with arbitrary markup</strong></p>',
-        '<tpl if="Description">',
-            '<p>{Description}</p>',
+        '<h1>{abbreviation}</h1>',
+        '<h2>{code}</h2>',
+        '<tpl if="teacher_title">',
+            '<strong>{teacher_title}</strong>',
+        '</tpl>',
+        '<tpl if="teacher_description">',
+            '<p>{teacher_description}</p>',
         '</tpl>'
     ],
 
-    tableUrl: '/mock-sparkpoints',
+    proxy: {
+        type: 'spark-sparkpoints',
+        url: '/spark-repo/sparkpoints'
+    },
 
     fields: [
         'id',
         'content_area_id',
+        { name: 'abbreviation', defaultValue: '' },
         { name: 'code', defaultValue: '' },
-        { name: 'power', defaultValue: false },
         { name: 'teacher_title', defaultValue: '' },
         { name: 'student_title', defaultValue: '' },
         { name: 'teacher_description', defaultValue: '' },
-        { name: 'student_description', defaultValue: '' }
+        { name: 'student_description', defaultValue: '' },
+        // { name: 'power', defaultValue: false },
+        { name: 'dependencies_count', persist: false },
+        { name: 'dependents_count', persist: false }
     ],
 
     validators: {

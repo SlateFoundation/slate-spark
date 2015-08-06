@@ -3,7 +3,6 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     xtype: 'srm-sparkpointcolumn',
 
     text: 'Sparkpoint',
-    dataIndex: 'code',
     renderer: function(value, metaData, record) {
         /*
          * TODO: Note: I added the "if (metaData)" because adding nodes to tree store caused a "Cannot read property 'tdAttr' of null"
@@ -17,6 +16,6 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
             });
         }
 
-        return value;
+        return record.get('abbreviation') || record.get('code');
     }
 });

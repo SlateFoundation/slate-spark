@@ -66,9 +66,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
             }
         },
         {
-            width: 32,
-            align: 'right',
-            dataIndex: 'sparkpoints_count'
+            width: 60,
+
+            xtype: 'numbercolumn',
+            dataIndex: 'sparkpoints_count',
+            format: '0,000',
+            align: 'right'
         }
     ],
 
