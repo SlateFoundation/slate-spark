@@ -2,8 +2,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     extend: 'Ext.form.Panel',
     xtype: 'srm-sparkpoints-sparkpointform',
     requires: [
+        'Ext.tab.Panel',
         'Ext.form.CheckboxGroup',
-        'Ext.form.FieldSet',
         'Ext.form.field.Text',
         'Ext.form.field.TextArea',
         'Ext.form.field.Checkbox',
@@ -20,54 +20,63 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     items: [{
         xtype: 'textfield',
         fieldLabel: 'Code',
+        labelWidth: 50,
         name: 'code',
         allowBlank: false
     },{
-        xtype: 'srm-field-levelslider',
-        fieldLabel: 'Target Level Range'
+        xtype: 'textfield',
+        fieldLabel: 'Abbr',
+        labelWidth: 50,
+        name: 'abbreviation',
+        allowBlank: false
+    // },{
+    //     xtype: 'srm-field-levelslider',
+    //     fieldLabel: 'Target Level Range'
+    // },{
+    //     xtype: 'checkboxgroup',
+    //     items: [{
+    //         boxLabel: 'Anchor',
+    //         name: 'anchor',
+    //         inputValue: true
+    //     },{
+    //         boxLabel: 'Power',
+    //         name: 'power',
+    //         inputValue: true
+    //     }]
     },{
-        xtype: 'checkboxgroup',
-        items: [{
-        //     boxLabel: 'Anchor',
-        //     name: 'anchor',
-        //     inputValue: true
-        // },{
-            boxLabel: 'Power',
-            name: 'power',
-            inputValue: true
-        }]
-    },{
-        xtype: 'fieldset',
-        title: 'For teachers',
+        xtype: 'tabpanel',
         defaults: {
-            anchor: '100%',
-            labelAlign: 'top'
+            bodyPadding: 10,
+            tabConfig: {
+                flex: 1
+            },
+            layout: 'anchor',
+            defaults: {
+                xtype: 'textarea',
+                anchor: '100%',
+                labelAlign: 'top',
+                height: 200
+            }
         },
         items: [{
-            xtype: 'textfield',
-            fieldLabel: 'Title',
-            name: 'teacher_title',
-            allowBlank: false
+            title: 'For teachers',
+            items: [{
+                fieldLabel: 'Teacher Title',
+                name: 'teacher_title',
+                allowBlank: false
+            },{
+                fieldLabel: 'Teacher Description',
+                name: 'teacher_description'
+            }]
         },{
-            xtype: 'textarea',
-            fieldLabel: 'Description',
-            name: 'teacher_description'
-        }]
-    },{
-        xtype: 'fieldset',
-        title: 'For students',
-        defaults: {
-            anchor: '100%',
-            labelAlign: 'top'
-        },
-        items: [{
-            xtype: 'textfield',
-            fieldLabel: 'Title',
-            name: 'student_title'
-        },{
-            xtype: 'textarea',
-            fieldLabel: 'Description',
-            name: 'student_description'
+            title: 'For students',
+            items: [{
+                fieldLabel: 'Student Title',
+                name: 'student_title'
+            },{
+                fieldLabel: 'Student Description',
+                name: 'student_description'
+            }]
         }]
     // },{
     // TODO: move to own panel below grids?
@@ -78,19 +87,20 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     }],
 
     dockedItems: [{
-        dock: 'bottom',
+        dock: 'top',
 
         xtype: 'toolbar',
+        defaults: {
+            xtype: 'button',
+            flex: 1,
+            disabled: true
+        },
         items: [{
-            xtype: 'button',
             text: 'Discard changes',
-            itemId: 'discard',
-            disabled: true
+            itemId: 'discard'
         },{
-            xtype: 'button',
             text: 'Save changes',
-            itemId: 'save',
-            disabled: true
+            itemId: 'save'
         }]
     }]
 });

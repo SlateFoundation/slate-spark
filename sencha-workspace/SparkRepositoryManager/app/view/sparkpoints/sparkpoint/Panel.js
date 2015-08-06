@@ -5,7 +5,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Form',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents',
-        'SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements'
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements',
+
+        'Ext.tab.Panel'
     ],
 
     title: 'Selected Sparkpoint: K.CC.1',
@@ -24,10 +26,18 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
     items: [{
         xtype: 'srm-sparkpoints-sparkpointform'
     },{
-        xtype: 'srm-sparkpoints-sparkpointdependencies'
-    },{
-        xtype: 'srm-sparkpoints-sparkpointdependents'
-    },{
-        xtype: 'srm-sparkpoints-sparkpointimplements'
+        xtype: 'tabpanel',
+        defaults: {
+            tabConfig: {
+                flex: 1
+            }
+        },
+        items: [{
+            xtype: 'srm-sparkpoints-sparkpointdependencies'
+        },{
+            xtype: 'srm-sparkpoints-sparkpointdependents'
+        },{
+            xtype: 'srm-sparkpoints-sparkpointimplements'
+        }]
     }]
 });
