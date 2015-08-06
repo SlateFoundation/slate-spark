@@ -6,7 +6,7 @@
 
     .x-toolbar-inner > .x-button {
         background-color: $base-color;
-        border: 1px solid #98d7d9;
+        border: 1px solid $base-light-color;
         border-width: 0 1px;
         color: white;
         cursor: pointer;
@@ -18,7 +18,8 @@
         &:focus,
         &:active,
         &.is-selected {
-            background-color: #98d7d9;
+            background-color: $base-light-color;
+            border-color: $base-color;
             color: inherit;
         }
     }
