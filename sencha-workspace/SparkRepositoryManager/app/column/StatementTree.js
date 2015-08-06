@@ -22,8 +22,7 @@ Ext.define('SparkRepositoryManager.column.StatementTree', {
             '<span class="{parent.childCls} {parent.elbowCls} ', // changed img to span
             '{parent.elbowCls}-<tpl if=".">line<tpl else>empty</tpl>" role="presentation"></span>',
         '</tpl>',
-        '<span class="{childCls} {elbowCls} {elbowCls}', // changed img to span
-            '<tpl if="isLast">-end</tpl><tpl if="expandable">-plus {expanderCls}</tpl>" role="presentation"></span>',
+        '<span class="{childCls} {elbowCls}" role="presentation"></span>',
         // '<tpl if="checked !== null">',
         //     '<input type="button" {ariaCellCheckboxAttr}',
         //         ' class="{childCls} {checkboxCls}<tpl if="checked"> {checkboxCls}-checked</tpl>"/>',
