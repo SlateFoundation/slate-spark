@@ -1,4 +1,4 @@
-.spark-gps-student-list-group {
+.spark-gps-studentlist-group {
     border: 1px solid #ccc;
     border-top: none;
     box-shadow: 0 2px 5px rgba(black, .1);
@@ -8,7 +8,7 @@
     }
 }
 
-.spark-gps-student-list {
+.spark-gps-studentlist {
     .x-title {
         background-color: white;
         border-bottom: 1px solid #999;
@@ -31,4 +31,33 @@
             text-align: center;
         }
     }
+
+    .x-horizontal > & + & {
+        border-left: 1px solid #ccc;
+    }
+}
+
+.studentlist-item-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.studentlist-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.studentlist-grade {
+    color: $alert-color;
+    flex: 1 0 auto;
+    margin-left: .5em;
+}
+
+.studentlist-timer {
+    color: $highlight-color;
+    font-size: smaller;
+    margin-left: .5em;
 }

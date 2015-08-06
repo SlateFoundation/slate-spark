@@ -1,9 +1,5 @@
 .x-list {
     background-color: white;
-
-    + .x-list {
-        border-left: 1px solid #ccc;
-    }
 }
 
 .x-list-header {

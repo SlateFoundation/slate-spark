@@ -25,3 +25,10 @@ body {
     padding: 0;
     width: 1px; 
 }
+
+// perhaps should be in the main.css for the site?
+.x-innerhtml {
+    a {
+        color: $base-color;
+    }
+}
