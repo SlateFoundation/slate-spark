@@ -1,25 +1,26 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.ContentArea', {
-    extend: 'Jarvus.model.Postgrest',
+    extend: 'Ext.data.Model',
     requires: [
-        'SparkRepositoryManager.proxy.ContentAreas'
+        'SparkRepositoryManager.proxy.API'
     ],
 
 
-    proxy: 'spark-contentareas',
-    tableUrl: '/content_areas',
+    proxy: {
+        type: 'spark-api',
+        url: '/sparkpoints/content-areas'
+    },
+
     fields: [
-        {
-            name: 'title'
-        },
-        {
-            name: 'leaf',
-            convert: function(v, r) {
-                return !r.get('root');
-            }
-        },
+        'id',
+        { name: 'code', defaultValue: '' },
+        { name: 'teacher_title', defaultValue: '' },
+        { name: 'student_title', defaultValue: '' },
+
+        // override tree metafields with custom configs
         {
             name: 'parentId',
+            mapping: 'parent_id',
             persist: false
         }
     ],

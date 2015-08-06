@@ -46,18 +46,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
     }],
 
     // treepanel config
-    store: {
-        xclass: 'Ext.data.TreeStore',
-        model: 'SparkRepositoryManager.model.ContentArea',
-        proxy: undefined, // force store to use model's proxy
-    	remoteSort: true,
-    	sorters: 'code',
-    	nodeParam: null,
-        autoSync: true
-    },
+    store: 'sparkpoints.ContentAreas',
 
     rootVisible: false,
-    singleExpand: true,
     hideHeaders: true,
 
     columns: [
@@ -65,26 +56,29 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
             flex: 1,
 
             xtype: 'treecolumn',
-            dataIndex: 'title',
-            editor: {
-                xtype: 'textfield',
-                allowBlank: false
+            dataIndex: 'teacher_title',
+            // editor: {
+            //     xtype: 'textfield',
+            //     allowBlank: false
+            // },
+            renderer: function(v, metaData, record) {
+                return v || record.get('student_title');
             }
-        // },
-        // {
-        //     width: 32,
-        //     align: 'right',
-        //     dataIndex: 'Total'
+        },
+        {
+            width: 32,
+            align: 'right',
+            dataIndex: 'sparkpoints_count'
         }
     ],
 
-    selModel: {
-        selType: 'cellmodel'
-    },
+    // selModel: {
+    //     selType: 'cellmodel'
+    // },
 
-    plugins: [{
-        pluginId: 'cellediting',
-        ptype: 'cellediting',
-        clicksToEdit: 2
-    }]
+    // plugins: [{
+    //     pluginId: 'cellediting',
+    //     ptype: 'cellediting',
+    //     clicksToEdit: 2
+    // }]
 });

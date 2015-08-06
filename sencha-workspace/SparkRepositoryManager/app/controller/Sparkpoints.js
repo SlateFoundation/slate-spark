@@ -6,6 +6,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
 
     stores: [
+        'sparkpoints.ContentAreas',
         'sparkpoints.Sparkpoints',
         'sparkpoints.Dependencies',
         'sparkpoints.Dependents',
@@ -39,7 +40,6 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         control: {
             contentAreasTable: {
-                boxready: 'onContentAreasTableReady',
                 select: 'onContentAreaSelect'
             },
             'srm-sparkpoints-contentareastable button[action=create]': {
@@ -73,14 +73,6 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-
-    onContentAreasTableReady: function(contentAreasTable) {
-        var store = contentAreasTable.getStore();
-
-        if (!store.isLoaded() || !store.isLoading()) {
-            store.load();
-        }
-    },
 
     onCreateContentAreaClick: function() {
         var contentAreasTable = this.getContentAreasTable();
