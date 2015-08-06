@@ -69,6 +69,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             'srm-sparkpoints-standardstable jarvus-searchfield': {
                 change: 'onStandardsSearchChange'
+            },
+            standardsTable: {
+                select: 'onStandardSelect'
             }
         }
     },
@@ -89,6 +92,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     onContentAreaSelect: function(contentAreasTable, contentArea) {
         this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
         this.getContentAreaPanel().enable();
+        contentArea.expand();
     },
 
     onCreateSparkpointClick: function() {
@@ -205,5 +209,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
 
         Ext.resumeLayouts(true);
+    },
+
+    onStandardSelect: function(standardsTable, standard) {
+        standard.expand();
     }
 });
