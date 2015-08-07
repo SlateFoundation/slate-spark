@@ -23,6 +23,24 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
     stateful: true,
     stateId: 'srm-sparkpoints-sparkpointpanel',
 
+    dockedItems: [{
+        dock: 'top',
+
+        xtype: 'toolbar',
+        defaults: {
+            xtype: 'button',
+            flex: 1,
+            disabled: true
+        },
+        items: [{
+            text: 'Discard changes',
+            itemId: 'discard'
+        },{
+            text: 'Save changes',
+            itemId: 'save'
+        }]
+    }],
+
     items: [{
         xtype: 'srm-sparkpoints-sparkpointform'
     },{

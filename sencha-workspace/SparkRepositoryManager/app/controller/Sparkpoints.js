@@ -22,9 +22,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             contentAreaPanel: 'srm-sparkpoints-contentareapanel',
             sparkpointsTable: 'srm-sparkpoints-grid',
             sparkpointPanel: 'srm-sparkpoints-sparkpointpanel',
+            sparkpointDiscardButton: 'srm-sparkpoints-sparkpointpanel button#discard',
+            sparkpointSaveButton: 'srm-sparkpoints-sparkpointpanel button#save',
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
-            sparkpointDiscardButton: 'srm-sparkpoints-sparkpointform button#discard',
-            sparkpointSaveButton: 'srm-sparkpoints-sparkpointform button#save',
 
             documentsTable: 'srm-sparkpoints-documentstable',
             standardsTable: 'srm-sparkpoints-standardstable',

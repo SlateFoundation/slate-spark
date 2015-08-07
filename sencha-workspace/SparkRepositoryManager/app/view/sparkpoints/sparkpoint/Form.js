@@ -44,6 +44,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     //         inputValue: true
     //     }]
     },{
+        // TODO: move to own panel below grids maybe?
+        xtype: 'textarea',
+        fieldLabel: 'Editor\'s Memo',
+        labelAlign: 'top',
+        name: 'memo'
+    },{
         xtype: 'tabpanel',
         defaults: {
             bodyPadding: 10,
@@ -77,30 +83,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
                 fieldLabel: 'Student Description',
                 name: 'student_description'
             }]
-        }]
-    // },{
-    // TODO: move to own panel below grids?
-    //     xtype: 'textarea',
-    //     fieldLabel: 'Editor\'s Memo',
-    //     labelAlign: 'top',
-    //     name: 'memo'
-    }],
-
-    dockedItems: [{
-        dock: 'top',
-
-        xtype: 'toolbar',
-        defaults: {
-            xtype: 'button',
-            flex: 1,
-            disabled: true
-        },
-        items: [{
-            text: 'Discard changes',
-            itemId: 'discard'
-        },{
-            text: 'Save changes',
-            itemId: 'save'
         }]
     }]
 });
