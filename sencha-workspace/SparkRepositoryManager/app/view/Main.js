@@ -17,6 +17,10 @@ Ext.define('SparkRepositoryManager.view.Main', {
     autoEl: 'main',
     componentCls: 'app-main',
 
+    tabBar: {
+        cls: 'spark-main-tabbar'
+    },
+
     items: [
         {
             itemId: 'learn',
