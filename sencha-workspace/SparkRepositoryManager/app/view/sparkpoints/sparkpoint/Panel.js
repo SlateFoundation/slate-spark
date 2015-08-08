@@ -29,13 +29,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         xtype: 'toolbar',
         defaults: {
             xtype: 'button',
-            flex: 1,
             disabled: true
         },
         items: [{
+            glyph: 0xf00d, // fa-times
             text: 'Discard changes',
             itemId: 'discard'
-        },{
+        },'->',{
+            glyph: 0xf00c, // fa-check
             text: 'Save changes',
             itemId: 'save'
         }]
