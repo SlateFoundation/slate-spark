@@ -1,11 +1,12 @@
-$tab-base-color:            $neutral-color !default;
-$tab-base-color-active:     $base-color !default;
-$tab-base-color-disabled:   lighten($tab-base-color, 8) !default;
-$tab-base-color-over:       lighten($tab-base-color, 4) !default;
+$tab-base-color:            #00a1b1 !default;
+$tab-base-color-active:     #9ad8da !default;
+// $tab-base-color-disabled:   lighten($tab-base-color, 8) !default;
+// $tab-base-color-over:       lighten($tab-base-color, 4) !default;
 
-$tab-border-color:          $tab-base-color !default;
+$tab-border-color:          $tab-base-color-active !default;
 $tab-border-color-active:   $tab-base-color-active !default;
-$tab-font-size:				21px !default;
-$tab-font-weight:			$font-weight !default;
-$tab-line-height:			24px !default;
-$tab-padding:				floor((50px - $tab-line-height) / 2) !default;
+$tab-border-width:          0 1px 0 0;
+
+$tab-color-active:          $color !default;
+
+$tab-margin: 0;

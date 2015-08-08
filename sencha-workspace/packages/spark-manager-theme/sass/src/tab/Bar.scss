@@ -1,0 +1,18 @@
+.x-docked-top {
+    // counteract default 0 that also has !important
+    border-bottom-width: 1px !important;
+}
+
+.spark-main-tabbar {
+    background-color: darken($tab-base-color, 10);
+
+    .x-tab-default-top {
+        background-color: darken($tab-base-color, 10);
+    }
+
+    .x-tab-inner-default {
+        font-size: 1.125em;
+        font-weight: normal;
+        line-height: 1.125;
+    }
+}

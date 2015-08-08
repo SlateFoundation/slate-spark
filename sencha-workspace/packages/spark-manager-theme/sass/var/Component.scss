@@ -1,6 +1,5 @@
-//$base-color: #db241c !default; // not sure why this isn't working with !default
-$base-color: #db241c;
+$base-color:            #00a1b1;
+$base-color-dark:       darken($base-color, 12) !default;
 $body-background-color: #f5f5f5 !default;
-$neutral-color: #3d3d3d !default;
-
-$font-weight: 300 !default;
+$neutral-color:         #ccc !default;
+$color:                 #333 !default;
