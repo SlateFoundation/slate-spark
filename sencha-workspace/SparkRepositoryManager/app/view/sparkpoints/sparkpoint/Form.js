@@ -61,7 +61,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
                 xtype: 'textarea',
                 anchor: '100%',
                 labelAlign: 'top',
-                height: 200
+                height: 100
             }
         },
         items: [{
