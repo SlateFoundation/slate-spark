@@ -7,14 +7,20 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
 
 
     tooltipTpl: [
-        '<h1>{abbreviation}</h1>',
-        '<h2>{code}</h2>',
-        '<tpl if="teacher_title">',
-            '<strong>{teacher_title}</strong>',
-        '</tpl>',
-        '<tpl if="teacher_description">',
-            '<p>{teacher_description}</p>',
-        '</tpl>'
+        '<dl>',
+            '<tpl if="abbreviation">',
+                '<dt>Abbreviation</dt>',
+                '<dt>{abbreviation}</dt>',
+            '</tpl>',
+            '<tpl if="teacher_title">',
+                '<dt>Teacher Title</dt>',
+                '<dt>{teacher_title}</dt>',
+            '</tpl>',
+            '<tpl if="teacher_description">',
+                '<dt>Teacher Description</dt>',
+                '<dt>{teacher_description}</dt>',
+            '</tpl>',
+        '</dl>'
     ],
 
     proxy: {

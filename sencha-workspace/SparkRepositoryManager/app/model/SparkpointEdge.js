@@ -8,6 +8,8 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
         'target_sparkpoint_id',
         'source_sparkpoint_id',
         'rel_type',
-        'metadata'
+        'metadata',
+        'other_sparkpoint',
+        { name: 'other_sparkpoint_code', mapping: 'other_sparkpoint.code' }
     ]
 });

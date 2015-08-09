@@ -27,12 +27,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     hideHeaders: true,
 
     columns: [{
-        xtype: 'treecolumn', // can't use sparkpointcolumn directly because we need a treecolumn here
-        flex: 5,
-        dataIndex: 'source_sparkpoint_id',
-        // renderer: function() {
-        //     return SparkRepositoryManager.column.Sparkpoint.prototype.renderer.apply(this, arguments);
-        // }
+        xtype: 'srm-treesparkpointcolumn',
+        flex: 1
     },{
         xtype: 'actioncolumn',
         action: 'delete',

@@ -7,6 +7,9 @@ Ext.define('SparkRepositoryManager.store.sparkpoints.Edges', {
 	proxy: {
 		type: 'spark-api',
 		url: '/spark-repo/sparkpoint-edges',
+		extraParams: {
+			include: 'other_sparkpoint'
+		},
 		reader: {
 			type: 'json',
 			rootProperty: 'sparkpoints_edges'

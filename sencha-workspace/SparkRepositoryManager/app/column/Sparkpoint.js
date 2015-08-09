@@ -1,9 +1,18 @@
 Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     extend: 'Ext.grid.column.Column',
     xtype: 'srm-sparkpointcolumn',
+    requires: [
+        'SparkRepositoryManager.model.Sparkpoint'
+    ],
 
     text: 'Sparkpoint',
     renderer: function(value, metaData, record) {
+        var sparkpointData = (record instanceof SparkRepositoryManager.model.Sparkpoint) ? record.getData() : record.get('other_sparkpoint');
+        debugger;
+        if (!sparkpointData) {
+            return '[Unavailable]';
+        }
+
         /*
          * TODO: Note: I added the "if (metaData)" because adding nodes to tree store caused a "Cannot read property 'tdAttr' of null"
          * error, but adding nodes manually may not be something we do as the app develops further.  Either way, it can't hurt.
@@ -11,11 +20,11 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
          */
         if (metaData) {
             metaData.tdAttr += Ext.util.Format.attributes({
-                'data-qtitle': value,
-                'data-qtip': Ext.XTemplate.getTpl(record, 'tooltipTpl').apply(record.getData())
+                'data-qtitle': sparkpointData.code,
+                'data-qtip': Ext.XTemplate.getTpl(SparkRepositoryManager.model.Sparkpoint.prototype, 'tooltipTpl').apply(sparkpointData)
             });
         }
 
-        return record.get('abbreviation') || record.get('code');
+        return sparkpointData.abbreviation || sparkpointData.code;
     }
 });
