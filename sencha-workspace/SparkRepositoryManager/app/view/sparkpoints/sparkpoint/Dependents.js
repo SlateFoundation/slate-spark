@@ -2,18 +2,24 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     extend: 'Ext.tree.Panel',
     xtype: 'srm-sparkpoints-sparkpointdependents',
-
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController',
-        'SparkRepositoryManager.store.sparkpoints.Dependents',
-        'SparkRepositoryManager.column.Sparkpoint'
+        // 'SparkRepositoryManager.store.sparkpoints.Dependents',
+        'SparkRepositoryManager.column.Sparkpoint',
+        'SparkRepositoryManager.model.SparkpointEdge'
     ],
-
-    title: 'Dependents',
 
     controller: 'srm-sparkpoints-sparkpointdependents',
 
-    store: 'sparkpoints.Dependents',
+    title: 'Dependents',
+
+    store: {
+        type: 'tree',
+        model: 'SparkRepositoryManager.model.SparkpointEdge',
+        root: {
+            children: []
+        }
+    },
 
     rootVisible: false,
     useArrows: true,
@@ -23,10 +29,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     columns: [{
         xtype: 'treecolumn', // can't use sparkpointcolumn directly because we need a treecolumn here
         flex: 5,
-        dataIndex: 'code',
-        renderer: function() {
-            return SparkRepositoryManager.column.Sparkpoint.prototype.renderer.apply(this, arguments);
-        }
+        dataIndex: 'source_sparkpoint_id',
+        // renderer: function() {
+        //     return SparkRepositoryManager.column.Sparkpoint.prototype.renderer.apply(this, arguments);
+        // }
     },{
         xtype: 'actioncolumn',
         action: 'delete',

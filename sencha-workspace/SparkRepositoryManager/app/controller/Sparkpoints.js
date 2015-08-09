@@ -8,8 +8,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     stores: [
         'sparkpoints.ContentAreas',
         'sparkpoints.Sparkpoints',
-        'sparkpoints.Dependencies',
-        'sparkpoints.Dependents',
+        'sparkpoints.Edges',
         'StandardDocuments',
         'DocumentStandards'
     ],
@@ -25,6 +24,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointDiscardButton: 'srm-sparkpoints-sparkpointpanel button#discard',
             sparkpointSaveButton: 'srm-sparkpoints-sparkpointpanel button#save',
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
+            dependenciesTable: 'srm-sparkpoints-sparkpointdependencies',
+            dependentsTable: 'srm-sparkpoints-sparkpointdependents',
 
             documentsTable: 'srm-sparkpoints-documentstable',
             standardsTable: 'srm-sparkpoints-standardstable',
@@ -34,6 +35,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             store: {
                 '#sparkpoints.Sparkpoints': {
                     update: 'onSparkpointUpdate'
+                },
+                '#sparkpoints.Edges': {
+                    load: 'onSparkpointEdgesLoad'
                 }
             }
         },
@@ -115,9 +119,55 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onSparkpointSelect: function(sparkpointsTable, sparkpoint) {
+    onSparkpointSelect: function(selModel, sparkpoint) {
         this.getSparkpointForm().loadRecord(sparkpoint);
         this.getSparkpointPanel().enable();
+
+        this.getDependenciesTable().setRootNode({
+            expanded: true,
+            source_sparkpoint: sparkpoint
+        });
+
+        this.getDependentsTable().setRootNode({
+            expanded: true,
+            target_sparkpoint: sparkpoint
+        });
+
+        this.getSparkpointsEdgesStore().filter([{
+            property: 'sparkpoint_id',
+            value: sparkpoint.getId()
+        }]);
+    },
+
+    onSparkpointEdgesLoad: function(edgesStore) {
+        var dependenciesRootNode = this.getDependenciesTable().getRootNode(),
+            dependentsRootNode = this.getDependentsTable().getRootNode(),
+            sparkpoint = dependenciesRootNode.get('source_sparkpoint'),
+            sparkpointId = sparkpoint.getId(),
+            dependenciesNodes = [],
+            dependentsNodes = [];
+
+        if (!sparkpoint) {
+            return;
+        }
+
+        edgesStore.each(function(edge) {
+            var sourceId = edge.get('source_sparkpoint_id'),
+                targetId = edge.get('target_sparkpoint_id');
+
+            if (edge.get('rel_type') != 'dependency') {
+                return;
+            }
+
+            if (sparkpointId == sourceId) {
+                dependenciesNodes.push(Ext.applyIf({leaf: true}, edge.getData()));
+            } else if (sparkpointId == targetId) {
+                dependentsNodes.push(Ext.applyIf({leaf: true}, edge.getData()));
+            }
+        });
+
+        dependenciesRootNode.appendChild(dependenciesNodes);
+        dependentsRootNode.appendChild(dependentsNodes);
     },
 
     onSparkpointDirtyChange: function(sparkpointForm, dirty) {
