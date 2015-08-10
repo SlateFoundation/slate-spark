@@ -5,7 +5,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Form',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependencies',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents',
-        'SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements',
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments',
 
         'Ext.tab.Panel'
     ],
@@ -56,7 +56,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         },{
             xtype: 'srm-sparkpoints-sparkpointdependents'
         },{
-            xtype: 'srm-sparkpoints-sparkpointimplements'
+            xtype: 'srm-sparkpoints-sparkpointalignments'
         }]
     }]
 });

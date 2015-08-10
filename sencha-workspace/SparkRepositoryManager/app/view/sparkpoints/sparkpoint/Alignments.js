@@ -1,16 +1,16 @@
-Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Implements', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
     extend: 'Ext.grid.Panel',
-    xtype: 'srm-sparkpoints-sparkpointimplements',
+    xtype: 'srm-sparkpoints-sparkpointalignments',
 
     requires: [
-        'SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsController',
+        'SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsController',
         'SparkRepositoryManager.model.Standard',
         'SparkRepositoryManager.column.Standard'
     ],
 
-    title: 'Implements',
+    title: 'Alignments',
 
-    controller: 'srm-sparkpoints-sparkpointimplements',
+    controller: 'srm-sparkpoints-sparkpointalignments',
 
     store:{
         model: 'SparkRepositoryManager.model.Standard',

@@ -2,9 +2,9 @@
  * TODO:
  * - Implement add UI here
  */
-Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsController', {
+Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.srm-sparkpoints-sparkpointimplements',
+    alias: 'controller.srm-sparkpoints-sparkpointalignments',
 
     control: {
         '#': {
@@ -24,7 +24,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.ImplementsControl
     onDeleteClick: function(grid,rec) {
         var me = this;
 
-        Ext.Msg.confirm('Deleting Implement', 'Are you sure you want to delete this implement?', function(btn) {
+        Ext.Msg.confirm('Deleting Alignment', 'Are you sure you want to delete this alignment?', function(btn) {
             if (btn == 'yes') {
                 rec.erase();
                 me.filterCombo();
