@@ -28,6 +28,23 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             autoCreate: true,
 
             xtype: 'spark-assign-points-tabbar'
+        },
+        sparkTabBar: 'viewport spark-tabbar'
+    },
+    
+    routes: {
+        ':section': {
+            action: 'showSection',
+            conditions: {
+                ':section': '(.+[^\/])'
+            }
+        },
+        ':section/:view': {
+            action: 'showSectionComponent',
+            conditions: {
+                ':section': '(.+[^\/])',
+                ':view': '(.+[^\/])'
+            }
         }
     },
 
@@ -62,10 +79,11 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         return tab;
     },
 
-    updateActiveTab: function(newTab, oldTab) {
+    updateActiveTab: function (newTab, oldTab) {
         //initial load contains no tab
         if (oldTab) {
             oldTab.hide();
+            oldTab.fireEvent('sectionclose', oldTab);
         }
 
         if(Ext.Viewport.down(newTab)) {
@@ -77,5 +95,33 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     onTabChange: function(tabBar, newTab, oldTab) {
         this.setActiveTab(newTab.config.section);
+    },
+    
+    showSection: function (section) {
+        var tabBar = this.getSparkTabBar(),
+            tab = tabBar.down('[section='+section+']');
+
+        tabBar.setActiveTab(tab);
+    },
+    
+    showSectionComponent: function(section, view) {
+        var me = this,
+            sectionCmp, tabBar;
+        
+        me.showSection(section);
+        
+        switch(section) {
+            case 'work':
+                sectionCmp = me.getWorkMainCt();
+                break;
+            case 'competencies':
+                sectionCmp = me.getCompetenciesMainCt();
+                break;
+            case 'assign':
+                sectionCmp = me.getAssignMainTabbar();
+                break;
+        }
+        
+        sectionCmp.fireEvent('viewselected', view);
     }
 });

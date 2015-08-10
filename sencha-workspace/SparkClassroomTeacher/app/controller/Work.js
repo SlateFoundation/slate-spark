@@ -42,13 +42,40 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             autoCreate: true,
 
             xtype: 'spark-teacher-work-assess'
-        }
+        },
+        navTabBar: 'spark-work tabbar[tabType=mainTab]'
     },
 
     control: {
-        'spark-work tabbar[tabType=mainTab]': {
+        navTabBar: {
             activetabchange: 'onTabChange'
+        },
+        'spark-work': {
+            sectionclose: 'onSectionClose',
+            show: 'onSparkWorkActivate',
+            added: 'onSparkWorkActivate',
+            viewselected: 'onViewSelected'
+        },
+        learnCt: {
+            show: 'onLearnCtActivate',
+            added: 'onLearnCtActivate'
+        },
+        conferenceCt: {
+            show: 'onConferenceCtActivate',
+            added: 'onConferenceCtActivate'
+        },
+        applyCt: {
+            show: 'onApplyCtActivate',
+            added: 'onApplyCtActivate'
+        },
+        assessCt: {
+            show: 'onAssessCtActivate',
+            added: 'onAssessCtActivate'
         }
+    },
+    
+    onTabChange: function(tabBar, newTab, oldTab) {
+        this.setActiveTab(newTab.config.section);
     },
 
     applyActiveTab: function(tab) {
@@ -91,8 +118,44 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             Ext.Viewport.add(newTab);
         }
     },
-
-    onTabChange: function(tabBar, newTab, oldTab) {
-        this.setActiveTab(newTab.config.section);
+    
+    onViewSelected: function(view) {
+        var tabBar = this.getNavTabBar();
+        
+        tabBar.setActiveTab(tabBar.down('[section='+view+']'));  
+    },
+    
+    onSparkWorkActivate: function () {
+        var tab = this.getActiveTab();
+        
+        if (tab) {
+            tab.show();
+        } else {
+            this.redirectTo('work');
+        }
+    },
+    
+    onLearnCtActivate: function () {
+        this.redirectTo('work/learn');
+    },
+    
+    onConferenceCtActivate: function () {
+        this.redirectTo('work/conference');
+    },
+    
+    onApplyCtActivate: function () {
+        this.redirectTo('work/apply');
+    },
+    
+    onAssessCtActivate: function () {
+        this.redirectTo('work/assess');
+    },
+    
+    onSectionClose: function (tab) {
+        var tab = this.getActiveTab();
+        
+        if (tab) {
+            tab.hide();
+        }
     }
 });

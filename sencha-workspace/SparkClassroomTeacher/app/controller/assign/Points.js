@@ -57,7 +57,31 @@ Ext.define('SparkClassroomTeacher.controller.assign.Points', {
 
     control: {
         'spark-assign-points-tabbar': {
-            activetabchange: 'onTabChange'
+            activetabchange: 'onTabChange',
+            sectionclose: 'onSectionClose',
+            show: 'onAssignPointsActivate',
+            added: 'onAssignPointsActivate',
+            viewselected: 'onViewSelected'
+        },
+        learnCt: {
+            added: 'onLearnCtShow',
+            show: 'onLearnCtShow'
+        },
+        conferenceResourceGrid: {
+            added: 'onConferenceResourceGridShow',
+            show: 'onConferenceResourceGridShow'
+        },
+        conferenceQuestionGrid: {
+            added: 'onConferenceQuestionGridShow',
+            show: 'onConferenceQuestionGridShow'
+        },
+        applyCt: {
+            added: 'onApplyCtShow',
+            show: 'onApplyCtShow'
+        },
+        assessCt: {
+            added: 'onAssessCtShow',
+            show: 'onAssessCtShow'
         }
     },
 
@@ -104,8 +128,52 @@ Ext.define('SparkClassroomTeacher.controller.assign.Points', {
             Ext.Viewport.add(newTab);
         }
     },
+    
+    onLearnCtShow: function () {
+        this.redirectTo('assign/learn');
+    },
+    
+    onConferenceResourceGridShow: function () {
+        this.redirectTo('assign/resourcegrid');
+    },
+    
+    onConferenceQuestionGridShow: function () {
+        this.redirectTo('assign/questiongrid');
+    },
+    
+    onApplyCtShow: function () {
+        this.redirectTo('assign/apply');
+    },
+    
+    onAssessCtShow: function () {
+        this.redirectTo('assign/learn');
+    },
+    
+    onViewSelected: function(section) {
+        var tabBar = this.getPointsTabbar();
+        
+        tabBar.setActiveTab(tabBar.down('[section='+section+']'));  
+    },
 
     onTabChange: function(tabBar, newTab, oldTab) {
         this.setActiveTab(newTab.config.section);
+    },
+    
+    onAssignPointsActivate: function (tabBar) {
+        var tab = this.getActiveTab();
+        
+        if (tab) {
+            tab.show();
+        } else {
+            this.redirectTo('assign');
+        }
+    },
+    
+    onSectionClose: function (tab) {
+        var tab = this.getActiveTab();
+        
+        if (tab) {
+            tab.hide();
+        }
     }
 });
