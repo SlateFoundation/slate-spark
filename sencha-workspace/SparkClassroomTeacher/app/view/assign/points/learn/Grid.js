@@ -4,7 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
     xtype: 'spark-assign-points-learn-grid',
 
     config: {
-        // height: 500,
+        height: 500,
         // layout: 'fit',
         titleBar: false,
         // scrollable: false,
