@@ -9,6 +9,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         'sparkpoints.ContentAreas',
         'sparkpoints.Sparkpoints',
         'sparkpoints.Edges',
+        'sparkpoints.Alignments',
         'StandardDocuments',
         'DocumentStandards'
     ],
@@ -134,6 +135,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         });
 
         this.getSparkpointsEdgesStore().filter([{
+            property: 'sparkpoint_id',
+            value: sparkpoint.getId()
+        }]);
+
+        this.getSparkpointsAlignmentsStore().filter([{
             property: 'sparkpoint_id',
             value: sparkpoint.getId()
         }]);

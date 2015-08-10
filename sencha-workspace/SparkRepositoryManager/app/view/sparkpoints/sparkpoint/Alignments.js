@@ -12,15 +12,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
 
     controller: 'srm-sparkpoints-sparkpointalignments',
 
-    store:{
-        model: 'SparkRepositoryManager.model.Standard',
-        data: [
-            { code: 'K.CC.JK.1' },
-            { code: 'K.CC.JK.2' },
-            { code: 'K.CC.JK.3' },
-            { code: 'K.CC.JK.4' }
-        ]
-    },
+    store: 'sparkpoints.Alignments',
 
     rootVisible: false,
     useArrows: true,
@@ -28,14 +20,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
     hideHeaders: true,
 
     columns: [{
-        xtype: 'srm-standardcolumn',
-        name: 'code',
-        flex: 5,
-        dataIndex: 'code'
+        flex: 1,
+
+        // xtype: 'srm-standardcolumn',
+        dataIndex: 'asn_id'
     },{
+        width: 32,
+
         xtype: 'actioncolumn',
         action: 'delete',
-        width: 32,
         icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
         tooltip: 'Delete'
     }],

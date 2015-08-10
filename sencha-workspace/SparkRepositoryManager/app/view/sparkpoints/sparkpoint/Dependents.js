@@ -4,8 +4,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     xtype: 'srm-sparkpoints-sparkpointdependents',
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController',
-        // 'SparkRepositoryManager.store.sparkpoints.Dependents',
-        'SparkRepositoryManager.column.Sparkpoint',
+        'SparkRepositoryManager.column.TreeSparkpoint',
         'SparkRepositoryManager.model.SparkpointEdge'
     ],
 
