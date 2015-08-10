@@ -15,10 +15,6 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
         }
     },
 
-    stores: [
-        'StandardsTree'
-    ],
-
     /**
      * Called when the view is created
      */
@@ -26,11 +22,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
         var me = this,
             view = me.getView(),
             record = view.getRecord(),
-            title = record.data.Title,
-            treeStore = me.lookupReference('tree').getStore();
-        // TODO: find where this is being relied on and eliminate it
-        window.treeStore = treeStore;
-        window.view = view;
+            title = record.data.Title;
 
         view.setTitle(title || 'Standard Alignment');
 
