@@ -105,16 +105,5 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Grid', {
                 }
             }
         ]
-    },
-    
-    // createContainer: function() {
-    //     debugger
-    //     return Ext.factory({
-    //         xtype: 'container',
-    //         scrollable: {
-    //             y: false,
-    //             x: false
-    //         }
-    //     });
-    // },
+    }
 });
