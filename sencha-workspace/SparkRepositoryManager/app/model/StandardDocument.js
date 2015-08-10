@@ -21,6 +21,6 @@ Ext.define('SparkRepositoryManager.model.StandardDocument', {
 
     proxy: {
         type: 'spark-api',
-        url: '/standards/documents'
+        url: '/spark-repo/standards-documents'
     }
 });
