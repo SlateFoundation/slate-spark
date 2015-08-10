@@ -1,3 +1,5 @@
+/* global Ext */
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     extend: 'Ext.grid.column.Column',
     xtype: 'srm-sparkpointcolumn',
@@ -8,7 +10,7 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     text: 'Sparkpoint',
     renderer: function(value, metaData, record) {
         var sparkpointData = (record instanceof SparkRepositoryManager.model.Sparkpoint) ? record.getData() : record.get('other_sparkpoint');
-        debugger;
+
         if (!sparkpointData) {
             return '[Unavailable]';
         }
