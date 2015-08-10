@@ -39,7 +39,8 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
         { name: 'student_description', defaultValue: '' },
         // { name: 'power', defaultValue: false },
         { name: 'dependencies_count', persist: false },
-        { name: 'dependents_count', persist: false }
+        { name: 'dependents_count', persist: false },
+        { name: 'alignments_count', persist: false }
     ],
 
     validators: {

@@ -53,17 +53,31 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     },{
         flex: 1,
 
-        text: 'Title',
+        text: 'Teacher Title',
         dataIndex: 'teacher_title'
     },{
-        width: 50,
+        flex: 1,
 
-        text: '<-',
-        dataIndex: 'dependencies_count'
+        text: 'Student Title',
+        dataIndex: 'student_title',
+        hidden: true
     },{
         width: 50,
 
-        text: '->',
-        dataIndex: 'dependents_count'
+        text: '&larr;',
+        dataIndex: 'dependencies_count',
+        tooltip: '# of sparkpoints this sparkpoint depends on'
+    },{
+        width: 50,
+
+        text: '&rarr;',
+        dataIndex: 'dependents_count',
+        tooltip: '# of sparkpoints that depend on this sparkpoint'
+    },{
+        width: 50,
+
+        text: '&darr;',
+        dataIndex: 'alignments_count',
+        tooltip: '# of standards this sparkpoint is aligned to'
     }]
 });
