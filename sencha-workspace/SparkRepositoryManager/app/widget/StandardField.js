@@ -6,33 +6,21 @@ Ext.define('SparkRepositoryManager.widget.StandardField', {
     ],
 
     lazyAutoLoad: false,
-
-    config: {
-        // store: 'StandardCodes',
-        displayField: 'standardCode',
-        valueField: 'standardCode',
-        queryMode: 'local',
-        publishes: 'value',
-        filterPickList: true,
-        forceSelection: true,
-        selectOnFocus: false,
-        multiSelect:  true,
-        anyMatch: true,
-        stacked: true,
-        triggerAction: 'query'
+    store: {
+        type: 'chained',
+        source: 'StandardCodes'
     },
-
-    initComponent: function() {
-        var me = this;
-
-        if (!me.store) {
-            me.store = Ext.create('Ext.data.ChainedStore', {
-                source: 'StandardCodes'
-            });
-        }
-
-        me.callParent();
-    },
+    displayField: 'standardCode',
+    valueField: 'standardCode',
+    queryMode: 'local',
+    publishes: 'value',
+    filterPickList: true,
+    forceSelection: true,
+    selectOnFocus: false,
+    multiSelect:  true,
+    anyMatch: true,
+    stacked: true,
+    triggerAction: 'query',
 
     getModelData: function() {
         return {

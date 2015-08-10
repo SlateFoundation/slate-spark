@@ -83,18 +83,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
                     }
                 });
 
-                Ext.create('Ext.data.JsonStore', {
-                    storeId  : 'StandardCodes',
-                    data     : standardCodes,
-                    idProperty: 'standardCode',
-                    fields: ['standardCode'],
-                    proxy: {
-                        type: 'memory',
-                        reader: {
-                            type: 'json'
-                        }
-                    }
-                });
+                Ext.getStore('StandardCodes').loadData(standardCodes);
             }
         }
     }

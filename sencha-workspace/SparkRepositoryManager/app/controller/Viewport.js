@@ -16,6 +16,7 @@ Ext.define('SparkRepositoryManager.controller.Viewport', {
         'Vendors',
         'VendorDomains',
         'StandardsTree',
+        'StandardCodes',
         'AssessmentTypes'
     ],
 
