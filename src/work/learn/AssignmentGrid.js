@@ -30,7 +30,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
             {
                 dataIndex: 'Category',
                 text: 'Category',
-                width: 100,
+                width: 100
             },
             {
                 dataIndex: 'SRating',
@@ -59,7 +59,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
                 cell: {
                     encodeHtml: false
                 }
-            },
+            }
         ],
 
         store: {
