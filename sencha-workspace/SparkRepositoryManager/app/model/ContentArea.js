@@ -8,7 +8,7 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
 
     proxy: {
         type: 'spark-api',
-        url: '/sparkpoints/content-areas'
+        url: '/spark-repo/content-areas'
     },
 
     fields: [
