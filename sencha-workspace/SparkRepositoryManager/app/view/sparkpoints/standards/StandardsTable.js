@@ -48,8 +48,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         dataIndex: 'asn_id',
         hidden: true
     },{
-        text: 'Mapped to',
-        dataIndex: 'Mapped'
+        width: 50,
+
+        text: '&uarr;',
+        dataIndex: 'alignments_count',
+        tooltip: '# of sparkpoints aligned to this standard'
     },{
         xtype: 'actioncolumn',
         width: 32,
