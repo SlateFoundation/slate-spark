@@ -68,7 +68,7 @@ if (Site::$pathStack[0] == 'children') {
                   FROM standards_nodes
              LEFT JOIN sparkpoint_standard_alignments USING (asn_id)
                  WHERE document_asn_id = :document_asn_id
-                 GROUP BY asn_id, code, title, parent_asn_id, parent_sort_order
+                 GROUP BY asn_id
                  ORDER BY parent_sort_order
             ',
             [
