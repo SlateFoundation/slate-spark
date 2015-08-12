@@ -310,7 +310,7 @@
         "output": {
             
             "appCache": {
-                "enable": true,
+                "enable": false,
                 "path": "cache.appcache"
             }
             
@@ -319,7 +319,7 @@
             "cache": "${build.timestamp}"
         },
         "cache": {
-            "enable": true
+            "enable": false
         }
     },
     
@@ -442,7 +442,7 @@
     */
     "cache": {
         "enable": false,
-        "deltas": true
+        "deltas": false
     },
 
     /**
