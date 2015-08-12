@@ -1,0 +1,18 @@
+.x-list {
+    background-color: white;
+}
+
+.x-list-header {
+    border: 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    .x-innerhtml {
+        padding: 0.6em 1.2em;
+
+        &:empty {
+            display: none;
+        }
+    }
+}
