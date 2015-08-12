@@ -15,3 +15,7 @@
 [submodule "sencha-workspace/packages/jarvus-apikit"]
 	path = sencha-workspace/packages/jarvus-apikit
 	url = https://aharley40@github.com/aharley40/jarvus-apikit.git
+[submodule "sencha-workspace/packages/spark-theme"]
+	path = sencha-workspace/packages/spark-theme
+	url = git@github.com:JarvusInnovations/spark-theme.git
+	branch = develop
