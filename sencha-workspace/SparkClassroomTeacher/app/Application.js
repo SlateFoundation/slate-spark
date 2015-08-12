@@ -6,6 +6,7 @@
 Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
     requires: [
+        'Slate.API',
         'Ext.MessageBox'
     ],
 
