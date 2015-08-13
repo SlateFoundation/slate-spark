@@ -1,0 +1,36 @@
+.spark-titlebar {
+    background: $base-color no-repeat center;
+    background-size: cover;
+    border: none;
+    padding: 0;
+
+    > .x-toolbar-inner {
+        background-color: rgba(white, .8);
+        padding: 1.5em 7.5%;
+    }
+
+    .spark-course-selector {
+        background: none;
+        border: none;
+        padding: 0;
+
+        .x-input-el {
+            background: none;
+            border: none;
+            font-family: $heading-font-family;
+            font-size: xx-large;
+            min-height: 0;
+            padding: 0;
+        }
+    }
+
+    .spark-course-selector {
+        border-bottom: 1px solid rgba(black, .3);
+
+        .x-field-mask::after {
+            color: $color;
+            content: '\f078'; // fa-chevron-down
+            font-size: small;
+        }
+    }
+}
