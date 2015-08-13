@@ -8,6 +8,8 @@ Ext.application({
 
     extend: 'SparkClassroomStudent.Application',
     requires: [
+        'SparkClassroom.view.TitleBar',
+        'SparkClassroom.view.NavBar',
         'Ext.form.Panel' // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
     ],
 
@@ -18,9 +20,12 @@ Ext.application({
     //-------------------------------------------------------------------------
 
     views: [
-        'TitleBar',
-        'TabBar'
+        'work.apply.Main',
+        'work.learn.Main',
+        'work.conference.Main',
+        'work.assess.Main'   
     ],
+
     controllers: [
         'Viewport'
     ],
@@ -34,7 +39,53 @@ Ext.application({
                     xtype: 'spark-titlebar'
                 },
                 {
-                    xtype: 'spark-tabbar'
+                    xtype: 'spark-navbar',
+                    items: [
+                        {
+                            xtype: 'selectfield'
+                        },
+                        {
+                            xtype: 'component',
+                            html: '5 days'
+                        },
+                        {
+                            xtype: 'component',
+                            flex: 1
+                        },
+                        {
+                            text: 'Classword'
+                        },
+                        {
+                            text: 'Standards'
+                        },
+                        {
+                            text: 'GPS'
+                        },
+                        {
+                            text: 'Activity'
+                        },
+                        {
+                            text: 'Help'
+                        }
+                    ]
+                },
+                {
+                    xtype: 'container',
+                    cls: 'page-wrap',
+                    items: [
+                        {
+                            xtype: 'spark-student-work-learn'                        
+                        }
+                    ]
+                },
+                {
+                    // xtype: 'spark-student-work-conference'
+                },
+                {
+                    // xtype: 'spark-student-work-apply'
+                },
+                {
+                    // xtype: 'spark-student-work-assess'
                 }
             ]
         }
