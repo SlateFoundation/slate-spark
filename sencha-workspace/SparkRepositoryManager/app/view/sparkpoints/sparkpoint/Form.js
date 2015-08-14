@@ -13,6 +13,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
 
     trackResetOnLoad: true,
 
+    fieldDefaults: {
+        msgTarget: 'under'
+    },
+
     defaults: {
         anchor: '100%'
     },
@@ -69,7 +73,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
             items: [{
                 fieldLabel: 'Teacher Title',
                 name: 'teacher_title',
-                allowBlank: false
+                allowBlank: false,
+                regex: /^[^\r\n]+$/,
+                regexText: 'Title cannot contain line breaks'
             },{
                 fieldLabel: 'Teacher Description',
                 name: 'teacher_description'
@@ -78,7 +84,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
             title: 'For students',
             items: [{
                 fieldLabel: 'Student Title',
-                name: 'student_title'
+                name: 'student_title',
+                allowBlank: false,
+                regex: /^[^\r\n]+$/,
+                regexText: 'Title cannot contain line breaks'
             },{
                 fieldLabel: 'Student Description',
                 name: 'student_description'
