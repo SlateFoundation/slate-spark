@@ -48,7 +48,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         control: {
             contentAreasTable: {
                 beforeselect: 'onContentAreaBeforeSelect',
-                select: 'onContentAreaSelect',
+                selectionchange: 'onContentAreaSelectionChange',
                 canceledit: 'onContentAreaCancelEdit'
             },
             'srm-sparkpoints-contentareastable button[action=create]': {
@@ -115,10 +115,17 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onContentAreaSelect: function(contentAreasTable, contentArea) {
-        this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
-        this.getContentAreaPanel().enable();
-        contentArea.expand();
+    onContentAreaSelectionChange: function(contentAreasTable, contentAreas) {
+        var contentArea = contentAreas[0],
+            contentAreaPanel = this.getContentAreaPanel();
+
+        if (contentArea) {
+            this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
+            contentAreaPanel.enable();
+            contentArea.expand();
+        } else {
+            contentAreaPanel.disable();
+        }
     },
 
     onContentAreaCancelEdit: function(cellEditingPlugin, context) {
@@ -138,6 +145,10 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         var sparkpointsTable = this.getSparkpointsTable(),
             contentArea = this.getContentAreasTable().getSelection()[0],
             sparkpoint;
+
+        if (!contentArea) {
+            return;
+        }
 
         sparkpoint = sparkpointsTable.getStore().insert(0, { })[0];
 
