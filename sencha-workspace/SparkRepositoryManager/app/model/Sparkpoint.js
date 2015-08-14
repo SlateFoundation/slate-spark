@@ -25,7 +25,10 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
 
     proxy: {
         type: 'spark-sparkpoints',
-        url: '/spark-repo/sparkpoints'
+        url: '/spark-repo/sparkpoints',
+        writer: {
+            allowSingle: false
+        }
     },
 
     fields: [
