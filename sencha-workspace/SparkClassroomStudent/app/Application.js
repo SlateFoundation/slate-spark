@@ -5,7 +5,10 @@
  */
 Ext.define('SparkClassroomStudent.Application', {
     extend: 'Ext.app.Application',
-    
+    requires: [
+        'Ext.MessageBox'
+    ],
+
     name: 'SparkClassroomStudent',
 
     stores: [
