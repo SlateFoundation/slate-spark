@@ -39,6 +39,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         listen: {
             store: {
                 '#sparkpoints.Sparkpoints': {
+                    write: 'onSparkpointWrite',
                     update: 'onSparkpointUpdate'
                 },
                 '#sparkpoints.Edges': {
@@ -277,6 +278,21 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
     onSparkpointSaveClick: function() {
         this.getSparkpointForm().updateRecord();
+    },
+
+    onSparkpointWrite: function(sparkpointsStore, operation) {
+        var contentAreasStore = this.getContentAreasTable().getStore(),
+            records = operation.getRecords(),
+            recordsLen = records.length,
+            i = 0, record, contentArea;
+
+        if (operation.getAction() == 'create') {
+            for (; i < recordsLen; i++) {
+                record = records[i];
+                contentArea = contentAreasStore.getById(record.get('content_area_id'));
+                contentArea.set('sparkpoints_count', contentArea.get('sparkpoints_count') + 1);
+            }
+        }
     },
 
     onSparkpointUpdate: function(sparkpointsStore, sparkpoint, operation) {

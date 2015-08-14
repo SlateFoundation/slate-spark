@@ -22,6 +22,7 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
         { name: 'code', defaultValue: '' },
         // { name: 'teacher_title', defaultValue: '' },
         { name: 'student_title', defaultValue: '' },
+        { name: 'sparkpoints_count', defaultValue: 0, persist: false },
 
         // override tree metafields with custom configs
         {
