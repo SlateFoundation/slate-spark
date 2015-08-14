@@ -11,7 +11,9 @@ Ext.define('SparkClassroom.work.TabBar', {
 
         items: [
             {
-                title: 'Learn &amp; Practice <div class="spark-tab-timer">1h</div>' // TODO: dynamic timers, and left icons
+                // TODO: dynamic timers, and left icons
+                title: 'Learn &amp; Practice <div class="spark-tab-timer">1h</div>',
+                active: true
             },
             {
                 title: 'Conference <div class="spark-tab-timer">1h</div>'
