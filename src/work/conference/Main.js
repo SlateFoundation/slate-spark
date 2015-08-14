@@ -7,11 +7,9 @@ Ext.define('SparkClassroom.work.conference.Main', {
     ],
 
     config: {
-        layout: 'hbox',
         items: [
             {
                 xtype: 'container',
-                flex: 1,
                 itemId: 'standardContainer',
                 items: [
                     {
