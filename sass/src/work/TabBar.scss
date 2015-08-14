@@ -1,0 +1,50 @@
+.spark-work-tabbar {
+    background: none;
+    box-shadow: 0 2px 4px rgba(black, .2);
+    margin: .5em 0 2em;
+    padding: 0;
+
+    .x-tabbar-inner > .x-tab {
+        margin: 0;
+    }
+
+    .x-tab {
+        background-color: $neutral-color;
+        border: none;
+        color: $color;
+        cursor: pointer;
+        font-size: large;
+        padding: .8em;
+        position: relative;
+
+        + .x-tab {
+            border-left: 1px solid #ccc;
+        }
+
+        &.x-tab-active {
+            background-color: $alert-color;
+            border-color: $alert-color;
+            color: white;
+
+            .spark-tab-timer {
+                display: block;
+            }
+
+            + .x-tab {
+                border-color: $alert-color;
+            }
+        }
+    }
+
+    .spark-tab-timer {
+        border-left: 1px solid rgba(white, .3);
+        bottom: 0;
+        color: white;
+        display: none;
+        font-size: small;
+        padding: 1.2em .6em;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}
