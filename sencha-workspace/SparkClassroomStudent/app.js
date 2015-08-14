@@ -10,6 +10,7 @@ Ext.application({
     requires: [
         'SparkClassroom.view.TitleBar',
         'SparkClassroom.view.NavBar',
+        'SparkClassroom.work.TabBar',
         'Ext.form.Panel' // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
     ],
 
@@ -42,10 +43,19 @@ Ext.application({
                     xtype: 'spark-navbar',
                     items: [
                         {
-                            xtype: 'selectfield'
+                            xtype: 'selectfield',
+                            cls: 'spark-navbar-standard-selector',
+                            label: 'Standard',
+                            labelCls: 'visually-hidden',
+                            options: [
+                                {
+                                    text: 'Select Standard'
+                                }
+                            ]
                         },
                         {
-                            xtype: 'component',
+                            xtype: 'label',
+                            cls: 'spark-navbar-timer',
                             html: '5 days'
                         },
                         {
@@ -53,7 +63,8 @@ Ext.application({
                             flex: 1
                         },
                         {
-                            text: 'Classword'
+                            text: 'Classwork',
+                            cls: 'is-selected'
                         },
                         {
                             text: 'Standards'
@@ -73,6 +84,9 @@ Ext.application({
                     xtype: 'container',
                     cls: 'page-wrap',
                     items: [
+                        {
+                            xtype: 'spark-work-tabbar'
+                        },
                         {
                             xtype: 'spark-student-work-learn'                        
                         }
