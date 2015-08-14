@@ -19,15 +19,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
 
     items: [{
         xtype: 'textfield',
-        fieldLabel: 'Code',
-        labelWidth: 50,
-        name: 'code',
-        allowBlank: false
-    },{
-        xtype: 'textfield',
         fieldLabel: 'Abbr',
         labelWidth: 50,
         name: 'abbreviation',
+        allowBlank: false
+    },{
+        xtype: 'textfield',
+        fieldLabel: 'Code',
+        labelWidth: 50,
+        name: 'code',
         allowBlank: false
     // },{
     //     xtype: 'srm-field-levelslider',

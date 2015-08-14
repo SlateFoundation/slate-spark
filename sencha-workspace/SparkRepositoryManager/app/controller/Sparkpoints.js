@@ -25,6 +25,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointDiscardButton: 'srm-sparkpoints-sparkpointpanel button#discard',
             sparkpointSaveButton: 'srm-sparkpoints-sparkpointpanel button#save',
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
+            sparkpointAbbreviationField: 'srm-sparkpoints-sparkpointform field[name=abbreviation]',
+            sparkpointCodeField: 'srm-sparkpoints-sparkpointform field[name=code]',
             dependenciesTable: 'srm-sparkpoints-sparkpointdependencies',
             dependentsTable: 'srm-sparkpoints-sparkpointdependents',
 
@@ -62,6 +64,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointForm: {
                 dirtychange: 'onSparkpointDirtyChange',
                 validitychange: 'onSparkpointValidityChange'
+            },
+            sparkpointAbbreviationField: {
+                blur: 'onSparkpointAbbreviationFieldBlur'
             },
             sparkpointDiscardButton: {
                 click: 'onSparkpointDiscardClick'
@@ -140,6 +145,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         sparkpoint.set('content_area_id', contentArea.getId());
 
         sparkpointsTable.setSelection(sparkpoint);
+        
+        this.getSparkpointAbbreviationField().focus(true);
     },
 
     onSparkpointBeforeDeselect: function(sparkpointTable, sparkpoint) {
@@ -217,6 +224,16 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         this.getSparkpointDiscardButton().setDisabled(!dirty && !sparkpointForm.getRecord().phantom);
         this.getSparkpointSaveButton().setDisabled(!valid || !dirty);
+    },
+
+    onSparkpointAbbreviationFieldBlur: function(abbreviationField) {
+        var codeField = this.getSparkpointCodeField(),
+            abbreviation = abbreviationField.getValue(),
+            contentArea = this.getContentAreasTable().getSelection()[0];
+
+        if (!codeField.getValue() && abbreviation) {
+            codeField.setValue( (contentArea ? contentArea.get('code') + '.' : '') + abbreviation);
+        }
     },
 
     onSparkpointDiscardClick: function() {
