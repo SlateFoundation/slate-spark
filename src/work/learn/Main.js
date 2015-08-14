@@ -3,26 +3,41 @@ Ext.define('SparkClassroom.work.learn.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work-learn',
     requires: [
+        'SparkClassroom.work.learn.ProgressBanner',
         'SparkClassroom.work.learn.AssignmentGrid',
         'Jarvus.layout.Accordion'
     ],
 
     config: {
-        layout: 'hbox',
         items: [
             {
                 xtype: 'container',
-                layout: 'vbox',
                 itemId: 'standardGrid',
-                flex: 1,
                 items: [
                     {
                         xtype: 'container',
                         layout: 'accordion',
                         items: [
                             {
-                                xtype: 'spark-work-learn-assignmentgrid',
-                                title: 'Standards Blarg'
+                                xtype: 'container',
+                                title: 'Standards Blarg',
+                                items: [
+                                    {
+                                        xtype: 'container',
+                                        layout: {
+                                            type: 'hbox',
+                                            pack: 'center',
+                                        },
+                                        items: [
+                                            {
+                                                xtype: 'spark-work-learn-progressbanner'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        xtype: 'spark-work-learn-assignmentgrid',
+                                    }
+                                ]
                             },
                             {
                                 xtype: 'component',
