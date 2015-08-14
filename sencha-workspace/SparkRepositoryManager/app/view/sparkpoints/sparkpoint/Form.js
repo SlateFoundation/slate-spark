@@ -46,9 +46,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     },{
         // TODO: move to own panel below grids maybe?
         xtype: 'textarea',
-        fieldLabel: 'Editor\'s Memo',
+        fieldLabel: 'Editor Memo',
         labelAlign: 'top',
-        name: 'memo'
+        name: 'editor_memo'
     },{
         xtype: 'tabpanel',
         defaults: {

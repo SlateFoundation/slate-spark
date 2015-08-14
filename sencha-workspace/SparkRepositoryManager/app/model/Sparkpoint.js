@@ -40,6 +40,7 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
         { name: 'student_title', defaultValue: '' },
         { name: 'teacher_description', defaultValue: '' },
         { name: 'student_description', defaultValue: '' },
+        { name: 'editor_memo', defaultValue: '' },
         // { name: 'power', defaultValue: false },
         { name: 'dependencies_count', persist: false },
         { name: 'dependents_count', persist: false },
