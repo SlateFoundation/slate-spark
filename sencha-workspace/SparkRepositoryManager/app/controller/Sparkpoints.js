@@ -27,6 +27,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
             sparkpointAbbreviationField: 'srm-sparkpoints-sparkpointform field[name=abbreviation]',
             sparkpointCodeField: 'srm-sparkpoints-sparkpointform field[name=code]',
+            sparkpointTeacherTitleField: 'srm-sparkpoints-sparkpointform field[name=teacher_title]',
+            sparkpointStudentTitleField: 'srm-sparkpoints-sparkpointform field[name=student_title]',
             dependenciesTable: 'srm-sparkpoints-sparkpointdependencies',
             dependentsTable: 'srm-sparkpoints-sparkpointdependents',
 
@@ -67,6 +69,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             sparkpointAbbreviationField: {
                 blur: 'onSparkpointAbbreviationFieldBlur'
+            },
+            sparkpointTeacherTitleField: {
+                blur: 'onSparkpointTeacherTitleFieldBlur'
             },
             sparkpointDiscardButton: {
                 click: 'onSparkpointDiscardClick'
@@ -244,6 +249,15 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         if (!codeField.getValue() && abbreviation) {
             codeField.setValue( (contentArea ? contentArea.get('code') + '.' : '') + abbreviation);
+        }
+    },
+
+    onSparkpointTeacherTitleFieldBlur: function(teacherTitleField) {
+        var studentTitleField = this.getSparkpointStudentTitleField(),
+            teacherTitle = teacherTitleField.getValue();
+
+        if (!studentTitleField.getValue() && teacherTitle) {
+            studentTitleField.setValue(teacherTitle);
         }
     },
 
