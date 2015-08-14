@@ -82,25 +82,14 @@ Ext.application({
                 },
                 {
                     xtype: 'container',
+                    itemId: 'page-wrap',
                     cls: 'page-wrap',
                     items: [
                         {
                             xtype: 'spark-work-tabbar'
-                        },
-                        {
-                            xtype: 'spark-student-work-learn'                        
                         }
                     ]
                 },
-                {
-                    // xtype: 'spark-student-work-conference'
-                },
-                {
-                    // xtype: 'spark-student-work-apply'
-                },
-                {
-                    // xtype: 'spark-student-work-assess'
-                }
             ]
         }
     }

@@ -14,6 +14,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
     
     refs:{
+        tabContainer: {
+            selector: '#page-wrap',
+            autoCreate: true,
+
+            xtype: 'container',
+            cls: 'page-wrap'
+        },
         learnMainCt: {
             selector: 'spark-student-work-learn',
             autoCreate: true,
@@ -41,7 +48,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     control: {
-        'viewport spark-tabbar': {
+        'spark-work-tabbar': {
             activetabchange: 'onTabChange'
         }
     },
@@ -75,15 +82,19 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     updateActiveTab: function(newTab, oldTab) {
+        var me = this;
+
+        console.log(me.getTabContainer());
+
         //initial load contains no tab
         if (oldTab) {
             oldTab.hide();
         }
 
-        if(Ext.Viewport.down(newTab)) {
+        if(me.getTabContainer().down(newTab)) {
             newTab.show();
         } else {
-            Ext.Viewport.add(newTab);
+            me.getTabContainer().add(newTab);
         }
     },
 
