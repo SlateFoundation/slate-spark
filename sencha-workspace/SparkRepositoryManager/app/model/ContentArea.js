@@ -2,30 +2,43 @@
 Ext.define('SparkRepositoryManager.model.ContentArea', {
     extend: 'Ext.data.Model',
     requires: [
-        'SparkRepositoryManager.proxy.API'
+        'SparkRepositoryManager.proxy.API',
+        'Ext.data.identifier.Negative'
     ],
 
 
+    identifier: 'negative',
+
     proxy: {
         type: 'spark-api',
-        url: '/spark-repo/content-areas'
+        url: '/spark-repo/content-areas',
+        writer: {
+            allowSingle: false
+        }
     },
 
     fields: [
         'id',
         { name: 'code', defaultValue: '' },
-        { name: 'teacher_title', defaultValue: '' },
+        // { name: 'teacher_title', defaultValue: '' },
         { name: 'student_title', defaultValue: '' },
 
         // override tree metafields with custom configs
         {
             name: 'parentId',
-            mapping: 'parent_id',
+            mapping: 'parent_id'
+        },
+        {
+            name: 'leaf',
+            persist: false
+        },
+        {
+            name: 'title',
             persist: false
         }
     ],
 
     validators: {
-        title: 'presence'
+        student_title: 'presence'
     }
 });

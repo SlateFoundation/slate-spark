@@ -11,23 +11,98 @@ function convertContentArea(&$contentArea) {
 
 // handle route /
 if (!count($path = array_filter(Site::$pathStack))) {
-    $contentAreas = PostgresPDO::query(
-        'SELECT content_areas.*,
-                COUNT(sparkpoints.*) AS sparkpoints_count
-           FROM content_areas
-      LEFT JOIN sparkpoints
-             ON sparkpoints.content_area_id = content_areas.id
-          GROUP BY content_areas.id
-          ORDER BY path'
-    );
-    
-    // convert generator to an array so we can transform some of its values before responding
-    $contentAreas = iterator_to_array($contentAreas);
-    foreach ($contentAreas AS &$contentArea) {
-        convertContentArea($contentArea);
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $contentAreas = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            $set = [];
+
+            if (!empty($requestData['student_title'])) {
+                $set['student_title'] = $requestData['student_title'];
+            } else {
+                JSON::error('student_title required', 400);
+            }
+
+            if (!empty($requestData['code'])) {
+                $set['code'] = $requestData['code'];
+            } else {
+                $set['code'] = preg_replace('/[^A-Z.]/', '', strtoupper($requestData['student_title']));
+            }
+
+            if (!empty($requestData['abbreviation'])) {
+                $set['abbreviation'] = $requestData['abbreviation'];
+            } else {
+                $set['abbreviation'] = $set['code'];
+            }
+
+            if (!empty($requestData['parentId']) && is_int($requestData['parentId'])) {
+                $set['parent_id'] = $requestData['parentId'];
+            }
+
+            $contentAreas[] = PostgresPDO::insert('content_areas', $set, '*');
+        }
+
+        JSON::respond($contentAreas);
+
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
+
+        $contentAreas = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            $set = [];
+
+            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+                JSON::error('id required', 400);
+            }
+
+            if (!empty($requestData['student_title'])) {
+                $set['student_title'] = $requestData['student_title'];
+            }
+
+            if (!empty($requestData['code'])) {
+                $set['code'] = $requestData['code'];
+            }
+
+            if (!empty($requestData['abbreviation'])) {
+                $set['abbreviation'] = $requestData['abbreviation'];
+            }
+
+            if (!empty($requestData['parentId']) && is_int($requestData['parentId'])) {
+                $set['parent_id'] = $requestData['parentId'];
+            }
+
+            $contentAreas[] = PostgresPDO::update('content_areas', $set, ['id' => $requestData['id']], '*');
+        }
+
+        JSON::respond($contentAreas);
+
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+        $contentAreas = PostgresPDO::query(
+            'SELECT content_areas.*,
+                    COUNT(sparkpoints.*) AS sparkpoints_count
+               FROM content_areas
+          LEFT JOIN sparkpoints
+                 ON sparkpoints.content_area_id = content_areas.id
+              GROUP BY content_areas.id
+              ORDER BY path'
+        );
+
+        // convert generator to an array so we can transform some of its values before responding
+        $contentAreas = iterator_to_array($contentAreas);
+        foreach ($contentAreas AS &$contentArea) {
+            convertContentArea($contentArea);
+        }
+
+        JSON::respond($contentAreas);
+
+    } else {
+
+        JSON::error('Only POST/GET supported for this route', 405);
+
     }
-    
-    JSON::respond($contentAreas);
 }
 
 

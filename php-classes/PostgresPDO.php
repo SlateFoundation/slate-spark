@@ -54,4 +54,45 @@ class PostgresPDO
             $statement->closeCursor();
         }
     }
+
+    public static function insert($table, $values = [], $returning = null)
+    {
+        $query = 'INSERT INTO ' . $table;
+
+        if ($values) {
+            $query .= ' (' . implode(',', array_keys($values)) . ')';
+            $query .= ' VALUES (' . implode(',', array_map([__CLASS__, 'quote'], array_values($values))) . ')';
+        } else {
+            $query .= ' DEFAULT VALUES';
+        }
+
+        if ($returning) {
+            $query .= ' RETURNING ' . (is_array($returning) ? implode(',', $returning) : $returning);
+        }
+
+        return static::query($query)->current();
+    }
+
+    public static function update($table, $values, $where = [], $returning = null)
+    {
+        $query = 'UPDATE ' . $table . ' SET';
+
+        $query .= ' (' . implode(',', array_keys($values)) . ')';
+        $query .= ' = (' . implode(',', array_map([__CLASS__, 'quote'], array_values($values))) . ')';
+
+        if ($where) {
+            $conditions = [];
+            foreach ($where AS $key => $value) {
+                $conditions[] = $key . ' = ' . static::quote($value);;
+            }
+
+            $query .= ' WHERE (' . implode(') AND (', $conditions) . ')';
+        }
+
+        if ($returning) {
+            $query .= ' RETURNING ' . (is_array($returning) ? implode(',', $returning) : $returning);
+        }
+
+        return static::query($query)->current();
+    }
 }

@@ -45,7 +45,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         control: {
             contentAreasTable: {
-                select: 'onContentAreaSelect'
+                beforeselect: 'onContentAreaBeforeSelect',
+                select: 'onContentAreaSelect',
+                canceledit: 'onContentAreaCancelEdit'
             },
             'srm-sparkpoints-contentareastable button[action=create]': {
                 click: 'onCreateContentAreaClick'
@@ -83,21 +85,48 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
 
     onCreateContentAreaClick: function() {
-        var contentAreasTable = this.getContentAreasTable();
+        var contentAreasTable = this.getContentAreasTable(),
+            parentContentArea = contentAreasTable.getSelection()[0] || contentAreasTable.getRootNode();
 
-        contentAreasTable.getPlugin('cellediting').startEdit(
-            contentAreasTable.getRootNode().appendChild({
-                leaf: true,
-                title: ''
-            }),
-            0 // first column
-        );
+        if (parentContentArea.get('leaf')) {
+            parentContentArea.set('children', []);
+            parentContentArea.set('leaf', false);
+        }
+
+        parentContentArea.expand(false, function() {
+            contentAreasTable.getPlugin('cellediting').startEdit(
+                parentContentArea.appendChild({
+                    leaf: true,
+                    title: ''
+                }),
+                0 // first column
+            );
+        });
+    },
+
+    onContentAreaBeforeSelect: function(rowModel, record) {
+        if (record.phantom) {
+            return false;
+        }
     },
 
     onContentAreaSelect: function(contentAreasTable, contentArea) {
         this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
         this.getContentAreaPanel().enable();
         contentArea.expand();
+    },
+
+    onContentAreaCancelEdit: function(cellEditingPlugin, context) {
+        var record = context.record,
+            parent = record.parentNode;
+
+        if (record.phantom) {
+            record.remove();
+
+            if (!parent.childNodes.length) {
+                parent.set('leaf', true);
+            }
+        }
     },
 
     onCreateSparkpointClick: function() {

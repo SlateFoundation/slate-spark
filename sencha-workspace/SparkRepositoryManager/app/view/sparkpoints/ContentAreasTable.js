@@ -56,13 +56,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
             flex: 1,
 
             xtype: 'treecolumn',
-            dataIndex: 'teacher_title',
-            // editor: {
-            //     xtype: 'textfield',
-            //     allowBlank: false
-            // },
-            renderer: function(v, metaData, record) {
-                return v || record.get('student_title');
+            dataIndex: 'student_title',
+            editor: {
+                xtype: 'textfield',
+                allowBlank: false
             }
         },
         {
@@ -75,13 +72,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
         }
     ],
 
-    // selModel: {
-    //     selType: 'cellmodel'
-    // },
+    selModel: {
+        selType: 'cellmodel'
+    },
 
-    // plugins: [{
-    //     pluginId: 'cellediting',
-    //     ptype: 'cellediting',
-    //     clicksToEdit: 2
-    // }]
+    plugins: [{
+        pluginId: 'cellediting',
+        ptype: 'cellediting',
+        clicksToEdit: 2
+    }]
 });
