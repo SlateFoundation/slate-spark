@@ -55,10 +55,36 @@ if (!$sparkpointId = array_shift(Site::$pathStack)) {
             if (!empty($requestData['content_area_id']) && is_int($requestData['content_area_id'])) {
                 $set['content_area_id'] = $requestData['content_area_id'];
             } else {
-                    JSON::error('content_area_id required', 400);
+                JSON::error('content_area_id required', 400);
             }
 
             $sparkpoints[] = PostgresPDO::insert('sparkpoints', $set, '*');
+        }
+
+        JSON::respond($sparkpoints);
+
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
+
+        $sparkpoints = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            $set = [];
+
+            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+                JSON::error('id required', 400);
+            }
+
+            foreach (['code', 'abbreviation', 'teacher_title', 'student_title', 'teacher_description', 'student_description', 'editor_memo'] AS $optionalField) {
+                if (!empty($requestData[$optionalField])) {
+                    $set[$optionalField] = $requestData[$optionalField];
+                }
+            }
+
+            if (!empty($requestData['content_area_id']) && is_int($requestData['content_area_id'])) {
+                $set['content_area_id'] = $requestData['content_area_id'];
+            }
+
+            $sparkpoints[] = PostgresPDO::update('sparkpoints', $set, ['id' => $requestData['id']], '*');
         }
 
         JSON::respond($sparkpoints);
