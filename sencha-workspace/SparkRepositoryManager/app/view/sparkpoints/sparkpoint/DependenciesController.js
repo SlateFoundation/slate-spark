@@ -1,6 +1,7 @@
 /**
  * TODO:
- * - Implement add UI here
+ * - Use primary edges store for add/remove operations and have tree stores mirror it? Then main controller can manage counts by listening to the edges store
+ * - Deduplicate code between this and the dependents controller
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesController', {
     extend: 'Ext.app.ViewController',
@@ -25,12 +26,21 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
     },
 
     onDeleteClick: function(grid,rec) {
-        var me = this;
+        var treePanel = this.getView(),
+            sparkpoint = treePanel.getRootNode().get('source_sparkpoint');
 
         Ext.Msg.confirm('Deleting Dependency', 'Are you sure you want to delete this dependency?', function(btn) {
-            if (btn == 'yes') {
-                rec.erase();
+            if (btn != 'yes') {
+                return;
             }
+
+            treePanel.mask('Deleting…');
+            rec.erase({
+                success: function() {
+                    sparkpoint.set('dependencies_count', sparkpoint.get('dependencies_count') - 1);
+                    treePanel.unmask();
+                }
+            });
         });
     },
 

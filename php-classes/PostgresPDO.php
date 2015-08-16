@@ -95,4 +95,24 @@ class PostgresPDO
 
         return static::query($query)->current();
     }
+
+    public static function delete($table, $where = [], $returning = null)
+    {
+        $query = 'DELETE FROM ' . $table;
+
+        if ($where) {
+            $conditions = [];
+            foreach ($where AS $key => $value) {
+                $conditions[] = $key . ' = ' . static::quote($value);;
+            }
+
+            $query .= ' WHERE (' . implode(') AND (', $conditions) . ')';
+        }
+
+        if ($returning) {
+            $query .= ' RETURNING ' . (is_array($returning) ? implode(',', $returning) : $returning);
+        }
+
+        return static::query($query)->current();
+    }
 }

@@ -67,6 +67,22 @@ if (!$recordId = array_shift(Site::$pathStack)) {
         }
 
         JSON::respond($edges);
+
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+
+        $edges = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            $set = [];
+
+            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+                JSON::error('id required', 400);
+            }
+
+            $edges[] = PostgresPDO::delete('sparkpoints_edges', ['id' => $requestData['id']], '*');
+        }
+
+        JSON::respond($edges);
         
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
