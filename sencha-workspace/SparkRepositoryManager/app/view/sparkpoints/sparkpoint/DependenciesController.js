@@ -88,22 +88,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
                 lookupCombo.clearValue();
                 treePanel.unmask();
                 thisSparkpoint.set('dependencies_count', thisSparkpoint.get('dependencies_count') + 1);
+            },
+            failure: function(edge, operation) {
+                var response = operation.getError().response,
+                    responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
+                    message = (responseData && responseData.message) || 'An unknown failure occured, please try again later or contact your technical support';
+
+                Ext.Msg.alert('Failed to save dependency', message.replace(/.*ERROR:\s*/, ''));
+                treePanel.unmask();
             }
         });
-    },
-
-//     filterCombo: function() {
-//         var treepanel = this.getView(),
-//             treeStore = treepanel.getStore(),
-//             combo = treepanel.down('combo'),
-//             comboStore = combo.getStore();
-//             debugger;
-// console.log('filtering dependencies combo');
-//         comboStore.filterBy(function(comboRec) {
-//             if (treeStore.find('code',comboRec.get('code')) !== -1) {
-//                 return false;
-//             }
-//             return true;
-//         });
-    // }
+    }
 });
