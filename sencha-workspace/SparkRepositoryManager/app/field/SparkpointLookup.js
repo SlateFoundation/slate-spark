@@ -10,6 +10,7 @@
     },
     queryMode: 'remote',
     queryParam: 'q',
+    triggerAction: 'query',
     minChars: 2,
     displayField: 'code',
     valueField: 'code',
