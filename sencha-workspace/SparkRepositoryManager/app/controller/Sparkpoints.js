@@ -29,6 +29,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointCodeField: 'srm-sparkpoints-sparkpointform field[name=code]',
             sparkpointTeacherTitleField: 'srm-sparkpoints-sparkpointform field[name=teacher_title]',
             sparkpointStudentTitleField: 'srm-sparkpoints-sparkpointform field[name=student_title]',
+            sparkpointRelationshipTabPanel: 'srm-sparkpoints-sparkpointpanel tabpanel',
             dependenciesTable: 'srm-sparkpoints-sparkpointdependencies',
             dependentsTable: 'srm-sparkpoints-sparkpointdependents',
 
@@ -174,25 +175,27 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onSparkpointSelect: function(selModel, sparkpoint) {
-        this.getSparkpointForm().loadRecord(sparkpoint);
-        this.getSparkpointPanel().enable();
+        var me = this;
 
-        this.getDependenciesTable().setRootNode({
+        me.getSparkpointForm().loadRecord(sparkpoint);
+        me.getSparkpointPanel().enable();
+
+        me.getDependenciesTable().setRootNode({
             expanded: true,
             source_sparkpoint: sparkpoint
         });
 
-        this.getDependentsTable().setRootNode({
+        me.getDependentsTable().setRootNode({
             expanded: true,
             target_sparkpoint: sparkpoint
         });
 
-        this.getSparkpointsEdgesStore().filter([{
+        me.getSparkpointsEdgesStore().filter([{
             property: 'sparkpoint_id',
             value: sparkpoint.getId()
         }]);
 
-        this.getSparkpointsAlignmentsStore().filter([{
+        me.getSparkpointsAlignmentsStore().filter([{
             property: 'sparkpoint_id',
             value: sparkpoint.getId()
         }]);

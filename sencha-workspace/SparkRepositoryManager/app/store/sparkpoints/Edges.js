@@ -3,12 +3,5 @@ Ext.define('SparkRepositoryManager.store.sparkpoints.Edges', {
     extend: 'Ext.data.Store',
 
     model: 'SparkRepositoryManager.model.SparkpointEdge',
-	remoteFilter: true,
-	proxy: {
-		type: 'spark-api',
-		url: '/spark-repo/sparkpoint-edges',
-		extraParams: {
-			include: 'other_sparkpoint'
-		}
-	}
+	remoteFilter: true
 });

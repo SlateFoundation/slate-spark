@@ -5,6 +5,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController',
         'SparkRepositoryManager.column.TreeSparkpoint',
+        'SparkRepositoryManager.field.SparkpointLookup',
         'SparkRepositoryManager.model.SparkpointEdge'
     ],
 
@@ -24,10 +25,16 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     useArrows: true,
     singleExpand: true,
     hideHeaders: true,
+    viewConfig: {
+        emptyText: 'None declared yet'
+    },
 
     columns: [{
+        flex: 1,
+
         xtype: 'srm-treesparkpointcolumn',
-        flex: 1
+        dataIndex: 'other_sparkpoint_code',
+        abbreviate: false
     },{
         xtype: 'actioncolumn',
         action: 'delete',
@@ -43,18 +50,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
 
         xtype: 'toolbar',
         items: [{
-            xtype: 'combobox',
-            flex: 1,
-            store: {
-                type: 'chained',
-                source: 'sparkpoints.Sparkpoints'
-            },
-            queryMode: 'local',
-            displayField: 'code',
-            valueField: 'code',
-            forceSelecton: true,
-            typeAhead: true,
-            allowBlank: true
+            xtype: 'srm-field-sparkpointlookup',
+            flex: 1
         },{
             xtype: 'button',
             action: 'add',

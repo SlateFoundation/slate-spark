@@ -2,7 +2,7 @@
 Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
-        'SparkRepositoryManager.proxy.Sparkpoints'
+        'SparkRepositoryManager.proxy.API'
     ],
 
 
@@ -24,7 +24,7 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     ],
 
     proxy: {
-        type: 'spark-sparkpoints',
+        type: 'spark-api',
         url: '/spark-repo/sparkpoints',
         writer: {
             allowSingle: false

@@ -8,7 +8,8 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     ],
 
     text: 'Sparkpoint',
-    renderer: function(value, metaData, record) {
+    abbreviate: true,
+    defaultRenderer: function(value, metaData, record) {
         var sparkpointData = (record instanceof SparkRepositoryManager.model.Sparkpoint) ? record.getData() : record.get('other_sparkpoint');
 
         if (!sparkpointData) {
@@ -27,6 +28,6 @@ Ext.define('SparkRepositoryManager.column.Sparkpoint', {
             });
         }
 
-        return sparkpointData.abbreviation || sparkpointData.code;
+        return (this.abbreviate !== false && sparkpointData.abbreviation) || sparkpointData.code;
     }
 });

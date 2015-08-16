@@ -7,8 +7,8 @@ Ext.define('SparkRepositoryManager.column.TreeSparkpoint', {
     ],
 
     text: 'Sparkpoint',
-    dataIndex: 'other_sparkpoint_code',
-    renderer: function(v) {
-        return SparkRepositoryManager.column.Sparkpoint.prototype.renderer.apply(this, arguments);
+    abbreviate: true,
+    defaultRenderer: function(v) {
+        return SparkRepositoryManager.column.Sparkpoint.prototype.defaultRenderer.apply(this, arguments);
     }
 });

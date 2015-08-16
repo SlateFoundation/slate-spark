@@ -79,10 +79,16 @@ class JSON
             case 429:
                 header('HTTP/1.1 429 Too Many Requests');
                 break;
+            case 500:
+                header('HTTP/1.0 500 Internal Server Error');
+                break;
+            case 501:
+                header('HTTP/1.0 501 Not Implemented');
+                break;
         }
 
 		$args = func_get_args();
-		
+
 		self::respond(array(
 			'success' => false
 			,'message' => vsprintf($message, array_slice($args, 1))
