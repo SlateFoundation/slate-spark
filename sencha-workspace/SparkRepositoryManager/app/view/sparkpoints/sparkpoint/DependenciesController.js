@@ -15,12 +15,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             deleteclick: 'onDeleteClick'
         },
         'combo': {
-            boxready: 'onComboBoxReady',
-            select: 'onComboSelect',
+            beforequery: 'onComboBeforeQuery',
             change: 'onComboChange',
             specialKey: 'onComboSpecialKey'
         },
-        'button[action="add"]': {
+        'button[action=add]': {
             click: 'onAddClick'
         }
     },
@@ -31,32 +30,29 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
         Ext.Msg.confirm('Deleting Dependency', 'Are you sure you want to delete this dependency?', function(btn) {
             if (btn == 'yes') {
                 rec.erase();
-                // me.filterCombo();
             }
         });
     },
 
-    onComboBoxReady: function() {
-        // this.filterCombo();
+    onComboBeforeQuery: function(queryPlan) {
+        var treeStore = this.getView().getStore(),
+            excludeSparkpointIds = Ext.Array.union(
+                treeStore.collect('source_sparkpoint_id'),
+                treeStore.collect('target_sparkpoint_id'),
+                treeStore.getRootNode().get('source_sparkpoint').getId()
+            );
+
+        queryPlan.combo.getStore().filterBy(function(sparkpoint) {
+            return excludeSparkpointIds.indexOf(sparkpoint.getId()) == -1;
+        });
     },
 
-    onComboSelect: function(combo) {
-        var treepanel = combo.up('treepanel'),
-            addButton = treepanel.down('button[action="add"]');
-
-        addButton.enable();
-    },
-
-    onComboChange: function(combo) {
-        var button = combo.up('toolbar').down('button');
-
-        if (!combo.findRecordByValue(combo.getValue())) {
-            button.disable();
-        }
+    onComboChange: function(lookupCombo) {
+        this.lookupReference('addButton').setDisabled(!lookupCombo.getSelectedRecord());
     },
 
     onComboSpecialKey: function(combo, e) {
-        if (e.getKey() == e.ENTER && combo.findRecordByValue(combo.getValue())) {
+        if (e.getKey() == e.ENTER) {
             this.addRecord();
         }
     },
@@ -72,11 +68,15 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             lookupCombo = me.lookupReference('lookupCombo'),
             thisSparkpoint = treeRootNode.get('source_sparkpoint'),
             otherSparkpoint = lookupCombo.getSelectedRecord(),
-            edge = Ext.create('SparkRepositoryManager.model.SparkpointEdge', {
+            edge = otherSparkpoint && Ext.create('SparkRepositoryManager.model.SparkpointEdge', {
                 rel_type: 'dependency',
                 target_sparkpoint_id: otherSparkpoint.getId(),
                 source_sparkpoint_id: thisSparkpoint.getId(),
             });
+
+        if (!edge) {
+            return;
+        }
 
         treePanel.mask('Saving…');
         edge.save({
