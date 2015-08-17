@@ -30,12 +30,17 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
 
         xtype: 'srm-standardcolumn'
     },{
-        width: 32,
+        width: 24,
 
         xtype: 'actioncolumn',
-        action: 'delete',
-        icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
-        tooltip: 'Delete'
+        items: [
+            {
+                action: 'delete',
+                iconCls: 'sparkpoint-alignment-delete glyph-danger',
+                glyph: 0xf056, // fa-minus-circle
+                tooltip: 'Remove this standard as aligned'
+            }
+        ]
     }],
 
     dockedItems: [{

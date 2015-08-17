@@ -37,14 +37,17 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
         dataIndex: 'other_sparkpoint_code',
         abbreviate: false
     },{
-        width: 32,
+        width: 24,
 
         xtype: 'actioncolumn',
-        action: 'delete',
-        // TODO: remove icon config and uncomment glyph config when glyphs are working
-        // glyph: 0xf056, // fa-minus-circle
-        icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
-        tooltip: 'Delete'
+        items: [
+            {
+                action: 'delete',
+                iconCls: 'sparkpoint-dependent-delete glyph-danger',
+                glyph: 0xf056, // fa-minus-circle
+                tooltip: 'Remove this sparkpoint as a dependent'
+            }
+        ]
     }],
 
     dockedItems: [{

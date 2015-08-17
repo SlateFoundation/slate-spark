@@ -54,9 +54,23 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         dataIndex: 'alignments_count',
         tooltip: '# of sparkpoints aligned to this standard'
     },{
+        width: 40,
+
         xtype: 'actioncolumn',
-        width: 32,
-        icon: 'http://i.imgur.com/k4BSyFG.png'
+        items: [
+            {
+                action: 'sparkpoint-seed',
+                iconCls: 'standard-sparkpoint-seed glyph-success',
+                glyph: 0xf055, // fa-plus-circle
+                tooltip: 'Create new sparkpoint from this standard'
+            },
+            {
+                action: 'sparkpoint-align',
+                iconCls: 'standard-sparkpoint-align',
+                glyph: 0xf0c1, // fa-link
+                tooltip: 'Align selected sparkpoint to this standard'
+            }
+        ]
     }],
 
     dockedItems: [{
