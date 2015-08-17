@@ -57,6 +57,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         width: 40,
 
         xtype: 'actioncolumn',
+        menuDisabled: true,
+        hideable: false,
         items: [
             {
                 action: 'sparkpointseed',
