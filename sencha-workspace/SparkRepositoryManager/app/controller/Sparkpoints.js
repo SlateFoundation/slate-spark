@@ -89,6 +89,10 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 click: 'onSparkpointSaveClick'
             },
 
+            alignmentsTable: {
+                itemclick: 'onAlignmentClick'
+            },
+
             documentsTable: {
                 boxready: 'onDocumentsTableReady',
                 selectionchange: 'onDocumentSelectionChange'
@@ -326,6 +330,38 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         if (operation == 'commit' && sparkpoint === loadedSparkpoint) {
             // re-load record after commit to reset form dirty tracking and load any server-modified values
             sparkpointForm.loadRecord(sparkpoint);
+        }
+    },
+
+    onAlignmentClick: function(alignmentsTable, alignment) {
+        var documentsTable = this.getDocumentsTable(),
+            standardsTable = this.getStandardsTable(),
+            standardsStore = standardsTable.getStore(),
+            standardData = alignment.get('standard'),
+            document = documentsTable.getStore().getById(standardData.document_asn_id),
+            selectStandard = function() {
+                var standard = standardsStore.getRootNode().findChild('asn_id', standardData.asn_id, true);
+
+                if (!standard) {
+                    return;
+                }
+
+                standardsTable.ensureVisible(standard.getPath(), {
+                    animate: true,
+                    select: true
+                });
+            };
+
+        if (!document) {
+            return;
+        }
+
+        documentsTable.getSelectionModel().select(document);
+
+        if (standardsStore.isLoading()) {
+            standardsStore.on('load', selectStandard, null, { single: true });
+        } else {
+            selectStandard();
         }
     },
 
