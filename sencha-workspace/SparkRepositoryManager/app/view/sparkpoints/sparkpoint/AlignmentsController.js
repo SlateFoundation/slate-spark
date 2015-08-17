@@ -55,46 +55,23 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsControl
         this.lookupReference('addButton').setDisabled(!lookupCombo.getSelectedRecord());
     },
 
-    onComboSpecialKey: function(combo, e) {
-        if (e.getKey() == e.ENTER) {
-            this.addRecord();
+    onComboSpecialKey: function(lookupCombo, ev) {
+        if (ev.getKey() == ev.ENTER) {
+            this.doCreateAlignmentFromCombo();
         }
     },
 
     onAddClick: function() {
-        this.addRecord();
+        this.doCreateAlignmentFromCombo();
     },
 
-    addRecord: function() {
-        var me = this,
-            gridPanel = me.getView(),
-            lookupCombo = me.lookupReference('lookupCombo'),
-            sparkpoint = gridPanel.getSparkpoint(),
-            standard = lookupCombo.getSelectedRecord(),
-            alignment = standard && Ext.create('SparkRepositoryManager.model.SparkpointAlignment', {
-                asn_id: standard.getId(),
-                sparkpoint_id: sparkpoint.getId()
-            });
+    doCreateAlignmentFromCombo: function() {
+        var lookupCombo = this.lookupReference('lookupCombo'),
+            standard = lookupCombo.getSelectedRecord();
 
-        if (!alignment) {
-            return;
-        }
-
-        gridPanel.mask('Saving…');
-        alignment.save({
-            success: function() {
-                gridPanel.getStore().add(alignment);
+        this.getView().createAlignment(standard, function(alignment, success) {
+            if (success) {
                 lookupCombo.clearValue();
-                gridPanel.unmask();
-                sparkpoint.set('alignments_count', sparkpoint.get('alignments_count') + 1);
-            },
-            failure: function(edge, operation) {
-                var response = operation.getError().response,
-                    responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
-                    message = (responseData && responseData.message) || 'An unknown failure occured, please try again later or contact your technical support';
-
-                Ext.Msg.alert('Failed to save alignment', message.replace(/.*ERROR:\s*/, ''));
-                gridPanel.unmask();
             }
         });
     }

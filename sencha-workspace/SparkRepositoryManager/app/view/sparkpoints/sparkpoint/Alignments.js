@@ -74,5 +74,39 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
             store.clearFilter(true);
             store.removeAll();
         }
+    },
+
+    createAlignment: function(standard, callback, scope) {
+        var me = this,
+            sparkpoint = me.getSparkpoint(),
+            alignment = standard && Ext.create('SparkRepositoryManager.model.SparkpointAlignment', {
+                asn_id: standard.getId(),
+                sparkpoint_id: sparkpoint.getId()
+            });
+
+        if (!alignment) {
+            return;
+        }
+
+        me.mask('Saving…');
+        alignment.save({
+            success: function() {
+                me.getStore().add(alignment);
+                sparkpoint.set('alignments_count', sparkpoint.get('alignments_count') + 1);
+                me.unmask();
+
+                Ext.callback(callback, scope, [alignment, true]);
+            },
+            failure: function(edge, operation) {
+                var response = operation.getError().response,
+                    responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
+                    message = (responseData && responseData.message) || 'An unknown failure occured, please try again later or contact your technical support';
+
+                Ext.Msg.alert('Failed to save alignment', message.replace(/.*ERROR:\s*/, ''));
+                me.unmask();
+
+                Ext.callback(callback, scope, [alignment, false]);
+            }
+        });
     }
 });

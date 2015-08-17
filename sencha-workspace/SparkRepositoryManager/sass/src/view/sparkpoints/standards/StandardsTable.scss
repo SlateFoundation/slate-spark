@@ -1,7 +1,11 @@
 .standard-sparkpoint-seed, .standard-sparkpoint-align {
     display: none;
+}
 
-	.x-grid-tree-node-leaf & {
-		display: inline-block;
-	}
+.x-grid-tree-node-leaf .standard-sparkpoint-seed {
+	display: inline-block;
+}
+
+.sparkpoint-selected .x-grid-tree-node-leaf .standard-sparkpoint-align {
+	display: inline-block;
 }

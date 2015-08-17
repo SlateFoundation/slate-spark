@@ -97,7 +97,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 change: 'onStandardsSearchChange'
             },
             standardsTable: {
-                selectionchange: 'onStandardSelectionChange'
+                selectionchange: 'onStandardSelectionChange',
+                sparkpointalignclick: 'onStandardSparkpointAlignClick'
             }
         }
     },
@@ -407,4 +408,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             selModel.deselectAll();
         }
     },
+
+    onStandardSparkpointAlignClick: function(standardsTable, standard) {
+        this.getAlignmentsTable().createAlignment(standard);
+    }
 });

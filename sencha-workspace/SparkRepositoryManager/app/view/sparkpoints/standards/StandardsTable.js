@@ -59,13 +59,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         xtype: 'actioncolumn',
         items: [
             {
-                action: 'sparkpoint-seed',
+                action: 'sparkpointseed',
                 iconCls: 'standard-sparkpoint-seed glyph-success',
                 glyph: 0xf055, // fa-plus-circle
                 tooltip: 'Create new sparkpoint from this standard'
             },
             {
-                action: 'sparkpoint-align',
+                action: 'sparkpointalign',
                 iconCls: 'standard-sparkpoint-align',
                 glyph: 0xf0c1, // fa-link
                 tooltip: 'Align selected sparkpoint to this standard'
