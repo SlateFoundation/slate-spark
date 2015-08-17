@@ -32,6 +32,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointRelationshipTabPanel: 'srm-sparkpoints-sparkpointpanel tabpanel',
             dependenciesTable: 'srm-sparkpoints-sparkpointdependencies',
             dependentsTable: 'srm-sparkpoints-sparkpointdependents',
+            alignmentsTable: 'srm-sparkpoints-sparkpointalignments',
 
             documentsTable: 'srm-sparkpoints-documentstable',
             standardsTable: 'srm-sparkpoints-standardstable',
@@ -195,10 +196,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             value: sparkpoint.getId()
         }]);
 
-        me.getSparkpointsAlignmentsStore().filter([{
-            property: 'sparkpoint_id',
-            value: sparkpoint.getId()
-        }]);
+        me.getAlignmentsTable().setSparkpoint(sparkpoint);
     },
 
     onSparkpointEdgesLoad: function(edgesStore) {

@@ -9,6 +9,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
 
     controller: 'srm-sparkpoints-sparkpointalignments',
 
+    config: {
+        sparkpoint: null
+    },
+
     title: 'Alignments',
 
     store: 'sparkpoints.Alignments',
@@ -45,10 +49,18 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
             xtype: 'srm-field-standardlookup'
         },{
             reference: 'addButton',
+
             xtype: 'button',
             action: 'add',
             disabled: true,
             text: 'Add'
         }]
-    }]
+    }],
+
+    updateSparkpoint: function(sparkpoint) {
+        this.getStore().filter([{
+            property: 'sparkpoint_id',
+            value: sparkpoint.getId()
+        }]);
+    }
 });

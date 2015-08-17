@@ -11,11 +11,13 @@ if (!empty($_GET['sparkpoint_id']) && ctype_digit($_GET['sparkpoint_id'])) {
 
 
 // declare record converter
-$convertRecord = function(&$record) use ($include, $sparkpointId) {
+$convertRecord = function(&$record) use ($include) {
 
-    $record['metadata'] = json_decode($record['metadata'], true);
+    if (!empty($record['metadata'])) {
+        $record['metadata'] = json_decode($record['metadata'], true);
+    }
 
-    if (in_array('standard', $include) && $sparkpointId) {
+    if (in_array('standard', $include)) {
         $record['standard'] = PostgresPDO::query(
             'SELECT * FROM standards_nodes WHERE asn_id = :asn_id',
             [
@@ -28,27 +30,71 @@ $convertRecord = function(&$record) use ($include, $sparkpointId) {
 
 // handle route /
 if (!$recordId = array_shift(Site::$pathStack)) {
-    $where = [];
 
-    if ($sparkpointId) {
-        $where[] = 'sparkpoint_id = ' . $sparkpointId;
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $alignments = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            $set = [];
+
+            if (!empty($requestData['sparkpoint_id']) && is_int($requestData['sparkpoint_id'])) {
+                $set['sparkpoint_id'] = $requestData['sparkpoint_id'];
+            } else {
+                JSON::error('sparkpoint_id required', 400);
+            }
+
+            if (!empty($requestData['asn_id'])) {
+                $set['asn_id'] = $requestData['asn_id'];
+            } else {
+                JSON::error('asn_id required', 400);
+            }
+
+            try {
+                $alignment = PostgresPDO::insert('sparkpoint_standard_alignments', $set, '*');
+            } catch (\PDOException $e) {
+                JSON::error($e->getMessage(), 500);
+            }
+
+            if (!$alignment) {
+                JSON::error('Failed to write edge', 500);
+            }
+
+            $convertRecord($alignment);
+            $alignments[] = $alignment;
+        }
+
+        JSON::respond($alignments);
+
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+        $where = [];
+    
+        if ($sparkpointId) {
+            $where[] = 'sparkpoint_id = ' . $sparkpointId;
+        }
+    
+        $query = 'SELECT sparkpoint_standard_alignments.* FROM sparkpoint_standard_alignments';
+    
+        if (count($where)) {
+            $query .= ' WHERE ('. implode(') AND (', $where) .')';
+        }
+    
+        $records = PostgresPDO::query($query);
+    
+        // convert generator to an array so we can transform some of its values before responding
+        $records = iterator_to_array($records);
+        foreach ($records AS &$record) {
+            $convertRecord($record);
+        }
+    
+        JSON::respond($records);
+
+    } else {
+
+        JSON::error('Only POST/GET supported for this route', 405);
+
     }
-
-    $query = 'SELECT sparkpoint_standard_alignments.* FROM sparkpoint_standard_alignments';
-
-    if (count($where)) {
-        $query .= ' WHERE ('. implode(') AND (', $where) .')';
-    }
-
-    $records = PostgresPDO::query($query);
-
-    // convert generator to an array so we can transform some of its values before responding
-    $records = iterator_to_array($records);
-    foreach ($records AS &$record) {
-        $convertRecord($record);
-    }
-
-    JSON::respond($records);
 }
 
 

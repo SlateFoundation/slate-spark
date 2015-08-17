@@ -26,7 +26,7 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
         'source_sparkpoint_id',
         'rel_type',
         'metadata',
-        'other_sparkpoint',
+        { name: 'other_sparkpoint', persist: false },
         { name: 'other_sparkpoint_code', mapping: 'other_sparkpoint.code' },
         
         // prevent tree meta-fields from being written to server

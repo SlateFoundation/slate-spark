@@ -83,7 +83,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
         }
 
         JSON::respond($edges);
-        
+
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $where = [];
