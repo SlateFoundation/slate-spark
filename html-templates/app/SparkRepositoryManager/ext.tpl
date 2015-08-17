@@ -1,5 +1,6 @@
 {extends app/ext.tpl}
 
 {block css-loader}
-    {cssmin lato.css}
+    {cssmin fonts/lato.css}
+    {cssmin fonts/font-awesome.css}
 {/block}
