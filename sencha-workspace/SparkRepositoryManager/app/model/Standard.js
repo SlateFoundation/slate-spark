@@ -7,10 +7,21 @@ Ext.define('SparkRepositoryManager.model.Standard', {
 
 
     tooltipTpl: [
-        '<p>The full description of <em>{Code}</em> can be displayed here <strong>with arbitrary markup</strong></p>',
-        '<tpl if="Description">',
-            '<p>{Description}</p>',
-        '</tpl>'
+        '<dl>',
+            '<tpl if="subject">',
+                '<dt>Subject</dt>',
+                '<dt>{subject}</dt>',
+            '</tpl>',
+            '<tpl if="jurisdiction">',
+                '<dt>Jurisdiction</dt>',
+                '<dt>{jurisdiction}</dt>',
+            '</tpl>',
+            '<tpl if="asn_id">',
+                '<dt>ASN ID</dt>',
+                '<dt>{asn_id}</dt>',
+            '</tpl>',
+        '</dl>',
+        '<p>{title}</p>'
     ],
 
     proxy: {

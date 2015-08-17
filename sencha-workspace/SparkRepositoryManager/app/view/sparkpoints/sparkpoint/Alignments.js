@@ -24,8 +24,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
     columns: [{
         flex: 1,
 
-        // xtype: 'srm-standardcolumn',
-        dataIndex: 'asn_id'
+        xtype: 'srm-standardcolumn'
     },{
         width: 32,
 
