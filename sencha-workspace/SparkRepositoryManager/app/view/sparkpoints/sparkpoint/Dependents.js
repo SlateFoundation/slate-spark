@@ -37,9 +37,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
         dataIndex: 'other_sparkpoint_code',
         abbreviate: false
     },{
+        width: 32,
+
         xtype: 'actioncolumn',
         action: 'delete',
-        width: 32,
         // TODO: remove icon config and uncomment glyph config when glyphs are working
         // glyph: 0xf056, // fa-minus-circle
         icon: 'http://www.goodsync.com/images/icons/C_Dis_Cir.png',
