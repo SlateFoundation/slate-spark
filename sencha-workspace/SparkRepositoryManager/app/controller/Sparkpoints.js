@@ -65,7 +65,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             sparkpointsTable: {
                 beforedeselect: 'onSparkpointTableBeforeDeselect',
-                select: 'onSparkpointTableSelect'
+                selectionchange: 'onSparkpointTableSelectionChange'
             },
             'srm-sparkpoints-grid button[action=create]': {
                 click: 'onCreateSparkpointClick'
@@ -95,7 +95,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 change: 'onStandardsSearchChange'
             },
             standardsTable: {
-                select: 'onStandardSelect'
+                selectionchange: 'onStandardSelectionChange'
             }
         }
     },
@@ -127,7 +127,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onContentAreaSelectionChange: function(contentAreasTable, contentAreas) {
+    onContentAreaSelectionChange: function(selModel, contentAreas) {
         var contentArea = contentAreas[0],
             contentAreaPanel = this.getContentAreaPanel();
 
@@ -179,32 +179,39 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onSparkpointTableSelect: function(selModel, sparkpoint) {
-        this.getMainPanel().setSelectedSparkpoint(sparkpoint);
+    onSparkpointTableSelectionChange: function(selModel, sparkpoints) {
+        this.getMainPanel().setSelectedSparkpoint(sparkpoints[0] || null);
     },
 
     onSelectedSparkpointChange: function(mainPanel, sparkpoint) {
-        var me = this;
+        var me = this,
+            selModel = me.getSparkpointsTable().getSelectionModel(),
+            sparkpointPanel = me.getSparkpointPanel();
 
-        me.getSparkpointsTable().getSelectionModel().select(sparkpoint);
-
-        me.getSparkpointForm().loadRecord(sparkpoint);
-        me.getSparkpointPanel().enable();
-
-        me.getDependenciesTable().setRootNode({
-            expanded: true,
-            source_sparkpoint: sparkpoint
-        });
-
-        me.getDependentsTable().setRootNode({
-            expanded: true,
-            target_sparkpoint: sparkpoint
-        });
-
-        me.getSparkpointsEdgesStore().filter([{
-            property: 'sparkpoint_id',
-            value: sparkpoint.getId()
-        }]);
+        if (sparkpoint) {
+            selModel.select(sparkpoint);
+    
+            me.getSparkpointForm().loadRecord(sparkpoint);
+            sparkpointPanel.enable();
+    
+            me.getDependenciesTable().setRootNode({
+                expanded: true,
+                source_sparkpoint: sparkpoint
+            });
+    
+            me.getDependentsTable().setRootNode({
+                expanded: true,
+                target_sparkpoint: sparkpoint
+            });
+    
+            me.getSparkpointsEdgesStore().filter([{
+                property: 'sparkpoint_id',
+                value: sparkpoint.getId()
+            }]);
+        } else {
+            selModel.deselectAll();
+            sparkpointPanel.disable();
+        }
 
         me.getAlignmentsTable().setSparkpoint(sparkpoint);
     },
@@ -365,12 +372,18 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         Ext.resumeLayouts(true);
     },
 
-    onStandardSelect: function(standardsTable, standard) {
-        this.getMainPanel().setSelectedStandard(standard);
+    onStandardSelectionChange: function(standardsTable, standards) {
+        this.getMainPanel().setSelectedStandard(standards[0] || null);
     },
 
     onSelectedStandardChange: function(mainPanel, standard) {
-        this.getStandardsTable().getSelectionModel().select(standard);
-        standard.expand();
+        var selModel = this.getStandardsTable().getSelectionModel();
+
+        if (standard) {
+            selModel.select(standard);
+            standard.expand();
+        } else {
+            selModel.deselectAll();
+        }
     },
 });

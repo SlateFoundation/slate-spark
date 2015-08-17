@@ -63,9 +63,16 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
     }],
 
     updateSparkpoint: function(sparkpoint) {
-        this.getStore().filter([{
-            property: 'sparkpoint_id',
-            value: sparkpoint.getId()
-        }]);
+        var store = this.getStore();
+
+        if (sparkpoint) {
+            store.filter([{
+                property: 'sparkpoint_id',
+                value: sparkpoint.getId()
+            }]);
+        } else {
+            store.clearFilter(true);
+            store.removeAll();
+        }
     }
 });

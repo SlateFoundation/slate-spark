@@ -13,6 +13,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         selectedStandard: null
     },
 
+    cls: ['no-sparkpoint-selected', 'no-standard-selected'],
+
     layout: 'border',
 
     items: [{
@@ -59,10 +61,30 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
     }],
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
-        this.fireEvent('selectedsparkpointchange', this, sparkpoint, oldSparkpoint);
+        var me = this;
+
+        if (sparkpoint && !oldSparkpoint) {
+            me.addCls('sparkpoint-selected').removeCls('no-sparkpoint-selected');
+        }
+
+        if (!sparkpoint) {
+            me.addCls('no-sparkpoint-selected').removeCls('sparkpoint-selected');
+        }
+
+        me.fireEvent('selectedsparkpointchange', me, sparkpoint, oldSparkpoint);
     },
 
     updateSelectedStandard: function(standard, oldStandard) {
-        this.fireEvent('selectedstandardchange', this, standard, oldStandard);
+        var me = this;
+
+        if (standard && !oldStandard) {
+            me.addCls('standard-selected').removeCls('no-standard-selected');
+        }
+
+        if (!standard) {
+            me.addCls('no-standard-selected').removeCls('standard-selected');
+        }
+
+        me.fireEvent('selectedstandardchange', me, standard, oldStandard);
     }
 });
