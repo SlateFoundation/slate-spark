@@ -110,7 +110,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
 
     } else {
 
-        JSON::error('Only POST/GET supported for this route', 405);
+        JSON::error('Only POST/GET/DELETE supported for this route', 405);
 
     }
 }

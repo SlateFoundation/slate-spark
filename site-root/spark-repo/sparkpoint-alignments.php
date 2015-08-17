@@ -66,6 +66,22 @@ if (!$recordId = array_shift(Site::$pathStack)) {
 
         JSON::respond($alignments);
 
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+
+        $alignments = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            $set = [];
+
+            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+                JSON::error('id required', 400);
+            }
+
+            $alignments[] = PostgresPDO::delete('sparkpoint_standard_alignments', ['id' => $requestData['id']], '*');
+        }
+
+        JSON::respond($alignments);
+
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         $where = [];
@@ -92,7 +108,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
 
     } else {
 
-        JSON::error('Only POST/GET supported for this route', 405);
+        JSON::error('Only POST/GET/DELETE supported for this route', 405);
 
     }
 }
