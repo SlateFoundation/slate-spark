@@ -9,11 +9,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
     ],
 
     config: {
+        selectedContentArea: null,
         selectedSparkpoint: null,
+        selectedDocument: null,
         selectedStandard: null
     },
 
-    cls: ['no-sparkpoint-selected', 'no-standard-selected'],
+    cls: ['no-contentarea-selected', 'no-sparkpoint-selected', 'no-document-selected', 'no-standard-selected'],
 
     layout: 'border',
 
@@ -60,6 +62,20 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         xtype: 'srm-sparkpoints-contentareapanel'
     }],
 
+    updateSelectedContentArea: function(contentArea, oldContentArea) {
+        var me = this;
+
+        if (contentArea && !oldContentArea) {
+            me.addCls('contentarea-selected').removeCls('no-contentarea-selected');
+        }
+
+        if (!contentArea) {
+            me.addCls('no-contentarea-selected').removeCls('contentarea-selected');
+        }
+
+        me.fireEvent('selectedcontentareachange', me, contentArea, oldContentArea);
+    },
+
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
         var me = this;
 
@@ -72,6 +88,20 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         }
 
         me.fireEvent('selectedsparkpointchange', me, sparkpoint, oldSparkpoint);
+    },
+
+    updateSelectedDocument: function(document, oldDocument) {
+        var me = this;
+
+        if (document && !oldDocument) {
+            me.addCls('document-selected').removeCls('no-document-selected');
+        }
+
+        if (!document) {
+            me.addCls('no-document-selected').removeCls('document-selected');
+        }
+
+        me.fireEvent('selecteddocumentchange', me, document, oldDocument);
     },
 
     updateSelectedStandard: function(standard, oldStandard) {

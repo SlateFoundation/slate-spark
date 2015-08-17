@@ -52,7 +52,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         control: {
             mainPanel: {
+                selectedcontentareachange: 'onSelectedContentAreaChange',
                 selectedsparkpointchange: 'onSelectedSparkpointChange',
+                selecteddocumentchange: 'onSelectedDocumentChange',
                 selectedstandardchange: 'onSelectedStandardChange'
             },
             contentAreasTable: {
@@ -89,7 +91,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
             documentsTable: {
                 boxready: 'onDocumentsTableReady',
-                select: 'onDocumentSelect'
+                selectionchange: 'onDocumentSelectionChange'
             },
             'srm-sparkpoints-standardstable jarvus-searchfield': {
                 change: 'onStandardsSearchChange'
@@ -128,8 +130,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onContentAreaSelectionChange: function(selModel, contentAreas) {
-        var contentArea = contentAreas[0],
-            contentAreaPanel = this.getContentAreaPanel();
+        this.getMainPanel().setSelectedContentArea(contentAreas[0] || null);
+    },
+
+    onSelectedContentAreaChange: function(mainPanel, contentArea) {
+        var contentAreaPanel = this.getContentAreaPanel();
 
         if (contentArea) {
             this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
@@ -331,10 +336,26 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onDocumentSelect: function(documentsTable, document) {
-        this.getDocumentStandardsStore().setRootNode(Ext.applyIf({
-            expanded: true
-        }, document.getData()));
+    onDocumentSelectionChange: function(selModel, documents) {
+        this.getMainPanel().setSelectedDocument(documents[0] || null);
+    },
+
+    onSelectedDocumentChange: function(mainPanel, document) {
+        var standardsTable = this.getStandardsTable(),
+            standardsStore = standardsTable.getStore();
+
+        if (document) {
+            standardsStore.setRootNode(Ext.applyIf({
+                expanded: true
+            }, document.getData()));
+        } else {
+            standardsStore.setRootNode({
+                expanded: true,
+                children: []
+            });
+        }
+
+        standardsTable.setDisabled(!document);
     },
 
     onStandardsSearchChange: function(field, query) {
@@ -372,7 +393,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         Ext.resumeLayouts(true);
     },
 
-    onStandardSelectionChange: function(standardsTable, standards) {
+    onStandardSelectionChange: function(selModel, standards) {
         this.getMainPanel().setSelectedStandard(standards[0] || null);
     },
 

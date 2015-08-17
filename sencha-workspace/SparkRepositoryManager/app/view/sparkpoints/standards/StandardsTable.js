@@ -141,7 +141,6 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
 
     listeners: {
         load: function() {
-            this.enable();
             this.autoExpand();
         }
     }
