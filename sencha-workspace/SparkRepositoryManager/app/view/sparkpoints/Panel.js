@@ -8,6 +8,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         'SparkRepositoryManager.view.sparkpoints.standards.StandardsTable'
     ],
 
+    config: {
+        selectedSparkpoint: null,
+        selectedStandard: null
+    },
+
     layout: 'border',
 
     items: [{
@@ -51,5 +56,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         region: 'center',
 
         xtype: 'srm-sparkpoints-contentareapanel'
-    }]
+    }],
+
+    updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
+        this.fireEvent('selectedsparkpointchange', this, sparkpoint, oldSparkpoint);
+    },
+
+    updateSelectedStandard: function(standard, oldStandard) {
+        this.fireEvent('selectedstandardchange', this, standard, oldStandard);
+    }
 });

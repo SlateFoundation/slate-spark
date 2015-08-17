@@ -51,6 +51,10 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         },
 
         control: {
+            mainPanel: {
+                selectedsparkpointchange: 'onSelectedSparkpointChange',
+                selectedstandardchange: 'onSelectedStandardChange'
+            },
             contentAreasTable: {
                 beforeselect: 'onContentAreaBeforeSelect',
                 selectionchange: 'onContentAreaSelectionChange',
@@ -60,8 +64,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 click: 'onCreateContentAreaClick'
             },
             sparkpointsTable: {
-                beforedeselect: 'onSparkpointBeforeDeselect',
-                select: 'onSparkpointSelect'
+                beforedeselect: 'onSparkpointTableBeforeDeselect',
+                select: 'onSparkpointTableSelect'
             },
             'srm-sparkpoints-grid button[action=create]': {
                 click: 'onCreateSparkpointClick'
@@ -168,15 +172,21 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         this.getSparkpointAbbreviationField().focus(true);
     },
 
-    onSparkpointBeforeDeselect: function(sparkpointTable, sparkpoint) {
+    onSparkpointTableBeforeDeselect: function(sparkpointTable, sparkpoint) {
         if (this.getSparkpointForm().isDirty()) {
             Ext.Msg.alert('Unsaved changes', '<p>You have unsaved changes in the sparkpoint editor.</p><p>Please save or discard them before moving to another sparkpoint</p>');
             return false;
         }
     },
 
-    onSparkpointSelect: function(selModel, sparkpoint) {
+    onSparkpointTableSelect: function(selModel, sparkpoint) {
+        this.getMainPanel().setSelectedSparkpoint(sparkpoint);
+    },
+
+    onSelectedSparkpointChange: function(mainPanel, sparkpoint) {
         var me = this;
+
+        me.getSparkpointsTable().getSelectionModel().select(sparkpoint);
 
         me.getSparkpointForm().loadRecord(sparkpoint);
         me.getSparkpointPanel().enable();
@@ -356,6 +366,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onStandardSelect: function(standardsTable, standard) {
+        this.getMainPanel().setSelectedStandard(standard);
+    },
+
+    onSelectedStandardChange: function(mainPanel, standard) {
+        this.getStandardsTable().getSelectionModel().select(standard);
         standard.expand();
-    }
+    },
 });
