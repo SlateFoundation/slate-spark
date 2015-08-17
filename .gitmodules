@@ -1,26 +1,26 @@
 [submodule "sencha-workspace/packages/emergence-apikit"]
 	path = sencha-workspace/packages/emergence-apikit
-	url = git@github.com:JarvusInnovations/emergence-apikit.git
+	url = https://github.com/JarvusInnovations/emergence-apikit.git
 [submodule "sencha-workspace/packages/jarvus-apikit"]
 	path = sencha-workspace/packages/jarvus-apikit
-	url = git@github.com:JarvusInnovations/jarvus-apikit.git
+	url = https://github.com/JarvusInnovations/jarvus-apikit.git
 [submodule "sencha-workspace/packages/jarvus-lazydata"]
 	path = sencha-workspace/packages/jarvus-lazydata
-	url = git@github.com:JarvusInnovations/jarvus-lazydata.git
+	url = https://github.com/JarvusInnovations/jarvus-lazydata.git
 	branch = ext/5/1/1/451
 [submodule "sencha-workspace/packages/jarvus-ext-searchfield"]
 	path = sencha-workspace/packages/jarvus-ext-searchfield
-	url = git@github.com:JarvusInnovations/jarvus-ext-searchfield.git
+	url = https://github.com/JarvusInnovations/jarvus-ext-searchfield.git
 [submodule "sencha-workspace/packages/jarvus-draw-dag"]
 	path = sencha-workspace/packages/jarvus-draw-dag
-	url = git@github.com:JarvusInnovations/jarvus-draw-dag.git
+	url = https://github.com/JarvusInnovations/jarvus-draw-dag.git
 [submodule "sencha-workspace/packages/slate-theme"]
 	path = sencha-workspace/packages/slate-theme
-	url = git@github.com:SlateFoundation/slate-theme.git
+	url = https://github.com/SlateFoundation/slate-theme.git
 	branch = releases/v2
 [submodule "sencha-workspace/packages/jarvus-hotfixes"]
 	path = sencha-workspace/packages/jarvus-hotfixes
-	url = git@github.com:JarvusInnovations/sencha-hotfixes.git
+	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
 	branch = ext/5/1/1/451
 [submodule "sencha-workspace/packages/jarvus-ext-actionevents"]
 	path = sencha-workspace/packages/jarvus-ext-actionevents
