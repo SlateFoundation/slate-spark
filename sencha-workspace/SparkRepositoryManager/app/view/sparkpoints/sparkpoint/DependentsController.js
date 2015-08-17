@@ -1,58 +1,67 @@
 /**
  * TODO:
- * - Implement add UI here
+ * - Use primary edges store for add/remove operations and have tree stores mirror it? Then main controller can manage counts by listening to the edges store
+ * - Deduplicate code between this and the dependencies controller
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.srm-sparkpoints-sparkpointdependents',
+    requires: [
+        'SparkRepositoryManager.model.SparkpointEdge'
+    ],
 
     control: {
         '#': {
             deleteclick: 'onDeleteClick'
         },
         'combo': {
-            afterrender: 'onComboAfterRender',
-            select: 'onComboSelect',
+            beforequery: 'onComboBeforeQuery',
             change: 'onComboChange',
             specialKey: 'onComboSpecialKey'
         },
-        'button[action="add"]': {
+        'button[action=add]': {
             click: 'onAddClick'
         }
     },
 
     onDeleteClick: function(grid,rec) {
-        var me = this;
+        var treePanel = this.getView(),
+            sparkpoint = treePanel.getRootNode().get('target_sparkpoint');
 
         Ext.Msg.confirm('Deleting Dependent', 'Are you sure you want to delete this dependent?', function(btn) {
-            if (btn == 'yes') {
-                rec.erase();
-                me.filterCombo();
+            if (btn != 'yes') {
+                return;
             }
+
+            treePanel.mask('Deleting…');
+            rec.erase({
+                success: function() {
+                    sparkpoint.set('dependents_count', sparkpoint.get('dependents_count') - 1);
+                    treePanel.unmask();
+                }
+            });
         });
     },
 
-    onComboAfterRender: function() {
-        this.filterCombo();
+    onComboBeforeQuery: function(queryPlan) {
+        var treeStore = this.getView().getStore(),
+            excludeSparkpointIds = Ext.Array.union(
+                treeStore.collect('source_sparkpoint_id'),
+                treeStore.collect('target_sparkpoint_id'),
+                treeStore.getRootNode().get('target_sparkpoint').getId()
+            );
+
+        queryPlan.combo.getStore().filterBy(function(sparkpoint) {
+            return excludeSparkpointIds.indexOf(sparkpoint.getId()) == -1;
+        });
     },
 
-    onComboSelect: function(combo) {
-        var treepanel = combo.up('treepanel'),
-            addButton = treepanel.down('button[action="add"]');
-
-        addButton.enable();
-    },
-
-    onComboChange: function(combo) {
-        var button = combo.up('toolbar').down('button');
-
-        if (!combo.findRecordByValue(combo.getValue())) {
-            button.disable();
-        }
+    onComboChange: function(lookupCombo) {
+        this.lookupReference('addButton').setDisabled(!lookupCombo.getSelectedRecord());
     },
 
     onComboSpecialKey: function(combo, e) {
-        if (e.getKey() == e.ENTER && combo.findRecordByValue(combo.getValue())) {
+        if (e.getKey() == e.ENTER) {
             this.addRecord();
         }
     },
@@ -61,38 +70,42 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
         this.addRecord();
     },
 
-    // TODO: just adding rec to root for now, but I would think this will require a server reload to rebuild tree store.
     addRecord: function() {
-        var treepanel = this.getView(),
-            treeStore = treepanel.getStore(),
-            root = treeStore.getRoot(),
-            button = treepanel.down('button'),
-            combo = treepanel.down('combo'),
-            comboStore = combo.getStore(),
-            comboIdx = comboStore.find('code',combo.getValue()),
-            comboRec = comboStore.getAt(comboIdx);
+        var me = this,
+            treePanel = me.getView(),
+            treeRootNode = treePanel.getRootNode(),
+            lookupCombo = me.lookupReference('lookupCombo'),
+            thisSparkpoint = treeRootNode.get('target_sparkpoint'),
+            otherSparkpoint = lookupCombo.getSelectedRecord(),
+            edge = otherSparkpoint && Ext.create('SparkRepositoryManager.model.SparkpointEdge', {
+                rel_type: 'dependency',
+                target_sparkpoint_id: thisSparkpoint.getId(),
+                source_sparkpoint_id: otherSparkpoint.getId(),
+            });
 
-        root.set('leaf', false);
+        if (!edge) {
+            return;
+        }
 
-        root.appendChild(Ext.apply(comboRec.getData(),{leaf:true}));
+        treePanel.mask('Saving…');
+        edge.save({
+            params: {
+                sparkpoint_id: thisSparkpoint.getId()
+            },
+            success: function() {
+                treeRootNode.appendChild(edge);
+                lookupCombo.clearValue();
+                treePanel.unmask();
+                thisSparkpoint.set('dependents_count', thisSparkpoint.get('dependents_count') + 1);
+            },
+            failure: function(edge, operation) {
+                var response = operation.getError().response,
+                    responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
+                    message = (responseData && responseData.message) || 'An unknown failure occured, please try again later or contact your technical support';
 
-        // TODO: These statements would be done in a callback if we reload this tree panel's store
-        combo.clearValue();
-        button.disable();
-        this.filterCombo();
-    },
-
-    filterCombo: function() {
-        var treepanel = this.getView(),
-            treeStore = treepanel.getStore(),
-            combo = treepanel.down('combo'),
-            comboStore = combo.getStore();
-
-        comboStore.filterBy(function(comboRec) {
-            if (treeStore.find('code',comboRec.get('code')) !== -1) {
-                return false;
+                Ext.Msg.alert('Failed to save dependent', message.replace(/.*ERROR:\s*/, ''));
+                treePanel.unmask();
             }
-            return true;
         });
     }
 });

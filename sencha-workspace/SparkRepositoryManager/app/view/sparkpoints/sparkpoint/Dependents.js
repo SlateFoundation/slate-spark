@@ -16,6 +16,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     store: {
         type: 'tree',
         model: 'SparkRepositoryManager.model.SparkpointEdge',
+        autoSync: true,
         root: {
             children: []
         }
@@ -50,9 +51,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
 
         xtype: 'toolbar',
         items: [{
-            xtype: 'srm-field-sparkpointlookup',
-            flex: 1
+            reference: 'lookupCombo',
+            flex: 1,
+
+            xtype: 'srm-field-sparkpointlookup'
         },{
+            reference: 'addButton',
+
             xtype: 'button',
             action: 'add',
             disabled: true,
