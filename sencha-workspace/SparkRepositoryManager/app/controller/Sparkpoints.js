@@ -356,13 +356,17 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             return;
         }
 
-        documentsTable.getSelectionModel().select(document);
-
-        if (standardsStore.isLoading()) {
-            standardsStore.on('load', selectStandard, null, { single: true });
-        } else {
-            selectStandard();
-        }
+        documentsTable.ensureVisible(document, {
+            animate: true,
+            select: true,
+            callback: function() {
+                if (standardsStore.isLoading()) {
+                    standardsStore.on('load', selectStandard, null, { single: true });
+                } else {
+                    selectStandard();
+                }
+            }
+        });
     },
 
     onDocumentsTableReady: function(documentsTable) {
