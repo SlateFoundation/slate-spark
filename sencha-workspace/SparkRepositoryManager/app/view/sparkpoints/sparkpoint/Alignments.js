@@ -1,16 +1,15 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
     extend: 'Ext.grid.Panel',
     xtype: 'srm-sparkpoints-sparkpointalignments',
-
     requires: [
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsController',
-        'SparkRepositoryManager.model.Standard',
+        'SparkRepositoryManager.field.StandardLookup',
         'SparkRepositoryManager.column.Standard'
     ],
 
-    title: 'Alignments',
-
     controller: 'srm-sparkpoints-sparkpointalignments',
+
+    title: 'Alignments',
 
     store: 'sparkpoints.Alignments',
 
@@ -18,6 +17,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
     useArrows: true,
     singleExpand: true,
     hideHeaders: true,
+    viewConfig: {
+        emptyText: 'None declared yet'
+    },
 
     columns: [{
         flex: 1,
@@ -38,28 +40,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
 
         xtype: 'toolbar',
         items: [{
-            xtype: 'combobox',
+            reference: 'lookupCombo',
             flex: 1,
-            store:{
-                model: 'SparkRepositoryManager.model.Standard',
-                data: [
-                    { code: 'K.CC.JK.1' },
-                    { code: 'K.CC.JK.2' },
-                    { code: 'K.CC.JK.3' },
-                    { code: 'K.CC.JK.4' },
-                    { code: 'K.CC.JK.5' },
-                    { code: 'K.CC.JK.6' },
-                    { code: 'K.CC.JK.7' },
-                    { code: 'K.CC.JK.8' }
-                ]
-            },
-            queryMode: 'local',
-            displayField: 'code',
-            valueField: 'code',
-            forceSelecton: true,
-            typeAhead: true,
-            allowBlank: true
+
+            xtype: 'srm-field-standardlookup'
         },{
+            reference: 'addButton',
             xtype: 'button',
             action: 'add',
             disabled: true,
