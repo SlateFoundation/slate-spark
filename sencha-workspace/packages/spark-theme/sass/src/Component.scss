@@ -40,3 +40,16 @@ body {
 .page-wrap {
     padding: 1.5em 7.5%;
 }
+
+.content-card {
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(black, .1);
+    padding: 1.5em 2.125em;
+}
+
+.content-card-separator {
+    border: 1px dashed #ccc;
+    border-width: 1px 0 0;
+    margin: 2em 0 1.5em;
+}
+
