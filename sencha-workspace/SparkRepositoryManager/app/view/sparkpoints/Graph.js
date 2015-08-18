@@ -6,41 +6,80 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
     extend:   'Ext.container.Container',
     xtype:    'srm-sparkpoints-graph',
     requires: [
-        'Jarvus.draw.DagContainer',
-        'Jarvus.draw.layout.MaxUpOrDown',
-        'Jarvus.draw.layout.TopDown',
-        'Jarvus.draw.layout.BottomUp'
+        'SparkRepositoryManager.view.sparkpoints.Dag'
     ],
 
     title:  'Graph',
     layout: 'fit',
 
     items: [{
-        xtype:    'jarvus-draw-dagcontainer',
+        xtype:    'srm-sparkpoints-dag',
         // TODO: settings -> config?
         settings: {
             nodes: {
-                label: {
-                    marginWidth:  10,
+                code: {
+                    marginWidth:  8,
+                    marginHeight: 10
+                },
+                title: {
+                    marginWidth:  8,
                     marginHeight: 5
                 },
                 rect:  {
                     width:  50,
                     height: 50,
                     stroke: 'green'
+                },
+                dot:  {
+                    radius: 6,
+                    fill: 'red',
+                    marginHeight: 5,
+                    marginWidth: 8
                 }
             }
         },
         dag:      {
             nodes: {
-                '1': { label: 'Count to 100 by ones and by tens. K.CC.1', highlighted: 1 },
-                '2': { label: 'Number permanence K.CC.4a' },
-                '3': { label: 'Understand how to stop counting K.CC.4b' },
-                '4': { label: 'Do you have a problem with counting? K.G.1,2' },
-                '5': { label: 'Get help. Call 1-800-GAMBLING KG.G.3,4' },
-                '6': { label: 'Math K.CC.2' },
-                '7': { label: 'Hard Math K.CC.3'},
-                '8': { label: 'Harder Math K.CC.4c' }
+                '1': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.1',
+                    teacher_title: 'Original choreography and improvisation of movement sequences begins with basic understanding of the elements of dance.',
+                    dependencies_count: 1
+                },
+                '2': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.1',
+                    teacher_title: 'Identify the elements of dance in planned and improvised dance sequences.',
+                    dependencies_count: 1
+                },
+                '3': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.2',
+                    teacher_title: 'Original movement is generated through improvisational skills and techniques.',
+                    dependencies_count: 5
+                },
+                '4': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.2',
+                    teacher_title: 'Use improvisation to discover.',
+                    dependencies_count: 2
+                },
+                '5': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.3',
+                    teacher_title: 'There are distinct differences between pedestrian movements and formal training in dance.',
+                    dependencies_count: 4
+                },
+                '6': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.3',
+                    teacher_title: 'There are distinct differences between pedestrian movements and formal training in dance.',
+                    dependencies_count: 0
+                },
+                '7': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.3',
+                    teacher_title: 'Demonstrate the difference between pantomime, pedestrian movement, abstract gesture, and dance movement.',
+                    dependencies_count: 1
+                },
+                '8': {
+                    code: 'NJ.ART.GK-2.1.1.2.A.4',
+                    teacher_title: 'The coordination and isolation of different body parts is dependent on the dynamic alignment of the body while standing and moving.',
+                    dependencies_count: 2
+                }
             },
             edges: [
                 [3, 5],
