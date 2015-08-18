@@ -81,12 +81,21 @@ class PostgresPDO
         $query .= ' = (' . implode(',', array_map([__CLASS__, 'quote'], array_values($values))) . ')';
 
         if ($where) {
-            $conditions = [];
-            foreach ($where AS $key => $value) {
-                $conditions[] = $key . ' = ' . static::quote($value);;
+            if (is_array($where)) {
+                $conditions = [];
+
+                foreach ($where AS $key => $value) {
+                    if (is_string($key)) {
+                        $conditions[] = $key . ' = ' . static::quote($value);
+                    } else {
+                        $conditions[] = $value;
+                    }
+                }
+
+                $where = '(' . implode(') AND (', $conditions) . ')';
             }
 
-            $query .= ' WHERE (' . implode(') AND (', $conditions) . ')';
+            $query .= ' WHERE ' . $where;
         }
 
         if ($returning) {
@@ -101,12 +110,21 @@ class PostgresPDO
         $query = 'DELETE FROM ' . $table;
 
         if ($where) {
-            $conditions = [];
-            foreach ($where AS $key => $value) {
-                $conditions[] = $key . ' = ' . static::quote($value);;
+            if (is_array($where)) {
+                $conditions = [];
+
+                foreach ($where AS $key => $value) {
+                    if (is_string($key)) {
+                        $conditions[] = $key . ' = ' . static::quote($value);
+                    } else {
+                        $conditions[] = $value;
+                    }
+                }
+
+                $where = '(' . implode(') AND (', $conditions) . ')';
             }
 
-            $query .= ' WHERE (' . implode(') AND (', $conditions) . ')';
+            $query .= ' WHERE ' . $where;
         }
 
         if ($returning) {
