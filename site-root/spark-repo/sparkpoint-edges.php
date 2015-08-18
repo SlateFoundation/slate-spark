@@ -73,8 +73,6 @@ if (!$recordId = array_shift(Site::$pathStack)) {
         $edges = [];
 
         foreach (JSON::getRequestData() AS $requestData) {
-            $set = [];
-
             if (empty($requestData['id']) || !is_int($requestData['id'])) {
                 JSON::error('id required', 400);
             }
