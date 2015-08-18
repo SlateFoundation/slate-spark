@@ -1,0 +1,39 @@
+.x-form-fieldset {
+    margin: 0;
+
+    .x-field {
+        border: none;
+    }
+}
+
+.x-form-fieldset-title {
+    font-family: Sanchez;
+    font-size: x-large;
+    font-weight: normal;
+    margin: 0 0 .5em;
+}
+
+.x-field,
+.x-form-fieldset {
+    + .x-field,
+    + .x-form-fieldset {
+        margin-top: 1.5em;
+    }
+}
+
+.composite-field {
+    .x-form-fieldset-title {
+        color: $field-label-color;
+        font-family: $field-label-font-family;
+        font-size: $field-label-font-size;
+        font-weight: $field-label-font-weight;
+    }
+
+    .x-label-align-left > .x-form-label {
+        padding: .7em .7em 0 0;
+    }
+
+    .x-field + .x-field {
+        margin-top: .75em;
+    }
+}
