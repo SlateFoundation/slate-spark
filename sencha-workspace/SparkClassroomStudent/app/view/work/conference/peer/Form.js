@@ -2,50 +2,67 @@
 Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
     extend: 'Ext.form.Panel',
     xtype: 'spark-student-work-conference-peer-form',
+    cls: 'content-card',
 
     config: {
+        defaults: {
+            labelAlign: 'top'
+        },
         items: [
             {
-                xtype: 'textfield',
-                label: 'Restate the Learn target in your own words',
-                placeHodler: 'Active text field with green line belowe.'
+                xtype: 'textareafield',
+                label: 'Restate the Learn target in your own words.',
+                maxRows: 3,
             },
             {
                 xtype: 'textareafield',
-                label: 'Describe the steps used to show understanding of the skill'
+                label: 'Describe the steps used to show understanding of the skill.',
+                maxRows: 6
             },
             {
                 xtype: 'fieldset',
-                label: 'Cite 3 real world examples of the learning target',
+                cls: 'composite-field',
+                title: 'Cite three real world examples of the learning target.',
+                defaults: {
+                    xtype: 'textfield',
+                    labelWidth: '2.5em'
+                },
                 items: [
                     {
-                        xtype: 'textfield',
-                        label: 1
+                        label: '1.'
                     },
                     {
-                        xtype: 'textfield',
-                        label: 2
+                        label: '2.'
                     },
                     {
-                        xtype: 'textfield',
-                        label: 3
+                        label: '3.'
                     }
                 ]
             },
             {
                 xtype: 'component',
-                html: '<h4>Peer Conferenc:</h4> (optional)'
+                html: '<hr class="content-card-separator">'
             },
             {
-                xtype: 'selectfield',
-                label: 'Peer\'s Name',
-                options: [
-                    "stuff"
+                xtype: 'fieldset',
+                title: 'Peer Conference <small>(Optional)</small>',
+                defaults: {
+                    labelAlign: 'top'
+                },
+                items: [
+                    {
+                        xtype: 'selectfield',
+                        label: 'Peer’s Name',
+                        width: '18em',
+                        options: [
+                            "stuff"
+                        ]
+                    },
+                    {
+                        xtype: 'textareafield',
+                        label: 'Feedback From Peer'
+                    }
                 ]
-            },
-            {
-                xtype: 'textareafield',
-                label: 'Feedback from Peer'
             }
         ]
     }
