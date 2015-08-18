@@ -28,11 +28,10 @@
 }
 
 .spark-navbar-standard-selector {
-    background-color: rgba($field-background-color, .9);
     color: $color;
 
     .x-input-el {
-        background: none;
+        background-color: tint($base-color, 90%);
         border: none;
         font-size: 1em;
         min-height: 0;
