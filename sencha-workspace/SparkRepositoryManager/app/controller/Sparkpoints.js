@@ -24,6 +24,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpointPanel: 'srm-sparkpoints-sparkpointpanel',
             sparkpointDiscardButton: 'srm-sparkpoints-sparkpointpanel button#discard',
             sparkpointSaveButton: 'srm-sparkpoints-sparkpointpanel button#save',
+            sparkpointDeleteButton: 'srm-sparkpoints-sparkpointpanel button#delete',
             sparkpointForm: 'srm-sparkpoints-sparkpointform',
             sparkpointAbbreviationField: 'srm-sparkpoints-sparkpointform field[name=abbreviation]',
             sparkpointCodeField: 'srm-sparkpoints-sparkpointform field[name=code]',
@@ -87,6 +88,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             sparkpointSaveButton: {
                 click: 'onSparkpointSaveClick'
+            },
+            sparkpointDeleteButton: {
+                click: 'onSparkpointDeleteClick'
             },
 
             alignmentsTable: {
@@ -306,6 +310,24 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
     onSparkpointSaveClick: function() {
         this.getSparkpointForm().updateRecord();
+    },
+
+    onSparkpointDeleteClick: function() {
+        var sparkpointPanel = this.getSparkpointPanel(),
+            sparkpoint = this.getMainPanel().getSelectedSparkpoint();
+
+        Ext.Msg.confirm('Deleting Sparkpoint', 'Are you sure you want to delete this sparkpoint and all its connections?', function(btn) {
+            if (btn != 'yes') {
+                return;
+            }
+
+            sparkpointPanel.mask('Deleting…');
+            sparkpoint.erase({
+                success: function() {
+                    sparkpointPanel.unmask();
+                }
+            });
+        });
     },
 
     onSparkpointWrite: function(sparkpointsStore, operation) {

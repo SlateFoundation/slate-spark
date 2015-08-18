@@ -94,6 +94,23 @@ if (!$sparkpointId = array_shift(Site::$pathStack)) {
 
         JSON::respond($sparkpoints);
 
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+
+        $sparkpoints = [];
+
+        foreach (JSON::getRequestData() AS $requestData) {
+            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+                JSON::error('id required', 400);
+            }
+
+            PostgresPDO::delete('sparkpoint_standard_alignments', ['sparkpoint_id' => $requestData['id']]);
+            PostgresPDO::delete('sparkpoints_edges', $requestData['id'] . ' IN (source_sparkpoint_id, target_sparkpoint_id)');
+
+            $sparkpoints[] = PostgresPDO::delete('sparkpoints', ['id' => $requestData['id']], '*');
+        }
+
+        JSON::respond($sparkpoints);
+
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         // prepare query parts
@@ -156,7 +173,7 @@ if (!$sparkpointId = array_shift(Site::$pathStack)) {
 
     } else {
 
-        JSON::error('Only POST/GET supported for this route', 405);
+        JSON::error('Only GET/POST/PATCH/DELETE supported for this route', 405);
 
     }
 }

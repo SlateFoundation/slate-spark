@@ -7,7 +7,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents',
         'SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments',
 
-        'Ext.tab.Panel'
+        'Ext.tab.Panel',
+        'Ext.form.FieldSet'
     ],
 
     title: 'Selected Sparkpoint: K.CC.1',
@@ -57,6 +58,20 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
             xtype: 'srm-sparkpoints-sparkpointdependents'
         },{
             xtype: 'srm-sparkpoints-sparkpointalignments'
+        }]
+    },{
+        xtype: 'fieldset',
+        title: 'Advanced',
+        collapsible: true,
+        collapsed: true,
+        layout: 'anchor',
+        defaults: {
+            anchor: '100%'
+        },
+        items: [{
+            xtype: 'button',
+            itemId: 'delete',
+            text: 'Delete this sparkpoint'
         }]
     }]
 });
