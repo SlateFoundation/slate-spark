@@ -78,9 +78,18 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
       //if the main work view isn't added to the viewport then add it
       if( Ext.Viewport.down( 'spark-teacher-work' ) == null ){
         Ext.Viewport.add( workCmp );
+        me.redirectTo('work/learn');
+      } else {
+          var currentHash = window.location.hash;
+          var currentSubView = me.getWorkTabBar().getActiveTab();
+
+          if(currentSubView !== null){
+            window.location.hash = currentHash + '/' + currentSubView.section;
+          } else {
+            window.location.hash = currentHash + '/learn';
+          }
       }
 
-      me.redirectTo('work/learn');
     },
 
     // handles route that contains a subview - ex: #work/learn

@@ -55,17 +55,11 @@ Ext.define('SparkClassroomTeacher.controller.sparkTabBar', {
         //hide currently visible container if one exists
         if( me.config.lastTab !== null ){
           var oldTargetContainer = SparkClassroomTeacher.ComponentRef.get( me, me.config.lastTab );
-          oldTargetContainer.hide();
-        } else {
-          //me.hideAllFound();
+          Ext.Viewport.remove( oldTargetContainer, false );
         }
 
-        // check if view has already been added to the viewport
-        if( Ext.Viewport.down( '#spark-' + newTab.config.section) ){
-          targetContainer.show();
-        } else {
-          Ext.Viewport.add( targetContainer );
-        }
+        //add new container to the dom
+        Ext.Viewport.add( targetContainer )
 
         // add section hash to url to trigger controller route
         me.redirectTo( newTab.config.section );

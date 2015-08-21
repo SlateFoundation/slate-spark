@@ -87,11 +87,21 @@ Ext.define('SparkClassroomTeacher.controller.assign.Assign', {
           assignCmp = me.getAssignCmp();
 
       //if the main work view isn't added to the viewport then add it
-      if( Ext.Viewport.down( 'spark-teacher-work' ) == null ){
-        Ext.Viewport.add( workCmp );
+      if( Ext.Viewport.down( 'spark-assign-points' ) == null ){
+        Ext.Viewport.add( assignCmp );
+        me.redirectTo('assign/learn');
+      } else {
+          var currentHash = window.location.hash;
+          var currentSubView = me.getAssignTabBar().getActiveTab();
+
+          if(currentSubView !== null){
+            window.location.hash = currentHash + '/' + currentSubView.section;
+          } else {
+            window.location.hash = currentHash + '/learn';
+          }
       }
-      
-      me.redirectTo('assign/learn');
+
+
     },
 
     // handles route that contains a subview - ex: #assign/learn
