@@ -1,0 +1,7 @@
+.spark-panel {
+    @extend .content-card;
+}
+
+.spark-panel-title {
+    @extend .x-form-fieldset-title;
+}
