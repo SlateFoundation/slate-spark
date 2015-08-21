@@ -3,7 +3,8 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
     extend: 'Ext.data.Model',
     requires: [
         'SparkRepositoryManager.proxy.API',
-        'Ext.data.identifier.Negative'
+        'Ext.data.identifier.Negative',
+        'Ext.data.validator.Presence'
     ],
 
 

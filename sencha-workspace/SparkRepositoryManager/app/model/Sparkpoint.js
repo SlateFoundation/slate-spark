@@ -2,7 +2,9 @@
 Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
-        'SparkRepositoryManager.proxy.API'
+        'SparkRepositoryManager.proxy.API',
+        'Ext.data.validator.Range',
+        'Ext.data.validator.Length'
     ],
 
 
