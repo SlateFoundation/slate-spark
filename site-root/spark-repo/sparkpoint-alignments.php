@@ -19,7 +19,7 @@ $convertRecord = function(&$record) use ($include) {
 
     if (in_array('standard', $include)) {
         $record['standard'] = PostgresPDO::query(
-            'SELECT * FROM standards_nodes WHERE asn_id = :asn_id',
+            'SELECT * FROM standards WHERE asn_id = :asn_id',
             [
                 ':asn_id' => $record['asn_id']
             ]

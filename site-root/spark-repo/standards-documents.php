@@ -65,7 +65,7 @@ if (Site::$pathStack[0] == 'children') {
                        title,
                        parent_asn_id,
                        COUNT(sparkpoint_standard_alignments) AS alignments_count
-                  FROM standards_nodes
+                  FROM standards
              LEFT JOIN sparkpoint_standard_alignments USING (asn_id)
                  WHERE document_asn_id = :document_asn_id
                  GROUP BY asn_id
