@@ -81,7 +81,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependenciesContr
             edge = otherSparkpoint && Ext.create('SparkRepositoryManager.model.SparkpointEdge', {
                 rel_type: 'dependency',
                 target_sparkpoint_id: otherSparkpoint.getId(),
-                source_sparkpoint_id: thisSparkpoint.getId(),
+                source_sparkpoint_id: thisSparkpoint.getId()
             });
 
         if (!edge) {

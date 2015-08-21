@@ -40,7 +40,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         },{
             region: 'center',
 
-            xtype: 'srm-sparkpoints-standardstable',
+            xtype: 'srm-sparkpoints-standardstable'
         }]
     },{
         region: 'west',

@@ -6,7 +6,7 @@
     ],
 
     store: {
-        type: 'sparkpoints-lookup',
+        type: 'sparkpoints-lookup'
     },
     queryMode: 'remote',
     queryParam: 'q',

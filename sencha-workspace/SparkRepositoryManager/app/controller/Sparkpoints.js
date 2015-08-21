@@ -36,7 +36,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             alignmentsTable: 'srm-sparkpoints-sparkpointalignments',
 
             documentsTable: 'srm-sparkpoints-documentstable',
-            standardsTable: 'srm-sparkpoints-standardstable',
+            standardsTable: 'srm-sparkpoints-standardstable'
         },
 
         listen: {

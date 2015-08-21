@@ -6,7 +6,7 @@
     ],
 
     store: {
-        type: 'standards-lookup',
+        type: 'standards-lookup'
     },
     queryMode: 'remote',
     queryParam: 'q',
