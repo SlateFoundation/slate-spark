@@ -22,6 +22,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
     refs: {
       sparkTabBar: 'spark-tabbar',
       workTabBar: 'spark-work tabbar[tabType=mainTab]',
+      studentTabBar: 'spark-work tabbar[tabType=studentTab]',
       workCmp: {
           selector: 'spark-teacher-work',
           autoCreate: true,
@@ -66,6 +67,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
       },
       'work/:view': {
         action: 'routeWithSubView'
+      },
+      'work/:studentId/:view': {
+        action: 'routeWithStudentSubView'
       }
     },
 
@@ -110,6 +114,32 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
 
       sectionTabBar.setActiveTab( sectionTab );
       workTabBar.setActiveTab( workTab );
+
+      //segment showing of subview logic into a separate function
+      me.showView( view );
+
+    },
+
+    routeWithStudentSubView: function( studentId, view ){
+      var me = this,
+          workCmp = me.getWorkCmp();
+
+      //if the main work view isn't added to the viewport then add it
+      if( Ext.Viewport.down( 'spark-teacher-work' ) == null ){
+        Ext.Viewport.add( workCmp );
+      }
+
+      //highlight active tabs based on passed in route
+      var workTabBar = me.getWorkTabBar(),
+          workTab = workTabBar.down('[section='+ view +']'),
+          sectionTabBar = me.getSparkTabBar(),
+          sectionTab = sectionTabBar.down('[section=work]'),
+          studentTabBar = me.getStudentTabBar(),
+          studentTab = studentTabBar.down('[student_id='+ studentId +']');
+
+      sectionTabBar.setActiveTab( sectionTab );
+      workTabBar.setActiveTab( workTab );
+      studentTabBar.setActiveTab( studentTab );
 
       //segment showing of subview logic into a separate function
       me.showView( view );
