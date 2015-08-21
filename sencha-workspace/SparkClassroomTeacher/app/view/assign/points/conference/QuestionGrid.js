@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-assign-points-conference-questiongrid',
+    xtype: 'spark-assign-points-questions',
 
     config: {
         title: 'Conference Questions',

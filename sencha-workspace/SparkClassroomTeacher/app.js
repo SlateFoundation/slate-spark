@@ -8,7 +8,7 @@ Ext.application({
 
     extend: 'SparkClassroomTeacher.Application',
     requires: [
-        'Ext.form.Panel' // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
+        'Ext.form.Panel', // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
     ],
 
     //-------------------------------------------------------------------------
@@ -22,10 +22,12 @@ Ext.application({
         'TeacherTabBar'
     ],
     controllers: [
-        'Viewport',
-        'Work',
+        //'Viewport', potentially deprecated
         'GPS',
-        'assign.Points'
+        'sparkTabBar',
+        'work.Work',
+        'competencies.Competencies',
+        'assign.Assign'
     ],
 
     config: {
@@ -42,7 +44,7 @@ Ext.application({
             ]
         }
     },
-    
+
     launch: function() {
         Ext.Viewport.insert(1,[
             {
@@ -50,5 +52,5 @@ Ext.application({
             }
         ]);
     }
-    
+
 });

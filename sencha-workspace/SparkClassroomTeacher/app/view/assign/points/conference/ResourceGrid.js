@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.points.conference.ResourceGrid', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-assign-points-conference-resourcegrid',
+    xtype: 'spark-assign-points-resources',
 
     config: {
         title: 'Conference Resources',

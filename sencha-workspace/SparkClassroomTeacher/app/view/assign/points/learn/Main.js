@@ -45,7 +45,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Main', {
                                 data: [
                                     {Name: 'Al Motley Jr', Created: '12/05/15 5:47pm',  Description: 'This is a teacher\'s comment'},
                                     {Name: 'Ali Wiest', Created: '12/05/15 5:47pm',  Description: 'This is a teacher\'s comment'}
-                                ] 
+                                ]
                             },
                             {
                                 xtype: 'textareafield',
