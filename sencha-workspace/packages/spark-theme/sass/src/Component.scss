@@ -26,14 +26,37 @@ body {
     width: 1px; 
 }
 
+.x-dock > .x-dock-body {
+    // to stop clipping drop shadows, etc. might cause issues...?
+    overflow: visible;
+}
+
 // perhaps should be in the main.css for the site?
-.x-innerhtml {
-    a {
-        color: $base-color;
+h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family;
+}
+
+a {
+    color: $base-color;
+
+    &:hover,
+    &:focus {
+        color: darken($base-color, 10);
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        font-family: $font-family;
+    &:visited {
+        color: mix($base-color, #999);
+    }
+}
+
+.spark-view-headline {
+    font-family: Sanchez;
+    font-size: x-large;
+    margin-bottom: 1em;
+    padding-top: .375em;
+
+    + .spark-view-prompt {
+        margin-top: -1.25em;
     }
 }
 
@@ -44,6 +67,7 @@ body {
 .content-card {
     background-color: #f9f9f9;
     box-shadow: 0 2px 5px rgba(black, .1);
+    margin-bottom: 1.5em;
     padding: 1.5em 2.125em;
 }
 
@@ -66,4 +90,65 @@ body {
     -webkit-flex: 1;
         -ms-flex: 1;
             flex: 1;
+}
+
+.sidebar-col {
+    margin-left: 1.5em;
+    width: 18em;
+
+    .kv-list {
+        margin: 1.5em 0; //  2.125em;
+    }
+}
+
+.dated-list {
+    
+}
+
+.link-list {
+    margin-bottom: 1.5em;
+}
+
+.link-list-item {
+    line-height: 1;
+
+    a {
+        display: block;
+        font-size: .9em;
+        padding: .75em 0;
+    }
+
+    + .link-list-item a {
+        border-top: 1px dashed #ccc;
+    }
+
+    .has-checkboxes & {
+        &::before {
+            content: '\f096';
+            cursor: pointer;
+            float: right;
+            font-family: FontAwesome;
+            margin-left: .5em;
+            margin-top: .625em;
+            width: 1em;
+        }
+
+        &.x-item-selected::before {
+            content: '\f046';
+        }
+    }
+}
+
+.dated-list-item {
+    & + & {
+        border-top: 1px dashed #ccc;
+        margin-top: 1.5em;
+        padding-top: 1.5em;
+    }
+}
+
+.dated-list-date {
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 1.5;
 }
