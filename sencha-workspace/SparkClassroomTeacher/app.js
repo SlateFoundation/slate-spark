@@ -18,8 +18,8 @@ Ext.application({
     //-------------------------------------------------------------------------
 
     views: [
-        'TitleBar',
-        'TabBar'
+        'TitleBar@SparkClassroom.view',
+        'TeacherTabBar'
     ],
     controllers: [
         'Viewport',
@@ -37,7 +37,7 @@ Ext.application({
                     xtype: 'spark-titlebar'
                 },
                 {
-                    xtype: 'spark-tabbar'
+                    xtype: 'spark-teacher-tabbar'
                 }
             ]
         }

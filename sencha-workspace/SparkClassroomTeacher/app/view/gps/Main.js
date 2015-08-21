@@ -4,7 +4,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
     xtype: 'spark-gps',
     cls: 'spark-gps',
     requires: [
-        'SparkClassroomTeacher.view.NavBar',
+        'SparkClassroom.view.NavBar',
         'SparkClassroomTeacher.view.gps.StudentList'
     ],
 

@@ -29,7 +29,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
             xtype: 'spark-assign-points-tabbar'
         },
-        sparkTabBar: 'viewport spark-tabbar'
+        sparkTeacherTabBar: 'viewport spark-teacher-tabbar'
     },
     
     routes: {
@@ -98,7 +98,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
     
     showSection: function (section) {
-        var tabBar = this.getSparkTabBar(),
+        var tabBar = this.getSparkTeacherTabBar(),
             tab = tabBar.down('[section='+section+']');
 
         tabBar.setActiveTab(tab);
