@@ -40,6 +40,13 @@ Ext.application({
                 },
                 {
                     xtype: 'spark-teacher-tabbar'
+                    itemId: 'teacherTabs',
+                    padding: '48 24',
+                    items: [
+                        {
+                            xtype: 'spark-tabbar'
+                        }
+                    ]
                 }
             ]
         }

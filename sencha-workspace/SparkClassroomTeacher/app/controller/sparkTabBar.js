@@ -59,7 +59,7 @@ Ext.define('SparkClassroomTeacher.controller.sparkTabBar', {
         }
 
         //add new container to the dom
-        Ext.Viewport.add( targetContainer )
+        Ext.Viewport.down('#teacherTabs').add( targetContainer )
 
         // add section hash to url to trigger controller route
         me.redirectTo( newTab.config.section );
