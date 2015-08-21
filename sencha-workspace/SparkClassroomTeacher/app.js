@@ -44,7 +44,7 @@ Ext.application({
                     padding: '48 24',
                     items: [
                         {
-                            xtype: 'spark-tabbar'
+                            xtype: 'spark-teacher-tabbar'
                         }
                     ]
                 }
