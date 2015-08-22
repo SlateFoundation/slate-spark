@@ -41,6 +41,7 @@ Ext.define('SparkClassroomTeacher.view.work.Main', {
                 0,
                 {
                     xtype: 'tabbar',
+                    cls: 'students-tabbar',
                     tabType: 'studentTab',
                     items: studentTabs
                 }

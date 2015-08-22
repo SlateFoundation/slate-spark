@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
     ],
 
     refs: {
-      sparkTabBar: 'spark-tabbar',
+      sparkTeacherTabBar: 'spark-teacher-tabbar',
       workTabBar: 'spark-work tabbar[tabType=mainTab]',
       studentTabBar: 'spark-work tabbar[tabType=studentTab]',
       workCmp: {
@@ -109,7 +109,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
       //highlight active tabs based on passed in route
       var workTabBar = me.getWorkTabBar(),
           workTab = workTabBar.down('[section='+ view +']'),
-          sectionTabBar = me.getSparkTabBar(),
+          sectionTabBar = me.getSparkTeacherTabBar(),
           sectionTab = sectionTabBar.down('[section=work]');
 
       sectionTabBar.setActiveTab( sectionTab );
@@ -132,7 +132,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Work', {
       //highlight active tabs based on passed in route
       var workTabBar = me.getWorkTabBar(),
           workTab = workTabBar.down('[section='+ view +']'),
-          sectionTabBar = me.getSparkTabBar(),
+          sectionTabBar = me.getSparkTeacherTabBar(),
           sectionTab = sectionTabBar.down('[section=work]'),
           studentTabBar = me.getStudentTabBar(),
           studentTab = studentTabBar.down('[student_id='+ studentId +']');

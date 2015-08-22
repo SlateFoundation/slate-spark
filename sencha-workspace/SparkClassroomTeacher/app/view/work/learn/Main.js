@@ -6,16 +6,13 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Main', {
         'SparkClassroomTeacher.view.work.learn.Form'
     ],
 
-    config: {
-        layout: 'hbox'
-    },
-    
     initialize: function () {
         this.callParent(arguments);
         
         this.add({
             xtype: 'spark-teacher-work-learn-form',
-            width: '30%'
+            docked: 'right',
+            cls: 'sidebar-col'
         });
     }
 });

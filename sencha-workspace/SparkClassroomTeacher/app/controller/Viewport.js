@@ -89,7 +89,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         if(Ext.Viewport.down(newTab)) {
             newTab.show();
         } else {
-            Ext.Viewport.add(newTab);
+            Ext.Viewport.down('#teacherTabs').add(newTab);
         }
     },
 

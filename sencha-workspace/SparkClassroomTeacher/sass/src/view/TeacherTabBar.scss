@@ -1,0 +1,28 @@
+.spark-teacher-tabbar {
+    box-shadow: 0 2px 4px rgba(black, .2);
+    padding: 0;
+
+    .x-tabbar-inner {
+        > .x-tab { // override vendor specificity
+            margin: 0;
+        }
+    }
+
+    .x-tab {
+        border: none;
+        cursor: pointer;
+        font-family: Sanchez;
+        font-size: x-large;
+        margin: 0;
+        padding: .5em 0 .25em; // imbalance because of weird font metrics
+
+        &.x-tab-active {
+            background-color: $base-light-color;
+            color: $color;
+        }
+
+        + .x-tab {
+            border-left: 1px solid white;
+        }
+    }
+}
