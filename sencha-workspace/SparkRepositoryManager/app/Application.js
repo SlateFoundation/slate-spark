@@ -28,6 +28,10 @@ Ext.define('SparkRepositoryManager.Application', {
     ],
 
     init: function() {
+        if (!location.search.match(/\Walltabs(\W|$)/)) {
+            location.hash = 'sparkpoints';
+        }
+
         if (!location.search.match(/\Wnostate(\W|$)/)) {
             Ext.state.Manager.setProvider(Ext.create('Ext.state.LocalStorageProvider', {
                 prefix: 'srm-'
