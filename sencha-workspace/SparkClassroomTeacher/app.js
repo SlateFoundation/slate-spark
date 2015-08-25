@@ -26,8 +26,6 @@ Ext.application({
     controllers: [
         'Viewport',
         'GPS',
-        //'sparkTabBar',
-
         'Work',
         'Competencies',
         'Assign'

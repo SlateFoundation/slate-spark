@@ -11,11 +11,11 @@ Ext.define('SparkClassroomTeacher.view.assign.TabBar', {
             },
             {
                 title: 'Confence Questions',
-                section: 'questions'
+                section: 'conference-questions'
             },
             {
                 title: 'Confence Resources',
-                section: 'resources'
+                section: 'conference-resources'
             },
             {
                 title: 'Apply',

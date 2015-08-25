@@ -21,7 +21,8 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     refs:{
         tabsCt: 'spark-teacher-tabscontainer',
-        assignTabBar: 'spark-teacher-assign-tabbar',
+        assignTabbar: 'spark-teacher-assign-tabbar',
+        teacherTabbar: 'spark-teacher-tabbar',
         assignCt: {
             selector: 'spark-teacher-assign-ct',
             autoCreate: true,
@@ -61,7 +62,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
     control: {
-      assignTabBar: {
+      assignTabbar: {
           activetabchange: 'onAssignTabChange'
       }
     },
@@ -86,26 +87,31 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     showLearn: function() {
         this.doShowContainer();
+        this.doHighlightTabbars();
         this.doShowLearnContainer();
     },
 
     showConferenceQuestions: function() {
         this.doShowContainer();
+        this.doHighlightTabbars();
         this.doShowConferenceQuestionsContainer();
     },
 
     showConferenceResources: function() {
         this.doShowContainer();
+        this.doHighlightTabbars();
         this.doShowConferenceResourcesContainer();
     },
 
     showApply: function() {
         this.doShowContainer();
+        this.doHighlightTabbars();
         this.doShowApplyContainer();
     },
 
     showAssess: function() {
         this.doShowContainer();
+        this.doHighlightTabbars();
         this.doShowAssessContainer();
     },
 
@@ -119,10 +125,10 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             case 'learn':
                 me.redirectTo('assign/learn');
                 break;
-            case 'questions':
+            case 'conference-questions':
                 me.redirectTo('assign/conference-questions');
                 break;
-            case 'resources':
+            case 'conference-resources':
                 me.redirectTo('assign/conference-resources');
                 break;
             case 'apply':
@@ -145,6 +151,23 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         
         tabsCt.removeAll();
         tabsCt.add(this.getAssignCt());
+    },
+
+    /**
+     * @private
+     * Called by each subsection route handler to highlight the proper tab in the teacher
+     * tabbar and the assign tabbar
+     */
+    doHighlightTabbars: function(){
+        var assignTabbar = this.getAssignTabbar(),
+            teacherTabbar = this.getTeacherTabbar(),
+            hash = window.location.hash,
+            section = hash.substring(hash.indexOf('/') + 1, hash.length),
+            teacherTab = teacherTabbar.down('[itemId=assign]'),
+            assignTab = assignTabbar.down('[section='+ section +']');
+
+        assignTabbar.setActiveTab(assignTab);
+        teacherTabbar.setActiveTab(teacherTab);
     },
 
     /**
