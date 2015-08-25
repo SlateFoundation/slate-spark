@@ -39,7 +39,7 @@ Ext.application({
                     xtype: 'spark-titlebar'
                 },
                 {
-                    xtype: 'spark-teacher-tabbar'
+                    xtype: 'spark-teacher-tabbar',
                     itemId: 'teacherTabs',
                     padding: '48 24',
                     items: [
