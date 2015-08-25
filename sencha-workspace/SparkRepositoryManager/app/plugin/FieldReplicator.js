@@ -46,9 +46,10 @@ Ext.define('SparkRepositoryManager.plugin.FieldReplicator', {
         var ownerCt = field.ownerCt,
             replicatorId = field.replicatorId,
             clone = field.cloneConfig({replicatorId: replicatorId}),
-            idx = ownerCt.items.indexOf(field);
+            idx = ownerCt.items.indexOf(field),
+            cloneCount = ownerCt.query('field[replicatorId]').length;
 
-        ownerCt.add(idx + 1, clone);
+        ownerCt.add(idx + cloneCount, clone);
 
         if (field.onReplicate) {
             field.onReplicate(clone, field, this.cloneField);
