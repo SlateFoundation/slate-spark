@@ -2,75 +2,68 @@
 Ext.define('SparkClassroomTeacher.controller.Assign', {
     extend: 'Ext.app.Controller',
 
-    // requires: [ 'SparkClassroomTeacher.ComponentRef' ],
-
-    // config: {
-    //     lastTab: null
-    // },
-
     views: [
-        'assign.Container'
-        // 'assign.points.learn.Main',
-        // 'assign.points.conference.ResourceGrid',
-        // 'assign.points.conference.QuestionGrid',
-        // 'assign.points.apply.Main',
-        // 'assign.points.assess.Grid'
+        'assign.Container',
+        'assign.learn.Container',
+        'assign.questions.Container',
+        'assign.resources.Container',
+        'assign.apply.Container',
+        'assign.assess.Container'
     ],
 
     stores: [
-        // 'assign.Learn',
-        // 'assign.Questions',
-        // 'assign.Resources',
-        // 'assign.Apply',
-        // 'assign.Assess'
+        'assign.Learn',
+        'assign.Questions',
+        'assign.Resources',
+        'assign.Apply',
+        'assign.Assess'
     ],
 
     refs:{
         tabsCt: 'spark-teacher-tabscontainer',
+        assignTabBar: 'spark-teacher-assign-tabbar',
         assignCt: {
             selector: 'spark-teacher-assign-ct',
             autoCreate: true,
 
             xtype: 'spark-teacher-assign-ct'
         },
-        // sparkTabBar: 'spark-tabbar',
-        // assignTabBar:'spark-assign-points-tabbar',
-        // learnCmp: {
-        //     selector: 'spark-assign-points-learn',
-        //     autoCreate: true,
+        learnCt: {
+            selector: 'spark-assign-learn',
+            autoCreate: true,
 
-        //     xtype: 'spark-assign-points-learn'
-        // },
-        // resourcesCmp: {
-        //     selector: 'spark-assign-points-resources',
-        //     autoCreate: true,
+            xtype: 'spark-assign-learn'
+        },
+        questionsCt: {
+            selector: 'spark-assign-questions',
+            autoCreate: true,
 
-        //     xtype: 'spark-assign-points-resources'
-        // },
-        // questionsCmp: {
-        //     selector: 'spark-assign-points-questions',
-        //     autoCreate: true,
+            xtype: 'spark-assign-questions'
+        },
+        resourcesCt: {
+            selector: 'spark-assign-resources',
+            autoCreate: true,
 
-        //     xtype: 'spark-assign-points-questions'
-        // },
-        // applyCmp: {
-        //     selector: 'spark-assign-points-apply',
-        //     autoCreate: true,
+            xtype: 'spark-assign-resources'
+        },
+        applyCt: {
+            selector: 'spark-assign-apply',
+            autoCreate: true,
 
-        //     xtype: 'spark-assign-points-apply'
-        // },
-        // assessCmp: {
-        //     selector: 'spark-assign-points-assess',
-        //     autoCreate: true,
+            xtype: 'spark-assign-apply'
+        },
+        assessCt: {
+            selector: 'spark-assign-assess',
+            autoCreate: true,
 
-        //     xtype: 'spark-assign-points-assess'
-        // }
+            xtype: 'spark-assign-assess'
+        }
     },
 
     control: {
-      // assignTabBar: {
-        //   activetabchange: 'onTabChange'
-      // }
+      assignTabBar: {
+          activetabchange: 'onAssignTabChange'
+      }
     },
 
     routes: {
@@ -93,37 +86,53 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     showLearn: function() {
         this.doShowContainer();
-        
-        // TODO: show subsection, maybe via params to doShowContainer
+        this.doShowLearnContainer();
     },
 
     showConferenceQuestions: function() {
         this.doShowContainer();
-        
-        // TODO: show subsection
+        this.doShowConferenceQuestionsContainer();
     },
 
     showConferenceResources: function() {
         this.doShowContainer();
-        
-        // TODO: show subsection
+        this.doShowConferenceResourcesContainer();
     },
 
     showApply: function() {
         this.doShowContainer();
-        
-        // TODO: show subsection
+        this.doShowApplyContainer();
     },
 
     showAssess: function() {
         this.doShowContainer();
-        
-        // TODO: show subsection
+        this.doShowAssessContainer();
     },
 
 
     // event handlers
-    
+    onAssignTabChange: function(tabbar){
+        var me = this,
+            section = tabbar.getActiveTab().section;
+
+        switch(section){
+            case 'learn':
+                me.redirectTo('assign/learn');
+                break;
+            case 'questions':
+                me.redirectTo('assign/conference-questions');
+                break;
+            case 'resources':
+                me.redirectTo('assign/conference-resources');
+                break;
+            case 'apply':
+                me.redirectTo('assign/apply');
+                break;
+            case 'assess':
+                me.redirectTo('assign/assess');
+                break;
+        }
+    },
     
     
     // controller methods
@@ -136,89 +145,61 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         
         tabsCt.removeAll();
         tabsCt.add(this.getAssignCt());
+    },
+
+    /**
+     * @private
+     * Called by each showLearn() to add the learnCt to the assignCt
+     */
+    doShowLearnContainer: function(){
+        var assignCt = this.getAssignCt();
+
+        assignCt.removeAll();
+        assignCt.add(this.getLearnCt());
+    },
+
+    /**
+     * @private
+     * Called by each showConferenceQuestions() to add the questionsCt to the assignCt
+     */
+    doShowConferenceQuestionsContainer: function(){
+        var assignCt = this.getAssignCt();
+
+        assignCt.removeAll();
+        assignCt.add(this.getQuestionsCt());
+    },
+
+    /**
+     * @private
+     * Called by each showConferenceResources() to add the resourceCt to the assignCt
+     */
+    doShowConferenceResourcesContainer: function(){
+        var assignCt = this.getAssignCt();
+
+        assignCt.removeAll();
+        assignCt.add(this.getResourcesCt());
+    },
+
+    /**
+     * @private
+     * Called by each showApply() to add the applyCt to the assignCt
+     */
+    doShowApplyContainer: function(){
+        var assignCt = this.getAssignCt();
+
+        assignCt.removeAll();
+        assignCt.add(this.getApplyCt());
+    },
+
+    /**
+     * @private
+     * Called by each showAssess() to add the assessCt to the assignCt
+     */
+    doShowAssessContainer: function(){
+        var assignCt = this.getAssignCt();
+
+        assignCt.removeAll();
+        assignCt.add(this.getAssessCt());
     }
 
-
-
-    // TODO: remove following code as its functionality is refactored
-
-    // // if route comes through without a sub view select the first sub view - 'learn'
-    // // example: #assign instead of #assign/learn
-    // rerouteBase: function(){
-    //   var me = this,
-    //       assignCmp = me.getAssignCmp();
-
-    //   //if the main work view isn't added to the viewport then add it
-    //   if( Ext.Viewport.down( 'spark-assign-points' ) == null ){
-    //     Ext.Viewport.add( assignCmp );
-    //     me.redirectTo('assign/learn');
-    //   } else {
-    //       var currentHash = window.location.hash;
-    //       var currentSubView = me.getAssignTabBar().getActiveTab();
-
-    //       if(currentSubView !== null){
-    //         window.location.hash = currentHash + '/' + currentSubView.section;
-    //       } else {
-    //         window.location.hash = currentHash + '/learn';
-    //       }
-    //   }
-
-
-    // },
-
-    // // handles route that contains a subview - ex: #assign/learn
-    // routeWithSubView: function( view ){
-    //   var me = this,
-    //       assignCmp = me.getAssignCmp();
-
-    //   //if the main work view isn't added to the viewport then add it
-    //   if( Ext.Viewport.down( 'spark-assign-points' ) == null ){
-    //     Ext.Viewport.add( assignCmp );
-    //   }
-
-    //   //highlight active tabs based on passed in route
-    //   var workTabBar = me.getAssignTabBar(),
-    //       workTab = workTabBar.down('[section='+ view +']'),
-    //       sectionTabBar = me.getSparkTabBar(),
-    //       sectionTab = sectionTabBar.down('[section=assign]');
-
-    //   sectionTabBar.setActiveTab( sectionTab );
-    //   workTabBar.setActiveTab( workTab );
-
-    //   //segment showing of subview logic into a separate function
-    //   me.showView( view );
-
-    // },
-
-    // onTabChange: function( tabBar, newTab, oldTab ){
-    //   var me = this;
-
-    //   // set lastTab config property to last selected section
-    //   if( oldTab !== null){
-    //     me.config.lastTab = oldTab.config.section;
-    //   }
-
-    //   //route app to include new selected subview
-    //   me.redirectTo( 'assign/' + newTab.config.section );
-    // },
-    // //handles showing of subview based on selected tabbar option
-    // showView: function ( view ){
-    //   var me = this,
-    //       targetContainer = SparkClassroomTeacher.ComponentRef.get( me, view ),
-    //       assignCmp = me.getAssignCmp();
-
-    //   //hide currently visible container if one exists
-    //   if( me.config.lastTab !== null ){
-    //     var oldTargetContainer = SparkClassroomTeacher.ComponentRef.get( me, me.config.lastTab );
-    //     oldTargetContainer.hide();
-    //   }
-
-    //   // check if view has already been added to the viewport
-    //   if( Ext.Viewport.down( 'spark-assign-points-' + view) ){
-    //     targetContainer.show();
-    //   } else {
-    //     assignCmp.add( targetContainer );
-    //   }
-
-    // }
 });

@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.points.apply.Grid', {
+Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-assign-points-apply-grid',
+    xtype: 'spark-assign-apply-grid',
     config: {
         height: 500,
         titleBar: null,

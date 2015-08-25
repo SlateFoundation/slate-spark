@@ -1,10 +1,10 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
+Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-assign-points-questions',
+    xtype: 'spark-assign-resources',
 
     config: {
-        title: 'Conference Questions',
+        title: 'Conference Resources',
         height: 500,
         titleBar: null,
         columns:[
@@ -20,9 +20,14 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
                 text: 'Grade'
             },
             {
-                dataIndex: 'Question',
-                width: 150,
-                text: 'Guiding Questions'
+                dataIndex: 'Link',
+                width: 100,
+                text: 'Url'
+            },
+            {
+                dataIndex: 'Title',
+                width: 100,
+                text: 'Title'
             },
             {
                 dataIndex: 'Created',
@@ -38,13 +43,13 @@ Ext.define('SparkClassroomTeacher.view.assign.points.conference.QuestionGrid', {
                 dataIndex: 'Assign',
                 text: 'Assign',
                 width: 100,
-                tpl: '<input type="checkbox" checked="Assign"><span class="select-jawn"></span>',
+                tpl: '<input type="checkbox" checked="{Assign}}">',
                 cell: {
                     encodeHtml: false
                 }
             }
         ],
 
-        store: 'assign.Questions'
+        store: 'assign.Resources'
     }
 });

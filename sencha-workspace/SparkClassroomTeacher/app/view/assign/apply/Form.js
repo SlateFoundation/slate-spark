@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.points.apply.Form', {
+Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
     extend: 'Ext.form.Panel',
-    xtype: 'spark-assign-points-apply-form',
+    xtype: 'spark-assign-apply-form',
 
     config: {
         items: [

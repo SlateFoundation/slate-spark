@@ -1,10 +1,10 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.points.apply.Main', {
+Ext.define('SparkClassroomTeacher.view.assign.apply.Container', {
     extend: 'Ext.Container',
-    xtype: 'spark-assign-points-apply',
+    xtype: 'spark-assign-apply',
     requires: [
-        'SparkClassroomTeacher.view.assign.points.apply.Grid',
-        'SparkClassroomTeacher.view.assign.points.apply.Form'
+        'SparkClassroomTeacher.view.assign.apply.Grid',
+        'SparkClassroomTeacher.view.assign.apply.Form'
     ],
 
     config: {
@@ -12,7 +12,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Main', {
         layout: 'hbox',
         items: [
             {
-                xtype: 'spark-assign-points-apply-grid',
+                xtype: 'spark-assign-apply-grid',
                 width: '75%'
             },
             {
@@ -24,7 +24,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.apply.Main', {
                         title: 'Project Details'
                     },
                     {
-                        xtype: 'spark-assign-points-apply-form'
+                        xtype: 'spark-assign-apply-form'
                     }
                 ]
             }

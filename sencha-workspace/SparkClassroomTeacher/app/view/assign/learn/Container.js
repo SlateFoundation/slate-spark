@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.points.learn.Main', {
+Ext.define('SparkClassroomTeacher.view.assign.learn.Container', {
     extend: 'Ext.Container',
-    xtype: 'spark-assign-points-learn',
+    xtype: 'spark-assign-learn',
     requires: [
-        'SparkClassroomTeacher.view.assign.points.learn.Grid'
+        'SparkClassroomTeacher.view.assign.learn.Grid'
     ],
 
     config: {
@@ -23,7 +23,7 @@ Ext.define('SparkClassroomTeacher.view.assign.points.learn.Main', {
                 layout: 'hbox',
                 items: [
                     {
-                        xtype: 'spark-assign-points-learn-grid',
+                        xtype: 'spark-assign-learn-grid',
                         width: '75%'
                     },
                     {
