@@ -2,6 +2,7 @@
   Global class to get access to a particular controller reference dynamically
   based on it's section.  See get() description.
 */
+// TODO: eliminate this class
 Ext.define('SparkClassroomTeacher.ComponentRef', {
     singleton: true,
 

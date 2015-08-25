@@ -8,6 +8,7 @@ Ext.application({
 
     extend: 'SparkClassroomTeacher.Application',
     requires: [
+        // TODO: move this to a hotfix override
         'Ext.form.Panel', // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
     ],
 
@@ -17,6 +18,7 @@ Ext.application({
     // of merge conflicts when upgrading to new versions of Sencha Cmd.
     //-------------------------------------------------------------------------
 
+    // TODO: move all this to the Application class
     views: [
         'TitleBar@SparkClassroom.view',
         'TeacherTabBar'
@@ -34,17 +36,18 @@ Ext.application({
         viewport: {
             layout: 'auto',
             scrollable: 'vertical',
+            // TODO: move all items to viewport launch  function
             items: [
                 {
                     xtype: 'spark-titlebar'
                 },
                 {
                     xtype: 'spark-teacher-tabbar',
-                    itemId: 'teacherTabs',
-                    padding: '48 24',
+                    itemId: 'teacherTabs', // TODO: remove this, the xtype is unique enough
+                    padding: '48 24', // TODO: move to class
                     items: [
                         {
-                            xtype: 'spark-teacher-tabbar'
+                            xtype: 'spark-teacher-tabbar' // TODO: why does this thing contain itself?
                         }
                     ]
                 }
