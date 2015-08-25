@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.controller.work.Work', {
+Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
 
     requires: [ 'SparkClassroomTeacher.ComponentRef' ],

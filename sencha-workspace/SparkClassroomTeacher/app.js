@@ -27,9 +27,10 @@ Ext.application({
         //'Viewport', potentially deprecated
         'GPS',
         'sparkTabBar',
-        'work.Work',
-        'competencies.Competencies',
-        'assign.Assign'
+
+        'Work',
+        'Competencies',
+        'Assign'
     ],
 
     config: {
