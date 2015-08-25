@@ -2,13 +2,42 @@
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
 
-    // requires: [ 'SparkClassroomTeacher.ComponentRef' ],
+    views: [
+        'competencies.Container'
+    ],
+
+    refs:{
+    	tabsCt: 'spark-teacher-tabscontainer',
+    	competenciesCt: {
+            selector: 'spark-competencies',
+            autoCreate: true,
+
+            xtype: 'spark-competencies'
+        }
+    },
 
     routes: {
-      // 'competencies': {
-        // action: 'rerouteBase'
-      // }
-    }
+      	'competencies': 'showCompetencies'
+    },
 
+    // route handlers
+    showCompetencies: function(){
+    	this.doShowContainer();
+    },
+
+    // event handlers
+
+
+	// controller methods
+    /**
+     * @private
+     * Called by each subsection route handler to ensure container is activated
+     */
+    doShowContainer: function() {
+        var tabsCt = this.getTabsCt();
+        
+        tabsCt.removeAll();
+        tabsCt.add(this.getCompetenciesCt());
+    }
 
 });
