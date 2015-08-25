@@ -66,6 +66,12 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
                 if (checked) {
                     child.parentNode.expand();
                 }
+            } else {
+                /*
+                 * TODO: this shouldn't be necessary.  Top level nodes are occasionally picking up a "checked"
+                 * attribute.  This resets them, but would be better to find the source.
+                 */
+                child.set('checked', null);
             }
         });
     },
