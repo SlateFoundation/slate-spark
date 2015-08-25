@@ -5,6 +5,8 @@ Ext.define('SparkClassroom.work.TabBar', {
     cls: 'spark-work-tabbar',
 
     config: {
+        tabType: 'mainTab',
+
         defaults: {
             flex: 1
         },
