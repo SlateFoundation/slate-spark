@@ -166,8 +166,10 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             teacherTab = teacherTabbar.down('[itemId=assign]'),
             assignTab = assignTabbar.down('[section='+ section +']');
 
-        assignTabbar.setActiveTab(assignTab);
-        teacherTabbar.setActiveTab(teacherTab);
+        //TODO: figure out a better way to highlight tab that doesn't trigger event
+        
+        //assignTabbar.setActiveTab(assignTab);
+        //teacherTabbar.setActiveTab(teacherTab); 
     },
 
     /**

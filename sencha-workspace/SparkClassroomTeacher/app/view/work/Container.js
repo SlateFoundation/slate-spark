@@ -7,6 +7,7 @@ Ext.define('SparkClassroomTeacher.view.work.Container', {
     ],
 
     config: {
+        autoDestroy: false,
         students: [
             {FirstName: 'Anthony', LastName: 'Harley', student_id: 1},
             {FirstName: 'Chris', LastName: 'Alfano', student_id: 2}
@@ -43,6 +44,7 @@ Ext.define('SparkClassroomTeacher.view.work.Container', {
                     xtype: 'tabbar',
                     cls: 'students-tabbar',
                     tabType: 'studentTab',
+                    docked: 'top',
                     items: studentTabs
                 }
              );
