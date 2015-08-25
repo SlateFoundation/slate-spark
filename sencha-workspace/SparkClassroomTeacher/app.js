@@ -21,12 +21,12 @@ Ext.application({
     // TODO: move all this to the Application class
     views: [
         'TitleBar@SparkClassroom.view',
-        'TeacherTabBar'
+        'TabsContainer'
     ],
     controllers: [
-        //'Viewport', potentially deprecated
+        'Viewport',
         'GPS',
-        'sparkTabBar',
+        //'sparkTabBar',
 
         'Work',
         'Competencies',
@@ -37,20 +37,13 @@ Ext.application({
         viewport: {
             layout: 'auto',
             scrollable: 'vertical',
-            // TODO: move all items to viewport launch  function
+            // TODO: move all items to viewport launch function
             items: [
                 {
                     xtype: 'spark-titlebar'
                 },
                 {
-                    xtype: 'spark-teacher-tabbar',
-                    itemId: 'teacherTabs', // TODO: remove this, the xtype is unique enough
-                    padding: '48 24', // TODO: move to class
-                    items: [
-                        {
-                            xtype: 'spark-teacher-tabbar' // TODO: why does this thing contain itself?
-                        }
-                    ]
+                    xtype: 'spark-teacher-tabscontainer',
                 }
             ]
         }
@@ -63,5 +56,4 @@ Ext.application({
             }
         ]);
     }
-
 });

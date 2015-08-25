@@ -1,10 +1,11 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.TeacherTabBar', {
+Ext.define('SparkClassroomTeacher.view.TabBar', {
     extend: 'Ext.tab.Bar',
     xtype: 'spark-teacher-tabbar',
-    cls: 'spark-teacher-tabbar',
 
     config: {
+        cls: 'spark-teacher-tabbar',
+
         layout: {
             type: 'hbox',
             pack: 'center'
@@ -17,15 +18,15 @@ Ext.define('SparkClassroomTeacher.view.TeacherTabBar', {
         items: [
             {
                 title: 'Student Work',
-                section: 'work'
+                itemId: 'work'
             },
             {
                 title: 'Competency Overview',
-                section: 'competencies'
+                itemId: 'competencies'
             },
             {
                 title: 'Assign',
-                section: 'assign'
+                itemId: 'assign'
             }
         ]
     }

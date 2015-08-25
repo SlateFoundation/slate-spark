@@ -2,12 +2,12 @@
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
 
-    requires: [ 'SparkClassroomTeacher.ComponentRef' ],
+    // requires: [ 'SparkClassroomTeacher.ComponentRef' ],
 
     routes: {
-      'competencies': {
-        action: 'rerouteBase'
-      }
+      // 'competencies': {
+        // action: 'rerouteBase'
+      // }
     }
 
 

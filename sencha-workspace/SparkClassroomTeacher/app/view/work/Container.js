@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.work.Main', {
-    extend: 'SparkClassroom.work.Main',
-    xtype: 'spark-teacher-work',
+Ext.define('SparkClassroomTeacher.view.work.Container', {
+    extend: 'SparkClassroom.work.Main', // TODO: rename base class to container too
+    xtype: 'spark-teacher-work-ct',
     requires: [
         'Ext.tab.Bar'
     ],

@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.points.TabBar', {
+Ext.define('SparkClassroomTeacher.view.assign.TabBar', {
     extend: 'Ext.tab.Bar',
-    xtype: 'spark-assign-points-tabbar',
+    xtype: 'spark-teacher-assign-tabbar',
 
     config: {
         items: [
