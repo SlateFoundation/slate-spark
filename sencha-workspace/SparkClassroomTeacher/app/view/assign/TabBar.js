@@ -4,17 +4,21 @@ Ext.define('SparkClassroomTeacher.view.assign.TabBar', {
     xtype: 'spark-teacher-assign-tabbar',
 
     config: {
+        cls: 'spark-work-tabbar',
+        defaults: {
+            flex: 1
+        },
         items: [
             {
                 title: 'Learn &amp; Practice',
                 section: 'learn'
             },
             {
-                title: 'Confence Questions',
+                title: 'Conference Questions',
                 section: 'conference-questions'
             },
             {
-                title: 'Confence Resources',
+                title: 'Conference Resources',
                 section: 'conference-resources'
             },
             {

@@ -13,9 +13,9 @@
         border: none;
         cursor: pointer;
         font-family: Sanchez;
-        font-size: x-large;
+        font-size: 1.375em;
         margin: 0;
-        padding: .5em 0 .25em; // imbalance because of weird font metrics
+        padding: .75em 0 .5em; // imbalance because of weird font metrics
 
         &.x-tab-active {
             background-color: $base-light-color;

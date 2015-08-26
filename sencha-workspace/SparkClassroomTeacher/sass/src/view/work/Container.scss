@@ -1,7 +1,7 @@
 .students-tabbar {
     background-color: $neutral-color;
     box-shadow: 0 2px 4px rgba(black, .2);
-    margin-bottom: 1em;
+    margin-top: .5em;
     padding: 0;
 
     .x-tabbar-inner > .x-tab {
@@ -12,6 +12,7 @@
         background-color: $neutral-dark-color;
         border: none;
         color: $light-color;
+        cursor: pointer;
         font-size: .9em;
 
         + .x-tab {
@@ -37,7 +38,11 @@
 
         &:nth-child(2) { // TODO make this a real selector
             border-color: transparent;
-            outline: 3px solid $active-color;
+            outline: $spark-students-tabbar-group-outline-width $spark-students-tabbar-group-outline-style $spark-students-tabbar-group-outline-color;
         }
+    }
+
+    + .spark-work-tabbar {
+        margin-top: $spark-students-tabbar-group-outline-width;
     }
 }
