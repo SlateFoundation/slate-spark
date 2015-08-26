@@ -119,7 +119,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     // event handlers
     onAssignTabChange: function(tabbar){
         var me = this,
-            section = tabbar.getActiveTab().section;
+            section = tabbar.getActiveTab().getItemId();
 
         switch(section){
             case 'learn':
@@ -164,7 +164,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             hash = window.location.hash,
             section = hash.substring(hash.indexOf('/') + 1, hash.length),
             teacherTab = teacherTabbar.down('[itemId=assign]'),
-            assignTab = assignTabbar.down('[section='+ section +']');
+            assignTab = assignTabbar.down('[itemId='+ section +']');
 
         //TODO: figure out a better way to highlight tab that doesn't trigger event
         
