@@ -57,7 +57,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     routes: {
         'work': {
-            before: 'beforeShowContainer'
+            rewrite: 'rewriteShowContainer'
         },
         'work/learn': 'showLearn',
         'work/conference': 'showConference',
@@ -67,9 +67,16 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
 
     // route handlers
-    beforeShowContainer: function(action) {
-        action.stop();
-        this.redirectTo('work/learn');
+    rewriteShowContainer: function(token, args, route) {
+        var workTabBar = this.getWorkTabbar(),
+            workTabId = 'learn';
+
+        if (workTabBar) {
+            // TODO: verify this works when the tab bar exists
+            workTabId = workTabBar.getActiveItem().getItemId();
+        }
+
+        return 'work/' + workTabId;
     },
 
     showLearn: function() {
