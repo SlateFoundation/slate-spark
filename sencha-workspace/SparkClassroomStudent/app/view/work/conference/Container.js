@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.view.work.conference.Main', {
+Ext.define('SparkClassroomStudent.view.work.conference.Container', {
     extend: 'SparkClassroom.work.conference.Main',
     xtype: 'spark-student-work-conference',
     requires: [

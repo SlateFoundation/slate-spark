@@ -3,43 +3,37 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
  
     views: [
-        'work.apply.Main',
-        'work.learn.Main',
-        'work.conference.Main',
-        'work.assess.Main'   
+        'work.apply.Container',
+        'work.learn.Container',
+        'work.conference.Container',
+        'work.assess.Container'   
     ],
 
-    config: {
-        activeTab: null
-    },
-    
-    refs:{
-        tabContainer: {
-            selector: '#page-wrap',
-            autoCreate: true,
+    // stores: [
+    //     'apply.Tasks'
+    // ],
 
-            xtype: 'container',
-            cls: 'page-wrap'
-        },
-        learnMainCt: {
+    refs: {
+        tabsCt: 'spark-student-tabscontainer',
+        learnCt: {
             selector: 'spark-student-work-learn',
             autoCreate: true,
 
             xtype: 'spark-student-work-learn'
         },
-        conferenceMainCt: {
+        conferenceCt: {
             selector: 'spark-student-work-conference',
             autoCreate: true,
 
             xtype: 'spark-student-work-conference'
         },
-        applyMainCt: {
+        applyCt: {
             selector: 'spark-student-work-apply',
             autoCreate: true,
 
             xtype: 'spark-student-work-apply'
         },
-        assessMainCt: {
+        assessCt: {
             selector: 'spark-student-work-assess',
             autoCreate: true,
 
@@ -47,58 +41,117 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
 
+    routes: {
+        'learn': 'showLearn',
+        'conference': 'showConference',
+        'apply': 'showApply',
+        'assess': 'showAssess'
+    },
+
     control: {
         'spark-work-tabbar': {
-            activetabchange: 'onTabChange'
+            activetabchange: 'onWorkTabChange'
         }
     },
 
-    applyActiveTab: function(tab) {
+
+    // route handlers
+    showLearn: function() {
+        //this.doShowContainer();
+        this.doHighlightTabbars();
+        this.doShowLearnContainer();
+    },
+
+    showConference: function() {
+        //this.doShowContainer();
+        this.doHighlightTabbars();
+        this.doShowConferenceContainer();
+    },
+
+    showApply: function() {
+        this.doHighlightTabbars();
+        this.doShowApplyContainer();
+    },
+
+    showAssess: function() {
+        this.doHighlightTabbars();
+        this.doShowAssessContainer();
+    },
+
+    // event handlers
+    onWorkTabChange: function(tabbar){
         var me = this,
-            section;
+            section = tabbar.getActiveTab().section;
 
-        if (Ext.isString(tab)) {
-            section = tab;
-        } else if (tab.isXtype('button')) {
-            section = tab.config.section;
-        }
-
-        switch(section) {
+        switch(section){
             case 'learn':
-                tab = me.getLearnMainCt();
+                me.redirectTo('learn');
                 break;
             case 'conference':
-                tab = me.getConferenceMainCt();
+                me.redirectTo('conference');
                 break;
             case 'apply':
-                tab = me.getApplyMainCt();
+                me.redirectTo('apply');
                 break;
             case 'assess':
-                tab = me.getAssessMainCt();
+                me.redirectTo('assess');
                 break;
         }
-
-        return tab;
     },
 
-    updateActiveTab: function(newTab, oldTab) {
-        var me = this;
+    //controller methods
+    /**
+     * @private
+     * Called by each subsection route handler to highlight the proper tab
+     */
+    doHighlightTabbars: function(){
 
-        console.log(me.getTabContainer());
+        //TODO: figure out a better way to highlight tab that doesn't trigger event
 
-        //initial load contains no tab
-        if (oldTab) {
-            oldTab.hide();
-        }
-
-        if(me.getTabContainer().down(newTab)) {
-            newTab.show();
-        } else {
-            me.getTabContainer().add(newTab);
-        }
     },
 
-    onTabChange: function(tabBar, newTab, oldTab) {
-        this.setActiveTab(newTab.config.section);
+    /**
+     * @private
+     * Called by each showLearn() to add the learnCt to the tabsCt
+     */
+    doShowLearnContainer: function() {
+        var workCt = this.getTabsCt();
+        
+        workCt.removeAll();
+        workCt.add(this.getLearnCt());
+    },
+
+    /**
+     * @private
+     * Called by each showConference() to add the conferenceCt to the tabsCt
+     */
+    doShowConferenceContainer: function() {
+        var workCt = this.getTabsCt();
+        
+        workCt.removeAll();
+        workCt.add(this.getConferenceCt());
+    },
+
+    /**
+     * @private
+     * Called by each showApply() to add the applyCt to the tabsCt
+     */
+    doShowApplyContainer: function() {
+        var workCt = this.getTabsCt();
+        
+        workCt.removeAll();
+        workCt.add(this.getApplyCt());
+    },
+
+    /**
+     * @private
+     * Called by each showAssess() to add the assessCt to the tabsCt
+     */
+    doShowAssessContainer: function() {
+        var workCt = this.getTabsCt();
+        
+        workCt.removeAll();
+        workCt.add(this.getAssessCt());
     }
+
 });

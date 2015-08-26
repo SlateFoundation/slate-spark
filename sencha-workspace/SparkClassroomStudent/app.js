@@ -11,6 +11,7 @@ Ext.application({
         'SparkClassroom.view.TitleBar',
         'SparkClassroom.view.NavBar',
         'SparkClassroom.work.TabBar',
+        'SparkClassroomStudent.view.TabsContainer',
         'Ext.form.Panel' // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
     ],
 
@@ -21,10 +22,10 @@ Ext.application({
     //-------------------------------------------------------------------------
 
     views: [
-        'work.apply.Main',
-        'work.learn.Main',
-        'work.conference.Main',
-        'work.assess.Main'   
+        'work.apply.Container',
+        'work.learn.Container',
+        'work.conference.Container',
+        'work.assess.Container'   
     ],
 
     controllers: [
@@ -81,15 +82,8 @@ Ext.application({
                     ]
                 },
                 {
-                    xtype: 'container',
-                    itemId: 'page-wrap',
-                    cls: 'page-wrap',
-                    items: [
-                        {
-                            xtype: 'spark-work-tabbar'
-                        }
-                    ]
-                },
+                    xtype: 'spark-student-tabscontainer'
+                }
             ]
         }
     }
