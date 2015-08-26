@@ -31,7 +31,8 @@ body {
     overflow: visible;
 }
 
-// perhaps should be in the main.css for the site?
+// TODO below: misc to be organized
+
 h1, h2, h3, h4, h5, h6 {
     font-family: $font-family;
 }
@@ -69,6 +70,12 @@ a {
     box-shadow: 0 2px 5px rgba(black, .1);
     margin-bottom: 1.5em;
     padding: 1.5em 2.125em;
+}
+
+.content-card-inline {
+    @extend .content-card;
+    display: inline-block;
+    padding: .75em 1.5em;
 }
 
 .content-card-separator {
