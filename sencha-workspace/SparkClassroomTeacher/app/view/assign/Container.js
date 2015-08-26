@@ -8,14 +8,26 @@ Ext.define('SparkClassroomTeacher.view.assign.Container', {
 
     config: {
         autoDestroy: false,
-        // TODO: copied from 'SparkClassroomTeacher.view.TabsContainer' are they 
-        // 		 appropriate for this sub view styling?
-        //baseCls: 'spark-teacher-tabscontainer',
-        //padding: '48 24', // TODO: shouldn't this be in SASS?
         items: [
             {
                 docked: 'top',
-
+                xtype: 'formpanel',
+                cls: 'content-card-inline',
+                margin: 0,
+                items: [
+                    {
+                        xtype: 'selectfield',
+                        options: [
+                            {
+                                text: 'BIO1-009',
+                                value: ''
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                docked: 'top',
                 xtype: 'spark-teacher-assign-tabbar'
             }
         ]
