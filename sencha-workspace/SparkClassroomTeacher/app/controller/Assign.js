@@ -69,7 +69,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     routes: {
         'assign': {
-            before: 'beforeShowContainer'
+            rewrite: 'rewriteShowContainer'
         },
         'assign/learn': 'showLearn',
         'assign/conference-questions': 'showConferenceQuestions',
@@ -80,6 +80,18 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
 
     // route handlers
+    rewriteShowContainer: function(token, args, route) {
+        var assignTabBar = this.getAssignTabbar(),
+            assignTabId = 'learn';
+
+        if (assignTabBar) {
+            // TODO: verify this works when the tab bar exists
+            assignTabId = assignTabBar.getActiveItem().getItemId();
+        }
+
+        return 'assign/' + assignTabId;
+    },
+
     beforeShowContainer: function(action) {
         action.stop();
         this.redirectTo('assign/learn');
