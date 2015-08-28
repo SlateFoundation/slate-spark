@@ -15,6 +15,6 @@ Ext.define('SparkClassroom.store.Sections', {
         },
     },
 
-    storeId: 'testStore',
+    storeId: 'sectionsStore',
     autoLoad: true
 });
