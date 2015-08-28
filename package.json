@@ -246,6 +246,7 @@
      *      }
      */
     "requires": [
+        "jarvus-apikit",
         "jarvus-touch-accordion"
     ]
 }
