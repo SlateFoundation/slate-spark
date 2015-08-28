@@ -7,6 +7,7 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
     config: {
         data: {
             completedLearns: 3,
+            name: null,
             requiredLearns: 5,
         },
 
@@ -16,7 +17,7 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
                     '<li class="progressbanner-pip {.}"></li>',
                 '</tpl>',
             '</ul>',
-            'You’ve completed <strong>{completedLearns}/{requiredLearns}</strong> of the required learns.',
+            '{[ this.getNameAndAuxVerb(values.name)]} completed <strong>{completedLearns}/{requiredLearns}</strong> of the required learns.',
 
             {
                 pips: function(complete, required) {
@@ -28,6 +29,17 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
                     }
 
                     return pips;
+                }
+            },
+            {
+                getNameAndAuxVerb: function(name) {
+                    name = name || 'You';
+
+                    if (name == 'You') {
+                        return 'You’ve';
+                    } else {
+                        return name + ' has';
+                    }
                 }
             }
         ]

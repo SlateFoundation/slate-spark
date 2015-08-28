@@ -1,8 +1,9 @@
 .spark-learn-progressbanner {
-    background-color: white;
+    background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba($color, .2);
-    margin: 1em 0;
+    margin: 1em auto;
     padding: 1em;
+    text-align: center;
 
     .progressbanner-pips {
         display: block;
