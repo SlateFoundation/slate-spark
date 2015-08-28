@@ -70,6 +70,10 @@ a {
     box-shadow: 0 2px 5px rgba(black, .1);
     margin-bottom: 1.5em;
     padding: 1.5em 2.125em;
+
+    &.narrow {
+        padding: 1.5em;
+    }
 }
 
 .content-card-inline {
