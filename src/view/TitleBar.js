@@ -6,21 +6,23 @@ Ext.define('SparkClassroom.view.TitleBar', {
 
     requires: [
         'Ext.Title',
-        'Ext.field.Select'
+        'Ext.field.Select',
+        'SparkClassroom.store.Sections'
     ],
 
     config: {
         items: [
             {
                 xtype: 'selectfield',
-                cls: 'spark-course-selector',
-                label: 'Course Section',
+                store: { 
+                    xclass: 'SparkClassroom.store.Sections' 
+                },
+                displayField: 'Title',
+                valueField: 'ID',
+                itemId: 'testSelect',
                 labelCls: 'visually-hidden',
-                options: [
-                    { text: 'BIO1-009', value: 'bio1-009' },
-                    { text: 'ENG1-009', value: 'eng1-009' },
-                    { text: 'AMHIST-008', value: 'amhist-008' }
-                ]
+                cls: 'spark-course-selector',
+                label: 'Course Section'
             }
         ]
     }
