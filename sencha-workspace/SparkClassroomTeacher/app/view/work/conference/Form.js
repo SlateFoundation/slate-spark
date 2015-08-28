@@ -4,65 +4,96 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Form', {
     xtype: 'spark-teacher-work-conference-form',
 
     config: {
-        layout: 'vbox',
         items: [
             {
                 xtype: 'container',
                 layout: 'hbox',
                 items: [
                     {
+                        flex: 1,
                         xtype: 'component',
                         html: 'timer'
                     },
                     {
                         xtype: 'button',
+                        ui: 'action',
                         text: 'Pause Conference'
                     }
                 ]
             },
             {
                 xtype: 'formpanel',
-                flex: 1,
+                cls: 'content-card narrow',
                 items: [
                     {
-                        xtype: 'textfield',
-                        placeHolder: 'Subject'
-                    },
-                    {
-                        xtype: 'textareafield',
-                        placeHolder: 'Message'
-                    },
-                    {
                         xtype: 'fieldset',
-                        label: 'To',
+                        title: 'Feedback',
                         items: [
                             {
-                                xtype: 'radiofield',
-                                label: 'Alexandra W'
+                                xtype: 'textfield',
+                                label: 'Subject'
                             },
                             {
-                                xtype: 'radiofield',
-                                label: 'Current Standard'
+                                xtype: 'textareafield',
+                                label: 'Message'
                             },
                             {
-                                xtype: 'radiofield',
-                                label: 'All in group'
-                            },
-                            {
-                                xtype: 'radiofield',
-                                label: 'All in Conference'
+                                xtype: 'fieldset',
+                                cls: 'radio-group text-notrail',
+                                title: 'To',
+                                defaults: {
+                                    labelAlign: 'left',
+                                    labelWidth: 'auto',
+                                    name: 'to'
+                                },
+                                items: [
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'Alexandra W'
+                                    },
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'Current Standard'
+                                    },
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'All in group'
+                                    },
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'All in Conference'
+                                    }
+                                ]
                             }
                         ]
                     },
                     {
                         xtype: 'button',
+                        ui: 'action',
                         text: 'Log'
                     }
                 ]
             },
             {
-                xtype: 'component',
-                html: 'mastery score'
+                xtype: 'formpanel',
+                cls: 'content-card narrow',
+                items: [
+                    {
+                        // TODO input mask?
+                        xtype: 'textfield',
+                        label: 'Mastery Check Score',
+                        labelAlign: 'left',
+                        labelCls: 'text-left',
+                        labelWidth: '10.5em',
+                        placeHolder: ' / ',
+                        style: { textAlign: 'center' },
+                    }
+                ]
+            },
+            {
+                xtype: 'button',
+                ui: 'action',
+                text: 'Alexandra W. is Ready for Apply'
             }
         ]
     }
