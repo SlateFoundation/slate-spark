@@ -2,55 +2,84 @@
 Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
     extend: 'Ext.form.Panel',
     xtype: 'spark-teacher-work-learn-form',
+    requires: [
+        'SparkClassroom.work.learn.ProgressBanner'
+    ],
 
     config: {
-
-        layout: 'vbox',
         items: [
             {
-                xtype: 'component',
-                html: 'required learns'
-            },
-            {
-                xtype: 'component',
-                html: 'mastery score'
+                // TODO: hide/remove progress banner from grid
+                xtype: 'spark-work-learn-progressbanner',
+                data: {
+                    name: 'Alexandra W.'
+                }
             },
             {
                 xtype: 'formpanel',
-                flex: 1,
+                cls: 'content-card narrow',
                 items: [
                     {
+                        // TODO input mask?
                         xtype: 'textfield',
-                        placeHolder: 'Subject'
-                    },
-                    {
-                        xtype: 'textareafield',
-                        placeHolder: 'Message'
-                    },
+                        label: 'Mastery Check Score',
+                        labelAlign: 'left',
+                        labelCls: 'text-left',
+                        labelWidth: '10.5em',
+                        placeHolder: ' / ',
+                        style: { textAlign: 'center' },
+                    }
+                ]
+            },
+            {
+                xtype: 'formpanel',
+                cls: 'content-card narrow',
+                items: [
                     {
                         xtype: 'fieldset',
-                        label: 'To',
+                        title: 'Feedback',
                         items: [
                             {
-                                xtype: 'radiofield',
-                                label: 'Alexandra W'
+                                xtype: 'textfield',
+                                label: 'Subject'
                             },
                             {
-                                xtype: 'radiofield',
-                                label: 'Current Standard'
+                                xtype: 'textareafield',
+                                label: 'Message'
                             },
                             {
-                                xtype: 'radiofield',
-                                label: 'All in group'
-                            },
-                            {
-                                xtype: 'radiofield',
-                                label: 'All in Conference'
+                                xtype: 'fieldset',
+                                cls: 'radio-group text-notrail',
+                                title: 'To',
+                                defaults: {
+                                    labelAlign: 'left',
+                                    labelWidth: 'auto',
+                                    name: 'to'
+                                },
+                                items: [
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'Alexandra W'
+                                    },
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'Current Standard'
+                                    },
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'All in group'
+                                    },
+                                    {
+                                        xtype: 'radiofield',
+                                        label: 'All in Conference'
+                                    }
+                                ]
                             }
                         ]
                     },
                     {
                         xtype: 'button',
+                        ui: 'action',
                         text: 'Log'
                     }
                 ]
