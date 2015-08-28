@@ -12,7 +12,8 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
         this.add({
             xtype: 'spark-teacher-work-learn-form',
             docked: 'right',
-            cls: 'sidebar-col'
+            cls: 'sidebar-col',
+            scrollable: false
         });
     }
 });
