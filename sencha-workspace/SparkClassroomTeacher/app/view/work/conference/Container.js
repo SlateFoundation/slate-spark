@@ -7,16 +7,14 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
         'SparkClassroomTeacher.view.work.conference.peer.Component'
     ],
 
-    config: {
-        layout: 'hbox'
-    },
-    
     initialize: function () {
         this.callParent(arguments);
         
         this.add({
             xtype: 'spark-teacher-work-conference-form',
-            width: '30%'
+            docked: 'right',
+            cls: 'sidebar-col',
+            scrollable: false
         });
         
         this.getComponent('standardContainer').add({
