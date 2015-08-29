@@ -255,5 +255,7 @@
      *          }
      *      }
      */
-    "requires": []
+    "requires": [
+        "font-awesome"
+    ]
 }
