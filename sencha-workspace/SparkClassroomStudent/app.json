@@ -69,9 +69,7 @@
      *      ]
      */
     "requires": [
-        "font-awesome",
-        "spark-classroom",
-        "jarvus-touch-accordion"
+        "spark-classroom"
     ],
 
     /**
