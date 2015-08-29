@@ -10,3 +10,11 @@
 	path = sencha-workspace/packages/spark-theme
 	url = git@github.com:JarvusInnovations/spark-theme.git
 	branch = develop
+[submodule "sencha-workspace/packages/jarvus-apikit"]
+	path = sencha-workspace/packages/jarvus-apikit
+	url = git@github.com:JarvusInnovations/jarvus-apikit.git
+	branch = master
+[submodule "sencha-workspace/packages/emergence-apikit"]
+	path = sencha-workspace/packages/emergence-apikit
+	url = git@github.com:JarvusInnovations/emergence-apikit.git
+	branch = master
