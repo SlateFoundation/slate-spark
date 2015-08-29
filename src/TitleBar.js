@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroom.view.TitleBar', {
+Ext.define('SparkClassroom.TitleBar', {
     extend: 'Ext.Toolbar',
     xtype: 'spark-titlebar',
     cls: 'spark-titlebar',

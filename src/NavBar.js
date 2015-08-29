@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroom.view.NavBar', {
+Ext.define('SparkClassroom.NavBar', {
     extend: 'Ext.Toolbar',
     xtype: 'spark-navbar',
     cls: 'spark-navbar',
