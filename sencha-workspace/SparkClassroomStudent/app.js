@@ -8,8 +8,8 @@ Ext.application({
 
     extend: 'SparkClassroomStudent.Application',
     requires: [
-        'SparkClassroom.view.TitleBar',
-        'SparkClassroom.view.NavBar',
+        'SparkClassroom.TitleBar',
+        'SparkClassroom.NavBar',
         'SparkClassroom.work.TabBar',
         'SparkClassroomStudent.view.TabsContainer',
         'Ext.form.Panel' // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
