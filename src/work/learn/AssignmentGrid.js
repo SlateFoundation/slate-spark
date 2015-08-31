@@ -2,8 +2,14 @@
 Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-assignmentgrid',
+    requires: [
+        'SparkClassroomStudent.plugin.GridFlex'
+    ],
 
     config: {
+        plugins: [
+            'gridflex'
+        ],
         height: 500,
         grouped: true,
         titleBar: null,
@@ -19,7 +25,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
             },
             {
                 dataIndex: 'Title',
-                width: 100,
+                flex: 2,
                 text: 'Playist'
             },
             {
@@ -30,7 +36,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
             {
                 dataIndex: 'Category',
                 text: 'Category',
-                width: 100
+                flex: 1
             },
             {
                 dataIndex: 'SRating',
@@ -48,7 +54,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
             },
             {
                 dataIndex: 'Attachment',
-                width: 100,
+                flex: 1,
                 text: 'Attachment'
             },
             {
