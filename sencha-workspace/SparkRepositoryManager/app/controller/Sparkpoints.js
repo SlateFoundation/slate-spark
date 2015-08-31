@@ -203,7 +203,10 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onSparkpointTableSelectionChange: function(selModel, sparkpoints) {
-        this.getMainPanel().setSelectedSparkpoint(sparkpoints[0] || null);
+        var me = this;
+
+        me.getMainPanel().setSelectedSparkpoint(sparkpoints[0] || null);
+        me.getContentAreaPanel().setActiveTab(me.getSparkpointsTable());
     },
 
     onSelectedSparkpointChange: function(mainPanel, sparkpoint) {
