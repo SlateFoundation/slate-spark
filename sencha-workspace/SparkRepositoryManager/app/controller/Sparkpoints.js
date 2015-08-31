@@ -76,6 +76,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                 click: 'onCreateSparkpointClick'
             },
             sparkpointsGraph: {
+                beforeactivate: 'onSparkpointsGraphBeforeActivate',
                 activate: 'onSparkpointsGraphActivate'
             },
             sparkpointsDag: {
@@ -236,6 +237,16 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
 
         me.getAlignmentsTable().setSparkpoint(sparkpoint);
+    },
+
+    onSparkpointsGraphBeforeActivate: function(ct) {
+        var me = this,
+            sparkpoint = me.getSparkpointsTable().getSelection()[0];
+
+        if (!sparkpoint) {
+            Ext.Msg.alert('Graph','Please select a sparkpoint before switching to graph');
+            return false;
+        }
     },
 
     onSparkpointsGraphActivate: function(ct) {
