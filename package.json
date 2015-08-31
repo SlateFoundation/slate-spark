@@ -246,7 +246,7 @@
      *      }
      */
     "requires": [
-        "jarvus-apikit",
-        "jarvus-touch-accordion"
+        "jarvus-touch-accordion",
+        "emergence-apikit"
     ]
 }

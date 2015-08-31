@@ -1,6 +1,6 @@
 /*jslint browser: true ,undef: true *//*global Ext*/
 Ext.define('SparkClassroom.API', {
-    extend: 'Jarvus.util.AbstractAPI',
+    extend: 'Emergence.util.AbstractAPI',
     singleton: true,
 
     getMetadata: function (url, extended, cb) {
