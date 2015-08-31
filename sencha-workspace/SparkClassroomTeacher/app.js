@@ -20,7 +20,7 @@ Ext.application({
 
     // TODO: move all this to the Application class
     views: [
-        'TitleBar@SparkClassroom.view',
+        'TitleBar@SparkClassroom',
         'TabsContainer'
     ],
     controllers: [
