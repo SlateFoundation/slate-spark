@@ -11,7 +11,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Panel', {
         'Ext.form.FieldSet'
     ],
 
-    title: 'Selected Sparkpoint: K.CC.1',
+    title: 'Selected Sparkpoint',
 
     disabled: true,
     scrollable: 'y',
