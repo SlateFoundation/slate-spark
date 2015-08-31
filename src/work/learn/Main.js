@@ -4,7 +4,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
     xtype: 'spark-work-learn',
     requires: [
         'SparkClassroom.work.learn.ProgressBanner',
-        'SparkClassroom.work.learn.AssignmentGrid',
+        'SparkClassroom.work.learn.Grid',
         'Jarvus.layout.Accordion'
     ],
 
@@ -35,7 +35,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
                                         ]
                                     },
                                     {
-                                        xtype: 'spark-work-learn-assignmentgrid',
+                                        xtype: 'spark-work-learn-grid',
                                     }
                                 ]
                             },

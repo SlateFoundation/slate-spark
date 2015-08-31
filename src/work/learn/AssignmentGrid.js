@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
+Ext.define('SparkClassroom.work.learn.Grid', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-work-learn-assignmentgrid',
+    xtype: 'spark-work-learn-grid',
     requires: [
         'SparkClassroom.plugin.GridFlex'
     ],
