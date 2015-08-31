@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.work.learn.AssignmentGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-assignmentgrid',
     requires: [
-        'SparkClassroomStudent.plugin.GridFlex'
+        'SparkClassroom.plugin.GridFlex'
     ],
 
     config: {
