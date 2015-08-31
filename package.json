@@ -247,6 +247,6 @@
      */
     "requires": [
         "jarvus-touch-accordion",
-        "emergence-apikit"
+        "slate-core-data"
     ]
 }
