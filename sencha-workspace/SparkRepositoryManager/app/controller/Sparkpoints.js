@@ -21,6 +21,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             contentAreasTable: 'srm-sparkpoints-contentareastable',
             contentAreaPanel: 'srm-sparkpoints-contentareapanel',
             sparkpointsTable: 'srm-sparkpoints-grid',
+            sparkpointsGraph: 'srm-sparkpoints-graph',
+            sparkpointsDag: 'srm-sparkpoints-dag',
             sparkpointPanel: 'srm-sparkpoints-sparkpointpanel',
             sparkpointDiscardButton: 'srm-sparkpoints-sparkpointpanel button#discard',
             sparkpointSaveButton: 'srm-sparkpoints-sparkpointpanel button#save',
@@ -72,6 +74,12 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             },
             'srm-sparkpoints-grid button[action=create]': {
                 click: 'onCreateSparkpointClick'
+            },
+            sparkpointsGraph: {
+                activate: 'onSparkpointsGraphActivate'
+            },
+            sparkpointsDag: {
+                maskclick: 'onSparkpointsDagMaskClick'
             },
             sparkpointForm: {
                 dirtychange: 'onSparkpointDirtyChange',
@@ -182,7 +190,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         sparkpoint.set('content_area_id', contentArea.getId());
 
         sparkpointsTable.setSelection(sparkpoint);
-        
+
         this.getSparkpointAbbreviationField().focus(true);
     },
 
@@ -204,20 +212,20 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         if (sparkpoint) {
             selModel.select(sparkpoint);
-    
+
             me.getSparkpointForm().loadRecord(sparkpoint);
             sparkpointPanel.enable();
-    
+
             me.getDependenciesTable().setRootNode({
                 expanded: true,
                 source_sparkpoint: sparkpoint
             });
-    
+
             me.getDependentsTable().setRootNode({
                 expanded: true,
                 target_sparkpoint: sparkpoint
             });
-    
+
             me.getSparkpointsEdgesStore().filter([{
                 property: 'sparkpoint_id',
                 value: sparkpoint.getId()
@@ -228,6 +236,29 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
 
         me.getAlignmentsTable().setSparkpoint(sparkpoint);
+    },
+
+    onSparkpointsGraphActivate: function(ct) {
+        var me = this,
+            dag = me.getSparkpointsDag(),
+            sparkpoint = me.getSparkpointsTable().getSelection()[0];
+
+        if (sparkpoint) {
+            dag.loadSparkpoint(sparkpoint);
+        }
+    },
+
+    onSparkpointsDagMaskClick: function(node) {
+        var me = this,
+            dag = me.getSparkpointsDag(),
+            grid = me.getSparkpointsTable(),
+            store = grid.getStore(),
+            sparkpoint = store.getById(node.id);
+
+        if (sparkpoint) {
+            dag.loadSparkpoint(sparkpoint);
+            grid.getSelectionModel().select(sparkpoint);
+        }
     },
 
     onSparkpointEdgesLoad: function(edgesStore) {
@@ -301,7 +332,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             phantom = sparkpoint.phantom;
 
         sparkpointForm.reset(phantom);
-        
+
         if (phantom) {
             me.getSparkpointsTable().getStore().remove(sparkpoint);
             me.getSparkpointPanel().disable();
@@ -441,7 +472,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                     var children = node.childNodes,
                         len = children && children.length,
                         i = 0;
-                        
+
                     for (; i < len; i++) {
                         if (children[i].get('visible')) {
                             return true;
