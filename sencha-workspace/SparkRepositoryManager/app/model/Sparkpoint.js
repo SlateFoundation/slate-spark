@@ -28,6 +28,9 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     proxy: {
         type: 'spark-api',
         url: '/spark-repo/sparkpoints',
+		extraParams: {
+			include: 'sparkpoints_edges_complete'
+		},
         writer: {
             allowSingle: false
         }
@@ -63,4 +66,5 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
             min: 2
         }
     }
+
 });
