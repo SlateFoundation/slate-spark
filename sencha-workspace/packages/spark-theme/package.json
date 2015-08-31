@@ -166,7 +166,7 @@
          * The "sass/var/all.scss" file is always included at the start of the var
          * block before any files associated with JavaScript classes.
          */
-        "var": "${package.dir}/sass/var,${package.dir}/${toolkit.name}/sass/var",
+        "var": "${package.dir}/sass/var/all.scss,${package.dir}/sass/var,${package.dir}/${toolkit.name}/sass/var",
 
         /**
          * Comma-separated list of folders containing Sass rule files.
