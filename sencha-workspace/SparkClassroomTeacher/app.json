@@ -69,12 +69,7 @@
      *      ]
      */
     "requires": [
-        "font-awesome",
-        "spark-classroom",
-        "jarvus-touch-accordion",
-        "slate-core-data",
-        "jarvus-apikit",
-        "emergence-apikit"
+        "spark-classroom"
     ],
 
     /**
