@@ -11,6 +11,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
 
     title:  'Graph',
     layout: 'fit',
+    padding: 20,
 
     items: [{
         xtype:    'srm-sparkpoints-dag',
@@ -26,74 +27,40 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
                     marginHeight: 5
                 },
                 rect:  {
-                    width:  50,
                     height: 50,
-                    stroke: 'green'
+                    width: 50,
+                    stroke: '#00a1b1',
+                    'stroke-width': 2
                 },
                 dot:  {
                     radius: 6,
-                    fill: 'red',
+                    fill: '#00737e',
                     marginHeight: 5,
                     marginWidth: 8
                 }
+            },
+            highlightedNodes: {
+                code: {
+                    'font-weight': 'bold',
+                },
+                rect: {
+                    height: 50,
+                    width: 50,
+                    fill: '#9ad8da',
+                    stroke: '#00a1b1',
+                    'stroke-width': 4
+                }
+            },
+            edges: {
+                color: '#00737e',
+                arrow_height: 8,
             }
         },
         dag:      {
             nodes: {
-                '1': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.1',
-                    teacher_title: 'Original choreography and improvisation of movement sequences begins with basic understanding of the elements of dance.',
-                    dependencies_count: 1
-                },
-                '2': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.1',
-                    teacher_title: 'Identify the elements of dance in planned and improvised dance sequences.',
-                    dependencies_count: 1
-                },
-                '3': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.2',
-                    teacher_title: 'Original movement is generated through improvisational skills and techniques.',
-                    dependencies_count: 5
-                },
-                '4': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.2',
-                    teacher_title: 'Use improvisation to discover.',
-                    dependencies_count: 2
-                },
-                '5': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.3',
-                    teacher_title: 'There are distinct differences between pedestrian movements and formal training in dance.',
-                    dependencies_count: 4
-                },
-                '6': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.3',
-                    teacher_title: 'There are distinct differences between pedestrian movements and formal training in dance.',
-                    dependencies_count: 0
-                },
-                '7': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.3',
-                    teacher_title: 'Demonstrate the difference between pantomime, pedestrian movement, abstract gesture, and dance movement.',
-                    dependencies_count: 1
-                },
-                '8': {
-                    code: 'NJ.ART.GK-2.1.1.2.A.4',
-                    teacher_title: 'The coordination and isolation of different body parts is dependent on the dynamic alignment of the body while standing and moving.',
-                    dependencies_count: 2
-                }
+                '1': {code: 'Select a sparkpoint', teacher_title: '', dependencies_count: 0 }
             },
-            edges: [
-                [3, 5],
-                [2, 7],
-                [4, 6],
-                [6, 8],
-                [2, 4],
-                [5, 7],
-                [1, 3],
-                [2, 8],
-                [1, 2],
-                [7, 8],
-                [3, 4]
-            ]
+            edges: []
         },
 
         computeLayout: 'maxupordown'
