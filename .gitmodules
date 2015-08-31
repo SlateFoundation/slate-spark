@@ -2,19 +2,23 @@
 	path = sencha-workspace/packages/spark-classroom
 	url = git@github.com:JarvusInnovations/spark-classroom.git
 	branch = develop
-[submodule "sencha-workspace/packages/jarvus-touch-accordion"]
-	path = sencha-workspace/packages/jarvus-touch-accordion
-	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
-	branch = ext/6
 [submodule "sencha-workspace/packages/spark-theme"]
 	path = sencha-workspace/packages/spark-theme
 	url = git@github.com:JarvusInnovations/spark-theme.git
 	branch = develop
+[submodule "sencha-workspace/packages/jarvus-touch-accordion"]
+	path = sencha-workspace/packages/jarvus-touch-accordion
+	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
+	branch = master
 [submodule "sencha-workspace/packages/jarvus-apikit"]
 	path = sencha-workspace/packages/jarvus-apikit
-	url = git@github.com:JarvusInnovations/jarvus-apikit.git
+	url = https://github.com/JarvusInnovations/jarvus-apikit.git
 	branch = master
 [submodule "sencha-workspace/packages/emergence-apikit"]
 	path = sencha-workspace/packages/emergence-apikit
-	url = git@github.com:JarvusInnovations/emergence-apikit.git
+	url = https://github.com/JarvusInnovations/emergence-apikit.git
+	branch = master
+[submodule "sencha-workspace/packages/slate-core-data"]
+	path = sencha-workspace/packages/slate-core-data
+	url = https://github.com/SlateFoundation/slate-core-data.git
 	branch = master
