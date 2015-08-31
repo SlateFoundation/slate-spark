@@ -3,8 +3,8 @@ Ext.define('SparkClassroom.work.assess.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-work-assess',
     requires: [
-        'SparkClassroom.work.assess.StandardsGrid',
-        'SparkClassroom.work.assess.AssignmentGrid'
+        'SparkClassroom.work.assess.AssessmentsGrid',
+        'SparkClassroom.work.assess.LearnsGrid'
     ],
 
     config: {
@@ -12,14 +12,14 @@ Ext.define('SparkClassroom.work.assess.Main', {
         layout: 'vbox',
         items: [
             {
-                xtype: 'spark-work-assess-standardsgrid'
+                xtype: 'spark-work-assess-assessmentsgrid'
             },
             {
                 xtype: 'component',
                 html: 'How does this standards apply to everyday life?'
             },
             {
-                xtype: 'spark-work-assess-assignmentgrid'
+                xtype: 'spark-work-assess-learnsgrid'
             }
         ]
     }
