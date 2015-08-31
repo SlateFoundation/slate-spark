@@ -152,12 +152,14 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onSelectedContentAreaChange: function(mainPanel, contentArea) {
-        var contentAreaPanel = this.getContentAreaPanel();
+        var me = this,
+            contentAreaPanel = me.getContentAreaPanel();
 
         if (contentArea) {
-            this.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
+            me.getSparkpointsSparkpointsStore().filter('content_area_id', contentArea.getId());
             contentAreaPanel.enable();
             contentArea.expand();
+            contentAreaPanel.setActiveTab(me.getSparkpointsTable());
         } else {
             contentAreaPanel.disable();
         }
@@ -206,7 +208,6 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         var me = this;
 
         me.getMainPanel().setSelectedSparkpoint(sparkpoints[0] || null);
-        me.getContentAreaPanel().setActiveTab(me.getSparkpointsTable());
     },
 
     onSelectedSparkpointChange: function(mainPanel, sparkpoint) {
@@ -219,6 +220,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
             me.getSparkpointForm().loadRecord(sparkpoint);
             sparkpointPanel.enable();
+            sparkpointPanel.setTitle('Selected Sparkpoint: ' + sparkpoint.get('abbreviation'));
 
             me.getDependenciesTable().setRootNode({
                 expanded: true,
@@ -242,7 +244,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         me.getAlignmentsTable().setSparkpoint(sparkpoint);
     },
 
-    onSparkpointsGraphBeforeActivate: function(ct) {
+    onSparkpointsGraphBeforeActivate: function() {
         var me = this,
             sparkpoint = me.getSparkpointsTable().getSelection()[0];
 
@@ -252,7 +254,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         }
     },
 
-    onSparkpointsGraphActivate: function(ct) {
+    onSparkpointsGraphActivate: function() {
         var me = this,
             dag = me.getSparkpointsDag(),
             sparkpoint = me.getSparkpointsTable().getSelection()[0];
