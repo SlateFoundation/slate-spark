@@ -8,8 +8,6 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     refs:{
         teacherTabBar: 'spark-teacher-tabbar',
-        workTabBar: 'spark-work-tabbar',
-        assignTabBar: 'spark-teacher-assign-tabbar',
         sparkNavBarButtons: 'spark-navbar button'
     },
     
