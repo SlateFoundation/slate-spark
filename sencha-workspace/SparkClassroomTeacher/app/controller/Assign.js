@@ -129,27 +129,32 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
 
     // event handlers
-    onAssignTabChange: function(tabbar){
+    onAssignTabChange: function(tabbar, value, oldValue){
         var me = this,
             section = tabbar.getActiveTab().getItemId();
 
-        switch(section){
-            case 'learn':
-                me.redirectTo('assign/learn');
-                break;
-            case 'conference-questions':
-                me.redirectTo('assign/conference-questions');
-                break;
-            case 'conference-resources':
-                me.redirectTo('assign/conference-resources');
-                break;
-            case 'apply':
-                me.redirectTo('assign/apply');
-                break;
-            case 'assess':
-                me.redirectTo('assign/assess');
-                break;
+        if(oldValue !== null){
+
+            switch(section){
+                case 'learn':
+                    me.redirectTo('assign/learn');
+                    break;
+                case 'conference-questions':
+                    me.redirectTo('assign/conference-questions');
+                    break;
+                case 'conference-resources':
+                    me.redirectTo('assign/conference-resources');
+                    break;
+                case 'apply':
+                    me.redirectTo('assign/apply');
+                    break;
+                case 'assess':
+                    me.redirectTo('assign/assess');
+                    break;
+            }
+
         }
+
     },
     
     
@@ -180,7 +185,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         //TODO: figure out a better way to highlight tab that doesn't trigger event
         
-        //assignTabbar.setActiveTab(assignTab);
+        assignTabbar.setActiveTab(assignTab);
         //teacherTabbar.setActiveTab(teacherTab); 
     },
 
