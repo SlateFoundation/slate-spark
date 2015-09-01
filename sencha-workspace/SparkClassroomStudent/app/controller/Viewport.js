@@ -15,6 +15,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     refs: {
         tabsCt: 'spark-student-tabscontainer',
+        workTabbar: 'spark-work-tabbar',
         learnCt: {
             selector: 'spark-student-work-learn',
             autoCreate: true,
@@ -83,20 +84,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         var me = this,
             section = tabbar.getActiveTab().section;
 
-        switch(section){
-            case 'learn':
-                me.redirectTo('learn');
-                break;
-            case 'conference':
-                me.redirectTo('conference');
-                break;
-            case 'apply':
-                me.redirectTo('apply');
-                break;
-            case 'assess':
-                me.redirectTo('assess');
-                break;
-        }
+        me.redirectTo(section);
     },
 
     //controller methods
@@ -105,9 +93,12 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
      * Called by each subsection route handler to highlight the proper tab
      */
     doHighlightTabbars: function(){
+        var workTabbar = this.getWorkTabbar(),
+            hash = window.location.hash,
+            section = hash.substring(hash.indexOf('/') + 1, hash.length),
+            assignTab = workTabbar.down(section);
 
-        //TODO: figure out a better way to highlight tab that doesn't trigger event
-
+        workTabbar.setActiveTab(assignTab);
     },
 
     /**
