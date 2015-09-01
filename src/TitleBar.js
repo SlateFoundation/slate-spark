@@ -19,7 +19,7 @@ Ext.define('SparkClassroom.TitleBar', {
                 },
                 displayField: 'Title',
                 valueField: 'ID',
-                itemId: 'testSelect',
+                itemId: 'sectionSelect',
                 labelCls: 'visually-hidden',
                 cls: 'spark-course-selector',
                 label: 'Course Section'
