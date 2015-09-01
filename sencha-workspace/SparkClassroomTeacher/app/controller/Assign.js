@@ -85,8 +85,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             assignTabId = 'learn';
 
         if (assignTabBar) {
-            // TODO: verify this works when the tab bar exists
-            assignTabId = assignTabBar.getActiveItem().getItemId();
+            assignTabId = assignTabBar.getActiveTab().getItemId();
         }
 
         return 'assign/' + assignTabId;
@@ -165,10 +164,8 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             teacherTab = teacherTabbar.down('[itemId=assign]'),
             assignTab = assignTabbar.down('[itemId='+ section +']');
 
-        //TODO: figure out a better way to highlight tab that doesn't trigger event
-        
         assignTabbar.setActiveTab(assignTab);
-        //teacherTabbar.setActiveTab(teacherTab); 
+        teacherTabbar.setActiveTab(teacherTab); 
     },
 
     /**

@@ -3,7 +3,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
     refs:{
-        teacherTabBar: 'spark-teacher-tabbar'
+        teacherTabBar: 'spark-teacher-tabbar',
+        workTabBar: 'spark-work-tabbar',
+        assignTabBar: 'spark-teacher-assign-tabbar'
     },
     
     control: {
@@ -13,9 +15,31 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     onTeacherTabChange: function(tabBar, value, oldValue) {
-        
+        var me =  this,
+            section = value.getItemId();
+
         // TODO: handle when this gets triggered via setActiveTab from any controller
-        this.redirectTo(value.getItemId());
+        switch(section){
+            case 'work':
+                var workTabBar = me.getWorkTabBar();
+                if(workTabBar === undefined){
+                    this.redirectTo(section);
+                } else {
+                    this.redirectTo(section + '/' +  workTabBar.getActiveTab().getItemId());
+                }
+                break;
+            case 'competencies':
+                this.redirectTo(value.getItemId());
+                break;
+            case 'assign':
+                var assignTabBar = me.getAssignTabBar();
+                if(assignTabBar === undefined){
+                    this.redirectTo(section);
+                } else {
+                    this.redirectTo(section + '/' +  assignTabBar.getActiveTab().getItemId());
+                }
+                break;
+        }
         
     }
 

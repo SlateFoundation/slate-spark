@@ -73,8 +73,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             workTabId = 'learn';
 
         if (workTabBar) {
-            // TODO: verify this works when the tab bar exists
-            workTabId = workTabBar.getActiveItem().getItemId();
+            workTabId = workTabBar.getActiveTab().getItemId();
         }
 
         return 'work/' + workTabId;
@@ -137,13 +136,11 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             teacherTabbar = this.getTeacherTabbar(),
             hash = window.location.hash,
             section = hash.substring(hash.indexOf('/') + 1, hash.length),
-            teacherTab = teacherTabbar.down('[itemId=assign]'),
+            teacherTab = teacherTabbar.down('[itemId=work]'),
             assignTab = workTabbar.down('[itemId='+ section +']');
 
-        //TODO: figure out a better way to highlight tab that doesn't trigger event
-        
         workTabbar.setActiveTab(assignTab);
-        //teacherTabbar.setActiveTab(teacherTab); 
+        teacherTabbar.setActiveTab(teacherTab); 
     },
 
     /**
