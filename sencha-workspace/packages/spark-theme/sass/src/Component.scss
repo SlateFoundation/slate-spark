@@ -163,3 +163,31 @@ a {
     font-weight: bold;
     line-height: 1.5;
 }
+
+.spark-qna {
+    
+}
+
+.spark-qna-item {
+    ol, ul {
+        margin-left: 1.5em;
+    }
+
+    ol li {
+        list-style: decimal;
+    }
+
+    ul li {
+        list-style: disc;
+    }
+}
+
+.spark-qna-q {
+    color: $field-label-color;
+    font-size: $field-label-font-size;
+    font-weight: $field-label-font-weight;
+}
+
+.spark-qna-a {
+    margin: .25em 0 1.5em;
+}
