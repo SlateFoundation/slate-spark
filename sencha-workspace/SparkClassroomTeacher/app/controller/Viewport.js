@@ -2,6 +2,10 @@
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
+    stores: [
+        'Sections@SparkClassroom.store'
+    ],
+
     refs:{
         teacherTabBar: 'spark-teacher-tabbar',
         workTabBar: 'spark-work-tabbar',
