@@ -35,7 +35,7 @@ Ext.application({
         viewport: {
             layout: 'auto',
             scrollable: 'vertical',
-            // TODO: move all items to viewport launch function
+            // TODO: move all items to viewport launch function, use autoCreate refs
             items: [
                 {
                     xtype: 'spark-titlebar'
@@ -48,6 +48,7 @@ Ext.application({
     },
 
     launch: function() {
+        // TODO: also move to viewport launch function, use autoCreate ref
         Ext.Viewport.insert(1,[
             {
                 xtype: 'spark-gps'
