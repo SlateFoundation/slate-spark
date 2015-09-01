@@ -17,6 +17,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     refs: {
         tabsCt: 'spark-teacher-tabscontainer',
         workTabbar: 'spark-work-tabbar',
+        teacherTabbar: 'spark-teacher-tabbar',
         workCt: {
             selector: 'spark-teacher-work-ct',
             autoCreate: true,
@@ -104,24 +105,28 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     // event handlers
-    onWorkTabChange: function(tabbar){
+    onWorkTabChange: function(tabbar, value, oldValue){
         var me = this,
             section = tabbar.getActiveTab().section;
 
-        switch(section){
-            case 'learn':
-                me.redirectTo('work/learn');
-                break;
-            case 'conference':
-                me.redirectTo('work/conference');
-                break;
-            case 'apply':
-                me.redirectTo('work/apply');
-                break;
-            case 'assess':
-                me.redirectTo('work/assess');
-                break;
+        if(oldValue !== null){
+
+            switch(section){
+                case 'learn':
+                    me.redirectTo('work/learn');
+                    break;
+                case 'conference':
+                    me.redirectTo('work/conference');
+                    break;
+                case 'apply':
+                    me.redirectTo('work/apply');
+                    break;
+                case 'assess':
+                    me.redirectTo('work/assess');
+                    break;
+            }
         }
+
     },
     
     // controller methods
@@ -139,12 +144,20 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     /**
      * @private
      * Called by each subsection route handler to highlight the proper tab in the teacher
-     * tabbar and the work tabbar
+     * tabbar and the assign tabbar
      */
     doHighlightTabbars: function(){
+        var workTabbar = this.getWorkTabbar(),
+            teacherTabbar = this.getTeacherTabbar(),
+            hash = window.location.hash,
+            section = hash.substring(hash.indexOf('/') + 1, hash.length),
+            teacherTab = teacherTabbar.down('[itemId=assign]'),
+            assignTab = workTabbar.down('[itemId='+ section +']');
 
         //TODO: figure out a better way to highlight tab that doesn't trigger event
-
+        
+        workTabbar.setActiveTab(assignTab);
+        //teacherTabbar.setActiveTab(teacherTab); 
     },
 
     /**
