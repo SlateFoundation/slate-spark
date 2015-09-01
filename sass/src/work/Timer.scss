@@ -1,0 +1,34 @@
+.spark-work-timer {
+    background-color: white;
+    border: 2px solid darken($active-color, 10);
+    border-radius: .5em;
+    text-align: center;
+
+    .x-innerhtml {
+        align-items: stretch;
+        display: flex;
+    }
+
+    .timer-icon {
+        background-color: darken($active-color, 10);
+        color: white;
+        padding: .0625em .25em;
+
+        &::before {
+            content: '\f017'; // fa-clock-o
+            display: block;
+            font-size: xx-large;
+            font-family: FontAwesome;
+            font-weight: normal;
+            line-height: 1;
+        }
+    }
+
+    .timer-counter {
+        flex: 1;
+        font-size: 1.25em;
+        font-weight: bold;
+        line-height: 1;
+        padding: .3125em;
+    }
+}
