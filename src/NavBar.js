@@ -11,21 +11,20 @@ Ext.define('SparkClassroom.NavBar', {
 
         items: [
             {
-                cls: 'is-selected',
                 text: 'Student Work',
-                href: '#student-work' // TODO: make hrefs jump down to tabbed section
+                itemId: 'work',
             },
             {
                 text: 'Competency Overview',
-                href: '#overview'
+                itemId: 'competencies',
             },
             {
                 text: 'Assign Sparkpoints',
-                href: '#assign-sparkpoints'
+                itemId: 'assign'
             },
             {
                 text: 'Activity',
-                href: '#activity' // TODO: this will trigger the activity popover
+                //href: '#activity' // TODO: this will trigger the activity popover
             }
         ]
     }
