@@ -14,10 +14,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     onTeacherTabChange: function(tabBar, value, oldValue) {
         
-        //if(oldValue !== null){
-            this.redirectTo(value.getItemId());
-        //}
-
+        // TODO: handle when this gets triggered via setActiveTab from any controller
+        this.redirectTo(value.getItemId());
+        
     }
 
 });
