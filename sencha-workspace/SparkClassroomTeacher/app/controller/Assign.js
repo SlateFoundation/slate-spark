@@ -161,8 +161,8 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             teacherTabbar = this.getTeacherTabbar(),
             hash = window.location.hash,
             section = hash.substring(hash.indexOf('/') + 1, hash.length),
-            teacherTab = teacherTabbar.down('[itemId=assign]'),
-            assignTab = assignTabbar.down('[itemId='+ section +']');
+            teacherTab = teacherTabbar.down('#assign'),
+            assignTab = assignTabbar.down('#'+ section);
 
         assignTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab); 
