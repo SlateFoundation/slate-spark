@@ -2,124 +2,22 @@
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
-    views: [
-        // 'assign.points.TabBar',
-        // 'competencies.Main',
-        // 'work.Main'
-    ],
-
     refs:{
-        // workMainCt: {
-        //     selector: 'spark-teacher-work',
-        //     autoCreate: true,
-
-        //     xtype: 'spark-teacher-work'
-        // },
-        // competenciesMainCt: {
-        //     selector: 'spark-competencies',
-        //     autoCreate: true,
-
-        //     xtype: 'spark-competencies'
-        // },
-        // assignMainTabbar: {
-        //     selector: 'spark-assign-points-tabbar',
-        //     autoCreate: true,
-
-        //     xtype: 'spark-assign-points-tabbar'
-        // },
         teacherTabBar: 'spark-teacher-tabbar'
     },
     
-    routes: {
-        // ':section': {
-        //     action: 'showSection',
-        //     conditions: {
-        //         ':section': '(.+[^\/])'
-        //     }
-        // },
-        // ':section/:view': {
-        //     action: 'showSectionComponent',
-        //     conditions: {
-        //         ':section': '(.+[^\/])',
-        //         ':view': '(.+[^\/])'
-        //     }
-        // }
-    },
-
     control: {
         teacherTabBar: {
             activetabchange: 'onTeacherTabChange'
         }
     },
 
-    // applyActiveTab: function(tab) {
-    //     var me = this,
-    //         section;
-
-    //     if (Ext.isString(tab)) {
-    //         section = tab;
-    //     } else if (tab.isXtype('button')) {
-    //         section = tab.config.section;
-    //     }
-
-    //     switch(section) {
-    //         case 'work':
-    //             tab = me.getWorkMainCt();
-    //             break;
-    //         case 'competencies':
-    //             tab = me.getCompetenciesMainCt();
-    //             break;
-    //         case 'assign':
-    //             tab = me.getAssignMainTabbar();
-    //             break;
-    //     }
-
-    //     return tab;
-    // },
-
-    // updateActiveTab: function (newTab, oldTab) {
-    //     //initial load contains no tab
-    //     if (oldTab) {
-    //         oldTab.hide();
-    //         oldTab.fireEvent('sectionclose', oldTab);
-    //     }
-
-    //     if(Ext.Viewport.down(newTab)) {
-    //         newTab.show();
-    //     } else {
-    //         Ext.Viewport.down('#teacherTabs').add(newTab);
-    //     }
-    // },
-
-    onTeacherTabChange: function(tabBar, newTab, oldTab) {
-        this.redirectTo(newTab.getItemId())
-    },
-    
-    // showSection: function (section) {
-    //     var tabBar = this.getSparkTeacherTabBar(),
-    //         tab = tabBar.down('[section='+section+']');
-
-    //     tabBar.setActiveTab(tab);
-    // },
-    
-    // showSectionComponent: function(section, view) {
-    //     var me = this,
-    //         sectionCmp, tabBar;
+    onTeacherTabChange: function(tabBar, value, oldValue) {
         
-    //     me.showSection(section);
-        
-    //     switch(section) {
-    //         case 'work':
-    //             sectionCmp = me.getWorkMainCt();
-    //             break;
-    //         case 'competencies':
-    //             sectionCmp = me.getCompetenciesMainCt();
-    //             break;
-    //         case 'assign':
-    //             sectionCmp = me.getAssignMainTabbar();
-    //             break;
-    //     }
-        
-    //     sectionCmp.fireEvent('viewselected', view);
-    // }
+        //if(oldValue !== null){
+            this.redirectTo(value.getItemId());
+        //}
+
+    }
+
 });
