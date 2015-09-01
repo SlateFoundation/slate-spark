@@ -6,17 +6,14 @@ Ext.define('SparkClassroom.TitleBar', {
 
     requires: [
         'Ext.Title',
-        'Ext.field.Select',
-        'SparkClassroom.store.Sections'
+        'Ext.field.Select'
     ],
 
     config: {
         items: [
             {
                 xtype: 'selectfield',
-                store: { 
-                    xclass: 'SparkClassroom.store.Sections' 
-                },
+                store: 'Sections',
                 displayField: 'Title',
                 valueField: 'ID',
                 itemId: 'sectionSelect',

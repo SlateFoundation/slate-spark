@@ -1,16 +1,12 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.store.Sections', {
     extend: 'Ext.data.Store',
-    singleton: true,
     requires: [
-    	'Slate.proxy.API'
+    	'Slate.proxy.Records'
     ],
 
     proxy: {
-        type: 'slate-api',
+        type: 'slate-records',
         url: '/sections'
-    },
-
-    storeId: 'sectionsStore',
-    autoLoad: true
+    }
 });
