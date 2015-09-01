@@ -134,25 +134,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             itemId = tabbar.getActiveTab().getItemId();
 
         if(oldValue !== null){
-
-            switch(itemId){
-                case 'learn':
-                    me.redirectTo('assign/' + itemId);
-                    break;
-                case 'conference-questions':
-                    me.redirectTo('assign/' + itemId);
-                    break;
-                case 'conference-resources':
-                    me.redirectTo('assign/' + itemId);
-                    break;
-                case 'apply':
-                    me.redirectTo('assign/' + itemId);
-                    break;
-                case 'assess':
-                    me.redirectTo('assign/' + itemId);
-                    break;
-            }
-
+            me.redirectTo('assign/' + itemId);
         }
 
     },
