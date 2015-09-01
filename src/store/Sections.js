@@ -3,16 +3,12 @@ Ext.define('SparkClassroom.store.Sections', {
     extend: 'Ext.data.Store',
     singleton: true,
     requires: [
-    	'SparkClassroom.proxy.API'
+    	'Slate.proxy.API'
     ],
-    
+
     proxy: {
-        type: 'spark-api',
-        url: '/sections?format=json',
-        reader: {
-            type: 'json',
-            rootProperty: 'data'
-        },
+        type: 'slate-api',
+        url: '/sections'
     },
 
     storeId: 'sectionsStore',
