@@ -1,18 +1,25 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.conference.Form', {
-    extend: 'Ext.Container',
+    extend: 'Ext.form.Panel',
     xtype: 'spark-teacher-work-conference-form',
+    requires: [
+        'SparkClassroom.work.Timer'
+    ],
 
     config: {
         items: [
             {
                 xtype: 'container',
-                layout: 'hbox',
+                margin: '16 0',
+                layout: {
+                    type: 'hbox'
+                },
                 items: [
                     {
                         flex: 1,
-                        xtype: 'component',
-                        html: 'timer'
+                        xtype: 'spark-work-timer',
+                        data: { time: '5:45' },
+                        margin: '0 16 0 0'
                     },
                     {
                         xtype: 'button',
