@@ -18,6 +18,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
                 dataIndex: 'Completed',
                 text: 'Completed',
                 width: 100,
+                align: 'center',
                 tpl: '<input type="checkbox" checked="{Completed}">',
                 cell: {
                     encodeHtml: false
@@ -30,7 +31,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             },
             {
                 dataIndex: 'DOK',
-                width: 50,
+                width: 55,
+                align: 'center',
                 text: 'DOK'
             },
             {
@@ -40,8 +42,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             },
             {
                 dataIndex: 'SRating',
-                text: 'ActiveRating',
-                width: 50,
+                text: 'Avg. Rating',
+                width: 100,
                 tpl: '{SRating}    {TRating}',
                 cell: {
                     encodeHtml: false
@@ -49,7 +51,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             },
             {
                 dataIndex: 'Score',
-                width: 50,
+                width: 65,
+                align: 'center',
                 text: 'Score'
             },
             {
@@ -60,7 +63,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             {
                 dataIndex: 'Issue',
                 text: 'Issue',
-                width: 100,
+                width: 60,
                 tpl: '<img src="http://placehold.it/5x5">',
                 cell: {
                     encodeHtml: false
