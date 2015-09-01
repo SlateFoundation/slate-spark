@@ -9,17 +9,25 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     refs:{
         teacherTabBar: 'spark-teacher-tabbar',
         workTabBar: 'spark-work-tabbar',
-        assignTabBar: 'spark-teacher-assign-tabbar'
+        assignTabBar: 'spark-teacher-assign-tabbar',
+        sparkNavBarButtons: 'spark-navbar button'
     },
     
     control: {
         teacherTabBar: {
             activetabchange: 'onTeacherTabChange'
+        },
+        sparkNavBarButtons: {
+            tap: 'onSparkNavBarButtonClick'
         }
     },
 
     onTeacherTabChange: function(tabBar, value, oldValue) {
-        this.redirectTo(value.getItemId());        
+        this.redirectTo(value.getItemId());      
+    },
+
+    onSparkNavBarButtonClick: function(btn) {
+        this.redirectTo(btn.getItemId());
     }
 
 });
