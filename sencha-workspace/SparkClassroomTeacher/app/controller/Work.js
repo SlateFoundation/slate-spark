@@ -107,22 +107,22 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     // event handlers
     onWorkTabChange: function(tabbar, value, oldValue){
         var me = this,
-            section = tabbar.getActiveTab().section;
+            itemId = tabbar.getActiveTab().getItemId();
 
         if(oldValue !== null){
 
-            switch(section){
+            switch(itemId){
                 case 'learn':
-                    me.redirectTo('work/learn');
+                    me.redirectTo('work/' + itemId);
                     break;
                 case 'conference':
-                    me.redirectTo('work/conference');
+                    me.redirectTo('work/' + itemId);
                     break;
                 case 'apply':
-                    me.redirectTo('work/apply');
+                    me.redirectTo('work/' + itemId);
                     break;
                 case 'assess':
-                    me.redirectTo('work/assess');
+                    me.redirectTo('work/' + itemId);
                     break;
             }
         }
