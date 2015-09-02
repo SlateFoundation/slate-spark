@@ -74,6 +74,10 @@ a {
     &.narrow {
         padding: 1.5em;
     }
+
+    &.flush {
+        padding: 0;
+    }
 }
 
 .content-card-inline {
