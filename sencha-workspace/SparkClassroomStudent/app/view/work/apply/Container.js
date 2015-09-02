@@ -4,7 +4,8 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
     xtype: 'spark-student-work-apply',
     requires: [
         'SparkClassroom.widget.Panel',
-        'SparkClassroom.widget.SimpleHeading'
+        'SparkClassroom.widget.SimpleHeading',
+        'SparkClassroom.plugin.GridFlex'
     ],
 
     config: {
@@ -17,6 +18,10 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
             },
             {
                 xtype: 'grid',
+                plugins: [
+                    'gridflex'
+                ],
+                height: 300, // TODO remove height when possible
                 titleBar: false,
                 store: {
                     fields: [ 'title', 'description', 'standards', 'checked' ],
@@ -42,15 +47,15 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                     {
                         xtype: 'booleancolumn',
                         dataIndex: 'checked',
-                        width: 100
+                        width: 120
                     },
                     {
                         xtype: 'templatecolumn',
-                        width: 700,
+                        flex: 1,
                         cell: { encodeHtml: false },
                         tpl: [
-                            '<h3 class="grid-item-title">{title}</h3>',
-                            '<tpl if="description"><div class="grid-item-detail">{description}</div></tpl>'
+                            '<div class="spark-grid-row-title">{title}</div>',
+                            '<tpl if="description"><div class="spark-grid-row-detail">{description}</div></tpl>'
                         ]
                     },
                     {
@@ -58,11 +63,10 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                         text: 'Standards Incorporated',
                         dataIndex: 'standards',
                         cell: { encodeHtml: false },
-                        tpl: '<tpl if="standards"><ul class="grid-token-list"><tpl for="standards"><li class="grid-token-item">{.}</li></tpl></ul></tpl>',
-                        width: '250'
+                        tpl: '<tpl if="standards"><ul class="spark-grid-token-list"><tpl for="standards"><li class="spark-grid-token-item">{.}</li></tpl></ul></tpl>',
+                        width: 320
                     }
                 ],
-                height: 300
             },
             {
                 layout: {

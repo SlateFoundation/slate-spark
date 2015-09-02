@@ -2,9 +2,16 @@
 Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-student-work-assess-projectgrid',
+    requires: [
+        'SparkClassroom.plugin.GridFlex'
+    ],
 
     config: {
-
+        plugins: [
+            'gridflex'
+        ],
+        height: 200, // TODO remove height when possible
+        titleBar: null,
         columns:[
             {
                 dataIndex: 'Title',
@@ -13,7 +20,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
             },
             {
                 dataIndex: 'Rating',
-                flex: 1,
+                width: 130,
                 text: 'Rating',
                 renderTpl: function(v,m,r ) {
                     return '<img src="'+r.get('VendorImageUrl')+'">'+v;
@@ -22,7 +29,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
             {
                 dataIndex: 'Comment',
                 text: 'Comment',
-                flex: 1,
+                width: 340,
                 renderTpl: function(v,m,r ) {
                     return '<select><option>'+v+'</option></select>';
                 }

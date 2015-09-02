@@ -10,10 +10,14 @@ Ext.define('SparkClassroomStudent.view.work.assess.Container', {
     initialize: function () {
         this.callParent(arguments);
         
-        this.add({
-            xtype: 'spark-student-work-assess-projectgrid'
-        },{
-            xtype: 'spark-student-work-assess-footer'
-        });
+        this.add([
+            {
+                xtype: 'spark-student-work-assess-projectgrid'
+            },
+            {
+                xtype: 'spark-student-work-assess-footer',
+                margin: '0 0 100'
+            }
+        ]);
     }
 });
