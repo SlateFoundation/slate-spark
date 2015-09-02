@@ -5,13 +5,11 @@ Ext.define('SparkClassroomTeacher.store.gps.Assess', {
         'SparkClassroomTeacher.store.Students'
     ],
     
-    config: {
-        storeId: 'gps.Assess',
-        source: 'Students',
-        filters: [
-            function (student) {
-                return student.get('GPSStatus') == 'Assess';
-            }
-        ]
-    }
+    storeId: 'Assess',
+    source: 'Students',
+    filters: [
+        function (student) {
+            return student.get('GPSStatus') == 'Assess';
+        }
+    ]
 });

@@ -5,13 +5,11 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
         'SparkClassroomTeacher.store.Students'
     ],
     
-    config: {
-        storeId: 'gps.Priorities',
-        source: 'Students',
-        filters: [
-            function (student) {
-                return Ext.isNumber(student.get('Priority'));
-            }
-        ]
-    }
+    storeId: 'Priorities',
+    source: 'Students',
+    filters: [
+        function (student) {
+            return Ext.isNumber(student.get('Priority'));
+        }
+    ]
 });

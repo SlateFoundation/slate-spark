@@ -4,25 +4,22 @@ Ext.define('SparkClassroomTeacher.store.gps.Help', {
     requires: [
         'SparkClassroomTeacher.store.Students'
     ],
-    
-    config: {
-         storeId: 'gps.Help',
-         source: 'Students',
-         
-        grouper: {
-            direction: 'DESC',
-            groupFn: function (item) {
-               //Force all records into help group
-                return 'Help';
-            }
-        },
-        filters: [
-            {
-                filterFn: function (student) {
-                    return student.get('Help');
-                }
-            }
-        ]
         
-    }
+    storeId: 'Help',
+    source: 'Students',
+     
+    grouper: {
+        direction: 'DESC',
+        groupFn: function (item) {
+           //Force all records into help group
+            return 'Help';
+        }
+    },
+    filters: [
+        {
+            filterFn: function (student) {
+                return student.get('Help');
+            }
+        }
+    ]
 });

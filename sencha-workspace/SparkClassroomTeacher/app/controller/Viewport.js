@@ -3,21 +3,68 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
     stores: [
-        'Sections@SparkClassroom.store'
+        'Sections@SparkClassroom.store',
+        'Students',
+        'gps.Learn',
+        'gps.Conference',
+        'gps.Apply',
+        'gps.Assess',
+        'gps.Priorities',
+        'gps.Help'
     ],
 
     refs:{
         teacherTabBar: 'spark-teacher-tabbar',
-        sparkNavBarButtons: 'spark-navbar button'
+        sparkNavBarButtons: 'spark-navbar button',
+        sectionSelect: '#sectionSelect',
+        sparkGPS: {
+            xtype: 'spark-gps',
+            selector: 'spark-gps',
+            autoCreate: true
+        },
+        sparkTitleBar: {
+            xtype: 'spark-titlebar',
+            selector: 'spark-titlebar',
+            autoCreate: true
+        },
+        sparkTeacherTabContainer: {
+            xtype: 'spark-teacher-tabscontainer',
+            selector: 'spark-teacher-tabscontainer',
+            autoCreate: true
+        }
     },
     
     control: {
+        sectionSelect: {
+            change: 'onSectionSelectChange'
+        },
         teacherTabBar: {
             activetabchange: 'onTeacherTabChange'
         },
         sparkNavBarButtons: {
             tap: 'onSparkNavBarButtonClick'
         }
+    },
+
+    init:function(){
+        var me = this;
+
+        //load class section selector store
+        Ext.getStore('Sections').load();
+        Ext.getStore('Students').load();
+
+        //add items to viewport
+        Ext.Viewport.add([
+            me.getSparkTitleBar(),
+            me.getSparkGPS(),
+            me.getSparkTeacherTabContainer()
+        ]);
+
+    },
+
+    onSectionSelectChange: function(select, newValue, oldValue){
+        // TODO: wire up setUrl() and what not
+        console.log('value->',newValue.get('Code'));
     },
 
     onTeacherTabChange: function(tabBar, value, oldValue) {

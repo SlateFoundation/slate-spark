@@ -34,25 +34,7 @@ Ext.application({
     config: {
         viewport: {
             layout: 'auto',
-            scrollable: 'vertical',
-            // TODO: move all items to viewport launch function, use autoCreate refs
-            items: [
-                {
-                    xtype: 'spark-titlebar'
-                },
-                {
-                    xtype: 'spark-teacher-tabscontainer',
-                }
-            ]
+            scrollable: 'vertical'
         }
-    },
-
-    launch: function() {
-        // TODO: also move to viewport launch function, use autoCreate ref
-        Ext.Viewport.insert(1,[
-            {
-                xtype: 'spark-gps'
-            }
-        ]);
     }
 });
