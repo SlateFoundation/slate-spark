@@ -9,13 +9,40 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         'work.assess.Container'   
     ],
 
-    // stores: [
-    //     'apply.Tasks'
-    // ],
+    stores: [
+        'Sections@SparkClassroom.store'
+    ],
 
     refs: {
-        tabsCt: 'spark-student-tabscontainer',
+        tabsCt: {
+            xtype: 'spark-student-tabscontainer',
+            selector: 'spark-student-tabscontainer',
+            autoCreate: true
+        },
+        sectionSelect: {
+            selector: '#sectionSelect',
+            autoCreate: true
+        },
+        sparkStudentNavBar: {
+            xtype: 'spark-student-navbar',
+            selector: 'spark-student-navbar',
+            autoCreate: true
+        },
         workTabbar: 'spark-work-tabbar',
+        sparkNavBar: {
+            xtype: 'spark-navbar',
+            selector:'spark-navbar',
+            autoCreate: true
+        },
+        sectionSelect: {
+            selector: '#sectionSelect',
+            autoCreate: true
+        },
+        sparkTitleBar: {
+            xtype: 'spark-titlebar',
+            selector: 'spark-titlebar',
+            autoCreate: true
+        },
         learnCt: {
             selector: 'spark-student-work-learn',
             autoCreate: true,
@@ -52,9 +79,33 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     control: {
         'spark-work-tabbar': {
             activetabchange: 'onWorkTabChange'
-        }
+        },
+        sectionSelect: {
+            change: 'onSectionSelectChange'
+        },
     },
 
+    listen: {
+        store: {
+            '#Sections': {
+                load: 'onSectionsStoreLoad'
+            }
+        }
+    },
+    
+    init:function(){
+        var me = this;
+
+        Ext.getStore('Sections').load();
+
+        //add items to viewport
+        Ext.Viewport.add([
+            me.getSparkTitleBar(),
+            me.getSparkStudentNavBar(),
+            me.getTabsCt()
+        ]);
+
+    },
 
     // route handlers
     showLearn: function() {
@@ -80,6 +131,28 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     // event handlers
+
+    onSectionsStoreLoad: function(store){
+        var sectionQueryString = Ext.Object.fromQueryString(location.search).section,
+            sectionSelectCmp = this.getSectionSelect(),
+            record = store.findRecord('Code', sectionQueryString);
+
+        sectionSelectCmp.setValue(record);
+    },
+
+    onSectionSelectChange: function(select, newValue, oldValue){
+        var classCode = newValue.get('Code'),
+            queryStringObject = Ext.Object.fromQueryString(location.search),
+            hash = Ext.util.History.getHash();
+
+        // set 'section' query string param
+        queryStringObject.section = classCode;
+        var parsedQueryString = Ext.Object.toQueryString(queryStringObject);
+
+        // TODO: cross browser compatibility testing.  HTML5 only
+        window.history.pushState(null ,null , '?' + parsedQueryString + '#' + hash);
+    },
+
     onWorkTabChange: function(tabbar){
         var me = this,
             section = tabbar.getActiveTab().section;

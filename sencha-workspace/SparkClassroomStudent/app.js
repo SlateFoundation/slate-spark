@@ -25,7 +25,8 @@ Ext.application({
         'work.apply.Container',
         'work.learn.Container',
         'work.conference.Container',
-        'work.assess.Container'   
+        'work.assess.Container',
+        'SparkStudentNavBar'
     ],
 
     controllers: [
@@ -35,56 +36,7 @@ Ext.application({
     config: {
         viewport: {
             layout: 'auto',
-            scrollable: 'vertical',
-            items: [
-                {
-                    xtype: 'spark-titlebar'
-                },
-                {
-                    xtype: 'spark-navbar',
-                    items: [
-                        {
-                            xtype: 'selectfield',
-                            cls: 'spark-navbar-standard-selector',
-                            label: 'Standard',
-                            labelCls: 'visually-hidden',
-                            options: [
-                                {
-                                    text: 'Select Standard'
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'label',
-                            cls: 'spark-navbar-timer',
-                            html: '5 days'
-                        },
-                        {
-                            xtype: 'component',
-                            flex: 1
-                        },
-                        {
-                            text: 'Classwork',
-                            cls: 'is-selected'
-                        },
-                        {
-                            text: 'Standards'
-                        },
-                        {
-                            text: 'GPS'
-                        },
-                        {
-                            text: 'Activity'
-                        },
-                        {
-                            text: 'Help'
-                        }
-                    ]
-                },
-                {
-                    xtype: 'spark-student-tabscontainer'
-                }
-            ]
+            scrollable: 'vertical'
         }
     }
 });
