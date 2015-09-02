@@ -15,6 +15,7 @@ Ext.define('SparkClassroom.TitleBar', {
                 xtype: 'selectfield',
                 store: 'Sections',
                 displayField: 'Title',
+                autoSelect: false,
                 valueField: 'ID',
                 itemId: 'sectionSelect',
                 labelCls: 'visually-hidden',
