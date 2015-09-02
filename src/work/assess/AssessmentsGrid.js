@@ -2,22 +2,30 @@
 Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-assessmentsgrid',
+    requires: [
+        'SparkClassroom.plugin.GridFlex'
+    ],
 
     config: {
-        width: 500,
-        height: 200,
+        plugins: [
+            'gridflex'
+        ],
+        height: 200, // TODO remove height when possible
         titleBar: null,
         columns:[
             {
                 dataIndex: 'Standard',
-                width: 150,
+                flex: 1,
                 text: 'Assessment Selected'
             },
             {
                 dataIndex: 'Completed',
-                width: 50,
+                width: 120,
                 text: 'Completed',
-                tpl: '<input type="checkbox" checked="{Completed}">'
+                tpl: '<input type="checkbox" checked="{Completed}">',
+                cell: {
+                    encodeHtml: false
+                }
             },
             {
                 dataIndex: 'Score',
@@ -25,16 +33,24 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
                 renderer: function(v, r) {
                     return v ? v+'/5' : '';
                 },
-                width: 50
+                width: 120
             }
         ],
 
         store: {
-            fields: ['Standard', 'Completed', 'Score'],
+            fields: [ 'Standard', 'Completed', 'Score' ],
 
             data: [
-                {Standard: 'Playlist Title', Score: false, Comleted: false},
-                {Standard: 'Playlist Title', Score: 2, Completed: true}
+                {
+                    Standard: 'Playlist Title',
+                    Score: false,
+                    Completed: false
+                },
+                {
+                    Standard: 'Playlist Title',
+                    Score: 2,
+                    Completed: true
+                }
             ]
         }
     }

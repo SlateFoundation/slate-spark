@@ -2,35 +2,45 @@
 Ext.define('SparkClassroom.work.assess.LearnsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-learnsgrid',
+    requires: [
+        'SparkClassroom.plugin.GridFlex'
+    ],
 
     config: {
-        height: 200,
+        plugins: [
+            'gridflex'
+        ],
+        height: 400, // TODO remove height when possible
         titleBar: null,
-        width: 500,
         columns:[
             {
-                dataIndex: 'Title',
-                width: 150,
-                text: 'Playist'
+                flex: 1,
+                text: 'Learns',
+                cell: {
+                    encodeHtml: false
+                },
+                tpl: [
+                    '<div class="spark-grid-row-image" style="background-image:url(',
+                        '<tpl if="VendorImage">',
+                            '{VendorImage}',
+                        '<tpl else>',
+                            '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png', // TODO some other default?
+                        '</tpl>',
+                    ')">{VendorTitle}</div>',
+                    '<div class="spark-grid-row-title">{Title}</div>',
+                    '<div class="spark-grid-row-detail"><a href="{Link}">{Link}</a></div>'
+                ]
+                            
             },
             {
                 dataIndex: 'Rating',
-                width: 50,
-                text: 'Rating'
+                width: 130,
+                text: 'Your Rating'
             },
             {
                 dataIndex: 'Comment',
                 text: 'Comment',
-                width: 100
-            },
-            {
-                dataIndex: 'VendorTitle',
-                text: 'Vendor',
-                width: 75,
-                tpl: '<img src="http://placehold.it/15x15"> {VendorTitle}',
-                cell: {
-                    encodeHtml: false
-                }
+                width: 340
             }
         ],
 
@@ -38,11 +48,11 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
             fields: ['Title', 'Rating', 'Comment', 'VendorTitle', 'VendorImageUrl', 'Link'],
 
             data: [
-                {Title: 'Playlist Title', Rating: 2, Comment: 'Comments left here', VendorTitle: 'PBS', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 2, Comment: 'Comments left here', VendorTitle: 'Brainpop', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 3, Comment: 'Comments left here', VendorTitle: 'Youtube', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 1, Comment: 'Comments left here', VendorTitle: 'Illuminate', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 1, Comment: 'Comments left here', VendorTitle: 'Youtube', Link: 'http://link.com'}
+                {Title: 'Playlist Title', Rating: 2, Comment: 'Comments left here', VendorTitle: 'PBS',         VendorImage: '', Link: 'http://link.com'},
+                {Title: 'Playlist Title', Rating: 2, Comment: 'Comments left here', VendorTitle: 'Brainpop',    VendorImage: '', Link: 'http://link.com'},
+                {Title: 'Playlist Title', Rating: 3, Comment: 'Comments left here', VendorTitle: 'Youtube',     VendorImage: '', Link: 'http://link.com'},
+                {Title: 'Playlist Title', Rating: 1, Comment: 'Comments left here', VendorTitle: 'Illuminate',  VendorImage: '', Link: 'http://link.com'},
+                {Title: 'Playlist Title', Rating: 1, Comment: 'Comments left here', VendorTitle: 'Youtube',     VendorImage: '', Link: 'http://link.com'}
             ]
         }
     }
