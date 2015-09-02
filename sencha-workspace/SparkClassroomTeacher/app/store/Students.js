@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.store.Students', {
         
         proxy: {
             type: 'slate-records',
-            url: '/sections/Geometry/students?format=json'
+            url: '/sections/ADV1-1/students?format=json'
         },
 
         // TODO: Replace generated data with real data

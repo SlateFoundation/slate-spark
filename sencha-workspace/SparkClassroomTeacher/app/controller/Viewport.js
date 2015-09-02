@@ -63,8 +63,11 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     onSectionSelectChange: function(select, newValue, oldValue){
-        // TODO: wire up setUrl() and what not
-        console.log('value->',newValue.get('Code'));
+        var studentStore = Ext.getStore('Students'),
+            classCode = newValue.get('Code');
+
+        studentStore.getProxy().setUrl('/sections/'+ classCode +'/students');
+        studentStore.load();
     },
 
     onTeacherTabChange: function(tabBar, value, oldValue) {
