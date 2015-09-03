@@ -33,6 +33,12 @@ body {
 
 // TODO below: misc to be organized
 
+.x-html {
+    ol {
+        margin-left: 1.5em;
+    }
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: $font-family;
 }
