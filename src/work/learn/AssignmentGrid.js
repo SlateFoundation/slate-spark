@@ -16,9 +16,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         columns:[
             {
                 dataIndex: 'Completed',
-                text: 'Completed',
-                width: 100,
-                align: 'center',
+                text: 'Done',
+                width: 85,
                 tpl: '<input type="checkbox" checked="{Completed}">',
                 cell: {
                     encodeHtml: false
@@ -31,8 +30,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             },
             {
                 dataIndex: 'DOK',
-                width: 55,
-                align: 'center',
+                width: 85,
                 text: 'DOK'
             },
             {
@@ -43,7 +41,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             {
                 dataIndex: 'SRating',
                 text: 'Avg. Rating',
-                width: 100,
+                width: 130,
                 tpl: '{SRating}    {TRating}',
                 cell: {
                     encodeHtml: false
@@ -51,7 +49,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             },
             {
                 dataIndex: 'Score',
-                width: 65,
+                width: 85,
                 align: 'center',
                 text: 'Score'
             },
@@ -59,15 +57,6 @@ Ext.define('SparkClassroom.work.learn.Grid', {
                 dataIndex: 'Attachment',
                 flex: 1,
                 text: 'Attachment'
-            },
-            {
-                dataIndex: 'Issue',
-                text: 'Issue',
-                width: 60,
-                tpl: '<img src="http://placehold.it/5x5">',
-                cell: {
-                    encodeHtml: false
-                }
             }
         ],
 
