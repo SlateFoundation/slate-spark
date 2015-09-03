@@ -26,7 +26,7 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
                         '<tpl else>',
                             '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png', // TODO some other default?
                         '</tpl>',
-                    ')">{VendorTitle}</div>',
+                    ')" title="{VendorTitle}">{VendorTitle}</div>',
                     '<div class="spark-grid-row-title">{Title}</div>',
                     '<div class="spark-grid-row-detail"><a href="{Link}">{Link}</a></div>'
                 ]
