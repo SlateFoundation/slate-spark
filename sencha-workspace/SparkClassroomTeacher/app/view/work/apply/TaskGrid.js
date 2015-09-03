@@ -2,14 +2,20 @@
 Ext.define('SparkClassroomTeacher.view.work.apply.TaskGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-teacher-work-apply-taskgrid',
+    requires: [
+        'SparkClassroom.plugin.GridFlex'
+    ],
 
     config: {
+        plugins: [
+            'gridflex'
+        ],
         height: 200,
-        titleBar: false,
+        titleBar: null,
         columns: [
             {
                 text: 'To Dos',
-                width: 400,
+                flex: 1,
                 tpl: '<input type="checkbox" checked="{Completed}"> {Title}',
                 cell: {
                     encodeHtml: false
@@ -17,7 +23,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.TaskGrid', {
             },
             {
                 text: 'Due Date',
-                width: 100,
+                width: 200,
                 dataIndex: 'DueDate'
             }
         ],
