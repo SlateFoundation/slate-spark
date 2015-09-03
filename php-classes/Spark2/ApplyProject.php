@@ -14,7 +14,9 @@ class ApplyProject extends SparkPointRecord
     public static $collectionRoute = '/spark2/apply-projects';
 
     public static $fields = [
-        'Title',
+        'Title' => [
+            'includeInSummary' => true
+        ],
         'Instructions' => 'clob',
         'GradeLevel' => [
             'type'    => 'enum',
@@ -27,7 +29,8 @@ class ApplyProject extends SparkPointRecord
         ],
         'Standards' => [
             'type'    => 'json',
-            'notnull' => false
+            'notnull' => false,
+            'includeInSummary' => true
         ],
         'Todos' => [
             'type'    => 'json',
@@ -52,10 +55,13 @@ class ApplyProject extends SparkPointRecord
             'qualifiers' => ['DOK', 'dok'],
             'sql' => 'DOK = "%s"'
         ],
-
         'Title' => [
-            'qualifiers' => ['title'],
+            'qualifiers' => ['any','title'],
             'sql' => 'Title LIKE "%%%s%%"'
+        ],
+        'Standards' => [
+            'qualifiers' => ['any','standards'],
+            'sql' => 'Standards LIKE "%%%s%%"'
         ]
     ];
 }
