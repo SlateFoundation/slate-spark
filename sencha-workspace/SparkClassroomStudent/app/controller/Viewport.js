@@ -15,33 +15,37 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     refs: {
         tabsCt: {
-            xtype: 'spark-student-tabscontainer',
             selector: 'spark-student-tabscontainer',
-            autoCreate: true
+            autoCreate: true,
+
+            xtype: 'spark-student-tabscontainer'
         },
         sectionSelect: {
             selector: '#sectionSelect',
             autoCreate: true
         },
         sparkStudentNavBar: {
-            xtype: 'spark-student-navbar',
             selector: 'spark-student-navbar',
-            autoCreate: true
+            autoCreate: true,
+
+            xtype: 'spark-student-navbar'
         },
         workTabbar: 'spark-work-tabbar',
         sparkNavBar: {
-            xtype: 'spark-navbar',
             selector:'spark-navbar',
-            autoCreate: true
+            autoCreate: true,
+
+            xtype: 'spark-navbar'
         },
         sectionSelect: {
             selector: '#sectionSelect',
             autoCreate: true
         },
         sparkTitleBar: {
-            xtype: 'spark-titlebar',
             selector: 'spark-titlebar',
-            autoCreate: true
+            autoCreate: true,
+
+            xtype: 'spark-titlebar'
         },
         learnCt: {
             selector: 'spark-student-work-learn',
@@ -93,7 +97,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
     
-    init:function(){
+    onLaunch:function(){
         var me = this;
 
         Ext.getStore('Sections').load();
@@ -143,14 +147,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     onSectionSelectChange: function(select, newValue, oldValue){
         var classCode = newValue.get('Code'),
             queryStringObject = Ext.Object.fromQueryString(location.search),
-            hash = Ext.util.History.getHash();
+            hash = Ext.util.History.getHash(),
+            parsedQueryString;
 
-        // set 'section' query string param
+        // set 'section' query string param    
         queryStringObject.section = classCode;
-        var parsedQueryString = Ext.Object.toQueryString(queryStringObject);
-
-        // TODO: cross browser compatibility testing.  HTML5 only
-        window.history.pushState(null ,null , '?' + parsedQueryString + '#' + hash);
+        parsedQueryString = Ext.Object.toQueryString(queryStringObject);
+        location.search = parsedQueryString;
     },
 
     onWorkTabChange: function(tabbar){
