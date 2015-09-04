@@ -10,7 +10,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         itemCls: 'studentlist-item',
         itemTpl: [
             '<header class="studentlist-item-header">',
-                '<a class="studentlist-name" href="#">{FirstName} {LastName}</a> ',
+                '<a class="studentlist-name" href="#">{Student.FirstName} {Student.LastName}</a> ',
                 '<tpl if="Grade"><span class="studentlist-grade">{Grade}</span></tpl> ',
                 '<span class="studentlist-timer">20m</span>',
             '</header>',
