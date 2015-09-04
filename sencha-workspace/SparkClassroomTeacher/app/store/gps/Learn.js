@@ -2,13 +2,8 @@
 Ext.define('SparkClassroomTeacher.store.gps.Learn', {
     extend: 'Ext.data.ChainedStore',
     
-    
-    requires: [
-        'SparkClassroomTeacher.store.Students'
-    ],
-    
     storeId: 'Learn',
-    source: 'Students',
+    source: 'SectionStudents',
     filters: [
         {
             filterFn: function (student) {
