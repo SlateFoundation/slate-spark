@@ -10,6 +10,26 @@ Ext.define('SparkClassroomTeacher.Application', {
         'Ext.MessageBox'
     ],
 
+    views: [
+        'TitleBar@SparkClassroom',
+        'TabsContainer'
+    ],
+
+    controllers: [
+        'Viewport',
+        'GPS',
+        'Work',
+        'Competencies',
+        'Assign'
+    ],
+
+    config: {
+        viewport: {
+            layout: 'auto',
+            scrollable: 'vertical'
+        }
+    },
+
     onAppUpdate: function () {
         Ext.Msg.confirm('Application Update', 'This application has an update, reload?',
             function (choice) {

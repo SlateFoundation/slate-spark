@@ -13,24 +13,4 @@ Ext.application({
     // customize this file, doing so below this section reduces the likelihood
     // of merge conflicts when upgrading to new versions of Sencha Cmd.
     //-------------------------------------------------------------------------
-
-    // TODO: move all this to the Application class
-    views: [
-        'TitleBar@SparkClassroom',
-        'TabsContainer'
-    ],
-    controllers: [
-        'Viewport',
-        'GPS',
-        'Work',
-        'Competencies',
-        'Assign'
-    ],
-
-    config: {
-        viewport: {
-            layout: 'auto',
-            scrollable: 'vertical'
-        }
-    }
 });
