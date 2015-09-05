@@ -6,17 +6,32 @@
 Ext.define('SparkClassroomStudent.Application', {
     extend: 'Ext.app.Application',
     requires: [
+        // TODO: these aren't being used here and should be rquired via views config
+        'SparkClassroom.TitleBar',
+        'SparkClassroom.NavBar',
+        'SparkClassroom.work.TabBar',
+        'SparkClassroomStudent.view.TabsContainer',
         'Ext.MessageBox'
     ],
 
-    name: 'SparkClassroomStudent',
-
-    stores: [
-        // TODO: add global / shared stores here
+    // TODO: move these to where they're being used
+    views: [
+        'work.apply.Container',
+        'work.learn.Container',
+        'work.conference.Container',
+        'work.assess.Container',
+        'SparkStudentNavBar'
     ],
-    
-    launch: function () {
-        // TODO - Launch the application
+
+    controllers: [
+        'Viewport'
+    ],
+
+    config: {
+        viewport: {
+            layout: 'auto',
+            scrollable: 'vertical'
+        }
     },
 
     onAppUpdate: function () {
