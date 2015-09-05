@@ -7,10 +7,6 @@ Ext.application({
     name: 'SparkClassroomTeacher',
 
     extend: 'SparkClassroomTeacher.Application',
-    requires: [
-        // TODO: move this to a hotfix override
-        'Ext.form.Panel', // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
-    ],
 
     //-------------------------------------------------------------------------
     // Most customizations should be made to SparkClassroomTeacher.Application. If you need to
