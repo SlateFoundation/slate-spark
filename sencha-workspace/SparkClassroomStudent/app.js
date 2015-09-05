@@ -11,8 +11,7 @@ Ext.application({
         'SparkClassroom.TitleBar',
         'SparkClassroom.NavBar',
         'SparkClassroom.work.TabBar',
-        'SparkClassroomStudent.view.TabsContainer',
-        'Ext.form.Panel' // TODO: remove when framework bug fixed: https://www.sencha.com/forum/showthread.php?303365
+        'SparkClassroomStudent.view.TabsContainer'
     ],
 
     //-------------------------------------------------------------------------
