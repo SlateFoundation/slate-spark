@@ -24,7 +24,7 @@ Ext.define('SparkClassroom.NavBar', {
             },
             {
                 text: 'Activity',
-                //href: '#activity' // TODO: this will trigger the activity popover
+                itemId: 'activity'
             }
         ]
     }
