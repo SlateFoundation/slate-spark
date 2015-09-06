@@ -2,9 +2,7 @@
 Ext.define('SparkClassroom.TitleBar', {
     extend: 'Ext.Toolbar',
     xtype: 'spark-titlebar',
-
     requires: [
-        'Ext.Title',
         'Ext.field.Select'
     ],
 
