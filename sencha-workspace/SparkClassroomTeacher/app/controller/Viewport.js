@@ -98,12 +98,12 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     onBeforeRoute: function(token, resume) {
-        var sectionMatch = token && token.match(/^([^\/]+)\/(.*)$/),
+        var sectionMatch = token && token.match(/^([^\/]+)(\/(.+))?$/),
             sectionCode = sectionMatch && sectionMatch[1];
 
         if (sectionCode) {
-            console.warn('TODO: load section', sectionCode);
-            resume(sectionMatch[2]);
+            console.warn('TODO: load section %s and then resume path %s', sectionCode, sectionMatch[3]);
+            resume(sectionMatch[3]);
             return false;
         }
     },
@@ -116,23 +116,24 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         sectionSelectCmp.setValue(record);
     },
 
-    onSectionSelectChange: function(select, newValue, oldValue) {
-        var studentStore = Ext.getStore('Students'),
-            sectionStore = Ext.getStore('SectionStudents'),
-            classCode = newValue.get('Code'),
-            queryStringObject = Ext.Object.fromQueryString(location.search),
-            hash = Ext.util.History.getHash(),
-            parsedQueryString;
+    onSectionSelectChange: function(selectField, section, oldSection) {
+        this.redirectTo(section.get('Code'));
+        // var studentStore = Ext.getStore('Students'),
+        //     sectionStore = Ext.getStore('SectionStudents'),
+        //     classCode = newValue.get('Code'),
+        //     queryStringObject = Ext.Object.fromQueryString(location.search),
+        //     hash = Ext.util.History.getHash(),
+        //     parsedQueryString;
 
-        queryStringObject.section = classCode;
-        parsedQueryString = Ext.Object.toQueryString(queryStringObject);
-        location.search = parsedQueryString;
+        // queryStringObject.section = classCode;
+        // parsedQueryString = Ext.Object.toQueryString(queryStringObject);
+        // location.search = parsedQueryString;
 
-        if (oldValue == null) {
-            studentStore.getProxy().setUrl('/sections/'+ classCode +'/students');
-            sectionStore.removeAll();
-            studentStore.load();
-        }
+        // if (oldValue == null) {
+        //     studentStore.getProxy().setUrl('/sections/'+ classCode +'/students');
+        //     sectionStore.removeAll();
+        //     studentStore.load();
+        // }
     },
 
     onSparkNavBarButtonClick: function(btn) {
