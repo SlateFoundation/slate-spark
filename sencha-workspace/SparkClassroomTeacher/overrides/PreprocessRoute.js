@@ -8,7 +8,7 @@ Ext.define('Jarvus.routing.PreprocessRoute', {
         var me = this,
             thisMethod = arguments.callee,
             resume = function(newToken) {
-                thisMethod.$owner.prototype[thisMethod.$name].call(me, newToken || token);
+                thisMethod.$owner.prototype[thisMethod.$name].call(me, Ext.isEmpty(newToken, true) ? token : newToken);
             };
 
         if (false !== me.application.fireEvent('beforeroute', token, resume)) {
