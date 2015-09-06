@@ -31,21 +31,24 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             selector: 'spark-navbar',
             autoCreate: true,
 
-            xtype: 'spark-navbar'
+            xtype: 'spark-navbar',
+            hidden: true
         },
 
         sparkGPS: {
             selector: 'spark-gps',
             autoCreate: true,
 
-            xtype: 'spark-gps'
+            xtype: 'spark-gps',
+            hidden: true
         },
 
         sparkTeacherTabContainer: {
             selector: 'spark-teacher-tabscontainer',
             autoCreate: true,
 
-            xtype: 'spark-teacher-tabscontainer'
+            xtype: 'spark-teacher-tabscontainer',
+            hidden: true
         },
         teacherTabBar: 'spark-teacher-tabbar',
     },
