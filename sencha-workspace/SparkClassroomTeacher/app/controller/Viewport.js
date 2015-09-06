@@ -51,6 +51,16 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     listen: {
+        controller: {
+            '#': {
+                beforeroute: 'onBeforeRoute'
+                //<debug>
+                ,unmatchedroute: function(token) {
+                    Ext.log.warn('Unmatched token: ' + token);
+                }
+                //</debug>
+            }
+        },
         store: {
             '#Sections': {
                 load: 'onSectionsStoreLoad'
@@ -82,7 +92,17 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             me.getSparkGPS(),
             me.getSparkTeacherTabContainer()
         ]);
+    },
 
+    onBeforeRoute: function(token, resume) {
+        var sectionMatch = token && token.match(/^([^\/]+)\/(.*)$/),
+            sectionCode = sectionMatch && sectionMatch[1];
+
+        if (sectionCode) {
+            console.warn('TODO: load section', sectionCode);
+            resume(sectionMatch[2]);
+            return false;
+        }
     },
 
     onSectionsStoreLoad: function(store) {
