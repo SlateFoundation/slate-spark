@@ -1,6 +1,9 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Ext.MessageBox'
+    ],
 
     views: [
         'TitleBar@SparkClassroom',
@@ -113,7 +116,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         var btnId = btn.getItemId();
 
         if (btnId == 'activity') {
-            Ext.Msg.alert('Classroom activity view is not yet available');
+            Ext.Msg.alert('Not yet available', 'Classroom activity view is not yet available');
         } else {
             this.redirectTo(btnId);
         }
