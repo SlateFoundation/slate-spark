@@ -6,17 +6,12 @@
 Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
     requires: [
-        'Slate.API',
         'Ext.MessageBox'
-    ],
-
-    views: [
-        'TitleBar@SparkClassroom',
-        'TabsContainer'
     ],
 
     controllers: [
         'Viewport',
+
         'GPS',
         'Work',
         'Competencies',

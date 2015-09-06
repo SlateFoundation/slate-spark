@@ -4,15 +4,11 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
     xtype: 'spark-gps',
     cls: 'spark-gps',
     requires: [
-        'SparkClassroom.NavBar',
         'SparkClassroomTeacher.view.gps.StudentList'
     ],
 
     config: {
         items: [
-            {
-                xtype: 'spark-navbar'
-            },
             {
                 xtype: 'container',
                 layout: {
@@ -71,11 +67,11 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                         ]
                     }
                 ]
-                
+
             }
         ]
     },
-    
+
     initialize: function () {
         // var me = this,
         // componentList = {
@@ -88,11 +84,11 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
         // me.callParent(arguments);
 
         // for (var key in componentList) {
-        //     list = me.down('spark-gps-studentList[itemId='+componentList[key]+']');    
+        //     list = me.down('spark-gps-studentList[itemId='+componentList[key]+']');
         //     store = list.getStore();
-            
+
         //     store.group('GPSStatusGroup');
-            
+
         // }
     }
 });

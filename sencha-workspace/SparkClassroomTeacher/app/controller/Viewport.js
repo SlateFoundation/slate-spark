@@ -2,69 +2,72 @@
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
+    views: [
+        'TitleBar@SparkClassroom',
+        'NavBar@SparkClassroom',
+        'gps.Main',
+        'TabsContainer'
+    ],
+
     stores: [
         'Sections@SparkClassroom.store',
         'Students@SparkClassroom.store',
-        'SectionStudents@SparkClassroom.store',
-        'gps.Learn',
-        'gps.Conference',
-        'gps.Apply',
-        'gps.Assess',
-        'gps.Priorities',
-        'gps.Help'
+        'SectionStudents@SparkClassroom.store'
     ],
 
-    refs:{
-        teacherTabBar: 'spark-teacher-tabbar',
-        sparkNavBarButtons: 'spark-navbar button',
-        sectionSelect: {
-            selector: '#sectionSelect',
-            autoCreate: true
+    refs: {
+        sparkTitleBar: {
+            selector: 'spark-titlebar',
+            autoCreate: true,
+
+            xtype: 'spark-titlebar'
         },
+        sectionSelect: 'spark-titlebar #sectionSelect',
+
+        sparkNavBar: {
+            selector: 'spark-navbar',
+            autoCreate: true,
+
+            xtype: 'spark-navbar'
+        },
+
         sparkGPS: {
             selector: 'spark-gps',
             autoCreate: true,
 
             xtype: 'spark-gps'
         },
-        sparkTitleBar: {
-            selector: 'spark-titlebar',
-            autoCreate: true,
-            
-            xtype: 'spark-titlebar'
-        },
+
         sparkTeacherTabContainer: {
             selector: 'spark-teacher-tabscontainer',
             autoCreate: true,
 
             xtype: 'spark-teacher-tabscontainer'
-        }
-    },
-    
-    control: {
-        sectionSelect: {
-            change: 'onSectionSelectChange'
         },
-        teacherTabBar: {
-            activetabchange: 'onTeacherTabChange'
-        },
-        sparkNavBarButtons: {
-            tap: 'onSparkNavBarButtonClick'
-        }
+        teacherTabBar: 'spark-teacher-tabbar',
     },
 
     listen: {
         store: {
-            '#Students': {
-                load: 'onStudentsStoreLoad'
-            },
             '#Sections': {
                 load: 'onSectionsStoreLoad'
             }
         }
     },
 
-    onLaunch:function(){
+    control: {
+        sectionSelect: {
+            change: 'onSectionSelectChange'
+        },
+        'spark-navbar button': {
+            tap: 'onSparkNavBarButtonClick'
+        },
+        teacherTabBar: {
+            activetabchange: 'onTeacherTabChange'
+        }
+    },
+
+    onLaunch: function() {
         var me = this;
 
         Ext.getStore('Sections').load();
@@ -72,13 +75,14 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         //add items to viewport
         Ext.Viewport.add([
             me.getSparkTitleBar(),
+            me.getSparkNavBar(),
             me.getSparkGPS(),
             me.getSparkTeacherTabContainer()
         ]);
 
     },
 
-    onSectionsStoreLoad: function(store){
+    onSectionsStoreLoad: function(store) {
         var sectionQueryString = Ext.Object.fromQueryString(location.search).section,
             sectionSelectCmp = this.getSectionSelect(),
             record = store.findRecord('Code', sectionQueryString);
@@ -86,35 +90,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         sectionSelectCmp.setValue(record);
     },
 
-    onStudentsStoreLoad: function(store, records){
-        var sectionStore = Ext.getStore('SectionStudents');
-
-        for(var i = 0; i < records.length; i++){
-
-            // temp mock data generation script
-            var status = ['Learn', 'Conference', 'Apply', 'Assess'],
-                grades = ['L', '*', 'G', 'N'];
-                mod = i % 4,
-                randomIncrement = Math.floor(Math.random() * 4),
-                record = records[i];
-
-            // add data from students store to SectionStudentStore
-            sectionStore.add({
-                Student: record.getData(),
-                Section: status[randomIncrement],
-                GPSStatus: status[randomIncrement],
-                GPSStatusGroup: 24,
-                Help: mod == 2 ? true : '',
-                Priority: mod == 2 ? 2 : '',
-                Standards: ['CC.Content', 'CC.SS.Math.Content'],
-                Grade: grades[randomIncrement]
-            });
-
-        }
-
-    },
-
-    onSectionSelectChange: function(select, newValue, oldValue){
+    onSectionSelectChange: function(select, newValue, oldValue) {
         var studentStore = Ext.getStore('Students'),
             sectionStore = Ext.getStore('SectionStudents'),
             classCode = newValue.get('Code'),
@@ -126,21 +102,24 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         parsedQueryString = Ext.Object.toQueryString(queryStringObject);
         location.search = parsedQueryString;
 
-        if(oldValue == null){
+        if (oldValue == null) {
             studentStore.getProxy().setUrl('/sections/'+ classCode +'/students');
             sectionStore.removeAll();
             studentStore.load();
         }
-
-
-    },
-
-    onTeacherTabChange: function(tabBar, value, oldValue) {
-        this.redirectTo(value.getItemId());      
     },
 
     onSparkNavBarButtonClick: function(btn) {
-        this.redirectTo(btn.getItemId());
-    }
+        var btnId = btn.getItemId();
 
+        if (btnId == 'activity') {
+            Ext.Msg.alert('Classroom activity view is not yet available');
+        } else {
+            this.redirectTo(btnId);
+        }
+    },
+
+    onTeacherTabChange: function(tabBar, value, oldValue) {
+        this.redirectTo(value.getItemId());
+    }
 });
