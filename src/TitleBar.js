@@ -11,14 +11,17 @@ Ext.define('SparkClassroom.TitleBar', {
         items: [
             {
                 xtype: 'selectfield',
+                itemId: 'sectionSelect',
+                cls: 'spark-course-selector',
+
+                labelCls: 'visually-hidden',
+                label: 'Course Section',
+                placeHolder: 'Select Class',
+
                 store: 'Sections',
                 displayField: 'Title',
-                autoSelect: false,
                 valueField: 'ID',
-                itemId: 'sectionSelect',
-                labelCls: 'visually-hidden',
-                cls: 'spark-course-selector',
-                label: 'Course Section'
+                autoSelect: false
             }
         ]
     }
