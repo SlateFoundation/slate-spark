@@ -80,27 +80,43 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     showLearn: function() {
+        var workCt = this.getWorkCt();
+        
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowLearnContainer();
+          
+        workCt.removeAll();
+        workCt.add(this.getLearnCt());
     },
 
     showConference: function() {
+        var workCt = this.getWorkCt();
+        
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowConferenceContainer();
+        
+        workCt.removeAll();
+        workCt.add(this.getConferenceCt());
     },
 
     showApply: function() {
+        var workCt = this.getWorkCt();
+        
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowApplyContainer();
+
+        workCt.removeAll();
+        workCt.add(this.getApplyCt());
     },
 
     showAssess: function() {
+        var workCt = this.getWorkCt();
+        
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowAssessContainer();
+
+        workCt.removeAll();
+        workCt.add(this.getAssessCt());
     },
 
     // event handlers
@@ -111,7 +127,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         if(oldValue !== null){
             me.redirectTo('work/' + itemId);
         }
-
     },
 
     // controller methods
@@ -125,7 +140,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         tabsCt.removeAll();
         tabsCt.add(this.getWorkCt());
     },
-
+    
     /**
      * @private
      * Called by each subsection route handler to highlight the proper tab in the teacher
@@ -141,50 +156,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         workTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab);
-    },
-
-    /**
-     * @private
-     * Called by each showLearn() to add the learnCt to the workCt
-     */
-    doShowLearnContainer: function() {
-        var workCt = this.getWorkCt();
-
-        workCt.removeAll();
-        workCt.add(this.getLearnCt());
-    },
-
-    /**
-     * @private
-     * Called by each showConference() to add the conferenceCt to the workCt
-     */
-    doShowConferenceContainer: function() {
-        var workCt = this.getWorkCt();
-
-        workCt.removeAll();
-        workCt.add(this.getConferenceCt());
-    },
-
-    /**
-     * @private
-     * Called by each showApply() to add the applyCt to the workCt
-     */
-    doShowApplyContainer: function() {
-        var workCt = this.getWorkCt();
-
-        workCt.removeAll();
-        workCt.add(this.getApplyCt());
-    },
-
-    /**
-     * @private
-     * Called by each showAssess() to add the assessCt to the workCt
-     */
-    doShowAssessContainer: function() {
-        var workCt = this.getWorkCt();
-
-        workCt.removeAll();
-        workCt.add(this.getAssessCt());
     }
-
+    
 });

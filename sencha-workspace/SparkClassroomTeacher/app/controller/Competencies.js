@@ -22,19 +22,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     // route handlers
     showCompetencies: function(){
-    	this.doShowContainer();
-    },
-
-    // event handlers
-
-
-	// controller methods
-    /**
-     * @private
-     * Called by each subsection route handler to ensure container is activated
-     */
-    doShowContainer: function() {
-        var tabsCt = this.getTabsCt();
+    	var tabsCt = this.getTabsCt();
         
         tabsCt.removeAll();
         tabsCt.add(this.getCompetenciesCt());

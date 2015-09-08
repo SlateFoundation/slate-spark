@@ -97,33 +97,53 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
     showLearn: function() {
+        var assignCt = this.getAssignCt();
+        
         this.doShowContainer();
-        this.doHighlightTabbars();
-        this.doShowLearnContainer();
+        this.doHighlightTabbars();        
+
+        assignCt.removeAll();
+        assignCt.add(this.getLearnCt());
     },
 
     showConferenceQuestions: function() {
+        var assignCt = this.getAssignCt();
+
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowConferenceQuestionsContainer();
+                
+        assignCt.removeAll();
+        assignCt.add(this.getQuestionsCt());
     },
 
     showConferenceResources: function() {
+        var assignCt = this.getAssignCt();
+                
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowConferenceResourcesContainer();
+
+        assignCt.removeAll();
+        assignCt.add(this.getResourcesCt());
     },
 
     showApply: function() {
+        var assignCt = this.getAssignCt();
+
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowApplyContainer();
+        
+        assignCt.removeAll();
+        assignCt.add(this.getApplyCt());
     },
 
     showAssess: function() {
+        var assignCt = this.getAssignCt();
+        
         this.doShowContainer();
         this.doHighlightTabbars();
-        this.doShowAssessContainer();
+
+        assignCt.removeAll();
+        assignCt.add(this.getAssessCt());
     },
 
 
@@ -166,61 +186,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         assignTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab); 
-    },
-
-    /**
-     * @private
-     * Called by each showLearn() to add the learnCt to the assignCt
-     */
-    doShowLearnContainer: function(){
-        var assignCt = this.getAssignCt();
-
-        assignCt.removeAll();
-        assignCt.add(this.getLearnCt());
-    },
-
-    /**
-     * @private
-     * Called by each showConferenceQuestions() to add the questionsCt to the assignCt
-     */
-    doShowConferenceQuestionsContainer: function(){
-        var assignCt = this.getAssignCt();
-
-        assignCt.removeAll();
-        assignCt.add(this.getQuestionsCt());
-    },
-
-    /**
-     * @private
-     * Called by each showConferenceResources() to add the resourceCt to the assignCt
-     */
-    doShowConferenceResourcesContainer: function(){
-        var assignCt = this.getAssignCt();
-
-        assignCt.removeAll();
-        assignCt.add(this.getResourcesCt());
-    },
-
-    /**
-     * @private
-     * Called by each showApply() to add the applyCt to the assignCt
-     */
-    doShowApplyContainer: function(){
-        var assignCt = this.getAssignCt();
-
-        assignCt.removeAll();
-        assignCt.add(this.getApplyCt());
-    },
-
-    /**
-     * @private
-     * Called by each showAssess() to add the assessCt to the assignCt
-     */
-    doShowAssessContainer: function(){
-        var assignCt = this.getAssignCt();
-
-        assignCt.removeAll();
-        assignCt.add(this.getAssessCt());
     }
 
 });
