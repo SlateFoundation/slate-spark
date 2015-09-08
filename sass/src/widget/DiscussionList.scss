@@ -1,0 +1,26 @@
+.spark-discussion-item {
+    border-bottom: 1px solid #ccc;
+    padding: .75em 0;
+}
+
+.spark-discussion-author {
+    display: block;
+    font-size: .9em;
+    font-weight: bold;
+    margin: 0;
+
+    a {
+        color: inherit;
+    }
+}
+
+.spark-discussion-timestamp {
+    color: $highlight-color;
+    display: block;
+    font-size: small;
+    margin-top: .25em;
+}
+
+.spark-discussion-text {
+    line-height: (4/3);
+}
