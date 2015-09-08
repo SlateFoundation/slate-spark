@@ -113,7 +113,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         }
 
     },
-    
+
     // controller methods
     /**
      * @private
@@ -121,7 +121,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      */
     doShowContainer: function() {
         var tabsCt = this.getTabsCt();
-        
+
         tabsCt.removeAll();
         tabsCt.add(this.getWorkCt());
     },
@@ -140,7 +140,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             assignTab = workTabbar.down('#'+ section);
 
         workTabbar.setActiveTab(assignTab);
-        teacherTabbar.setActiveTab(teacherTab); 
+        teacherTabbar.setActiveTab(teacherTab);
     },
 
     /**
@@ -149,7 +149,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      */
     doShowLearnContainer: function() {
         var workCt = this.getWorkCt();
-        
+
         workCt.removeAll();
         workCt.add(this.getLearnCt());
     },
@@ -160,7 +160,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      */
     doShowConferenceContainer: function() {
         var workCt = this.getWorkCt();
-        
+
         workCt.removeAll();
         workCt.add(this.getConferenceCt());
     },
@@ -171,7 +171,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      */
     doShowApplyContainer: function() {
         var workCt = this.getWorkCt();
-        
+
         workCt.removeAll();
         workCt.add(this.getApplyCt());
     },
@@ -182,7 +182,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      */
     doShowAssessContainer: function() {
         var workCt = this.getWorkCt();
-        
+
         workCt.removeAll();
         workCt.add(this.getAssessCt());
     }
