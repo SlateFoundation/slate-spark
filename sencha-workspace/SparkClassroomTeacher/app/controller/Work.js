@@ -83,7 +83,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var workCt = this.getWorkCt();
         
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('learn');
           
         workCt.removeAll();
         workCt.add(this.getLearnCt());
@@ -93,7 +93,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var workCt = this.getWorkCt();
         
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('conference');
         
         workCt.removeAll();
         workCt.add(this.getConferenceCt());
@@ -103,7 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var workCt = this.getWorkCt();
         
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('apply');
 
         workCt.removeAll();
         workCt.add(this.getApplyCt());
@@ -113,7 +113,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var workCt = this.getWorkCt();
         
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('assess');
 
         workCt.removeAll();
         workCt.add(this.getAssessCt());
@@ -146,11 +146,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(){
+    doHighlightTabbars: function(section){
         var workTabbar = this.getWorkTabbar(),
             teacherTabbar = this.getTeacherTabbar(),
-            hash = window.location.hash,
-            section = hash.substring(hash.indexOf('/') + 1, hash.length),
             teacherTab = teacherTabbar.down('#work'),
             assignTab = workTabbar.down('#'+ section);
 

@@ -100,7 +100,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         var assignCt = this.getAssignCt();
         
         this.doShowContainer();
-        this.doHighlightTabbars();        
+        this.doHighlightTabbars('learn');        
 
         assignCt.removeAll();
         assignCt.add(this.getLearnCt());
@@ -112,7 +112,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         this.doShowContainer();
         this.doHighlightTabbars();
                 
-        assignCt.removeAll();
+        assignCt.removeAll('conference-questions');
         assignCt.add(this.getQuestionsCt());
     },
 
@@ -120,7 +120,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         var assignCt = this.getAssignCt();
                 
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('conference-resources');
 
         assignCt.removeAll();
         assignCt.add(this.getResourcesCt());
@@ -130,7 +130,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         var assignCt = this.getAssignCt();
 
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('apply');
         
         assignCt.removeAll();
         assignCt.add(this.getApplyCt());
@@ -140,7 +140,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         var assignCt = this.getAssignCt();
         
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('assess');
 
         assignCt.removeAll();
         assignCt.add(this.getAssessCt());
@@ -176,11 +176,9 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(){
+    doHighlightTabbars: function(section){
         var assignTabbar = this.getAssignTabbar(),
             teacherTabbar = this.getTeacherTabbar(),
-            hash = window.location.hash,
-            section = hash.substring(hash.indexOf('/') + 1, hash.length),
             teacherTab = teacherTabbar.down('#assign'),
             assignTab = assignTabbar.down('#'+ section);
 
