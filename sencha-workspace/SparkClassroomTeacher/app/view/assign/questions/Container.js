@@ -2,42 +2,51 @@
 Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-questions',
+    requires: [
+        'SparkClassroom.plugin.GridFlex',
+        'Ext.grid.plugin.PagingToolbar'
+    ],
 
     config: {
-        title: 'Conference Questions',
+        plugins: [
+            'gridflex',
+            'gridpagingtoolbar'
+        ],
         height: 500,
+        grouped: true,
         titleBar: null,
+        margin: '0 -24', // flush with viewport
         columns:[
             {
                 dataIndex: 'Standards',
-                width: 100,
+                width: 288,
                 text: 'Standards',
                 tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}'
             },
             {
                 dataIndex: 'Grade',
-                width: 50,
+                width: 100,
                 text: 'Grade'
             },
             {
                 dataIndex: 'Question',
-                width: 150,
+                flex: 1,
                 text: 'Guiding Questions'
-            },
-            {
-                dataIndex: 'Created',
-                text: 'Created',
-                width: 100
             },
             {
                 dataIndex: 'CreatedBy',
                 text: 'Created By',
-                width: 100
+                width: 200
+            },
+            {
+                dataIndex: 'Created',
+                text: 'Created',
+                width: 200
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                width: 100,
+                width: 200,
                 tpl: '<input type="checkbox" checked="Assign"><span class="select-jawn"></span>',
                 cell: {
                     encodeHtml: false

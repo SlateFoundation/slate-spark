@@ -1,48 +1,60 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-assign-resources',
+    requires: [
+        'SparkClassroom.plugin.GridFlex',
+        'Ext.grid.plugin.PagingToolbar'
+    ],
 
     config: {
-        title: 'Conference Resources',
+        plugins: [
+            'gridflex',
+            'gridpagingtoolbar'
+        ],
         height: 500,
+        grouped: true,
         titleBar: null,
+        margin: '0 -24', // flush with viewport
         columns:[
             {
                 dataIndex: 'Standards',
-                width: 100,
+                width: 288,
                 text: 'Standards',
                 tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}'
             },
             {
                 dataIndex: 'Grade',
-                width: 50,
+                width: 100,
                 text: 'Grade'
             },
             {
                 dataIndex: 'Link',
-                width: 100,
-                text: 'Url'
+                flex: 2,
+                text: 'URL',
+                tpl: '<a href="{Link}">{Link}</a>',
+                cell: {
+                    encodeHtml: false
+                }
             },
             {
                 dataIndex: 'Title',
-                width: 100,
+                flex: 3,
                 text: 'Title'
-            },
-            {
-                dataIndex: 'Created',
-                text: 'Created',
-                width: 100
             },
             {
                 dataIndex: 'CreatedBy',
                 text: 'Created By',
-                width: 100
+                width: 200
+            },
+            {
+                dataIndex: 'Created',
+                text: 'Created',
+                width: 200
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                width: 100,
+                width: 200,
                 tpl: '<input type="checkbox" checked="{Assign}}">',
                 cell: {
                     encodeHtml: false

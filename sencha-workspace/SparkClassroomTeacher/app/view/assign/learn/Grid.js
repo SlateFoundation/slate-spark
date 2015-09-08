@@ -2,14 +2,19 @@
 Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-learn-grid',
+    requires: [
+        'SparkClassroom.plugin.GridFlex',
+        'Ext.grid.plugin.PagingToolbar'
+    ],
 
     config: {
+        plugins: [
+            'gridflex',
+            'gridpagingtoolbar'
+        ],
         height: 500,
-        // layout: 'fit',
-        titleBar: false,
-        // scrollable: false,
-        // infinite: false,
-        // variableHeights: false,
+        grouped: true,
+        titleBar: null,
         store: 'assign.Learn',
         columns:[
             {
@@ -23,23 +28,23 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 dataIndex: 'Grade',
-                width: 30,
+                width: 100,
                 text: 'Grade'
             },
             {
 
                 dataIndex: 'Title',
-                width: 100,
+                width: 200,
                 text: 'Playist'
             },
             {
                 dataIndex: 'Link',
-                width: 100,
+                width: 200,
                 text: 'Url'
             },
             {
                 dataIndex: 'Vendor',
-                width: 100,
+                width: 200,
                 text: 'Vendor',
                 renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">'+v;
@@ -50,7 +55,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 dataIndex: 'DOK',
-                width: 30,
+                width: 100,
                 text: 'DOK'
             },
             {
@@ -61,7 +66,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             {
                 dataIndex: 'SRating',
                 text: 'ActiveRating',
-                width: 60,
+                width: 100,
                 renderer: function(v, r) {
                     return r.get('SRating') + ' ' + r.get('TRating');
                 },
