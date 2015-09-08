@@ -7,6 +7,7 @@ Ext.define('Jarvus.routing.PreprocessRedirect', {
 
     redirectTo: function(originalToken) {
         var me = this,
+            app = me.getApplication(),
             thisMethod = arguments.callee,
             resumeRedirect = function(resumeToken) {
                 thisMethod.$previous.call(me, resumeToken);
@@ -17,7 +18,7 @@ Ext.define('Jarvus.routing.PreprocessRedirect', {
                     controller = route && route.controller,
                     rewrite = route && route.rewrite;
 
-                if (resumeToken) {
+                if (rewrite) {
                     if (Ext.isString(rewrite)) {
                         rewrite = route.rewrite = controller[rewrite];
                     }
@@ -25,12 +26,12 @@ Ext.define('Jarvus.routing.PreprocessRedirect', {
                     resumeToken = rewrite.apply(controller, [resumeToken, recognized.args.args, route]);
                 }
 
-                if (false !== me.application.fireEvent('beforeredirect', resumeToken, resumeRedirect)) {
+                if (false !== app.fireEvent('beforeredirect', resumeToken, resumeRedirect)) {
                     resumeRedirect(resumeToken);
                 }
             };
 
-        if (false !== me.application.fireEvent('beforerewrite', originalToken, resumeRewrite)) {
+        if (false !== app.fireEvent('beforerewrite', originalToken, resumeRewrite)) {
             resumeRewrite(originalToken);
         }
     }

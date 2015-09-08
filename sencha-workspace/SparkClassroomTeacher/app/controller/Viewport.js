@@ -56,7 +56,6 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     listen: {
         controller: {
             '#': {
-                beforerewrite: 'onBeforeRewrite',
                 beforeredirect: 'onBeforeRedirect',
                 beforeroute: 'onBeforeRoute'
                 //<debug>
@@ -105,10 +104,6 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     updateSelectedSection: function(section, oldSection) {
         console.info('updateSelectedSection(%o, %o)', section, oldSection);
-    },
-
-    onBeforeRewrite: function(token, resume) {
-        console.info('onBeforeRewrite(%s)', token);
     },
 
     onBeforeRedirect: function(token, resume) {

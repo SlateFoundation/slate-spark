@@ -3,6 +3,10 @@
  */
 Ext.define('Jarvus.routing.PreprocessRoute', {
     override: 'Ext.app.route.Router',
+    requires: [
+        'Jarvus.hotfixes.app.route.RouterOverridable'
+    ],
+
 
     onStateChange: function (originalToken) {
         var me = this,
