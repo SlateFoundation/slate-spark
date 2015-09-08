@@ -7,13 +7,13 @@ Ext.define('SparkClassroomStudent.controller.Apply', {
     ],
 
     refs: {
-        workTabbar: 'spark-work-tabbar',
         tabsCt: {
             selector: 'spark-student-tabscontainer',
             autoCreate: true,
 
             xtype: 'spark-student-tabscontainer'
         },
+        workTabbar: 'spark-work-tabbar',
         applyCt: {
             selector: 'spark-student-work-apply',
             autoCreate: true,
