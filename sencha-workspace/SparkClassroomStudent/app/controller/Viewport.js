@@ -13,7 +13,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
             xtype: 'spark-titlebar'
         },
-        sectionSelect: '#sectionSelect',
+        sectionSelect: 'spark-titlebar #sectionSelect',
         sparkStudentNavBar: {
             selector: 'spark-student-navbar',
             autoCreate: true,
