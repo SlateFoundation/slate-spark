@@ -56,6 +56,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     listen: {
         controller: {
             '#': {
+                beforerewrite: 'onBeforeRewrite',
+                beforeredirect: 'onBeforeRedirect',
                 beforeroute: 'onBeforeRoute'
                 //<debug>
                 ,unmatchedroute: function(token) {
@@ -83,6 +85,10 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         }
     },
 
+    config: {
+        selectedSection: null
+    },
+
     onLaunch: function() {
         var me = this;
 
@@ -97,13 +103,38 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         ]);
     },
 
-    onBeforeRoute: function(token, resume) {
-        var sectionMatch = token && token.match(/^([^\/]+)(\/(.+))?$/),
-            sectionCode = sectionMatch && sectionMatch[1];
+    updateSelectedSection: function(section, oldSection) {
+        console.info('updateSelectedSection(%o, %o)', section, oldSection);
+    },
+
+    onBeforeRewrite: function(token, resume) {
+        console.info('onBeforeRewrite(%s)', token);
+    },
+
+    onBeforeRedirect: function(token, resume) {
+        var sectionCode = this.getSelectedSection();
+
+        console.info('onBeforeRedirect(%s)', token);
 
         if (sectionCode) {
-            console.warn('TODO: load section %s and then resume path %s', sectionCode, sectionMatch[3]);
-            resume(sectionMatch[3]);
+            console.info('->resume(%s)', sectionCode + ':' + token);
+            resume(sectionCode + ':' + token);
+            return false;
+        }
+    },
+
+    onBeforeRoute: function(token, resume) {
+        var sectionMatch = token && token.match(/^([^:]+):(.+)?$/),
+            sectionCode = sectionMatch && sectionMatch[1];
+
+        console.info('onBeforeRoute(%s)', token);
+
+        if (sectionCode) {
+            console.warn('TODO: load section %s and then resume path %s', sectionCode, sectionMatch[2]);
+
+            this.setSelectedSection(sectionCode);
+            console.info('->resume(%s)', sectionMatch[2]);
+            resume(sectionMatch[2]);
             return false;
         }
     },
