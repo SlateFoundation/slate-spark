@@ -19,8 +19,8 @@ Ext.define('SparkClassroom.TitleBar', {
                 placeHolder: 'Select Class',
 
                 store: 'Sections',
+                valueField: 'Code',
                 displayField: 'Title',
-                valueField: 'ID',
                 autoSelect: false
             }
         ]
