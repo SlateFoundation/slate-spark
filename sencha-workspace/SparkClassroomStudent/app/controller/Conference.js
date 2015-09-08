@@ -41,10 +41,9 @@ Ext.define('SparkClassroomStudent.controller.Conference', {
      * @private
      * Called by each subsection route handler to highlight the proper tab
      */
-    doHighlightTabbars: function(){
+    doHighlightTabbars: function(section){
         var workTabbar = this.getWorkTabbar(),
-            hash = Ext.util.History.getHash(),
-            assignTab = workTabbar.down('#' + hash);
+            assignTab = workTabbar.down('#' + section);
 
         workTabbar.setActiveTab(assignTab);
     }

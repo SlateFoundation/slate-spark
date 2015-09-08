@@ -30,7 +30,7 @@ Ext.define('SparkClassroomStudent.controller.Assess', {
     showAssess: function() {
         var workCt = this.getTabsCt();
 
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('assess');
         
         workCt.removeAll();
         workCt.add(this.getAssessCt());
@@ -41,10 +41,9 @@ Ext.define('SparkClassroomStudent.controller.Assess', {
      * @private
      * Called by each subsection route handler to highlight the proper tab
      */
-    doHighlightTabbars: function(){
+    doHighlightTabbars: function(section){
         var workTabbar = this.getWorkTabbar(),
-            hash = Ext.util.History.getHash(),
-            assignTab = workTabbar.down('#' + hash);
+            assignTab = workTabbar.down('#' + section);
 
         workTabbar.setActiveTab(assignTab);
     }
