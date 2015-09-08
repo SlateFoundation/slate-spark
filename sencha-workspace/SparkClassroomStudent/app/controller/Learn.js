@@ -28,8 +28,12 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
 
     // route handlers
     showLearn: function() {
+        var workCt = this.getTabsCt();
+
         this.doHighlightTabbars();
-        this.doShowLearnContainer();
+                
+        workCt.removeAll();
+        workCt.add(this.getLearnCt());
     },
 
     //controller methods
@@ -43,17 +47,6 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
             assignTab = workTabbar.down('#' + hash);
 
         workTabbar.setActiveTab(assignTab);
-    },
-
-    /**
-     * @private
-     * Called by each showLearn() to add the learnCt to the tabsCt
-     */
-    doShowLearnContainer: function() {
-        var workCt = this.getTabsCt();
-        
-        workCt.removeAll();
-        workCt.add(this.getLearnCt());
     }
 
 });

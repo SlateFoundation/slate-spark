@@ -28,8 +28,12 @@ Ext.define('SparkClassroomStudent.controller.Conference', {
 
     // route handlers
     showConference: function() {
-        this.doHighlightTabbars();
-        this.doShowConferenceContainer();
+        var workCt = this.getTabsCt();
+
+        this.doHighlightTabbars();        
+        
+        workCt.removeAll();
+        workCt.add(this.getConferenceCt());
     },
 
     //controller methods
@@ -43,17 +47,6 @@ Ext.define('SparkClassroomStudent.controller.Conference', {
             assignTab = workTabbar.down('#' + hash);
 
         workTabbar.setActiveTab(assignTab);
-    },
-
-    /**
-     * @private
-     * Called by each showLearn() to add the learnCt to the tabsCt
-     */
-    doShowConferenceContainer: function() {
-        var workCt = this.getTabsCt();
-        
-        workCt.removeAll();
-        workCt.add(this.getConferenceCt());
     }
 
 });
