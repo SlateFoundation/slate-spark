@@ -38,6 +38,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             autoCreate: true,
 
             xtype: 'spark-navbar',
+            hidden: true
         },
 
         sparkGPS: {
@@ -93,7 +94,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         var me = this;
 
         Ext.getStore('Sections').load();
-        
+
         //add items to viewport
         Ext.Viewport.add([
             me.getSparkTitleBar(),
@@ -103,27 +104,31 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         ]);
     },
 
-    updateSelectedSection: function(section, oldSection) {
-        var token = Ext.util.History.getToken(),
+    updateSelectedSection: function(sectionCode, oldSectionCode) {
+        var me = this,
+            token = Ext.util.History.getToken(),
             sectionMatch = token && this.tokenSectionRe.exec(token),
-            sectionSelect = this.getSectionSelect();
+            studentStore = Ext.getStore('Students');
 
-        // TODO remove
-        //console.info('updateSelectedSection(%o, %o)', section, oldSection);
+        if (sectionCode) {
+            //show section dependant components
+            me.getSparkNavBar().show();
+            me.getSparkGPS().show();
+            me.getSparkTeacherTabContainer().show();
 
-        // redirect with the current un-prefixed route or an empty string to write the new section into the route
-        this.redirectTo((sectionMatch && sectionMatch[2]) || '');
+            Ext.getStore('SectionStudents').removeAll();
+            studentStore.getProxy().setUrl('/sections/' + sectionCode + '/students');
+            studentStore.load();
+
+            // redirect with the current un-prefixed route or an empty string to write the new section into the route
+            this.redirectTo((sectionMatch && sectionMatch[2]) || '');
+        }
     },
 
     onBeforeRedirect: function(token, resume) {
         var sectionCode = this.getSelectedSection();
 
-        // TODO remove
-        //console.info('onBeforeRedirect(%s)', token, sectionCode);
-
         if (sectionCode) {
-            // TODO remove
-            //console.info('->resume(%s)', sectionCode + ':' + token);
             resume(sectionCode + ':' + token);
             return false;
         }
@@ -134,13 +139,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             sectionMatch = token && me.tokenSectionRe.exec(token),
             sectionCode = sectionMatch && sectionMatch[1];
 
-        // TODO remove
-        //console.info('onBeforeRoute(%s)', token, sectionMatch, 'sc-> '+ sectionCode);
-
         if (sectionCode) {
             me.setSelectedSection(sectionCode);
-            // TODO remove
-            //console.info('->resume(%s)', sectionMatch[2]);
             resume(sectionMatch[2]);
             return false;
         }
@@ -155,26 +155,12 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     onSectionSelectChange: function(selectField, section, oldSection) {
-        var me = this,
-            studentStore = Ext.getStore('Students'),
-            sectionStore = Ext.getStore('SectionStudents'),
-            sparkGPS = me.getSparkGPS(),
-            sparkTeacherTabContainer = me.getSparkTeacherTabContainer();
-
-        me.setSelectedSection(section.get('Code'));
-
-        //show section dependant components
-        sparkGPS.setHidden(false);
-        sparkTeacherTabContainer.setHidden(false);
-
-        studentStore.getProxy().setUrl('/sections/'+ section.get('Code') +'/students');
-        sectionStore.removeAll();
-        studentStore.load();
+        this.setSelectedSection(section.get('Code'));
     },
 
     onSparkNavBarButtonClick: function(btn) {
         var btnId = btn.getItemId();
-        
+
         if (btnId == 'activity') {
             Ext.Msg.alert('Not yet available', 'Classroom activity view is not yet available');
         } else {
