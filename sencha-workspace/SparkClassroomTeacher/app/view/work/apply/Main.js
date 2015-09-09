@@ -51,7 +51,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                                 title: 'Applied Standards',
                                 defaults: {
                                     xtype: 'component',
-                                    cls: 'spark-token-item',
+                                    cls: 'spark-token-item'
                                 },
                                 items: [
                                     {
@@ -138,7 +138,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                                                     'title': 'essay_final_aw.doc',
                                                     'url': 'http://example.com/essay_final_aw.doc'
                                                 }
-                                            ],
+                                            ]
                                         },
                                         itemTpl: '<a href="{url:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                     }

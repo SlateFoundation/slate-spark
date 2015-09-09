@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Container', {
                 items: [
                     {
                         flex: 1,
-                        xtype: 'spark-assign-learn-grid',
+                        xtype: 'spark-assign-learn-grid'
                     },
                     {
                         xtype: 'spark-panel',

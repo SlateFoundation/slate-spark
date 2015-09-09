@@ -56,7 +56,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             xtype: 'spark-teacher-tabscontainer',
             hidden: true
         },
-        teacherTabBar: 'spark-teacher-tabbar',
+        teacherTabBar: 'spark-teacher-tabbar'
     },
 
     listen: {
@@ -80,7 +80,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     control: {
         sectionSelect: {
-            change: 'onSectionSelectChange',
+            change: 'onSectionSelectChange'
         },
         'spark-navbar button': {
             tap: 'onSparkNavBarButtonClick'

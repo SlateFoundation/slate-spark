@@ -28,7 +28,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
                         style: {
                             fontWeight: 'bold',
                             textAlign: 'center'
-                        },
+                        }
                     },
                     {
                         xtype: 'textfield',

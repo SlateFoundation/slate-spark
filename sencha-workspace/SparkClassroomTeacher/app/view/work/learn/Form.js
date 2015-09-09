@@ -27,7 +27,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
                         labelCls: 'text-left',
                         labelWidth: '10.5em',
                         placeHolder: ' / ',
-                        style: { textAlign: 'center' },
+                        style: { textAlign: 'center' }
                     }
                 ]
             },

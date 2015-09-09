@@ -6,7 +6,7 @@
 Ext.application({
     name: 'SparkClassroomTeacher',
 
-    extend: 'SparkClassroomTeacher.Application',
+    extend: 'SparkClassroomTeacher.Application'
 
     //-------------------------------------------------------------------------
     // Most customizations should be made to SparkClassroomTeacher.Application. If you need to
