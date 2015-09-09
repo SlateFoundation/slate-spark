@@ -56,8 +56,12 @@ a {
     }
 }
 
+.text-alert {
+    color: $alert-color;
+}
+
 .spark-view-headline {
-    font-family: Sanchez;
+    font-family: $heading-font-family;
     font-size: x-large;
     margin-bottom: 1em;
     padding-top: .375em;
@@ -96,6 +100,13 @@ a {
     border: 1px dashed #ccc;
     border-width: 1px 0 0;
     margin: 2em 0 1.5em;
+}
+
+.flex-ct {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
 }
 
 .inline-flex-fullwidth-ct {

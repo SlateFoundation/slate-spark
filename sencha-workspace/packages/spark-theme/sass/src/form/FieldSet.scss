@@ -7,10 +7,18 @@
 }
 
 .x-form-fieldset-title {
-    font-family: Sanchez;
+    font-family: $heading-font-family;
     font-size: 1.25em;
     font-weight: normal;
     margin: 0 0 .5em;
+
+    small {
+        font-family: $font-family;
+        font-size: 2em/3;
+        font-weight: bold;
+        margin-left: .5em;
+        text-transform: uppercase;
+    }
 }
 
 .x-field,
@@ -35,6 +43,16 @@
 
     .x-field + .x-field {
         margin-top: .75em;
+    }
+
+    .x-form-fieldset-inner {
+        overflow: visible;
+
+        &.x-horizontal {
+            .x-field {
+                margin-top: 0;
+            }
+        }
     }
 }
 
