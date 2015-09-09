@@ -81,27 +81,27 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     showLearn: function() {
         var workCt = this.getWorkCt();
-        
+
         this.doShowContainer();
         this.doHighlightTabbars('learn');
-          
+
         workCt.removeAll();
         workCt.add(this.getLearnCt());
     },
 
     showConference: function() {
         var workCt = this.getWorkCt();
-        
+
         this.doShowContainer();
         this.doHighlightTabbars('conference');
-        
+
         workCt.removeAll();
         workCt.add(this.getConferenceCt());
     },
 
     showApply: function() {
         var workCt = this.getWorkCt();
-        
+
         this.doShowContainer();
         this.doHighlightTabbars('apply');
 
@@ -111,7 +111,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     showAssess: function() {
         var workCt = this.getWorkCt();
-        
+
         this.doShowContainer();
         this.doHighlightTabbars('assess');
 
@@ -120,13 +120,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     // event handlers
-    onWorkTabChange: function(tabbar, value, oldValue){
-        var me = this,
-            itemId = tabbar.getActiveTab().getItemId();
-
-        if(oldValue !== null){
-            me.redirectTo('work/' + itemId);
-        }
+    onWorkTabChange: function(tabbar, activeTab) {
+        this.redirectTo('work/' + activeTab.getItemId());
     },
 
     // controller methods
@@ -140,13 +135,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         tabsCt.removeAll();
         tabsCt.add(this.getWorkCt());
     },
-    
+
     /**
      * @private
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(section){
+    doHighlightTabbars: function(section) {
         var workTabbar = this.getWorkTabbar(),
             teacherTabbar = this.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#work'),
@@ -155,5 +150,5 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         workTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab);
     }
-    
+
 });
