@@ -4,7 +4,7 @@ Ext.define('SparkClassroomStudent.view.TabsContainer', {
     xtype: 'spark-student-tabscontainer',
     cls: 'spark-student-tabscontainer',
     requires: [
-        'SparkClassroomStudent.view.TabBar'
+        'SparkClassroom.work.TabBar'
     ],
 
     config: {
