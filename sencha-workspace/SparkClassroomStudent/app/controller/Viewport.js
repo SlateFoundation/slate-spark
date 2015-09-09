@@ -54,7 +54,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
 
-    onLaunch:function(){
+    onLaunch: function() {
         var me = this;
 
         Ext.getStore('Sections').load();
@@ -69,7 +69,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     // event handlers
-    onSectionsStoreLoad: function(store){
+    onSectionsStoreLoad: function(store) {
         var sectionQueryString = Ext.Object.fromQueryString(location.search).section,
             sectionSelectCmp = this.getSectionSelect(),
             record = store.findRecord('Code', sectionQueryString);
@@ -77,10 +77,9 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         sectionSelectCmp.setValue(record);
     },
 
-    onSectionSelectChange: function(select, newValue, oldValue){
+    onSectionSelectChange: function(select, newValue, oldValue) {
         var classCode = newValue.get('Code'),
             queryStringObject = Ext.Object.fromQueryString(location.search),
-            hash = Ext.util.History.getHash(),
             parsedQueryString;
 
         // set 'section' query string param
