@@ -10,19 +10,18 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Container', {
     config: {
         title: 'Apply',
         layout: 'hbox',
+        margin: '0 -24', // flush with viewport
         items: [
             {
                 xtype: 'spark-assign-apply-grid',
-                width: '75%'
+                flex: 1
             },
             {
-                xtype: 'container',
-                width: '25%',
+                xtype: 'spark-panel',
+                cls: 'dark narrow',
+                title: 'Project Name <small>Details</small>',
+                width: 384,
                 items: [
-                    {
-                        xtype: 'titlebar',
-                        title: 'Project Details'
-                    },
                     {
                         xtype: 'spark-assign-apply-form'
                     }

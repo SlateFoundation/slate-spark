@@ -2,48 +2,56 @@
 Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-apply-grid',
+    requires: [
+        'SparkClassroom.plugin.GridFlex',
+        'Ext.grid.plugin.PagingToolbar'
+    ],
+
     config: {
+        plugins: [
+            'gridflex',
+            'gridpagingtoolbar'
+        ],
         height: 500,
+        grouped: true,
         titleBar: null,
+        store: 'assign.Apply',
         columns:[
             {
                 dataIndex: 'Title',
-                //NOTE: x-grid horizontal flex broken 
-                width: 100,
+                flex: 1,
                 text: 'Title'
             },
             {
                 dataIndex: 'Standards',
                 text: 'Standards',
                 tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}',
-                width: 100
+                width: 288
             },
             {
                 dataIndex: 'Grade',
-                width: 100,
+                width: 80,
                 text: 'Grade'
             },
             {
                 dataIndex: 'DOK',
-                width: 100,
+                width: 80,
                 text: 'DOK'
             },
             {
                 dataIndex: 'CreatedBy',
-                width: 100,
+                width: 128,
                 text: 'Created By'
             },
             {
                 dataIndex: 'Assign',
-                width: 100,
+                width: 96,
                 text: 'Assign',
                 tpl: '<input type="checkbox" checked="{Assign}">',
                 cell: {
                     encodeHtml: false
                 }
             }
-        ],
-
-        store: 'assign.Apply'
+        ]
     }
 });

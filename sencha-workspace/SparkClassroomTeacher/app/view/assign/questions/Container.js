@@ -25,7 +25,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
             },
             {
                 dataIndex: 'Grade',
-                width: 100,
+                width: 80,
                 text: 'Grade'
             },
             {
@@ -36,17 +36,17 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
             {
                 dataIndex: 'CreatedBy',
                 text: 'Created By',
-                width: 200
+                width: 160
             },
             {
                 dataIndex: 'Created',
                 text: 'Created',
-                width: 200
+                width: 96
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                width: 200,
+                width: 96,
                 tpl: '<input type="checkbox" checked="Assign"><span class="select-jawn"></span>',
                 cell: {
                     encodeHtml: false

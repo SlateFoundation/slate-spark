@@ -6,10 +6,6 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
     config: {
         items: [
             {
-                xtype: 'component',
-                html: '<h4>Project Title</h4>'  
-            },
-            {
                 xtype: 'textareafield',
                 labelAlign: 'top',
                 label: 'Instructions'
@@ -17,50 +13,59 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
             {
                 xtype: 'fieldset',
                 layout: 'hbox',
-                label: 'Time Estimate',
-                labelAlign: 'top',
+                title: 'Time Estimate',
+                cls: 'composite-field',
                 items: [
                     {
                         xtype: 'textfield',
-                        placeHolder: '1 Hour',
-                        flex: 1
+                        placeHolder: 'H',
+                        width: 64
+                    },
+                    {
+                        xtype: 'component',
+                        html: ':',
+                        padding: '7 8 0',
+                        style: {
+                            fontWeight: 'bold',
+                            textAlign: 'center'
+                        },
                     },
                     {
                         xtype: 'textfield',
-                        placeHolder: '30 Minutes',
+                        placeHolder: 'MM',
+                        width: 64
+                    },
+                    {
                         flex: 1
                     }
                 ]
             },
             {
                 xtype: 'fieldset',
-                label: 'ToDOs',
+                title: 'To-Dos',
+                cls: 'composite-field',
                 items: [
                     {
-                        xtype: 'textfield',
-                        placeHolder: 'TODO 1'
+                        xtype: 'textfield'
                     },
+                    // TODO start with two fields and add a blank one every the last one has text entered
                     {
-                        xtype: 'textfield',
-                        placeHolder: 'TODO 2'
-                    },
-                    {
-                        xtype: 'textfield',
-                        placeHolder: 'TODO 3'
+                        xtype: 'textfield'
                     }
                 ]
             },
             {
                 xtype: 'fieldset',
-                label: 'Links',
+                title: 'Links',
+                cls: 'composite-field',
                 items: [
                     {
                         xtype: 'textfield',
-                        placeHolder: 'http://stuff.com'
+                        placeHolder: 'http://example.com/video/908'
                     },
+                    // TODO same as above; always have a fresh blank field at the bottom of this list
                     {
-                        xtype: 'textfield',
-                        placeHolder: 'http://youtube.com'
+                        xtype: 'textfield'
                     }
                 ]
             }

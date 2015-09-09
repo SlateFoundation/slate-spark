@@ -1,5 +1,6 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
+    xtype: 'spark-assign-resources',
     extend: 'Ext.grid.Grid',
     requires: [
         'SparkClassroom.plugin.GridFlex',
@@ -24,12 +25,12 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
             },
             {
                 dataIndex: 'Grade',
-                width: 100,
+                width: 80,
                 text: 'Grade'
             },
             {
                 dataIndex: 'Link',
-                flex: 2,
+                flex: 1,
                 text: 'URL',
                 tpl: '<a href="{Link}">{Link}</a>',
                 cell: {
@@ -38,23 +39,23 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
             },
             {
                 dataIndex: 'Title',
-                flex: 3,
+                flex: 2,
                 text: 'Title'
             },
             {
                 dataIndex: 'CreatedBy',
                 text: 'Created By',
-                width: 200
+                width: 160
             },
             {
                 dataIndex: 'Created',
                 text: 'Created',
-                width: 200
+                width: 96
             },
             {
                 dataIndex: 'Assign',
                 text: 'Assign',
-                width: 200,
+                width: 96,
                 tpl: '<input type="checkbox" checked="{Assign}}">',
                 cell: {
                     encodeHtml: false
