@@ -12,11 +12,11 @@ Ext.define('SparkClassroom.NavBar', {
         items: [
             {
                 text: 'Student Work',
-                itemId: 'work',
+                itemId: 'work'
             },
             {
                 text: 'Competency Overview',
-                itemId: 'competencies',
+                itemId: 'competencies'
             },
             {
                 text: 'Assign Sparkpoints',

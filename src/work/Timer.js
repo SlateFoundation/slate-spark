@@ -11,5 +11,5 @@ Ext.define('SparkClassroom.work.Timer', {
             '<div class="timer-icon"></div>',
             '<div class="timer-counter">{time}</div>'
         ]
-    },
+    }
 });

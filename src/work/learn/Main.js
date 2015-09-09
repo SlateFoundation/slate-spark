@@ -26,7 +26,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
                                         xtype: 'container',
                                         layout: {
                                             type: 'hbox',
-                                            pack: 'center',
+                                            pack: 'center'
                                         },
                                         items: [
                                             {
@@ -35,7 +35,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
                                         ]
                                     },
                                     {
-                                        xtype: 'spark-work-learn-grid',
+                                        xtype: 'spark-work-learn-grid'
                                     }
                                 ]
                             },

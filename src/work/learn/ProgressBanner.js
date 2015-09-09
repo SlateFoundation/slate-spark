@@ -8,7 +8,7 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
         data: {
             completedLearns: 3,
             name: null,
-            requiredLearns: 5,
+            requiredLearns: 5
         },
 
         tpl: [
