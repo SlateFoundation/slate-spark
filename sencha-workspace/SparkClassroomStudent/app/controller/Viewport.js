@@ -88,8 +88,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         location.search = parsedQueryString;
     },
 
-    onWorkTabChange: function(tabbar) {
-        this.redirectTo(tabbar.getActiveTab().getItemId());
+    onWorkTabChange: function(tabbar, activeTab) {
+        this.redirectTo(activeTab.getItemId());
     }
 
 });
