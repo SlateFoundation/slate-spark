@@ -7,13 +7,9 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
     ],
 
     refs: {
-        tabsCt: {
-            selector: 'spark-student-tabscontainer',
-            autoCreate: true,
-
-            xtype: 'spark-student-tabscontainer'
-        },
+        tabsCt: 'spark-student-tabscontainer',
         workTabbar: 'spark-work-tabbar',
+
         learnCt: {
             selector: 'spark-student-work-learn',
             autoCreate: true,

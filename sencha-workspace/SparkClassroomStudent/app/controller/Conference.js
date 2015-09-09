@@ -7,13 +7,9 @@ Ext.define('SparkClassroomStudent.controller.Conference', {
     ],
 
     refs: {
-        tabsCt: {
-            selector: 'spark-student-tabscontainer',
-            autoCreate: true,
-
-            xtype: 'spark-student-tabscontainer'
-        },
+        tabsCt: 'spark-student-tabscontainer',
         workTabbar: 'spark-work-tabbar',
+
         conferenceCt: {
             selector: 'spark-student-work-conference',
             autoCreate: true,
