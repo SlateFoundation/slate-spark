@@ -43,7 +43,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         },
         sectionSelect: {
             change: 'onSectionSelectChange'
-        },
+        }
     },
 
     listen: {

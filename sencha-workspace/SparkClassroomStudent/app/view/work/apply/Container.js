@@ -41,7 +41,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                             title: 'Wild Card',
                             description: 'Record a video teaching students how to use active and passive voice. In your video, be sure to identify what is active and passive voice.'
                         }
-                    ],
+                    ]
                 },
                 columns: [
                     {
@@ -66,7 +66,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                         tpl: '<tpl if="standards"><ul class="spark-grid-token-list"><tpl for="standards"><li class="spark-grid-token-item">{.}</li></tpl></ul></tpl>',
                         width: 320
                     }
-                ],
+                ]
             },
             {
                 layout: {
@@ -232,7 +232,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                                                     'title': 'essay_final_aw.doc',
                                                     'url': 'http://example.com/essay_final_aw.doc'
                                                 }
-                                            ],
+                                            ]
                                         },
                                         itemTpl: '<a href="{url:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                     },
@@ -283,7 +283,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                             '</li>',
                         '</tpl>',
                     '</ol>'
-                ]       
+                ]
             }
         ]
     }

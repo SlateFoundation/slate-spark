@@ -12,7 +12,7 @@ Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
             {
                 xtype: 'textareafield',
                 label: 'Restate the Learn target in your own words.',
-                maxRows: 3,
+                maxRows: 3
             },
             {
                 xtype: 'textareafield',
