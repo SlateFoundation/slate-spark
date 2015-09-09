@@ -9,6 +9,12 @@
     text-transform: uppercase;
 }
 
+.x-grid-column {
+    small {
+        color: $highlight-color;
+    }
+}
+
 .spark-grid-row-image {
     background-repeat: no-repeat;
     background-size: contain;
@@ -20,6 +26,13 @@
     text-indent: 33px;
     white-space: nowrap;
     width: 32px;
+
+    &.small {
+        height: 16px;
+        margin-right: .375em;
+        text-indent: 17px;
+        width: 16px;
+    }
 }
 
 .spark-grid-row-title {
