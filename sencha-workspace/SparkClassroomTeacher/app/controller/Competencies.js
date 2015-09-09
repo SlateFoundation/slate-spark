@@ -13,7 +13,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             autoCreate: true,
 
             xtype: 'spark-competencies'
-        }
+        },
+        teacherTabbar: 'spark-teacher-tabbar'
     },
 
     routes: {
@@ -22,10 +23,24 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     // route handlers
     showCompetencies: function(){
-    	var tabsCt = this.getTabsCt();
+        var tabsCt = this.getTabsCt();
+
+        this.doHighlightTabbars();
         
         tabsCt.removeAll();
         tabsCt.add(this.getCompetenciesCt());
+    },
+
+    // controller methods
+    /**
+     * @private
+     * highlights proper section in the spark teacher tabbar
+     */
+    doHighlightTabbars: function(section){
+        var teacherTabbar = this.getTeacherTabbar(),
+            teacherTab = teacherTabbar.down('#competencies');
+
+        teacherTabbar.setActiveTab(teacherTab); 
     }
 
 });
