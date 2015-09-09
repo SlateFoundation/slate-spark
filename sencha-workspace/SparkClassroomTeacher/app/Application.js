@@ -9,6 +9,9 @@ Ext.define('SparkClassroomTeacher.Application', {
         'Ext.MessageBox'
     ],
 
+
+    name: 'SparkClassroomTeacher',
+
     controllers: [
         'Viewport',
 
