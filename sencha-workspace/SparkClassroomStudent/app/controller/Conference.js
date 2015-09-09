@@ -26,7 +26,7 @@ Ext.define('SparkClassroomStudent.controller.Conference', {
     showConference: function() {
         var workCt = this.getTabsCt();
 
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('conference');
 
         workCt.removeAll();
         workCt.add(this.getConferenceCt());

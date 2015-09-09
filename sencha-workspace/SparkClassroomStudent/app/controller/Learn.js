@@ -26,7 +26,7 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
     showLearn: function() {
         var workCt = this.getTabsCt();
 
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('learn');
 
         workCt.removeAll();
         workCt.add(this.getLearnCt());
