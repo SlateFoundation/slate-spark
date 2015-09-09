@@ -2,6 +2,13 @@
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
+
+    views: [
+        'TitleBar@SparkClassroom',
+        'SparkStudentNavBar',
+        'TabsContainer'
+    ],
+
     stores: [
         'Sections@SparkClassroom.store'
     ],
@@ -14,12 +21,14 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             xtype: 'spark-titlebar'
         },
         sectionSelect: 'spark-titlebar #sectionSelect',
+
         sparkStudentNavBar: {
             selector: 'spark-student-navbar',
             autoCreate: true,
 
             xtype: 'spark-student-navbar'
         },
+
         tabsCt: {
             selector: 'spark-student-tabscontainer',
             autoCreate: true,

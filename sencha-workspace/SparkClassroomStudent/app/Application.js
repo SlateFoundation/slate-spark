@@ -14,17 +14,11 @@ Ext.define('SparkClassroomStudent.Application', {
         'Ext.MessageBox'
     ],
 
-    // TODO: move these to where they're being used
-    views: [
-        'work.apply.Container',
-        'work.learn.Container',
-        'work.conference.Container',
-        'work.assess.Container',
-        'SparkStudentNavBar'
-    ],
+    name: 'SparkClassroomStudent',
 
     controllers: [
         'Viewport',
+
         'Learn',
         'Conference',
         'Apply',
