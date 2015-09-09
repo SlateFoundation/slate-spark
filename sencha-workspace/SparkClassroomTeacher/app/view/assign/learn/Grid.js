@@ -4,7 +4,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     xtype: 'spark-assign-learn-grid',
     requires: [
         'SparkClassroom.plugin.GridFlex',
-        'Ext.grid.plugin.PagingToolbar'
+        'Ext.grid.plugin.PagingToolbar',
+        'SparkClassroom.widget.GridColumnFilter'
     ],
 
     config: {
@@ -28,23 +29,23 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 dataIndex: 'Grade',
-                width: 100,
+                width: 96,
                 text: 'Grade'
             },
             {
 
                 dataIndex: 'Title',
-                width: 200,
-                text: 'Playist'
+                width: 160,
+                text: 'Playlist'
             },
             {
                 dataIndex: 'Link',
-                width: 200,
-                text: 'Url'
+                width: 160,
+                text: 'URL'
             },
             {
                 dataIndex: 'Vendor',
-                width: 200,
+                width: 160,
                 text: 'Vendor',
                 renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">'+v;
@@ -55,20 +56,21 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 dataIndex: 'DOK',
-                width: 100,
+                width: 80,
                 text: 'DOK'
             },
             {
                 dataIndex: 'Category',
                 text: 'Category',
-                width: 100
+                width: 96
             },
             {
                 dataIndex: 'SRating',
-                text: 'ActiveRating',
-                width: 100,
+                align: 'center',
+                text: 'Avg. Rating' + '<small class="flex-ct"><div class="flex-1">S</div><div class="flex-1">T</div></small>',
+                width: 128,
                 renderer: function(v, r) {
-                    return r.get('SRating') + ' ' + r.get('TRating');
+                    return '<div class="flex-ct text-center"><div class="flex-1">' + r.get('SRating') + '</div><div class="flex-1>' + r.get('TRating') + '</div></div>';
                 },
                 cell: {
                     encodeHtml: false
@@ -76,14 +78,14 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 dataIndex: 'Attachment',
-                width: 100,
+                width: 112,
                 text: 'Attachment'
             },
             {
                 dataIndex: 'Assign',
             
-                text: 'Url',
-                width: 100,
+                text: 'URL',
+                width: 96,
                 renderer: function(v, r) {
                     var number = Math.floor((Math.random() * 4) + 1);
                     return [
@@ -94,13 +96,12 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                     ].join('');
                 },
                 cell: {
-                    flex: 1,
                     encodeHtml: false
                 }
             },
             {
                 dataIndex: 'Flag',
-                width: 100,
+                width: 96,
                 text: 'Issue',
                 renderer: function(v, r) {
                     return '<img src="http://placehold.it/25x25">';
@@ -110,5 +111,88 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 }
             }
         ]
+    },
+
+    initialize: function() {
+        var me = this;
+
+        me.callParent();
+
+        me.container.add({
+            xtype: 'headercontainer',
+            defaults: {
+                xtype: 'spark-grid-column-filter'
+            },
+            layout: 'hbox',
+            items: [
+                // TODO not all columns actually have filters, and those that do need real values
+                {
+                    flex: 1,
+                    options: [
+                        { text: 'Standards' }
+                    ]
+                },
+                {
+                    width: 96,
+                    options: [
+                        { text: 'Grade' }
+                    ]
+                },
+                {
+                    width: 160,
+                    options: [
+                        { text: 'Playlist' }
+                    ]
+                },
+                {
+                    width: 160,
+                    options: [
+                        { text: 'URL' }
+                    ]
+                },
+                {
+                    width: 160,
+                    options: [
+                        { text: 'Vendor' }
+                    ]
+                },
+                {
+                    width: 80,
+                    options: [
+                        { text: 'DOK' }
+                    ]
+                },
+                {
+                    width: 96,
+                    options: [
+                        { text: 'Category' }
+                    ]
+                },
+                {
+                    width: 128,
+                    options: [
+                        { text: 'Avg. Rating' }
+                    ]
+                },
+                {
+                    width: 112,
+                    options: [
+                        { text: 'Attachment' }
+                    ]
+                },
+                {
+                    width: 96,
+                    options: [
+                        { text: 'Assign URL' }
+                    ]
+                },
+                {
+                    width: 96,
+                    options: [
+                        { text: 'Flag' }
+                    ]
+                }
+            ]
+        });
     }
 });
