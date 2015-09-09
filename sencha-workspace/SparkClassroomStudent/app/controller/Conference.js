@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Conference', {
     extend: 'Ext.app.Controller',
- 
-     views: [
-        'work.conference.Container' 
+
+    views: [
+        'work.conference.Container'
     ],
 
     refs: {
@@ -30,8 +30,8 @@ Ext.define('SparkClassroomStudent.controller.Conference', {
     showConference: function() {
         var workCt = this.getTabsCt();
 
-        this.doHighlightTabbars();        
-        
+        this.doHighlightTabbars();
+
         workCt.removeAll();
         workCt.add(this.getConferenceCt());
     },

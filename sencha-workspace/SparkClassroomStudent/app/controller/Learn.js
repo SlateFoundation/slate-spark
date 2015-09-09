@@ -1,9 +1,9 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Learn', {
     extend: 'Ext.app.Controller',
- 
-     views: [
-        'work.learn.Container' 
+
+    views: [
+        'work.learn.Container'
     ],
 
     refs: {
@@ -13,7 +13,7 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
 
             xtype: 'spark-student-tabscontainer'
         },
-        workTabbar: 'spark-work-tabbar',  
+        workTabbar: 'spark-work-tabbar',
         learnCt: {
             selector: 'spark-student-work-learn',
             autoCreate: true,
@@ -31,7 +31,7 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
         var workCt = this.getTabsCt();
 
         this.doHighlightTabbars();
-                
+
         workCt.removeAll();
         workCt.add(this.getLearnCt());
     },

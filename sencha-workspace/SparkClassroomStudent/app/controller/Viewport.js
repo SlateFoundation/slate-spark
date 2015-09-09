@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
- 
+
     stores: [
         'Sections@SparkClassroom.store'
     ],
@@ -44,7 +44,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             }
         }
     },
-    
+
     onLaunch:function(){
         var me = this;
 
@@ -74,7 +74,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             hash = Ext.util.History.getHash(),
             parsedQueryString;
 
-        // set 'section' query string param    
+        // set 'section' query string param
         queryStringObject.section = classCode;
         parsedQueryString = Ext.Object.toQueryString(queryStringObject);
         location.search = parsedQueryString;
