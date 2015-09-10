@@ -110,9 +110,9 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         var assignCt = this.getAssignCt();
 
         this.doShowContainer();
-        this.doHighlightTabbars();
+        this.doHighlightTabbars('conference-questions');
                 
-        assignCt.removeAll('conference-questions');
+        assignCt.removeAll();
         assignCt.add(this.getQuestionsCt());
     },
 
