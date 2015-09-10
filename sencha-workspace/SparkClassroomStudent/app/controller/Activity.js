@@ -31,14 +31,9 @@ Ext.define('SparkClassroomStudent.controller.Activity', {
         var btnId = btn.getItemId(),
             sparkActivityCt = this.getSparkActivityCt();
 
-        console.log(btnId, sparkActivityCt, sparkActivityCt.isHidden())
-
         // TODO possible handle clicking anywhere else in the viewport to hide the panel
         if (btnId == 'activity' && sparkActivityCt.isHidden()) {
-
-            console.log('showing it!!!')
             sparkActivityCt.showBy(btn, 'tr-tr?');
-            
         } else {
             sparkActivityCt.hide();
         }
