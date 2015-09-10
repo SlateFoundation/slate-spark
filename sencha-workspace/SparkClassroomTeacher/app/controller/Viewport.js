@@ -161,9 +161,13 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     onSparkNavBarButtonClick: function(btn) {
         var btnId = btn.getItemId();
 
-        if (btnId == 'activity') {
-            Ext.Msg.alert('Not yet available', 'Classroom activity view is not yet available');
-        } else {
+        // Commented out until logic approved then deletable
+        // if (btnId == 'activity') {
+        //     Ext.Msg.alert('Not yet available', 'Classroom activity view is not yet available');
+        // } else {
+        //     this.redirectTo(btnId);
+        // }
+        if (btnId != 'activity') {
             this.redirectTo(btnId);
         }
     },
