@@ -2,6 +2,10 @@
 Ext.define('SparkClassroomStudent.view.help.Container', {
     extend: 'Ext.Panel',
     xtype: 'spark-help',
+    requires: [
+        'Ext.form.FieldSet',
+        'Ext.field.Radio'
+    ],
 
     config: {
     	/*
@@ -10,7 +14,7 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
     	*/
     	margin: '-17 0', // needs handled with sass
     	left: 0,
-    	
+
     	width: 400,
         items: [
         	{
@@ -18,7 +22,7 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                 layout: 'hbox',
                 items: [
                      {
-                        xtype: 'formpanel',
+                        xtype: 'fieldset',
                         flex: 1,
                         items: [
                             /*
@@ -28,38 +32,38 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                             */
                             {
                                 xtype: 'radiofield',
-                                name : 'bathroom',
+                                name : 'request',
                                 value: 'bathroom',
                                 label: 'Bathroom',
                                 checked: true
                             },
                             {
                                 xtype: 'radiofield',
-                                name : 'nurse',
+                                name : 'request',
                                 value: 'nurse',
                                 label: 'Nurse'
                             },
                             {
                                 xtype: 'radiofield',
-                                name : 'locker',
+                                name : 'request',
                                 value: 'locker',
                                 label: 'Locker'
                             },
                             {
                                 xtype: 'radiofield',
-                                name : 'general_question',
+                                name : 'request',
                                 value: 'general_question',
                                 label: 'General Question'
                             },
                             {
                                 xtype: 'radiofield',
-                                name : 'academic_question',
+                                name : 'request',
                                 value: 'academic_question',
                                 label: 'Academic Question'
                             },
                             {
                                 xtype: 'radiofield',
-                                name : 'technology_question',
+                                name : 'request',
                                 value: 'technology_question',
                                 label: 'Technology Question'
                             }
