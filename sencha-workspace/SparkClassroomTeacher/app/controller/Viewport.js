@@ -121,7 +121,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             studentStore.load();
 
             // redirect with the current un-prefixed route or an empty string to write the new section into the route
-            this.redirectTo((sectionMatch && sectionMatch[2]) || '');
+            this.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
         }
     },
 
