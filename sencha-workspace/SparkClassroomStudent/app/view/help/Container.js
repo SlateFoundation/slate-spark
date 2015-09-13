@@ -24,6 +24,11 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                      {
                         xtype: 'fieldset',
                         flex: 1,
+                        defaults: {
+                            xtype: 'radiofield',
+                            name : 'request',
+                            labelAlign: 'right'
+                        },
                         items: [
                             /*
                                 Another possible ExtJS 6 modern bug, hard coded until figured out
@@ -31,39 +36,27 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                                 https://goo.gl/aacKWe
                             */
                             {
-                                xtype: 'radiofield',
-                                name : 'request',
                                 value: 'bathroom',
                                 label: 'Bathroom',
                                 checked: true
                             },
                             {
-                                xtype: 'radiofield',
-                                name : 'request',
                                 value: 'nurse',
                                 label: 'Nurse'
                             },
                             {
-                                xtype: 'radiofield',
-                                name : 'request',
                                 value: 'locker',
                                 label: 'Locker'
                             },
                             {
-                                xtype: 'radiofield',
-                                name : 'request',
                                 value: 'general_question',
                                 label: 'General Question'
                             },
                             {
-                                xtype: 'radiofield',
-                                name : 'request',
                                 value: 'academic_question',
                                 label: 'Academic Question'
                             },
                             {
-                                xtype: 'radiofield',
-                                name : 'request',
                                 value: 'technology_question',
                                 label: 'Technology Question'
                             }
