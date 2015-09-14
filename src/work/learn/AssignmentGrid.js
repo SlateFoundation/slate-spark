@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-grid',
     requires: [
-        'SparkClassroom.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex'
     ],
 
     config: {
