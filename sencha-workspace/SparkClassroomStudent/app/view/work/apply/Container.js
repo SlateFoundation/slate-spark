@@ -5,7 +5,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
     requires: [
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
-        'SparkClassroom.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex'
     ],
 
     config: {
