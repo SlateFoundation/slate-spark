@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-assess',
     requires: [
-        'SparkClassroom.plugin.GridFlex',
+        'Jarvus.plugin.GridFlex',
         'Ext.grid.plugin.PagingToolbar'
     ],
 

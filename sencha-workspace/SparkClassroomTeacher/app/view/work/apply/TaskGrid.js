@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.TaskGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-teacher-work-apply-taskgrid',
     requires: [
-        'SparkClassroom.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex'
     ],
 
     config: {

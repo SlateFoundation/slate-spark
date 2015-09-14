@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-learn-grid',
     requires: [
-        'SparkClassroom.plugin.GridFlex',
+        'Jarvus.plugin.GridFlex',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.widget.GridColumnFilter'
     ],
@@ -83,7 +83,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 dataIndex: 'Assign',
-            
+
                 text: 'URL',
                 width: 96,
                 renderer: function(v, r) {
