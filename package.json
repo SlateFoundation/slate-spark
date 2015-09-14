@@ -247,6 +247,7 @@
      */
     "requires": [
         "jarvus-touch-accordion",
-        "slate-core-data"
+        "slate-core-data",
+        "jarvus-gridflex"
     ]
 }
