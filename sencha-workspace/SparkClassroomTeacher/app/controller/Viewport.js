@@ -13,7 +13,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     views: [
         'TitleBar@SparkClassroom',
-        'NavBar@SparkClassroom',
+        'NavBar',
         'gps.Main',
         'TabsContainer'
     ],
@@ -33,11 +33,11 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         },
         sectionSelect: 'spark-titlebar #sectionSelect',
 
-        sparkNavBar: {
-            selector: 'spark-navbar',
+        navBar: {
+            selector: 'spark-teacher-navbar',
             autoCreate: true,
 
-            xtype: 'spark-navbar',
+            xtype: 'spark-teacher-navbar',
             hidden: true
         },
 
@@ -49,7 +49,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             hidden: true
         },
 
-        sparkTeacherTabContainer: {
+        tabsCt: {
             selector: 'spark-teacher-tabscontainer',
             autoCreate: true,
 
@@ -98,9 +98,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         //add items to viewport
         Ext.Viewport.add([
             me.getSparkTitleBar(),
-            me.getSparkNavBar(),
+            me.getNavBar(),
             me.getSparkGPS(),
-            me.getSparkTeacherTabContainer()
+            me.getTabsCt()
         ]);
     },
 
@@ -112,9 +112,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
         if (sectionCode) {
             //show section dependant components
-            me.getSparkNavBar().show();
+            me.getNavBar().show();
             me.getSparkGPS().show();
-            me.getSparkTeacherTabContainer().show();
+            me.getTabsCt().show();
 
             Ext.getStore('SectionStudents').removeAll();
             studentStore.getProxy().setUrl('/sections/' + sectionCode + '/students');
