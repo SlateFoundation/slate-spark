@@ -10,11 +10,13 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
     refs: {
+        navBar: 'spark-student-navbar',
+        workNavButton: 'spark-student-navbar button#work',
         workTabbar: 'spark-work-tabbar',
     },
 
     control: {
-        'spark-student-navbar button#work': {
+        workNavButton: {
             tap: 'onNavWorkTap'
         },
         workTabbar: {
@@ -38,6 +40,9 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
     onWorkTabChange: function(tabbar, activeTab) {
-        this.redirectTo('work/' + activeTab.getItemId());
+        var me = this;
+
+        me.redirectTo('work/' + activeTab.getItemId());
+        me.getNavBar().setSelectedButton(me.getWorkNavButton());
     }
 });
