@@ -68,6 +68,9 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         workNavButton: {
             tap: 'onNavWorkTap'
         },
+        workCt: {
+            activate: 'onWorkCtActivate'
+        },
         workTabbar: {
             activetabchange: 'onWorkTabChange'
         }
@@ -132,7 +135,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         var me = this;
 
         me.redirectTo('work/' + activeTab.getItemId());
-        me.getNavBar().setSelectedButton(me.getWorkNavButton());
+    },
+
+    onWorkCtActivate: function() {
+        this.getNavBar().setSelectedButton(this.getWorkNavButton());
     },
 
 

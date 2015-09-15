@@ -21,6 +21,7 @@ Ext.define('SparkClassroomStudent.Application', {
         'work.Apply',
         'work.Assess',
 
+        'Standards',
         'Activity',
         'Help',
     ],
