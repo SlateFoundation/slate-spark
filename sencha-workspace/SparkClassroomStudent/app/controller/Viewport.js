@@ -5,7 +5,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     views: [
         'TitleBar@SparkClassroom',
-        'SparkStudentNavBar',
+        'NavBar',
         'TabsContainer'
     ],
 
@@ -22,7 +22,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         },
         sectionSelect: 'spark-titlebar #sectionSelect',
 
-        sparkStudentNavBar: {
+        navBar: {
             selector: 'spark-student-navbar',
             autoCreate: true,
 
@@ -59,7 +59,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         //add items to viewport
         Ext.Viewport.add([
             me.getSparkTitleBar(),
-            me.getSparkStudentNavBar(),
+            me.getNavBar(),
             me.getTabsCt()
         ]);
 
