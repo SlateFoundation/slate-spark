@@ -16,14 +16,16 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     refs: {
         tabsCt: 'spark-teacher-tabscontainer',
-        workTabbar: 'spark-work-tabbar',
         teacherTabbar: 'spark-teacher-tabbar',
+
         workCt: {
             selector: 'spark-teacher-work-ct',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-ct'
         },
+        workTabbar: 'spark-work-tabbar',
+
         learnCt: {
             selector: 'spark-teacher-work-learn',
             autoCreate: true,
