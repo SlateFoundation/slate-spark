@@ -7,7 +7,7 @@ Ext.define('SparkClassroomTeacher.view.work.Container', {
     ],
 
     config: {
-        autoDestroy: false,
+        title: 'Student Work',
         students: [
             {FirstName: 'Anthony', LastName: 'Harley', student_id: 1},
             {FirstName: 'Chris', LastName: 'Alfano', student_id: 2}
