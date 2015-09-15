@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
     xtype: 'spark-assign-resources',
     extend: 'Ext.grid.Grid',
     requires: [
-        'SparkClassroom.plugin.GridFlex',
+        'Jarvus.plugin.GridFlex',
         'Ext.grid.plugin.PagingToolbar'
     ],
 

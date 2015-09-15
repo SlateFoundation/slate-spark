@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-questions',
     requires: [
-        'SparkClassroom.plugin.GridFlex',
+        'Jarvus.plugin.GridFlex',
         'Ext.grid.plugin.PagingToolbar'
     ],
 
