@@ -2,46 +2,6 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
-    views: [
-        'work.conference.Container'
-    ],
 
-    refs: {
-        tabsCt: 'spark-student-tabscontainer',
-        workTabbar: 'spark-work-tabbar',
-
-        conferenceCt: {
-            selector: 'spark-student-work-conference',
-            autoCreate: true,
-
-            xtype: 'spark-student-work-conference'
-        }
-    },
-
-    routes: {
-        'work/conference': 'showConference'
-    },
-
-    // route handlers
-    showConference: function() {
-        var workCt = this.getTabsCt();
-
-        this.doHighlightTabbars('conference');
-
-        workCt.removeAll();
-        workCt.add(this.getConferenceCt());
-    },
-
-    //controller methods
-    /**
-     * @private
-     * Called by each subsection route handler to highlight the proper tab
-     */
-    doHighlightTabbars: function(section){
-        var workTabbar = this.getWorkTabbar(),
-            assignTab = workTabbar.down('#' + section);
-
-        workTabbar.setActiveTab(assignTab);
-    }
-
+    // TODO: handle loading data into conference section
 });
