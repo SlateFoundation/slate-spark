@@ -45,9 +45,6 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     control: {
-        'spark-work-tabbar': {
-            activetabchange: 'onWorkTabChange'
-        },
         sectionSelect: {
             change: 'onSectionSelectChange'
         }
@@ -94,10 +91,5 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         queryStringObject.section = classCode;
         parsedQueryString = Ext.Object.toQueryString(queryStringObject);
         location.search = parsedQueryString;
-    },
-
-    onWorkTabChange: function(tabbar, activeTab) {
-        this.redirectTo(activeTab.getItemId());
     }
-
 });

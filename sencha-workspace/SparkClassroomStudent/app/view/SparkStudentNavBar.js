@@ -33,8 +33,8 @@ Ext.define('SparkClassroomStudent.view.SparkStudentNavBar', {
             },
             {
                 text: 'Classwork',
-                itemId: 'classwork',
-                cls: 'is-selected'
+                itemId: 'work',
+                // cls: 'is-selected'
             },
             {
                 text: 'Standards',

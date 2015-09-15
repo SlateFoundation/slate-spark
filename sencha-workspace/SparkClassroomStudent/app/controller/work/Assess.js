@@ -1,35 +1,35 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.controller.Conference', {
+Ext.define('SparkClassroomStudent.controller.work.Assess', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'work.conference.Container'
+        'work.assess.Container'
     ],
 
     refs: {
         tabsCt: 'spark-student-tabscontainer',
         workTabbar: 'spark-work-tabbar',
 
-        conferenceCt: {
-            selector: 'spark-student-work-conference',
+        assessCt: {
+            selector: 'spark-student-work-assess',
             autoCreate: true,
 
-            xtype: 'spark-student-work-conference'
+            xtype: 'spark-student-work-assess'
         }
     },
 
     routes: {
-        'conference': 'showConference'
+        'work/assess': 'showAssess'
     },
 
     // route handlers
-    showConference: function() {
+    showAssess: function() {
         var workCt = this.getTabsCt();
 
-        this.doHighlightTabbars('conference');
+        this.doHighlightTabbars('assess');
 
         workCt.removeAll();
-        workCt.add(this.getConferenceCt());
+        workCt.add(this.getAssessCt());
     },
 
     //controller methods

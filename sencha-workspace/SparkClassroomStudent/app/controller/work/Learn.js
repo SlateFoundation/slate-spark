@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.controller.Learn', {
+Ext.define('SparkClassroomStudent.controller.work.Learn', {
     extend: 'Ext.app.Controller',
 
     views: [
@@ -19,7 +19,7 @@ Ext.define('SparkClassroomStudent.controller.Learn', {
     },
 
     routes: {
-        'learn': 'showLearn'
+        'work/learn': 'showLearn'
     },
 
     // route handlers

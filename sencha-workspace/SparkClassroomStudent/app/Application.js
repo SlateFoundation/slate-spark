@@ -15,10 +15,12 @@ Ext.define('SparkClassroomStudent.Application', {
     controllers: [
         'Viewport',
 
-        'Learn',
-        'Conference',
-        'Apply',
-        'Assess',
+        'Work',
+        'work.Learn',
+        'work.Conference',
+        'work.Apply',
+        'work.Assess',
+
         'Activity',
         'Help',
     ],
