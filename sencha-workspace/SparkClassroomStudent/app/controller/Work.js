@@ -131,14 +131,14 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         this.redirectTo('work');
     },
 
+    onWorkCtActivate: function() {
+        this.getNavBar().setSelectedButton(this.getWorkNavButton());
+    },
+
     onWorkTabChange: function(tabbar, activeTab) {
         var me = this;
 
         me.redirectTo('work/' + activeTab.getItemId());
-    },
-
-    onWorkCtActivate: function() {
-        this.getNavBar().setSelectedButton(this.getWorkNavButton());
     },
 
 
