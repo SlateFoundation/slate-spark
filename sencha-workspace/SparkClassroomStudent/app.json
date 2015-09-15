@@ -70,6 +70,7 @@
      */
     "requires": [
         "jarvus-hotfixes",
+        "jarvus-routing",
         "spark-classroom"
     ],
 
