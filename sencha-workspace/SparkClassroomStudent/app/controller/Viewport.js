@@ -34,6 +34,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             autoCreate: true,
 
             xtype: 'spark-student-tabscontainer'
+        },
+
+        standardsCt: {
+            selector: 'spark-standards',
+            autoCreate: true,
+
+            xtype: 'spark-standards'
         }
     },
 
@@ -63,6 +70,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         Ext.Viewport.add([
             me.getSparkTitleBar(),
             me.getSparkStudentNavBar(),
+            me.getStandardsCt(),
             me.getTabsCt()
         ]);
 
