@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-learnsgrid',
     requires: [
-        'SparkClassroom.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex'
     ],
 
     config: {
@@ -30,7 +30,7 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
                     '<div class="spark-grid-row-title">{Title}</div>',
                     '<div class="spark-grid-row-detail"><a href="{Link}">{Link}</a></div>'
                 ]
-                            
+
             },
             {
                 dataIndex: 'Rating',

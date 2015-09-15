@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-assessmentsgrid',
     requires: [
-        'SparkClassroom.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex'
     ],
 
     config: {
