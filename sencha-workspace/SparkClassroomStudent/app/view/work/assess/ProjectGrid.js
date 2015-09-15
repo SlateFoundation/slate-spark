@@ -3,7 +3,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-student-work-assess-projectgrid',
     requires: [
-        'SparkClassroom.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex'
     ],
 
     config: {
