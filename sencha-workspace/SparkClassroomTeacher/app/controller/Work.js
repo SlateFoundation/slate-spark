@@ -58,7 +58,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     routes: {
         'work': {
-            rewrite: 'rewriteShowContainer'
+            rewrite: 'rewriteShowWork'
         },
         'work/learn': 'showLearn',
         'work/conference': 'showConference',
@@ -68,7 +68,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
 
     // route handlers
-    rewriteShowContainer: function(token, args, route) {
+    rewriteShowWork: function(token, args, route) {
         var workTabBar = this.getWorkTabbar(),
             workTabId = 'learn';
 
