@@ -15,6 +15,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     ],
 
     refs: {
+        navBar: 'spark-navbar',
+        workNavButton: 'spark-navbar button#work',
+
         tabsCt: 'spark-teacher-tabscontainer',
         teacherTabbar: 'spark-teacher-tabbar',
 
@@ -53,6 +56,12 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     control: {
+        workNavButton: {
+            tap: 'onNavWorkTap'
+        },
+        workCt: {
+            activate: 'onWorkCtActivate'
+        },
         workTabbar: {
             activetabchange: 'onWorkTabChange'
         }
@@ -122,6 +131,14 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     // event handlers
+    onNavWorkTap: function() {
+        this.redirectTo('work');
+    },
+
+    onWorkCtActivate: function() {
+        this.getNavBar().setSelectedButton(this.getWorkNavButton());
+    },
+
     onWorkTabChange: function(tabbar, activeTab) {
         this.redirectTo('work/' + activeTab.getItemId());
     },

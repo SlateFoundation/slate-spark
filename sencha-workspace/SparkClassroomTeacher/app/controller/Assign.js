@@ -20,15 +20,20 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     ],
 
     refs:{
+        navBar: 'spark-navbar',
+        assignNavButton: 'spark-navbar button#assign',
+
         tabsCt: 'spark-teacher-tabscontainer',
-        assignTabbar: 'spark-teacher-assign-tabbar',
         teacherTabbar: 'spark-teacher-tabbar',
+
         assignCt: {
             selector: 'spark-teacher-assign-ct',
             autoCreate: true,
 
             xtype: 'spark-teacher-assign-ct'
         },
+        assignTabbar: 'spark-teacher-assign-tabbar',
+
         learnCt: {
             selector: 'spark-assign-learn',
             autoCreate: true,
@@ -62,9 +67,15 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
     control: {
-      assignTabbar: {
-          activetabchange: 'onAssignTabChange'
-      }
+        assignNavButton: {
+            tap: 'onNavAssignTap'
+        },
+        assignCt: {
+            activate: 'onAssignCtActivate'
+        },
+        assignTabbar: {
+            activetabchange: 'onAssignTabChange'
+        }
     },
 
     routes: {
@@ -98,9 +109,9 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     showLearn: function() {
         var assignCt = this.getAssignCt();
-        
+
         this.doShowContainer();
-        this.doHighlightTabbars('learn');        
+        this.doHighlightTabbars('learn');
 
         assignCt.removeAll();
         assignCt.add(this.getLearnCt());
@@ -111,14 +122,14 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         this.doShowContainer();
         this.doHighlightTabbars('conference-questions');
-                
+
         assignCt.removeAll();
         assignCt.add(this.getQuestionsCt());
     },
 
     showConferenceResources: function() {
         var assignCt = this.getAssignCt();
-                
+
         this.doShowContainer();
         this.doHighlightTabbars('conference-resources');
 
@@ -131,14 +142,14 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         this.doShowContainer();
         this.doHighlightTabbars('apply');
-        
+
         assignCt.removeAll();
         assignCt.add(this.getApplyCt());
     },
 
     showAssess: function() {
         var assignCt = this.getAssignCt();
-        
+
         this.doShowContainer();
         this.doHighlightTabbars('assess');
 
@@ -148,6 +159,14 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
 
     // event handlers
+    onNavAssignTap: function() {
+        this.redirectTo('assign');
+    },
+
+    onAssignCtActivate: function() {
+        this.getNavBar().setSelectedButton(this.getAssignNavButton());
+    },
+
     onAssignTabChange: function(tabbar, value, oldValue){
         var me = this,
             itemId = tabbar.getActiveTab().getItemId();
@@ -157,8 +176,8 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         }
 
     },
-    
-    
+
+
     // controller methods
     /**
      * @private
@@ -166,7 +185,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
      */
     doShowContainer: function() {
         var tabsCt = this.getTabsCt();
-        
+
         tabsCt.removeAll();
         tabsCt.add(this.getAssignCt());
     },
@@ -183,7 +202,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             assignTab = assignTabbar.down('#'+ section);
 
         assignTabbar.setActiveTab(assignTab);
-        teacherTabbar.setActiveTab(teacherTab); 
+        teacherTabbar.setActiveTab(teacherTab);
     }
 
 });

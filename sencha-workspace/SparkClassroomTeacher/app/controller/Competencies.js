@@ -7,14 +7,27 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     ],
 
     refs:{
+        navBar: 'spark-navbar',
+        competenciesNavButton: 'spark-navbar button#competencies',
+
     	tabsCt: 'spark-teacher-tabscontainer',
+        teacherTabbar: 'spark-teacher-tabbar',
+
     	competenciesCt: {
             selector: 'spark-competencies',
             autoCreate: true,
 
             xtype: 'spark-competencies'
+        }
+    },
+
+    control: {
+        competenciesNavButton: {
+            tap: 'onNavCompetenciesTap'
         },
-        teacherTabbar: 'spark-teacher-tabbar'
+        competenciesCt: {
+            activate: 'onCompetenciesCtActivate'
+        }
     },
 
     routes: {
@@ -26,10 +39,21 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var tabsCt = this.getTabsCt();
 
         this.doHighlightTabbars();
-        
+
         tabsCt.removeAll();
         tabsCt.add(this.getCompetenciesCt());
     },
+
+
+    // event handlers
+    onNavCompetenciesTap: function() {
+        this.redirectTo('competencies');
+    },
+
+    onCompetenciesCtActivate: function() {
+        this.getNavBar().setSelectedButton(this.getCompetenciesNavButton());
+    },
+
 
     // controller methods
     /**
@@ -40,7 +64,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var teacherTabbar = this.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#competencies');
 
-        teacherTabbar.setActiveTab(teacherTab); 
+        teacherTabbar.setActiveTab(teacherTab);
     }
 
 });
