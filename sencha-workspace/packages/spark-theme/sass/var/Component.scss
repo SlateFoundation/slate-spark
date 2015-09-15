@@ -12,6 +12,7 @@ $color:                 dynamic(#3d3d3d);
 $alert-color:           dynamic(#e31c24);
 $highlight-color:       dynamic(#888);
 $neutral-dark-color:    dynamic(#777);
+$placeholder-color:     dynamic(rgba($color, .3));
 // $light-color:           dynamic(#f0f0f0);
 $font-family:           dynamic('Lato', 'Open Sans', 'Helvetica Neue', helvetica, arial, sans-serif);
 $font-size:             dynamic(16px);
