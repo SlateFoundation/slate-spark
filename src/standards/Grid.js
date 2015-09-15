@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.standards.Grid', {
     xtype: 'spark-standards-grid',
     cls: 'spark-standards-grid',
     requires: [
-        'SparkClassroom.plugin.GridFlex',
+        'Jarvus.plugin.GridFlex',
         'SparkClassroom.standards.CycleColumn'
     ],
 
