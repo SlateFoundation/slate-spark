@@ -2,33 +2,15 @@
 Ext.define('SparkClassroom.NavBar', {
     extend: 'Ext.Toolbar',
     xtype: 'spark-navbar',
-    cls: 'spark-navbar',
 
     config: {
         selectedButton: null,
 
+        cls: 'spark-navbar',
         layout: {
+            type: 'hbox',
             pack: 'end'
         },
-
-        items: [
-            {
-                text: 'Student Work',
-                itemId: 'work'
-            },
-            {
-                text: 'Competency Overview',
-                itemId: 'competencies'
-            },
-            {
-                text: 'Assign Sparkpoints',
-                itemId: 'assign'
-            },
-            {
-                text: 'Activity',
-                itemId: 'activity'
-            }
-        ]
     },
 
     updateSelectedButton: function(newButton, oldButton) {
