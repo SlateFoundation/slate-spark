@@ -5,6 +5,8 @@ Ext.define('SparkClassroom.NavBar', {
     cls: 'spark-navbar',
 
     config: {
+        selectedButton: null,
+
         layout: {
             pack: 'end'
         },
@@ -27,5 +29,15 @@ Ext.define('SparkClassroom.NavBar', {
                 itemId: 'activity'
             }
         ]
+    },
+
+    updateSelectedButton: function(newButton, oldButton) {
+        if (oldButton) {
+            oldButton.removeCls('is-selected');
+        }
+
+        if (newButton) {
+            newButton.addCls('is-selected');
+        }
     }
 });
