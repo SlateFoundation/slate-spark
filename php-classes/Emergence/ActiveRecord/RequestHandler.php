@@ -109,7 +109,7 @@ abstract class RequestHandler extends \RequestHandler
         }
     }
 
-    public static function handleQueryRequest($query, $conditions = [], $options = [], $responseID = null, $responseData = [], $mode = 'AND')
+    public static function handleQueryRequest($query, array $conditions = [], array $options = [], $responseID = null, array $responseData = [], $mode = 'AND')
     {
         $className = static::$recordClass;
         $tableAlias = $className::getTableAlias();
@@ -222,7 +222,7 @@ abstract class RequestHandler extends \RequestHandler
     }
 
 
-    public static function handleBrowseRequest($options = [], $conditions = [], $responseID = null, $responseData = [])
+    public static function handleBrowseRequest(array $options = [], array $conditions = [], $responseID = null, array $responseData = [])
     {
         $className = static::$recordClass;
 
@@ -320,7 +320,7 @@ abstract class RequestHandler extends \RequestHandler
     }
 
 
-    public static function handleRecordRequest(ActiveRecord $Record, $action = false)
+    public static function handleRecordRequest(ActiveRecordInterface $Record, $action = false)
     {
         switch ($action ? $action : $action = static::shiftPath()) {
             case '':
@@ -356,7 +356,7 @@ abstract class RequestHandler extends \RequestHandler
         }
     }
 
-    protected static function onRecordRequestNotHandled(ActiveRecord $Record, $action)
+    protected static function onRecordRequestNotHandled(ActiveRecordInterface $Record, $action)
     {
         return static::throwNotFoundError();
     }
@@ -502,7 +502,7 @@ abstract class RequestHandler extends \RequestHandler
     }
 
 
-    public static function handleCreateRequest(ActiveRecord $Record = null)
+    public static function handleCreateRequest(ActiveRecordInterface $Record = null)
     {
         // save static class
         static::$calledClass = get_called_class();
@@ -526,7 +526,7 @@ abstract class RequestHandler extends \RequestHandler
         return static::handleEditRequest($Record);
     }
 
-    public static function handleEditRequest(ActiveRecord $Record)
+    public static function handleEditRequest(ActiveRecordInterface $Record)
     {
         $className = static::$recordClass;
 
@@ -574,7 +574,7 @@ abstract class RequestHandler extends \RequestHandler
     }
 
 
-    public static function handleDeleteRequest(ActiveRecord $Record)
+    public static function handleDeleteRequest(ActiveRecordInterface $Record)
     {
         $className = static::$recordClass;
 
@@ -599,7 +599,7 @@ abstract class RequestHandler extends \RequestHandler
     }
 
 
-    public static function handleCommentRequest(ActiveRecord $Record)
+    public static function handleCommentRequest(ActiveRecordInterface $Record)
     {
         if (!static::checkCommentAccess($Record)) {
             return static::throwUnauthorizedError();
@@ -635,7 +635,7 @@ abstract class RequestHandler extends \RequestHandler
         return preg_replace_callback('/\s+([a-zA-Z])/', function($matches) { return strtoupper($matches[1]); }, $noun);
     }
 
-    public static function respondJson($responseID, $responseData = [])
+    public static function respondJson($responseID, array $responseData = [])
     {
         if (!static::checkAPIAccess($responseID, $responseData, 'json')) {
             return static::throwAPIUnauthorizedError();
@@ -644,7 +644,7 @@ abstract class RequestHandler extends \RequestHandler
         return parent::respondJson($responseID, $responseData);
     }
 
-    public static function respondCsv($responseID, $responseData = [])
+    public static function respondCsv($responseID, array $responseData = [])
     {
         if (!static::checkAPIAccess($responseID, $responseData, 'csv')) {
             return static::throwAPIUnauthorizedError();
@@ -653,7 +653,7 @@ abstract class RequestHandler extends \RequestHandler
         return parent::respondCsv($responseID, $responseData);
     }
 
-    public static function respondXml($responseID, $responseData = [])
+    public static function respondXml($responseID, array $responseData = [])
     {
         if (!static::checkAPIAccess($responseID, $responseData, 'xml')) {
             return static::throwAPIUnauthorizedError();
@@ -662,7 +662,7 @@ abstract class RequestHandler extends \RequestHandler
         return parent::respondXml($responseID, $responseData);
     }
 
-    protected static function applyRecordDelta(ActiveRecord $Record, $data)
+    protected static function applyRecordDelta(ActiveRecordInterface $Record, array $data)
     {
         if (static::$editableFields) {
             $Record->setFields(array_intersect_key($data, array_flip(static::$editableFields)));
@@ -672,20 +672,20 @@ abstract class RequestHandler extends \RequestHandler
     }
 
     // event template functions
-    protected static function onRecordCreated(ActiveRecord $Record, $data)
+    protected static function onRecordCreated(ActiveRecordInterface $Record, array $data)
     {
     }
-    protected static function onBeforeRecordValidated(ActiveRecord $Record, $data)
+    protected static function onBeforeRecordValidated(ActiveRecordInterface $Record, array $data)
     {
     }
-    protected static function onBeforeRecordSaved(ActiveRecord $Record, $data)
+    protected static function onBeforeRecordSaved(ActiveRecordInterface $Record, array $data)
     {
     }
-    protected static function onRecordSaved(ActiveRecord $Record, $data)
+    protected static function onRecordSaved(ActiveRecordInterface $Record, array $data)
     {
     }
 
-    protected static function getEditResponse($responseID, $responseData)
+    protected static function getEditResponse($responseID, array $responseData = [])
     {
         return $responseData;
     }
@@ -701,7 +701,7 @@ abstract class RequestHandler extends \RequestHandler
         return true;
     }
 
-    public static function checkReadAccess(ActiveRecord $Record, $suppressLogin=false)
+    public static function checkReadAccess(ActiveRecordInterface $Record, $suppressLogin = false)
     {
         if (static::$accountLevelRead) {
             if (!$suppressLogin) {
@@ -714,7 +714,7 @@ abstract class RequestHandler extends \RequestHandler
         return true;
     }
 
-    public static function checkWriteAccess(ActiveRecord $Record, $suppressLogin=false)
+    public static function checkWriteAccess(ActiveRecordInterface $Record, $suppressLogin = false)
     {
         if (static::$accountLevelWrite) {
             if (!$suppressLogin) {
@@ -727,7 +727,7 @@ abstract class RequestHandler extends \RequestHandler
         return true;
     }
 
-    public static function checkCommentAccess(ActiveRecord $Record)
+    public static function checkCommentAccess(ActiveRecordInterface $Record)
     {
         if (static::$accountLevelComment) {
             return $GLOBALS['Session']->hasAccountLevel(static::$accountLevelComment);
@@ -736,7 +736,7 @@ abstract class RequestHandler extends \RequestHandler
         return true;
     }
 
-    public static function checkAPIAccess($responseID, $responseData, $responseMode)
+    public static function checkAPIAccess($responseID, array $responseData, $responseMode)
     {
         if (static::$accountLevelAPI) {
             $GLOBALS['Session']->requireAuthentication();
