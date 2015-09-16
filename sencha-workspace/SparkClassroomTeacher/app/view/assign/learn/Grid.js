@@ -103,7 +103,14 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             {
                 width: 240,
                 dataIndex: 'Assign',
-                text: 'Assign',
+                align: 'center',
+                text: '<div class="flex-ct">'
+                        + '<div class="flex-1"><i class="fa fa-lg fa-exclamation-triangle"></i></div>'
+                        + '<div class="flex-1"><i class="fa fa-lg fa-thumbs-up"></i></div>'
+                        + '<div class="flex-1"><i class="fa fa-lg fa-plus-circle"></i></div>'
+                        + '<div class="flex-1"><i class="fa fa-lg fa-times-circle"></i></div>'
+                        + '<div class="flex-1"></div>'
+                    + '</div>',
                 renderer: function(v, r) {
                     var i = 1,
                         controlItems = {};
@@ -141,6 +148,9 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                                 '<div class="assign-control-frame">',
                                     '<div class="assign-control-indicator"></div>',
                                 '</div>',
+                            '</li>',
+                            '<li class="assign-control-item">',
+                                '<div class="menu-trigger"><i class="fa fa-lg fa-caret-down"></i></div>',
                             '</li>',
                         '</ul>',
                     ].join('');

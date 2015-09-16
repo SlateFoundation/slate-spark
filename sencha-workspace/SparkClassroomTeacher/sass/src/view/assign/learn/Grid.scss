@@ -7,6 +7,20 @@
 .assign-control-item {
     flex: 1;
     text-align: center;
+
+    .menu-trigger {
+        color: $base-color;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            opacity: .8;
+        }
+
+        &:active {
+            opacity: .6;
+        }
+    }
 }
 
 .assign-control-frame {
@@ -17,8 +31,13 @@
     margin: auto;
     width: 1.25em;
 
-    &:hover {
-        
+    &:hover,
+    &:focus {
+        background-color: rgba($active-color, .4);
+    }
+
+    &:active {
+        opacity: .6;
     }
 
     .is-full & {
@@ -26,8 +45,7 @@
     }
 
     .is-partial & {
-        background-color: rgba($active-color, .4);
-        background-image: -webkit-radial-gradient(center, circle cover, darken($active-color, 5) 35%, white 45%);
-        background-image: radial-gradient(center, circle cover, darken($active-color, 5) 35%, white 45%);
+        background-image: -webkit-radial-gradient(center, circle cover, darken($active-color, 5) 35%, transparent 35%);
+        background-image: radial-gradient(center, circle cover, darken($active-color, 5) 35%, transparent 35%);
     }
 }
