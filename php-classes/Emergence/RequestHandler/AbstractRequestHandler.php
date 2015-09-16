@@ -15,7 +15,7 @@ abstract class AbstractRequestHandler
 
 
     // protected static methods
-    protected static function setPath($path = null)
+    protected static function setPath(array $path = null)
     {
         static::$_path = isset($path) ? $path : Site::$pathStack;
     }
@@ -63,7 +63,7 @@ abstract class AbstractRequestHandler
         }
     }
 
-    public static function respond($responseId, $responseData = [], $responseMode = false)
+    public static function respond($responseId, array $responseData = [], $responseMode = false)
     {
         if (!$responseMode) {
             $responseMode = static::getResponseMode();
@@ -104,12 +104,12 @@ abstract class AbstractRequestHandler
         }
     }
 
-    public static function respondJson($responseId, $responseData = [])
+    public static function respondJson($responseId, array $responseData = [])
     {
         return JSON::translateAndRespond($responseData, !empty($_GET['summary']), !empty($_GET['include']) ? $_GET['include'] : null);
     }
 
-    public static function respondCsv($responseId, $responseData = [])
+    public static function respondCsv($responseId, array $responseData = [])
     {
         if (!empty($_REQUEST['downloadToken'])) {
             setcookie('downloadToken', $_REQUEST['downloadToken'], time()+300, '/');
@@ -125,7 +125,7 @@ abstract class AbstractRequestHandler
         exit();
     }
 
-    public static function respondPdf($responseId, $responseData = [])
+    public static function respondPdf($responseId, array ]$responseData = [])
     {
         if (!empty($_REQUEST['downloadToken'])) {
             setcookie('downloadToken', $_REQUEST['downloadToken'], time()+300, '/');
@@ -149,13 +149,13 @@ abstract class AbstractRequestHandler
         exit();
     }
 
-    public static function respondXml($responseId, $responseData = [])
+    public static function respondXml($responseId, array $responseData = [])
     {
         header('Content-Type: text/xml');
         return Emergence\Dwoo\Engine::respond($responseId, $responseData);
     }
 
-    public static function respondHtml($responseId, $responseData = [])
+    public static function respondHtml($responseId, array $responseData = [])
     {
         header('Content-Type: text/html; charset=utf-8');
         $responseData['responseID'] = $responseId;
