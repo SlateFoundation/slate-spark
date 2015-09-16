@@ -1,0 +1,33 @@
+.assign-control-list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.assign-control-item {
+    flex: 1;
+    text-align: center;
+}
+
+.assign-control-frame {
+    border: 2px solid lighten($color, 10);
+    border-radius: 1em;
+    cursor: pointer;
+    height: 1.25em;
+    margin: auto;
+    width: 1.25em;
+
+    &:hover {
+        
+    }
+
+    .is-full & {
+        background-color: $active-color;
+    }
+
+    .is-partial & {
+        background-color: rgba($active-color, .4);
+        background-image: -webkit-radial-gradient(center, circle cover, darken($active-color, 5) 35%, white 45%);
+        background-image: radial-gradient(center, circle cover, darken($active-color, 5) 35%, white 45%);
+    }
+}
