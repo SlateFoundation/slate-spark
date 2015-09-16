@@ -164,10 +164,10 @@ abstract class AbstractSqlConnection implements SqlConnectionInterface
             } else {
                 $select = $options['columns'];
             }
-        } elseif(!empty($options['from'])) {
+        } elseif(!empty($options['from']) || !empty($options['table'])) {
             $select = '*';
         } else {
-            throw new \Exception('SELECT query must have columns or from configured');
+            throw new \Exception('SELECT query must have columns, from, or table configured');
         }
 
         $query .= ' ' . $select;
@@ -186,6 +186,8 @@ abstract class AbstractSqlConnection implements SqlConnectionInterface
             }
 
             $query .= ' FROM ' . $from;
+        } elseif (!empty($options['table'])) {
+            $query .= ' FROM ' . $this->quoteIdentifier($options['table']);
         }
 
 
@@ -302,6 +304,92 @@ abstract class AbstractSqlConnection implements SqlConnectionInterface
             }
         } finally {
             $statement->closeCursor();
+        }
+    }
+
+    public function insert($table, $values = [], $returning = null)
+    {
+        $query = 'INSERT INTO ' . $this->quoteIdentifier($table);
+
+        if ($values) {
+            $query .= ' (' . implode(',', array_map([$this, 'quoteIdentifier'], array_keys($values))) . ')';
+            $query .= ' VALUES (' . implode(',', array_map([$this, 'quoteValue'], array_values($values))) . ')';
+        } else {
+            $query .= ' DEFAULT VALUES';
+        }
+
+        if ($returning) {
+            $query .= ' RETURNING ' . (is_array($returning) ? implode(',', $returning) : $returning);
+            return $this->oneRow($query);
+        } else {
+            return $this->nonQuery($query);
+        }
+    }
+
+    public function update($table, $values, $where = [], $returning = null)
+    {
+        $query = 'UPDATE ' . $this->quoteIdentifier($table);
+
+        $set = [];
+        foreach ($values AS $key => $value) {
+            $set[] = $this->quoteIdentifier($key) . ' = ' . $this->quoteValue($value);
+        }
+
+        $query .= ' SET ' . implode(', ', $set);
+
+        if ($where) {
+            if (is_array($where)) {
+                $conditions = [];
+
+                foreach ($where AS $key => $value) {
+                    if (is_string($key)) {
+                        $conditions[] = $this->quoteIdentifier($key) . ' = ' . $this->quoteValue($value);
+                    } else {
+                        $conditions[] = $value;
+                    }
+                }
+
+                $where = '(' . implode(') AND (', $conditions) . ')';
+            }
+
+            $query .= ' WHERE ' . $where;
+        }
+
+        if ($returning) {
+            $query .= ' RETURNING ' . (is_array($returning) ? implode(',', $returning) : $returning);
+            return $this->oneRow($query);
+        } else {
+            return $this->nonQuery($query);
+        }
+    }
+
+    public function delete($table, $where = [], $returning = null)
+    {
+        $query = 'DELETE FROM ' . $this->quoteIdentifier($table);
+
+        if ($where) {
+            if (is_array($where)) {
+                $conditions = [];
+
+                foreach ($where AS $key => $value) {
+                    if (is_string($key)) {
+                        $conditions[] = $this->quoteIdentifier($key) . ' = ' . $this->quoteValue($value);
+                    } else {
+                        $conditions[] = $value;
+                    }
+                }
+
+                $where = '(' . implode(') AND (', $conditions) . ')';
+            }
+
+            $query .= ' WHERE ' . $where;
+        }
+
+        if ($returning) {
+            $query .= ' RETURNING ' . (is_array($returning) ? implode(',', $returning) : $returning);
+            return $this->oneRow($query);
+        } else {
+            return $this->nonQuery($query);
         }
     }
 }

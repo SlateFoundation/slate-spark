@@ -2,7 +2,7 @@
 
 namespace Emergence\Database;
 
-class Postgres extends AbstractStaticSingleton
+class Postgres extends AbstractConnectionSingleton
 {
     public static $connectionClass = PostgresConnection::class;
 }

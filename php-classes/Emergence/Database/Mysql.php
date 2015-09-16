@@ -2,7 +2,7 @@
 
 namespace Emergence\Database;
 
-class Mysql extends AbstractStaticSingleton
+class Mysql extends AbstractConnectionSingleton
 {
     public static $connectionClass = MysqlConnection::class;
 }

@@ -6,6 +6,7 @@ use PDO;
 
 abstract class MysqlRecord extends AbstractSqlRecord
 {
+/*
     private $connection;
 
     public function getConnection()
@@ -29,8 +30,8 @@ abstract class MysqlRecord extends AbstractSqlRecord
 
         return self::$connection;
     }
-
-    public function setConnection();
+*/
+    //public function setConnection();
 #    public function save()
 #    {
 #        print("save()\n");

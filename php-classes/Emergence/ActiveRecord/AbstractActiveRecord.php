@@ -45,4 +45,107 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
 
 
     // static collection getterts
+
+
+    // instance members
+    protected $data;
+    protected $phantom;
+    protected $dirty;
+    protected $valid;
+    protected $new;
+    protected $destroyed;
+
+
+    // instance methods
+    public function __construct(array $data = [], array $options = [])
+    {
+        $this->data = $data;
+        $this->phantom = isset($options['phantom']) ? $options['phantom'] : empty($data);
+        $this->dirty = $this->phantom || !empty($options['dirty']);
+        $this->valid = isset($options['valid']) ? $options['valid'] : null;
+        $this->new = !empty($options['new']);
+        $this->destroyed = !empty($options['destroyed']);
+    }
+
+
+    // lifecycle state setters
+    public function setPhantom($phantom)
+    {
+        if ($this->phantom != $phantom) {
+            $this->updatePhantom($phantom);
+        }
+    }
+
+    public function setDirty($dirty)
+    {
+        if ($this->dirty != $dirty) {
+            $this->updateDirty($dirty);
+        }
+    }
+
+    public function setValid($valid)
+    {
+        if ($this->valid != $valid) {
+            $this->updateValid($valid);
+        }
+    }
+
+    public function setNew($new)
+    {
+        if ($this->new != $new) {
+            $this->updateNew($new);
+        }
+    }
+
+    public function setDestroyed($destroyed)
+    {
+        if ($this->destroyed != $destroyed) {
+            $this->updateDestroyed($destroyed);
+        }
+    }
+
+
+    // lifecycle state update handlers
+    protected function updatePhantom($phantom)
+    {
+        $this->phantom = $phantom;
+        
+        if (!$phantom) {
+            $this->setNew(true);
+            $this->setDestroyed(false);
+        }
+    }
+
+    protected function updateDirty($dirty)
+    {
+        $this->dirty = $dirty;
+
+        if ($dirty) {
+            $this->valid = null;
+        }
+    }
+
+    protected function updateValid($valid)
+    {
+        $this->valid = $valid;
+    }
+
+    protected function updateNew($new)
+    {
+        $this->new = $new;
+
+        if ($new) {
+            $this->setPhantom(false);
+            $this->setDirty(false);
+        }
+    }
+
+    protected function updateDestroyed($destroyed)
+    {
+        $this->destroyed = $destroyed;
+
+        if ($destroyed) {
+            $this->setPhantom(true);
+        }
+    }
 }
