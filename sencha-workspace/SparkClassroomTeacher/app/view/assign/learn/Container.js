@@ -26,13 +26,14 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Container', {
             {
                 xtype: 'container',
                 margin: '0 -24', // flush with viewport
-                layout: 'hbox',
+                layout: 'auto',
                 items: [
                     {
-                        flex: 1,
                         xtype: 'spark-assign-learn-grid'
                     },
                     {
+                        docked: 'right',
+
                         xtype: 'spark-panel',
                         cls: 'dark narrow',
                         title: 'Discussion',

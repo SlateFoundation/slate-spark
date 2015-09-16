@@ -9,14 +9,15 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Container', {
 
     config: {
         title: 'Apply',
-        layout: 'hbox',
+        layout: 'auto',
         margin: '0 -24', // flush with viewport
         items: [
             {
-                xtype: 'spark-assign-apply-grid',
-                flex: 1
+                xtype: 'spark-assign-apply-grid'
             },
             {
+                docked: 'right',
+
                 xtype: 'spark-panel',
                 cls: 'dark narrow',
                 title: 'Project Name <small>Details</small>',
