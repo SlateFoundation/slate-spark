@@ -2,7 +2,7 @@
 
 namespace Emergence\ActiveRecord;
 
-abstract class RequestHandler extends \RequestHandler
+abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestHandler
 {
     // configurables
     public static $recordClass;
@@ -109,7 +109,7 @@ abstract class RequestHandler extends \RequestHandler
         }
     }
 
-    public static function handleQueryRequest($query, array $conditions = [], array $options = [], $responseID = null, array $responseData = [], $mode = 'AND')
+    public static function handleQueryRequest($query, array $conditions = [], array $options = [], $responseId = null, array $responseData = [], $mode = 'AND')
     {
         $className = static::$recordClass;
         $tableAlias = $className::getTableAlias();
@@ -195,7 +195,7 @@ abstract class RequestHandler extends \RequestHandler
         }
 
         return static::respond(
-            isset($responseID) ? $responseID : static::getTemplateName($className::$pluralNoun)
+            isset($responseId) ? $responseId : static::getTemplateName($className::$pluralNoun)
             ,array_merge($responseData, [
                 'success' => true
                 ,'data' => $className::getAllByQuery(
@@ -222,7 +222,7 @@ abstract class RequestHandler extends \RequestHandler
     }
 
 
-    public static function handleBrowseRequest(array $options = [], array $conditions = [], $responseID = null, array $responseData = [])
+    public static function handleBrowseRequest(array $options = [], array $conditions = [], $responseId = null, array $responseData = [])
     {
         $className = static::$recordClass;
 
@@ -265,7 +265,7 @@ abstract class RequestHandler extends \RequestHandler
 
         // handle query search
         if (!empty($_REQUEST['q']) && $className::$searchConditions) {
-            return static::handleQueryRequest($_REQUEST['q'], $conditions, ['limit' => $limit, 'offset' => $offset], $responseID, $responseData);
+            return static::handleQueryRequest($_REQUEST['q'], $conditions, ['limit' => $limit, 'offset' => $offset], $responseId, $responseData);
         }
 
 
@@ -307,7 +307,7 @@ abstract class RequestHandler extends \RequestHandler
 
         // generate response
         return static::respond(
-            isset($responseID) ? $responseID : static::getTemplateName($className::$pluralNoun)
+            isset($responseId) ? $responseId : static::getTemplateName($className::$pluralNoun)
             ,array_merge($responseData, [
                 'success' => true
                 ,'data' => $results
@@ -553,24 +553,24 @@ abstract class RequestHandler extends \RequestHandler
                 static::onRecordSaved($Record, $_REQUEST);
 
                 // fire created response
-                $responseID = static::getTemplateName($className::$singularNoun).'Saved';
-                $responseData = static::getEditResponse($responseID, [
+                $responseId = static::getTemplateName($className::$singularNoun).'Saved';
+                $responseData = static::getEditResponse($responseId, [
                     'success' => true
                     ,'data' => $Record
                 ]);
-                return static::respond($responseID, $responseData);
+                return static::respond($responseId, $responseData);
             }
 
             // fall through back to form if validation failed
         }
 
-        $responseID = static::getTemplateName($className::$singularNoun).'Edit';
-        $responseData = static::getEditResponse($responseID, [
+        $responseId = static::getTemplateName($className::$singularNoun).'Edit';
+        $responseData = static::getEditResponse($responseId, [
             'success' => false
             ,'data' => $Record
         ]);
 
-        return static::respond($responseID, $responseData);
+        return static::respond($responseId, $responseData);
     }
 
 
@@ -635,31 +635,31 @@ abstract class RequestHandler extends \RequestHandler
         return preg_replace_callback('/\s+([a-zA-Z])/', function($matches) { return strtoupper($matches[1]); }, $noun);
     }
 
-    public static function respondJson($responseID, array $responseData = [])
+    public static function respondJson($responseId, array $responseData = [])
     {
-        if (!static::checkAPIAccess($responseID, $responseData, 'json')) {
+        if (!static::checkAPIAccess($responseId, $responseData, 'json')) {
             return static::throwAPIUnauthorizedError();
         }
 
-        return parent::respondJson($responseID, $responseData);
+        return parent::respondJson($responseId, $responseData);
     }
 
-    public static function respondCsv($responseID, array $responseData = [])
+    public static function respondCsv($responseId, array $responseData = [])
     {
-        if (!static::checkAPIAccess($responseID, $responseData, 'csv')) {
+        if (!static::checkAPIAccess($responseId, $responseData, 'csv')) {
             return static::throwAPIUnauthorizedError();
         }
 
-        return parent::respondCsv($responseID, $responseData);
+        return parent::respondCsv($responseId, $responseData);
     }
 
-    public static function respondXml($responseID, array $responseData = [])
+    public static function respondXml($responseId, array $responseData = [])
     {
-        if (!static::checkAPIAccess($responseID, $responseData, 'xml')) {
+        if (!static::checkAPIAccess($responseId, $responseData, 'xml')) {
             return static::throwAPIUnauthorizedError();
         }
 
-        return parent::respondXml($responseID, $responseData);
+        return parent::respondXml($responseId, $responseData);
     }
 
     protected static function applyRecordDelta(ActiveRecordInterface $Record, array $data)
@@ -685,7 +685,7 @@ abstract class RequestHandler extends \RequestHandler
     {
     }
 
-    protected static function getEditResponse($responseID, array $responseData = [])
+    protected static function getEditResponse($responseId, array $responseData = [])
     {
         return $responseData;
     }
@@ -736,7 +736,7 @@ abstract class RequestHandler extends \RequestHandler
         return true;
     }
 
-    public static function checkAPIAccess($responseID, array $responseData, $responseMode)
+    public static function checkAPIAccess($responseId, array $responseData, $responseMode)
     {
         if (static::$accountLevelAPI) {
             $GLOBALS['Session']->requireAuthentication();

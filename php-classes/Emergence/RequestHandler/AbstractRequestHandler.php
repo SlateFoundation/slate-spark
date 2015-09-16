@@ -63,39 +63,39 @@ abstract class AbstractRequestHandler
         }
     }
 
-    public static function respond($responseID, $responseData = [], $responseMode = false)
+    public static function respond($responseId, $responseData = [], $responseMode = false)
     {
         if (!$responseMode) {
             $responseMode = static::getResponseMode();
         }
 
         if ($responseMode != 'return') {
-            header('X-Response-ID: '.$responseID);
+            header('X-Response-ID: '.$responseId);
         }
 
         if (is_callable(static::$beforeRespond)) {
-            call_user_func_array(static::$beforeRespond, [$responseID, &$responseData, $responseMode]);
+            call_user_func_array(static::$beforeRespond, [$responseId, &$responseData, $responseMode]);
         }
 
         switch ($responseMode) {
             case 'json':
-                return static::respondJson($responseID, $responseData);
+                return static::respondJson($responseId, $responseData);
 
             case 'csv':
-                return static::respondCsv($responseID, $responseData);
+                return static::respondCsv($responseId, $responseData);
 
             case 'pdf':
-                return static::respondPdf($responseID, $responseData);
+                return static::respondPdf($responseId, $responseData);
 
             case 'xml':
-                return static::respondXml($responseID, $responseData);
+                return static::respondXml($responseId, $responseData);
 
             case 'html':
-                return static::respondHtml($responseID, $responseData);
+                return static::respondHtml($responseId, $responseData);
 
             case 'return':
                 return [
-                    'responseID' => $responseID
+                    'responseID' => $responseId
                     ,'data' => $responseData
                 ];
 
@@ -104,28 +104,28 @@ abstract class AbstractRequestHandler
         }
     }
 
-    public static function respondJson($responseID, $responseData = [])
+    public static function respondJson($responseId, $responseData = [])
     {
         return JSON::translateAndRespond($responseData, !empty($_GET['summary']), !empty($_GET['include']) ? $_GET['include'] : null);
     }
 
-    public static function respondCsv($responseID, $responseData = [])
+    public static function respondCsv($responseId, $responseData = [])
     {
         if (!empty($_REQUEST['downloadToken'])) {
             setcookie('downloadToken', $_REQUEST['downloadToken'], time()+300, '/');
         }
 
         if (is_array($responseData['data'])) {
-            return CSV::respond($responseData['data'], $responseID, !empty($_GET['columns']) ? $_GET['columns'] : null);
-        } elseif ($responseID == 'error') {
+            return CSV::respond($responseData['data'], $responseId, !empty($_GET['columns']) ? $_GET['columns'] : null);
+        } elseif ($responseId == 'error') {
             print($responseData['message']);
         } else {
-            print 'Unable to render data to CSV: '.$responseID;
+            print 'Unable to render data to CSV: '.$responseId;
         }
         exit();
     }
 
-    public static function respondPdf($responseID, $responseData = [])
+    public static function respondPdf($responseId, $responseData = [])
     {
         if (!empty($_REQUEST['downloadToken'])) {
             setcookie('downloadToken', $_REQUEST['downloadToken'], time()+300, '/');
@@ -133,10 +133,10 @@ abstract class AbstractRequestHandler
 
         $tmpPath = tempnam('/tmp', 'e_pdf_');
 
-        file_put_contents($tmpPath.'.html', Emergence\Dwoo\Engine::getSource("$responseID.pdf", $responseData));
+        file_put_contents($tmpPath.'.html', Emergence\Dwoo\Engine::getSource("$responseId.pdf", $responseData));
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="'.str_replace('"', '', $responseID).'.pdf"');
+        header('Content-Disposition: attachment; filename="'.str_replace('"', '', $responseId).'.pdf"');
 
         exec("/usr/local/bin/wkhtmltopdf \"$tmpPath.html\" \"$tmpPath.pdf\"");
 
@@ -149,17 +149,17 @@ abstract class AbstractRequestHandler
         exit();
     }
 
-    public static function respondXml($responseID, $responseData = [])
+    public static function respondXml($responseId, $responseData = [])
     {
         header('Content-Type: text/xml');
-        return Emergence\Dwoo\Engine::respond($responseID, $responseData);
+        return Emergence\Dwoo\Engine::respond($responseId, $responseData);
     }
 
-    public static function respondHtml($responseID, $responseData = [])
+    public static function respondHtml($responseId, $responseData = [])
     {
         header('Content-Type: text/html; charset=utf-8');
-        $responseData['responseID'] = $responseID;
-        return Emergence\Dwoo\Engine::respond($responseID, $responseData);
+        $responseData['responseID'] = $responseId;
+        return Emergence\Dwoo\Engine::respond($responseId, $responseData);
     }
 
     public static function throwUnauthorizedError($message = 'You do not have authorization to access this resource')
