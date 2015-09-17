@@ -2,6 +2,11 @@
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
+    tokenSectionRe: /^([^:]+):(.*)$/,
+
+    config: {
+        selectedSection: null
+    },
 
     views: [
         'TitleBar@SparkClassroom',
@@ -44,6 +49,17 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     listen: {
+        controller: {
+            '#': {
+                beforeredirect: 'onBeforeRedirect',
+                beforeroute: 'onBeforeRoute'
+                //<debug>
+                ,unmatchedroute: function(token) {
+                    Ext.log.warn('Unmatched token: ' + token);
+                }
+                //</debug>
+            }
+        },
         store: {
             '#Sections': {
                 load: 'onSectionsStoreLoad'
@@ -65,23 +81,51 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     },
 
-    // event handlers
+    updateSelectedSection: function(sectionCode, oldSectionCode) {
+        var me = this,
+            token = Ext.util.History.getToken(),
+            sectionMatch = token && this.tokenSectionRe.exec(token);
+
+        if (sectionCode) {
+            //show section dependant components
+            me.getNavBar().show();
+            me.getTabsCt().show();
+
+            // redirect with the current un-prefixed route or an empty string to write the new section into the route
+            this.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
+        }
+    },
+
+    onBeforeRedirect: function(token, resume) {
+        var sectionCode = this.getSelectedSection();
+
+        if (sectionCode) {
+            resume(sectionCode + ':' + token);
+            return false;
+        }
+    },
+
+    onBeforeRoute: function(token, resume) {
+        var me = this,
+            sectionMatch = token && me.tokenSectionRe.exec(token),
+            sectionCode = sectionMatch && sectionMatch[1];
+
+        if (sectionCode) {
+            me.setSelectedSection(sectionCode);
+            resume(sectionMatch[2]);
+            return false;
+        }
+    },
+
     onSectionsStoreLoad: function(store) {
-        var sectionQueryString = Ext.Object.fromQueryString(location.search).section,
+        var sectionQueryString = this.getSelectedSection(),
             sectionSelectCmp = this.getSectionSelect(),
             record = store.findRecord('Code', sectionQueryString);
 
         sectionSelectCmp.setValue(record);
     },
 
-    onSectionSelectChange: function(select, newValue, oldValue) {
-        var classCode = newValue.get('Code'),
-            queryStringObject = Ext.Object.fromQueryString(location.search),
-            parsedQueryString;
-
-        // set 'section' query string param
-        queryStringObject.section = classCode;
-        parsedQueryString = Ext.Object.toQueryString(queryStringObject);
-        location.search = parsedQueryString;
+    onSectionSelectChange: function(select, section, oldSection) {
+        this.setSelectedSection(section.get('Code'));
     }
 });
