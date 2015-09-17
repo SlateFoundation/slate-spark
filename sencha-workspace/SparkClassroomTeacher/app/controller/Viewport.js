@@ -108,6 +108,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             studentStore = Ext.getStore('Students');
 
         if (sectionCode) {
+            me.getSectionSelect().setValue(sectionCode);
+
             //show section dependant components
             me.getNavBar().show();
             me.getSparkGPS().show();
