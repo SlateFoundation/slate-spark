@@ -120,11 +120,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     onSectionsStoreLoad: function(store) {
-        var sectionQueryString = this.getSelectedSection(),
-            sectionSelectCmp = this.getSectionSelect(),
-            record = store.findRecord('Code', sectionQueryString);
-
-        sectionSelectCmp.setValue(record);
+        this.getSectionSelect().setValue(this.getSelectedSection());
     },
 
     onSectionSelectChange: function(select, section, oldSection) {
