@@ -31,14 +31,16 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             selector: 'spark-student-navbar',
             autoCreate: true,
 
-            xtype: 'spark-student-navbar'
+            xtype: 'spark-student-navbar',
+            hidden: true
         },
 
         tabsCt: {
             selector: 'spark-student-tabscontainer',
             autoCreate: true,
 
-            xtype: 'spark-student-tabscontainer'
+            xtype: 'spark-student-tabscontainer',
+            hidden: true
         }
     },
 
