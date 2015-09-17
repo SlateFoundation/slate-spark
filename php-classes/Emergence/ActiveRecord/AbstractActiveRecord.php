@@ -56,7 +56,7 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
     protected $destroyed;
 
 
-    // instance methods
+    // constructor
     public function __construct(array $data = [], array $options = [])
     {
         $this->data = $data;
@@ -147,5 +147,12 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
         if ($destroyed) {
             $this->setPhantom(true);
         }
+    }
+
+
+    // instance methods
+    public function getValues(array $options = [])
+    {
+        return $this->data;
     }
 }

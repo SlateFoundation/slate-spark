@@ -18,7 +18,7 @@ interface ActiveRecordInterface
 #    public function getValue($name);
 #    public function setValue($name, $value);
 #
-#    public function getValues(array $options = []);
+    public function getValues(array $options = []);
 #    public function setValues(array $values);
 #
 #    public function changeClass($className = null, $setValues = null);

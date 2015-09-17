@@ -98,7 +98,13 @@ class JSON
 	public static function translateObjects($input, $summary = null, $include = null, $stringsOnly = false)
 	{
 		if (is_object($input)) {
-            if ($summary && method_exists($input, 'getSummary')) {
+            if (method_exists($input, 'getValues')) {
+		        $input = $input->getValues([
+		            'summary' => $summary,
+		            'include' => $include,
+		            'stringEncode' => $stringsOnly
+		        ]);
+	        } elseif ($summary && method_exists($input, 'getSummary')) {
                 $input = $input->getSummary();
             } elseif (!empty($include) && method_exists($input, 'getDetails')) {
                 $includeThisLevel = array();
