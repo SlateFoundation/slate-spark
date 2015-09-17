@@ -16,7 +16,7 @@ abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestH
     public static $browseLimitDefault = false;
     public static $editableFields = false;
     public static $searchConditions = false;
-    public static $browseCalcFoundRows = true;
+    public static $browseCalcFoundRows = false; // tough to support with postgres =/
 
     public static $calledClass = __CLASS__;
     public static $responseMode = 'html';
@@ -270,8 +270,8 @@ abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestH
 
 
         // get results
-        $results = $className::getAllByWhere($conditions, $options);
-        $resultsTotal = DB::foundRows();
+        $results = iterator_to_array($className::getAllByWhere($conditions, $options));
+        $resultsTotal = static::$browseCalcFoundRows ? DB::foundRows() : count($results);
 
 
         // embed tables

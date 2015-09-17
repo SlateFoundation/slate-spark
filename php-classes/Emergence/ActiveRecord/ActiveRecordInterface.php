@@ -63,7 +63,7 @@ interface ActiveRecordInterface
 #    public static function getCount();
 #    public static function getAll(array $options = []);
 #    public static function getCountByWhere(array $conditions = []);
-#    public static function getAllByWhere(array $conditions = [], array $options = []);
+    public static function getAllByWhere(array $conditions = [], array $options = []);
 #    public static function getCountByField($field, $value);
 #    public static function getAllByField($field, $value);
     

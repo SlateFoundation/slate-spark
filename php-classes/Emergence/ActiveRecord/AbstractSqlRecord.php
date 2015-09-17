@@ -59,6 +59,32 @@ abstract class AbstractSqlRecord extends AbstractActiveRecord
         return $row;
     }
 
+    public static function getAllByWhere(array $conditions = [], array $options = [])
+    {
+        $connection = static::getConnection($options['connection']);
+
+        $options['table'] = static::getTableName();
+        $options['where'] = $conditions;
+
+        if ($options['instantiate'] !== false) {
+            $defaultClass = static::class;
+            $instanceOptions = ['connection' => $connection];
+        } else {
+            $instanceOptions = false;
+        }
+
+        $rows = $connection->selectAll($options);
+
+        foreach ($rows AS $row) {
+            if ($instanceOptions) {
+                $className = $row['Class'] ?: $defaultClass;
+                $row = new $className($row, $instanceOptions);
+            }
+
+            yield $row;
+        }
+    }
+
     // instance members
     protected $connection;
 
