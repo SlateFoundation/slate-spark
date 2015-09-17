@@ -19,7 +19,7 @@ abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestH
     public static $browseCalcFoundRows = false; // tough to support with postgres =/
 
     public static $calledClass = __CLASS__;
-    public static $responseMode = 'html';
+    public static $defaultResponseMode = 'html';
     public static $userResponseModes = [
         'application/json' => 'json',
         'text/csv' => 'csv'

@@ -5,7 +5,7 @@ namespace Emergence\RequestHandler;
 abstract class AbstractRequestHandler
 {
     // configurables
-    public static $responseMode = 'html';
+    public static $defaultResponseMode = 'html';
     public static $userResponseModes = []; // array of responseModes that can be selected by the user, with key optionally set to a MIME Type
     public static $beforeRespond;
 
@@ -59,7 +59,7 @@ abstract class AbstractRequestHandler
         } elseif (!empty($_SERVER['HTTP_ACCEPT']) && array_key_exists($_SERVER['HTTP_ACCEPT'], static::$userResponseModes)) {
             return static::$userResponseModes[$_SERVER['HTTP_ACCEPT']];
         } else {
-            return static::$responseMode;
+            return static::$defaultResponseMode;
         }
     }
 
@@ -177,7 +177,7 @@ abstract class AbstractRequestHandler
     public static function throwAPIUnauthorizedError($message = 'You do not have authorization to access this resource')
     {
         header('HTTP/1.0 403 Forbidden');
-        switch (static::$responseMode) {
+        switch (static::getResponseMode()) {
             case 'json':
             default:
                 JSON::respond([
