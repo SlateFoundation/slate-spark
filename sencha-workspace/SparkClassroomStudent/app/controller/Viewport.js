@@ -89,6 +89,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             sectionMatch = token && this.tokenSectionRe.exec(token);
 
         if (sectionCode) {
+            me.getSectionSelect().setValue(sectionCode);
+
             //show section dependant components
             me.getNavBar().show();
             me.getTabsCt().show();
