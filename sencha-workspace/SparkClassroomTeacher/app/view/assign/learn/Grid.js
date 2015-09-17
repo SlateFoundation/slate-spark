@@ -18,7 +18,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         store: 'assign.Learn',
         columns:[
             {
-                width: 240,
+                width: 208,
                 dataIndex: 'Standards',
                 text: 'Standards',
                 tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}',
@@ -27,7 +27,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 }
             },
             {
-                width: 96,
+                width: 80,
                 dataIndex: 'Grade',
                 text: 'Grade'
             },
@@ -47,7 +47,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                         '</tpl>',
                     ')" title="{Vendor}">{Vendor}</div>',
                     '<div class="spark-grid-row-title">{Title}</div>',
-                    '<div class="spark-grid-row-detail"><a href="{Link}">{Link}</a></div>'
+                    '<div class="spark-grid-row-detail"><a href="{Link}" title="{Link}">{Link}</a></div>'
                 ]
             },
             {
@@ -101,7 +101,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 text: 'Attachment'
             },
             {
-                width: 240,
+                width: 192,
                 dataIndex: 'Assign',
                 align: 'center',
                 text: '<div class="flex-ct">'
@@ -163,7 +163,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 width: 64,
                 dataIndex: 'Flag',
                 text: 'Issue',
-                tpl: '<div class="text-center"><a href="#" class="text-alert"><i class="fa fa-flag"></i></a></div>',
+                tpl: '<a href="#" class="text-alert"><i class="fa fa-flag"></i></a>',
                 cell: {
                     encodeHtml: false
                 }
@@ -186,13 +186,13 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 // TODO not all columns actually have filters, and those that do need real values
                 // TODO measure column widths/flex values automatically pls
                 {
-                    width: 240,
+                    width: 208,
                     options: [
                         { text: 'Standards' }
                     ]
                 },
                 {
-                    width: 96,
+                    width: 80,
                     options: [
                         { text: 'Grade' }
                     ]
@@ -228,7 +228,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                     ]
                 },
                 {
-                    width: 240,
+                    width: 192,
                     options: [
                         { text: 'Assign' }
                     ]
