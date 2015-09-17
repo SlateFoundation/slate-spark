@@ -1,5 +1,7 @@
 <?php
 
+use Emergence\Database\Postgres;
+
 function convertContentArea(&$contentArea) {
 #    foreach (['grades'] AS $arrayColumn) {
 #        if ($contentArea[$arrayColumn][0] == '{') {
@@ -80,15 +82,18 @@ if (!count($path = array_filter(Site::$pathStack))) {
 
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-        $contentAreas = PostgresPDO::query(
-            'SELECT content_areas.*,
-                    COUNT(sparkpoints.*) AS sparkpoints_count
-               FROM content_areas
-          LEFT JOIN sparkpoints
-                 ON sparkpoints.content_area_id = content_areas.id
-              GROUP BY content_areas.id
-              ORDER BY path'
-        );
+        $contentAreas = Postgres::selectAll([
+            'table' => 'content_areas',
+            'columns' => [
+                'content_areas.*',
+                'sparkpoints_count' => 'COUNT(sparkpoints.*)'
+            ],
+            'join' => [
+                'LEFT JOIN sparkpoints ON sparkpoints.content_area_id = content_areas.id'
+            ],
+            'group' => ['content_areas.id'],
+            'order' => 'path'
+        ]);
 
         // convert generator to an array so we can transform some of its values before responding
         $contentAreas = iterator_to_array($contentAreas);
