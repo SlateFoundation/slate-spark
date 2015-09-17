@@ -93,8 +93,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             me.getNavBar().show();
             me.getTabsCt().show();
 
-            // redirect with the current un-prefixed route or an empty string to write the new section into the route
-            this.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
+            // redirect with the current un-prefixed route or the default section to write the new section into the route
+            this.redirectTo((sectionMatch && sectionMatch[2]) || 'work');
         }
     },
 
