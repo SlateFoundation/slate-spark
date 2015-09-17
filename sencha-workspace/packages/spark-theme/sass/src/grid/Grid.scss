@@ -37,12 +37,16 @@
 
 .spark-grid-row-title {
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .spark-grid-row-detail {
     color: $highlight-color;
     font-size: .9em;
-    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal; // wrap normal text; cut off e.g., long URLs
 }
 
 .spark-token-item {
