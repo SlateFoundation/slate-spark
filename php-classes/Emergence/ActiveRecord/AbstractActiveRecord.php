@@ -33,14 +33,14 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
 
 
     // static instance getters
-    public static function getById($id)
+    public static function getById($id, array $options = [])
     {
-        return static::getByField('id', $id);
+        return static::getByField('id', $id, $options);
     }
 
-    public static function getByHandle($handle)
+    public static function getByHandle($handle, array $options = [])
     {
-        return static::getByField('handle', $handle);
+        return static::getByField('handle', $handle, $options);
     }
 
 

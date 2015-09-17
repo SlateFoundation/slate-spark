@@ -57,9 +57,9 @@ interface ActiveRecordInterface
 
 
     // static methods for fetching instances
-    public static function getById($id);
-    public static function getByHandle($handle);
-    public static function getByField($field, $value);
+    public static function getById($id, array $options = []);
+    public static function getByHandle($handle, array $options = []);
+    public static function getByField($field, $value, array $options = []);
 #    public static function getCount();
 #    public static function getAll(array $options = []);
 #    public static function getCountByWhere(array $conditions = []);

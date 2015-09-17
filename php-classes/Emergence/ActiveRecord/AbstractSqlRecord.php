@@ -40,7 +40,7 @@ abstract class AbstractSqlRecord extends AbstractActiveRecord
         return $connection;
     }
 
-    public static function getByField($field, $value, $options = [])
+    public static function getByField($field, $value, array $options = [])
     {
         $connection = static::getConnection($options['connection']);
 
