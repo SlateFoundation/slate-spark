@@ -160,7 +160,11 @@ abstract class AbstractSqlConnection implements SqlConnectionInterface
         // columns
         if (!empty($options['columns'])) {
             if (is_array($options['columns'])) {
-                $select = implode(', ', $options['columns']);
+                $select = [];
+                foreach ($options['columns'] AS $columnAlias => $columnValue) {
+                    $select[] = $columnValue . ( is_string($columnAlias) ? ' AS ' . $columnAlias : '' );
+                }
+                $select = implode(', ', $select);
             } else {
                 $select = $options['columns'];
             }
