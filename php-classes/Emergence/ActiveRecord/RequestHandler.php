@@ -6,19 +6,19 @@ abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestH
 {
     // configurables
     public static $recordClass;
+
     public static $accountLevelRead = false;
     public static $accountLevelComment = 'User';
     public static $accountLevelBrowse = 'Staff';
     public static $accountLevelWrite = 'Staff';
     public static $accountLevelAPI = false;
+    public static $editableFields = false;
+
     public static $browseOrder = false;
     public static $browseConditions = false;
     public static $browseLimitDefault = false;
-    public static $editableFields = false;
-    public static $searchConditions = false;
     public static $browseCalcFoundRows = false; // tough to support with postgres =/
 
-    public static $calledClass = __CLASS__;
     public static $defaultResponseMode = 'html';
     public static $userResponseModes = [
         'application/json' => 'json',
@@ -27,23 +27,12 @@ abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestH
 
     public static function handleRequest()
     {
-        // save static class
-        static::$calledClass = get_called_class();
-
-        switch (static::peekPath()) {
-            case 'csv':
-            case 'json':
-            case 'pdf':
-                static::$responseMode = static::shiftPath();
-                break;
-        }
-
         return static::handleRecordsRequest();
     }
 
     public static function handleRecordsRequest($action = false)
     {
-        switch ($action ? $action : $action = static::shiftPath()) {
+        switch ($action ?: $action = static::shiftPath()) {
             case 'save':
             {
                 return static::handleMultiSaveRequest();
@@ -322,7 +311,7 @@ abstract class RequestHandler extends \Emergence\RequestHandler\AbstractRequestH
 
     public static function handleRecordRequest(ActiveRecordInterface $Record, $action = false)
     {
-        switch ($action ? $action : $action = static::shiftPath()) {
+        switch ($action ?: $action = static::shiftPath()) {
             case '':
             case false:
             {

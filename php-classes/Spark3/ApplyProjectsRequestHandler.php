@@ -17,7 +17,7 @@ class ApplyProjectsRequestHandler extends \Emergence\ActiveRecord\RequestHandler
         );
     }
 
-    public static function checkReadAccess(\ActiveRecord $Record, $suppressLogin = false)
+    public static function checkReadAccess(\Emergence\ActiveRecord\ActiveRecordInterface $Record, $suppressLogin = false)
     {
         return (
             in_array($_SERVER['HTTP_ORIGIN'], static::$anonymousOrigins) ||

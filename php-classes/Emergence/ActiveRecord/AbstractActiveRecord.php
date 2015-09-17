@@ -9,6 +9,10 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
     public static $pluralNoun = 'records';
     public static $collectionRoute = null;
 
+    public static $fieldHandlers = [
+    
+    ];
+
 
     // static configuration getters
     public static function getSingularNoun()
