@@ -4,7 +4,14 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     xtype: 'spark-assign-questions',
     requires: [
         'Jarvus.plugin.GridFlex',
-        'Ext.grid.plugin.PagingToolbar'
+        'Ext.grid.plugin.PagingToolbar',
+        'SparkClassroom.widget.GridColumnFilter',
+        'SparkClassroom.column.Standards',
+        'SparkClassroom.column.Grade',
+        'SparkClassroom.column.Title',
+        'SparkClassroom.column.CreatedBy',
+        'SparkClassroom.column.CreatedDate',
+        'SparkClassroom.column.AssignSingle'
     ],
 
     config: {
@@ -12,45 +19,33 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
             'gridflex',
             'gridpagingtoolbar'
         ],
-        height: 500,
-        grouped: true,
+        height: 600,
         titleBar: null,
-        margin: '0 -24', // flush with viewport
         columns:[
             {
                 dataIndex: 'Standards',
-                width: 288,
-                text: 'Standards',
-                tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}'
+                xtype: 'spark-standards-column'
             },
             {
                 dataIndex: 'Grade',
-                width: 80,
-                text: 'Grade'
+                xtype: 'spark-grade-column'
             },
             {
                 dataIndex: 'Question',
-                flex: 1,
-                text: 'Guiding Questions'
+                text: 'Guiding Questions',
+                xtype: 'spark-title-column'
             },
             {
                 dataIndex: 'CreatedBy',
-                text: 'Created By',
-                width: 160
+                xtype: 'spark-createdby-column'
             },
             {
                 dataIndex: 'Created',
-                text: 'Created',
-                width: 96
+                xtype: 'spark-createddate-column'
             },
             {
                 dataIndex: 'Assign',
-                text: 'Assign',
-                width: 96,
-                tpl: '<input type="checkbox" checked="Assign"><span class="select-jawn"></span>',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-assign-column-single'
             }
         ],
 

@@ -5,7 +5,16 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Ext.grid.plugin.PagingToolbar',
-        'SparkClassroom.widget.GridColumnFilter'
+        'SparkClassroom.widget.GridColumnFilter',
+        'SparkClassroom.column.Standards',
+        'SparkClassroom.column.Grade',
+        'SparkClassroom.column.Learn',
+        'SparkClassroom.column.LearnType',
+        'SparkClassroom.column.DOK',
+        'SparkClassroom.column.Rating',
+        'SparkClassroom.column.Attachment',
+        'SparkClassroom.column.AssignMulti',
+        'SparkClassroom.column.Flag'
     ],
 
     config: {
@@ -18,155 +27,41 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         store: 'assign.Learn',
         columns:[
             {
-                width: 208,
                 dataIndex: 'Standards',
-                text: 'Standards',
-                tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-standards-column'
             },
             {
-                width: 80,
                 dataIndex: 'Grade',
-                text: 'Grade'
+                xtype: 'spark-grade-column'
             },
             {
-                flex: 1,
+                flex: 2,
                 dataIndex: 'Title',
-                text: 'Learn',
-                cell: {
-                    encodeHtml: false
-                },
-                tpl: [
-                    '<div class="spark-grid-row-image" style="background-image:url(',
-                        '<tpl if="VendorImage">',
-                            '{VendorImage}',
-                        '<tpl else>',
-                            '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png', // TODO some other default?
-                        '</tpl>',
-                    ')" title="{Vendor}">{Vendor}</div>',
-                    '<div class="spark-grid-row-title">{Title}</div>',
-                    '<div class="spark-grid-row-detail"><a href="{Link}" title="{Link}">{Link}</a></div>'
-                ]
+                xtype: 'spark-learn-column'
             },
             {
-                width: 64,
-                dataIndex: 'DOK',
-                text: 'DOK'
-            },
-            {
-                width: 64,
                 dataIndex: 'Category',
-                text: 'Type',
-                cell: {
-                    encodeHtml: false
-                },
-                renderer: function(v, r) {
-                    var type = r.get('Category');
-
-                    // TODO get list of possible strings and assign icons
-                    var icons = {
-                        'Video':                'youtube-play',
-                        'Article':              'newspaper-o',
-                        'Practice Problems':    'calculator',
-                        'IEPFriendly':          'folder-open-o',
-                        'Reading':              'bookmark-o'
-                    };
-
-                    var icon = icons[type];
-
-                    if (icon) {
-                        return '<div class="text-center" title="' + type + '"><i class="fa fa-lg fa-' + icon + '"></i></div>';
-                    } else {
-                        return type;
-                    }
-                }
+                xtype: 'spark-learntype-column'
             },
             {
-                width: 112,
+                dataIndex: 'DOK',
+                xtype: 'spark-dok-column'
+            },
+            {
                 dataIndex: 'SRating',
-                align: 'center',
-                text: 'Avg. Rating' + '<small class="flex-ct"><div class="flex-1">S</div><div class="flex-1">T</div></small>',
-                renderer: function(v, r) {
-                    return '<div class="flex-ct text-center"><div class="flex-1">' + r.get('SRating') + '</div><div class="flex-1">' + r.get('TRating') + '</div></div>';
-                },
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-rating-column'
             },
             {
-                width: 144,
                 dataIndex: 'Attachment',
-                text: 'Attachment'
+                xtype: 'spark-attachment-column'
             },
             {
-                width: 192,
                 dataIndex: 'Assign',
-                align: 'center',
-                text: '<div class="flex-ct">'
-                        + '<div class="flex-1"><i class="fa fa-lg fa-exclamation-triangle"></i></div>'
-                        + '<div class="flex-1"><i class="fa fa-lg fa-thumbs-up"></i></div>'
-                        + '<div class="flex-1"><i class="fa fa-lg fa-plus-circle"></i></div>'
-                        + '<div class="flex-1"><i class="fa fa-lg fa-times-circle"></i></div>'
-                        + '<div class="flex-1"></div>'
-                    + '</div>',
-                renderer: function(v, r) {
-                    var i = 1,
-                        controlItems = {};
-
-                    var filledItem = Math.floor(Math.random() * 4) + 1;
-
-                    // TODO replace all this randomized junk with real data
-                    for (; i<5; i++) {
-                        if (i == filledItem) {
-                            var isFull = Math.random()<.5;
-                            controlItems[i] = isFull ? 'is-full' : 'is-partial';
-                        } else {
-                            controlItems[i] = 'is-empty';
-                        }
-                    }
-
-                    return [
-                        '<ul class="assign-control-list">',
-                            '<li class="assign-control-item ' + controlItems[1] + '">',
-                                '<div class="assign-control-frame">',
-                                    '<div class="assign-control-indicator"></div>',
-                                '</div>',
-                            '</li>',
-                            '<li class="assign-control-item ' + controlItems[2] + '">',
-                                '<div class="assign-control-frame">',
-                                    '<div class="assign-control-indicator"></div>',
-                                '</div>',
-                            '</li>',
-                            '<li class="assign-control-item ' + controlItems[3] + '">',
-                                '<div class="assign-control-frame">',
-                                    '<div class="assign-control-indicator"></div>',
-                                '</div>',
-                            '</li>',
-                            '<li class="assign-control-item ' + controlItems[4] + '">',
-                                '<div class="assign-control-frame">',
-                                    '<div class="assign-control-indicator"></div>',
-                                '</div>',
-                            '</li>',
-                            '<li class="assign-control-item">',
-                                '<div class="menu-trigger"><i class="fa fa-lg fa-caret-down"></i></div>',
-                            '</li>',
-                        '</ul>',
-                    ].join('');
-                },
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-assign-column-multi'
             },
             {
-                width: 64,
                 dataIndex: 'Flag',
-                text: 'Issue',
-                tpl: '<a href="#" class="text-alert"><i class="fa fa-flag"></i></a>',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-flag-column'
             }
         ]
     },
@@ -228,7 +123,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                     ]
                 },
                 {
-                    width: 192,
+                    width: 176,
                     options: [
                         { text: 'Assign' }
                     ]

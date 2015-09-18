@@ -4,7 +4,13 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
     xtype: 'spark-assign-apply-grid',
     requires: [
         'Jarvus.plugin.GridFlex',
-        'Ext.grid.plugin.PagingToolbar'
+        'Ext.grid.plugin.PagingToolbar',
+        'SparkClassroom.column.Standards',
+        'SparkClassroom.column.Grade',
+        'SparkClassroom.column.Title',
+        'SparkClassroom.column.DOK',
+        'SparkClassroom.column.CreatedBy',
+        'SparkClassroom.column.AssignSingle'
     ],
 
     config: {
@@ -18,39 +24,28 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
         store: 'assign.Apply',
         columns:[
             {
-                dataIndex: 'Title',
-                flex: 1,
-                text: 'Title'
-            },
-            {
                 dataIndex: 'Standards',
-                text: 'Standards',
-                tpl: '{[values.Standards ? values.Standards.join(", ") : ""]}',
-                width: 288
+                xtype: 'spark-standards-column'
             },
             {
                 dataIndex: 'Grade',
-                width: 80,
-                text: 'Grade'
+                xtype: 'spark-grade-column'
+            },
+            {
+                dataIndex: 'Title',
+                xtype: 'spark-title-column'
             },
             {
                 dataIndex: 'DOK',
-                width: 80,
-                text: 'DOK'
+                xtype: 'spark-dok-column'
             },
             {
                 dataIndex: 'CreatedBy',
-                width: 128,
-                text: 'Created By'
+                xtype: 'spark-createdby-column'
             },
             {
                 dataIndex: 'Assign',
-                width: 96,
-                text: 'Assign',
-                tpl: '<input type="checkbox" checked="{Assign}">',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-assign-column-single'
             }
         ]
     }
