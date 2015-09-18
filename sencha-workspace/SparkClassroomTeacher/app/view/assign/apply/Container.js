@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Container', {
 
                 xtype: 'spark-panel',
                 cls: 'dark narrow',
-                title: 'Project Name <small>Details</small>',
+                title: '[Project Name] <small>Details</small>',
                 width: 384,
                 items: [
                     {
