@@ -1,0 +1,15 @@
+.x-grid-column,
+.x-grid-headergroup-inner > .x-innerhtml {
+    overflow: hidden;
+}
+
+.x-column-sorted-asc,
+.x-column-sorted-desc {
+    position: relative;
+
+    > .x-innerhtml::after {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}
