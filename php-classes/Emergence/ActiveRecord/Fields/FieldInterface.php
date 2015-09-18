@@ -5,7 +5,7 @@ namespace Emergence\ActiveRecord\Fields;
 interface FieldInterface
 {
     public static function getAliases();
-    public static function initConfig(array $config);
-    public static function serialize($input);
-    public static function unserialize($string);
+    public static function initOptions(array &$options);
+    public static function pack($unpacked, array &$options);
+    public static function unpack($packed, array &$options);
 }

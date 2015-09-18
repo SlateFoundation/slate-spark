@@ -2,8 +2,10 @@
 
 namespace Spark3;
 
-class ApplyProject extends \Emergence\ActiveRecord\MysqlRecord
+class ApplyProject extends \Emergence\ActiveRecord\LegacyActiveRecord
 {
+    public static $useLegacyFieldNames = true;
+
     public static $historyTable = 's2_history_apply_projects';
 
     public static $tableName = 's2_apply_projects';

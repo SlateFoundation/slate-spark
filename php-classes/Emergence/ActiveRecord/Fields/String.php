@@ -8,4 +8,21 @@ class String extends AbstractField
     {
         return ['string', 'varchar'];
     }
+
+    public static function initOptions(array &$options)
+    {
+        if (isset($options['blankisnull'])) {
+            if (!isset($options['blankIsNull'])) {
+                $options['blankIsNull'] = $options['blankisnull'];
+            }
+
+            unset($options['blankisnull']);
+        }
+
+        if (!isset($options['blankIsNull'])) {
+            $options['blankIsNull'] = !empty($options['null']);
+        }
+
+        return $options;
+    }
 }

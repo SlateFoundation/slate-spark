@@ -4,18 +4,17 @@ namespace Emergence\ActiveRecord\Fields;
 
 abstract class AbstractField implements FieldInterface
 {
-    public static function initConfig(array $config)
+    public static function initOptions(array &$options)
     {
-        return $config;
     }
 
-    public static function serialize($input)
+    public static function pack($unpacked, array &$options)
     {
-        return (string)$input;
+        return $unpacked;
     }
 
-    public static function unserialize($string)
+    public static function unpack($packed, array &$options)
     {
-        return $string;
+        return $packed;
     }
 }

@@ -14,25 +14,21 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
     public static $pluralNoun = 'records';
     public static $collectionRoute = null;
 
+    public static $behaviors = [
+        Behaviors\Eventable::class
+    ];
+
     public static $fields = [
-        'ID' => [
+        'id' => [
             'type' => 'integer',
-            'autoIncrement' => true,
             'unsigned' => true,
+            'autoIncrement' => true,
             'includeInSummary' => true
         ],
-        'Class' => [
+        'class' => [
             'type' => 'enum',
             'null' => false,
             'values' => []
-        ],
-        'Created' => [
-            'type' => 'timestamp',
-            'default' => 'CURRENT_TIMESTAMP'
-        ],
-        'CreatorID' => [
-            'type' => 'integer',
-            'null' => true
         ]
     ];
 
@@ -46,7 +42,10 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
         Fields\Text::class => [
             'foo' => 'bar',
             'boo' => 'baz'
-        ]
+        ],
+        Fields\Enum::class,
+        Fields\Timestamp::class,
+        Fields\Object::class
     ];
 
 
@@ -72,6 +71,21 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
         return $collectionRoute;
     }
 
+    public static function getFields()
+    {
+        return static::getStackedConfig('fields');
+    }
+
+    public static function getField($name)
+    {
+        return static::getStackedConfig('fields', $name);
+    }
+
+    public static function hasField($name)
+    {
+        return (boolean)static::getStackedConfig('fields', $name);
+    }
+
 
     // static instance getters
     public static function getById($id, array $options = [])
@@ -81,7 +95,7 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
 
     public static function getByHandle($handle, array $options = [])
     {
-        return static::getByField('handle', $handle, $options);
+        return static::getByField(static::hasField('handle') ? 'handle' : 'id', $handle, $options);
     }
 
 
@@ -90,8 +104,61 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
 
 
     // static configuration management
+    public static function getBehaviors()
+    {
+        return static::getStackedConfig('behaviors');
+    }
+
+    public static function getBehavior($name)
+    {
+        return static::getStackedConfig('behaviors', $name);
+    }
+
+    protected static function initBehaviors(array $config)
+    {
+        $behaviors = [];
+        foreach ($config AS $key => $value) {
+            if (!$value) {
+                if (is_string($key) && array_key_exists($key, $behaviors)) {
+                    unset($behaviors[$key]);
+                }
+
+                continue;
+            }
+
+            if (is_string($value)) {
+                $value = ['class' => $value];
+            }
+
+            if (!is_string($key)) {
+                $key = $value['class'];
+            } elseif (empty($value['class'])) {
+                $value['class'] = $key;
+            }
+
+            $behaviors[$key] = $value;
+        }
+
+        return $behaviors;
+    }
+
+    protected static function executeBehaviors($method, array $arguments)
+    {
+        $class = get_called_class();
+
+        foreach (static::getBehaviors() AS $behavior) {
+            if (method_exists($behavior['class'], $method)) {
+                call_user_func_array([$behavior['class'], $method], [&$arguments, &$behavior, $class]);
+            }
+        }
+    }
+
     protected static function initFields(array $config)
     {
+        static::executeBehaviors('beforeInitFields', [
+            'config' => &$config
+        ]);
+
         $fields = [];
 
         // apply defaults to field definitions
@@ -108,12 +175,17 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
             }
         }
 
+        static::executeBehaviors('afterInitFields', [
+            'config' => &$config,
+            'fields' => &$fields
+        ]);
+
         return $fields;
     }
 
     protected static function initField($field, array $options = [])
     {
-        // backwards compatibility
+        // backwards compatibility for deprecated options
         if (isset($options['notnull'])) {
             if (!isset($options['null'])) {
                 $options['null'] = !$options['notnull'];
@@ -130,33 +202,29 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
             unset($options['autoincrement']);
         }
 
-        if (isset($options['blankisnull'])) {
-            if (!isset($options['blankIsNull'])) {
-                $options['blankIsNull'] = $options['blankisnull'];
+        if (isset($options['excludeFromData'])) {
+            if (!isset($options['excludeFromValues'])) {
+                $options['excludeFromValues'] = $options['excludeFromData'];
             }
 
-            unset($options['blankisnull']);
+            unset($options['excludeFromData']);
         }
+
 
         // apply defaults
         $options = array_merge([
             'type' => null,
-            'length' => null,
             'primary' => null,
             'unique' => null,
             'autoIncrement' => null,
             'null' => array_key_exists('default', $options) && $options['default'] === null ? true : false,
-            'unsigned' => null,
-            'default' => null,
-            'values' => null
+            'default' => null
         ], static::$fieldDefaults, ['columnName' => $field], $options);
 
-        if ($field == 'Class') {
+        if ($field == 'class') {
             // apply Class enum values
             $options['values'] = static::getStaticSubClasses();
         }
-
-        $options['blankIsNull'] = !isset($options['blankIsNull']) && !empty($options['null']);
 
         if ($options['autoincrement']) {
             $options['primary'] = true;
@@ -165,6 +233,33 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
         if (empty($options['label'])) {
             $options['label'] = Inflector::labelIdentifier($field);
         }
+
+
+        // apply fieldHandler
+        if (!empty($options['fieldHandler'])) {
+            if (is_string($options['fieldHandler'])) {
+                $options['fieldHandler'] = ['class' => $options['fieldHandler']];
+            }
+        } elseif (!empty($options['type'])) {
+            $options['fieldHandler'] = static::getStackedConfig('fieldHandlers', $options['type']);
+
+            if (!$options['fieldHandler']) {
+                throw new \Exception("No field handler registered for type '$options[type]'");
+            }
+        }
+        
+        if (!empty($options['fieldHandler'])) {
+            $options['fieldHandler']['class']::initOptions($options);
+        }
+
+        return $options;
+    }
+
+    public static function addField($name, $options)
+    {
+        $options = static::initField($name, $options);
+
+        static::getStackedConfig('fields')[$name] = $options;
 
         return $options;
     }
@@ -231,7 +326,8 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
     }
 
     // instance members
-    protected $data;
+    protected $packedData;
+    protected $unpackedData;
     protected $phantom;
     protected $dirty;
     protected $valid;
@@ -242,12 +338,19 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
     // magic methods
     public function __construct(array $data = [], array $options = [])
     {
-        $this->data = $data;
         $this->phantom = isset($options['phantom']) ? $options['phantom'] : empty($data);
         $this->dirty = $this->phantom || !empty($options['dirty']);
         $this->valid = isset($options['valid']) ? $options['valid'] : null;
         $this->new = !empty($options['new']);
         $this->destroyed = !empty($options['destroyed']);
+
+        if (!isset($options['packed']) || $options['packed'] == true) {
+            $this->packedData = $data;
+            $this->unpackedData = [];
+        } else {
+            $this->packedData = [];
+            $this->unpackedData = $data;
+        }
     }
 
 
@@ -334,8 +437,37 @@ abstract class AbstractActiveRecord implements ActiveRecordInterface
 
 
     // instance methods
+    public function getValue($name, array $options = null)
+    {
+        if (array_key_exists($name, $this->unpackedData)) {
+            return $this->unpackedData[$name];
+        }
+
+        if (!$options) {
+            $options = static::getField($name);
+        }
+
+        $value = array_key_exists($name, $this->packedData) ? $this->packedData[$name] : null;
+
+        if (!empty($options['fieldHandler'])) {
+            $value = $options['fieldHandler']['class']::unpack($value, $options);
+        }
+
+        return $this->unpackedData[$name] = $value;
+    }
+
     public function getValues(array $options = [])
     {
-        return $this->data;
+        $values = [];
+
+        foreach (static::getFields() AS $fieldName => $fieldOptions) {
+            if (!empty($fieldOptions['excludeFromValues'])) {
+                continue;
+            }
+
+            $values[$fieldName] = $this->getValue($fieldName, $fieldOptions);
+        }
+
+        return $values;
     }
 }

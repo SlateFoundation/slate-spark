@@ -22,9 +22,6 @@ trait StackedConfigTrait
             }
         }
 
-        // filter out falsey configs
-        $config = array_filter($config);
-
         // apply property-specific initialization
         $initMethodName = 'init'.ucfirst($propertyName);
         if (method_exists($className, $initMethodName)) {

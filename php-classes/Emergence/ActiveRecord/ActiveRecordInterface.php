@@ -12,10 +12,17 @@ interface ActiveRecordInterface
     public static function getPluralNoun();
     public static function getNoun($count);
     public static function getCollectionRoute();
+    public static function getFields();
+    public static function getField($name);
+    public static function hasField($name);
 
+
+    // static configuration modifiers
+    public static function addField($name, $config);
+        
 
     // instance methods for managing record values
-#    public function getValue($name);
+    public function getValue($name, array $options = null);
 #    public function setValue($name, $value);
 #
     public function getValues(array $options = []);
