@@ -4,13 +4,14 @@ Ext.define('SparkClassroom.column.AssignMulti', {
 
     config: {
         cls: 'spark-assign-column-multi',
+        showTrigger: true,
         width: 176,
         text: '<div class="flex-ct">'
                 + '<div class="flex-1"><i class="fa fa-lg fa-exclamation-triangle"></i></div>'
                 + '<div class="flex-1"><i class="fa fa-lg fa-thumbs-up"></i></div>'
                 + '<div class="flex-1"><i class="fa fa-lg fa-plus-circle"></i></div>'
                 + '<div class="flex-1"><i class="fa fa-lg fa-times-circle"></i></div>'
-                + '<div class="flex-1"></div>'
+                + '<div class="flex-1"></div>' // TODO hide me if showTrigger is false
             + '</div>',
         renderer: function(v, r) {
             var i = 1,
@@ -50,6 +51,8 @@ Ext.define('SparkClassroom.column.AssignMulti', {
                             '<div class="assign-control-indicator"></div>',
                         '</div>',
                     '</li>',
+                    
+                    // TODO hide me if showTrigger is false
                     '<li class="assign-control-item">',
                         '<div class="menu-trigger"><i class="fa fa-lg fa-angle-down"></i></div>',
                     '</li>',

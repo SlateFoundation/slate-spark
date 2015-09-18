@@ -4,6 +4,7 @@ Ext.define('SparkClassroom.column.AssignSingle', {
 
     config: {
         cls: 'spark-assign-column-single',
+        showTrigger: true,
         text: 'Assign',
         width: 80,
         cell: {
@@ -26,6 +27,8 @@ Ext.define('SparkClassroom.column.AssignSingle', {
                             '<i class="assign-control-indicator"></i>',
                         '</div>',
                     '</div>',
+
+                    // TODO hide me if showTrigger is false
                     '<div class="assign-control-item">',
                         '<div class="menu-trigger"><i class="fa fa-lg fa-angle-down"></i></div>',
                     '</div>',
