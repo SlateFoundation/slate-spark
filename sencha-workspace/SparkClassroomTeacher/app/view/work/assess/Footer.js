@@ -1,21 +1,32 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
-    extend: 'Ext.Toolbar',
+    extend: 'Ext.Container',
     xtype: 'spark-teacher-work-assess-footer',
 
     config: {
+        layout: 'hbox',
+        defaults: {
+            xtype: 'button',
+            ui: 'action'
+        },
         items: [
             {
-                xtype: 'button',
                 text: 'Assign Learns'
             },
             {
-                xtype: 'button',
+                xtype: 'component',
+                width: '16'
+            },
+            {
                 text: 'Schedule Interaction'
             },
             {
-                xtype: 'button',
-                text: 'Standard Completed'
+                xtype: 'component',
+                flex: 1
+            },
+            {
+                text: 'Mark Standard Complete',
+                iconCls: 'fa fa-check'
             }
         ]
     }
