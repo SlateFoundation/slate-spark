@@ -3,7 +3,14 @@ Ext.define('SparkClassroom.work.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-grid',
     requires: [
-        'Jarvus.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex',
+        'SparkClassroom.column.Completed',
+        'SparkClassroom.column.Learn',
+        'SparkClassroom.column.DOK',
+        'SparkClassroom.column.LearnType',
+        'SparkClassroom.column.Rating',
+        'SparkClassroom.column.Score',
+        'SparkClassroom.column.Attachment',
     ],
 
     config: {
@@ -16,47 +23,32 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         columns:[
             {
                 dataIndex: 'Completed',
-                text: 'Done',
-                width: 85,
-                tpl: '<input type="checkbox" checked="{Completed}">',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-completed-column'
             },
             {
                 dataIndex: 'Title',
-                flex: 2,
-                text: 'Playist'
+                xtype: 'spark-learn-column',
+                flex: 2
             },
             {
                 dataIndex: 'DOK',
-                width: 85,
-                text: 'DOK'
+                xtype: 'spark-dok-column'
             },
             {
                 dataIndex: 'Category',
-                text: 'Category',
-                flex: 1
+                xtype: 'spark-learntype-column'
             },
             {
                 dataIndex: 'SRating',
-                text: 'Avg. Rating',
-                width: 130,
-                tpl: '{SRating}    {TRating}',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-rating-column'
             },
             {
                 dataIndex: 'Score',
-                width: 85,
-                align: 'center',
-                text: 'Score'
+                xtype: 'spark-score-column'
             },
             {
                 dataIndex: 'Attachment',
-                flex: 1,
-                text: 'Attachment'
+                xtype: 'spark-attachment-column'
             }
         ],
 

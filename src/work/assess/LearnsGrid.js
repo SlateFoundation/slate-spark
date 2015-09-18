@@ -3,7 +3,8 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-learnsgrid',
     requires: [
-        'Jarvus.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex',
+        'SparkClassroom.column.Learn'
     ],
 
     config: {
@@ -14,33 +15,18 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
         titleBar: null,
         columns:[
             {
-                flex: 1,
-                text: 'Learns',
-                cell: {
-                    encodeHtml: false
-                },
-                tpl: [
-                    '<div class="spark-grid-row-image" style="background-image:url(',
-                        '<tpl if="VendorImage">',
-                            '{VendorImage}',
-                        '<tpl else>',
-                            '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png', // TODO some other default?
-                        '</tpl>',
-                    ')" title="{VendorTitle}">{VendorTitle}</div>',
-                    '<div class="spark-grid-row-title">{Title}</div>',
-                    '<div class="spark-grid-row-detail"><a href="{Link}">{Link}</a></div>'
-                ]
-
+                dataIndex: 'Title',
+                xtype: 'spark-learn-column'
             },
             {
                 dataIndex: 'Rating',
-                width: 130,
+                width: 112,
                 text: 'Your Rating'
             },
             {
                 dataIndex: 'Comment',
-                text: 'Comment',
-                width: 340
+                text: 'Comments',
+                flex: 1
             }
         ],
 

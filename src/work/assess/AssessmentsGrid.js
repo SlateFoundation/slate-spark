@@ -3,7 +3,10 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-assessmentsgrid',
     requires: [
-        'Jarvus.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex',
+        'SparkClassroom.column.Title',
+        'SparkClassroom.column.Completed',
+        'SparkClassroom.column.Score'
     ],
 
     config: {
@@ -15,25 +18,16 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
         columns:[
             {
                 dataIndex: 'Standard',
-                flex: 1,
+                xtype: 'spark-title-column',
                 text: 'Assessment Selected'
             },
             {
                 dataIndex: 'Completed',
-                width: 120,
-                text: 'Completed',
-                tpl: '<input type="checkbox" checked="{Completed}">',
-                cell: {
-                    encodeHtml: false
-                }
+                xtype: 'spark-completed-column'
             },
             {
                 dataIndex: 'Score',
-                text: 'Score',
-                renderer: function(v, r) {
-                    return v ? v+'/5' : '';
-                },
-                width: 120
+                xtype: 'spark-score-column'
             }
         ],
 
