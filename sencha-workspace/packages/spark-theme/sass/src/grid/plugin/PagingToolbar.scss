@@ -1,0 +1,9 @@
+.x-grid-pagingtoolbar {
+    &.x-docked-bottom {
+        border-width: 1px 0 0;
+    }
+
+    &.x-docked-top {
+        border-width: 0 0 1px;
+    }
+}
