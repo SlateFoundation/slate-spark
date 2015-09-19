@@ -65,8 +65,15 @@
     }
 
     .x-field {
-        margin-right: -.75em; // experimental
         margin-top: 0;
+
+        &.x-label-align-right {
+            margin-left: -.75em; // experimental
+        }
+
+        &.x-label-align-left {
+            margin-right: -.75em;
+        }
     }
 
     .x-form-label {
