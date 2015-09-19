@@ -7,6 +7,8 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
         'Ext.field.Radio'
     ],
 
+    manageBorders: false,
+
     config: {
     	/*
 			these are style work around for a ExtJS 6 modern bug:
@@ -15,19 +17,23 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
     	margin: '-17 0', // needs handled with sass
     	left: 0,
 
-    	width: 400,
+    	width: 480,
         items: [
         	{
         		xtype: 'container',
                 layout: 'hbox',
+                defaults: {
+                    flex: 1
+                },
                 items: [
                      {
                         xtype: 'fieldset',
-                        flex: 1,
+                        cls: 'radio-group',
                         defaults: {
                             xtype: 'radiofield',
                             name : 'request',
-                            labelAlign: 'right'
+                            labelAlign: 'right',
+                            labelWidth: 200 // TODO find a way to make the labels "flex"
                         },
                         items: [
                             /*
