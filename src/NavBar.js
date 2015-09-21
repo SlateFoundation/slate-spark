@@ -5,6 +5,7 @@ Ext.define('SparkClassroom.NavBar', {
 
     config: {
         selectedButton: null,
+        activeSubpanel: null,
 
         cls: 'spark-navbar',
         layout: {
@@ -21,5 +22,35 @@ Ext.define('SparkClassroom.NavBar', {
         if (newButton) {
             newButton.addCls('is-selected');
         }
+    },
+
+    updateActiveSubpanel: function(panel, oldPanel) {
+        if (oldPanel) {
+            oldPanel.hide();
+        }
+
+        if (panel) {
+            panel.show();
+        }
+    },
+
+    toggleSubpanel: function(panel, showByButton) {
+        var me = this;
+
+        if (panel === me.getActiveSubpanel()) {
+            me.setActiveSubpanel(null);
+            return;
+        }
+
+        panel.setVisibility(false);
+
+        if (!panel.getParent()) {
+            me.getParent().add(panel);
+        }
+
+        me.setActiveSubpanel(panel);
+        panel.alignTo(showByButton, 'tr-br?');
+
+        panel.setVisibility(true);
     }
 });
