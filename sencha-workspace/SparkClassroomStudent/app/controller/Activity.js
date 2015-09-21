@@ -3,15 +3,14 @@ Ext.define('SparkClassroomStudent.controller.Activity', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'activity.Container',
-        'ActivityList@SparkClassroom.activity'
+        'activity.Container'
     ],
 
     stores: ['Activities@SparkClassroom.store'],
 
     refs: {
-        navBar: 'spark-student-navbar',
-        activityNavButton: 'spark-student-navbar button#activity',
+        navBar: 'spark-navbar',
+        activityNavButton: 'spark-navbar button#activity',
 
         activityCt: {
             selector: 'spark-activity',
