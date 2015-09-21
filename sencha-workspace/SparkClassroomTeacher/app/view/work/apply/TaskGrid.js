@@ -3,14 +3,15 @@ Ext.define('SparkClassroomTeacher.view.work.apply.TaskGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-teacher-work-apply-taskgrid',
     requires: [
-        'Jarvus.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight'
     ],
 
     config: {
         plugins: [
-            'gridflex'
+            'gridflex',
+            'gridheight'
         ],
-        height: 200,
         titleBar: null,
         columns: [
             {

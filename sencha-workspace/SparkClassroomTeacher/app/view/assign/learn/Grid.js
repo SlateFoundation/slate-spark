@@ -4,6 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     xtype: 'spark-assign-learn-grid',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.widget.GridColumnFilter',
         'SparkClassroom.column.Standards',
@@ -20,9 +21,9 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     config: {
         plugins: [
             'gridflex',
+            'gridheight',
             'gridpagingtoolbar'
         ],
-        height: 600,
         titleBar: null,
         store: 'assign.Learn',
         columns:[

@@ -4,6 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
     xtype: 'spark-assign-assess',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.column.Standards',
         'SparkClassroom.column.Grade',
@@ -18,9 +19,9 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
     config: {
         plugins: [
             'gridflex',
+            'gridheight',
             'gridpagingtoolbar'
         ],
-        height: 400,
         grouped: true,
         title: 'Assess',
         titleBar: null,

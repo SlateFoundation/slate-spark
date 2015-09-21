@@ -4,6 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
     extend: 'Ext.grid.Grid',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.column.Standards',
         'SparkClassroom.column.Grade',
@@ -17,9 +18,9 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
     config: {
         plugins: [
             'gridflex',
+            'gridheight',
             'gridpagingtoolbar'
         ],
-        height: 500,
         grouped: true,
         titleBar: null,
         columns:[

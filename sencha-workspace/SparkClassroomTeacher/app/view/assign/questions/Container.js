@@ -4,6 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     xtype: 'spark-assign-questions',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.widget.GridColumnFilter',
         'SparkClassroom.column.Standards',
@@ -17,9 +18,9 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     config: {
         plugins: [
             'gridflex',
+            'gridheight',
             'gridpagingtoolbar'
         ],
-        height: 600,
         titleBar: null,
         columns:[
             {
