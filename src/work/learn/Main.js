@@ -11,6 +11,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
     config: {
         items: [
             {
+                // TODO: remove this double-bagging?
                 xtype: 'container',
                 itemId: 'standardGrid',
                 items: [

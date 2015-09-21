@@ -11,13 +11,14 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         'SparkClassroom.column.Rating',
         'SparkClassroom.column.Score',
         'SparkClassroom.column.Attachment',
+        'Jarvus.plugin.GridHeight'
     ],
 
     config: {
         plugins: [
-            'gridflex'
+            'gridflex',
+            'gridheight'
         ],
-        height: 500,
         grouped: true,
         titleBar: null,
         columns:[
