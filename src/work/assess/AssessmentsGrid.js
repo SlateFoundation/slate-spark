@@ -4,6 +4,7 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
     xtype: 'spark-work-assess-assessmentsgrid',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.Completed',
         'SparkClassroom.column.Score'
@@ -11,9 +12,9 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
 
     config: {
         plugins: [
-            'gridflex'
+            'gridflex',
+            'gridheight'
         ],
-        height: 200, // TODO remove height when possible
         titleBar: null,
         columns:[
             {

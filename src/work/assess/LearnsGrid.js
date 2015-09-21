@@ -4,14 +4,15 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
     xtype: 'spark-work-assess-learnsgrid',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Learn'
     ],
 
     config: {
         plugins: [
-            'gridflex'
+            'gridflex',
+            'gridheight'
         ],
-        height: 400, // TODO remove height when possible
         titleBar: null,
         columns:[
             {

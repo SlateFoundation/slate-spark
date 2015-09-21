@@ -4,14 +4,14 @@ Ext.define('SparkClassroom.work.learn.Grid', {
     xtype: 'spark-work-learn-grid',
     requires: [
         'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Completed',
         'SparkClassroom.column.Learn',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.LearnType',
         'SparkClassroom.column.Rating',
         'SparkClassroom.column.Score',
-        'SparkClassroom.column.Attachment',
-        'Jarvus.plugin.GridHeight'
+        'SparkClassroom.column.Attachment'
     ],
 
     config: {
