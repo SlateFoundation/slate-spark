@@ -3,14 +3,15 @@ Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-student-work-assess-projectgrid',
     requires: [
-        'Jarvus.plugin.GridFlex'
+        'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight'
     ],
 
     config: {
         plugins: [
-            'gridflex'
+            'gridflex',
+            'gridheight'
         ],
-        height: 200, // TODO remove height when possible
         titleBar: null,
         columns:[
             {

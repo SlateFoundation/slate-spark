@@ -3,9 +3,10 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
     extend: 'Ext.Container',
     xtype: 'spark-student-work-apply',
     requires: [
+        'Jarvus.plugin.GridFlex',
+        'Jarvus.plugin.GridHeight',
         'SparkClassroom.widget.Panel',
-        'SparkClassroom.widget.SimpleHeading',
-        'Jarvus.plugin.GridFlex'
+        'SparkClassroom.widget.SimpleHeading'
     ],
 
     config: {
@@ -19,9 +20,9 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
             {
                 xtype: 'grid',
                 plugins: [
-                    'gridflex'
+                    'gridflex',
+                    'gridheight'
                 ],
-                height: 300, // TODO remove height when possible
                 titleBar: false,
                 store: {
                     fields: [ 'title', 'description', 'standards', 'checked' ],
