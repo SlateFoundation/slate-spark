@@ -3,43 +3,31 @@ Ext.define('SparkClassroomTeacher.controller.Activity', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'activity.Container',
-        'ActivityList@SparkClassroom.activity'
+        'activity.Container'
     ],
 
     stores: ['Activities@SparkClassroom.store'],
 
-    refs:{
-        sparkNavBarButton: 'spark-navbar button',
-        sparkActivityCt: {
+    refs: {
+        navBar: 'spark-navbar',
+        activityNavButton: 'spark-navbar button#activity',
+
+        activityCt: {
             selector: 'spark-activity',
             autoCreate: true,
 
-            xtype: 'spark-activity',
-            hidden: true
+            xtype: 'spark-activity'
         }
     },
 
     control: {
-        sparkNavBarButton: {
-            tap: 'onSparkNavBarButtonClick'
+        activityNavButton: {
+            tap: 'onNavActivityTap'
         }
     },
 
     // event handlers
-    onSparkNavBarButtonClick: function(btn) {
-        var btnId = btn.getItemId(),
-            sparkActivityCt = this.getSparkActivityCt();
-
-
-        // TODO possible handle clicking anywhere else in the viewport to hide the panel
-        if (btnId == 'activity' && sparkActivityCt.isHidden()) {
-
-            sparkActivityCt.showBy(btn, 'tr-tr?');
-            
-        } else {
-            sparkActivityCt.hide();
-        }
-    },
-
+    onNavActivityTap: function(btn) {
+        this.getNavBar().toggleSubpanel(this.getActivityCt(), btn);
+    }
 });
