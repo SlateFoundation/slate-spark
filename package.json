@@ -248,6 +248,7 @@
     "requires": [
         "jarvus-touch-accordion",
         "slate-core-data",
-        "jarvus-gridflex"
+        "jarvus-gridflex",
+        "jarvus-gridheight"
     ]
 }
