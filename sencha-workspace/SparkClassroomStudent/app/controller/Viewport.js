@@ -19,6 +19,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     ],
 
     refs: {
+        appCt: 'viewport > #appCt',
+
         sparkTitleBar: {
             selector: 'spark-titlebar',
             autoCreate: true,
@@ -74,13 +76,12 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
         Ext.getStore('Sections').load();
 
-        //add items to viewport
-        Ext.Viewport.add([
+        // add items to viewport's appCt
+        me.getAppCt().add([
             me.getSparkTitleBar(),
             me.getNavBar(),
             me.getTabsCt()
         ]);
-
     },
 
     updateSelectedSection: function(sectionCode, oldSectionCode) {

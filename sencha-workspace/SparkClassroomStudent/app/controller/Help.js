@@ -3,58 +3,50 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'help.Container',
-        'help.Waitlist'
+        'help.Container'
     ],
 
-    stores: ['Students@SparkClassroom.store'],
+    //stores: ['Students@SparkClassroom.store'],
 
-    refs:{
-        sparkStudentNavBar: 'spark-student-navbar button',
-        sparkHelpCt: {
+    refs: {
+        navBar: 'spark-student-navbar',
+        helpNavButton: 'spark-student-navbar button#help',
+
+        helpCt: {
             selector: 'spark-help',
             autoCreate: true,
 
-            xtype: 'spark-help',
-            hidden: true
-        },
-        helpForm: '#helpForm'
+            xtype: 'spark-help'
+        }
+        //helpForm: '#helpForm'
     },
 
     control: {
-        sparkStudentNavBar: {
-            tap: 'onSparkNavBarButtonClick'
+        helpNavButton: {
+            tap: 'onNavHelpTap'
         }
-        // called on painted because the get return empty when the component is 
+        // called on painted because the get return empty when the component is
         // autoCreated with hidden set to true
         // ,sparkHelpCt: {
         //     painted: 'onSparkHelpContainerPainted'
         // }
     },
 
-    onLaunch: function(){
-        var studentsStore = Ext.getStore('Students');
+    // onLaunch: function(){
+    //     var studentsStore = Ext.getStore('Students');
 
-        // UNCOMMENT TO BREAK EVERYTHING!
-        //studentsStore.load();
-    },
+    //     // UNCOMMENT TO BREAK EVERYTHING!
+    //     //studentsStore.load();
+    // },
 
     // event handlers
-    onSparkNavBarButtonClick: function(btn) {
-        var btnId = btn.getItemId(),
-            sparkHelpCt = this.getSparkHelpCt();
-
-        // TODO possible handle clicking anywhere else in the viewport to hide the panel
-        if (btnId == 'help' && sparkHelpCt.isHidden()) {
-            sparkHelpCt.showBy(btn, 'tr-tr?');
-        } else {
-            sparkHelpCt.hide();
-        }
+    onNavHelpTap: function(btn) {
+        this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
 
     // didn't bother programatically added radiofields because the styling is buggy
-    onSparkHelpContainerPainted: function(){
-        //var helpForm = this.getHelpForm();
-    },
+    // onSparkHelpContainerPainted: function(){
+    //     //var helpForm = this.getHelpForm();
+    // },
 
 });

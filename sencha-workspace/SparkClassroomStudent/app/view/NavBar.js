@@ -16,10 +16,10 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                 label: 'Standard',
                 labelCls: 'visually-hidden',
                 options: [
-                {
-                    text: 'Select Standard'
-                }
-            ]
+                    {
+                        text: 'Select Standard'
+                    }
+                ]
             },
             {
                 xtype: 'label',
