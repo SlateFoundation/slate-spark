@@ -10,7 +10,6 @@ Ext.define('SparkClassroom.assign.Popup', {
     config: {
         cls: 'spark-teacher-assign-popup',
         floating: true,
-        modal: true,
         height: 400,
         width: 560,
         margin: 0,
