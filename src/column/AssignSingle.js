@@ -12,28 +12,28 @@ Ext.define('SparkClassroom.column.AssignSingle', {
         },
         renderer: function(v, r) {
             // TODO get rid of randomized junk
-            // TODO? use View Models instead of renderer/tpl? 
+            // TODO? use View Models instead of renderer/tpl?
             var states = [ 'is-empty', 'is-partial', 'is-full' ],
-                state,
-                n;
+                out = ['<div class="flex-ct">'];
 
-            n = Math.floor(Math.random() * 3);
-            state = states[n];
-
-            return [
-                '<div class="flex-ct">',
-                    '<div class="assign-control-item ' + state + '">',
-                        '<div class="assign-control-frame single-control">',
-                            '<i class="assign-control-indicator"></i>',
-                        '</div>',
-                    '</div>',
-
-                    // TODO hide me if showTrigger is false
-                    '<div class="assign-control-item">',
-                        '<div class="menu-trigger"><i class="fa fa-lg fa-angle-down"></i></div>',
+            out.push(
+                '<div class="assign-control-item ' + states[Math.floor(Math.random() * 3)] + '">',
+                    '<div class="assign-control-frame single-control">',
+                        '<i class="assign-control-indicator"></i>',
                     '</div>',
                 '</div>'
-            ].join('');
+            );
+
+            if (this.getShowTrigger()) {
+                out.push(
+                    '<div class="assign-control-item">',
+                        '<div class="menu-trigger"><i class="fa fa-lg fa-angle-down"></i></div>',
+                    '</div>'
+                );
+            }
+
+            out.push('</div>');
+            return out.join('');
         }
     }
 });

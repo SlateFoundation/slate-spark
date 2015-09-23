@@ -15,7 +15,8 @@ Ext.define('SparkClassroom.column.AssignMulti', {
             + '</div>',
         renderer: function(v, r) {
             var i = 1,
-                controlItems = {};
+                controlItems = {},
+                out = [];
 
             var filledItem = Math.floor(Math.random() * 4) + 1;
 
@@ -29,35 +30,41 @@ Ext.define('SparkClassroom.column.AssignMulti', {
                 }
             }
 
-            return [
-                '<ul class="assign-control-list">',
-                    '<li class="assign-control-item ' + controlItems[1] + '">',
-                        '<div class="assign-control-frame">',
-                            '<div class="assign-control-indicator"></div>',
-                        '</div>',
-                    '</li>',
-                    '<li class="assign-control-item ' + controlItems[2] + '">',
-                        '<div class="assign-control-frame">',
-                            '<div class="assign-control-indicator"></div>',
-                        '</div>',
-                    '</li>',
-                    '<li class="assign-control-item ' + controlItems[3] + '">',
-                        '<div class="assign-control-frame">',
-                            '<div class="assign-control-indicator"></div>',
-                        '</div>',
-                    '</li>',
-                    '<li class="assign-control-item ' + controlItems[4] + '">',
-                        '<div class="assign-control-frame">',
-                            '<div class="assign-control-indicator"></div>',
-                        '</div>',
-                    '</li>',
-                    
-                    // TODO hide me if showTrigger is false
+            out.push('<ul class="assign-control-list">');
+
+            out.push(
+                '<li class="assign-control-item ' + controlItems[1] + '">',
+                    '<div class="assign-control-frame">',
+                        '<div class="assign-control-indicator"></div>',
+                    '</div>',
+                '</li>',
+                '<li class="assign-control-item ' + controlItems[2] + '">',
+                    '<div class="assign-control-frame">',
+                        '<div class="assign-control-indicator"></div>',
+                    '</div>',
+                '</li>',
+                '<li class="assign-control-item ' + controlItems[3] + '">',
+                    '<div class="assign-control-frame">',
+                        '<div class="assign-control-indicator"></div>',
+                    '</div>',
+                '</li>',
+                '<li class="assign-control-item ' + controlItems[4] + '">',
+                    '<div class="assign-control-frame">',
+                        '<div class="assign-control-indicator"></div>',
+                    '</div>',
+                '</li>'
+            );
+
+            if (this.getShowTrigger()) {
+                out.push(
                     '<li class="assign-control-item">',
                         '<div class="menu-trigger"><i class="fa fa-lg fa-angle-down"></i></div>',
-                    '</li>',
-                '</ul>',
-            ].join('');
+                    '</li>'
+                );
+            }
+
+            out.push('</ul>');
+            return out.join('');
         },
         cell: {
             encodeHtml: false
