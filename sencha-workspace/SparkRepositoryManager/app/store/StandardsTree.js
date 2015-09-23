@@ -11,7 +11,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
     config: {
         proxy: {
             type: 'ajax',
-            url: 'data/tree.json',
+            url: 'https://api.matchbooklearning.com/postgrest/legacy_standards_tree',
             reader: {
                 type: 'json'
             },
@@ -24,9 +24,8 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
             'id',
             'parentId',
             'name',
-            'gradeLevels',
-            'standardCode',
-            'altCode'
+            'grades',
+            'standardCode'
         ]
     },
 
@@ -80,12 +79,14 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
         load: function(me, records, success, eOpts) {
             var standardCodes = [];
 
-            if (success) {
+            if (success) {                
                 me.getRoot().visitPreOrder('', function (child) {
+                    
                     var standardCode = child.get('standardCode');
 
                     if (standardCode && child.get('leaf')) {
                         standardCodes.push({standardCode: standardCode});
+                        child.set('checked', false);
                     }
                 });
 
