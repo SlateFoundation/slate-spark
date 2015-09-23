@@ -25,6 +25,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     ],
 
     refs: {
+        appCt: 'viewport > #appCt',
+
         sparkTitleBar: {
             selector: 'spark-titlebar',
             autoCreate: true,
@@ -92,8 +94,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
         Ext.getStore('Sections').load();
 
-        //add items to viewport
-        Ext.Viewport.add([
+        // add items to viewport's appCt
+        me.getAppCt().add([
             me.getSparkTitleBar(),
             me.getNavBar(),
             me.getSparkGPS(),

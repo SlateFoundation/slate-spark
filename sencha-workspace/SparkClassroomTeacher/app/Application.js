@@ -24,8 +24,13 @@ Ext.define('SparkClassroomTeacher.Application', {
 
     config: {
         viewport: {
-            layout: 'auto',
-            scrollable: 'vertical'
+            items: {
+                itemId: 'appCt',
+
+                xtype: 'container',
+                layout: 'auto',
+                scrollable: 'vertical'
+            }
         }
     },
 
