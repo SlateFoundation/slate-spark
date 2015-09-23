@@ -31,6 +31,10 @@ class ApplyProject extends \Emergence\ActiveRecord\LegacyActiveRecord
             'type'    => 'json',
             'notnull' => false
         ],
+        'StandardIDs' => [
+            'type'    => 'json',
+            'notnull' => false
+        ],
         'Todos' => [
             'type'    => 'json',
             'notnull' => false

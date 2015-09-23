@@ -75,6 +75,10 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
             }
         },
         {
+            name: "StandardIDs",
+            useNull: true
+        },
+        {
             name: "Todos",
             useNull: true
         },

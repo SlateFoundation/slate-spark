@@ -32,6 +32,11 @@ class ApplyProject extends SparkPointRecord
             'notnull' => false,
             'includeInSummary' => true
         ],
+        'StandardIDs' => [
+            'type'    => 'json',
+            'notnull' => false,
+            'includeInSummary' => true
+        ],
         'Todos' => [
             'type'    => 'json',
             'notnull' => false
@@ -62,6 +67,11 @@ class ApplyProject extends SparkPointRecord
         'Standards' => [
             'qualifiers' => ['any','standards'],
             'sql' => 'Standards LIKE "%%%s%%"'
-        ]
+        ],
+        'StandardIDs' => [
+            'qualifiers' => ['any','standardids'],
+            'sql' => 'StandardIDs LIKE "%%%s%%"'
+        ],
+
     ];
 }

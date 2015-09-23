@@ -23,6 +23,10 @@ class ConferenceResource extends SparkPointRecord
         'Standards' => [
             'type'    => 'json',
             'notnull' => false
+        ],
+        'StandardIDs' => [
+            'type'    => 'json',
+            'notnull' => false
         ]
     ];
 

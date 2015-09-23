@@ -57,6 +57,10 @@ Ext.define('SparkRepositoryManager.model.Assessment', {
             }
         },
         {
+            name: "StandardIDs",
+            useNull: true
+        },
+        {
             name: "GradeLevel",
             type: "string",
             useNull: true
