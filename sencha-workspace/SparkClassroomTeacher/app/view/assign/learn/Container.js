@@ -4,8 +4,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Container', {
     xtype: 'spark-assign-learn',
     requires: [
         'SparkClassroomTeacher.view.assign.learn.Grid',
-        'SparkClassroom.widget.DiscussionList',
-        'SparkClassroomTeacher.view.assign.Popup'
+        'SparkClassroom.widget.DiscussionList'
     ],
 
     config: {
