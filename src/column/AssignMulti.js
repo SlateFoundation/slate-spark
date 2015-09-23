@@ -1,11 +1,41 @@
 Ext.define('SparkClassroom.column.AssignMulti', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-assign-column-multi',
+    requires: [
+        'SparkClassroom.assign.Popup'
+    ],
 
     config: {
-        cls: 'spark-assign-column-multi',
+        popup: null,
+        popupCell: null,
         showTrigger: true,
+
+        cls: 'spark-assign-column-multi',
         width: 176,
+        cell: {
+            encodeHtml: false,
+            listeners: {
+                element: 'element',
+                delegate: '.menu-trigger',
+                tap: function(ev, t) {
+                    var me = this,
+                        column = me.getColumn(),
+                        popup = column.getPopup();
+
+                    if (false === me.fireEvent('beforetriggertap', me)) {
+                        return;
+                    }
+
+                    if (popup && column.getPopupCell() === me) {
+                        column.setPopupCell(null);
+                    } else {
+                        column.setPopupCell(me);
+                    }
+
+                    me.fireEvent('triggertap', me);
+                }
+            }
+        },
         text: '<div class="flex-ct">'
                 + '<div class="flex-1"><i class="fa fa-lg fa-exclamation-triangle"></i></div>'
                 + '<div class="flex-1"><i class="fa fa-lg fa-thumbs-up"></i></div>'
@@ -65,9 +95,26 @@ Ext.define('SparkClassroom.column.AssignMulti', {
 
             out.push('</ul>');
             return out.join('');
-        },
-        cell: {
-            encodeHtml: false
         }
+    },
+
+    updatePopupCell: function(cell, oldCell) {
+        var me = this,
+            popup = this.getPopup();
+
+        if (!cell) {
+            popup.hide();
+            return;
+        }
+
+        if (!popup) {
+            me.setPopup(popup = Ext.create('SparkClassroom.assign.Popup', {
+                hidden: true
+            }));
+            (me.up('{getScrollable()}') || Ext.Viewport).add(popup);
+        }
+
+        popup.showBy(cell.element.down('.menu-trigger'), 'tr-b?');
+
     }
 });

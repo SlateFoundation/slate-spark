@@ -1,14 +1,41 @@
 Ext.define('SparkClassroom.column.AssignSingle', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-assign-column-single',
+    requires: [
+        'SparkClassroom.assign.Popup'
+    ],
 
     config: {
-        cls: 'spark-assign-column-single',
+        popup: null,
+        popupCell: null,
         showTrigger: true,
+
+        cls: 'spark-assign-column-single',
         text: 'Assign',
         width: 80,
         cell: {
-            encodeHtml: false
+            encodeHtml: false,
+            listeners: {
+                element: 'element',
+                delegate: '.menu-trigger',
+                tap: function(ev, t) {
+                    var me = this,
+                        column = me.getColumn(),
+                        popup = column.getPopup();
+
+                    if (false === me.fireEvent('beforetriggertap', me)) {
+                        return;
+                    }
+
+                    if (popup && column.getPopupCell() === me) {
+                        column.setPopupCell(null);
+                    } else {
+                        column.setPopupCell(me);
+                    }
+
+                    me.fireEvent('triggertap', me);
+                }
+            }
         },
         renderer: function(v, r) {
             // TODO get rid of randomized junk
@@ -35,5 +62,25 @@ Ext.define('SparkClassroom.column.AssignSingle', {
             out.push('</div>');
             return out.join('');
         }
+    },
+
+    updatePopupCell: function(cell, oldCell) {
+        var me = this,
+            popup = this.getPopup();
+
+        if (!cell) {
+            popup.hide();
+            return;
+        }
+
+        if (!popup) {
+            me.setPopup(popup = Ext.create('SparkClassroom.assign.Popup', {
+                hidden: true
+            }));
+            (me.up('{getScrollable()}') || Ext.Viewport).add(popup);
+        }
+
+        popup.showBy(cell.element.down('.menu-trigger'), 'tr-b?');
+
     }
 });
