@@ -13,7 +13,7 @@ class MysqlConnection extends AbstractSqlConnection
         $pdo = $pdo ?: [];
 
         if (is_array($pdo)) {
-            $dsn = 'mysql:dbname=' . $pdo['database'];
+            $dsn = 'mysql:charset=utf8;dbname=' . $pdo['database'];
 
             if (!empty($pdo['socket'])) {
                 $dsn .= ';unix_socket=' . $pdo['socket'];

@@ -13,7 +13,7 @@ class PostgresConnection extends AbstractSqlConnection
         $pdo = $pdo ?: [];
 
         if (is_array($pdo)) {
-            $dsn = 'pgsql:dbname=' . $pdo['database'];
+            $dsn = 'pgsql:charset=utf8;dbname=' . $pdo['database'];
 
             $dsn .= ';host=' . ($pdo['host'] ?: 'localhost');
             $dsn .= ';port=' . ($pdo['port'] ?: 5432);
