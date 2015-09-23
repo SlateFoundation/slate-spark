@@ -10,12 +10,14 @@ Ext.define('SparkClassroom.NavSubpanel', {
     },
 
     getAlignmentInfo: function(component, alignment) {
-        var scrollable = this.getParent().getScrollable(),
-            scrollPosition = scrollable.getPosition(),
+        var scrollable = this.up('{getScrollable()}').getScrollable(),
             alignmentInfo = this.callParent(arguments);
 
-        // shift alignToBox.top by containter padding and scroll position
-        alignmentInfo.stats.alignToBox.top -= scrollable.getElement().getY() - scrollPosition.y;
+        if (scrollable) {
+            // shift alignToBox.top by containter padding and scroll position
+            alignmentInfo.stats.alignToBox.top -= scrollable.getElement().getY() - scrollable.getPosition().y;
+        }
+
         return alignmentInfo;
     }
 });
