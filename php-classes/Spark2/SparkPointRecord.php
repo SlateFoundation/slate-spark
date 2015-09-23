@@ -19,6 +19,19 @@ class SparkPointRecord extends \VersionedRecord
         ]
     ];
 
+    public static function getStandardIdsConditions($handle)
+    {
+        $standard_ids = explode(',', $handle);
+        $sql = [];
+
+        foreach ($standard_ids as $standard_id) {
+            // TODO: @themightychris how do we like to escape sql?
+            $sql[] = 'INSTR(StandardIDs, "' . $standard_id . '")';
+        }
+
+        return implode($sql, ' OR ');
+    }
+
     public static function getStandardsConditions($handle)
     {
         $standards = explode(',', $handle);
@@ -48,6 +61,11 @@ class SparkPointRecord extends \VersionedRecord
         'Standards' => [
             'qualifiers' => ['Standards', 'standards'],
             'callback'   => 'getStandardsConditions'
+        ],
+
+        'StandardIDs' => [
+            'qualifiers' => ['StandardIDs', 'standardids'],
+            'callback'   => 'getStandardIdsConditions'
         ],
 
         'CreatorID' => [

@@ -65,6 +65,7 @@ Ext.define('SparkRepositoryManager.model.LearnLink', {
             name: "Standards",
             useNull: true,
             convert: function(val) {
+                // TODO: This can be safely removed after the migration
                 if (Array.isArray(val)) {
                     return val.map(function(standard) {
                         if (typeof standard === 'object') {
@@ -77,6 +78,10 @@ Ext.define('SparkRepositoryManager.model.LearnLink', {
 
                 return [];
             }
+        },
+        {
+            name: "StandardIDs",
+            useNull: true
         },
         {
             name: "Metadata",

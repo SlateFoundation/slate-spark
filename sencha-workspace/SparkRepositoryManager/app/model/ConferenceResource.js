@@ -69,6 +69,10 @@ Ext.define('SparkRepositoryManager.model.ConferenceResource', {
 
                 return [];
             }
+        },
+        {
+            name: "StandardIDs",
+            useNull: true
         }
     ],
 
