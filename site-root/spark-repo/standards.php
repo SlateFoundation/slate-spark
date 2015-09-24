@@ -40,7 +40,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
         }
 
         if (!empty($_GET['q'])) {
-            $where[] = 'code LIKE ' . PostgresPDO::quote('%' . $_GET['q'] . '%');
+            $where[] = 'code ~* ' . PostgresPDO::quote($_GET['q']);
         }
 
 
