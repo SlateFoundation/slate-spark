@@ -27,7 +27,7 @@
     }
 }
 
-.spark-navbar-standard-selector {
+.spark-navbar-sparkpoint-selector {
     color: $color;
 
     .x-input-el {
@@ -36,6 +36,31 @@
         font-size: 1em;
         min-height: 0;
         padding: .4em;
+    }
+}
+
+.spark-navbar-sparkpoint-selector-list {
+    box-shadow: 0 .25em 1em rgba(black, .25);
+
+    .sparkpoint-recommended {
+        float: right;
+
+        &:before {
+            content: 'recommended';
+            text-transform: uppercase;
+            color: gold;
+        }
+    }
+
+    .sparkpoint-completed-date {
+        float: right;
+    }
+
+    .sparkpoint-title {
+        display: block;
+        clear: both;
+        font-size: 75%;
+        color: #666;
     }
 }
 
