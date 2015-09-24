@@ -32,7 +32,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
 
             $join[] = 'LEFT JOIN sparkpoint_standard_alignments USING (asn_id)';
 
-            $group[] = 'standards.id'; // TODO: change to asn_id when asn_id becomes PK
+            $group[] = 'standards.asn_id';
         }
 
         if (!empty($_GET['document_asn_id'])) {
