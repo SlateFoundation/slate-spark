@@ -2,10 +2,11 @@
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
 
-    tokenSectionRe: /^([^:]+):(.*)$/,
+    tokenPrefixRe: /^([^:]+)(:([^:]+))?::(.*)$/,
 
     config: {
-        selectedSection: null
+        selectedSection: null,
+        selectedSparkpoint: null
     },
 
     views: [
@@ -28,6 +29,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             xtype: 'spark-titlebar'
         },
         sectionSelect: 'spark-titlebar #sectionSelect',
+        sparkpointSelect: 'spark-student-navbar #sparkpointSelector',
 
         navBar: {
             selector: 'spark-student-navbar',
@@ -49,6 +51,9 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     control: {
         sectionSelect: {
             change: 'onSectionSelectChange'
+        },
+        sparkpointSelect: {
+            sparkpointselect: 'onSparkpointSelectChange'
         }
     },
 
@@ -84,40 +89,32 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         ]);
     },
 
-    updateSelectedSection: function(sectionCode, oldSectionCode) {
-        var me = this,
-            token = Ext.util.History.getToken(),
-            sectionMatch = token && this.tokenSectionRe.exec(token);
+    updateSelectedSection: function() {
+        this.syncSelections();
+    },
 
-        if (sectionCode) {
-            me.getSectionSelect().setValue(sectionCode);
-
-            //show section dependant components
-            me.getNavBar().show();
-            me.getTabsCt().show();
-
-            // redirect with the current un-prefixed route or the default section to write the new section into the route
-            this.redirectTo((sectionMatch && sectionMatch[2]) || 'work');
-        }
+    updateSelectedSparkpoint: function() {
+        this.syncSelections();
     },
 
     onBeforeRedirect: function(token, resume) {
-        var sectionCode = this.getSelectedSection();
+        var sectionCode = this.getSelectedSection(),
+            sparkpointCode = this.getSelectedSparkpoint();
 
         if (sectionCode) {
-            resume(sectionCode + ':' + token);
+            resume(sectionCode + (sparkpointCode ? ':' + sparkpointCode : '') + '::' + token);
             return false;
         }
     },
 
     onBeforeRoute: function(token, resume) {
         var me = this,
-            sectionMatch = token && me.tokenSectionRe.exec(token),
-            sectionCode = sectionMatch && sectionMatch[1];
+            prefixMatch = token && me.tokenPrefixRe.exec(token);
 
-        if (sectionCode) {
-            me.setSelectedSection(sectionCode);
-            resume(sectionMatch[2]);
+        if (prefixMatch) {
+            me.setSelectedSection(prefixMatch[1] || null);
+            me.setSelectedSparkpoint(prefixMatch[3] || null);
+            resume(prefixMatch[4]);
             return false;
         }
     },
@@ -128,5 +125,27 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     onSectionSelectChange: function(select, section, oldSection) {
         this.setSelectedSection(section.get('Code'));
-    }
+    },
+
+    onSparkpointSelectChange: function(sparkpointSelector, sparkpoint) {
+        this.setSelectedSparkpoint(sparkpoint.getId());
+    },
+
+    syncSelections: Ext.Function.createBuffered(function() {
+        var me = this,
+            sectionCode = me.getSelectedSection(),
+            sparkpointCode = me.getSelectedSparkpoint(),
+            token = Ext.util.History.getToken(),
+            prefixMatch = token && this.tokenPrefixRe.exec(token);
+
+        me.getSectionSelect().setValue(sectionCode || null);
+        me.getSparkpointSelect().setValue(sparkpointCode || null);
+
+        //show section dependant components
+        me.getNavBar().setHidden(!sectionCode);
+        me.getTabsCt().setHidden(!sectionCode);
+
+        // redirect with the current un-prefixed route or the default section to write the new section into the route
+        this.redirectTo((prefixMatch && prefixMatch[4]) || 'work');
+    }, 10)
 });
