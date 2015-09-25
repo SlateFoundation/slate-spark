@@ -29,10 +29,6 @@ class LearnLink extends SparkPointRecord
             'type'    => 'tinyint',
             'notnull' => false
         ],
-        'Standards' => [
-            'type'    => 'json',
-            'notnull' => false
-        ],
         'StandardIDs' => [
             'type'    => 'json',
             'notnull' => false

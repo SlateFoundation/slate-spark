@@ -32,19 +32,6 @@ class SparkPointRecord extends \VersionedRecord
         return implode($sql, ' OR ');
     }
 
-    public static function getStandardsConditions($handle)
-    {
-        $standards = explode(',', $handle);
-        $sql = [];
-
-        foreach ($standards as $standard) {
-            // TODO: @themightychris how do we like to escape sql?
-            $sql[] = 'INSTR(Standards, "' . $standard . '")';
-        }
-
-        return implode($sql, ' OR ');
-    }
-
     public static function getCreatedConditions($handle)
     {
         list($month, $day, $year) = explode('-', $handle);
@@ -57,12 +44,6 @@ class SparkPointRecord extends \VersionedRecord
             'qualifiers' => ['GradeLevel', 'gradelevel'],
             'sql' => 'GradeLevel = "%s"'
         ],
-
-        'Standards' => [
-            'qualifiers' => ['Standards', 'standards'],
-            'callback'   => 'getStandardsConditions'
-        ],
-
         'StandardIDs' => [
             'qualifiers' => ['StandardIDs', 'standardids'],
             'callback'   => 'getStandardIdsConditions'

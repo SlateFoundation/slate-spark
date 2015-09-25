@@ -27,11 +27,6 @@ class ApplyProject extends SparkPointRecord
             'type'    => 'tinyint',
             'notnull' => false
         ],
-        'Standards' => [
-            'type'    => 'json',
-            'notnull' => false,
-            'includeInSummary' => true
-        ],
         'StandardIDs' => [
             'type'    => 'json',
             'notnull' => false,
