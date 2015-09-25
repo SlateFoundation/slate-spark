@@ -59,20 +59,7 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
         },
         {
             name: "Standards",
-            useNull: true,
-            convert: function(val) {
-                if (Array.isArray(val)) {
-                    return val.map(function(standard) {
-                        if (typeof standard === 'object') {
-                            return standard.standardCode;
-                        } else {
-                            return standard;
-                        }
-                    })
-                }
-
-                return [];
-            }
+            useNull: true
         },
         {
             name: "StandardIDs",

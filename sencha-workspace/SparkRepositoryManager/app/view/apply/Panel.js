@@ -19,7 +19,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.store.ApplyProjects',
         'SparkRepositoryManager.view.apply.Editor',
-        'SparkRepositoryManager.widget.StandardField'
+        'SparkRepositoryManager.column.StandardsList'
     ],
 
 
@@ -71,30 +71,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
             allowBlank: false
         }
     }, {
-        // TODO: Move to common code
-        text:      'Standards',
-        dataIndex: 'Standards',
-        width:     275,
-
-        filterField: {
-            xtype: 'spark-standardfield'
-        },
-
-        editor: {
-            xtype: 'spark-standardfield'
-        },
-
-        renderer: function (val, col, record) {
-            val = record.get('Standards');
-
-            if (!Array.isArray(val)) {
-                return '';
-            }
-
-            return val.map(function (standard) {
-                return standard.standardCode || standard;
-            }).join(', ');
-        }
+        xtype: 'srm-standardslistcolumn'
     }, {
         text:      'Grade',
         dataIndex: 'GradeLevel',

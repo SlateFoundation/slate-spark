@@ -79,13 +79,16 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
         load: function(me, records, success, eOpts) {
             var standardCodes = [];
 
-            if (success) {                
+            if (success) {
                 me.getRoot().visitPreOrder('', function (child) {
-                    
+
                     var standardCode = child.get('standardCode');
 
                     if (standardCode && child.get('leaf')) {
-                        standardCodes.push({standardCode: standardCode});
+                        standardCodes.push({
+                            id: child.getId(),
+                            code: standardCode
+                        });
                         child.set('checked', false);
                     }
                 });
