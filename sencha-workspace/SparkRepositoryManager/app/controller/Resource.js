@@ -128,13 +128,10 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
             panel = me.getPanel(),
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
-            isEditing = rowEditing.editing,
-            tagField;
+            isEditing = rowEditing.editing;
 
         if (isEditing) {
-            // HACK: @themightychris what's a better way to get a reference to the tagfield in the roweditor?
-            tagField = editor.getRefItems()[0];
-            tagField.setValue(standards.map(function(standard) {
+            editor.down('spark-standardfield').setValue(standards.map(function(standard) {
                 return standard.standardCode;
             }));
         } else {

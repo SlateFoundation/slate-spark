@@ -111,7 +111,6 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
             },
 
             renderer: function(val, col, record) {
-                // HELP: @themightychris: is there an easier way to do this sort of thing?
                 var assessmentType = Ext.getStore('AssessmentTypes').getById(val);
 
                 if (assessmentType) {
