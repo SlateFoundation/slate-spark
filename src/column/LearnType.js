@@ -10,7 +10,7 @@ Ext.define('SparkClassroom.column.LearnType', {
             encodeHtml: false
         },
         renderer: function(v, r) {
-            var type = r.get('Category');
+            var type = r.get('type');
 
             // TODO get list of possible strings and assign icons
             var icons = {
