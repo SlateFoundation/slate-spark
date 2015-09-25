@@ -97,7 +97,6 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             standardsPicker;
 
         if (isEditing) {
-            debugger;
             standards = editor.down('spark-standardfield').getValue();
         } else {
             standards = record.get('StandardIDs');
