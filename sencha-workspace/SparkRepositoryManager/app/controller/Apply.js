@@ -92,16 +92,13 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
-            tagField,
             record = panel.getSelection()[0],
             standards,
             standardsPicker;
 
         if (isEditing) {
-            tagField = editor.down('tagfield');
-            standards = tagField.getValue().map(function(standard) {
-                return standard.standardCode ? standard : { standardCode: standard };
-            });
+            debugger;
+            standards = editor.down('spark-standardfield').getValue();
         } else {
             standards = record.get('StandardIDs');
         }
@@ -123,14 +120,10 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             panel = me.getPanel(),
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
-            isEditing = rowEditing.editing,
-            tagField = editor.down('tagfield');
+            isEditing = rowEditing.editing;
 
         if (isEditing) {
-            tagField = editor.down('tagfield');
-            tagField.setValue(standards.map(function(standard) {
-                return standard.standardCode;
-            }));
+            editor.down('spark-standardfield').setValue(standards);
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
