@@ -71,7 +71,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
 
         Ext.Array.each(checkedItems, function (rec) {
             if (rec.get('checked')) {
-                standards.push({standardCode: rec.get('standardCode')});
+                standards.push(rec.getId());
             }
         });
 
@@ -93,14 +93,14 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
         var tagField = this.lookupReference('tagfield');
 
         if (checked) {
-            tagField.addValue(node.get('standardCode'));
+            tagField.addValue(node.getId());
         } else {
-            tagField.removeValue(node.get('standardCode'));
+            tagField.removeValue(node.getId());
         }
     },
 
     onBeforeTagFieldSelect: function(combo, record, index, eOpts) {
-        var node = Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true);
+        var node = Ext.getStore('StandardsTree').getRoot().findChild('id', record.getId(), true);
 
         if (typeof node.get('checked') == 'boolean') {
             node.set('checked', true);
@@ -110,10 +110,10 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
     },
 
     onBeforeTagFieldDeselect: function(combo, record, index, eOpts) {
-        var node = Ext.getStore('StandardsTree').getRoot().findChild('standardCode', record.get('code'), true);
+        var node = Ext.getStore('StandardsTree').getRoot().findChild('id', record.getId(), true);
 
-        if (typeof node.get('checked') != 'undefined') {
-            node.set('checked', true);
+        if (typeof node.get('checked') == 'boolean') {
+            node.set('checked', false);
         }
 
         // TODO: should we collapse the parent here if it has no other children checked?

@@ -49,16 +49,15 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
 
         if (Array.isArray(standards)) {
             standards.forEach(function (standard) {
-                selectedStandards[standard.standardCode || standard] = true;
+                selectedStandards[standard] = true;
             });
         }
 
         root.visitPreOrder('', function (child) {
-            var checked,
-                standardCode = child.get('standardCode');
+            var checked;
 
-            if (standardCode && typeof child.get('checked') == 'boolean') {
-                checked = selectedStandards[standardCode] || false;
+            if (typeof child.get('checked') == 'boolean') {
+                checked = selectedStandards[child.getId()] || false;
 
                 child.set('checked', checked);
 

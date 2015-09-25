@@ -111,7 +111,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
                 return standard.standardCode ? standard : { standardCode: standard };
             });
         } else {
-            standards = record.get('Standards');
+            standards = record.get('StandardIDs');
         }
 
         standardsPicker = Ext.create('SparkRepositoryManager.view.StandardPicker', {
@@ -132,8 +132,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
             rowEditing = panel.getPlugin('rowediting'),
             editor = rowEditing.getEditor(),
             isEditing = rowEditing.editing,
-            tagField,
-            record;
+            tagField;
 
         if (isEditing) {
             // HACK: @themightychris what's a better way to get a reference to the tagfield in the roweditor?
@@ -143,7 +142,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
             }));
         } else {
             record = panel.getSelection()[0];
-            record.set('Standards', standards);
+            record.set('StandardIDs', standards);
         }
     }
 });

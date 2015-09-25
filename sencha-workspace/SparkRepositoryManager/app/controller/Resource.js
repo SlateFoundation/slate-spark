@@ -108,7 +108,7 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
                 return standard.standardCode ? standard : { standardCode: standard };
             });
         } else {
-            standards = record.get('Standards');
+            standards = record.get('StandardIDs');
         }
 
         standardsPicker = Ext.create('SparkRepositoryManager.view.StandardPicker', {
@@ -139,7 +139,7 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
             }));
         } else {
             record = panel.getSelection()[0];
-            record.set('Standards', standards);
+            record.set('StandardIDs', standards);
         }
     }
 });
