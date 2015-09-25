@@ -23,38 +23,67 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         titleBar: null,
         columns:[
             {
-                dataIndex: 'Completed',
+                dataIndex: 'completed',
                 xtype: 'spark-completed-column'
             },
             {
-                dataIndex: 'Title',
-                xtype: 'spark-learn-column',
+                dataIndex: 'title',
+                xtype: 'spark-title-column',
                 flex: 2
             },
             {
-                dataIndex: 'DOK',
+                dataIndex: 'dok',
                 xtype: 'spark-dok-column'
             },
             {
-                dataIndex: 'Category',
+                dataIndex: 'category',
                 xtype: 'spark-learntype-column'
             },
             {
-                dataIndex: 'SRating',
+                dataIndex: 'rating',
                 xtype: 'spark-rating-column'
             },
             {
-                dataIndex: 'Score',
+                dataIndex: 'score',
                 xtype: 'spark-score-column'
             },
             {
-                dataIndex: 'Attachment',
+                dataIndex: 'attachments',
                 xtype: 'spark-attachment-column'
             }
         ],
 
         store: {
-            fields: ['Group', 'Completed', 'Title', 'Link', 'DOK', 'Category', 'SRating', 'TRating',  'Score', 'Attachment', 'Issue'],
+            fields: [
+                'type',
+                'completed',
+                'title',
+                'url',
+                'dok',
+                'rating',
+                'score',
+                'attachments',
+                'vendor',
+                {
+                    name: 'srating',
+                    convert: function(v, r) {
+                        var rating = r.get('rating');
+
+                        return rating ? rating.student : null;
+                    }
+                },
+                {
+                    name: 'trating',
+                    convert: function(v, r) {
+                        var rating = r.get('rating');
+
+                        return rating ? rating.teacher : null;
+                    }
+                }
+             ],
+             data: [
+                {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', Rating: {Teacher: 4, Student: 2}, Score: null, Attachment: 'A link of doc'}
+            ],
 
             grouper: {
                 property: 'Group',
@@ -72,17 +101,10 @@ Ext.define('SparkClassroom.work.learn.Grid', {
                     }
                 }
             ],
-            data: [
-                {Group: 'Required', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: '85%', Issue: true},
-                {Completed: true, Group: 'Required', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Article', SRating: 3, TRating: 3, Score: null, Issue: true},
-                {Group: 'Mr. Smith Recommends', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: '85%', Issue: true},
-                {Completed: true, Group: 'Mr. Smith Recommends', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'IEPFriendly', SRating: 3, TRating: 3, Score: null, Attachment: 'A link of doc', Issue: true},
-                {Group: 'Mr. Smith Recommends', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: null},
-                {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Practice Problems', SRating: 3, TRating: 3, Score: null, Attachment: 'A link of doc'},
-                {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: null, Issue: true},
-                {Completed: true, Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Reading', SRating: 3, TRating: 3, Score: null},
-                {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', SRating: 3, TRating: 3, Score: null, Attachment: 'A link of doc'}
-            ]
+            proxy: {
+                type: 'api',
+                url: 'https://api.matchbooklearning.com/content/learns?sparkpoints=MATH.GK.NBT.1'
+            }
         }
     }
 });
