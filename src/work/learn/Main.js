@@ -9,48 +9,29 @@ Ext.define('SparkClassroom.work.learn.Main', {
     ],
 
     config: {
+        layout: 'accordion',
         items: [
             {
-                // TODO: remove this double-bagging?
+                expanded: true,
+                itemId: 'sparkpointCt',
+
                 xtype: 'container',
-                itemId: 'standardGrid',
+                title: 'Standards Blarg',
                 items: [
                     {
                         xtype: 'container',
-                        layout: 'accordion',
+                        layout: {
+                            type: 'hbox',
+                            pack: 'center'
+                        },
                         items: [
                             {
-                                xtype: 'container',
-                                title: 'Standards Blarg',
-                                items: [
-                                    {
-                                        xtype: 'container',
-                                        layout: {
-                                            type: 'hbox',
-                                            pack: 'center'
-                                        },
-                                        items: [
-                                            {
-                                                xtype: 'spark-work-learn-progressbanner'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype: 'spark-work-learn-grid'
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'component',
-                                html: 'stuff',
-                                title: 'Standard 2'
-                            },
-                            {
-                                xtype: 'component',
-                                html: 'stuff',
-                                title: 'Standard 1'
+                                xtype: 'spark-work-learn-progressbanner'
                             }
                         ]
+                    },
+                    {
+                        xtype: 'spark-work-learn-grid'
                     }
                 ]
             }
