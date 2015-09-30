@@ -1,14 +1,13 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.store.work.Learns', {
     extend: 'Ext.data.Store',
+    requires: [
+        'Jarvus.proxy.API'
+    ],
 
     model: 'SparkClassroom.model.work.Learn',
 
     config: {
-        data: [
-            {Group: 'Additional Options', Title: 'Learn Title', Link: 'http://pbs.com/videos/science', DOK: 3, Category: 'Video', Rating: {Teacher: 4, Student: 2}, Score: null, Attachment: 'A link of doc'}
-        ],
-
         grouper: {
             property: 'Group',
             direction: 'DESC'
@@ -29,8 +28,7 @@ Ext.define('SparkClassroom.store.work.Learns', {
 
         proxy: {
             type: 'api',
-            connection: 'Ext.Ajax',
-            url: './api-data/learns.json'
+            url: 'https://api.matchbooklearning.com/content/learns'
         }
     }
 });
