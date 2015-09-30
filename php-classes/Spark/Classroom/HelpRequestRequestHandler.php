@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark2\Classroom;
+namespace Spark\Classroom;
 
 class HelpRequestRequestHandler extends \RecordsRequestHandler
 {

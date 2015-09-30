@@ -1,13 +1,13 @@
 <?php
 
-namespace Spark2\Classroom;
+namespace Spark\Classroom;
 
 class HelpRequest extends \ActiveRecord
 {
     public static $tableName = 'help_requests';
     public static $singularNoun = 'help_request';
     public static $pluralNoun = 'help_requests';
-    
+
     public static $fields = [
         'SectionID' => 'uint',
         'StudentID' => 'uint',
@@ -31,7 +31,7 @@ class HelpRequest extends \ActiveRecord
             'notnull' => false
         ]
     ];
-    
+
     public static $relationships = [
         'Student' => [
             'type' => 'one-one',
@@ -39,17 +39,17 @@ class HelpRequest extends \ActiveRecord
             'class' => \Slate\People\Student::class
         ]
     ];
-    
+
     public static $dynamicFields = [
-        'Student'    
+        'Student'
     ];
-    
+
     public function save ($deep = true)
     {
         if(!$this->StudentID) {
             $this->StudentID = $GLOBALS['Session']->PersonID;
         }
-        
+
         parent::save($deep);
     }
 }

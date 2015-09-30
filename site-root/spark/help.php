@@ -1,3 +1,3 @@
 <?php
 
-Spark2\Classroom\HelpRequestRequestHandler::handleRequest();
+Spark\Classroom\HelpRequestRequestHandler::handleRequest();
