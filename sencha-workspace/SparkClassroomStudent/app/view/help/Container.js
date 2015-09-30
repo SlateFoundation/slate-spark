@@ -44,16 +44,22 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                         label: 'Locker'
                     },
                     {
-                        value: 'general_question',
+                        value: 'question-general',
                         label: 'General Question'
                     },
                     {
-                        value: 'academic_question',
+                        value: 'question-academic',
                         label: 'Academic Question'
                     },
                     {
-                        value: 'technology_question',
+                        value: 'question-technology',
                         label: 'Technology Question'
+                    },
+                    {
+                        xtype: 'button',
+                        text: 'Submit',
+                        height: 75,
+                        action: 'submit-helprequest'
                     }
                 ]
             },
