@@ -2,10 +2,13 @@
 Ext.define('SparkClassroomStudent.controller.work.Learn', {
     extend: 'Ext.app.Controller',
 
+    stores: [
+        'work.Learns@SparkClassroom.store'
+    ],
 
-    // TODO: handle loading data into learn section
     refs: {
         learnCt: 'spark-student-work-learn',
+        sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         learnGrid: 'spark-work-learn-grid'
     },
 
@@ -15,9 +18,25 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
+    listen: {
+        controller: {
+            '#': {
+                sparkpointselect: 'onSparkpointSelect'
+            }
+        }
+    },
+
+    onSparkpointSelect: function(sparkpoint) {
+        // TODO: track dirty state of extraparams?
+        this.getWorkLearnsStore().getProxy().setExtraParam('sparkpoints', sparkpoint);
+    },
+
     onLearnCtActivate: function(learnCt) {
-        var grid = this.getLearnGrid(),
-            store = grid.getStore();
+        var me = this,
+            store = me.getWorkLearnsStore();
+
+        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
+        me.getSparkpointCt().setTitle(store.getProxy().getExtraParams().sparkpoints);
 
         store.load();
         //TODO: Reenable when grid can start empty

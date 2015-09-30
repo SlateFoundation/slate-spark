@@ -89,11 +89,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         ]);
     },
 
-    updateSelectedSection: function() {
+    updateSelectedSection: function(section, oldSection) {
+        this.getApplication().fireEvent('sectionselect', section, oldSection);
         this.syncSelections();
     },
 
-    updateSelectedSparkpoint: function() {
+    updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
+        this.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
         this.syncSelections();
     },
 
