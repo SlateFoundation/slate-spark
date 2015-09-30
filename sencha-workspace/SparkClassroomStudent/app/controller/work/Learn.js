@@ -29,6 +29,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     onSparkpointSelect: function(sparkpoint) {
         // TODO: track dirty state of extraparams?
         this.getWorkLearnsStore().getProxy().setExtraParam('sparkpoints', sparkpoint);
+
+        // TODO: reload store if sparkpoints param dirty
     },
 
     onLearnCtActivate: function(learnCt) {
@@ -38,10 +40,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         me.getSparkpointCt().setTitle(store.getProxy().getExtraParams().sparkpoints);
 
-        store.load();
-        //TODO: Reenable when grid can start empty
-        // if(!store.isLoaded()) {
-        //     store.load();
-        // }
+        if(!store.isLoaded()) { // TODO: OR extraParamsDirty
+            store.load();
+        }
     }
 });
