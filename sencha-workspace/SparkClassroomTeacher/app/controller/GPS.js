@@ -20,6 +20,16 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
+    refs: {
+        sparkGps: 'spark-gps'
+    },
+
+    control: {
+        list: {
+            select: 'onListSelect'
+        }
+    },
+
     onStudentsStoreLoad: function(store, records) {
         var sectionStore = Ext.getStore('SectionStudents');
 
@@ -45,5 +55,20 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             });
 
         }
+    },
+
+    onListSelect: function(list, rec) {
+        var container = this.getSparkGps(),
+            lists = container.query('list'),
+            listCount = lists.length,
+            i = 0;
+
+        for (i; i<listCount; i++) {
+            if (lists[i].getItemId()!==list.getItemId()) {
+                lists[i].deselectAll();
+            }
+        }
+
+        this.getApplication().fireEvent('studentselect', rec, list);
     }
 });
