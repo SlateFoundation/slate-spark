@@ -5,8 +5,8 @@ namespace Spark\Classroom;
 class HelpRequest extends \ActiveRecord
 {
     public static $tableName = 'help_requests';
-    public static $singularNoun = 'help_request';
-    public static $pluralNoun = 'help_requests';
+    public static $singularNoun = 'help request';
+    public static $pluralNoun = 'help requests';
 
     public static $fields = [
         'SectionID' => 'uint',
@@ -26,8 +26,7 @@ class HelpRequest extends \ActiveRecord
             'notnull' => false
         ],
         'ClosedBy' => [
-            'type' => 'integer',
-            'unsigned' => true,
+            'type' => 'uint',
             'notnull' => false
         ]
     ];
@@ -46,8 +45,9 @@ class HelpRequest extends \ActiveRecord
 
     public function save ($deep = true)
     {
-        if(!$this->StudentID) {
-            $this->StudentID = $GLOBALS['Session']->PersonID;
+        if (!$this->StudentID) {
+            $Student = $this->getUserFromEnvironment();
+			$this->StudentID = $Student ? $Student>ID : null;
         }
 
         parent::save($deep);
