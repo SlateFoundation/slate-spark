@@ -22,7 +22,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                         cls: 'spark-gps-studentlist-group',
                         layout: 'hbox',
                         defaults: {
-                            xtype: 'spark-gps-studentList',
+                            xtype: 'spark-gps-studentlist',
                             //grouped: true,
                             flex: 1
                         },
@@ -58,7 +58,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                                 xtype: 'container',
                                 layout: 'fit',
                                 items: [{
-                                    xtype: 'spark-gps-studentList',
+                                    xtype: 'spark-gps-studentlist',
                                     store: 'Priorities',
                                     itemId: 'priorityList',
                                     title: 'Priorities <span class="count">23</span>'
@@ -71,7 +71,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                                 }]
                             },
                             {
-                                xtype: 'spark-gps-studentList',
+                                xtype: 'spark-gps-studentlist',
                                 store: 'Help',
                                 title: 'Help <span class="count">5</span>'
                                 //grouped: true
@@ -96,7 +96,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
         // me.callParent(arguments);
 
         // for (var key in componentList) {
-        //     list = me.down('spark-gps-studentList[itemId='+componentList[key]+']');
+        //     list = me.down('spark-gps-studentlist[itemId='+componentList[key]+']');
         //     store = list.getStore();
 
         //     store.group('GPSStatusGroup');

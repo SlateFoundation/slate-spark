@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     extend: 'Ext.dataview.List',
-    xtype: 'spark-gps-studentList',
+    xtype: 'spark-gps-studentlist',
     cls: 'spark-gps-studentlist',
 
     config: {

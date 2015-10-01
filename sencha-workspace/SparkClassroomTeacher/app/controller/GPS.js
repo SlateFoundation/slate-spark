@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         gps: {
             studentselect: 'onStudentSelect'
         },
-        'spark-gps-studentList': {
+        'spark-gps-studentlist': {
             select: 'onListSelect'
         },
         priorityAddButton: {
