@@ -60,11 +60,11 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                                 items: [{
                                     xtype: 'spark-gps-studentlist',
                                     store: 'Priorities',
-                                    itemId: 'priorityList',
                                     title: 'Priorities <span class="count">23</span>'
                                 },
                                 {
                                     xtype: 'button',
+                                    itemId: 'priority-add',
                                     tpl: 'Add {data.Student.FullName}',
                                     hidden: true,
                                     docked: 'bottom'
