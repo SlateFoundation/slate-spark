@@ -72,7 +72,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             i = 0;
 
         for (i; i<listCount; i++) {
-            if (lists[i].getItemId()!==list.getItemId()) {
+            if (lists[i]!==list) {
                 lists[i].deselectAll();
             }
         }
