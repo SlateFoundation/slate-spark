@@ -74,7 +74,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                             {
                                 xtype: 'spark-gps-studentList',
                                 store: 'Help',
-                                itemId: 'helpList'
+                                itemId: 'helpList',
+                                title: 'Help <span class="count">5</span>'
                                 //grouped: true
                             }
                         ]
