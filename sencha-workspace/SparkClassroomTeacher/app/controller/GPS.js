@@ -21,13 +21,13 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     refs: {
-        sparkGps: 'spark-gps',
+        gps: 'spark-gps',
         priorityList: 'list#priorityList',
         priorityAddButton: 'spark-gps button#priority-add'
     },
 
     control: {
-        sparkGps: {
+        gps: {
             studentselect: 'onStudentSelect'
         },
         'spark-gps-studentList': {
@@ -66,7 +66,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onListSelect: function(list, rec) {
-        var container = this.getSparkGps(),
+        var container = this.getGps(),
             lists = container.query('list'),
             listCount = lists.length,
             i = 0;
@@ -82,12 +82,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     onStudentSelect: function(rec, list) {
         var priorityList = this.getPriorityList(),
-            button = this.getPriorityAddButton(),
-            student = rec.get('Student'),
-            studentId = student.ID;
+            button = this.getPriorityAddButton();
 
         priorityIndex = priorityList.getStore().findBy(function(priorityRec) {
-            return (priorityRec.get('Student').ID === studentId);
+            return (priorityRec === rec);
         });
 
         if (priorityIndex === -1) {
