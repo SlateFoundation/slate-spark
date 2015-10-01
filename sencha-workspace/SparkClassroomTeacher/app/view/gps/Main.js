@@ -8,6 +8,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
     ],
 
     config: {
+        selectedStudent: null,
         items: [
             {
                 xtype: 'container',
@@ -66,7 +67,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Main', {
                                 {
                                     xtype: 'button',
                                     itemId: 'priority-add',
-                                    tpl: 'Add {data.Student.FullName}',
+                                    tpl: 'Add {Student.FullName}',
                                     hidden: true,
                                     docked: 'bottom'
                                 }]

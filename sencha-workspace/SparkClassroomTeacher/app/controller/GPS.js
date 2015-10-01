@@ -87,7 +87,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         priorityIndex = priorityList.getStore().indexOf(rec);
 
         if (priorityIndex === -1) {
-            button.setData(rec);
+            this.getGps().setSelectedStudent(rec);
+            button.setData(rec.data);
             button.show();
         } else {
             button.hide();
@@ -95,7 +96,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onPriorityAddButtonTapped: function(button) {
-        var rec = button.getData();
+        var rec = this.getGps().getSelectedStudent();
 
         rec.set('Priority', 2);
         button.hide();
