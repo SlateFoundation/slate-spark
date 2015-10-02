@@ -14,6 +14,7 @@ Ext.define('SparkClassroomStudent.Application', {
 
     controllers: [
         'Viewport',
+        'ActivityTracker',
 
         'Work',
         'work.Learn',
