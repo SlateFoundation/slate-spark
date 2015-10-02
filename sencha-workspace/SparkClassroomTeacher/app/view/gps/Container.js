@@ -84,25 +84,5 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
 
             }
         ]
-    },
-
-    initialize: function () {
-        // var me = this,
-        // componentList = {
-        //     Learn: 'learnList',
-        //     Conference: 'conferenceList',
-        //     Apply: 'applyList',
-        //     Assess: 'assessList'
-        // }, store, list;
-
-        // me.callParent(arguments);
-
-        // for (var key in componentList) {
-        //     list = me.down('spark-gps-studentlist[itemId='+componentList[key]+']');
-        //     store = list.getStore();
-
-        //     store.group('GPSStatusGroup');
-
-        // }
     }
 });
