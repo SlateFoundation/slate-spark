@@ -28,7 +28,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     onSparkpointSelect: function(sparkpoint) {
         // TODO: track dirty state of extraparams?
-        this.getWorkLearnsStore().getProxy().setExtraParam('sparkpoints', sparkpoint);
+        this.getWorkLearnsStore().getProxy().setExtraParam('sparkpoint', sparkpoint);
 
         // TODO: reload store if sparkpoints param dirty
     },
