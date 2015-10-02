@@ -9,6 +9,8 @@ Ext.define('SparkClassroom.work.learn.Main', {
     ],
 
     config: {
+        itemId: 'learn',
+
         layout: 'accordion',
         items: [
             {

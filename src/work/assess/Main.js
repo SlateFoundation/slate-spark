@@ -10,7 +10,8 @@ Ext.define('SparkClassroom.work.assess.Main', {
     ],
 
     config: {
-        title: 'Assess',
+        itemId: 'assess',
+
         items: [
             {
                 xtype: 'spark-simpleheading',
