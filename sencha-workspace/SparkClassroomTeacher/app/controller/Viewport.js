@@ -14,7 +14,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     views: [
         'TitleBar@SparkClassroom',
         'NavBar',
-        'gps.Main',
+        'gps.Container',
         'TabsContainer'
     ],
 

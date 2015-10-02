@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.gps.Main', {
+Ext.define('SparkClassroomTeacher.view.gps.Container', {
     extend: 'Ext.Container',
     xtype: 'spark-gps',
     cls: 'spark-gps',
