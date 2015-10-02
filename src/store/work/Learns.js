@@ -2,7 +2,7 @@
 Ext.define('SparkClassroom.store.work.Learns', {
     extend: 'Ext.data.Store',
     requires: [
-        'Jarvus.proxy.API'
+        'Slate.proxy.API'
     ],
 
     model: 'SparkClassroom.model.work.Learn',
@@ -27,8 +27,8 @@ Ext.define('SparkClassroom.store.work.Learns', {
         ],
 
         proxy: {
-            type: 'api',
-            url: 'https://api.matchbooklearning.com/content/learns'
+            type: 'slate-api',
+            url: '/spark/api/work/learns'
         }
     }
 });
