@@ -29,23 +29,23 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         },
                         items: [
                             {
-                                store: 'Learn',
                                 itemId: 'learnList',
+                                store: 'gps.Learn',
                                 title: 'Learn and Practice <span class="count">5</span>'
                             },
                             {
-                                store: 'Conference',
                                 itemId: 'conferenceList',
+                                store: 'gps.Conference',
                                 title: 'Conference <span class="count">9</span>'
                             },
                             {
-                                store: 'Apply',
                                 itemId: 'applyList',
+                                store: 'gps.Apply',
                                 title: 'Apply <span class="count">8</span>'
                             },
                             {
-                                store: 'Assess',
                                 itemId: 'assessList',
+                                store: 'gps.Assess',
                                 title: 'Assess <span class="count">8</span>'
                             }
                         ]

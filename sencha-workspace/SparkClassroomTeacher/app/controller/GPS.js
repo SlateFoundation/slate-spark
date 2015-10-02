@@ -44,7 +44,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         for (var i = 0; i < records.length; i++) {
 
             // temp mock data generation script
-            var status = ['Learn', 'Conference', 'Apply', 'Assess'],
+            var status = ['learn', 'conference', 'apply', 'assess'],
                 grades = ['L', '*', 'G', 'N'],
                 mod = i % 4,
                 randomIncrement = Math.floor(Math.random() * 4),
