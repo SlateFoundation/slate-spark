@@ -71,8 +71,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             listCount = lists.length,
             i = 0;
 
-        for (i; i<listCount; i++) {
-            if (lists[i]!==list) {
+        for (i; i < listCount; i++) {
+            if (lists[i] !== list) {
                 lists[i].deselectAll();
             }
         }
@@ -81,14 +81,13 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onStudentSelect: function(rec, list) {
-        var priorityList = this.getPriorityList(),
-            button = this.getPriorityAddButton();
-
-        priorityIndex = priorityList.getStore().indexOf(rec);
+        var me = this,
+            button = me.getPriorityAddButton(),
+            priorityIndex = me.getPriorityList().getStore().indexOf(rec);
 
         if (priorityIndex === -1) {
-            this.getGpsCt().setSelectedStudent(rec);
-            button.setData(rec.data);
+            me.getGpsCt().setSelectedStudent(rec);
+            button.setData(rec.getData());
             button.show();
         } else {
             button.hide();
