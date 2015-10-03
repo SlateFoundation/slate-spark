@@ -8,7 +8,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     ],
 
     refs: {
-        conferenceCt: 'spark-student-work-conference'
+        conferenceCt: 'spark-student-work-conference',
+        questionsList: 'spark-worklist#questions',
+        resourcesList: 'spark-worklist#resources'
     },
 
     control: {
@@ -25,27 +27,67 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
     },
 
-    onConferenceCtActivate: function(conferenceCt) {
-        console.log('onConferenceCtActivate');
-        var me = this,
-            store = Ext.getStore('work.ConferenceQuestions');
+    onConferenceCtActivate: function() {
+        var store = Ext.getStore('work.ConferenceQuestions');
 
         if(!store.isLoaded()) {
             store.load();
         }
     },
 
-    // TODO: handle loading data into conference section
-    onConferenceQuestionsStoreLoad: function(store, records) {
-        console.log('onConferenceQuestionsStoreLoad');
-        var resourcesStore = Ext.getStore('work.ConferenceResources'),
-            recordsLength = records.length,
-            i = 0;
+    onConferenceQuestionsStoreLoad: function(store) {
+        var me = this,
+            resourcesStore = Ext.getStore('work.ConferenceResources');
 
-        for (i; i < recordsLength; i++) {
-            console.log('hi');
+        resourcesStore.loadData(store.getProxy().getReader().rawData.resources);
+
+        me.setQuestions(store.getRange());
+        me.setResources(resourcesStore.getRange());
+
+    },
+
+    setQuestions: function(recs) {
+        var list = this.getQuestionsList(),
+            count = recs.length,
+            items = [],
+            i = 0,
+            data;
+
+        for (i; i < count; i++) {
+            items.push({
+                text: recs[i].get('question')
+            });
         }
 
+        data = {
+            title: 'Guiding Questions',
+            items: items
+        };
+
+        list.setData(data);
+    },
+
+    setResources: function(recs) {
+        var list = this.getResourcesList(),
+            count = recs.length,
+            items = [],
+            i = 0,
+            data;
+
+        for (i; i < count; i++) {
+            items.push({
+                text: recs[i].get('title'),
+                linkTitle: recs[i].get('url'),
+                linkUrl: recs[i].get('url')
+            });
+        }
+
+        data = {
+            title: 'Resources',
+            items: items
+        };
+
+        list.setData(data);
     }
 
 });
