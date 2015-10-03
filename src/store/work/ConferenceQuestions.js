@@ -13,7 +13,15 @@ Ext.define('SparkClassroom.store.work.ConferenceQuestions', {
             url: '/spark/api/work/conferences',
             extraParams: {
                 sparkpoints: 'MATH.G9-12.BF.4.b'
+            },
+            reader: {
+                type: 'json',
+                keepRawData: true,
+                rootProperty: 'questions',
+                totalProperty: 'total',
+                messageProperty: 'message'
             }
+
         }
     }
 
