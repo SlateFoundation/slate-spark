@@ -15,9 +15,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         itemTpl: [
             '<header class="studentlist-item-header">',
                 '<tpl for="student.getData()">',
-                    '<a class="studentlist-name" href="#">',
-                        '{FirstName} {LastName}',
-                    '</a> ',
+                    '<a class="studentlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank">{FullName}</a> ',
                 '</tpl>',
                 '<tpl if="Grade"><span class="studentlist-grade">{Grade}</span></tpl> ', // TODO: what should go here?
                 '<span class="studentlist-timer">',
