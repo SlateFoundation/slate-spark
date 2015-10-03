@@ -2,7 +2,15 @@
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
 
+
+    config: {
+        activeSection: null
+    },
+
+
     stores: [
+        'gps.ActiveStudents',
+
         'gps.Learn',
         'gps.Conference',
         'gps.Apply',
@@ -13,6 +21,11 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     ],
 
     listen: {
+        controller: {
+            '#': {
+                sectionselect: 'onSectionSelect'
+            }
+        },
         store: {
             '#Students': {
                 load: 'onStudentsStoreLoad'
@@ -38,31 +51,24 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
-    onStudentsStoreLoad: function(store, records) {
-        var sectionStore = Ext.getStore('SectionStudents');
 
-        for (var i = 0; i < records.length; i++) {
+    // config handlers
+    updateActiveSection: function(section) {
+        // TODO: delete if uneeded
+    },
 
-            // temp mock data generation script
-            var status = ['learn', 'conference', 'apply', 'assess'],
-                grades = ['L', '*', 'G', 'N'],
-                mod = i % 4,
-                randomIncrement = Math.floor(Math.random() * 4),
-                record = records[i];
 
-            // add data from students store to SectionStudentStore
-            sectionStore.add({
-                Student: record.getData(),
-                Section: status[randomIncrement],
-                GPSStatus: status[randomIncrement],
-                GPSStatusGroup: 24,
-                Help: mod == 2 ? true : '',
-                Priority: mod == 2 ? 2 : '',
-                Standards: ['CC.Content', 'CC.SS.Math.Content'],
-                Grade: grades[randomIncrement]
-            });
+    // event handlers
+    onSectionSelect: function(section) {
+        this.setActiveSection(section);
+    },
 
-        }
+    onStudentsStoreLoad: function(studentsStore) {
+        this.getGpsActiveStudentsStore().load({
+            params: {
+                section_id: this.getActiveSection()
+            }
+        });
     },
 
     onListSelect: function(list, rec) {

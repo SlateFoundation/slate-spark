@@ -89,6 +89,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         }
     },
 
+
+    // controller template methods
     onLaunch: function() {
         var me = this;
 
@@ -103,14 +105,16 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         ]);
     },
 
-    updateSelectedSection: function(sectionCode, oldSectionCode) {
+
+    // config handlers
+    updateSelectedSection: function(section, oldSection) {
         var me = this,
             token = Ext.util.History.getToken(),
-            sectionMatch = token && this.tokenSectionRe.exec(token),
+            sectionMatch = token && me.tokenSectionRe.exec(token),
             studentStore = Ext.getStore('Students');
 
-        if (sectionCode) {
-            me.getSectionSelect().setValue(sectionCode);
+        if (section) {
+            me.getSectionSelect().setValue(section);
 
             //show section dependant components
             me.getNavBar().show();
@@ -118,14 +122,19 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             me.getTabsCt().show();
 
             Ext.getStore('SectionStudents').removeAll();
-            studentStore.getProxy().setUrl('/sections/' + sectionCode + '/students');
+            // studentStore.getProxy().setUrl('/sections/' + section + '/students');
+            studentStore.getProxy().setUrl('./api-data/students.json');
             studentStore.load();
 
             // redirect with the current un-prefixed route or an empty string to write the new section into the route
-            this.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
+            me.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
         }
+        
+        me.getApplication().fireEvent('sectionselect', section, oldSection);
     },
 
+
+    // event handlers
     onBeforeRedirect: function(token, resume) {
         var sectionCode = this.getSelectedSection();
 

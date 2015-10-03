@@ -2,22 +2,32 @@
 Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     extend: 'Ext.dataview.List',
     xtype: 'spark-gps-studentlist',
-    cls: 'spark-gps-studentlist',
+    requires: [
+        'Jarvus.util.format.FuzzyTime'
+    ],
+
 
     config: {
         title: null,
 
+        cls: 'spark-gps-studentlist',
         itemCls: 'studentlist-item',
         itemTpl: [
             '<header class="studentlist-item-header">',
-                '<a class="studentlist-name" href="#">{Student.FirstName} {Student.LastName}</a> ',
-                '<tpl if="Grade"><span class="studentlist-grade">{Grade}</span></tpl> ',
-                '<span class="studentlist-timer">20m</span>',
-            '</header>',
-            '<ul class="studentlist-standards">',
-                '<tpl for="Standards">',
-                    '<li class="studentlist-standard">{.}</li>',
+                '<tpl for="student.getData()">',
+                    '<a class="studentlist-name" href="#">',
+                        '{FirstName} {LastName}',
+                    '</a> ',
                 '</tpl>',
+                '<tpl if="Grade"><span class="studentlist-grade">{Grade}</span></tpl> ', // TODO: what should go here?
+                '<span class="studentlist-timer">',
+                    '{[Ext.util.Format.fuzzyDuration(values[values.phase+"_duration"] * 1000, true)]}',
+                '</span>',
+            '</header>',
+            '<ul class="studentlist-standards">', // TODO: rename to studentlist-sparkpoints
+                // '<tpl for="Standards">',
+                    '<li class="studentlist-standard">{sparkpoint_code}</li>',
+                // '</tpl>',
             '</ul>'
         ]
     },

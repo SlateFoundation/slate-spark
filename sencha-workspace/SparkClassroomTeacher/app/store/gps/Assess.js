@@ -2,9 +2,12 @@
 Ext.define('SparkClassroomTeacher.store.gps.Assess', {
     extend: 'Ext.data.ChainedStore',
 
-    source: 'SectionStudents',
-    filters: [{
-        property: 'GPSStatus',
-        value: 'assess'
-    }]
+
+    config: {
+        source: 'gps.ActiveStudents',
+        filters: [{
+            property: 'phase',
+            value: 'assess'
+        }]
+    }
 });
