@@ -5,6 +5,16 @@ Ext.define('SparkClassroom.store.work.ConferenceQuestions', {
         'Slate.proxy.API'
     ],
 
-    model: 'SparkClassroom.model.work.ConferenceQuestion'
+    model: 'SparkClassroom.model.work.ConferenceResource',
+
+    config: {
+        proxy: {
+            type: 'slate-records',
+            url: '/spark/api/work/conferences',
+            extraParams: {
+                sparkpoints: 'MATH.G9-12.BF.4.b'
+            }
+        }
+    }
 
 });
