@@ -3,8 +3,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
     stores: [
-        'work.ConferenceQuestions',
-        'work.ConferenceResources'
+        'work.ConferenceQuestions@SparkClassroom.store',
+        'work.ConferenceResources@SparkClassroom.store'
     ],
 
     refs: {
@@ -28,7 +28,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     onConferenceCtActivate: function(conferenceCt) {
         console.log('onConferenceCtActivate');
         var me = this,
-            store = me.getWorkConferenceQuestionsStore();
+            store = Ext.getStore('work.ConferenceQuestions');
 
         if(!store.isLoaded()) {
             store.load();
@@ -43,7 +43,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             i = 0;
 
         for (i; i < recordsLength; i++) {
-            //console.log('hi');
+            console.log('hi');
         }
 
     }
