@@ -5,6 +5,6 @@ Ext.define('SparkClassroomStudent.store.work.ConferenceQuestions', {
         'SparkClassroomStudent.model.work.ConferenceQuestion'
     ],
 
-    model: 'ClassroomStudent.model.work.ConferenceQuestion'
+    model: 'SparkClassroomStudent.model.work.ConferenceQuestion'
 
 });
