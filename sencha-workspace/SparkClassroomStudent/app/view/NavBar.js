@@ -141,7 +141,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
         }
 
         sparkpointsList.show();
-        sparkpointsList.alignTo(sparkpointField, 'tl-bl?');
+        sparkpointsList.alignTo(sparkpointField, 'tl-bl');
 
         me.setSparkpointQuery(sparkpointField.getValue()||'');
 
