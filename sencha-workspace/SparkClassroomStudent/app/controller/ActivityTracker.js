@@ -26,6 +26,13 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
     },
 
 
+    refs: {
+        learnTab: 'spark-work-tab#learn',
+        conferenceTab: 'spark-work-tab#conference',
+        applyTab: 'spark-work-tab#apply',
+        assessTab: 'spark-work-tab#assess'
+    },
+
     control: {
         'spark-student-work-ct > component': {
             activate: 'onWorkTabActivate'
@@ -67,22 +74,16 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
         this.setActiveTab(workTab);
     },
 
-    onTaskInterval: function() {
-        console.info('tick');
-    },
-
-    // onPostResponse: function(response) {
-
-    // },
-
 
     // config handlers
-    updateActiveTab: function(activeTab, oldActiveTab) {
+    updateActiveTab: function(activeTab, oldTab) {
         var me = this,
             task = me.task,
             lastSync = me.lastSync,
-            durations = me.durations,
-            now = Date.now();
+            continueTimer = function() {
+                // post initial time for incoming tab with duration = 1 and start timer afterwards
+                me.flushTimer(task.start, task);
+            };
 
         // initialize timer if needed, otherwise pause
         if (task) {
@@ -91,41 +92,63 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
             task = me.task = Ext.util.TaskManager.newTask({
                 interval: 5000,
                 scope: me,
-                run: me.onTaskInterval
+                run: me.flushTimer
             });
         }
 
-        // TODO: post remaining time for outgoing tab
-        if (oldActiveTab && lastSync) {
-            //debugger;
+        if (oldTab && lastSync) {
+            // post remaining time for outgoing tab
+            me.postTime(oldTab.getItemId(), Math.round((Date.now() - lastSync) / 1000), continueTimer);
+        } else {
+            continueTimer();
         }
+    },
 
-        // TODO: post initial time for incoming tab with duration = 0
+
+    // workflow methods
+    postTime: function(phase, duration, callback, scope) {
+        var me = this;
+
+        me.lastSync = Date.now();
+
+        console.info('postTime(phase=%o, duration=%o)', phase, duration);
+
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/work/activity',
             urlParams: {
-                section_id: 1, // TODO: send actual section when it will accept section code
+                section_id: me.getActiveSection(),
             },
             jsonData: {
-                phase: activeTab.getItemId(),
+                phase: phase,
                 complete: false,
                 sparkpoint: me.getActiveSparkpoint(),
-                duration: lastSync ? Math.round((now - lastSync) / 1000) : 1
+                duration: duration
             },
             success: function(response) {
                 var r = Ext.decode(response.responseText);
 
-                me.lastSync = now;// last sync should get updated before the request is sent so it lines up with the sent duration
+                console.info('Updated durations:', {
+                    learn: r.learn_duration,
+                    conference: r.conference_duration,
+                    apply: r.apply_duration,
+                    assess: r.assess_duration
+                });
 
-                durations.learn = r.learn_duration;
-                durations.conference = r.conference_duration;
-                durations.apply = r.apply_duration;
-                durations.assess = r.assess_duration;
+                me.getLearnTab().setDuration(r.learn_duration);
+                me.getConferenceTab().setDuration(r.conference_duration);
+                me.getApplyTab().setDuration(r.apply_duration);
+                me.getAssessTab().setDuration(r.assess_duration);
 
-                // (re)start timer
-                task.start();
+                Ext.callback(callback, scope);
             }
         });
+    },
+
+    flushTimer: function(callback, scope) {
+        var me = this,
+            lastSync = me.lastSync;
+
+        me.postTime(me.getActiveTab().getItemId(), lastSync ? Math.round((Date.now() - lastSync) / 1000) : 0, callback, scope);
     }
 });
