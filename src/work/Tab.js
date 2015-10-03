@@ -1,0 +1,30 @@
+/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+Ext.define('SparkClassroom.work.Tab', {
+    extend: 'Ext.tab.Tab',
+    xtype: 'spark-work-tab',
+    require: [
+        'Jarvus.util.format.FuzzyTime'
+    ],
+
+
+    config: {
+        duration: null,
+    },
+
+    titleTpl: [
+        '{title}',
+        '<tpl if="duration">',
+            '<div class="spark-tab-timer">{[Ext.util.Format.fuzzyDuration(values.duration*1000, true)]}</div>',
+        '</tpl>'
+    ],
+
+    updateDuration: function(duration) {
+        var me = this,
+            titleTpl = Ext.XTemplate.getTpl(me, 'titleTpl');
+
+        me.setText(titleTpl.apply({
+            title: me.getTitle(),
+            duration: duration
+        }));
+    }
+});
