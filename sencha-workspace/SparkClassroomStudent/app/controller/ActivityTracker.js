@@ -111,8 +111,6 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
 
         me.lastSync = Date.now();
 
-        console.info('postTime(phase=%o, duration=%o)', phase, duration);
-
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/work/activity',
@@ -127,13 +125,6 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
             },
             success: function(response) {
                 var r = Ext.decode(response.responseText);
-
-                console.info('Updated durations:', {
-                    learn: r.learn_duration,
-                    conference: r.conference_duration,
-                    apply: r.apply_duration,
-                    assess: r.assess_duration
-                });
 
                 me.getLearnTab().setDuration(r.learn_duration);
                 me.getConferenceTab().setDuration(r.conference_duration);
