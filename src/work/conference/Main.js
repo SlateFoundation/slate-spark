@@ -27,6 +27,7 @@ Ext.define('SparkClassroom.work.conference.Main', {
                                 items: [
                                     {
                                         xtype: 'spark-worklist',
+                                        itemId: 'questions',
                                         data: {
                                             title: 'Guiding Questions',
                                             items: [
@@ -39,6 +40,7 @@ Ext.define('SparkClassroom.work.conference.Main', {
                                     },
                                     {
                                         xtype: 'spark-worklist',
+                                        itemId: 'resources',
                                         data: {
                                             title: 'Resources',
                                             items: [
