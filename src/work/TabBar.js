@@ -2,10 +2,15 @@
 Ext.define('SparkClassroom.work.TabBar', {
     extend: 'Ext.tab.Bar',
     xtype: 'spark-work-tabbar',
-    cls: 'spark-work-tabbar',
+    requires: [
+        'SparkClassroom.work.Tab'
+    ],
+
 
     config: {
-        tabType: 'mainTab',
+        cls: 'spark-work-tabbar',
+
+        defaultType: 'spark-work-tab',
 
         defaults: {
             flex: 1
@@ -13,22 +18,25 @@ Ext.define('SparkClassroom.work.TabBar', {
 
         items: [
             {
-                // TODO: dynamic timers, and left icons
-                // TODO: squash custom section after confirming it's not used anywhere in SparkClassroom
-                title: 'Learn &amp; Practice <div class="spark-tab-timer">1h</div>',
-                itemId: 'learn'
+                itemId: 'learn',
+
+                // TODO: left icons
+                title: 'Learn &amp; Practice'
             },
             {
-                title: 'Conference <div class="spark-tab-timer">1h</div>',
-                itemId: 'conference'
+                itemId: 'conference',
+
+                title: 'Conference'
             },
             {
-                title: 'Apply <div class="spark-tab-timer">1h</div>',
-                itemId: 'apply'
+                itemId: 'apply',
+
+                title: 'Apply'
             },
             {
-                title: 'Assess <div class="spark-tab-timer">1h</div>',
-                itemId: 'assess'
+                itemId: 'assess',
+
+                title: 'Assess'
             }
         ]
     }
