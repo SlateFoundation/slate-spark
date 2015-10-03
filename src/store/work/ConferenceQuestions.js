@@ -2,7 +2,7 @@
 Ext.define('SparkClassroom.store.work.ConferenceQuestions', {
     extend: 'Ext.data.Store',
     requires: [
-        'SparkClassroom.model.work.ConferenceQuestion'
+        'Slate.proxy.API'
     ],
 
     model: 'SparkClassroom.model.work.ConferenceQuestion'
