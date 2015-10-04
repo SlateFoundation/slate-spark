@@ -10,6 +10,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     config: {
         title: null,
 
+        loadingText: null,
         cls: 'spark-gps-studentlist',
         itemCls: 'studentlist-item',
         itemTpl: [
