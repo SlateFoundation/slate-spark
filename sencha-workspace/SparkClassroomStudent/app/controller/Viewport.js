@@ -90,13 +90,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     updateSelectedSection: function(section, oldSection) {
-        this.getApplication().fireEvent('sectionselect', section, oldSection);
         this.syncSelections();
+        this.getApplication().fireEvent('sectionselect', section, oldSection);
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
-        this.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
         this.syncSelections();
+        this.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
     },
 
     onBeforeRedirect: function(token, resume) {
