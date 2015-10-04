@@ -52,9 +52,9 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         }
     },
 
-    onLoad: function(store) {
+    doRefresh: function() {
         var me = this,
-            countStr = store.getCount().toString(),
+            countStr = me.getStore().getCount().toString(),
             titleCmp = me.getTitle(),
             countEl = me.countEl;
 

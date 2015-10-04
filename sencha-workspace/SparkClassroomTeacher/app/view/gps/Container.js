@@ -30,21 +30,25 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         items: [
                             {
                                 itemId: 'learnList',
+
                                 store: 'gps.Learn',
                                 title: 'Learn and Practice'
                             },
                             {
                                 itemId: 'conferenceList',
+
                                 store: 'gps.Conference',
                                 title: 'Conference'
                             },
                             {
                                 itemId: 'applyList',
+
                                 store: 'gps.Apply',
                                 title: 'Apply'
                             },
                             {
                                 itemId: 'assessList',
+
                                 store: 'gps.Assess',
                                 title: 'Assess'
                             }
@@ -56,21 +60,25 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         flex: 2,
                         items: [
                             {
-                                xtype: 'spark-gps-studentlist',
-                                store: 'Priorities',
                                 itemId: 'priorityList',
-                                title: 'Priorities <span class="count">23</span>'
+
+                                xtype: 'spark-gps-studentlist',
+                                store: 'gps.Priorities',
+                                title: 'Priorities'
                             },
                             {
+                                itemId: 'addPriorityBtn',
+
                                 xtype: 'button',
-                                itemId: 'priority-add',
-                                tpl: 'Add {Student.FullName}',
+                                tpl: 'Add {[values.student.get("FullName")]}',
                                 hidden: true
                             },
                             {
+                                itemId: 'helpList',
+
                                 xtype: 'spark-gps-studentlist',
-                                store: 'Help',
-                                title: 'Help <span class="count">5</span>'
+                                store: 'gps.Help',
+                                title: 'Help'
                                 //grouped: true
                             }
                         ]

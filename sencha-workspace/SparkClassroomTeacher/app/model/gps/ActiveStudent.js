@@ -58,6 +58,16 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             convert: function(v, r) {
                 return Ext.getStore('Students').getById(v);
             }
+        },
+
+        {
+            name: 'priority_group',
+            type: 'integer',
+            allowNull: true
+        },
+        {
+            name: 'help_request',
+            allowNull: true
         }
     ]
 });

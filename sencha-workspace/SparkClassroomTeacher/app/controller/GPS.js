@@ -39,7 +39,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     refs: {
         gpsCt: 'spark-gps',
         priorityList: 'list#priorityList',
-        priorityAddButton: 'spark-gps button#priority-add'
+        addPriorityButton: 'spark-gps button#addPriorityBtn'
     },
 
     control: {
@@ -49,8 +49,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         'spark-gps-studentlist': {
             select: 'onListSelect'
         },
-        priorityAddButton: {
-            tap: 'onPriorityAddButtonTapped'
+        addPriorityButton: {
+            tap: 'onAddPriorityButtonTap'
         }
     },
 
@@ -107,7 +107,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     onStudentSelect: function(rec, list) {
         var me = this,
-            button = me.getPriorityAddButton(),
+            button = me.getAddPriorityButton(),
             priorityIndex = me.getPriorityList().getStore().indexOf(rec);
 
         if (priorityIndex === -1) {
@@ -119,10 +119,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
-    onPriorityAddButtonTapped: function(button) {
-        var rec = this.getGpsCt().getSelectedStudent();
+    onAddPriorityButtonTap: function(button) {
+        var activeStudent = this.getGpsCt().getSelectedStudent();
 
-        rec.set('Priority', 2);
+        activeStudent.set('priority_group', 2);
         button.hide();
     }
 });
