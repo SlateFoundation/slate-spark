@@ -1,6 +1,9 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
+    require: [
+        'Ext.util.TaskManager'
+    ],
 
 
     config: {
@@ -64,11 +67,23 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onStudentsStoreLoad: function(studentsStore) {
-        this.getGpsActiveStudentsStore().load({
-            params: {
-                section_id: this.getActiveSection()
-            }
-        });
+        var me = this,
+            refreshTask = me.refreshTask,
+            activeStudentsStore = me.getGpsActiveStudentsStore();
+
+        // create refresh task if needed
+        if (!refreshTask) {
+            refreshTask = me.refreshTask = Ext.util.TaskManager.newTask({
+                interval: 5000,
+                fireOnStart: true,
+                scope: activeStudentsStore,
+                run: activeStudentsStore.load
+            });
+        }
+
+        refreshTask.stop();
+        activeStudentsStore.getProxy().setExtraParam('section_id', me.getActiveSection());
+        refreshTask.start();
     },
 
     onListSelect: function(list, rec) {
