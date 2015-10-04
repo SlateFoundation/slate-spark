@@ -49,5 +49,24 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         if (oldTitle) {
             this.remove(oldTitle);
         }
+    },
+
+    onLoad: function(store) {
+        var me = this,
+            countStr = store.getCount().toString(),
+            titleCmp = me.getTitle(),
+            countEl = me.countEl;
+
+        me.callParent(arguments);
+
+        if (countEl) {
+            countEl.setHtml(countStr);
+        } else {
+            me.countEl = titleCmp.getInnerHtmlElement().appendChild({
+                tag: 'span',
+                cls: 'count',
+                html: countStr
+            });
+        }
     }
 });
