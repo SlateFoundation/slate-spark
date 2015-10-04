@@ -66,10 +66,14 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.setActiveSection(section);
     },
 
-    onStudentsStoreLoad: function(studentsStore) {
+    onStudentsStoreLoad: function(studentsStore, students, success) {
         var me = this,
             refreshTask = me.refreshTask,
             activeStudentsStore = me.getGpsActiveStudentsStore();
+
+        if (!success) {
+            return;
+        }
 
         // create refresh task if needed
         if (!refreshTask) {
