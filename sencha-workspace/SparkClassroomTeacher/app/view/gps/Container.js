@@ -56,21 +56,16 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         flex: 2,
                         items: [
                             {
-                                xtype: 'container',
-                                layout: 'fit',
-                                items: [{
-                                    xtype: 'spark-gps-studentlist',
-                                    store: 'Priorities',
-                                    itemId: 'priorityList',
-                                    title: 'Priorities <span class="count">23</span>'
-                                },
-                                {
-                                    xtype: 'button',
-                                    itemId: 'priority-add',
-                                    tpl: 'Add {Student.FullName}',
-                                    hidden: true,
-                                    docked: 'bottom'
-                                }]
+                                xtype: 'spark-gps-studentlist',
+                                store: 'Priorities',
+                                itemId: 'priorityList',
+                                title: 'Priorities <span class="count">23</span>'
+                            },
+                            {
+                                xtype: 'button',
+                                itemId: 'priority-add',
+                                tpl: 'Add {Student.FullName}',
+                                hidden: true
                             },
                             {
                                 xtype: 'spark-gps-studentlist',
