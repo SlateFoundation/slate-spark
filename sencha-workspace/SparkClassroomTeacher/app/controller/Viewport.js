@@ -122,14 +122,13 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             me.getTabsCt().show();
 
             Ext.getStore('SectionStudents').removeAll();
-            // studentStore.getProxy().setUrl('/sections/' + section + '/students');
-            studentStore.getProxy().setUrl('./api-data/students.json');
+            studentStore.getProxy().setUrl('/sections/' + section + '/students');
             studentStore.load();
 
             // redirect with the current un-prefixed route or an empty string to write the new section into the route
             me.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
         }
-        
+
         me.getApplication().fireEvent('sectionselect', section, oldSection);
     },
 
