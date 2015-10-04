@@ -2,16 +2,15 @@
 Ext.define('SparkClassroom.store.Students', {
     extend: 'Ext.data.Store',
     requires: [
-        'Slate.model.person.Person',
         'Slate.proxy.Records'
     ],
-    
+
+
+    model: 'Slate.model.person.Person',
+
     config: {
-        model: 'Slate.model.person.Person',
-        
         proxy: {
-            type: 'slate-records',
-            url: '/sections/ADV1-1/students'
+            type: 'slate-records'
         }
     }
 });

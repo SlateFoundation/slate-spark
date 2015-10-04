@@ -5,8 +5,11 @@ Ext.define('SparkClassroom.store.Sections', {
     	'Slate.proxy.Records'
     ],
 
-    proxy: {
-        type: 'slate-records',
-        url: '/sections'
+
+    config: {
+        proxy: {
+            type: 'slate-records',
+            url: '/sections'
+        }
     }
 });
