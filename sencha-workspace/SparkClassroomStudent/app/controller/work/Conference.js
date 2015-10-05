@@ -2,6 +2,7 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
+
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
         'work.ConferenceResources@SparkClassroom.store'
@@ -16,7 +17,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     control: {
         conferenceCt: {
             activate: 'onConferenceCtActivate'
-        }
+        },
+
     },
 
     listen: {
@@ -27,6 +29,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
     },
 
+
+    // event handlers
     onConferenceCtActivate: function() {
         var store = Ext.getStore('work.ConferenceQuestions');
 
@@ -35,25 +39,26 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
     },
 
-    onConferenceQuestionsStoreLoad: function(store) {
-        var me = this,
-            resourcesStore = Ext.getStore('work.ConferenceResources');
+    onConferenceQuestionsStoreLoad: function(questionsStore) {
+        var me = this;
 
-        resourcesStore.loadData(store.getProxy().getReader().rawData.resources);
+        Ext.getStore('work.ConferenceResources').loadData(questionsStore.getProxy().getReader().rawData.resources);
 
-        me.setQuestions(store.getRange());
-        me.setResources(resourcesStore.getRange());
+        me.refreshQuestions();
+        me.refreshResources();
     },
 
-    setQuestions: function(recs) {
-        var list = this.getQuestionsList(),
-            count = recs.length,
+
+    // controller methods
+    refreshQuestions: function() {
+        var questions = Ext.getStore('work.ConferenceQuestions').getRange(),
+            count = questions.length,
             items = [],
             i = 0;
 
         for (i; i < count; i++) {
             items.push({
-                text: recs[i].get('question')
+                text: questions[i].get('question')
             });
         }
 
@@ -62,30 +67,29 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             skipHtmlEncode: true
         });
 
-        list.setData({
+        this.getQuestionsList().setData({
             title: 'Guiding Questions',
             items: items
         });
     },
 
-    setResources: function(recs) {
-        var list = this.getResourcesList(),
-            count = recs.length,
+    refreshResources: function() {
+        var resources = Ext.getStore('work.ConferenceResources').getRange(),
+            count = resources.length,
             items = [],
             i = 0;
 
         for (i; i < count; i++) {
             items.push({
-                text: recs[i].get('title'),
-                linkTitle: recs[i].get('url'),
-                linkUrl: recs[i].get('url')
+                text: resources[i].get('title'),
+                linkTitle: resources[i].get('url'),
+                linkUrl: resources[i].get('url')
             });
         }
 
-        list.setData({
+        this.getResourcesList().setData({
             title: 'Resources',
             items: items
         });
     }
-
 });
