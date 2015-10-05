@@ -18,7 +18,6 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
         titleBar: null,
         columns:[
             {
-                dataIndex: 'Standard',
                 xtype: 'spark-title-column',
                 text: 'Assessment'
             },
