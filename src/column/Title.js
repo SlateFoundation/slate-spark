@@ -5,11 +5,11 @@ Ext.define('SparkClassroom.column.Title', {
     config: {
         cls: 'spark-title-column',
         flex: 2,
+        dataIndex: 'title',
         cell: {
             encodeHtml: false
         },
         tpl: [
-            '{%console.log(values)%}',
             '<tpl if="thumbnail">',
                 '<img src="{thumbnail:htmlEncode}" height="26"> ',
             '</tpl>',

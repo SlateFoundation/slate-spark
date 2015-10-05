@@ -5,6 +5,7 @@ Ext.define('SparkClassroom.column.Learn', {
     config: {
         cls: 'spark-learn-column',
         flex: 1,
+        dataIndex: 'title',
         text: 'Learn',
         cell: {
             encodeHtml: false

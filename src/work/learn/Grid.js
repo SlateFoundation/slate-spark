@@ -27,8 +27,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
                 xtype: 'spark-completed-column'
             },
             {
-                dataIndex: 'title',
-                xtype: 'spark-title-column',
+                xtype: 'spark-learn-column',
                 flex: 2
             },
             {
