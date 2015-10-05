@@ -3,6 +3,7 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-learnsgrid',
     requires: [
+        'Ext.data.ChainedStore',
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Learn'
@@ -14,6 +15,8 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
             'gridheight'
         ],
         titleBar: null,
+        emptyText: 'Once some learns have been marked completed, you&rsquo;ll be able to rate them here',
+
         columns:[
             {
                 dataIndex: 'Title',
@@ -32,14 +35,14 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
         ],
 
         store: {
-            fields: ['Title', 'Rating', 'Comment', 'VendorTitle', 'VendorImageUrl', 'Link'],
-
-            data: [
-                {Title: 'Playlist Title', Rating: 2, Comment: 'Comments left here', VendorTitle: 'PBS',         VendorImage: '', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 2, Comment: 'Comments left here', VendorTitle: 'Brainpop',    VendorImage: '', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 3, Comment: 'Comments left here', VendorTitle: 'Youtube',     VendorImage: '', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 1, Comment: 'Comments left here', VendorTitle: 'Illuminate',  VendorImage: '', Link: 'http://link.com'},
-                {Title: 'Playlist Title', Rating: 1, Comment: 'Comments left here', VendorTitle: 'Youtube',     VendorImage: '', Link: 'http://link.com'}
+            type: 'chained',
+            source: 'work.Learns',
+            filters: [
+                {
+                    filterFn: function(learn) {
+                        return learn.get('completed');
+                    }
+                }
             ]
         }
     }
