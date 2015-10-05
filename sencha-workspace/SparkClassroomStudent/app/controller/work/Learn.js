@@ -33,7 +33,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         },
         store: {
             '#work.Learns': {
-                load: 'onLearnsStoreLoad'
+                load: 'refreshProgressBar',
+                update: 'refreshProgressBar'
             }
         }
     },
@@ -70,8 +71,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
-    onLearnsStoreLoad: function(store,recs) {
-        var me = this,
+    refreshProgressBar: function(store) {
+        var recs = store.getRange(),
             count = recs.length,
             completed = 0,
             required = 0,
@@ -92,7 +93,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             }
         }
 
-        me.getProgressBanner().setData(
+        this.getProgressBanner().setData(
             {
                 completedLearns: completed,
                 name: null,
