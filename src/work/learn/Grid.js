@@ -23,7 +23,6 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         titleBar: null,
         columns:[
             {
-                dataIndex: 'completed',
                 xtype: 'spark-completed-column'
             },
             {

@@ -22,12 +22,11 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
                 text: 'Assessment'
             },
             {
-                dataIndex: 'completed',
                 xtype: 'spark-completed-column'
             },
             {
-                dataIndex: 'score',
                 xtype: 'spark-score-column',
+                dataIndex: 'score'
             }
         ],
 

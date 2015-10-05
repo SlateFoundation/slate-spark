@@ -32,7 +32,6 @@ Ext.define('SparkClassroom.work.apply.Container', {
                 emptyText: 'No apply projects are available for this Sparkpoint currently.',
                 columns: [
                     {
-                        dataIndex: 'completed',
                         xtype: 'spark-completed-column'
                     },
                     {

@@ -6,6 +6,7 @@ Ext.define('SparkClassroom.column.Completed', {
         allowToggle: true,
 
         cls: 'spark-completed-column',
+        dataIndex: 'completed',
         text: 'Completed',
         width: 96,
         cell: {
