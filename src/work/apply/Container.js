@@ -147,11 +147,53 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                 xtype: 'container',
                                 items: [
                                     {
-                                        xtype: 'spark-panel',
-                                        cls: 'content-card',
-                                        title: 'To Do',
-                                        html: '[grid]',
-                                        height: 400 // temp
+                                        itemId: 'todosGrid',
+
+                                        xtype: 'grid',
+                                        plugins: [
+                                            'gridflex',
+                                            'gridheight'
+                                        ],
+                                        titleBar: false,
+                                        emptyText: 'There are no To Dos for this apply project',
+                                        deferEmptyText: false,
+
+                                        store: {
+                                            fields: [
+                                                'todo',
+                                                {
+                                                    name: 'date_due',
+                                                    type: 'date',
+                                                    allowNull: true
+                                                },
+                                                {
+                                                    name: 'completed',
+                                                    type: 'boolean',
+                                                    defaultValue: false
+                                                }
+                                            ]
+                                        },
+
+                                        columns: [
+                                            {
+                                                xtype: 'spark-completed-column',
+                                                text: null,
+                                                width: 45
+                                            },
+                                            {
+                                                xtype: 'column',
+                                                flex: 1,
+                                                text: 'To Dos',
+                                                dataIndex: 'todo'
+                                            },
+                                            {
+                                                xtype: 'datecolumn',
+                                                text: 'Due Date',
+                                                dataIndex: 'date_due',
+                                                width: 150,
+                                                format: 'l, n/j'
+                                            }
+                                        ],
                                     },
                                     {
                                         xtype: 'fieldset',
@@ -175,26 +217,12 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                         title: 'Related Docs',
                                         items: [
                                             {
+                                                itemId: 'linksCmp',
+
                                                 xtype: 'component',
-                                                data: {
-                                                    docs: [
-                                                        {
-                                                            title: 'Some doc on Google <test></test>',
-                                                            url: 'https://docs.google.com/document/d/1OFiXSz5nSEMxKutQYzHDdVxfIfNJTsyM-YJlEMiVRfQ/'
-                                                        },
-                                                        {
-                                                            title: 'A Dropbox file maybe, with a longer title than usual',
-                                                            url: 'https://www.dropbox.com/s/bdp8dwgssrhr6e4/Jarvus-Deliveries-B.pdf'
-                                                        },
-                                                        {
-                                                            title: 'paperinpdfform.pdf',
-                                                            url: 'http://example.com/paperinpdfform.pdf'
-                                                        }
-                                                    ]
-                                                },
                                                 tpl: [
                                                     '<ul class="link-list">',
-                                                        '<tpl for="docs">',
+                                                        '<tpl for=".">',
                                                             '<li class="link-list-item"><a href="{url:htmlEncode}" target=_blank>{title:htmlEncode}</a></li>',
                                                         '</tpl>',
                                                     '</ul>'
