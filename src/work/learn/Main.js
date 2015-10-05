@@ -28,7 +28,8 @@ Ext.define('SparkClassroom.work.learn.Main', {
                         },
                         items: [
                             {
-                                xtype: 'spark-work-learn-progressbanner'
+                                xtype: 'spark-work-learn-progressbanner',
+                                hidden: true
                             }
                         ]
                     },
