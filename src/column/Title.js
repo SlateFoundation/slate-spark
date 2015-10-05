@@ -5,6 +5,24 @@ Ext.define('SparkClassroom.column.Title', {
     config: {
         cls: 'spark-title-column',
         flex: 2,
-        text: 'Title'
+        cell: {
+            encodeHtml: false
+        },
+        tpl: [
+            '{%console.log(values)%}',
+            '<tpl if="thumbnail">',
+                '<img src="{thumbnail:htmlEncode}" height="26"> ',
+            '</tpl>',
+
+            '<tpl if="url">',
+                '<a href="{url:htmlEncode}" target="_blank">',
+            '</tpl>',
+
+            '{title}',
+
+            '<tpl if="url">',
+                '</a>',
+            '</tpl>'
+        ]
     }
 });
