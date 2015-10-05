@@ -26,6 +26,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                     'gridheight'
                 ],
                 titleBar: false,
+/*
                 store: {
                     fields: [ 'title', 'description', 'standards', 'checked' ],
                     data: [
@@ -46,6 +47,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                         }
                     ]
                 },
+*/
                 columns: [
                     {
                         xtype: 'booleancolumn',
@@ -69,7 +71,8 @@ Ext.define('SparkClassroom.work.apply.Container', {
                         tpl: '<tpl if="standards"><ul class="spark-grid-token-list"><tpl for="standards"><li class="spark-grid-token-item">{.}</li></tpl></ul></tpl>',
                         width: 320
                     }
-                ]
+                ],
+                store: 'work.Applies'
             },
             {
                 layout: {
