@@ -80,8 +80,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     onConferenceQuestionsStoreLoad: function(questionsStore) {
         var me = this;
 
-        console.log(questionsStore.getProxy().getReader().rawData);
-
         me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
 
         me.refreshQuestions();
