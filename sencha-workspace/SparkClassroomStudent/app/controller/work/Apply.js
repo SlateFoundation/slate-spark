@@ -4,7 +4,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     config: {
-        activeSparkpoint: null
+        activeSparkpoint: null,
+        activeApply: null
     },
 
     stores: [
@@ -15,7 +16,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         applyCt: 'spark-student-work-apply',
         appliesGrid: 'spark-student-work-apply grid#appliesGrid',
         chooseSelectedApplyBtn: 'spark-student-work-apply button#chooseSelectedApplyBtn',
-        selectedApplyCt: 'spark-student-work-apply #selectedApplyCt'
+        selectedApplyCt: 'spark-student-work-apply #selectedApplyCt',
+        todosGrid: 'spark-student-work-apply grid#todosGrid',
+        linksCmp: 'spark-student-work-apply #linksCmp'
     },
 
     control: {
@@ -52,6 +55,26 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         }
     },
 
+    updateActiveApply: function(apply) {
+        var me = this;
+
+        me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
+            return {
+                todo: todo,
+                date_due: new Date()
+            };
+        }));
+
+        me.getLinksCmp().setData(apply.get('links').map(function(url) {
+            return {
+                title: url.replace(/^https?:\/\//, ''),
+                url: url
+            };
+        }));
+
+        me.getSelectedApplyCt().show();
+    },
+
 
     // event handlers
     onSparkpointSelect: function(sparkpoint) {
@@ -74,8 +97,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onChooseSelectedApplyTap: function() {
-        var selectedApply = this.getAppliesGrid().getSelection();
-
-        this.getSelectedApplyCt().show();
+        this.setActiveApply(this.getAppliesGrid().getSelection());
     }
 });
