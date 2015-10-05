@@ -25,14 +25,24 @@ Ext.define('SparkClassroom.work.conference.Main', {
                                 itemId: 'questions',
 
                                 xtype: 'spark-worklist',
-                                data: {
-                                    title: 'Guiding Questions',
-                                    items: [
-                                        // { text: 'Example <foo> of a first guiding question.' },
-                                        // { text: 'Example of a second guiding question that a student should be prepared to respond to.' },
-                                        // { text: 'Example of a third guiding question that a student should be prepared to respond to.', studentSubmitted: true },
-                                        // { text: '<div class="inline-flex-fullwidth-ct"><input placeholder="Add a guiding question you want to discuss with the teacher (optional)" class="flex-1"> <button type="submit">Add</button></div>', skipHtmlEncode: true }
-                                    ]
+
+                                listeners: {
+                                    tap: {
+                                        element: 'element',
+                                        delegate: 'button[type=submit]',
+                                        fn: function() {
+                                            this.fireEvent('submit', this);
+                                        }
+                                    },
+                                    keypress: {
+                                        element: 'element',
+                                        delegate: 'input',
+                                        fn: function(ev, t) {
+                                            if (ev.getKey() == ev.ENTER) {
+                                                this.fireEvent('submit', this);
+                                            }
+                                        }
+                                    }
                                 }
                             },
                             {
