@@ -5,12 +5,6 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
     cls: 'spark-learn-progressbanner',
 
     config: {
-        data: {
-            completedLearns: 3,
-            name: null,
-            requiredLearns: 5
-        },
-
         tpl: [
             '<ul class="progressbanner-pips">',
                 '<tpl for="this.pips(completedLearns, requiredLearns)">',
