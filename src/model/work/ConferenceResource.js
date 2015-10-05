@@ -2,12 +2,11 @@
 Ext.define('SparkClassroom.model.work.ConferenceResource', {
     extend: 'Ext.data.Model',
 
-    config: {
-        fields: [
-            'id',
-            'title',
-            'url',
-            'gradeLevel'
-        ]
-    }
+
+    fields: [
+        'id',
+        'title',
+        'url',
+        'gradeLevel'
+    ]
 });
