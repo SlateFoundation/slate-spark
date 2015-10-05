@@ -28,10 +28,10 @@ Ext.define('SparkClassroom.work.conference.Main', {
                                 data: {
                                     title: 'Guiding Questions',
                                     items: [
-                                        { text: 'Example <foo> of a first guiding question.' },
-                                        { text: 'Example of a second guiding question that a student should be prepared to respond to.' },
-                                        { text: 'Example of a third guiding question that a student should be prepared to respond to.', studentSubmitted: true },
-                                        { text: '<div class="inline-flex-fullwidth-ct"><input placeholder="Add a guiding question you want to discuss with the teacher (optional)" class="flex-1"> <button type="submit">Add</button></div>', skipHtmlEncode: true }
+                                        // { text: 'Example <foo> of a first guiding question.' },
+                                        // { text: 'Example of a second guiding question that a student should be prepared to respond to.' },
+                                        // { text: 'Example of a third guiding question that a student should be prepared to respond to.', studentSubmitted: true },
+                                        // { text: '<div class="inline-flex-fullwidth-ct"><input placeholder="Add a guiding question you want to discuss with the teacher (optional)" class="flex-1"> <button type="submit">Add</button></div>', skipHtmlEncode: true }
                                     ]
                                 }
                             },
@@ -42,8 +42,8 @@ Ext.define('SparkClassroom.work.conference.Main', {
                                 data: {
                                     title: 'Resources',
                                     items: [
-                                        { text: 'Title of resource', linkTitle: 'documenttoshare.pdf', linkUrl: '#' },
-                                        { text: 'Title of resource', linkUrl: 'http://example.com' }
+                                        // { text: 'Title of resource', linkTitle: 'documenttoshare.pdf', linkUrl: '#' },
+                                        // { text: 'Title of resource', linkUrl: 'http://example.com' }
                                     ]
                                 }
                             }
