@@ -43,15 +43,13 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         me.setQuestions(store.getRange());
         me.setResources(resourcesStore.getRange());
-
     },
 
     setQuestions: function(recs) {
         var list = this.getQuestionsList(),
             count = recs.length,
             items = [],
-            i = 0,
-            data;
+            i = 0;
 
         for (i; i < count; i++) {
             items.push({
@@ -59,20 +57,22 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             });
         }
 
-        data = {
+        items.push({
+            text: '<div class="inline-flex-fullwidth-ct"><input placeholder="Add a guiding question you want to discuss with the teacher (optional)" class="flex-1"> <button type="submit">Add</button></div>',
+            skipHtmlEncode: true
+        });
+
+        list.setData({
             title: 'Guiding Questions',
             items: items
-        };
-
-        list.setData(data);
+        });
     },
 
     setResources: function(recs) {
         var list = this.getResourcesList(),
             count = recs.length,
             items = [],
-            i = 0,
-            data;
+            i = 0;
 
         for (i; i < count; i++) {
             items.push({
@@ -82,12 +82,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             });
         }
 
-        data = {
+        list.setData({
             title: 'Resources',
             items: items
-        };
-
-        list.setData(data);
+        });
     }
 
 });
