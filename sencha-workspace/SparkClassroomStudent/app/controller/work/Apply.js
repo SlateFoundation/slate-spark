@@ -25,9 +25,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         var store = this.getWorkAppliesStore();
 
         // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
+        if (!store.isLoaded()) {
+            console.log('loading store ! isloaded');
             store.load();
         }
-
     }
 });
