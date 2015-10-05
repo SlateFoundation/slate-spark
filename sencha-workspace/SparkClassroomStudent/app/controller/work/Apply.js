@@ -11,8 +11,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     ],
 
     refs: {
-        applyCt: 'spark-student-work-apply',
-        sparkpointCt: 'spark-student-work-apply #sparkpointCt'
+        applyCt: 'spark-student-work-apply'
     },
 
     control: {
@@ -26,7 +25,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         var me = this;
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
 
     }
 });
