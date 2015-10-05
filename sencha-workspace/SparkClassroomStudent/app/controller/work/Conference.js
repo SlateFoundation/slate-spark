@@ -7,11 +7,9 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
-
     config: {
         activeSparkpoint: null
     },
-
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
@@ -71,6 +69,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         var me = this,
             store = me.getWorkConferenceQuestionsStore();
 
+        console.log(me.getActiveSparkpoint());
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
 
@@ -81,6 +80,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     onConferenceQuestionsStoreLoad: function(questionsStore) {
         var me = this;
+
+        console.log(questionsStore.getProxy().getReader().rawData);
 
         me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
 
