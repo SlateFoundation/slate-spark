@@ -5,11 +5,11 @@ Ext.define('SparkClassroomStudent.view.work.conference.Container', {
     requires: [
         'SparkClassroomStudent.view.work.conference.peer.Form'
     ],
-    
+
     initialize: function () {
         this.callParent(arguments);
-        
-        this.getComponent('standardContainer').add({
+
+        this.add({
             xtype: 'spark-student-work-conference-peer-form'
         });
     }
