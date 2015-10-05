@@ -20,6 +20,14 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         }
     },
 
+    listen: {
+        controller: {
+            '#': {
+                sparkpointselect: 'onSparkpointSelect'
+            }
+        }
+    },
+
     // config handlers
     updateActiveSparkpoint: function(sparkpoint) {
         var store = this.getWorkAppliesStore();
@@ -32,6 +40,12 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             store.load();
         }
     },
+
+    // event handlers
+    onSparkpointSelect: function(sparkpoint) {
+        this.setActiveSparkpoint(sparkpoint);
+    },
+
 
     // TODO: handle loading data into apply section
     onApplyCtActivate: function() {
