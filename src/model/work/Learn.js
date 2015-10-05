@@ -17,20 +17,12 @@ Ext.define('SparkClassroom.model.work.Learn', {
             defaultValue: false
         },
         {
-            name: 'srating',
-            convert: function(v, r) {
-                var rating = r.get('rating');
-
-                return rating ? rating.student : null;
-            }
+            name: 'student_rating',
+            mapping: 'rating.student'
         },
         {
-            name: 'trating',
-            convert: function(v, r) {
-                var rating = r.get('rating');
-
-                return rating ? rating.teacher : null;
-            }
+            name: 'teacher_rating',
+            mapping: 'rating.teacher'
         }
     ]
 });
