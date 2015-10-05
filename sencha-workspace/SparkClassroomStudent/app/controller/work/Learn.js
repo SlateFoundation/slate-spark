@@ -33,6 +33,20 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
 
+    // config handlers
+    updateActiveSparkpoint: function(sparkpoint) {
+        var store = this.getWorkLearnsStore();
+
+        // TODO: track dirty state of extraparams?
+        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+
+        // TODO: reload store if sparkpoints param dirty
+        if (store.isLoaded()) {
+            store.load();
+        }
+    },
+
+
     // event handlers
     onSparkpointSelect: function(sparkpoint) {
         this.setActiveSparkpoint(sparkpoint);
@@ -45,21 +59,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
 
-        if(!store.isLoaded()) { // TODO: OR extraParamsDirty
-            store.load();
-        }
-    },
-
-
-    // config handlers
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkLearnsStore();
-
-        // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
-
-        // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
+        if (!store.isLoaded()) { // TODO: OR extraParamsDirty
             store.load();
         }
     }
