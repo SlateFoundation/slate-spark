@@ -14,9 +14,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     refs: {
         applyCt: 'spark-student-work-apply',
+        applyPickerCt: 'spark-student-work-apply #applyPickerCt',
         appliesGrid: 'spark-student-work-apply grid#appliesGrid',
         chooseSelectedApplyBtn: 'spark-student-work-apply button#chooseSelectedApplyBtn',
         selectedApplyCt: 'spark-student-work-apply #selectedApplyCt',
+        chooseAgainBtn: 'spark-student-work-apply button#chooseAgainBtn',
         headerCmp: 'spark-student-work-apply #headerCmp',
         todosGrid: 'spark-student-work-apply grid#todosGrid',
         linksCmp: 'spark-student-work-apply #linksCmp'
@@ -31,6 +33,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         },
         chooseSelectedApplyBtn: {
             tap: 'onChooseSelectedApplyTap'
+        },
+        chooseAgainBtn: {
+            tap: 'onChooseAgainTap'
         }
     },
 
@@ -57,25 +62,30 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     updateActiveApply: function(apply) {
-        var me = this;
+        var me = this,
+            applyPickerCt = me.getApplyPickerCt(),
+            selectedApplyCt = me.getSelectedApplyCt();
 
-        me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
-            return {
-                todo: todo,
-                date_due: new Date()
-            };
-        }));
+        if (apply) {
+            me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
+                return {
+                    todo: todo,
+                    date_due: new Date()
+                };
+            }));
 
-        me.getLinksCmp().setData(apply.get('links').map(function(url) {
-            return {
-                title: url.replace(/^https?:\/\//, ''),
-                url: url
-            };
-        }));
+            me.getLinksCmp().setData(apply.get('links').map(function(url) {
+                return {
+                    title: url.replace(/^https?:\/\//, ''),
+                    url: url
+                };
+            }));
 
-        me.getHeaderCmp().setData(apply.getData());
+            me.getHeaderCmp().setData(apply.getData());
+        }
 
-        me.getSelectedApplyCt().show();
+        applyPickerCt.setHidden(apply);
+        selectedApplyCt.setHidden(!apply);
     },
 
 
@@ -101,5 +111,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onChooseSelectedApplyTap: function() {
         this.setActiveApply(this.getAppliesGrid().getSelection());
+    },
+
+    onChooseAgainTap: function() {
+        this.setActiveApply(null);
     }
 });
