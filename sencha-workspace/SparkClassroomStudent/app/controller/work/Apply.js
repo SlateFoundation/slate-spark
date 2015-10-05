@@ -2,6 +2,7 @@
 Ext.define('SparkClassroomStudent.controller.work.Apply', {
     extend: 'Ext.app.Controller',
 
+
     config: {
         activeSparkpoint: null
     },
@@ -11,12 +12,21 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     ],
 
     refs: {
-        applyCt: 'spark-student-work-apply'
+        applyCt: 'spark-student-work-apply',
+        appliesGrid: 'spark-student-work-apply grid#appliesGrid',
+        chooseSelectedApplyBtn: 'spark-student-work-apply button#chooseSelectedApplyBtn',
+        selectedApplyCt: 'spark-student-work-apply #selectedApplyCt'
     },
 
     control: {
         applyCt: {
             activate: 'onApplyCtActivate'
+        },
+        appliesGrid: {
+            select: 'onAppliesGridSelect'
+        },
+        chooseSelectedApplyBtn: {
+            tap: 'onChooseSelectedApplyTap'
         }
     },
 
@@ -27,6 +37,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             }
         }
     },
+
 
     // config handlers
     updateActiveSparkpoint: function(sparkpoint) {
@@ -40,6 +51,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             store.load();
         }
     },
+
 
     // event handlers
     onSparkpointSelect: function(sparkpoint) {
@@ -55,5 +67,15 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         if (!store.isLoaded()) {
             store.load();
         }
+    },
+
+    onAppliesGridSelect: function(appliesGrid) {
+        this.getChooseSelectedApplyBtn().enable();
+    },
+
+    onChooseSelectedApplyTap: function() {
+        var selectedApply = this.getAppliesGrid().getSelection();
+
+        this.getSelectedApplyCt().show();
     }
 });
