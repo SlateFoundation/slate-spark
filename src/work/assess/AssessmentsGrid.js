@@ -20,33 +20,18 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
             {
                 dataIndex: 'Standard',
                 xtype: 'spark-title-column',
-                text: 'Assessment Selected'
+                text: 'Assessment'
             },
             {
-                dataIndex: 'Completed',
+                dataIndex: 'completed',
                 xtype: 'spark-completed-column'
             },
             {
-                dataIndex: 'Score',
-                xtype: 'spark-score-column'
+                dataIndex: 'score',
+                xtype: 'spark-score-column',
             }
         ],
 
-        store: {
-            fields: [ 'Standard', 'Completed', 'Score' ],
-
-            data: [
-                {
-                    Standard: 'Playlist Title',
-                    Score: false,
-                    Completed: false
-                },
-                {
-                    Standard: 'Playlist Title',
-                    Score: 2,
-                    Completed: true
-                }
-            ]
-        }
+        store: 'work.Assessments'
     }
 });
