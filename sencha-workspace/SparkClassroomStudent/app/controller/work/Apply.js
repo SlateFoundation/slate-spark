@@ -17,6 +17,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         appliesGrid: 'spark-student-work-apply grid#appliesGrid',
         chooseSelectedApplyBtn: 'spark-student-work-apply button#chooseSelectedApplyBtn',
         selectedApplyCt: 'spark-student-work-apply #selectedApplyCt',
+        headerCmp: 'spark-student-work-apply #headerCmp',
         todosGrid: 'spark-student-work-apply grid#todosGrid',
         linksCmp: 'spark-student-work-apply #linksCmp'
     },
@@ -71,6 +72,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 url: url
             };
         }));
+
+        me.getHeaderCmp().setData(apply.getData());
 
         me.getSelectedApplyCt().show();
     },
