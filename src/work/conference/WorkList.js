@@ -3,9 +3,9 @@ Ext.define('SparkClassroom.work.conference.WorkList', {
     xtype: 'spark-worklist',
     requires: [ 'Ext.XTemplate' ],
 
-    cls: 'spark-worklist-ct',
 
     config: {
+        cls: 'spark-worklist-ct',
         tpl: [
             '<tpl if="title"><h2 class="spark-worklist-title">{title:htmlEncode}</h2></tpl>',
             '<ol class="spark-worklist">',
