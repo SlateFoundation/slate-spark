@@ -11,7 +11,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     ],
 
     refs: {
-        applyCt: 'spark-student-work-apply'
+        applyCt: 'spark-student-work-apply',
+        sparkpointCt: 'spark-student-work-apply #sparkpointCt'
     },
 
     control: {
