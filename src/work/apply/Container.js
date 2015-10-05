@@ -184,7 +184,14 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 xtype: 'column',
                                                 flex: 1,
                                                 text: 'To Dos',
-                                                dataIndex: 'todo'
+                                                dataIndex: 'todo',
+                                                cell: {
+                                                    encodeHtml: false
+                                                },
+                                                renderer: function(v) {
+                                                    var fm = Ext.util.Format;
+                                                    return fm.nl2br(fm.htmlEncode(v));
+                                                }
                                             },
                                             {
                                                 xtype: 'datecolumn',
