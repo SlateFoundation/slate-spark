@@ -8,6 +8,11 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
 
+    config: {
+        activeSparkpoint: null
+    },
+
+
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
         'work.ConferenceResources@SparkClassroom.store'
@@ -15,6 +20,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     refs: {
         conferenceCt: 'spark-student-work-conference',
+        sparkpointCt: 'spark-student-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
         resourcesList: 'spark-worklist#resources'
     },
@@ -23,12 +29,17 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         conferenceCt: {
             activate: 'onConferenceCtActivate'
         },
-        'spark-work-conference spark-worklist#questions': {
+        questionsList: {
             submit: 'onQuestionSubmit'
         }
     },
 
     listen: {
+        controller: {
+            '#': {
+                sparkpointselect: 'onSparkpointSelect'
+            }
+        },
         store: {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
@@ -37,11 +48,33 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
 
-    // event handlers
-    onConferenceCtActivate: function() {
-        var store = Ext.getStore('work.ConferenceQuestions');
+    // config handlers
+    updateActiveSparkpoint: function(sparkpoint) {
+        var store = this.getWorkConferenceQuestionsStore();
 
-        if(!store.isLoaded()) {
+        // TODO: track dirty state of extraparams?
+        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+
+        // TODO: reload store if sparkpoints param dirty
+        if (store.isLoaded()) {
+            store.load();
+        }
+    },
+
+
+    // event handlers
+    onSparkpointSelect: function(sparkpoint) {
+        this.setActiveSparkpoint(sparkpoint);
+    },
+
+    onConferenceCtActivate: function() {
+        var me = this,
+            store = me.getWorkConferenceQuestionsStore();
+
+        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
+        me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
+
+        if (!store.isLoaded()) {
             store.load();
         }
     },
@@ -49,14 +82,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     onConferenceQuestionsStoreLoad: function(questionsStore) {
         var me = this;
 
-        Ext.getStore('work.ConferenceResources').loadData(questionsStore.getProxy().getReader().rawData.resources);
+        me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
 
         me.refreshQuestions();
         me.refreshResources();
     },
 
     onQuestionSubmit: function(questionsList) {
-        Ext.getStore('work.ConferenceQuestions').add({
+        this.getWorkConferenceQuestionsStore().add({
             question: questionsList.getInnerHtmlElement().down('input').getValue(),
             studentSubmitted: true
         });
@@ -67,12 +100,13 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     // controller methods
     refreshQuestions: function() {
-        var questions = Ext.getStore('work.ConferenceQuestions').getRange(),
-            count = questions.length, i = 0, question,
+        var me = this,
+            questionsStore = me.getWorkConferenceQuestionsStore(),
+            count = questionsStore.getCount(), i = 0, question,
             items = [];
 
         for (; i < count; i++) {
-            question = questions[i];
+            question = questionsStore.getAt(i);
 
             items.push({
                 text: question.get('question'),
@@ -85,19 +119,20 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             skipHtmlEncode: true
         });
 
-        this.getQuestionsList().setData({
+        me.getQuestionsList().setData({
             title: 'Guiding Questions',
             items: items
         });
     },
 
     refreshResources: function() {
-        var resources = Ext.getStore('work.ConferenceResources').getRange(),
-            count = resources.length, i = 0, resource,
+        var me = this,
+            resourcesStore = me.getWorkConferenceResourcesStore(),
+            count = resourcesStore.getCount(), i = 0, resource,
             items = [];
 
         for (; i < count; i++) {
-            resource = resources[i];
+            resource = resourcesStore.getAt(i);
 
             items.push({
                 text: resource.get('title'),
@@ -106,7 +141,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             });
         }
 
-        this.getResourcesList().setData({
+        me.getResourcesList().setData({
             title: 'Resources',
             items: items
         });
