@@ -71,35 +71,26 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
+
+    // controller methods
     refreshProgressBar: function(store) {
         var recs = store.getRange(),
             count = recs.length,
             completed = 0,
-            required = 0,
-            i = 0,
-            rec;
+            required = Math.min(count, 5),
+            i = 0;
 
-        for (i; i< count; i++) {
-            rec = recs[i];
-
-            // TODO: get actual value of required
-            // if (rec.get('required')) {
-
-            if (true) {
-                required++;
-                if (rec.get('completed')) {
-                    completed++;
-                }
+        for (; i < count; i++) {
+            if (recs[i].get('completed')) {
+                completed++;
             }
         }
 
-        this.getProgressBanner().setData(
-            {
-                completedLearns: completed,
-                name: null,
-                requiredLearns: required
-            }
-        );
+        this.getProgressBanner().setData({
+            completedLearns: completed,
+            name: null,
+            requiredLearns: required
+        });
     }
 
 });
