@@ -8,7 +8,20 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     refs: {
         applyCt: 'spark-student-work-apply'
-    }
+    },
+
+    control: {
+        applyCt: {
+            activate: 'onApplyCtActivate'
+        }
+    },
 
     // TODO: handle loading data into apply section
+    onApplyCtActivate: function() {
+        var me = this;
+
+        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
+        me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
+
+    }
 });
