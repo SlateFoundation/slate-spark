@@ -12,6 +12,11 @@ Ext.define('SparkClassroom.model.work.Learn', {
         'attachments',
         'vendor',
         {
+            name: 'completed',
+            type: 'boolean',
+            defaultValue: false
+        },
+        {
             name: 'srating',
             convert: function(v, r) {
                 var rating = r.get('rating');
