@@ -15,64 +15,70 @@ Ext.define('SparkClassroom.work.apply.Container', {
 
         items: [
             {
-                xtype: 'spark-simpleheading',
-                level: 1,
-                cls: 'spark-view-headline',
-                html: 'Time to Apply your knowledge!'
-            },
-            {
-                itemId: 'appliesGrid',
+                itemId: 'applyPickerCt',
 
-                xtype: 'grid',
-                plugins: [
-                    'gridflex',
-                    'gridheight'
-                ],
-                titleBar: false,
-                emptyText: 'No apply projects are available for this Sparkpoint currently.',
-                columns: [
-                    {
-                        xtype: 'spark-completed-column'
-                    },
-                    {
-                        xtype: 'templatecolumn',
-                        flex: 1,
-                        cell: { encodeHtml: false },
-                        tpl: [
-                            '<div class="spark-grid-row-title">{title}</div>',
-                            '<tpl if="instructions"><div class="spark-grid-row-detail">{instructions}</div></tpl>'
-                        ]
-                    },
-                    {
-                        xtype: 'templatecolumn',
-                        text: 'Sparkpoints Incorporated',
-                        dataIndex: 'sparkpointCodes',
-                        cell: { encodeHtml: false },
-                        tpl: [
-                            '<tpl if="sparkpointCodes">',
-                                '<ul class="spark-grid-token-list">',
-                                    '<tpl for="sparkpointCodes"><li class="spark-grid-token-item">{.}</li></tpl>',
-                                '</ul>',
-                            '</tpl>'
-                        ],
-                        width: 320
-                    }
-                ],
-                store: 'work.Applies'
-            },
-            {
-                layout: {
-                    type: 'hbox',
-                    pack: 'end'
-                },
                 items: [
                     {
-                        itemId: 'chooseSelectedApplyBtn',
+                        xtype: 'spark-simpleheading',
+                        level: 1,
+                        cls: 'spark-view-headline',
+                        html: 'Time to Apply your knowledge!'
+                    },
+                    {
+                        itemId: 'appliesGrid',
 
-                        xtype: 'button',
-                        disabled: true,
-                        ui: 'action',
-                        text: 'Choose Selected Apply' // TODO polish this copy? include apply name?
+                        xtype: 'grid',
+                        plugins: [
+                            'gridflex',
+                            'gridheight'
+                        ],
+                        titleBar: false,
+                        emptyText: 'No apply projects are available for this Sparkpoint currently.',
+                        columns: [
+                            {
+                                xtype: 'spark-completed-column'
+                            },
+                            {
+                                xtype: 'templatecolumn',
+                                flex: 1,
+                                cell: { encodeHtml: false },
+                                tpl: [
+                                    '<div class="spark-grid-row-title">{title}</div>',
+                                    '<tpl if="instructions"><div class="spark-grid-row-detail">{instructions}</div></tpl>'
+                                ]
+                            },
+                            {
+                                xtype: 'templatecolumn',
+                                text: 'Sparkpoints Incorporated',
+                                dataIndex: 'sparkpointCodes',
+                                cell: { encodeHtml: false },
+                                tpl: [
+                                    '<tpl if="sparkpointCodes">',
+                                        '<ul class="spark-grid-token-list">',
+                                            '<tpl for="sparkpointCodes"><li class="spark-grid-token-item">{.}</li></tpl>',
+                                        '</ul>',
+                                    '</tpl>'
+                                ],
+                                width: 320
+                            }
+                        ],
+                        store: 'work.Applies'
+                    },
+                    {
+                        layout: {
+                            type: 'hbox',
+                            pack: 'end'
+                        },
+                        items: [
+                            {
+                                itemId: 'chooseSelectedApplyBtn',
+
+                                xtype: 'button',
+                                disabled: true,
+                                ui: 'action',
+                                text: 'Choose Selected Apply' // TODO polish this copy? include apply name?
+                            }
+                        ]
                     }
                 ]
             },
@@ -81,6 +87,13 @@ Ext.define('SparkClassroom.work.apply.Container', {
 
                 hidden: true,
                 items: [
+                    {
+                        itemId: 'chooseAgainBtn',
+
+                        xtype: 'button',
+                        width: 300,
+                        text: '&larr; Choose a different apply'
+                    },
                     {
                         xtype: 'container',
                         layout: 'hbox',
