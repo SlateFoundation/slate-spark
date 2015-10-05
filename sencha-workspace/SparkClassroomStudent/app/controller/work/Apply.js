@@ -22,9 +22,12 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     // TODO: handle loading data into apply section
     onApplyCtActivate: function() {
-        var me = this;
+        var store = this.getWorkAppliesStore();
 
-        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
+        // TODO: reload store if sparkpoints param dirty
+        if (store.isLoaded()) {
+            store.load();
+        }
 
     }
 });
