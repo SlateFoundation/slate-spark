@@ -15,6 +15,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     refs: {
         learnCt: 'spark-student-work-learn',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
+        progressBanner: 'spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid'
     },
 
@@ -28,6 +29,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         controller: {
             '#': {
                 sparkpointselect: 'onSparkpointSelect'
+            }
+        },
+        store: {
+            '#work.Learns': {
+                load: 'onLearnsStoreLoad'
             }
         }
     },
@@ -62,5 +68,37 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         if (!store.isLoaded()) { // TODO: OR extraParamsDirty
             store.load();
         }
+    },
+
+    onLearnsStoreLoad: function(store,recs) {
+        var me = this,
+            count = recs.length,
+            completed = 0,
+            required = 0,
+            i = 0,
+            rec;
+
+        for (i; i< count; i++) {
+            rec = recs[i];
+
+            // TODO: get actual value of required
+            // if (rec.get('required')) {
+
+            if (true) {
+                required++;
+                if (rec.get('completed')) {
+                    completed++;
+                }
+            }
+        }
+
+        me.getProgressBanner().setData(
+            {
+                completedLearns: completed,
+                name: null,
+                requiredLearns: required
+            }
+        );
     }
+
 });
