@@ -20,13 +20,25 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         }
     },
 
+    // config handlers
+    updateActiveSparkpoint: function(sparkpoint) {
+        var store = this.getWorkAppliesStore();
+
+        // TODO: track dirty state of extraparams?
+        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+
+        // TODO: reload store if sparkpoints param dirty
+        if (store.isLoaded()) {
+            store.load();
+        }
+    },
+
     // TODO: handle loading data into apply section
     onApplyCtActivate: function() {
         var store = this.getWorkAppliesStore();
 
         // TODO: reload store if sparkpoints param dirty
         if (!store.isLoaded()) {
-            console.log('loading store ! isloaded');
             store.load();
         }
     }
