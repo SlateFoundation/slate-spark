@@ -3,5 +3,23 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     extend: 'Ext.app.Controller',
 
 
-    // TODO: handle loading data into assess section
+    refs: {
+        assessCt: 'spark-student-work-assess'
+    },
+
+    control: {
+        assessCt: {
+            activate: 'onAssessCtActivate'
+        }
+    },
+
+
+    // event handlers
+    onAssessCtActivate: function(learnCt) {
+        var learnsStore = Ext.getStore('work.Learns');
+
+        if (!learnsStore.isLoaded()) { // TODO: OR extraParamsDirty
+            learnsStore.load();
+        }
+    }
 });
