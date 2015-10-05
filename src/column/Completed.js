@@ -3,15 +3,30 @@ Ext.define('SparkClassroom.column.Completed', {
     xtype: 'spark-completed-column',
 
     config: {
+        allowToggle: true,
+
         cls: 'spark-completed-column',
         text: 'Completed',
         width: 96,
         cell: {
-            encodeHtml: false
+            encodeHtml: false,
+            listeners: {
+                element: 'element',
+                delegate: '.assign-control-frame',
+                tap: function(ev, t) {
+                    var me = this,
+                        record = me.getRecord(),
+                        dataIndex = me.getColumn().getDataIndex();
+
+                    if (me.getColumn().getAllowToggle()) {
+                        record.set(dataIndex, !record.get(dataIndex));
+                    }
+                }
+            }
         },
         tpl: [
             '<div class="flex-ct">',
-                '<div class="assign-control-item">',
+                '<div class="assign-control-item <tpl if="completed">is-full</tpl>">', // TODO: "assign" is an innacurate term here @ryon
                     '<div class="assign-control-frame single-control">',
                         '<i class="assign-control-indicator"></i>',
                     '</div>',
