@@ -18,7 +18,7 @@ Ext.define('SparkClassroom.work.learn.Main', {
                 itemId: 'sparkpointCt',
 
                 xtype: 'container',
-                title: 'Standards Blarg',
+                title: '[Select a Sparkpoint]',
                 items: [
                     {
                         xtype: 'container',
