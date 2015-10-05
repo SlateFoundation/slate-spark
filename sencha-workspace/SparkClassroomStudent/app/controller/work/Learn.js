@@ -74,7 +74,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     // controller methods
     refreshProgressBar: function(store) {
-        var recs = store.getRange(),
+        var progressBanner = this.getProgressBanner(),
+            recs = store.getRange(),
             count = recs.length,
             completed = 0,
             required = Math.min(count, 5),
@@ -86,11 +87,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             }
         }
 
-        this.getProgressBanner().setData({
+        progressBanner.setData({
             completedLearns: completed,
             name: null,
             requiredLearns: required
         });
-    }
 
+        progressBanner.show();
+    }
 });
