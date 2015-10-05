@@ -6,6 +6,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         activeSparkpoint: null
     },
 
+    stores: [
+        'work.Applies@SparkClassroom.store'
+    ],
+
     refs: {
         applyCt: 'spark-student-work-apply'
     },
