@@ -86,12 +86,14 @@ Ext.define('SparkClassroom.work.apply.Container', {
                         layout: 'hbox',
                         items: [
                             {
+                                itemId: 'headerCmp',
+
                                 xtype: 'component',
                                 flex: 1,
-                                html: [
-                                    '<h1 class="spark-view-headline">Write It</h1>',
-                                    '<div class="spark-view-prompt"><p>Write a paragraph that has both active and passive voice sentences.  Be sure to underline your sentences that display the learning target.</p></div>'
-                                ].join('')
+                                tpl: [
+                                    '<h1 class="spark-view-headline">{title:htmlEncode}</h1>',
+                                    '<div class="spark-view-prompt"><p>{instructions:htmlEncode}</p></div>' // TODO: support markdown
+                                ]
                             },
                             {
                                 xtype: 'container',
