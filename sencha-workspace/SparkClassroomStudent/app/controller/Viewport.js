@@ -11,6 +11,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     views: [
         'TitleBar@SparkClassroom',
+        'Welcome',
         'NavBar',
         'TabsContainer'
     ],
@@ -37,6 +38,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
             xtype: 'spark-student-navbar',
             hidden: true
+        },
+
+        welcomeCmp: {
+            selector: 'spark-student-welcome',
+            autoCreate: true,
+
+            xtype: 'spark-student-welcome'
         },
 
         tabsCt: {
@@ -85,6 +93,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         me.getAppCt().add([
             me.getSparkTitleBar(),
             me.getNavBar(),
+            me.getWelcomeCmp(),
             me.getTabsCt()
         ]);
     },
@@ -145,7 +154,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
         //show section dependant components
         me.getNavBar().setHidden(!sectionCode);
-        me.getTabsCt().setHidden(!sectionCode);
+        me.getWelcomeCmp().setHidden(sectionCode && sparkpointCode);
+        me.getTabsCt().setHidden(!sparkpointCode);
 
         // redirect with the current un-prefixed route or the default section to write the new section into the route
         this.redirectTo((prefixMatch && prefixMatch[4]) || 'work');
