@@ -1,4 +1,9 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/**
+ * TODO:
+ * - Embed a store in each list that it internally binds to
+ * - Move add question form processing details into a questions subclass of the list class
+ */
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
@@ -18,7 +23,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         conferenceCt: {
             activate: 'onConferenceCtActivate'
         },
-
+        'spark-work-conference spark-worklist#questions': {
+            submit: 'onQuestionSubmit'
+        }
     },
 
     listen: {
@@ -48,17 +55,28 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         me.refreshResources();
     },
 
+    onQuestionSubmit: function(questionsList) {
+        Ext.getStore('work.ConferenceQuestions').add({
+            question: questionsList.getInnerHtmlElement().down('input').getValue(),
+            studentSubmitted: true
+        });
+
+        this.refreshQuestions();
+    },
+
 
     // controller methods
     refreshQuestions: function() {
         var questions = Ext.getStore('work.ConferenceQuestions').getRange(),
-            count = questions.length,
-            items = [],
-            i = 0;
+            count = questions.length, i = 0, question,
+            items = [];
 
-        for (i; i < count; i++) {
+        for (; i < count; i++) {
+            question = questions[i];
+
             items.push({
-                text: questions[i].get('question')
+                text: question.get('question'),
+                studentSubmitted: question.get('studentSubmitted')
             });
         }
 
@@ -75,15 +93,16 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     refreshResources: function() {
         var resources = Ext.getStore('work.ConferenceResources').getRange(),
-            count = resources.length,
-            items = [],
-            i = 0;
+            count = resources.length, i = 0, resource,
+            items = [];
 
-        for (i; i < count; i++) {
+        for (; i < count; i++) {
+            resource = resources[i];
+
             items.push({
-                text: resources[i].get('title'),
-                linkTitle: resources[i].get('url'),
-                linkUrl: resources[i].get('url')
+                text: resource.get('title'),
+                linkTitle: resource.get('url'),
+                linkUrl: resource.get('url')
             });
         }
 
