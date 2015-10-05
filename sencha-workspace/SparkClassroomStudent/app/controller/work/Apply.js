@@ -6,5 +6,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         activeSparkpoint: null
     },
 
+    refs: {
+        applyCt: 'spark-student-work-apply'
+    }
+
     // TODO: handle loading data into apply section
 });
