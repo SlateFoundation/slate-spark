@@ -12,14 +12,14 @@ Ext.define('SparkClassroom.column.Learn', {
         },
         tpl: [
             '<div class="spark-grid-row-image" style="background-image:url(',
-                '<tpl if="VendorImage">',
-                    '{VendorImage}',
+                '<tpl if="thumbnail">',
+                    '{thumbnail:htmlEncode}',
                 '<tpl else>',
                     '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png', // TODO some other default?
                 '</tpl>',
-            ')" title="{Vendor}">{Vendor}</div>',
-            '<div class="spark-grid-row-title">{Title}</div>',
-            '<div class="spark-grid-row-detail"><a href="{Link}" title="{Link}">{Link}</a></div>'
+            ')" title="{vendor:htmlEncode}">{vendor:htmlEncode}</div>',
+            '<div class="spark-grid-row-title">{title:htmlEncode}</div>',
+            '<div class="spark-grid-row-detail"><a href="{url:htmlEncode}" title="{title:htmlEncode}" target="_blank">{url:htmlEncode}</a></div>'
         ]
     }
 });
