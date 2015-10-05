@@ -3,6 +3,15 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     extend: 'Ext.app.Controller',
 
 
+    config: {
+        activeSparkpoint: null
+    },
+
+
+    stores: [
+        'work.Assessments@SparkClassroom.store'
+    ],
+
     refs: {
         assessCt: 'spark-student-work-assess'
     },
@@ -13,10 +22,41 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         }
     },
 
+    listen: {
+        controller: {
+            '#': {
+                sparkpointselect: 'onSparkpointSelect'
+            }
+        }
+    },
+
+
+    // config handlers
+    updateActiveSparkpoint: function(sparkpoint) {
+        var store = this.getWorkAssessmentsStore();
+
+        // TODO: track dirty state of extraparams?
+        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+
+        // TODO: reload store if sparkpoints param dirty
+        if (store.isLoaded()) {
+            store.load();
+        }
+    },
+
 
     // event handlers
+    onSparkpointSelect: function(sparkpoint) {
+        this.setActiveSparkpoint(sparkpoint);
+    },
+
     onAssessCtActivate: function(learnCt) {
-        var learnsStore = Ext.getStore('work.Learns');
+        var assessmentsStore = this.getWorkAssessmentsStore(),
+            learnsStore = Ext.getStore('work.Learns');
+
+        if (!assessmentsStore.isLoaded()) { // TODO: OR extraParamsDirty
+            assessmentsStore.load();
+        }
 
         if (!learnsStore.isLoaded()) { // TODO: OR extraParamsDirty
             learnsStore.load();
