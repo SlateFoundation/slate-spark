@@ -23,14 +23,32 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
                 xtype: 'spark-learn-column'
             },
             {
-                dataIndex: 'Rating',
+                dataIndex: 'rating',
                 width: 112,
-                text: 'Your Rating'
+                text: 'Your Rating',
+                cell: {
+                    encodeHtml: false
+                },
+                tpl: [
+                    '<select>',
+                        '<option>5</option>',
+                        '<option>4</option>',
+                        '<option>3</option>',
+                        '<option>2</option>',
+                        '<option>1</option>',
+                    '</select>'
+                ]
             },
             {
-                dataIndex: 'Comment',
+                dataIndex: 'comment',
                 text: 'Comments',
-                flex: 1
+                flex: 1,
+                cell: {
+                    encodeHtml: false
+                },
+                tpl: [
+                    '<input style="width: 100%" value="{comment:htmlEncode}">'
+                ]
             }
         ],
 
