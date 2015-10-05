@@ -6,7 +6,8 @@ Ext.define('SparkClassroom.work.apply.Container', {
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.widget.Panel',
-        'SparkClassroom.widget.SimpleHeading'
+        'SparkClassroom.widget.SimpleHeading',
+        'SparkClassroom.column.Completed'
     ],
 
     config: {
@@ -26,33 +27,11 @@ Ext.define('SparkClassroom.work.apply.Container', {
                     'gridheight'
                 ],
                 titleBar: false,
-/*
-                store: {
-                    fields: [ 'title', 'description', 'standards', 'checked' ],
-                    data: [
-                        {
-                            title: 'Write It',
-                            description: 'Write a paragraph that has both active and passive voice sentences. Be sure to underline your sentences that display the learning target.',
-                            standards: [ '8.L.01b', '8.L.7', '8.L.5' ]
-                        },
-                        {
-                            title: 'Create It',
-                            description: 'Create a Powerpoint or Prezi to teach this learning target to your peers. Don’t limit yourself. Be creative and be sure to include practice activities. You may even decide to use Storybird or Storyboard.',
-                            standards: [ '8.L.7', '8.L.3' ],
-                            checked: true
-                        },
-                        {
-                            title: 'Wild Card',
-                            description: 'Record a video teaching students how to use active and passive voice. In your video, be sure to identify what is active and passive voice.'
-                        }
-                    ]
-                },
-*/
+                emptyText: 'No apply projects are available for this Sparkpoint currently.',
                 columns: [
                     {
-                        xtype: 'booleancolumn',
-                        dataIndex: 'checked',
-                        width: 120
+                        dataIndex: 'completed',
+                        xtype: 'spark-completed-column'
                     },
                     {
                         xtype: 'templatecolumn',
@@ -60,15 +39,21 @@ Ext.define('SparkClassroom.work.apply.Container', {
                         cell: { encodeHtml: false },
                         tpl: [
                             '<div class="spark-grid-row-title">{title}</div>',
-                            '<tpl if="description"><div class="spark-grid-row-detail">{description}</div></tpl>'
+                            '<tpl if="instructions"><div class="spark-grid-row-detail">{instructions}</div></tpl>'
                         ]
                     },
                     {
                         xtype: 'templatecolumn',
-                        text: 'Standards Incorporated',
-                        dataIndex: 'standards',
+                        text: 'Sparkpoints Incorporated',
+                        dataIndex: 'sparkpointCodes',
                         cell: { encodeHtml: false },
-                        tpl: '<tpl if="standards"><ul class="spark-grid-token-list"><tpl for="standards"><li class="spark-grid-token-item">{.}</li></tpl></ul></tpl>',
+                        tpl: [
+                            '<tpl if="sparkpointCodes">',
+                                '<ul class="spark-grid-token-list">',
+                                    '<tpl for="sparkpointCodes"><li class="spark-grid-token-item">{.}</li></tpl>',
+                                '</ul>',
+                            '</tpl>'
+                        ],
                         width: 320
                     }
                 ],

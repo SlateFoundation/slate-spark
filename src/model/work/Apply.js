@@ -11,6 +11,13 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'sparkpointCodes',
         'standardCodes',
         'todos',
-        'links'
+        'links',
+
+        // local-only
+        {
+            name: 'completed',
+            type: 'boolean',
+            defaultValue: false
+        }
     ]
 });
