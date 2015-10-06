@@ -8,8 +8,12 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
     ],
 
     title: 'Grid',
-    store: 'sparkpoints.Sparkpoints',
-    //store: 'sparkpoints-selected',
+    //store: 'sparkpoints.Sparkpoints',
+
+    store: {
+        type: 'chained',
+        source: 'sparkpoints.Sparkpoints'
+    },
 
     dockedItems: [{
         dock: 'top',
