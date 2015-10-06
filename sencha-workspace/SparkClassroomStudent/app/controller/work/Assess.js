@@ -52,7 +52,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
     onAssessCtActivate: function(learnCt) {
         var assessmentsStore = this.getWorkAssessmentsStore(),
-            learnsStore = Ext.getStore('work.Learns');
+            learnsStore = Ext.getStore('work.Learns'),
+            appliesStore = Ext.getStore('work.Applies');
 
         if (!assessmentsStore.isLoaded()) { // TODO: OR extraParamsDirty
             assessmentsStore.load();
@@ -60,6 +61,10 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
         if (!learnsStore.isLoaded()) { // TODO: OR extraParamsDirty
             learnsStore.load();
+        }
+
+        if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
+            appliesStore.load();
         }
     }
 });
