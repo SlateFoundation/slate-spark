@@ -7,13 +7,16 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
+    tokenSectionRe: /^([^:]+):(.*)$/,
+
     config: {
         activeSparkpoint: null
     },
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
-        'work.ConferenceResources@SparkClassroom.store'
+        'work.ConferenceResources@SparkClassroom.store',
+        'Students@SparkClassroom.store'
     ],
 
     refs: {
@@ -41,6 +44,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         store: {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
+            },
+            '#Students': {
+                beforeload: 'onStudentsStoreBeforeLoad'
             }
         }
     },
@@ -59,7 +65,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
     },
 
-
     // event handlers
     onSparkpointSelect: function(sparkpoint) {
         this.setActiveSparkpoint(sparkpoint);
@@ -67,13 +72,26 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     onConferenceCtActivate: function() {
         var me = this,
-            store = me.getWorkConferenceQuestionsStore();
+            conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
+            studentsStore = me.getStudentsStore();
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
 
-        if (!store.isLoaded()) {
-            store.load();
+        if (!conferenceQuestionsStore.isLoaded()) {
+            conferenceQuestionsStore.load();
+        }
+
+        if (!studentsStore.isLoaded()) {
+            studentsStore.load();
+        }
+    },
+
+    onStudentsStoreBeforeLoad : function(store) {
+        var section = this.getController('Viewport').getSelectedSection();
+
+        if (section) {
+            store.getProxy().setUrl('/sections/' + section + '/students');
         }
     },
 
@@ -144,4 +162,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             items: items
         });
     }
+
+
 });
