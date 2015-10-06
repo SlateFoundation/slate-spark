@@ -19,6 +19,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
             'gridflex',
             'gridheight'
         ],
+        emptyText: 'No Learns to show for this Sparkpoint.',
         grouped: true,
         titleBar: null,
         columns:[
