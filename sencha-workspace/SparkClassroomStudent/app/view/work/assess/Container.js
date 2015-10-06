@@ -3,7 +3,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.Container', {
     extend: 'SparkClassroom.work.assess.Main',
     xtype: 'spark-student-work-assess',
     requires: [
-        'SparkClassroomStudent.view.work.assess.ProjectGrid',
+        'SparkClassroomStudent.view.work.assess.AppliesGrid',
         'SparkClassroomStudent.view.work.assess.Footer'
     ],
 
@@ -12,7 +12,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.Container', {
         
         this.add([
             {
-                xtype: 'spark-student-work-assess-projectgrid'
+                xtype: 'spark-student-work-assess-appliesgrid'
             },
             {
                 xtype: 'spark-student-work-assess-footer',
