@@ -15,6 +15,13 @@
     }
 }
 
+.x-grid-emptytext {
+    color: $grid-emptytext-color;
+    font-style: $grid-emptytext-style;
+    padding: $grid-emptytext-padding;
+    text-align: $grid-emptytext-align;
+}
+
 .spark-grid-row-image {
     background-repeat: no-repeat;
     background-size: contain;

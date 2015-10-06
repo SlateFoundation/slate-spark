@@ -8,3 +8,8 @@ $grid-column-padding:           dynamic(.5em 1em);
 $grid-group-header-font-size:           dynamic(.75em);
 $grid-group-header-font-weight:         dynamic(bold); 
 $grid-group-header-padding:             dynamic(.5em 1.25em);
+
+$grid-emptytext-align:          dynamic(center);
+$grid-emptytext-color:          dynamic($highlight-color);
+$grid-emptytext-padding:        dynamic(1.75em);
+$grid-emptytext-style:          dynamic(italic);
