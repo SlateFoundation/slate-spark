@@ -2,7 +2,10 @@
 Ext.define('SparkClassroomStudent.view.help.Waitlist', {
     extend: 'Ext.Container',
     xtype: 'spark-waitlist',
-    requires: ['SparkClassroomStudent.store.HelpRequests'],
+    requires: [
+        'Jarvus.util.format.FuzzyTime'
+    ],
+
 
     config: {
         cls: 'spark-waitlist',
@@ -18,7 +21,7 @@ Ext.define('SparkClassroomStudent.view.help.Waitlist', {
                 store: 'HelpRequests',
                 itemTpl: [
                     '<span class="spark-waitlist-name">{StudentFullName}</span> ',
-                    '<span class="spark-waitlist-time">{Created}</span> ',
+                    '<span class="spark-waitlist-time">{Created:fuzzyTime(true)}</span> ',
                     '<span class="spark-waitlist-x">{ShortType}</span> ',
                     '<i class="fa fa-times-circle item-delete-btn"></i>'
                 ]
