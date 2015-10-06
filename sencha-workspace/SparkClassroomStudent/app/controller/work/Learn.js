@@ -34,7 +34,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         store: {
             '#work.Learns': {
                 load: 'onLearnsStoreLoad',
-                update: 'onLearnsStoreLoad'
+                update: 'onLearnsStoreUpdate'
             }
         }
     },
