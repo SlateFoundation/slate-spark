@@ -41,9 +41,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         store: {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
-            },
-            '#Students': {
-                beforeload: 'onStudentsStoreBeforeLoad'
             }
         }
     },
