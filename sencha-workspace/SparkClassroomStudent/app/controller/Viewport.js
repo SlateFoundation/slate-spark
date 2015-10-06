@@ -101,16 +101,15 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     updateSelectedSection: function(section, oldSection) {
         var me = this,
-            sectionCode = me.getSelectedSection(),
             studentsStore = me.getStudentsStore();
 
-        if (sectionCode) {
-            studentsStore.getProxy().setUrl('/sections/' + sectionCode + '/students');
+        if (section) {
+            studentsStore.getProxy().setUrl('/sections/' + section + '/students');
             studentsStore.load();
         }
 
-        this.syncSelections();
-        this.getApplication().fireEvent('sectionselect', section, oldSection);
+        me.syncSelections();
+        me.getApplication().fireEvent('sectionselect', section, oldSection);
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
