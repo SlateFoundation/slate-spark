@@ -33,8 +33,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         },
         store: {
             '#work.Learns': {
-                load: 'refreshProgressBar',
-                update: 'refreshProgressBar'
+                load: 'onLearnsStoreLoad',
+                update: 'onLearnsStoreLoad'
             }
         }
     },
@@ -68,21 +68,36 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         if (!store.isLoaded()) { // TODO: OR extraParamsDirty
             store.load();
+        } else {
+            me.refreshProgressBar();
         }
+    },
+
+    onLearnsStoreLoad: function() {
+        this.refreshProgressBar();
+    },
+
+    onLearnsStoreUpdate: function() {
+        this.refreshProgressBar();
     },
 
 
     // controller methods
-    refreshProgressBar: function(store) {
+    refreshProgressBar: function() {
         var progressBanner = this.getProgressBanner(),
-            recs = store.getRange(),
-            count = recs.length,
+            learns = this.getWorkLearnsStore().getRange(),
+            count = learns.length,
             completed = 0,
             required = Math.min(count, 5),
             i = 0;
 
+        if (!progressBanner) {
+            // learns tab hasn't been activated yet
+            return;
+        }
+
         for (; i < count; i++) {
-            if (recs[i].get('completed')) {
+            if (learns[i].get('completed')) {
                 completed++;
             }
         }
