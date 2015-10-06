@@ -23,16 +23,20 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
 
             grouped: true,
             itemTpl: [
-                '<span cls="sparkpoint-code">{code}</span>',
-                '<tpl if="recommended">',
-                    '<span class="sparkpoint-recommended"></span>',
-                '</tpl>',
-                '<tpl if="completed_date">',
-                    '<span class="sparkpoint-completed-date">{completed_date:date("m/d/y")}</span>',
-                '</tpl>',
-                '<tpl if="student_title">',
-                    '<span class="sparkpoint-title">{student_title}</span>',
-                '</tpl>'
+                '<div class="flex-ct">',
+                    '<div class="sparkpoint-code flex-1">{code}</div>',
+                    
+                    '<tpl if="recommended">',
+                        '<div class="sparkpoint-recommended"></div>',
+                    '</tpl>',
+                    '<tpl if="completed_date">',
+                        '<div class="sparkpoint-completed-date">{completed_date:date("n/j/y")}</div>',
+                    '</tpl>',
+                    '<tpl if="student_title">',
+                        '</div>', // close flex container
+                        '<div class="sparkpoint-title">{student_title}', // open description container
+                    '</tpl>',
+                '</div>' // close flex or description
             ],
             store: {
                 type: 'store',
