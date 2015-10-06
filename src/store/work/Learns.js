@@ -8,10 +8,10 @@ Ext.define('SparkClassroom.store.work.Learns', {
     model: 'SparkClassroom.model.work.Learn',
 
     config: {
-        grouper: {
-            property: 'Group',
-            direction: 'DESC'
-        },
+        // grouper: {
+        //     property: 'Group',
+        //     direction: 'DESC'
+        // },
 
         sorters: [
             {
