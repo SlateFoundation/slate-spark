@@ -28,7 +28,13 @@ Ext.define('SparkClassroom.store.work.Learns', {
 
         proxy: {
             type: 'slate-api',
-            url: '/spark/api/work/learns'
+            url: '/spark/api/work/learns',
+            reader: {
+                type: 'json',
+                transform: function(data) {
+                    return data.slice(0, 10); // TODO: remove this, it's just for demo purposes until grouping is available
+                }
+            }
         }
     }
 });
