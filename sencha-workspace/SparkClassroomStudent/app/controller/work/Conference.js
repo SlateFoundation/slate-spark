@@ -7,8 +7,6 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
-    tokenSectionRe: /^([^:]+):(.*)$/,
-
     config: {
         activeSparkpoint: null
     },
