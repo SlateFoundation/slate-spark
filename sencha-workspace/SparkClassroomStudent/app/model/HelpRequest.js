@@ -12,7 +12,7 @@ Ext.define('SparkClassroomStudent.model.HelpRequest', {
             type: 'integer'
         },
         {
-            name: 'created',
+            name: 'Created',
             type: 'date',
             dateFormate: 'timestamp'
         },
@@ -36,13 +36,13 @@ Ext.define('SparkClassroomStudent.model.HelpRequest', {
                     case 'bathroom':
                         return 'B';
                     case 'question-general':
-                        return 'G+';
+                        return 'G?';
                     case 'question-academic':
-                        return 'A+';
+                        return 'A?';
                     case 'question-technology':
-                        return 'T+';
-                    case 'Nurse':
-                        return 'IT';
+                        return 'T?';
+                    case 'nurse':
+                        return 'N';
                 }
             }
         },
@@ -51,7 +51,7 @@ Ext.define('SparkClassroomStudent.model.HelpRequest', {
             convert: function (v, r) {
                 var student = r.get('Student');
 
-                return student ? student.FirstName + ' ' + student.LastName : '';
+                return student ? (student.FirstName + ' ' + student.LastName[0] + '.') : '';
             }
         }
     ],
