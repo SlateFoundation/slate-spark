@@ -75,6 +75,9 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             'srm-sparkpoints-grid button[action=create]': {
                 click: 'onCreateSparkpointClick'
             },
+            'srm-sparkpoints-grid jarvus-searchfield': {
+                change: 'onSparkpointsSearchChange'
+            },
             sparkpointsGraph: {
                 beforeactivate: 'onSparkpointsGraphBeforeActivate',
                 activate: 'onSparkpointsGraphActivate'
@@ -195,6 +198,26 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         sparkpointsTable.setSelection(sparkpoint);
 
         this.getSparkpointAbbreviationField().focus(true);
+    },
+
+    onSparkpointsSearchChange: function(field, query) {
+        var store = this.getSparkpointsTable().getStore(),
+            queryRe = Ext.String.createRegex(query, false, false);
+
+        Ext.suspendLayouts();
+
+        if (query) {
+            store.filter({
+                id: 'search',
+                filterFn: function(node) {
+                    return queryRe.test(node.get('abbreviation')) || queryRe.test(node.get('teacher_title'));
+                }
+            });
+        } else {
+            store.clearFilter();
+        }
+
+        Ext.resumeLayouts(true);
     },
 
     onSparkpointTableBeforeDeselect: function(sparkpointTable, sparkpoint) {
