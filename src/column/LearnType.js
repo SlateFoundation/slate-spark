@@ -5,13 +5,14 @@ Ext.define('SparkClassroom.column.LearnType', {
 
     statics: {
         icons: {
-            assessment: 'pencil',
+            assessment: 'check-circle-o',
             video: 'youtube-play',
             exercise: 'bicycle',
             lesson_plan: 'list-ol',
             article: 'newspaper-o',
             question: 'question-circle',
             game: 'gamepad',
+            homework: 'home',
             other: 'file',
             'Practice Problems': 'calculator',
             'IEPFriendly': 'folder-open-o',
