@@ -14,7 +14,6 @@ Ext.define('SparkClassroom.standards.Grid', {
             'gridflex',
             'gridheight'
         ],
-        grouped: true,
         titleBar: null,
         itemConfig: {
             viewModel: {
