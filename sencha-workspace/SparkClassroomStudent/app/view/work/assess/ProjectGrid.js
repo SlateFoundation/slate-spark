@@ -3,6 +3,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-student-work-assess-projectgrid',
     requires: [
+        'Ext.data.ChainedStore',
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight'
     ],
@@ -13,36 +14,60 @@ Ext.define('SparkClassroomStudent.view.work.assess.ProjectGrid', {
             'gridheight'
         ],
         titleBar: null,
+        emptyText: 'Once some applies have been marked completed, you&rsquo;ll be able to rate them here',
         columns:[
             {
-                dataIndex: 'Title',
-                flex: 1,
+                xtype: 'templatecolumn',
+                cell: { encodeHtml: false },
+                tpl: [
+                    '<div class="spark-grid-row-title">{title}</div>',
+                    '<tpl if="instructions"><div class="spark-grid-row-detail">{instructions}</div></tpl>'
+                ],
                 text: 'Apply'
             },
             {
                 dataIndex: 'Rating',
                 width: 130,
                 text: 'Rating',
-                renderTpl: function(v,m,r ) {
-                    return '<img src="'+r.get('VendorImageUrl')+'">'+v;
-                }
+                cell: {
+                    encodeHtml: false
+                },
+                tpl: [
+                    '<select>',
+                        '<option>5</option>',
+                        '<option>4</option>',
+                        '<option>3</option>',
+                        '<option>2</option>',
+                        '<option>1</option>',
+                    '</select>'
+                ]
             },
             {
                 dataIndex: 'Comment',
                 text: 'Comment',
-                width: 340,
-                renderTpl: function(v,m,r ) {
-                    return '<select><option>'+v+'</option></select>';
-                }
+                flex: 1,
+                cell: {
+                    encodeHtml: false
+                },
+                tpl: [
+                    '<input style="width: 100%" value="{comment:htmlEncode}">'
+                ]
             }
         ],
 
         store: {
-            fields: ['Title', 'Rating', 'Comment', 'VendorTitle', 'VendorImageUrl', 'Link'],
-
-            data: [
-                {Title: 'Project Name of Apply', Rating: 2, Comment: 'Comments left here'}
+            type: 'chained',
+            source: 'work.Applies',
+            filters: [
+                {
+                    filterFn: function(apply) {
+                        console.log(apply);
+                        return apply.get('completed');
+                    }
+                }
             ]
         }
+
     }
+
 });
