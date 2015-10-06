@@ -15,7 +15,7 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
             'gridheight'
         ],
         titleBar: null,
-        emptyText: 'Once some learns have been marked completed, you&rsquo;ll be able to rate them here',
+        emptyText: 'Once some Learns have been marked completed, you’ll be able to rate them here.',
 
         columns:[
             {

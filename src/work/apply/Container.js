@@ -19,12 +19,6 @@ Ext.define('SparkClassroom.work.apply.Container', {
 
                 items: [
                     {
-                        xtype: 'spark-simpleheading',
-                        level: 1,
-                        cls: 'spark-view-headline',
-                        html: 'Time to Apply your knowledge!'
-                    },
-                    {
                         itemId: 'appliesGrid',
 
                         xtype: 'grid',
@@ -33,7 +27,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                             'gridheight'
                         ],
                         titleBar: false,
-                        emptyText: 'No apply projects are available for this Sparkpoint currently.',
+                        emptyText: 'No Applies to show for this Sparkpoint.',
                         columns: [
                             {
                                 xtype: 'spark-completed-column'
@@ -49,7 +43,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                             },
                             {
                                 xtype: 'templatecolumn',
-                                text: 'Sparkpoints Incorporated',
+                                text: 'Sparkpoints',
                                 dataIndex: 'sparkpointCodes',
                                 cell: { encodeHtml: false },
                                 tpl: [

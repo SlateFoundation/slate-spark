@@ -16,6 +16,7 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
             'gridheight'
         ],
         titleBar: null,
+        emptyText: 'No Assessments to show for this Sparkpoint.',
         columns:[
             {
                 xtype: 'spark-title-column',
