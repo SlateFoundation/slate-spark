@@ -13,6 +13,13 @@ Ext.define('SparkClassroom.store.Students', {
             type: 'slate-records',
             limitParam: false,
             startParam: false
-        }
+        },
+        sorters: [{
+            property: 'LastName',
+            direction: 'ASC'
+        },{
+            property: 'FirstName',
+            direction: 'ASC'
+        }]
     }
 });
