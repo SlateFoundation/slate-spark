@@ -17,13 +17,9 @@ Ext.define('SparkClassroomStudent.view.work.assess.AppliesGrid', {
         emptyText: 'Once some applies have been marked completed, you&rsquo;ll be able to rate them here',
         columns:[
             {
-                xtype: 'templatecolumn',
-                cell: { encodeHtml: false },
-                tpl: [
-                    '<div class="spark-grid-row-title">{title}</div>',
-                    '<tpl if="instructions"><div class="spark-grid-row-detail">{instructions}</div></tpl>'
-                ],
-                text: 'Apply'
+                dataIndex: 'title',
+                text: 'Apply',
+                flex: 1
             },
             {
                 dataIndex: 'Rating',
