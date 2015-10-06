@@ -66,18 +66,13 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     onConferenceCtActivate: function() {
         var me = this,
-            conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
-            studentsStore = me.getStudentsStore();
+            conferenceQuestionsStore = me.getWorkConferenceQuestionsStore();
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
 
         if (!conferenceQuestionsStore.isLoaded()) {
             conferenceQuestionsStore.load();
-        }
-
-        if (!studentsStore.isLoaded()) {
-            studentsStore.load();
         }
     },
 
