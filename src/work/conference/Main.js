@@ -9,6 +9,8 @@ Ext.define('SparkClassroom.work.conference.Main', {
     ],
 
     config: {
+        itemId: 'conference',
+
         items: [
             {
                 layout: 'accordion',
