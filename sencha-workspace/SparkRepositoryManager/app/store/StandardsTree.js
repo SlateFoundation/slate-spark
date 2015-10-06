@@ -1,24 +1,18 @@
 Ext.define('SparkRepositoryManager.store.StandardsTree', {
+    extend: 'Ext.data.TreeStore',
     requires: [
-        'Ext.data.proxy.Ajax',
-        'Ext.data.reader.Json',
-        'Ext.data.JsonStore',
-        'Ext.data.proxy.Memory'
+        'Jarvus.proxy.API'
     ],
 
-    extend: 'Ext.data.TreeStore',
 
     config: {
         proxy: {
-            type: 'ajax',
-            url: 'https://api.matchbooklearning.com/postgrest/legacy_standards_tree',
-            reader: {
-                type: 'json'
-            },
-            noCache: false
+            type: 'api',
+            url: 'https://api.matchbooklearning.com/postgrest/legacy_standards_tree'
         },
 
         parentIdProperty: 'parentId',
+        nodeParam: null,
 
         fields: [
             'id',
