@@ -13,8 +13,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
-        'work.ConferenceResources@SparkClassroom.store',
-        'Students@SparkClassroom.store'
+        'work.ConferenceResources@SparkClassroom.store'
     ],
 
     refs: {
@@ -82,14 +81,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         if (!studentsStore.isLoaded()) {
             studentsStore.load();
-        }
-    },
-
-    onStudentsStoreBeforeLoad : function(store) {
-        var section = this.getController('Viewport').getSelectedSection();
-
-        if (section) {
-            store.getProxy().setUrl('/sections/' + section + '/students');
         }
     },
 
