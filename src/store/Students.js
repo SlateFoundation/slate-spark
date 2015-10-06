@@ -10,7 +10,9 @@ Ext.define('SparkClassroom.store.Students', {
 
     config: {
         proxy: {
-            type: 'slate-records'
+            type: 'slate-records',
+            limitParam: false,
+            startParam: false
         }
     }
 });

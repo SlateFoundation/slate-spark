@@ -9,7 +9,9 @@ Ext.define('SparkClassroom.store.Sections', {
     config: {
         proxy: {
             type: 'slate-records',
-            url: '/sections'
+            url: '/sections',
+            limitParam: false,
+            startParam: false
         }
     }
 });
