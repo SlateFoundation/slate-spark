@@ -33,8 +33,6 @@ Ext.define('SparkClassroomStudent.model.HelpRequest', {
             name: 'ShortType',
             convert: function (v, r) {
                 switch(r.get('Type')) {
-                    case 'bathroom':
-                        return 'B';
                     case 'question-general':
                         return 'G?';
                     case 'question-academic':
@@ -43,6 +41,10 @@ Ext.define('SparkClassroomStudent.model.HelpRequest', {
                         return 'T?';
                     case 'nurse':
                         return 'N';
+                    case 'bathroom':
+                        return 'B';
+                    case 'locker':
+                        return 'L';
                 }
             }
         },
