@@ -9,7 +9,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.Container', {
 
     initialize: function () {
         this.callParent(arguments);
-        
+
         this.add([
             {
                 xtype: 'spark-student-work-assess-appliesgrid'

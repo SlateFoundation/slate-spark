@@ -67,7 +67,5 @@ Ext.define('SparkClassroomStudent.view.work.assess.AppliesGrid', {
                 }
             ]
         }
-
     }
-
 });
