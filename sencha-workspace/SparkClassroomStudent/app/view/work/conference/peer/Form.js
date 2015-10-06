@@ -56,7 +56,8 @@ Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
                         width: '18em',
                         store: 'Students',
                         valueField: 'ID',
-                        displayField: 'FullName'
+                        displayField: 'FullName',
+                        autoSelect: false
                     },
                     {
                         xtype: 'textareafield',
