@@ -14,7 +14,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.AppliesGrid', {
             'gridheight'
         ],
         titleBar: null,
-        emptyText: 'Once some applies have been marked completed, you&rsquo;ll be able to rate them here',
+        emptyText: 'Once some Applies have been marked completed, you’ll be able to rate them here.',
         columns:[
             {
                 dataIndex: 'title',

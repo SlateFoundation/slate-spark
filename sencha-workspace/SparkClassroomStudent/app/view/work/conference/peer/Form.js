@@ -11,7 +11,7 @@ Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
         items: [
             {
                 xtype: 'textareafield',
-                label: 'Restate the Learn target in your own words.',
+                label: 'Restate the Sparkpoint in your own words.',
                 maxRows: 3
             },
             {
@@ -22,9 +22,10 @@ Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
             {
                 xtype: 'fieldset',
                 cls: 'composite-field',
-                title: 'Cite three real world examples of the learning target.',
+                title: 'Cite three real world examples of the Sparkpoint.',
                 defaults: {
                     xtype: 'textfield',
+                    labelAlign: 'left',
                     labelWidth: '2.5em'
                 },
                 items: [
@@ -52,7 +53,7 @@ Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
                 items: [
                     {
                         xtype: 'selectfield',
-                        label: 'Peer’s Name',
+                        label: 'Peer’s name',
                         width: '18em',
                         store: 'Students',
                         valueField: 'ID',
@@ -61,7 +62,7 @@ Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
                     },
                     {
                         xtype: 'textareafield',
-                        label: 'Feedback From Peer'
+                        label: 'Feedback from peer'
                     }
                 ]
             }
