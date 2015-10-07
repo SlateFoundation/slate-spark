@@ -71,7 +71,33 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
         },
         {
             name: "Links",
-            useNull: true
+            useNull: true,
+
+            /*
+             * In the Apply model, the URLs are currently stored as an array of strings in the Links field.
+             * After we deploy the new UI we'll migrate the backend data in bulk to the new format on the
+             * staging and production servers and then come back and delete this convert function.
+             */
+            convert: function (value) {
+                var links = [],
+                    i = 0,
+                    count;
+
+                if (Ext.isArray(value)) {
+                    count = value.length;
+                    if (Ext.isString(value[0])) {
+                        for (i; i<count; i++) {
+                            links.push({
+                                title: null,
+                                url: value[i]
+                            });
+                        }
+                    } else {
+                        links = value;
+                    }
+                }
+                return links;
+            }
         },
         {
             name: "TimeEstimate",
