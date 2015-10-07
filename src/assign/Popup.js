@@ -2,6 +2,7 @@ Ext.define('SparkClassroom.assign.Popup', {
     extend: 'Ext.Panel',
     xtype: 'spark-assign-popup',
     requires: [
+        'Ext.grid.Grid',
         'Jarvus.plugin.GridFlex'
     ],
 
@@ -19,24 +20,24 @@ Ext.define('SparkClassroom.assign.Popup', {
                 xtype: 'grid',
                 titleBar: null,
                 margin: 0,
-                store: 'assign.Learn',
+                store: 'gps.ActiveStudents',
                 plugins: [
                     'gridflex'
                 ],
                 columns: [
                     {
-                        dataIndex: 'SRating',
                         xtype: 'spark-assign-column-multi',
                         showTrigger: false
                     },
                     {
-                        dataIndex: 'Title',
+                        dataIndex: 'student',
                         text: 'Name',
-                        flex: 1
+                        flex: 1,
+                        tpl: ['<tpl for="student.getData()">{FullName}</tpl>']
                     },
                     {
-                        dataIndex: 'Standards',
-                        text: 'Current Standard',
+                        dataIndex: 'sparkpoint_code',
+                        text: 'Current Sparkpoint',
                         flex: 1
                     }
                 ]
