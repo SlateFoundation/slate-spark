@@ -70,7 +70,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                 xtype: 'button',
                                 disabled: true,
                                 ui: 'action',
-                                text: 'Choose Selected Apply' // TODO polish this copy? include apply name?
+                                text: 'Choose Selected Apply &rarr;' // TODO polish this copy? include apply name?
                             }
                         ]
                     }
