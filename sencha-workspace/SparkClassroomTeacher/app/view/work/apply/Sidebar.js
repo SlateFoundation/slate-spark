@@ -57,20 +57,20 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
                     }
                 ]
             },
-            {
-                xtype: 'spark-panel',
-                title: 'Grade the Apply',
-                items: [
-                    {
-                        xtype: 'sliderfield',
-                        label: '3.C.C.4.A - Reading Critically',
-                        value: 0,
-                        minValue: 0,
-                        maxValue: 4,
-                        increment: 1
-                    }
-                ]
-            },
+            // {
+            //     xtype: 'spark-panel',
+            //     title: 'Grade the Apply',
+            //     items: [
+            //         {
+            //             xtype: 'sliderfield',
+            //             label: '3.C.C.4.A - Reading Critically',
+            //             value: 0,
+            //             minValue: 0,
+            //             maxValue: 4,
+            //             increment: 1
+            //         }
+            //     ]
+            // },
             {
                 xtype: 'spark-panel',
                 title: 'Grade the Apply',
