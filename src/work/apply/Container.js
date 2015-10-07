@@ -82,11 +82,21 @@ Ext.define('SparkClassroom.work.apply.Container', {
                 hidden: true,
                 items: [
                     {
-                        itemId: 'chooseAgainBtn',
-
-                        xtype: 'button',
-                        width: 300,
-                        text: '&larr; Choose a different apply'
+                        xtype: 'container',
+                        margin: '0 0 32',
+                        layout: {
+                            type: 'hbox',
+                            pack: 'start'
+                        },
+                        items: [
+                            {
+                                itemId: 'chooseAgainBtn',
+        
+                                xtype: 'button',
+                                ui: 'action',
+                                text: '&larr; Choose a Different Apply'
+                            }
+                        ]
                     },
                     {
                         xtype: 'container',
