@@ -27,9 +27,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     control: {
         conferenceCt: {
             activate: 'onConferenceCtActivate'
-        },
-        questionsList: {
-            submit: 'onQuestionSubmit'
         }
     },
 
@@ -84,15 +81,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         me.refreshResources();
     },
 
-    onQuestionSubmit: function(questionsList) {
-        this.getWorkConferenceQuestionsStore().add({
-            question: questionsList.getInnerHtmlElement().down('input').getValue(),
-            studentSubmitted: true
-        });
-
-        this.refreshQuestions();
-    },
-
 
     // controller methods
     syncActiveSparkpoint: function() {
@@ -132,11 +120,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 studentSubmitted: question.get('studentSubmitted')
             });
         }
-
-        items.push({
-            text: '<div class="inline-flex-fullwidth-ct"><input placeholder="Add a guiding question you want to discuss with the teacher (optional)" class="flex-1"> <button type="submit">Add</button></div>',
-            skipHtmlEncode: true
-        });
 
         me.getQuestionsList().setData({
             title: 'Guiding Questions',
