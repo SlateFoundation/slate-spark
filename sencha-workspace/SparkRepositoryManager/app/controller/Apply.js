@@ -28,7 +28,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             },
             // TODO improve this component query... itemId on fieldset?
             's2m-apply-editor fieldset[title="Links"] field': {
-                change: 'onLinkChange'
+                blur: 'onLinkBlur'
             }
         }
     },
@@ -133,7 +133,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         }
     },
 
-    onLinkChange: function(field) {
+    onLinkBlur: function(field) {
         var ct = field.up('fieldcontainer'),
             ctOwner = ct.up('fieldset'),
             link = {},
