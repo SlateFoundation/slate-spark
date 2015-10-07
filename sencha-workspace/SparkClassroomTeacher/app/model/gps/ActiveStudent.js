@@ -82,7 +82,42 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         },
         {
             name: 'help_request',
-            allowNull: true
-        }
+            allowNull: true,
+
+            // TODO: remove this when backend is implemented
+            convert: function(v, r) {
+                var types = ['question-general','question-academic','question-technology','bathroom','locker','nurse'],
+                    helpRequests = r.self.helpRequests = r.self.helpRequests || {},
+                    userId = r.get('user_id');
+
+                // temporarily persist value in model instance until backend is implemented
+                if (userId in helpRequests) {
+                    v = helpRequests[userId];
+                } else {
+                    helpRequests[userId] = v = Math.random() < 0.8 ? null : types[Math.floor(Math.random()*types.length)];
+                }
+
+                return v || null;
+            }
+        },
+        {
+            name: 'help_request_abbr',
+            convert: function (v, r) {
+                switch(r.get('help_request')) {
+                    case 'question-general':
+                        return 'G?';
+                    case 'question-academic':
+                        return 'A?';
+                    case 'question-technology':
+                        return 'T?';
+                    case 'nurse':
+                        return 'N';
+                    case 'bathroom':
+                        return 'B';
+                    case 'locker':
+                        return 'L';
+                }
+            }
+        },
     ]
 });
