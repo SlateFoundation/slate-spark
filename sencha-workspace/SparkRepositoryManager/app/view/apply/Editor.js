@@ -230,18 +230,22 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                         ownerCt.remove(ct, true);
                     }
                 });
-                ownerCt.doLayout();
 
-                for (i; i < linkCount; i++) {
-                    link = links[i];
-                    if (i === 0) {
-                        linkCt = me;
-                    } else {
-                        linkCt.lastInGroup = false;
-                        linkCt = me.up('fieldset').add(me.cloneConfig({isClone: true}));
+                if (linkCount > 0) {
+                    for (i; i < linkCount; i++) {
+                        link = links[i];
+                        if (i === 0) {
+                            linkCt = me;
+                            linkCt.lastInGroup = true;
+                        } else {
+                            linkCt.lastInGroup = false;
+                            linkCt = me.up('fieldset').add(me.cloneConfig({isClone: true}));
+                        }
+                        linkCt.down('field[name="url"]').setRawValue(link.url);
+                        linkCt.down('field[name="title"]').setRawValue(link.title);
                     }
-                    linkCt.down('field[name="url"]').setValue(link.url);
-                    linkCt.down('field[name="title"]').setValue(link.title);
+                } else {
+                    me.lastInGroup = true;
                 }
             },
             items: [{
