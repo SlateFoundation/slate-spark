@@ -157,6 +157,7 @@ a {
     line-height: 1;
 
     a {
+        @include ellipsis;
         display: block;
         font-size: .9em;
         padding: .75em 0;
