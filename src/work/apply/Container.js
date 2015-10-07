@@ -239,7 +239,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 tpl: [
                                                     '<ul class="link-list">',
                                                         '<tpl for=".">',
-                                                            '<li class="link-list-item"><a href="{url:htmlEncode}" target=_blank>{title:htmlEncode}</a></li>',
+                                                            '<li class="link-list-item"><a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a></li>',
                                                         '</tpl>',
                                                     '</ul>'
                                                 ]
@@ -270,7 +270,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                         }
                                                     ]
                                                 },
-                                                itemTpl: '<a href="{url:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
+                                                itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                             },
                                             {
                                                 xtype: 'button',
