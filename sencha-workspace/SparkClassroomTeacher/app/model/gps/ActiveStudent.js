@@ -63,7 +63,22 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         {
             name: 'priority_group',
             type: 'integer',
-            allowNull: true
+            allowNull: true,
+
+            // TODO: remove this when backend is implemented
+            convert: function(v, r) {
+                var priorityGroups = r.self.priorityGroups = r.self.priorityGroups || {},
+                    userId = r.get('user_id');
+
+                // temporarily persist value in model instance until backend is implemented
+                if (v === undefined) {
+                    v = priorityGroups[userId];
+                } else {
+                    priorityGroups[userId] = v;
+                }
+
+                return v || null;
+            }
         },
         {
             name: 'help_request',
