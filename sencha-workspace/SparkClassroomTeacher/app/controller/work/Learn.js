@@ -55,10 +55,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
 
     // event handlers
-    onSparkpointSelect: function(sparkpoint) {
-        this.setActiveSparkpoint(sparkpoint);
-    },
-
     onActiveStudentSelect: function(student) {
         this.setActiveStudent(student);
     },
