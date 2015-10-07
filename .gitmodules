@@ -42,3 +42,6 @@
 	path = sencha-workspace/packages/jarvus-fuzzytime
 	url = https://github.com/JarvusInnovations/jarvus-fuzzytime.git
 	branch = master
+[submodule "sencha-workspace/packages/jarvus-fileupload"]
+	path = sencha-workspace/packages/jarvus-fileupload
+	url = git@github.com:JarvusInnovations/jarvus-fileupload.git
