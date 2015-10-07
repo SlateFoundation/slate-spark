@@ -48,7 +48,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             fieldLabel: 'Instructions',
             labelAlign: 'top',
             grow: true,
-            
+
             anchor: '100%',
 
             listeners: {
@@ -188,49 +188,66 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
         },
 
         items: [{
-            xtype: 'textfield',
-
-            readOnly: this.readOnly,
-
-            plugins: {
-                ptype: 'fieldreplicator',
-                pluginId: 'fieldreplicator'
+            xtype: 'fieldcontainer',
+            lastInGroup: true,
+            isClone: false,
+            layout: {
+                type: 'anchor'
             },
-            triggerAction: 'all',
-            labelAlign:    'top',
-            emptyText:     'Enter your link URL here. Press tab to enter another.',
-            listeners: {
-                blur: function() {
-                    var me = this,
-                        rowediting,
-                        record,
-                        newVal,
-                        curVal;
+            getValues: function() {
+                var me = this,
+                    ownerCt = me.ownerCt,
+                    values = [],
+                    link;
 
-                    // TODO: isDirty doesn't work quite the way we want here, originalValues and the fieldreplicator
-                    // may not play nice.
-
-                    if (!me.readOnly && me.isDirty() && me.getValue() != '') {
-                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
-                        record = rowediting.editor.getRecord();
-                        newVal = me.getPlugin('fieldreplicator').getValues();
-                        curVal = record.get('Links') || [];
-
-                        // HACK: Do not save if no changes have occurred
-                        if (newVal.length !== curVal.length || JSON.stringify(newVal) !== JSON.stringify(curVal)) {
-                            record.set('Links', newVal);
-                        }
+                ownerCt.items.each(function(ct) {
+                    link = {};
+                    ct.items.each(function(field) {
+                        link[field.getName()] = field.getValue();
+                    });
+                    if (link.url && link.title) {
+                        values.push(link);
                     }
+                });
+                return values;
+            },
+            setValues: function(links) {
+                var me = this,
+                    ownerCt = me.ownerCt,
+                    linkCount = links.length,
+                    i = 0,
+                    link, linkCt;
+
+                ownerCt.items.each(function(ct) {
+                    if (ct.isClone) {
+                        ownerCt.remove(ct, true);
+                    }
+                });
+                ownerCt.doLayout();
+
+                for (i; i < linkCount; i++) {
+                    link = links[i];
+                    if (i === 0) {
+                        linkCt = me;
+                    } else {
+                        linkCt.lastInGroup = false;
+                        linkCt = me.up('fieldset').add(me.cloneConfig({isClone: true}));
+                    }
+                    linkCt.down('field[name="url"]').setValue(link.url);
+                    linkCt.down('field[name="title"]').setValue(link.title);
                 }
             },
-
-            onReplicate: function (newField, lastField, cloneField) {
-                if (lastField && lastField.isDirty()) {
-                    window.setTimeout(function() {
-                        newField.focus();
-                    }, 5);
-                }
-            }
+            items: [{
+                xtype: 'textfield',
+                name: 'url',
+                anchor: '100%',
+                emptyText: 'Enter your link URL here. Press tab to enter another.'
+            },{
+                xtype: 'textfield',
+                name: 'title',
+                anchor: '100%',
+                emptyText: 'Enter the title of the link here. Press tab to enter another.'
+            }]
         }]
     }, {
         xtype: 'textfield',
@@ -288,7 +305,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
         }
 
         if (Array.isArray(links)) {
-            linksFieldset.down('textfield').getPlugin('fieldreplicator').setValues(links);
+            linksFieldset.down('fieldcontainer').setValues(links);
         }
 
         // HACK: resetFields manaully sets the nested fields under duration field
