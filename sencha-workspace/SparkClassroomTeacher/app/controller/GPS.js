@@ -103,6 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     onAddPriorityButtonTap: function(button) {
         this.getSelectedActiveStudent().set('priority_group', 2);
         button.hide();
+        this.syncSelectedActiveStudent();
     },
 
 
