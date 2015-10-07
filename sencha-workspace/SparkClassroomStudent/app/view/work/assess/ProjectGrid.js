@@ -29,7 +29,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.AppliesGrid', {
                     encodeHtml: false
                 },
                 tpl: [
-                    '<select>',
+                    '<select class="field-control">',
                         '<option>10</option>',
                         '<option>9</option>',
                         '<option>8</option>',
@@ -51,7 +51,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.AppliesGrid', {
                     encodeHtml: false
                 },
                 tpl: [
-                    '<input style="width: 100%" value="{comment:htmlEncode}">'
+                    '<input class="field-control" style="width: 100%" value="{comment:htmlEncode}">'
                 ]
             }
         ],
