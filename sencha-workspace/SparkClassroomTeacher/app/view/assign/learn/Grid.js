@@ -35,7 +35,11 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 flex: 2,
-                xtype: 'spark-learn-column'
+                xtype: 'spark-learn-column',
+                cell: {
+                    encodeHtml: false,
+                    cls: 'spark-cell-nowrap'
+                }
             },
             {
                 xtype: 'spark-learntype-column'
