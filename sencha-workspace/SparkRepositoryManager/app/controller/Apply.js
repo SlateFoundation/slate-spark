@@ -28,7 +28,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             },
             // TODO improve this component query... itemId on fieldset?
             's2m-apply-editor fieldset[title="Links"] field': {
-                blur: 'onLinkFieldBlur'
+                dirtychange: 'onLinkDirtyChange'
             }
         }
     },
@@ -133,7 +133,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         }
     },
 
-    onLinkFieldBlur: function(field) {
+    onLinkDirtyChange: function(field) {
         var ct = field.up('fieldcontainer'),
             link = {},
             clone;
@@ -144,9 +144,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
 
         if (ct.lastInGroup && link.url && link.title) {
             ct.lastInGroup = false;
-            clone = ct.up('fieldset').add(ct.cloneConfig());
-            clone.isClone = true;
-            clone.down('field[name="url"]').focus();
+            clone = ct.up('fieldset').add(ct.cloneConfig({isClone: true}));
         }
     }
 });
