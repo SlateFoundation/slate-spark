@@ -25,6 +25,10 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             },
             's2m-apply-panel button[action=align]': {
                 click: 'onAlignClick'
+            },
+            // TODO improve this component query... itemId on fieldset?
+            's2m-apply-editor fieldset[title="Links"] field': {
+                blur: 'onLinkFieldBlur'
             }
         }
     },
@@ -126,6 +130,23 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onLinkFieldBlur: function(field) {
+        var ct = field.up('fieldcontainer'),
+            link = {},
+            clone;
+
+        ct.items.each(function(field) {
+            link[field.getName()] = field.getValue();
+        });
+
+        if (ct.lastInGroup && link.url && link.title) {
+            ct.lastInGroup = false;
+            clone = ct.up('fieldset').add(ct.cloneConfig());
+            clone.isClone = true;
+            clone.down('field[name="url"]').focus();
         }
     }
 });
