@@ -69,6 +69,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             store = me.getWorkLearnsStore(),
             sparkpoint = me.getActiveSparkpoint();
 
+        if (!learnCt) {
+            return;
+        }
+
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         if (sparkpoint) {
             me.getSparkpointCt().setTitle(sparkpoint);
