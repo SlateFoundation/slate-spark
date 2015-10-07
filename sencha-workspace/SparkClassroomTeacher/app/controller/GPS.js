@@ -7,6 +7,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     config: {
+        selectedActiveStudent: null,
         activeSection: null
     },
 
@@ -32,6 +33,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         store: {
             '#Students': {
                 load: 'onStudentsStoreLoad'
+            },
+            '#gps.ActiveStudents': {
+                load: 'onActiveStudentsStoreLoad'
             }
         }
     },
@@ -43,9 +47,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     control: {
-        gpsCt: {
-            studentselect: 'onStudentSelect'
-        },
         'spark-gps-studentlist': {
             select: 'onListSelect'
         },
@@ -56,8 +57,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     // config handlers
-    updateActiveSection: function(section) {
-        // TODO: delete if uneeded
+    updateSelectedActiveStudent: function(activeStudent, oldActiveStudent) {
+        this.syncSelectedActiveStudent();
+        this.getApplication().fireEvent('activestudentselect', activeStudent, oldActiveStudent);
     },
 
 
@@ -90,39 +92,45 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         refreshTask.start();
     },
 
-    onListSelect: function(list, rec) {
-        var container = this.getGpsCt(),
-            lists = container.query('list'),
-            listCount = lists.length,
-            i = 0;
-
-        for (i; i < listCount; i++) {
-            if (lists[i] !== list) {
-                lists[i].deselectAll();
-            }
-        }
-
-        container.fireEvent('studentselect', rec, list);
+    onActiveStudentsStoreLoad: function() {
+        this.syncSelectedActiveStudent();
     },
 
-    onStudentSelect: function(rec, list) {
-        var me = this,
-            button = me.getAddPriorityButton(),
-            priorityIndex = me.getPriorityList().getStore().indexOf(rec);
-
-        if (priorityIndex === -1) {
-            me.getGpsCt().setSelectedStudent(rec);
-            button.setData(rec.getData());
-            button.show();
-        } else {
-            button.hide();
-        }
+    onListSelect: function(list, student) {
+        this.setSelectedActiveStudent(student);
     },
 
     onAddPriorityButtonTap: function(button) {
-        var activeStudent = this.getGpsCt().getSelectedStudent();
-
-        activeStudent.set('priority_group', 2);
+        this.getSelectedActiveStudent().set('priority_group', 2);
         button.hide();
+    },
+
+
+    // controller methods
+    syncSelectedActiveStudent: function() {
+        var me = this,
+            activeStudent = me.getSelectedActiveStudent(),
+            lists = me.getGpsCt().query('list'),
+            listCount = lists.length, i = 0, list,
+            addPriorityButton = me.getAddPriorityButton();
+
+        // sync list selection
+        for (; i < listCount; i++) {
+            list = lists[i];
+
+            if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
+                list.select(activeStudent);
+            } else {
+                list.deselectAll();
+            }
+        }
+
+        // sync add-to-priorities button
+        if (activeStudent && me.getPriorityList().getStore().indexOf(activeStudent) == -1) {
+            addPriorityButton.setData(activeStudent.getData());
+            addPriorityButton.show();
+        } else {
+            addPriorityButton.hide();
+        }
     }
 });
