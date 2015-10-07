@@ -6,17 +6,13 @@ JSON::respond([
         'group' => 'current'
     ],
     [
-        'code' => 'MATH.G9-12.APR.2',
+        'code' => 'MATH.G9-12.SSE.1.a',
         'group' => 'next'
     ],
     [
-        'code' => 'MATH.G9-12.APR.3',
-        'group' => 'next',
-        'recommended' => true
-    ],
-    [
-        'code' => 'MATH.G9-12.APR.4',
+        'code' => 'MATH.G9-12.SSE.1.b',
         'group' => 'next'
+        //'recommended' => true
     ],
     [
         'code' => 'MATH.GK.OA.1',
