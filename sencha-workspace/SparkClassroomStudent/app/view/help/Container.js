@@ -18,6 +18,7 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                 {
                 xtype: 'fieldset',
                 cls: 'radio-group',
+                padding: '16 0 0',
                 defaults: {
                     xtype: 'radiofield',
                     name : 'request',
@@ -56,10 +57,16 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                         label: 'Technology Question'
                     },
                     {
-                        xtype: 'button',
-                        text: 'Submit',
-                        height: 75,
-                        action: 'submit-helprequest'
+                        xtype: 'container',
+                        padding: '16 16 0',
+                        items: [
+                            {
+                                xtype: 'button',
+                                text: 'Submit',
+                                ui: 'action',
+                                action: 'submit-helprequest'
+                            }
+                        ]
                     }
                 ]
             },
