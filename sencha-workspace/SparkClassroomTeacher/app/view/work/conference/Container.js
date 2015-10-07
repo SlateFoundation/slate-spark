@@ -9,15 +9,15 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
 
     initialize: function () {
         this.callParent(arguments);
-        
+
         this.add({
             xtype: 'spark-teacher-work-conference-form',
             docked: 'right',
             cls: 'sidebar-col',
             scrollable: false
         });
-        
-        this.getComponent('standardContainer').add({
+
+        this.add({
             xtype: 'spark-teacher-work-conference-peer-component'
         });
     }
