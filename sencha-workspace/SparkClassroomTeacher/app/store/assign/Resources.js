@@ -15,16 +15,16 @@ Ext.define('SparkClassroomTeacher.store.assign.Resources', {
         ],
 
         data: [
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'What is this?', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
-            {sparkpoints: ['5.LA.M.B'], url: 'http://link.com', title: 'What is that?', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
-            {sparkpoints: ['3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true}
+            {sparkpoints: ['9.LE.A.2'], url: 'http://asn.org', title: 'ASN Resource Page for: 9.LE.A.2', created: '5/16/15', created_by: 'Diania Henderson', grade: 11, assign: false},
+            {sparkpoints: ['9.CO.C.11'], url: 'http://google.com', title: 'Google Search for 9.CO.C.11', created: '5/16/15', created_by: 'Milton Jossund', grade: 9, assign: true},
+            {sparkpoints: ['9.IF.A.1','9.LE.A.3'], url: 'http://google.com', title: 'Google Search for 9.IF.A.1', created: '5/16/15', created_by: 'Diania Henderson', grade: 11, assign: false},
+            {sparkpoints: ['9.LE.A.2'], url: 'http://asn.org', title: 'ASN Resource Page for: 9.LE.A.2', created: '5/16/15', created_by: 'Diania Henderson', grade: 9, assign: true},
+            {sparkpoints: ['9.CO.C.11'], url: 'http://google.com', title: 'Google Search for 9.CO.C.11', created: '5/16/15', created_by: 'Diania Henderson', grade: 11, assign: false},
+            {sparkpoints: ['9.IF.A.1','9.LE.A.3'], url: 'http://google.com', title: 'Google Search for 9.LE.A.3', created: '5/16/15', created_by: 'Diania Henderson', grade: 9, assign: true},
+            {sparkpoints: ['9.IF.C.7'], url: 'http://asn.org', title: 'ASN Resource Page for: 9.IF.C.7', created: '5/16/15', created_by: 'Diania Henderson', grade: 11, assign: false},
+            {sparkpoints: ['9.REI.D.11'], url: 'http://asn.org', title: 'ASN Resource Page for: 9.REI.D.11', created: '5/16/15', created_by: 'Milton Jossund', grade: 9, assign: true},
+            {sparkpoints: ['9.REI.D.11'], url: 'http://google.com', title: 'Google Search for 9.REI.D.11', created: '5/16/15', created_by: 'Nithi Thomas', grade: 11, assign: false},
+            {sparkpoints: ['9.IF.C.7'], url: 'http://asn.org', title: 'ASN Resource Page for: 9.IF.C.7', created: '5/16/15', created_by: 'Diania Henderson', grade: 9, assign: true}
         ]
     }
 });
