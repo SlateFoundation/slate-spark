@@ -3,7 +3,7 @@
 // parse request
 $include = !empty($_GET['include']) ? explode(',', $_GET['include']) : [];
 
-if (!empty($_GET['sparkpoint_id']) && ctype_digit($_GET['sparkpoint_id'])) {
+if (!empty($_GET['sparkpoint_id']) && preg_match('/^M[\dA-F]{7}$/', $_GET['sparkpoint_id'])) {
     $sparkpointId = $_GET['sparkpoint_id'];
 } else {
     $sparkpointId = null;
@@ -45,7 +45,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
             }
 
             foreach (['source_sparkpoint_id', 'target_sparkpoint_id'] AS $field) {
-                if (!empty($requestData[$field]) && is_int($requestData[$field])) {
+                if (!empty($requestData[$field]) && preg_match('/^M[\dA-F]{7}$/', $requestData[$field])) {
                     $set[$field] = $requestData[$field];
                 } else {
                     JSON::error($field . ' required', 400);
@@ -87,7 +87,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
         $where = [];
 
         if ($sparkpointId) {
-            $where[] = $sparkpointId . ' IN (source_sparkpoint_id, target_sparkpoint_id)';
+            $where[] = "'$sparkpointId' IN (source_sparkpoint_id, target_sparkpoint_id)";
         }
 
         $query = 'SELECT sparkpoints_edges.* FROM sparkpoints_edges';
