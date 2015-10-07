@@ -1,0 +1,46 @@
+@-webkit-keyframes glide-in {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(15%);
+                transform: translateY(15%)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: none;
+                transform: none;
+    }
+}
+
+@keyframes glide-in {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(15%);
+                transform: translateY(15%)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: none;
+                transform: none;
+    }
+}
+
+.welcome-view {
+    font-size: x-large;
+    padding: 6em;
+    text-align: center;
+}
+
+.welcome-title {
+    -webkit-animation: glide-in .6s .6s both;
+            animation: glide-in .6s .6s both;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.welcome-intro {
+    -webkit-animation: glide-in .6s .8s both;
+            animation: glide-in .6s .8s both;
+    color: $highlight-color;
+}

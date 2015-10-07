@@ -5,7 +5,7 @@ Ext.define('SparkClassroomStudent.view.Welcome', {
 
 
     config: {
-        styleHtmlContent: true,
-        html: '<h2>Welcome to Spark!</h2><p>Select a class and sparkpoint to begin.</p>'
+        cls: 'welcome-view welcome-view-student',
+        html: '<h1 class="welcome-title">Welcome to Spark!</h1> <p class="welcome-intro">Select a class and a Sparkpoint to begin.</p>'
     }
 });
