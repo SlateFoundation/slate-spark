@@ -6,7 +6,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
-        'SparkClassroom.column.Standards',
+        'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Grade',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.DOK',
@@ -25,8 +25,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
         store: 'assign.Apply',
         columns:[
             {
-                dataIndex: 'Standards',
-                xtype: 'spark-standards-column'
+                xtype: 'spark-sparkpoints-column'
             },
             {
                 dataIndex: 'Grade',

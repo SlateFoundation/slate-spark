@@ -1,21 +1,30 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.assign.Resources', {
     extend: 'Ext.data.Store',
-    config: {
-        fields: ['Standards','Link', 'Title', 'Grade', 'Created', 'CreatedBy', 'Assign'],
 
+
+    config: {
+        fields: [
+            'sparkpoints',
+            'title',
+            'url',
+            'grade',
+            'Created',
+            'CreatedBy',
+            'Assign'
+        ],
 
         data: [
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'What is this?', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-            {Standards: ['5.LA.M.B'], Link: 'http://link.com', Title: 'What is that?', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-            {Standards: ['3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 11, Assign: false},
-            {Standards: ['5.LA.M.B','3.LA.M.B'], Link: 'http://link.com', Title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', Grade: 9, Assign: true}
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'What is this?', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
+            {sparkpoints: ['5.LA.M.B'], url: 'http://link.com', title: 'What is that?', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
+            {sparkpoints: ['3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], url: 'http://link.com', title: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true}
         ]
     }
 });

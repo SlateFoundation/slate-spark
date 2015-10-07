@@ -7,7 +7,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
         'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.widget.GridColumnFilter',
-        'SparkClassroom.column.Standards',
+        'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Grade',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.CreatedBy',
@@ -24,8 +24,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
         titleBar: null,
         columns:[
             {
-                dataIndex: 'Standards',
-                xtype: 'spark-standards-column'
+                xtype: 'spark-sparkpoints-column'
             },
             {
                 dataIndex: 'Grade',
