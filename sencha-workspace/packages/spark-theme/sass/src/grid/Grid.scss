@@ -64,3 +64,9 @@
     padding: .25em .5em;
     white-space: nowrap;
 }
+
+.spark-cell-nowrap {
+    &, & * {
+        white-space: nowrap;
+    }
+}
