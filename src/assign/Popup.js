@@ -19,6 +19,7 @@ Ext.define('SparkClassroom.assign.Popup', {
             {
                 xtype: 'grid',
                 titleBar: null,
+                loadingText: null,
                 margin: 0,
                 store: 'gps.ActiveStudents',
                 plugins: [
