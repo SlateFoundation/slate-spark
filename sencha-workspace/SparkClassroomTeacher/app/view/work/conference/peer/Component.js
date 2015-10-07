@@ -9,15 +9,11 @@ Ext.define('SparkClassroomTeacher.view.work.conference.peer.Component', {
             questions: [
                 {
                     q: 'Restate the Learn target in your own words.',
-                    a: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+                    a: 'I can interpret complicated expressions, in terms of the context, by viewing one or more of their parts as a single entity for expressions that represent a contextual quantity.'
                 },
                 {
                     q: 'Describe the steps used to show understanding of the skill.',
-                    a: '<ol><li>First step</li><li>Second step</li><li>Third step</li></ol>'
-                },
-                {
-                    q: 'Cite three real-world examples of the learning target.',
-                    a: '<ol><li>First example</li><li>Second example</li><li>Third example</li></ol>'
+                    a: '<ol><li>Identify parts of an expression - such as terms, factors, and coefficients.</li><li>identify parts of a complicated expressions by viewing one or more of their parts as a single entity.</li></ol>'
                 }
             ]
         },
