@@ -192,15 +192,14 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             // TODO: replace style with style class?
             style: {
                 border: '1px',
-                borderStyle: 'solid'
+                borderStyle: 'solid',
+                borderColor: '#ccc'
             },
-
             lastInGroup: true,
             isClone: false,
             layout: {
                 type: 'vbox',
-                align: 'stretch',
-                padding: '2px 8px 0'
+                align: 'stretch'
             },
             getValues: function() {
                 var me = this,
@@ -248,12 +247,12 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             items: [{
                 xtype: 'textfield',
                 name: 'url',
-                flex: 1,
+                margin: '2px 8px',
                 emptyText: 'Enter your link URL here. Press tab to enter another.'
             },{
                 xtype: 'textfield',
                 name: 'title',
-                flex: 1,
+                margin: '0 8px',
                 emptyText: 'Enter the title of the link here. Press tab to enter another.'
             }]
         }]
