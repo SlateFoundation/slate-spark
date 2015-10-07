@@ -21,6 +21,7 @@ Ext.define('SparkClassroom.column.LearnType', {
     },
 
     config: {
+        dataIndex: 'type',
         cls: 'spark-learntype-column',
         width: 64,
         text: 'Type',

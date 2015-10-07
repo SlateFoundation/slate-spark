@@ -3,6 +3,7 @@ Ext.define('SparkClassroom.column.Grade', {
     xtype: 'spark-grade-column',
 
     config: {
+        dataIndex: 'grade',
         cls: 'spark-grade-column',
         width: 80,
         text: 'Grade'

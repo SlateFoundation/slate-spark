@@ -3,6 +3,7 @@ Ext.define('SparkClassroom.column.Rating', {
     xtype: 'spark-rating-column',
 
     config: {
+        dataIndex: 'student_rating',
         cls: 'spark-rating-column',
         width: 112,
         align: 'center',

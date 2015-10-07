@@ -3,6 +3,7 @@ Ext.define('SparkClassroom.column.Vendor', {
     xtype: 'spark-vendor-column',
 
     config: {
+        dataIndex: 'vendor',
         cls: 'spark-vendor-column',
         flex: 1,
         text: 'Vendor',

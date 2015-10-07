@@ -10,6 +10,7 @@ Ext.define('SparkClassroom.column.AssignMulti', {
         popupCell: null,
         showTrigger: true,
 
+        dataIndex: 'assign',
         cls: 'spark-assign-column-multi',
         width: 176,
         cell: {

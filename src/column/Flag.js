@@ -3,6 +3,7 @@ Ext.define('SparkClassroom.column.Flag', {
     xtype: 'spark-flag-column',
 
     config: {
+        dataIndex: 'flag',
         cls: 'spark-flag-column',
         width: 64,
         text: 'Issue',

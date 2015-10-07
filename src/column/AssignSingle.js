@@ -10,6 +10,7 @@ Ext.define('SparkClassroom.column.AssignSingle', {
         popupCell: null,
         showTrigger: true,
 
+        dataIndex: 'assign',
         cls: 'spark-assign-column-single',
         text: 'Assign',
         width: 80,
