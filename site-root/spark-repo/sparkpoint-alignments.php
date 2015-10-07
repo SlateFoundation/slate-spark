@@ -3,7 +3,8 @@
 // parse request
 $include = !empty($_GET['include']) ? explode(',', $_GET['include']) : [];
 
-if (!empty($_GET['sparkpoint_id']) && ctype_digit($_GET['sparkpoint_id'])) {
+
+if (!empty($_GET['sparkpoint_id']) && preg_match('/^M[\dA-F]{7}$/', $_GET['sparkpoint_id'])) {
     $sparkpointId = $_GET['sparkpoint_id'];
 } else {
     $sparkpointId = null;
@@ -85,7 +86,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
         $where = [];
     
         if ($sparkpointId) {
-            $where[] = 'sparkpoint_id = ' . $sparkpointId;
+            $where[] = "sparkpoint_id = '$sparkpointId'";
         }
     
         $query = 'SELECT sparkpoint_standard_alignments.* FROM sparkpoint_standard_alignments';
