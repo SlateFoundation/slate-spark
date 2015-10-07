@@ -7,7 +7,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         'Jarvus.plugin.GridHeight',
         'Ext.grid.plugin.PagingToolbar',
         'SparkClassroom.widget.GridColumnFilter',
-        'SparkClassroom.column.Standards',
+        'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Grade',
         'SparkClassroom.column.Learn',
         'SparkClassroom.column.LearnType',
@@ -28,40 +28,31 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         store: 'assign.Learn',
         columns:[
             {
-                dataIndex: 'Standards',
-                xtype: 'spark-standards-column'
+                xtype: 'spark-sparkpoints-column'
             },
             {
-                dataIndex: 'Grade',
                 xtype: 'spark-grade-column'
             },
             {
                 flex: 2,
-                dataIndex: 'Title',
                 xtype: 'spark-learn-column'
             },
             {
-                dataIndex: 'Category',
                 xtype: 'spark-learntype-column'
             },
             {
-                dataIndex: 'DOK',
                 xtype: 'spark-dok-column'
             },
             {
-                dataIndex: 'SRating',
                 xtype: 'spark-rating-column'
             },
             {
-                dataIndex: 'Attachment',
                 xtype: 'spark-attachment-column'
             },
             {
-                dataIndex: 'Assign',
                 xtype: 'spark-assign-column-multi'
             },
             {
-                dataIndex: 'Flag',
                 xtype: 'spark-flag-column'
             }
         ]
@@ -84,7 +75,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 {
                     width: 208,
                     options: [
-                        { text: 'Standards' }
+                        { text: 'Sparkpoints' }
                     ]
                 },
                 {
@@ -102,13 +93,13 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 {
                     width: 64,
                     options: [
-                        { text: 'DOK' }
+                        { text: 'Type' }
                     ]
                 },
                 {
                     width: 64,
                     options: [
-                        { text: 'Type' }
+                        { text: 'DOK' }
                     ]
                 },
                 {
