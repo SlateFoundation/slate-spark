@@ -30,26 +30,21 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
                 xtype: 'spark-sparkpoints-column'
             },
             {
-                dataIndex: 'Grade',
                 xtype: 'spark-grade-column'
             },
             {
-                dataIndex: 'Title',
                 xtype: 'spark-title-column'
             },
             {
                 xtype: 'spark-link-column'
             },
             {
-                dataIndex: 'Vendor',
                 xtype: 'spark-vendor-column'
             },
             {
-                dataIndex: 'Assign',
                 xtype: 'spark-assign-column-single'
             },
             {
-                dataIndex: 'Issue',
                 xtype: 'spark-flag-column'
             }
         ],

@@ -27,24 +27,20 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
                 xtype: 'spark-sparkpoints-column'
             },
             {
-                dataIndex: 'Grade',
                 xtype: 'spark-grade-column'
             },
             {
-                dataIndex: 'Question',
+                dataIndex: 'question',
                 text: 'Guiding Questions',
                 xtype: 'spark-title-column'
             },
             {
-                dataIndex: 'CreatedBy',
                 xtype: 'spark-createdby-column'
             },
             {
-                dataIndex: 'Created',
                 xtype: 'spark-createddate-column'
             },
             {
-                dataIndex: 'Assign',
                 xtype: 'spark-assign-column-single'
             }
         ],

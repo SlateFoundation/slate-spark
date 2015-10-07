@@ -28,26 +28,21 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
                 xtype: 'spark-sparkpoints-column'
             },
             {
-                dataIndex: 'Grade',
                 xtype: 'spark-grade-column'
             },
             {
-                dataIndex: 'Title',
                 xtype: 'spark-title-column'
             },
             {
                 xtype: 'spark-link-column'
             },
             {
-                dataIndex: 'CreatedBy',
                 xtype: 'spark-createdby-column'
             },
             {
-                dataIndex: 'Created',
                 xtype: 'spark-createddate-column'
             },
             {
-                dataIndex: 'Assign',
                 xtype: 'spark-assign-column-single'
             }
         ],

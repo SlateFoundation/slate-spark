@@ -6,24 +6,24 @@ Ext.define('SparkClassroomTeacher.store.assign.Questions', {
     config: {
         fields: [
             'sparkpoints',
-            'Question',
+            'question',
             'grade',
-            'Created',
-            'CreatedBy',
-            'Assign'
+            'created',
+            'created_by',
+            'assign'
         ],
 
         data: [
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'What is this?', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'What is that?', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
-            {sparkpoints: ['3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true},
-            {sparkpoints: ['5.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 11, Assign: false},
-            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], Question: 'Playlist Title', Created: '5/16/31', CreatedBy: 'Milton Jossund', grade: 9, Assign: true}
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'What is this?', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'What is that?', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
+            {sparkpoints: ['3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true},
+            {sparkpoints: ['5.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 11, assign: false},
+            {sparkpoints: ['5.LA.M.B','3.LA.M.B'], question: 'Playlist Title', created: '5/16/31', created_by: 'Milton Jossund', grade: 9, assign: true}
         ]
     }
 });

@@ -28,23 +28,18 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
                 xtype: 'spark-sparkpoints-column'
             },
             {
-                dataIndex: 'Grade',
                 xtype: 'spark-grade-column'
             },
             {
-                dataIndex: 'Title',
                 xtype: 'spark-title-column'
             },
             {
-                dataIndex: 'DOK',
                 xtype: 'spark-dok-column'
             },
             {
-                dataIndex: 'CreatedBy',
                 xtype: 'spark-createdby-column'
             },
             {
-                dataIndex: 'Assign',
                 xtype: 'spark-assign-column-single'
             }
         ]
