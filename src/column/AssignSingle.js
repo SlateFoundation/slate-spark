@@ -78,7 +78,8 @@ Ext.define('SparkClassroom.column.AssignSingle', {
             me.setPopup(popup = Ext.create('SparkClassroom.assign.Popup', {
                 hidden: true
             }));
-            (me.up('{getScrollable()}') || Ext.Viewport).add(popup);
+
+            (me.up('grid').up('{getScrollable()}') || Ext.Viewport).add(popup);
         }
 
         popup.showBy(cell.element.down('.menu-trigger'), 'tr-b?');
