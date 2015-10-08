@@ -2,6 +2,11 @@
     box-shadow: 0 1px 3px rgba(black, .3);
     cursor: pointer;
 
+    .fa {
+        font-size: 14px;
+        margin-right: ($font-size * .25);
+    }
+
     .x-toolbar & {
         border-radius: 0;
         box-shadow: none;
