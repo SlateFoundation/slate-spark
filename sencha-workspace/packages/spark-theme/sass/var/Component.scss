@@ -23,3 +23,8 @@ $font-weight-bold:      dynamic(500);
 $heading-font-family:   dynamic('Sanchez', 'Rockwell', 'Georgia', serif);
 
 $card-shadow:           0 1px 4px rgba(black, .2);
+
+// easing functions by matthewlein.com/ceaser
+$ease-in-circ:          cubic-bezier(0.600, 0.040, 0.980, 0.335);
+$ease-out-circ:         cubic-bezier(0.075, 0.820, 0.165, 1.000);
+$ease-in-out-circ:      cubic-bezier(0.785, 0.135, 0.150, 0.860);
