@@ -60,6 +60,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         flex: 2,
                         items: [
                             {
+                                cls: 'spark-gps-studentlist spark-gps-priority-group',
                                 itemId: 'priorityList',
 
                                 xtype: 'spark-gps-studentlist',
@@ -70,6 +71,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 itemId: 'addPriorityBtn',
 
                                 xtype: 'button',
+                                cls: 'studentlist-add-btn',
+                                iconCls: 'fa fa-plus-circle text-active',
                                 tpl: 'Add {[values.student.get("FullName")]}',
                                 hidden: true
                             },

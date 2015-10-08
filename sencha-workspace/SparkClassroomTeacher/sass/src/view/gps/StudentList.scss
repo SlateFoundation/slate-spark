@@ -9,8 +9,12 @@
 }
 
 .spark-gps-studentlist {
+    .x-list-item {
+        height: 61px;
+    }
+
     .x-title {
-        background-color: white;
+        background-color: #f5f5f5;
         border-bottom: 1px solid #999;
         font-size: 15px;
         font-weight: bold;
@@ -37,6 +41,23 @@
     }
 }
 
+@-webkit-keyframes list-item-slide-in {
+      0% { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+    100% { -webkit-transform: none; transform: none; }
+}
+
+@keyframes list-item-slide-in {
+      0% { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+    100% { -webkit-transform: none; transform: none; }
+}
+
+.spark-gps-priority-group {
+    .x-list-item {
+        -webkit-animation: list-item-slide-in .4s forwards $ease-out-circ;
+                animation: list-item-slide-in .4s forwards $ease-out-circ;
+    }
+}
+
 .studentlist-item-header {
     display: flex;
     justify-content: space-between;
@@ -60,4 +81,21 @@
     color: $highlight-color;
     font-size: smaller;
     margin-left: .5em;
+}
+
+.studentlist-add-btn {
+    background-color: rgba($base-color, .1);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: mix($base-color, $color);
+    font-size: 14px;
+    font-weight: bold;
+    height: 61px;
+    padding: 1em;
+
+    &:hover,
+    &:focus {
+        background-color: rgba($base-color, .2);
+    }
 }
