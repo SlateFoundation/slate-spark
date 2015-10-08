@@ -68,6 +68,10 @@ a {
    color: $placeholder-color;  
 }
 
+.text-active {
+    color: darken($active-color, 10) !important;
+}
+
 .text-alert {
     color: $alert-color !important;
 }
