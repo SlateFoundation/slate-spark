@@ -18,14 +18,15 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
             '</div>'
         ].join(''),
         cell: {
+            innerCls: 'no-padding',
             encodeHtml: false
         },
         tpl: [
-            '<div class="flex-ct text-center">',
-                '<div class="flex-1"><i class="fa fa-check"></i></div>',
-                '<div class="flex-1"><i class="fa fa-check"></i></div>',
-                '<div class="flex-1"><i class="fa fa-check"></i></div>',
-                '<div class="flex-1"><i class="fa fa-check"></i></div>',
+            '<div class="flex-ct cycle-gauge">',
+                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
+                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
+                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
+                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
             '</div>'
         ]
     }

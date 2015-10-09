@@ -1,0 +1,24 @@
+.cycle-gauge {
+    .x-grid-cell & {
+        padding: 0 .9em;
+    }
+
+    text-align: center;
+}
+
+.cycle-gauge-pip {
+    .x-grid-cell & {
+        padding: .6em 0;
+    }
+
+    $pip-complete-color: $active-dark-color;
+
+    &.is-complete {
+        background-color: $pip-complete-color;
+
+        &:nth-child(1) { background-color: rgba($pip-complete-color, .2); }
+        &:nth-child(2) { background-color: rgba($pip-complete-color, .4); }
+        &:nth-child(3) { background-color: rgba($pip-complete-color, .6); }
+        &:nth-child(4) { background-color: rgba($pip-complete-color, .8); }
+    }
+}
