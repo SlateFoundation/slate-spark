@@ -76,6 +76,10 @@ a {
     color: $alert-color !important;
 }
 
+.no-padding {
+    padding: 0 !important;
+}
+
 .spark-view-headline {
     font-family: $heading-font-family;
     font-size: x-large;
