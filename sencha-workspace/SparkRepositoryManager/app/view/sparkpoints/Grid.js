@@ -15,6 +15,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Grid', {
         source: 'sparkpoints.Sparkpoints'
     },
 
+    selModel: {
+        selType: 'rowmodel',
+        mode   : 'MULTI'
+    },
+
     dockedItems: [{
         dock: 'top',
 
