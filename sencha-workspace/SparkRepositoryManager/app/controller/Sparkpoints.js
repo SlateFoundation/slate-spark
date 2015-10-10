@@ -241,7 +241,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         {
             main.setSelectedSparkpoint(sparkpoints[0] || null);
             if (panel.isMasked()) {
-                panel.getEl().unmask();
+                panel.unmask();
             }
         }
 
