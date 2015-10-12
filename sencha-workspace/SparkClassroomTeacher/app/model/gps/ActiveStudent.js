@@ -94,7 +94,11 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
                 // temporarily persist value in model instance until backend is implemented
                 if (userId in helpRequests) {
-                    v = helpRequests[userId];
+                    if (v === undefined) {
+                        v = helpRequests[userId];
+                    } else {
+                        helpRequests[userId] = v;
+                    }
                 } else {
                     helpRequests[userId] = v = Math.random() < 0.8 ? null : types[Math.floor(Math.random()*types.length)];
                 }
