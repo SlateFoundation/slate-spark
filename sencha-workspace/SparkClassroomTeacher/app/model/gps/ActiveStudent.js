@@ -66,6 +66,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             allowNull: true,
 
             // TODO: remove this when backend is implemented
+            persist: false,
             convert: function(v, r) {
                 var priorityGroups = r.self.priorityGroups = r.self.priorityGroups || {},
                     userId = r.get('user_id');
@@ -85,6 +86,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             allowNull: true,
 
             // TODO: remove this when backend is implemented
+            persist: false,
             convert: function(v, r) {
                 var types = ['question-general','question-academic','question-technology','bathroom','locker','nurse'],
                     helpRequests = r.self.helpRequests = r.self.helpRequests || {},
