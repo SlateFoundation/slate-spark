@@ -178,20 +178,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         pluginId:     'rowediting',
         clicksToEdit: 2,
         errorSummary: true,
-        autoCancel:   false,
-        listeners:    {
-            canceledit: function () {
-                this.grid.down('s2m-apply-editor').setReadOnly(true);
-            },
-
-            beforeedit: function () {
-                this.grid.down('s2m-apply-editor').setReadOnly(false);
-            },
-
-            edit: function () {
-                this.grid.down('s2m-apply-editor').setReadOnly(true);
-            }
-        }
+        autoCancel:   false
     }, {
         ptype:    'saki-gms',
         pluginId: 'gms'
