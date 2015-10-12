@@ -9,7 +9,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         'SparkClassroom.widget.GridColumnFilter',
         'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Grade',
-        'SparkClassroom.column.Learn',
+        'SparkClassroom.column.Link',
         'SparkClassroom.column.LearnType',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.Rating',
@@ -35,7 +35,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             },
             {
                 flex: 2,
-                xtype: 'spark-learn-column',
+                xtype: 'spark-link-column',
+                text: 'Learn',
                 cell: {
                     encodeHtml: false,
                     cls: 'spark-cell-nowrap'
