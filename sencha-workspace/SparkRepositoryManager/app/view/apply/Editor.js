@@ -49,30 +49,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             labelAlign: 'top',
             grow: true,
 
-            anchor: '100%',
+            anchor: '100%'
 
-            listeners: {
-                'blur': function() {
-                    var me = this,
-                        rowediting,
-                        record,
-                        newVal,
-                        curVal;
-
-                    if (!me.readOnly && me.isDirty()) {
-                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
-                        record = rowediting.editor.getRecord();
-                        newVal = me.getValue();
-                        curVal = record.get('Instructions');
-
-                        // HACK: Do not save if no changes have occurred
-                        if (newVal != curVal) {
-                            record.set('Instructions', newVal);
-                        }
-                    }
-                },
-                scope: 'this'
-            }
         }, {
             xtype:      'durationfield',
 
@@ -83,34 +61,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
 
             duration:   0,
 
-            anchor: '100%',
+            anchor: '100%'
 
-            listeners: {
-                'blur': function() {
-                    var me = this,
-                        rowediting,
-                        record,
-                        newVal,
-                        curVal;
-
-                    if (!me.readOnly) {
-                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
-                        record = rowediting.editor.getRecord();
-
-                        if (!record) {
-                            return;
-                        }
-
-                        newVal = me.getValue();
-                        curVal = record.get('TimeEstimate');
-
-                        // HACK: Do not save if no changes have occurred
-                        if (newVal != curVal) {
-                            record.set('TimeEstimate', newVal);
-                        }
-                    }
-                }
-            }
         }]
     }, {
         xtype: 'fieldset',
@@ -140,30 +92,6 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             triggerAction: 'all',
             labelAlign:    'top',
             emptyText:     'Type your todo here. When you are done typing, press tab to enter another.',
-            listeners: {
-                blur: function() {
-                    var me = this,
-                        rowediting,
-                        record,
-                        newVal,
-                        curVal;
-
-                    // TODO: isDirty doesn't work quite the way we want here, originalValues and the fieldreplicator
-                    // may not play nice.
-
-                    if (!me.readOnly && me.isDirty() && me.getValue() != '') {
-                        rowediting = me.up('s2m-apply-panel').getPlugin('rowediting');
-                        record = rowediting.editor.getRecord();
-                        newVal = me.getPlugin('fieldreplicator').getValues();
-                        curVal = record.get('Todos') || [];
-
-                        // HACK: Do not save if no changes have occurred
-                        if (newVal.length !== curVal.length || JSON.stringify(newVal) !== JSON.stringify(curVal)) {
-                            record.set('Todos', newVal);
-                        }
-                    }
-                }
-            },
 
             onReplicate: function (newField, lastField, cloneField) {
                 if (lastField && lastField.isDirty()) {
@@ -186,55 +114,6 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             type: 'vbox',
             align: 'stretch'
         },
-        getValues: function() {
-            var me = this,
-                values = [],
-                link;
-
-            me.items.each(function(ct) {
-                link = {};
-                ct.items.each(function(field) {
-                    link[field.getName()] = field.getValue();
-                });
-                if (link.url && link.title) {
-                    values.push(link);
-                }
-            });
-            return values;
-        },
-        setValues: function(links) {
-            var me = this,
-                firstCt = me.down('fieldcontainer'),
-                linkCount = links.length,
-                i = 0,
-                link, linkCt;
-
-            me.items.each(function(ct) {
-                if (ct.isClone) {
-                    me.remove(ct, true);
-                }
-            });
-
-            if (linkCount > 0) {
-                for (i; i < linkCount; i++) {
-                    link = links[i];
-                    if (i === 0) {
-                        linkCt = firstCt;
-                    } else {
-                        linkCt = me.add(firstCt.cloneConfig({
-                            isClone: true,
-                            lastInGroup: false
-                        }));
-                    }
-                    linkCt.down('field[name="url"]').setRawValue(link.url);
-                    linkCt.down('field[name="title"]').setRawValue(link.title);
-                }
-                me.add(firstCt.cloneConfig({isClone: true}));
-            } else {
-                firstCt.lastInGroup = true;
-            }
-        },
-
         items: [{
             xtype: 'fieldcontainer',
             // TODO: replace style with style class?
