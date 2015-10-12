@@ -182,8 +182,9 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         this.getEditor().setReadOnly(false);
     },
 
-    onPanelEdit: function() {
+    onPanelEdit: function(editor, context) {
         this.getEditor().setReadOnly(true);
+        context.record.save();
     },
 
     onPanelValidateEdit: function() {
