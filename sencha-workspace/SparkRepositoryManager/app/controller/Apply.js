@@ -21,7 +21,8 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
                 activate: 'onPanelActivate',
                 beforeedit: 'onPanelBeforeEdit',
                 edit: 'onPanelEdit',
-                canceledit: 'onPanelCancelEdit'
+                canceledit: 'onPanelCancelEdit',
+                validateedit: 'onPanelValidateEdit'
             },
             's2m-apply-panel button[action=add]': {
                 click: 'onAddClick'
@@ -177,15 +178,18 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         }
     },
 
-    onPanelCancelEdit: function() {
-        this.getEditor().setReadOnly(true);
-    },
-
     onPanelBeforeEdit: function() {
         this.getEditor().setReadOnly(false);
     },
 
     onPanelEdit: function() {
+        this.getEditor().setReadOnly(true);
+    },
+
+    onPanelValidateEdit: function() {
+    },
+
+    onPanelCancelEdit: function() {
         this.getEditor().setReadOnly(true);
     }
 
