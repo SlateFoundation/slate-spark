@@ -52,6 +52,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         },
         addPriorityButton: {
             tap: 'onAddPriorityButtonTap'
+        },
+        'spark-gps-studentlist#priorityList': {
+            itemdismisstap: 'onPriorityDismissTap'
         }
     },
 
@@ -102,6 +105,11 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     onAddPriorityButtonTap: function(button) {
         this.getSelectedActiveStudent().set('priority_group', 2);
+        this.syncSelectedActiveStudent();
+    },
+
+    onPriorityDismissTap: function(list, item) {
+        item.getRecord().set('priority_group', null);
         this.syncSelectedActiveStudent();
     },
 

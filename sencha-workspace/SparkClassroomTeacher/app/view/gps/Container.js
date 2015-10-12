@@ -65,7 +65,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
 
                                 xtype: 'spark-gps-studentlist',
                                 store: 'gps.Priorities',
-                                title: 'Priorities'
+                                title: 'Priorities',
+                                showDismissButton: true
                             },
                             {
                                 itemId: 'addPriorityBtn',
@@ -81,7 +82,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
 
                                 xtype: 'spark-gps-studentlist',
                                 store: 'gps.Help',
-                                title: 'Help'
+                                title: 'Help',
+                                showDismissButton: true
                                 //grouped: true
                             }
                         ]

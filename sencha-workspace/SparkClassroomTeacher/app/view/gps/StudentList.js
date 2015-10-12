@@ -9,6 +9,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
 
     config: {
         title: null,
+        showDismissButton: false,
 
         loadingText: null,
         cls: 'spark-gps-studentlist',
@@ -22,6 +23,9 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 '<span class="studentlist-timer">',
                     '{[Ext.util.Format.fuzzyDuration(values[values.phase+"_duration"] * 1000, true)]}',
                 '</span>',
+                '<tpl if="showDismissButton">',
+                    '<i class="fa fa-times-circle item-delete-btn"></i>',
+                '</tpl>',
             '</header>',
             '<ul class="studentlist-standards">', // TODO: rename to studentlist-sparkpoints
                 // '<tpl for="Standards">',
@@ -69,5 +73,19 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 html: countStr
             });
         }
+    },
+
+    prepareData: function(data, index, record) {
+        data.showDismissButton = this.getShowDismissButton();
+        return data;
+    },
+
+    onItemTap: function(ev, t) {
+        if (ev.getTarget('.item-delete-btn')) {
+            this.fireEvent('itemdismisstap', this, Ext.get(t).component);
+            return;
+        }
+
+        this.callParent(arguments);
     }
 });
