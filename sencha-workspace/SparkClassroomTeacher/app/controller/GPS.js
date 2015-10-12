@@ -35,7 +35,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 load: 'onStudentsStoreLoad'
             },
             '#gps.ActiveStudents': {
-                load: 'onActiveStudentsStoreLoad'
+                endupdate: 'onActiveStudentsStoreEndUpdate'
             }
         }
     },
@@ -83,7 +83,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 interval: 5000,
                 fireOnStart: true,
                 scope: activeStudentsStore,
-                run: activeStudentsStore.load
+                run: activeStudentsStore.loadUpdates
             });
         }
 
@@ -92,7 +92,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         refreshTask.start();
     },
 
-    onActiveStudentsStoreLoad: function() {
+    onActiveStudentsStoreEndUpdate: function() {
         this.syncSelectedActiveStudent();
     },
 
