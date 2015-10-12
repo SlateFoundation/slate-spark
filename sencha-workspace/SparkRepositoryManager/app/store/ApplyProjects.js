@@ -9,8 +9,6 @@ Ext.define('SparkRepositoryManager.store.ApplyProjects', {
 
     model: 'SparkRepositoryManager.model.ApplyProject',
 
-    autoSync: true,
-
     pageSize: 25,
 
     sorters:[
