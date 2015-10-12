@@ -191,7 +191,8 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         this.getEditor().updateRecord();
     },
 
-    onPanelCancelEdit: function() {
+    onPanelCancelEdit: function(editor, context) {
+        this.getEditor().applyRecord(context.record);
         this.getEditor().setReadOnly(true);
     }
 
