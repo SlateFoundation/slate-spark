@@ -14,7 +14,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
         'Ext.layout.container.Fit',
         'Ext.layout.container.VBox',
         'SparkRepositoryManager.plugin.FieldReplicator',
-        'SparkRepositoryManager.widget.DurationField'
+        'SparkRepositoryManager.widget.DurationField',
+        'SparkRepositoryManager.field.ApplyLinks'
     ],
     extend:   'Ext.panel.Panel',
 
@@ -43,6 +44,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
 
         items: [{
             xtype: 'textarea',
+            itemId: 'instructions-textarea',
 
             readOnly: this.readOnly,
             fieldLabel: 'Instructions',
@@ -52,7 +54,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             anchor: '100%'
 
         }, {
-            xtype:      'durationfield',
+            xtype: 'durationfield',
+            itemId: 'timeestimate-durationfield',
 
             readOnly: this.readOnly,
 
@@ -102,44 +105,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             }
         }]
     }, {
-        xtype: 'fieldset',
-
-        id: 'links-fieldset',
-
-        title:       'Links',
-        defaultType: 'textfield',
-        flex:        1,
-        scrollable:  true,
-        layout: {
-            type: 'vbox',
-            align: 'stretch'
-        },
-        items: [{
-            xtype: 'fieldcontainer',
-            // TODO: replace style with style class?
-            style: {
-                border: '1px',
-                borderStyle: 'solid',
-                borderColor: '#ccc'
-            },
-            lastInGroup: true,
-            isClone: false,
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            items: [{
-                xtype: 'textfield',
-                name: 'url',
-                margin: '2px 8px',
-                emptyText: 'Enter your link URL here. Press tab to enter another.'
-            },{
-                xtype: 'textfield',
-                name: 'title',
-                margin: '0 8px',
-                emptyText: 'Enter the title of the link here. Press tab to enter another.'
-            }]
-        }]
+        xtype: 'srm-field-applylinks',
+        itemId: 'links-fieldset'
     }, {
         xtype: 'textfield',
         id: 'dummy-focus-field'
@@ -203,6 +170,33 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
         detailsFieldset.down('durationfield').setValue(detailsFieldset.down('durationfield').getValue());
 
         me.record = rec;
+    },
+
+    updateRecord: function() {
+        var me = this,
+            rec = me.getRecord(),
+            changes = {},
+            instructions = me.down('#instructions-textarea').getValue(),
+            timeEstimate = me.down('#timeestimate-durationfield').getValue(),
+            todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues();
+            links = me.down('#links-fieldset').getValues();
+
+        if (rec.get('Instructions') !== instructions) {
+            rec.set('Instructions', instructions);
+        }
+
+        if (rec.get('TimeEstimate') !== timeEstimate) {
+            rec.set('TimeEstimate', timeEstimate);
+        }
+
+        if (rec.get('Todos') !== todos) {
+            rec.set('Todos', todos);
+        }
+
+        if (rec.get('Links') !== links) {
+            rec.set('Links', links);
+        }
+
     },
 
     applyReadOnly: function(val) {
