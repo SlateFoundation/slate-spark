@@ -188,6 +188,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     },
 
     onPanelValidateEdit: function() {
+        this.getEditor().updateRecord();
     },
 
     onPanelCancelEdit: function() {
