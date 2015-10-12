@@ -6,7 +6,7 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Completed',
-        'SparkClassroom.column.Learn',
+        'SparkClassroom.column.Link',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.LearnType',
         'SparkClassroom.column.Rating',
@@ -27,7 +27,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
                 xtype: 'spark-completed-column'
             },
             {
-                xtype: 'spark-learn-column',
+                xtype: 'spark-link-column',
+                text: 'Learn',
                 flex: 2
             },
             {

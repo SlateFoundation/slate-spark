@@ -5,7 +5,7 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
-        'SparkClassroom.column.Title',
+        'SparkClassroom.column.Link',
         'SparkClassroom.column.Completed',
         'SparkClassroom.column.Score'
     ],
@@ -19,7 +19,7 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
         emptyText: 'No Assessments to show for this Sparkpoint.',
         columns:[
             {
-                xtype: 'spark-title-column',
+                xtype: 'spark-link-column',
                 text: 'Assessment'
             },
             {
