@@ -150,18 +150,15 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
                     xclass: 'Ext.data.Store',
 
                     proxy: {
-                        type: 'spark-records',
-                        url: '/spark2/conference-resources/creators',
-                        extraParams: {
-                            limit: 1024
-                        }
+                        type: 'spark-api',
+                        url: '/spark2/conference-resources/*creators'
                     },
 
-                    fields: ['CreatorID', 'CreatorFullName']
+                    fields: ['ID', 'FullName']
                 },
                 queryMode: 'local',
-                displayField: 'CreatorFullName',
-                valueField: 'CreatorID',
+                displayField: 'FullName',
+                valueField: 'ID',
                 editable: false,
                 grow: true
             }

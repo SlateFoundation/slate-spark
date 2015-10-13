@@ -72,6 +72,7 @@ Ext.define('SparkRepositoryManager.model.ApplyLink', {
 
     proxy: {
         type: 'spark-records',
-        url: '/spark2/apply-links'
+        url: '/spark2/apply-links',
+        include: ['CreatorFullName']
     }
 });

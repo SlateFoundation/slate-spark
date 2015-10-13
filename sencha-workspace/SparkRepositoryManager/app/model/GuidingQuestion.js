@@ -67,6 +67,7 @@ Ext.define('SparkRepositoryManager.model.GuidingQuestion', {
     proxy: {
         autoSync: false,
         type: 'spark-records',
-        url: '/spark2/guiding-questions'
+        url: '/spark2/guiding-questions',
+        include: ['CreatorFullName']
     }
 });

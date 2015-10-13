@@ -78,16 +78,38 @@ class Assessment extends SparkPointRecord
         ]
     ];
 
+    public function getCreatorFullName()
+    {
+        if ($this->RemoteAuthorName && $this->RemoteAuthorIdentifier) {
+            return $this->RemoteAuthorName;
+        }
+
+        return $this->Creator->FullName;
+    }
+
     public static function getCreatorIdConditions($id, $matchedCondition)
     {
         if (is_numeric($id)) {
-            // poor mans sql escaping
-            return 'CreatorID = ' . (integer) $id;
+            return sprintf('CreatorID = %u', $id);
         } else {
-            // poor mans sql escaping
-            $id = str_replace(' ', '', $id);
-            return "RemoteAuthorIdentifier = \"$id\"";
+            return sprintf('RemoteAuthorIdentifier = "%s"', \DB::escape($id));
         }
     }
 
+    public static function getCreators()
+    {
+        return \DB::allRecords('
+            SELECT DISTINCT r.CreatorID AS ID,
+                   CONCAT(p.FirstName, " ", p.LastName) AS FullName
+              FROM %1$s r
+              JOIN people p ON p.ID = r.CreatorID
+
+            UNION
+
+            SELECT DISTINCT RemoteAuthorIdentifier AS ID,
+                            RemoteAuthorName AS FullName
+                       FROM %1$s
+            ORDER BY FullName
+        ', static::$tableName);
+    }
 }

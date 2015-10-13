@@ -123,6 +123,7 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
 
     proxy: {
         type: 'spark-records',
-        url: '/spark2/apply-projects'
+        url: '/spark2/apply-projects',
+        include: ['CreatorFullName']
     }
 });

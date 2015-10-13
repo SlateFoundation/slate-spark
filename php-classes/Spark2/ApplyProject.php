@@ -67,6 +67,5 @@ class ApplyProject extends SparkPointRecord
             'qualifiers' => ['any','standardids'],
             'sql' => 'StandardIDs LIKE "%%%s%%"'
         ],
-
     ];
 }

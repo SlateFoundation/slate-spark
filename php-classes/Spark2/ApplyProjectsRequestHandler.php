@@ -24,19 +24,4 @@ class ApplyProjectsRequestHandler extends SparkPointRequestHandler
             parent::checkReadAccess($Record, $suppressLogin)
         );
     }
-
-    public static function handleCreatorsRequest()
-    {
-        $recordClass = static::$recordClass;
-
-        $creators = \DB::allRecords(sprintf('
-        SELECT DISTINCT RemoteAuthorName,
-                   FROM %s
-               ORDER BY RemoteAuthorName',
-        $recordClass::$tableName));
-
-        return static::respondJson('creators', array(
-            'data' => $creators
-        ));
-    }
 }

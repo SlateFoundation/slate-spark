@@ -45,12 +45,6 @@ class LearnLink extends SparkPointRecord
     ];
 
     public static $relationships = [
-        'Creator' => [
-            'type' => 'one-one',
-            'class' => 'Person',
-            'local' => 'CreatorID'
-        ],
-
         'Vendor' => [
             'type' => 'one-one',
             'class' => Vendor::class,

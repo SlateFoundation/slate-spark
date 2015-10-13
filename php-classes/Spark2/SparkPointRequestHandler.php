@@ -7,7 +7,7 @@ class SparkPointRequestHandler extends \RecordsRequestHandler
     public static function handleRecordsRequest($action = false)
     {
         switch ($action ? $action : $action = static::shiftPath()) {
-            case 'creators':
+            case '*creators':
                 return static::handleCreatorsRequest();
             default:
                 return parent::handleRecordsRequest($action);
@@ -18,16 +18,6 @@ class SparkPointRequestHandler extends \RecordsRequestHandler
     {
         $recordClass = static::$recordClass;
 
-        $creators = \DB::allRecords(sprintf('
-        SELECT DISTINCT r.CreatorID,
-                        CONCAT(p.FirstName, " ", p.LastName) as CreatorFullName
-                   FROM %s r
-                   JOIN people p ON p.ID = r.CreatorID
-               ORDER BY p.ID = "%d"
-                    AND p.LastName', $recordClass::$tableName, $GLOBALS['Session']->Person->ID));
-
-        return static::respondJson('creators', array(
-            'data' => $creators
-        ));
+        return static::respond('creators', $recordClass::getCreators());
     }
 }

@@ -26,14 +26,6 @@ class ConferenceResource extends SparkPointRecord
         ]
     ];
 
-    public static $relationships = [
-        'Creator' => [
-            'type' => 'one-one',
-            'class' => 'Person',
-            'local' => 'CreatorID'
-        ]
-    ];
-
     public static $searchConditions = [
         'Title' => [
             'qualifiers' => ['title'],

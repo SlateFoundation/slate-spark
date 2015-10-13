@@ -102,6 +102,7 @@ Ext.define('SparkRepositoryManager.model.Assessment', {
 
     proxy: {
         type: 'spark-records',
-        url: '/spark2/assessments'
+        url: '/spark2/assessments',
+        include: ['CreatorFullName']
     }
 });

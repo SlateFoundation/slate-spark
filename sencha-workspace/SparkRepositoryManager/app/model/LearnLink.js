@@ -96,6 +96,7 @@ Ext.define('SparkRepositoryManager.model.LearnLink', {
     proxy: {
         autoSync: false,
         type: 'spark-records',
-        url: '/spark2/learn-links'
+        url: '/spark2/learn-links',
+        include: ['CreatorFullName']
     }
 });

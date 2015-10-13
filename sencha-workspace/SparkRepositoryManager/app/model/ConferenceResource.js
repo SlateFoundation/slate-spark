@@ -74,6 +74,7 @@ Ext.define('SparkRepositoryManager.model.ConferenceResource', {
 
     proxy: {
         type: 'spark-records',
-        url:  '/spark2/conference-resources'
+        url:  '/spark2/conference-resources',
+        include: ['CreatorFullName']
     }
 });
