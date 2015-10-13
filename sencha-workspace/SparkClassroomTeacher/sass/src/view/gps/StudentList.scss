@@ -44,6 +44,11 @@
         height: $studentlist-item-height;
         padding: .6em .9em;
     }
+
+    .item-remove-btn {
+        margin-left: .6em;
+        padding: .2em;
+    }
 }
 
 @-webkit-keyframes list-item-slide-in {
@@ -84,8 +89,10 @@
 
 .studentlist-timer {
     color: $highlight-color;
+    flex: 1;
     font-size: smaller;
     margin-left: .5em;
+    text-align: right;
 }
 
 .studentlist-add-btn {
