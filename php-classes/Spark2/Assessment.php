@@ -28,6 +28,12 @@ class Assessment extends SparkPointRecord
         'StandardIDs' => [
             'type'    => 'json',
             'notnull' => false
+        ],
+        'RemoteAuthorName',
+        'RemoteAuthorIdentifier',
+        'Metadata' => [
+            'type'    => 'json',
+            'notnull' => false
         ]
     ];
 
@@ -64,6 +70,24 @@ class Assessment extends SparkPointRecord
         'AssessmentTypeID' => [
             'qualifiers' => ['AssessmentTypeID', 'assessmenttypeid'],
             'sql' => 'AssessmentTypeID = "%s"'
+        ],
+
+        'CreatorFullName' => [
+            'qualifiers' => ['CreatorFullName', 'creatorfullname'],
+            'callback' => 'getCreatorIdConditions'
         ]
     ];
+
+    public static function getCreatorIdConditions($id, $matchedCondition)
+    {
+        if (is_numeric($id)) {
+            // poor mans sql escaping
+            return 'CreatorID = ' . (integer) $id;
+        } else {
+            // poor mans sql escaping
+            $id = str_replace(' ', '', $id);
+            return "RemoteAuthorIdentifier = \"$id\"";
+        }
+    }
+
 }

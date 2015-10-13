@@ -66,6 +66,25 @@ Ext.define('SparkRepositoryManager.model.Assessment', {
             useNull: true,
             defaultValue: 4
         },
+
+        {
+            name: "RemoteAuthorName",
+            useNull: true,
+            type: "string"
+        },
+
+        {
+            name: "RemoteAuthorIdentifier",
+            useNull: true,
+            type: "string"
+        },
+
+        {
+            name: "Metadata",
+            useNull: true,
+            type: "string"
+        },
+
         {
             name: "CreatorFullName",
             type: "string"

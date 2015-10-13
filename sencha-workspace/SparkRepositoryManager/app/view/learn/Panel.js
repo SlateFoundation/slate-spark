@@ -194,8 +194,41 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
             }
         },
         {
+            text: 'Type',
+            dataIndex: 'Type',
+
+            filterField: {
+                xtype: 'combobox',
+                store: [
+                    'Assessment',
+                    'Video',
+                    'Homework',
+                    'Exercise',
+                    'Game',
+                    'Question'
+                ],
+                editable: false,
+                grow: true
+            },
+
+            editor: {
+                xtype: 'combobox',
+                store: [
+                    'Assessment',
+                    'Video',
+                    'Homework',
+                    'Exercise',
+                    'Game',
+                    'Question'
+                ],
+                editable: false,
+                grow: true
+            }
+        },
+        {
             text: 'Created By',
             dataIndex: 'CreatorFullName',
+            sortable: false,
             filterField: {
                 xtype: 'combobox',
                 store: {

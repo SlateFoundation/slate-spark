@@ -110,6 +110,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
     }, {
         text:        'Created By',
         dataIndex:   'CreatorFullName',
+        sortable: false,
         filterField: {
             xtype:        'combobox',
             store:        {

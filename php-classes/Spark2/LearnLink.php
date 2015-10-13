@@ -33,6 +33,11 @@ class LearnLink extends SparkPointRecord
             'type'    => 'json',
             'notnull' => false
         ],
+        'Type' => [
+            'type' => 'enum',
+            'notnull' => false,
+            'values' => [ 'Assessment', 'Video', 'Homework', 'Exercise', 'Game', 'Question' ]
+        ],
         'Metadata' => [
             'type'    => 'json',
             'notnull' => false
@@ -67,6 +72,11 @@ class LearnLink extends SparkPointRecord
         'VendorID' => [
             'qualifiers' => ['vendorid', 'vendor'],
             'sql' => 'VendorID = "%s"'
+        ],
+
+        'Type' => [
+            'qualifiers' => ['Type', 'type'],
+            'sql' => 'Type = "%s"'
         ],
 
         'URL' => [

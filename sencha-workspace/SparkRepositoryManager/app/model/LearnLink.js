@@ -70,6 +70,11 @@ Ext.define('SparkRepositoryManager.model.LearnLink', {
             useNull: true
         },
         {
+            name: "Type",
+            useNull: true,
+            type: "string"
+        },
+        {
             name: "Metadata",
             useNull: true
         },
