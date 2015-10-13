@@ -60,7 +60,7 @@ class LearnLink extends SparkPointRecord
 
     public static $searchConditions = [
         'DOK' => [
-            'qualifiers' => ['DOK', 'dok'],
+            'qualifiers' => ['dok'],
             'sql' => 'DOK = "%s"'
         ],
 
@@ -75,12 +75,12 @@ class LearnLink extends SparkPointRecord
         ],
 
         'Type' => [
-            'qualifiers' => ['Type', 'type'],
+            'qualifiers' => ['type'],
             'sql' => 'Type = "%s"'
         ],
 
         'URL' => [
-            'qualifiers' => ['URL', 'url'],
+            'qualifiers' => ['url'],
             'sql' => 'URL LIKE "%%%s%%"'
         ]
     ];

@@ -29,7 +29,7 @@ class GuidingQuestion extends SparkPointRecord
 
     public static $searchConditions = [
         'Question' => [
-            'qualifiers' => ['Question', 'question'],
+            'qualifiers' => ['question'],
             'sql' => 'Question LIKE "%%%s%%"'
         ]
     ];

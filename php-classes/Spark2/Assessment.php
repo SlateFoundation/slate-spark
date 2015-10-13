@@ -53,7 +53,7 @@ class Assessment extends SparkPointRecord
 
     public static $searchConditions = [
         'Title' => [
-            'qualifiers' => ['Title', 'title'],
+            'qualifiers' => ['title'],
             'sql' => 'Title LIKE "%%%s%%"'
         ],
 
@@ -63,17 +63,17 @@ class Assessment extends SparkPointRecord
         ],
 
         'URL' => [
-            'qualifiers' => ['URL', 'url'],
+            'qualifiers' => ['url'],
             'sql' => 'URL LIKE "%%%s%%"'
         ],
 
         'AssessmentTypeID' => [
-            'qualifiers' => ['AssessmentTypeID', 'assessmenttypeid'],
+            'qualifiers' => ['assessmenttypeid'],
             'sql' => 'AssessmentTypeID = "%s"'
         ],
 
         'CreatorFullName' => [
-            'qualifiers' => ['CreatorFullName', 'creatorfullname'],
+            'qualifiers' => ['creatorfullname'],
             'callback' => 'getCreatorIdConditions'
         ]
     ];

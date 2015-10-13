@@ -41,7 +41,7 @@ class ConferenceResource extends SparkPointRecord
         ],
 
         'URL' => [
-            'qualifiers' => ['URL', 'url'],
+            'qualifiers' => ['url'],
             'sql' => 'URL LIKE "%%%s%%"'
         ]
     ];
