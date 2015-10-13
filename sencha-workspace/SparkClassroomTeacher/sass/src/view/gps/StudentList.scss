@@ -10,7 +10,7 @@
 
 .spark-gps-studentlist {
     .x-list-item {
-        height: 61px;
+        height: $studentlist-item-height;
     }
 
     .x-title {
@@ -38,6 +38,11 @@
 
     .x-horizontal > & + & {
         border-left: 1px solid #ccc;
+    }
+
+    .x-list-emptytext {
+        height: $studentlist-item-height;
+        padding: .6em .9em;
     }
 }
 
@@ -91,7 +96,7 @@
     color: mix($base-color, $color);
     font-size: 14px;
     font-weight: bold;
-    height: 61px;
+    height: $studentlist-item-height;
     padding: 1em;
 
     &:hover,
