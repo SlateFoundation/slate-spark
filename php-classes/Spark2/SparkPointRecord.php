@@ -65,14 +65,4 @@ class SparkPointRecord extends \VersionedRecord
             'callback'   => 'getCreatedConditions'
         ]
     ];
-
-    public static $sorters = array(
-        // TODO: implement proper creator sorter on ActiveRecord` (please see Assessment model to make sure that fix is compatible or excludes that)
-        'CreatorFullName' => [__CLASS__, 'sortCreatorFullName']
-    );
-
-    public static function sortCreatorFullName($dir, $name)
-    {
-        return '1 = 1';
-    }
 }
