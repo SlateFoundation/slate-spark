@@ -1,5 +1,16 @@
 .x-list {
     background-color: white;
+
+    .item-remove-btn {
+        color: $alert-color;
+        cursor: pointer;
+        opacity: .4;
+
+        &:hover,
+        &:focus {
+            opacity: 1;
+        }
+    }
 }
 
 .x-list-header {
