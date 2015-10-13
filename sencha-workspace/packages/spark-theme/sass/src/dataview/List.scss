@@ -16,3 +16,7 @@
         }
     }
 }
+
+.x-list-emptytext {
+    @extend .x-grid-emptytext;
+}
