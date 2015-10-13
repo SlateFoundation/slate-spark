@@ -24,7 +24,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                     '{[Ext.util.Format.fuzzyDuration(values[values.phase+"_duration"] * 1000, true)]}',
                 '</span>',
                 '<tpl if="showDismissButton">',
-                    '<i class="fa fa-times-circle item-delete-btn"></i>',
+                    '<i class="fa fa-times item-remove-btn"></i>',
                 '</tpl>',
             '</header>',
             '<ul class="studentlist-standards">', // TODO: rename to studentlist-sparkpoints
