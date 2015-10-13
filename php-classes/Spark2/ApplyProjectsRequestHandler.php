@@ -33,7 +33,7 @@ class ApplyProjectsRequestHandler extends SparkPointRequestHandler
         SELECT DISTINCT RemoteAuthorName,
                    FROM %s
                ORDER BY RemoteAuthorName',
-        $recordClass::$tableName);
+        $recordClass::$tableName));
 
         return static::respondJson('creators', array(
             'data' => $creators
