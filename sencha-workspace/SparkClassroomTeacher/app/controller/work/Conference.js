@@ -54,9 +54,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'))
+        var me = this,
+            conferenceGroup = activeStudent.get('conference_group');
 
-        this.getWaitingCt().show();
+        me.setActiveSparkpoint(activeStudent.get('sparkpoint_code'))
+
+        me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
+        me.getConferencingCt().setHidden(!conferenceGroup);
     },
 
     updateActiveSparkpoint: function(sparkpoint) {
