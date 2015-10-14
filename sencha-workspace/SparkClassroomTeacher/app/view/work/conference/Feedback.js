@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.work.conference.Form', {
-    extend: 'Ext.form.Panel',
-    xtype: 'spark-teacher-work-conference-form',
+Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
+    extend: 'Ext.Container',
+    xtype: 'spark-teacher-work-conference-feedback',
     requires: [
         'SparkClassroom.work.Timer',
         'Jarvus.plugin.GridFlex',

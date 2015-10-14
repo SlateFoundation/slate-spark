@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
     extend: 'SparkClassroom.work.conference.Main',
     xtype: 'spark-teacher-work-conference',
     requires: [
-        'SparkClassroomTeacher.view.work.conference.Form',
+        'SparkClassroomTeacher.view.work.conference.Feedback',
         'SparkClassroomTeacher.view.work.conference.peer.Component'
     ],
 
@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
         this.callParent(arguments);
 
         this.add({
-            xtype: 'spark-teacher-work-conference-form',
+            xtype: 'spark-teacher-work-conference-feedback',
             docked: 'right',
             cls: 'sidebar-col is-wide',
             scrollable: false
