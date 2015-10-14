@@ -106,7 +106,21 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                                 items: [
                                     {
                                         xtype: 'selectfield',
+                                        displayField: 'student_name',
+                                        valueField: 'user_id',
+                                        autoSelect: false,
                                         placeHolder: 'Add a student…',
+                                        store: {
+                                            type: 'chained',
+                                            source: 'gps.ActiveStudents',
+                                            filters: [
+                                                {
+                                                    filterFn: function(r) {
+                                                        return r.get('phase') == 'conference' && r.get('conference_ready') && !r.get('conference_group');
+                                                    }
+                                                }
+                                            ]
+                                        }
                                     }
                                 ]
                             }
