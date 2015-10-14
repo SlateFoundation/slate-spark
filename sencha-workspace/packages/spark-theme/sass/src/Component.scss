@@ -151,6 +151,10 @@ a {
     .kv-list {
         margin: 1.5em 0; //  2.125em;
     }
+
+    &.is-wide {
+        width: 27em;
+    }
 }
 
 .dated-list {
