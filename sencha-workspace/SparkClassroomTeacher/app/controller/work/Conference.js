@@ -23,7 +23,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         questionsList: 'spark-worklist#questions',
         resourcesList: 'spark-worklist#resources',
         waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
-        conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt'
+        conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
+        conferencingStudentsGrid: 'spark-teacher-work-conference-feedback #conferencingStudentsGrid',
+        feedbackBtn: 'spark-teacher-work-conference-feedback #feedbackBtn',
+        readyBtn: 'spark-teacher-work-conference-feedback #readyBtn'
     },
 
     control: {
@@ -35,6 +38,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         },
         'spark-teacher-work-conference-feedback button#startConferenceBtn': {
             tap: 'onStartConferenceButtonTap'
+        },
+        conferencingStudentsGrid: {
+            selectionchange: 'onConferencingStudentsGridSelectionChange'
         }
     },
 
@@ -111,6 +117,25 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         me.getWaitingCt().hide();
         me.getActiveStudent().set('conference_group', nextGroupNumber);
         me.getConferencingCt().show();
+    },
+
+    onConferencingStudentsGridSelectionChange: function(grid) {
+        var students = grid.getSelections(),
+            feedbackBtn = this.getFeedbackBtn(),
+            readyBtn = this.getReadyBtn(),
+            subjectText = students.length == 1 ? students[0].get('name') : students.length + ' students';
+
+        if (students.length == 0) {
+            feedbackBtn.setText(feedbackBtn.config.text);
+            readyBtn.setText(readyBtn.config.text);
+            feedbackBtn.disable();
+            readyBtn.disable();
+        } else {
+            feedbackBtn.setText('Leave feedback for ' + subjectText);
+            readyBtn.setText('Mark ' + subjectText + ' ready for Apply &rarr;');
+            feedbackBtn.enable();
+            readyBtn.enable();
+        }
     },
 
 

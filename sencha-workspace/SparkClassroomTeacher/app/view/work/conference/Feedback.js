@@ -99,6 +99,8 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                         ]
                     },
                     {
+                        itemId: 'conferencingStudentsGrid',
+
                         xtype: 'grid',
                         cls: 'sidebar-grid',
                         plugins: [
@@ -182,18 +184,24 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                                 label: 'Message'
                             },
                             {
+                                itemId: 'feedbackBtn',
+
                                 xtype: 'button',
                                 margin: '16 0 0',
                                 ui: 'action',
                                 iconCls: 'fa fa-send',
-                                text: 'Leave feedback for 2 students'
+                                disabled: true,
+                                text: 'Select students to leave feedback'
                             }
                         ]
                     },
                     {
+                        itemId: 'readyBtn',
+
                         xtype: 'button',
                         ui: 'action',
-                        text: 'Mark 2 students ready for Apply &rarr;'
+                        disabled: true,
+                        text: 'Select students to mark ready for Apply &rarr;'
                     }
                 ]
             }
