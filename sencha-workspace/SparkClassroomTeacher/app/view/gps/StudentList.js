@@ -81,7 +81,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     },
 
     onItemTap: function(ev, t) {
-        if (ev.getTarget('.item-delete-btn')) {
+        if (ev.getTarget('.item-remove-btn')) {
             this.fireEvent('itemdismisstap', this, Ext.get(t).component);
             return;
         }
