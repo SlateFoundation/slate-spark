@@ -54,9 +54,18 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
         {
             name: 'student',
+            depends: ['user_id'],
             mapping: 'user_id',
             convert: function(v, r) {
                 return Ext.getStore('Students').getById(v);
+            }
+        },
+
+        {
+            name: 'student_name',
+            depends: ['student'],
+            convert: function(v, r) {
+                return r.get('student').get('FullName');
             }
         },
 

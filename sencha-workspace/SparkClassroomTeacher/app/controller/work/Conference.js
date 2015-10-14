@@ -19,6 +19,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     ],
 
     refs: {
+        gpsList: 'spark-gps-studentlist#conferenceList',
+
         conferenceCt: 'spark-teacher-work-conference',
         sparkpointCt: 'spark-teacher-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
@@ -68,14 +70,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        var me = this,
-            conferenceGroup = activeStudent.get('conference_group');
-
-        me.setActiveSparkpoint(activeStudent.get('sparkpoint_code'))
-
-        me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
-        me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
-        me.getConferencingCt().setHidden(!conferenceGroup);
+        this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
+        this.syncConferenceGroup();
     },
 
     updateActiveSparkpoint: function(sparkpoint) {
@@ -193,6 +189,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         }
     },
 
+    syncConferenceGroup: function() {
+        var me = this,
+            activeStudent = me.getActiveStudent(),
+            conferenceGroup = activeStudent.get('conference_group'),
+            conferencingStudentsStore = me.getConferencingStudentsGrid().getStore();
+
+        conferencingStudentsStore.clearFilter(true);
+        conferencingStudentsStore.filter('conference_group', conferenceGroup);
+        me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
+        me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
+        me.getConferencingCt().setHidden(!conferenceGroup);
+
+        // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
+        me.getGpsList().refresh();
+    },
+
     refreshQuestions: function() {
         var me = this,
             questionsStore = me.getWorkConferenceQuestionsStore(),
@@ -243,8 +255,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     doSetActiveStudentGroup: function(groupId) {
         var me = this;
 
-        me.getWaitingCt().hide();
         me.getActiveStudent().set('conference_group', groupId);
-        me.getConferencingCt().show();
+        me.syncConferenceGroup();
     }
 });

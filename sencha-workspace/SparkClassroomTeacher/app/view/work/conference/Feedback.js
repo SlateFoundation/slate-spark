@@ -3,6 +3,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-conference-feedback',
     requires: [
+        'Ext.data.ChainedStore',
         'SparkClassroom.work.Timer',
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight'
@@ -111,20 +112,26 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                             }
                         ],
                         store: {
-                            fields: [ 'name', 'feedbackLeft', 'ready' ],
-                            data: [
-                                { name: 'Tiffany To',       feedbackLeft: 0,    ready: true },
-                                { name: 'Alfonso Albert',   feedbackLeft: 1,    ready: false },
-                                { name: 'Bev Banton',       feedbackLeft: 0,    ready: false },
-                                { name: 'Laree Li',         feedbackLeft: 0,    ready: false },
-                                { name: 'Sammy Schlata',    feedbackLeft: 0,    ready: false },
-                                { name: 'Mottie McClenton', feedbackLeft: 0,    ready: false }
-                            ]
+                            type: 'chained',
+                            source: 'gps.ActiveStudents',
+                            filters: [{
+                                property: 'conference_group',
+                                value: 0
+                            }]
+                            // fields: [ 'name', 'feedbackLeft', 'ready' ],
+                            // data: [
+                            //     { name: 'Tiffany To',       feedbackLeft: 0,    ready: true },
+                            //     { name: 'Alfonso Albert',   feedbackLeft: 1,    ready: false },
+                            //     { name: 'Bev Banton',       feedbackLeft: 0,    ready: false },
+                            //     { name: 'Laree Li',         feedbackLeft: 0,    ready: false },
+                            //     { name: 'Sammy Schlata',    feedbackLeft: 0,    ready: false },
+                            //     { name: 'Mottie McClenton', feedbackLeft: 0,    ready: false }
+                            // ]
                         },
                         columns: [
                             {
                                 flex: 1,
-                                dataIndex: 'name',
+                                dataIndex: 'student_name',
                                 text: 'Student'
                             },
                             {
