@@ -40,7 +40,7 @@ Ext.define('SparkClassroomTeacher.store.gps.ActiveStudents', {
                     }
 
                     if (existingRecord) {
-                        existingRecord.set(incomingRecord.getData(), {
+                        existingRecord.set(incomingRecord.getData({persist: true}), {
                             dirty: false,
                             convert: false
                         });
