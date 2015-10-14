@@ -14,7 +14,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
-        'work.ConferenceResources@SparkClassroom.store'
+        'work.ConferenceResources@SparkClassroom.store',
+        'work.ConferenceGroups'
     ],
 
     refs: {
@@ -23,6 +24,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         questionsList: 'spark-worklist#questions',
         resourcesList: 'spark-worklist#resources',
         waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
+        joinConferenceCt: 'spark-teacher-work-conference-feedback #joinConferenceCt',
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
         conferencingStudentsGrid: 'spark-teacher-work-conference-feedback #conferencingStudentsGrid',
         feedbackBtn: 'spark-teacher-work-conference-feedback #feedbackBtn',
@@ -39,6 +41,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         'spark-teacher-work-conference-feedback button#startConferenceBtn': {
             tap: 'onStartConferenceButtonTap'
         },
+        'spark-teacher-work-conference-feedback #joinConferenceCt dataview': {
+            itemtap: 'onJoinConferenceViewItemTap'
+        },
         conferencingStudentsGrid: {
             selectionchange: 'onConferencingStudentsGridSelectionChange'
         }
@@ -53,6 +58,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         store: {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
+            },
+            '#gps.ActiveStudents': {
+                endupdate: 'onActiveStudentsStoreEndUpdate'
             }
         }
     },
@@ -66,6 +74,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         me.setActiveSparkpoint(activeStudent.get('sparkpoint_code'))
 
         me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
+        me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
         me.getConferencingCt().setHidden(!conferenceGroup);
     },
 
@@ -82,6 +91,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
         this.syncActiveSparkpoint();
     },
+
 
     // event handlers
     onActiveStudentSelect: function(student) {
@@ -101,6 +111,25 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         me.refreshResources();
     },
 
+    onActiveStudentsStoreEndUpdate: function() {
+        var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
+            groupsStore = this.getWorkConferenceGroupsStore(),
+            groupIds = activeStudentsStore.collect('conference_group'),
+            groupsCount = groupIds.length, i = 0, groupId,
+            groups = [];
+
+        for (; i < groupsCount; i++) {
+            groupId = groupIds[i];
+
+            groups.push({
+                id: groupId,
+                members: activeStudentsStore.query('conference_group', groupId).getRange()
+            });
+        }
+
+        groupsStore.loadData(groups);
+    },
+
     onQuestionSubmit: function(questionsList) {
         this.getWorkConferenceQuestionsStore().add({
             question: questionsList.getInnerHtmlElement().down('input').getValue(),
@@ -111,12 +140,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onStartConferenceButtonTap: function() {
-        var me = this,
-            nextGroupNumber = 1 + (Ext.Array.max(Ext.getStore('gps.ActiveStudents').collect('conference_group')) || 0);
+        this.doSetActiveStudentGroup(1 + (Ext.getStore('gps.ActiveStudents').max('conference_group') || 0));
+    },
 
-        me.getWaitingCt().hide();
-        me.getActiveStudent().set('conference_group', nextGroupNumber);
-        me.getConferencingCt().show();
+    onJoinConferenceViewItemTap: function(dataview, index, target, group, e) {
+        if (e.getTarget('.spark-conference-join-btn')) {
+            this.doSetActiveStudentGroup(group.getId());
+        }
     },
 
     onConferencingStudentsGridSelectionChange: function(grid) {
@@ -208,5 +238,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             title: 'Resources',
             items: items
         });
+    },
+
+    doSetActiveStudentGroup: function(groupId) {
+        var me = this;
+
+        me.getWaitingCt().hide();
+        me.getActiveStudent().set('conference_group', groupId);
+        me.getConferencingCt().show();
     }
 });

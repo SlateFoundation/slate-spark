@@ -25,45 +25,33 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                         text: 'Start a Conference'
                     },
                     {
-                        cls: 'or-separator',
-                        html: '<span class="text">or</span>'
-                    },
-                    {
-                        xtype: 'spark-panel',
-                        cls: 'content-card narrow',
-                        title: 'Join a Conference:',
+                        itemId: 'joinConferenceCt',
+
+                        xtype: 'container',
+                        hidden: true,
                         items: [
                             {
-                                xtype: 'dataview',
-                                store: {
-                                    fields: [ 'members' ],
-                                    data: [
-                                        {
-                                            members: [
-                                                'Tiffany To',
-                                                'Alfonso Albert',
-                                                'Bev Banton'
-                                            ]
-                                        },
-                                        {
-                                            members: [
-                                                'Laree Li'
-                                            ]
-                                        },
-                                        {
-                                            members: [
-                                                'Sammy Schlata',
-                                                'Mottie McClenton'
-                                            ]
-                                        }
-                                    ]
-                                },
-                                itemCls: 'spark-conference-listing',
-                                itemTpl: [
-                                    '<ul class="spark-conference-member-list">',
-                                        '<tpl for="members"><li class="spark-conference-member-item">{.}</li></tpl>',
-                                    '</ul>',
-                                    '<button class="primary small spark-conference-join-btn">Join</button>'
+                                cls: 'or-separator',
+                                html: '<span class="text">or</span>'
+                            },
+                            {
+                                xtype: 'spark-panel',
+                                cls: 'content-card narrow',
+                                title: 'Join a Conference:',
+                                items: [
+                                    {
+                                        xtype: 'dataview',
+                                        store: 'work.ConferenceGroups',
+                                        itemCls: 'spark-conference-listing',
+                                        itemTpl: [
+                                            '<ul class="spark-conference-member-list">',
+                                                '<tpl for="members">',
+                                                    '<li class="spark-conference-member-item">{[values.get("student").get("FullName")]}</li>',
+                                                '</tpl>',
+                                            '</ul>',
+                                            '<button class="primary small spark-conference-join-btn">Join #{id}</button>'
+                                        ]
+                                    }
                                 ]
                             }
                         ]
