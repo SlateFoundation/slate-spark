@@ -21,7 +21,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         conferenceCt: 'spark-teacher-work-conference',
         sparkpointCt: 'spark-teacher-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
-        resourcesList: 'spark-worklist#resources'
+        resourcesList: 'spark-worklist#resources',
+        waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
+        conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt'
     },
 
     control: {
@@ -30,6 +32,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         },
         questionsList: {
             submit: 'onQuestionSubmit'
+        },
+        'spark-teacher-work-conference-feedback button#startConferenceBtn': {
+            tap: 'onStartConferenceButtonTap'
         }
     },
 
@@ -50,6 +55,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     // config handlers
     updateActiveStudent: function(activeStudent) {
         this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'))
+
+        this.getWaitingCt().show();
     },
 
     updateActiveSparkpoint: function(sparkpoint) {
@@ -91,6 +98,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         });
 
         this.refreshQuestions();
+    },
+
+    onStartConferenceButtonTap: function() {
+        var me = this,
+            nextGroupNumber = 1 + (Ext.Array.max(Ext.getStore('gps.ActiveStudents').collect('conference_group')) || 0);
+
+        me.getWaitingCt().hide();
+        me.getActiveStudent().set('conference_group', nextGroupNumber);
+        me.getConferencingCt().show();
     },
 
 

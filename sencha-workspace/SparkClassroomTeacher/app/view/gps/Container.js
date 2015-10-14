@@ -38,7 +38,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 itemId: 'conferenceList',
 
                                 store: 'gps.Conference',
-                                title: 'Conference'
+                                title: 'Conference',
+                                grouped: true
                             },
                             {
                                 itemId: 'applyList',
