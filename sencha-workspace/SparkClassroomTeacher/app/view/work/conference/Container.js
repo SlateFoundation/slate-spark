@@ -13,7 +13,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
         this.add({
             xtype: 'spark-teacher-work-conference-form',
             docked: 'right',
-            cls: 'sidebar-col',
+            cls: 'sidebar-col is-wide',
             scrollable: false
         });
 
