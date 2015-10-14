@@ -106,6 +106,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                             'gridheight'
                         ],
                         titleBar: null,
+                        mode: 'MULTI',
                         items: [
                             {
                                 docked: 'bottom',
