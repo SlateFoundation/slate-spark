@@ -177,6 +177,21 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
                 return v || null;
             }
+        },
+        {
+            name: 'conference_feedback',
+            persist: false,
+            convert: function(v) {
+                return v || [];
+            }
+        },
+        {
+            name: 'conference_feedback_count',
+            persist: false,
+            depends: ['conference_feedback'],
+            convert: function(v, r) {
+                return r.get('conference_feedback').length;
+            }
         }
     ]
 });

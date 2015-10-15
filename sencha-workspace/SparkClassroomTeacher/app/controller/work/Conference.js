@@ -30,6 +30,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
         conferencingStudentsGrid: 'spark-teacher-work-conference-studentsgrid',
         addStudentSelectField: 'spark-teacher-work-conference-studentsgrid selectfield',
+        feedbackSubjectField: 'spark-teacher-work-conference-feedback #feedbackSubjectField',
+        feedbackMessageField: 'spark-teacher-work-conference-feedback #feedbackMessageField',
         feedbackBtn: 'spark-teacher-work-conference-feedback #feedbackBtn',
         readyBtn: 'spark-teacher-work-conference-feedback #readyBtn'
     },
@@ -53,6 +55,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         },
         addStudentSelectField: {
             change: 'onAddStudentSelectFieldChange'
+        },
+        feedbackBtn: {
+            tap: 'onFeedbackButtonTap'
         },
         readyBtn: {
             tap: 'onReadyButtonTap'
@@ -189,6 +194,28 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
             this.getGpsList().refresh();
         }
+    },
+
+    onFeedbackButtonTap: function() {
+        var me = this,
+            feedbackSubjectField = me.getFeedbackSubjectField(),
+            feedbackMessageField = me.getFeedbackMessageField(),
+            students = this.getConferencingStudentsGrid().getSelections(),
+            studentsLength = students.length,
+            i = 0, student,
+            feedback = {
+                subject: feedbackSubjectField.getValue(),
+                message: feedbackMessageField.getValue()
+            };
+
+        for (; i < studentsLength; i++) {
+            student = students[i];
+            student.get('conference_feedback').push(feedback);
+            student.set('conference_feedback_count'); // force count to refresh
+        }
+
+        feedbackSubjectField.reset();
+        feedbackMessageField.reset();
     },
 
     onReadyButtonTap: function() {

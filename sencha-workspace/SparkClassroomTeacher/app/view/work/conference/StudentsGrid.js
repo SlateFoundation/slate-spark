@@ -59,11 +59,11 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
             },
             {
                 width: 80,
-                dataIndex: 'feedbackLeft',
+                dataIndex: 'conference_feedback_count',
                 text: 'Feedback Left',
                 align: 'center',
                 cell: { encodeHtml: false, align: 'center' },
-                tpl: '<tpl if="feedbackLeft">{feedbackLeft}<tpl else>&mdash;</tpl>'
+                tpl: '<tpl if="conference_feedback_count">{conference_feedback_count}<tpl else>&mdash;</tpl>'
             },
             {
                 width: 80,

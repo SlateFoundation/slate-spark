@@ -95,10 +95,14 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                         title: 'Feedback',
                         items: [
                             {
+                                itemId: 'feedbackSubjectField',
+
                                 xtype: 'textfield',
                                 label: 'Subject'
                             },
                             {
+                                itemId: 'feedbackMessageField',
+
                                 xtype: 'textareafield',
                                 label: 'Message'
                             },
