@@ -28,8 +28,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
         joinConferenceCt: 'spark-teacher-work-conference-feedback #joinConferenceCt',
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
-        conferencingStudentsGrid: 'spark-teacher-work-conference-feedback #conferencingStudentsGrid',
-        addStudentSelectField: 'spark-teacher-work-conference-feedback #conferencingStudentsGrid selectfield',
+        conferencingStudentsGrid: 'spark-teacher-work-conference-studentsgrid',
+        addStudentSelectField: 'spark-teacher-work-conference-studentsgrid selectfield',
         feedbackBtn: 'spark-teacher-work-conference-feedback #feedbackBtn',
         readyBtn: 'spark-teacher-work-conference-feedback #readyBtn'
     },
@@ -48,6 +48,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             itemtap: 'onJoinConferenceViewItemTap'
         },
         conferencingStudentsGrid: {
+            itemdismisstap: 'onConferencingStudentsGridItemDismissTap',
             selectionchange: 'onConferencingStudentsGridSelectionChange'
         },
         addStudentSelectField: {
@@ -149,6 +150,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             this.getActiveStudent().set('conference_group', group.getId());
             this.syncConferenceGroup();
         }
+    },
+
+    onConferencingStudentsGridItemDismissTap: function(grid, item) {
+        item.getRecord().set('conference_group', null);
+        this.syncConferenceGroup();
     },
 
     onConferencingStudentsGridSelectionChange: function(grid) {

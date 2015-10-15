@@ -3,10 +3,8 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-conference-feedback',
     requires: [
-        'Ext.data.ChainedStore',
         'SparkClassroom.work.Timer',
-        'Jarvus.plugin.GridFlex',
-        'Jarvus.plugin.GridHeight'
+        'SparkClassroomTeacher.view.work.conference.StudentsGrid'
     ],
 
     config: {
@@ -88,96 +86,8 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                         ]
                     },
                     {
-                        itemId: 'conferencingStudentsGrid',
-
-                        xtype: 'grid',
-                        cls: 'sidebar-grid',
-                        plugins: [
-                            'gridflex',
-                            'gridheight'
-                        ],
-                        titleBar: null,
-                        mode: 'MULTI',
-                        items: [
-                            {
-                                docked: 'bottom',
-                                xtype: 'container',
-                                padding: '8 10 8 18',
-                                items: [
-                                    {
-                                        xtype: 'selectfield',
-                                        displayField: 'student_name',
-                                        valueField: 'user_id',
-                                        autoSelect: false,
-                                        placeHolder: 'Add a student…',
-                                        store: {
-                                            type: 'chained',
-                                            source: 'gps.ActiveStudents',
-                                            filters: [
-                                                {
-                                                    filterFn: function(r) {
-                                                        return r.get('phase') == 'conference' && r.get('conference_ready') && !r.get('conference_group');
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        ],
-                        store: {
-                            type: 'chained',
-                            source: 'gps.ActiveStudents',
-                            filters: [{
-                                property: 'conference_group',
-                                value: 0
-                            }]
-                            // fields: [ 'name', 'feedbackLeft', 'ready' ],
-                            // data: [
-                            //     { name: 'Tiffany To',       feedbackLeft: 0,    ready: true },
-                            //     { name: 'Alfonso Albert',   feedbackLeft: 1,    ready: false },
-                            //     { name: 'Bev Banton',       feedbackLeft: 0,    ready: false },
-                            //     { name: 'Laree Li',         feedbackLeft: 0,    ready: false },
-                            //     { name: 'Sammy Schlata',    feedbackLeft: 0,    ready: false },
-                            //     { name: 'Mottie McClenton', feedbackLeft: 0,    ready: false }
-                            // ]
-                        },
-                        columns: [
-                            {
-                                flex: 1,
-                                dataIndex: 'student_name',
-                                text: 'Student'
-                            },
-                            {
-                                width: 80,
-                                dataIndex: 'feedbackLeft',
-                                text: 'Feedback Left',
-                                align: 'center',
-                                cell: { encodeHtml: false, align: 'center' },
-                                tpl: '<tpl if="feedbackLeft">{feedbackLeft}<tpl else>&mdash;</tpl>'
-                            },
-                            {
-                                width: 80,
-                                text: 'Mastery Score',
-                                align: 'center',
-                                cell: { encodeHtml: false, align: 'center' },
-                                tpl: '<input class="field-control text-center" placeholder="/" style="width: 100%">'
-                            },
-                            {
-                                width: 64,
-                                dataIndex: 'ready',
-                                text: 'Ready',
-                                align: 'center',
-                                cell: { encodeHtml: false, align: 'center' },
-                                tpl: '<tpl if="ready"><i class="fa fa-check"></i><tpl else>&mdash;</tpl>'
-                            },
-                            {
-                                width: 48,
-                                sortable: false,
-                                cell: { encodeHtml: false, align: 'center' },
-                                tpl: '<i class="fa fa-times-circle"></i>',
-                            }
-                        ]
+                        xtype: 'spark-teacher-work-conference-studentsgrid',
+                        cls: 'sidebar-grid'
                     },
                     {
                         xtype: 'spark-panel',
