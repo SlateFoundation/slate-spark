@@ -91,11 +91,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        var me = this;
+        var me = this,
+            conferencingStudentsGrid = me.getConferencingStudentsGrid();
 
         me.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
         me.syncConferenceGroup();
-        me.getConferencingStudentsGrid().setSelection(activeStudent);
+
+        if (conferencingStudentsGrid) {
+            conferencingStudentsGrid.setSelection(activeStudent);
+        }
     },
 
     updateActiveSparkpoint: function(sparkpoint) {
@@ -120,6 +124,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onConferenceCtActivate: function() {
         this.syncActiveSparkpoint();
+        this.syncConferenceGroup();
     },
 
     onConferenceQuestionsStoreLoad: function(questionsStore) {
@@ -151,8 +156,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 groupsStore.add({
                     id: groupId,
                     members: members,
-                    // timer_started: now,
-                    // timer_base: now
+                    timer_started: now,
+                    timer_base: now
                 });
             }
         }
@@ -293,24 +298,26 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     syncConferenceGroup: function() {
         var me = this,
             activeStudent = me.getActiveStudent(),
-            conferenceGroup = activeStudent.get('conference_group'),
+            conferenceGroup = activeStudent && activeStudent.get('conference_group'),
             conferencingStudentsGrid = me.getConferencingStudentsGrid(),
-            conferencingStudentsStore =conferencingStudentsGrid.getStore();
+            conferencingStudentsStore = conferencingStudentsGrid && conferencingStudentsGrid.getStore();
 
-        conferencingStudentsStore.clearFilter(true);
-        conferencingStudentsStore.filter('conference_group', conferenceGroup);
+        if (activeStudent && me.getConferenceCt()) {
+            conferencingStudentsStore.clearFilter(true);
+            conferencingStudentsStore.filter('conference_group', conferenceGroup);
 
-        if (!conferencingStudentsGrid.getSelections().length) {
-            conferencingStudentsGrid.setSelection(activeStudent);
+            if (!conferencingStudentsGrid.getSelections().length) {
+                conferencingStudentsGrid.setSelection(activeStudent);
+            }
+
+            me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
+            me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
+            me.getConferencingCt().setHidden(!conferenceGroup);
+            me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
+
+            // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
+            me.getGpsList().refresh();
         }
-
-        me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
-        me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
-        me.getConferencingCt().setHidden(!conferenceGroup);
-        me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
-
-        // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
-        me.getGpsList().refresh();
     },
 
     refreshQuestions: function() {
