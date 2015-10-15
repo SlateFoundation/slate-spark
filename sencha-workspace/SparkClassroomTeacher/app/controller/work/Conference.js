@@ -155,7 +155,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var students = grid.getSelections(),
             feedbackBtn = this.getFeedbackBtn(),
             readyBtn = this.getReadyBtn(),
-            subjectText = students.length == 1 ? students[0].get('name') : students.length + ' students';
+            subjectText = students.length == 1 ? students[0].get('student_name') : students.length + ' students';
 
         if (students.length == 0) {
             feedbackBtn.setText(feedbackBtn.config.text);
