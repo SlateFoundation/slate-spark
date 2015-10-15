@@ -75,8 +75,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
-        this.syncConferenceGroup();
+        var me = this;
+
+        me.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
+        me.syncConferenceGroup();
+        me.getConferencingStudentsGrid().setSelection(activeStudent);
     },
 
     updateActiveSparkpoint: function(sparkpoint) {
@@ -214,10 +217,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             activeStudent = me.getActiveStudent(),
             conferenceGroup = activeStudent.get('conference_group'),
-            conferencingStudentsStore = me.getConferencingStudentsGrid().getStore();
+            conferencingStudentsGrid = me.getConferencingStudentsGrid(),
+            conferencingStudentsStore =conferencingStudentsGrid.getStore();
 
         conferencingStudentsStore.clearFilter(true);
         conferencingStudentsStore.filter('conference_group', conferenceGroup);
+
+        if (!conferencingStudentsGrid.getSelections().length) {
+            conferencingStudentsGrid.setSelection(activeStudent);
+        }
+
         me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
         me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
         me.getConferencingCt().setHidden(!conferenceGroup);
