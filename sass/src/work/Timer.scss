@@ -31,4 +31,28 @@
         line-height: 1;
         padding: .3125em;
     }
+
+    &.timer-paused {
+        border-color: yellow;
+
+        .timer-icon {
+            background-color: yellow;
+        }
+
+        .timer-counter {
+            animation: spark-work-timer-blink 1s steps(5, start) infinite;
+            -webkit-animation: spark-work-timer-blink 1s steps(5, start) infinite;
+        }
+    }
+}
+
+@keyframes spark-work-timer-blink {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes spark-work-timer-blink {
+    to {
+        visibility: hidden;
+    }
 }
