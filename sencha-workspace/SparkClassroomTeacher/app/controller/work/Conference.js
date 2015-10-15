@@ -28,6 +28,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
         joinConferenceCt: 'spark-teacher-work-conference-feedback #joinConferenceCt',
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
+        timer: 'spark-teacher-work-conference-feedback spark-work-timer',
+        pauseBtn: 'spark-teacher-work-conference-feedback #timerPauseBtn',
         conferencingStudentsGrid: 'spark-teacher-work-conference-studentsgrid',
         addStudentSelectField: 'spark-teacher-work-conference-studentsgrid selectfield',
         feedbackSubjectField: 'spark-teacher-work-conference-feedback #feedbackSubjectField',
@@ -48,6 +50,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         },
         'spark-teacher-work-conference-feedback #joinConferenceCt dataview': {
             itemtap: 'onJoinConferenceViewItemTap'
+        },
+        pauseBtn: {
+            tap: 'onPauseBtnTap'
+        },
+        timer: {
+            pausedchange: 'onTimerPausedChange'
         },
         conferencingStudentsGrid: {
             itemdismisstap: 'onConferencingStudentsGridItemDismissTap',
@@ -125,21 +133,31 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onActiveStudentsStoreEndUpdate: function() {
         var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
+            now = new Date(),
             groupsStore = this.getWorkConferenceGroupsStore(),
             groupIds = activeStudentsStore.collect('conference_group'),
-            groupsCount = groupIds.length, i = 0, groupId,
-            groups = [];
+            groupsCount = groupIds.length, i = 0,
+            groupId, existingGroup, members;
+
+        groupsStore.beginUpdate();
 
         for (; i < groupsCount; i++) {
             groupId = groupIds[i];
+            members = activeStudentsStore.query('conference_group', groupId).getRange();
 
-            groups.push({
-                id: groupId,
-                members: activeStudentsStore.query('conference_group', groupId).getRange()
-            });
+            if (existingGroup = groupsStore.getById(groupId)) {
+                existingGroup.set('members', members)
+            } else {
+                groupsStore.add({
+                    id: groupId,
+                    members: members,
+                    // timer_started: now,
+                    // timer_base: now
+                });
+            }
         }
 
-        groupsStore.loadData(groups);
+        groupsStore.endUpdate();
     },
 
     onQuestionSubmit: function(questionsList) {
@@ -160,6 +178,20 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         if (e.getTarget('.spark-conference-join-btn')) {
             this.getActiveStudent().set('conference_group', group.getId());
             this.syncConferenceGroup();
+        }
+    },
+
+    onPauseBtnTap: function() {
+        var timer = this.getTimer();
+
+        timer.setPaused(!timer.getPaused());
+    },
+
+    onTimerPausedChange: function(timer, paused) {
+        var pauseBtn = this.getPauseBtn();
+
+        if (pauseBtn) {
+            pauseBtn.setText(paused ? 'Resume Conference' : 'Pause Conference');
         }
     },
 
@@ -275,6 +307,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
         me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
         me.getConferencingCt().setHidden(!conferenceGroup);
+        me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
 
         // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
         me.getGpsList().refresh();

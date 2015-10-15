@@ -74,10 +74,11 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                             {
                                 flex: 1,
                                 xtype: 'spark-work-timer',
-                                data: { time: '5:45' },
                                 margin: '0 16 0 0'
                             },
                             {
+                                itemId: 'timerPauseBtn',
+
                                 flex: 1,
                                 xtype: 'button',
                                 ui: 'action',

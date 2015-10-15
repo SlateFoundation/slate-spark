@@ -11,6 +11,18 @@ Ext.define('SparkClassroomTeacher.store.work.ConferenceGroups', {
             },
             {
                 name: 'members'
+            },
+            {
+                name: 'timer_started',
+                allowNull: true
+            },
+            {
+                name: 'timer_base',
+                allowNull: true
+            },
+            {
+                name: 'timer_banked',
+                defaultValue: 0
             }
         ],
         sorters: 'id'
