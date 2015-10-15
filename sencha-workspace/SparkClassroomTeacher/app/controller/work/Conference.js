@@ -29,6 +29,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         joinConferenceCt: 'spark-teacher-work-conference-feedback #joinConferenceCt',
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
         conferencingStudentsGrid: 'spark-teacher-work-conference-feedback #conferencingStudentsGrid',
+        addStudentSelectField: 'spark-teacher-work-conference-feedback #conferencingStudentsGrid selectfield',
         feedbackBtn: 'spark-teacher-work-conference-feedback #feedbackBtn',
         readyBtn: 'spark-teacher-work-conference-feedback #readyBtn'
     },
@@ -48,6 +49,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         },
         conferencingStudentsGrid: {
             selectionchange: 'onConferencingStudentsGridSelectionChange'
+        },
+        addStudentSelectField: {
+            change: 'onAddStudentSelectFieldChange'
         }
     },
 
@@ -136,12 +140,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onStartConferenceButtonTap: function() {
-        this.doSetActiveStudentGroup(1 + (Ext.getStore('gps.ActiveStudents').max('conference_group') || 0));
+        this.getActiveStudent().set('conference_group', 1 + (Ext.getStore('gps.ActiveStudents').max('conference_group') || 0));
+        this.syncConferenceGroup();
     },
 
     onJoinConferenceViewItemTap: function(dataview, index, target, group, e) {
         if (e.getTarget('.spark-conference-join-btn')) {
-            this.doSetActiveStudentGroup(group.getId());
+            this.getActiveStudent().set('conference_group', group.getId());
+            this.syncConferenceGroup();
         }
     },
 
@@ -161,6 +167,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             readyBtn.setText('Mark ' + subjectText + ' ready for Apply &rarr;');
             feedbackBtn.enable();
             readyBtn.enable();
+        }
+    },
+
+    onAddStudentSelectFieldChange: function(selectField, student) {
+        if (student) {
+            student.set('conference_group', this.getActiveStudent().get('conference_group'));
+
+            // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
+            this.getGpsList().refresh();
         }
     },
 
@@ -250,12 +265,5 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             title: 'Resources',
             items: items
         });
-    },
-
-    doSetActiveStudentGroup: function(groupId) {
-        var me = this;
-
-        me.getActiveStudent().set('conference_group', groupId);
-        me.syncConferenceGroup();
     }
 });
