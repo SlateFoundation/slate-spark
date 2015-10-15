@@ -74,11 +74,11 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
             },
             {
                 width: 64,
-                dataIndex: 'ready',
+                dataIndex: 'conference_done',
                 text: 'Ready',
                 align: 'center',
                 cell: { encodeHtml: false, align: 'center' },
-                tpl: '<tpl if="ready"><i class="fa fa-check"></i><tpl else>&mdash;</tpl>'
+                tpl: '<tpl if="conference_done"><i class="fa fa-check"></i><tpl else>&mdash;</tpl>'
             },
             {
                 width: 48,

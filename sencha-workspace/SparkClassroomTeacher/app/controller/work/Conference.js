@@ -53,6 +53,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         },
         addStudentSelectField: {
             change: 'onAddStudentSelectFieldChange'
+        },
+        readyBtn: {
+            tap: 'onReadyButtonTap'
         }
     },
 
@@ -185,6 +188,21 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
             // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
             this.getGpsList().refresh();
+        }
+    },
+
+    onReadyButtonTap: function() {
+        var now = new Date(),
+            students = this.getConferencingStudentsGrid().getSelections(),
+            studentsLength = students.length,
+            i = 0, student;
+
+        for (; i < studentsLength; i++) {
+            student = students[i];
+
+            if (!student.get('conference_done')) {
+                student.set('conference_done', now);
+            }
         }
     },
 
