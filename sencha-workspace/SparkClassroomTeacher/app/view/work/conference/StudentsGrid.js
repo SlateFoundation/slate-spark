@@ -75,14 +75,14 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
                     align: 'center',
                     listeners: {
                         element: 'element',
-                        delegate: '.field-mastery-score',
+                        delegate: '.input-mastery-score',
                         buffer: 500,
                         keypress: function(ev, t) {
                             this.getRecord().set('conference_mastery_score', t.value);
                         }
                     }
                    },
-                tpl: '<input class="field-control text-center field-mastery-score" placeholder="/" style="width: 100%" value="{conference_mastery_score:htmlEncode}">'
+                tpl: '<input class="field-control text-center input-mastery-score" placeholder="95" style="width: 100%" type="number" min="0" max="100" step="1" value="{conference_mastery_score:htmlEncode}">%'
             },
             {
                 width: 64,
@@ -107,7 +107,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
             return;
         }
 
-        if (ev.getTarget('.field-mastery-score')) {
+        if (ev.getTarget('.input-mastery-score')) {
             return;
         }
 

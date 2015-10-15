@@ -3,6 +3,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
     extend: 'Ext.form.Panel',
     xtype: 'spark-teacher-work-learn-form',
     requires: [
+        'Ext.field.Number',
         'SparkClassroom.work.learn.ProgressBanner'
     ],
 
@@ -22,13 +23,17 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
                 cls: 'content-card narrow',
                 items: [
                     {
-                        // TODO input mask?
-                        xtype: 'textfield',
+                        xtype: 'numberfield',
                         label: 'Mastery Check Score',
                         labelAlign: 'left',
                         labelCls: 'text-left',
                         labelWidth: '10.5em',
-                        placeHolder: ' / ',
+                        inputCls: 'input-mastery-score',
+                        minValue: 0,
+                        maxValue: 100,
+                        stepValue: 1,
+                        clearIcon: false,
+                        placeHolder: '95',
                         style: { textAlign: 'center' }
                     }
                 ]
