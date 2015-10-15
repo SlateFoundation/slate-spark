@@ -2,9 +2,9 @@
 Ext.define('SparkClassroom.work.learn.ProgressBanner', {
     extend: 'Ext.Component',
     xtype: 'spark-work-learn-progressbanner',
-    cls: 'spark-learn-progressbanner',
 
     config: {
+        cls: 'spark-learn-progressbanner',
         tpl: [
             '<ul class="progressbanner-pips">',
                 '<tpl for="this.pips(completedLearns, requiredLearns)">',
@@ -15,11 +15,11 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
 
             {
                 pips: function(complete, required) {
-                    var pips = [];
+                    var pips = [],
+                        i = 0;
 
-                    for (var i = 0; i < required; i++) {
-                        var pip = (i < complete) ? 'is-complete' : 'is-incomplete';
-                        pips.push(pip);
+                    for (; i < required; i++) {
+                        pips.push(i < complete ? 'is-complete' : 'is-incomplete');
                     }
 
                     return pips;
@@ -28,12 +28,7 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
             {
                 getNameAndAuxVerb: function(name) {
                     name = name || 'You';
-
-                    if (name == 'You') {
-                        return 'You’ve';
-                    } else {
-                        return name + ' has';
-                    }
+                    return name == 'You' ? 'You’ve' : name + ' has';
                 }
             }
         ]
