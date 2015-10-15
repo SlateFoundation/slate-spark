@@ -67,10 +67,22 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
             },
             {
                 width: 80,
+                dataIndex: 'conference_mastery_score',
                 text: 'Mastery Score',
                 align: 'center',
-                cell: { encodeHtml: false, align: 'center' },
-                tpl: '<input class="field-control text-center" placeholder="/" style="width: 100%">'
+                cell: {
+                    encodeHtml: false,
+                    align: 'center',
+                    listeners: {
+                        element: 'element',
+                        delegate: '.field-mastery-score',
+                        buffer: 500,
+                        keypress: function(ev, t) {
+                            this.getRecord().set('conference_mastery_score', t.value);
+                        }
+                    }
+                   },
+                tpl: '<input class="field-control text-center field-mastery-score" placeholder="/" style="width: 100%" value="{conference_mastery_score:htmlEncode}">'
             },
             {
                 width: 64,
@@ -92,6 +104,10 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
     onItemTap: function(ev, t) {
         if (ev.getTarget('.item-remove-btn')) {
             this.fireEvent('itemdismisstap', this, Ext.get(t).component);
+            return;
+        }
+
+        if (ev.getTarget('.field-mastery-score')) {
             return;
         }
 
