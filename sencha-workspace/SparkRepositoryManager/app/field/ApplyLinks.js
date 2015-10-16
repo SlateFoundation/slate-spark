@@ -67,7 +67,7 @@
         });
 
         // create new link fieldcontainer if this container is last and has a valid link
-        if (ct.lastInGroup && link.url && link.title) {
+        if (ct.lastInGroup && link.url) {
             ct.lastInGroup = false;
             clone = ctOwner.add(ct.cloneConfig({isClone: true}));
         }
@@ -83,7 +83,7 @@
             ct.items.each(function(field) {
                 link[field.getName()] = field.getValue();
             });
-            if (link.url && link.title) {
+            if (link.url) {
                 values.push(link);
             }
         });
