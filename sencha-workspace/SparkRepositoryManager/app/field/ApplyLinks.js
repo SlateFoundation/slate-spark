@@ -7,7 +7,6 @@
     ],
 
     title:       'Links',
-    defaultType: 'textfield',
     flex:        1,
     scrollable:  true,
 
