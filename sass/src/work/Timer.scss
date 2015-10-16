@@ -1,6 +1,17 @@
+@keyframes spark-work-timer-blink {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes spark-work-timer-blink {
+    to {
+        visibility: hidden;
+    }
+}
+
 .spark-work-timer {
     background-color: white;
-    border: 2px solid darken($active-color, 10);
+    border: 2px solid $active-dark-color;
     border-radius: .5em;
     text-align: center;
 
@@ -10,7 +21,7 @@
     }
 
     .timer-icon {
-        background-color: darken($active-color, 10);
+        background-color: $active-dark-color;
         color: white;
         padding: .0625em .25em;
 
@@ -30,29 +41,24 @@
         font-weight: bold;
         line-height: 1;
         padding: .3125em;
-    }
+
+        font-variant-numeric: tabular-nums;
+        -moz-font-feature-settings: "tnum";
+        -ms-font-feature-settings: "tnum";
+        -webkit-font-feature-settings: "tnum";
+        font-feature-settings: "tnum";
+      }
 
     &.timer-paused {
-        border-color: yellow;
+        border-color: $alert-color;
 
         .timer-icon {
-            background-color: yellow;
+            background-color: $alert-color;
         }
 
         .timer-counter {
-            animation: spark-work-timer-blink 1s steps(5, start) infinite;
-            -webkit-animation: spark-work-timer-blink 1s steps(5, start) infinite;
+                    animation: spark-work-timer-blink 1s steps(3, start) infinite;
+            -webkit-animation: spark-work-timer-blink 1s steps(3, start) infinite;
         }
-    }
-}
-
-@keyframes spark-work-timer-blink {
-    to {
-        visibility: hidden;
-    }
-}
-@-webkit-keyframes spark-work-timer-blink {
-    to {
-        visibility: hidden;
     }
 }
