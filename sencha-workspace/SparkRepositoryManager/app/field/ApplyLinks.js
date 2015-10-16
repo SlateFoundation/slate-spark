@@ -32,7 +32,7 @@
         },
         items: [{
             xtype: 'textfield',
-            name: 'url',
+            itemId: 'url',
             margin: '2px 8px',
             emptyText: 'Enter your link URL here. Press tab to enter another.',
             listeners: {
@@ -42,7 +42,7 @@
             }
         },{
             xtype: 'textfield',
-            name: 'title',
+            itemId: 'title',
             margin: '0 8px',
             emptyText: 'Enter the title of the link here. Press tab to enter another.',
             listeners: {
@@ -57,13 +57,11 @@
         var ct = field.up('fieldcontainer'),
             ctOwner = ct.up('fieldset'),
             link = {},
-            clone,
-            rowediting,
-            record;
+            clone;
 
         // get link from this field container
         ct.items.each(function(field) {
-            link[field.getName()] = field.getValue();
+            link[field.getItemId()] = field.getValue();
         });
 
         // create new link fieldcontainer if this container is last and has a valid link
@@ -81,7 +79,7 @@
         me.items.each(function(ct) {
             link = {};
             ct.items.each(function(field) {
-                link[field.getName()] = field.getValue();
+                link[field.getItemId()] = field.getValue();
             });
             if (link.url) {
                 values.push(link);
@@ -114,8 +112,8 @@
                         lastInGroup: false
                     }));
                 }
-                linkCt.down('field[name="url"]').setRawValue(link.url);
-                linkCt.down('field[name="title"]').setRawValue(link.title);
+                linkCt.down('field[itemId="url"]').setRawValue(link.url);
+                linkCt.down('field[itemId="title"]').setRawValue(link.title);
             }
             me.add(firstCt.cloneConfig({isClone: true}));
         } else {
