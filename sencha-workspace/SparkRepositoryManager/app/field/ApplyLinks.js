@@ -34,14 +34,44 @@
             xtype: 'textfield',
             name: 'url',
             margin: '2px 8px',
-            emptyText: 'Enter your link URL here. Press tab to enter another.'
+            emptyText: 'Enter your link URL here. Press tab to enter another.',
+            listeners: {
+                blur: function(field) {
+                    field.up('srm-field-applylinks').onLinkBlur(field);
+                }
+            }
         },{
             xtype: 'textfield',
             name: 'title',
             margin: '0 8px',
-            emptyText: 'Enter the title of the link here. Press tab to enter another.'
+            emptyText: 'Enter the title of the link here. Press tab to enter another.',
+            listeners: {
+                blur: function(field) {
+                    field.up('srm-field-applylinks').onLinkBlur(field);
+                }
+            }
         }]
     }],
+
+    onLinkBlur: function(field) {
+        var ct = field.up('fieldcontainer'),
+            ctOwner = ct.up('fieldset'),
+            link = {},
+            clone,
+            rowediting,
+            record;
+
+        // get link from this field container
+        ct.items.each(function(field) {
+            link[field.getName()] = field.getValue();
+        });
+
+        // create new link fieldcontainer if this container is last and has a valid link
+        if (ct.lastInGroup && link.url && link.title) {
+            ct.lastInGroup = false;
+            clone = ctOwner.add(ct.cloneConfig({isClone: true}));
+        }
+    },
 
     getValues: function() {
         var me = this,

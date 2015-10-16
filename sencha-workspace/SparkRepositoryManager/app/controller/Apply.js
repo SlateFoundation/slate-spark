@@ -32,10 +32,6 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             },
             's2m-apply-panel button[action=align]': {
                 click: 'onAlignClick'
-            },
-            // TODO improve this component query... itemId on fieldset?
-            's2m-apply-editor fieldset[title="Links"] field': {
-                blur: 'onLinkBlur'
             }
         }
     },
@@ -137,44 +133,6 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
-        }
-    },
-
-    onLinkBlur: function(field) {
-        var ct = field.up('fieldcontainer'),
-            ctOwner = ct.up('fieldset'),
-            link = {},
-            clone,
-            rowediting,
-            record;
-
-        // get link from this field container
-        ct.items.each(function(field) {
-            link[field.getName()] = field.getValue();
-        });
-
-        // create new link fieldcontainer if this container is last and has a valid link
-        if (ct.lastInGroup && link.url && link.title) {
-            ct.lastInGroup = false;
-            clone = ctOwner.add(ct.cloneConfig({isClone: true}));
-        }
-
-        //console.log(ct.lastInGroup);
-        //console.log(link.url);
-        //console.log(link.title);
-
-        // update record if this link is valid
-        if (link.url && link.title) {
-            rowediting = this.getPanel().getPlugin('rowediting');
-            record = rowediting.editor.getRecord();
-            record.set('Links', ctOwner.getValues());
-        }
-        // remove container and update record if has been blanked
-        else if (!ct.lastInGroup && !link.url && !link.title) {
-            rowediting = this.getPanel().getPlugin('rowediting');
-            record = rowediting.editor.getRecord();
-            record.set('Links', ctOwner.getValues());
-            ctOwner.remove(ct);
         }
     },
 
