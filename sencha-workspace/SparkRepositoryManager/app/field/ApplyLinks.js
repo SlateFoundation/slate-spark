@@ -17,7 +17,7 @@
 
     items: [{
         xtype: 'fieldcontainer',
-        // TODO: replace style with style class?
+        // TODO: replace style with style class? Also see margin configs in child fields
         style: {
             border: '1px',
             borderStyle: 'solid',
@@ -66,18 +66,24 @@
 
     getValues: function() {
         var me = this,
+            items = me.items.items,
+            itemCount = items.length,
+            i = 0,
             values = [],
+            ct,
             link;
 
-        me.items.each(function(ct) {
-            link = {};
-            ct.items.each(function(field) {
-                link[field.getItemId()] = field.getValue();
-            });
+        for (; i<itemCount; i++) {
+            ct = items[i];
+            link = {
+                url: ct.down('textfield[itemId="url"]').getValue(),
+                title: ct.down('textfield[itemId="title"]').getValue()
+            };
             if (link.url) {
                 values.push(link);
             }
-        });
+        }
+
         return values;
     },
 
