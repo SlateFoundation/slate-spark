@@ -11,7 +11,32 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'sparkpointCodes',
         'standardCodes',
         'todos',
-        'links',
+        {
+            name: 'links',
+
+            /**
+             * Normalize old array-of-urls format to new array of title/url pair objects
+             */
+            convert: function (value) {
+                debugger;
+                if (!Ext.isArray(value) || !Ext.isString(value[0])) {
+                    return value;
+                }
+
+                var links = [],
+                    i = 0,
+                    count = value.length;
+
+                for (; i<count; i++) {
+                    links.push({
+                        title: null,
+                        url: value[i]
+                    });
+                }
+
+                return links;
+            }
+        },
 
         // local-only
         {
