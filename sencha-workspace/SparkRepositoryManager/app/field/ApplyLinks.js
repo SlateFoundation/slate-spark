@@ -56,18 +56,12 @@
     onLinkBlur: function(field) {
         var ct = field.up('fieldcontainer'),
             ctOwner = ct.up('fieldset'),
-            link = {},
-            clone;
-
-        // get link from this field container
-        ct.items.each(function(field) {
-            link[field.getItemId()] = field.getValue();
-        });
+            url = ct.down('textfield[itemId="url"]').getValue();
 
         // create new link fieldcontainer if this container is last and has a valid link
-        if (ct.lastInGroup && link.url) {
+        if (ct.lastInGroup && url) {
             ct.lastInGroup = false;
-            clone = ctOwner.add(ct.cloneConfig({isClone: true}));
+            ctOwner.add(ct.cloneConfig({isClone: true}));
         }
     },
 
