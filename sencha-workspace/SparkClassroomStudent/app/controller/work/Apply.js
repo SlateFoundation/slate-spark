@@ -74,10 +74,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 };
             }));
 
-            me.getLinksCmp().setData(apply.get('links').map(function(url) {
+            me.getLinksCmp().setData(apply.get('links').map(function(link) {
                 return {
-                    title: url.replace(/^https?:\/\//, ''),
-                    url: url
+                    title: link.title || link.url.replace(/^https?:\/\//, ''),
+                    url: link.url
                 };
             }));
 
