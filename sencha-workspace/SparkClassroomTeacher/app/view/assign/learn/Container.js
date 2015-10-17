@@ -3,6 +3,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Container', {
     extend: 'Ext.Container',
     xtype: 'spark-assign-learn',
     requires: [
+        'Ext.field.Number',
         'SparkClassroomTeacher.view.assign.learn.Grid',
         'SparkClassroom.widget.DiscussionList'
     ],
@@ -11,17 +12,16 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Container', {
         title: 'Learn &amp; Practice',
         items: [
             {
-                xtype: 'selectfield',
+                xtype: 'numberfield',
                 cls: 'content-card compact',
                 labelAlign: 'left',
                 labelWidth: 350,
-                width: 650,
+                width: 500,
                 label: 'Number of Learns required for CCSS.ELA.3.CC.4.A',
-                options: [
-                    { text: 'Between 1-2', value: 1 },
-                    { text: 'Between 3-7', value: 1 },
-                    { text: 'Between 8-12', value: 1 }
-                ]
+                minValue: 1,
+                maxValue: 15,
+                stepValue: 1,
+                placeHolder: 5
             },
             {
                 xtype: 'container',
