@@ -7,8 +7,14 @@
     ],
 
     title:       'Links',
+
+    config: {
+        originalValues: []
+    },
+
     flex:        1,
     scrollable:  true,
+
 
     layout: {
         type: 'vbox',
@@ -71,13 +77,15 @@
             i = 0,
             values = [],
             ct,
-            link;
+            link,
+            titleVal;
 
         for (; i<itemCount; i++) {
             ct = items[i];
+            titleVal = ct.down('textfield[itemId="title"]').getValue();
             link = {
-                url: ct.down('textfield[itemId="url"]').getValue(),
-                title: ct.down('textfield[itemId="title"]').getValue()
+                title: titleVal === '' ? null : titleVal,
+                url: ct.down('textfield[itemId="url"]').getValue()
             };
             if (link.url) {
                 values.push(link);
@@ -93,6 +101,8 @@
             linkCount = links.length,
             i = 0,
             link, linkCt;
+
+        me.setOriginalValues(links);
 
         me.items.each(function(ct) {
             if (ct.isClone) {
@@ -118,6 +128,31 @@
         } else {
             firstCt.lastInGroup = true;
         }
+    },
+
+    isDirty: function() {
+        var currentVals = this.getValues(),
+            originalVals = this.getOriginalValues(),
+            currentLength = currentVals.length,
+            originalLength = originalVals.length,
+            dirty = false,
+            i = 0;
+
+        if (currentLength === originalLength) {
+            // If length is zero dirty remains false
+            if (currentLength !== 0) {
+                for (; i<originalLength; i++) {
+                    // loop through the array and compare each object value
+                    if (!Ext.Object.equals(currentVals[i],originalVals[i])) {
+                        dirty = true;
+                    }
+                }
+            }
+        } else {
+            // if array lengths do not match dirty is true
+            dirty = true;
+        }
+        return dirty;
     }
 
  });
