@@ -175,10 +175,9 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
     updateRecord: function() {
         var me = this,
             rec = me.getRecord(),
-            changes = {},
             instructions = me.down('#instructions-textarea').getValue(),
             timeEstimate = me.down('#timeestimate-durationfield').getValue(),
-            todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues();
+            todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues(),
             links = me.down('#links-fieldset').getValues();
 
         if (rec.get('Instructions') !== instructions) {
@@ -197,6 +196,24 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             rec.set('Links', links);
         }
 
+    },
+
+    isDirty: function() {
+        var me = this,
+            rec = me.getRecord(),
+            instructions = me.down('#instructions-textarea').getValue(),
+            timeEstimate = me.down('#timeestimate-durationfield').getValue(),
+            todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues(),
+            links = me.down('#links-fieldset');
+
+        if (rec && ((rec.get('Instructions') !== instructions) ||
+            (rec.get('TimeEstimate') !== timeEstimate) ||
+            (JSON.stringify(rec.get('Todos')) !== JSON.stringify(todos)) ||
+            links.isDirty()))
+        {
+            return true;
+        }
+        return false;
     },
 
     applyReadOnly: function(val) {
