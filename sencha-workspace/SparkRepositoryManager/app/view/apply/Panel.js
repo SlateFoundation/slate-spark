@@ -142,34 +142,41 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
     }],
 
     listeners: {
-        selectionchange: function (model, records) {
-            var me              = this,
-                editor          = me.down('s2m-apply-editor'),
-                rec             = records ? records[0] : null,
-                hasRecords      = records.length === 0,
-                rowediting      = me.getPlugin('rowediting'),
-                isEditing = rec && rowediting.editing;
 
-            me.down('#gridtoolbar button[action="delete"]').setDisabled(hasRecords);
-            me.down('#gridtoolbar button[action="align"]').setDisabled(hasRecords);
-            editor.setDisabled(hasRecords);
+        beforeselect: function (model, record) {
+            var me          = this,
+                editor      = me.down('s2m-apply-editor'),
+                rowediting  = me.getPlugin('rowediting'),
+                isEditing   = record && rowediting.editing;
 
-            if (isEditing && me.editingPlugin.editor.getForm().isDirty()) {
+            me.down('#gridtoolbar button[action="delete"]').setDisabled(!record);
+            me.down('#gridtoolbar button[action="align"]').setDisabled(!record);
+            editor.setDisabled(!record);
+
+            if (isEditing && (me.editingPlugin.editor.getForm().isDirty() || editor.isDirty())) {
                 Ext.Msg.confirm(
                     'Unsaved Changes',
                     'Discard any unsaved changes on current apply?',
                     function(response) {
                         if (response === 'yes') {
                             rowediting.cancelEdit();
-                            editor.setRecord(rec);
-                            editor.setReadOnly(!rowediting.editing);
-                            rowediting.startEdit(rec);
+                            me.getSelectionModel().select(record);
                         }
                 });
+                return false;
             } else {
-                editor.setRecord(rec);
-                editor.setReadOnly(!rowediting.editing);
+                rowediting.cancelEdit();
             }
+        },
+
+        selectionchange: function (model, records) {
+            var me = this,
+                editor = me.down('s2m-apply-editor'),
+                rowediting  = me.getPlugin('rowediting'),
+                rec = records ? records[0] : null;
+
+            editor.setRecord(rec);
+            editor.setReadOnly(!rowediting.editing);
         }
     },
 
