@@ -119,8 +119,8 @@
                         lastInGroup: false
                     }));
                 }
-                linkCt.down('field[itemId="url"]').setValue(link.url);
-                linkCt.down('field[itemId="title"]').setValue(link.title);
+                linkCt.down('field#url]').setValue(link.url);
+                linkCt.down('field#title').setValue(link.title);
             }
             me.add(firstCt.cloneConfig({isClone: true}));
         } else {
