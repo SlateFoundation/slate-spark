@@ -39,12 +39,7 @@
             xtype: 'textfield',
             itemId: 'url',
             margin: '2px 8px',
-            emptyText: 'Enter your link URL here. Press tab to enter another.',
-            listeners: {
-                blur: function(field) {
-                    field.up('srm-field-applylinks').onLinkBlur(field);
-                }
-            }
+            emptyText: 'Enter your link URL here. Press tab to enter another.'
         },{
             xtype: 'textfield',
             itemId: 'title',
