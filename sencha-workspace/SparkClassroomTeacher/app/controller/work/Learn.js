@@ -36,23 +36,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
-    },
+        var store = this.getWorkLearnsStore(),
+            studentId = activeStudent.get('user_id'),
+            sparkpointCode = activeStudent.get('sparkpoint_code');
 
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkLearnsStore();
+        this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
 
         // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        store.getProxy().setExtraParam('student_id', studentId);
+        store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
 
-        // TODO: reload store if sparkpoints param dirty
         if (store.isLoaded()) {
             store.load();
         }
 
         this.syncActiveSparkpoint();
     },
-
 
     // event handlers
     onActiveStudentSelect: function(student) {
