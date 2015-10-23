@@ -17,7 +17,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         itemTpl: [
             '<header class="studentlist-item-header">',
                 '<tpl for="student.getData()">',
-                    '<a class="studentlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank">{FullName}</a> ',
+                    '<a class="studentlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
                 '</tpl>',
                 '<tpl if="help_request"><span class="studentlist-request">{help_request_abbr}</span></tpl> ',
                 '<span class="studentlist-timer">',
@@ -81,11 +81,13 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     },
 
     onItemTap: function(ev, t) {
+        var me = this;
+
         if (ev.getTarget('.item-remove-btn')) {
-            this.fireEvent('itemdismisstap', this, Ext.get(t).component);
+            me.fireEvent('itemdismisstap', me, Ext.get(t).component);
             return;
         }
 
-        this.callParent(arguments);
+        me.callParent(arguments);
     }
 });
