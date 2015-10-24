@@ -4,6 +4,7 @@ Ext.define('SparkClassroom.column.Completed', {
 
     config: {
         allowToggle: true,
+        requireLaunched: true,
 
         cls: 'spark-completed-column',
         dataIndex: 'completed',
@@ -17,9 +18,10 @@ Ext.define('SparkClassroom.column.Completed', {
                 tap: function(ev, t) {
                     var me = this,
                         record = me.getRecord(),
-                        dataIndex = me.getColumn().getDataIndex();
+                        column = me.getColumn(),
+                        dataIndex = column.getDataIndex();
 
-                    if (me.getColumn().getAllowToggle()) {
+                    if (column.getAllowToggle() && (!column.getRequireLaunched() || record.get('launched'))) {
                         record.set(dataIndex, !record.get(dataIndex));
                     }
                 }
