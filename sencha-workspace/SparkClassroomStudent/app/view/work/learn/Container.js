@@ -5,5 +5,22 @@ Ext.define('SparkClassroomStudent.view.work.learn.Container', {
 
     initialize: function () {
         this.callParent(arguments);
+
+        this.add({
+            xtype: 'container',
+            layout: {
+                type: 'hbox',
+                pack: 'end'
+            },
+            items: [
+                {
+                    itemId: 'readyForConferenceBtn',
+
+                    xtype: 'button',
+                    ui: 'action',
+                    text: 'Ready for Conference'
+                }
+            ]
+        });
     }
 });
