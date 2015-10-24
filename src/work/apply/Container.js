@@ -251,12 +251,6 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                         '</tpl>',
                                                     '</ul>'
                                                 ]
-                                            },
-                                            {
-                                                xtype: 'button',
-                                                ui: 'action',
-                                                iconCls: 'fa fa-paperclip',
-                                                text: 'Attach File or Link'
                                             }
                                         ]
                                     },
