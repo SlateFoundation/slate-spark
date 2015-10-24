@@ -1,8 +1,18 @@
+/* global Slate */
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.work.Learn', {
     extend: 'Ext.data.Model',
+    requires: [
+        'Slate.API'
+    ],
 
+
+    idProperty: 'resourceId',
     fields: [
+        {
+            name: 'resourceId',
+            type: 'int'
+        },
         'type',
         'title',
         'url',
@@ -11,6 +21,12 @@ Ext.define('SparkClassroom.model.work.Learn', {
         'score',
         'attachments',
         'vendor',
+        {
+            name: 'launchUrl',
+            convert: function(v) {
+                return Slate.API.buildUrl(v);
+            }
+        },
         {
             name: 'completed',
             type: 'boolean',
