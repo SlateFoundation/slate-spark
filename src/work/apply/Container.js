@@ -91,7 +91,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                         items: [
                             {
                                 itemId: 'chooseAgainBtn',
-        
+
                                 xtype: 'button',
                                 ui: 'action',
                                 text: '&larr; Choose a Different Apply'
@@ -120,11 +120,12 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                     align: 'end'
                                 },
                                 items: [
-                                    {
-                                        xtype: 'button',
-                                        ui: 'action',
-                                        text: 'Grading Rubric'
-                                    },
+                                    // TODO: restore once rubric content is available
+                                    // {
+                                    //     xtype: 'button',
+                                    //     ui: 'action',
+                                    //     text: 'Grading Rubric'
+                                    // },
                                     {
                                         cls: 'text-right',
                                         data: {
