@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.view.work.conference.peer.Form', {
+Ext.define('SparkClassroomStudent.view.work.conference.PeerForm', {
     extend: 'Ext.form.Panel',
-    xtype: 'spark-student-work-conference-peer-form',
+    xtype: 'spark-student-work-conference-peerform',
     cls: 'content-card',
 
     config: {
