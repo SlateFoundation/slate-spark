@@ -86,7 +86,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         // create refresh task if needed
         if (!refreshTask) {
             refreshTask = me.refreshTask = Ext.util.TaskManager.newTask({
-                interval: 5000,
+                interval: 60000,
                 fireOnStart: true,
                 scope: activeStudentsStore,
                 run: activeStudentsStore.loadUpdates
