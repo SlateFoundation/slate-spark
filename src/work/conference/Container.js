@@ -1,5 +1,5 @@
 
-Ext.define('SparkClassroom.work.conference.Main', {
+Ext.define('SparkClassroom.work.conference.Container', {
     extend: 'Ext.Container',
     xtype: 'spark-work-conference',
     requires: [
