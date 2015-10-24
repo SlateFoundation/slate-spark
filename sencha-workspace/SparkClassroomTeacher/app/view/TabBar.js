@@ -21,12 +21,14 @@ Ext.define('SparkClassroomTeacher.view.TabBar', {
                 itemId: 'work'
             },
             {
-                title: 'Competency Overview',
-                itemId: 'competencies'
+                title: 'Competency Overview<br><small>Coming Soon</small>',
+                itemId: 'competencies',
+                disabled: !location.search.match(/\WenableAlpha(\W|$)/)
             },
             {
-                title: 'Assign',
-                itemId: 'assign'
+                title: 'Assign<br><small>Coming Soon</small>',
+                itemId: 'assign',
+                disabled: !location.search.match(/\WenableAlpha(\W|$)/)
             }
         ]
     }
