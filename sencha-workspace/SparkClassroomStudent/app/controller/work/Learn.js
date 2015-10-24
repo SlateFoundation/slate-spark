@@ -16,7 +16,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         learnCt: 'spark-student-work-learn',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
-        learnGrid: 'spark-work-learn-grid'
+        learnGrid: 'spark-work-learn-grid',
+        readyBtn: 'spark-student-work-learn #readyForConferenceBtn'
     },
 
     control: {
@@ -69,23 +70,24 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         if (!store.isLoaded()) { // TODO: OR extraParamsDirty
             store.load();
         } else {
-            me.refreshProgressBar();
+            me.refreshLearnProgress();
         }
     },
 
     onLearnsStoreLoad: function() {
-        this.refreshProgressBar();
+        this.refreshLearnProgress();
     },
 
     onLearnsStoreUpdate: function() {
-        this.refreshProgressBar();
+        this.refreshLearnProgress();
     },
 
 
     // controller methods
-    refreshProgressBar: function() {
-        var progressBanner = this.getProgressBanner(),
-            learns = this.getWorkLearnsStore().getRange(),
+    refreshLearnProgress: function() {
+        var me = this,
+            progressBanner = me.getProgressBanner(),
+            learns = me.getWorkLearnsStore().getRange(),
             count = learns.length,
             completed = 0,
             required = Math.min(count, 5),
@@ -109,5 +111,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         });
 
         progressBanner.show();
+
+        me.getReadyBtn().setDisabled(completed < required);
     }
 });

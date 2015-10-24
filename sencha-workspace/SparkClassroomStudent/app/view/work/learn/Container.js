@@ -17,6 +17,7 @@ Ext.define('SparkClassroomStudent.view.work.learn.Container', {
                     itemId: 'readyForConferenceBtn',
 
                     xtype: 'button',
+                    disabled: true,
                     ui: 'action',
                     text: 'Ready for Conference'
                 }
