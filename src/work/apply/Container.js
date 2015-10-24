@@ -30,9 +30,6 @@ Ext.define('SparkClassroom.work.apply.Container', {
                         emptyText: 'No Applies to show for this Sparkpoint.',
                         columns: [
                             {
-                                xtype: 'spark-completed-column'
-                            },
-                            {
                                 xtype: 'templatecolumn',
                                 flex: 1,
                                 cell: { encodeHtml: false },
