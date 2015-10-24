@@ -275,10 +275,21 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                             },
                                             {
+                                                itemId: 'attachFileBtn',
+
                                                 xtype: 'button',
                                                 ui: 'action',
                                                 iconCls: 'fa fa-paperclip',
-                                                text: 'Attach File or Link'
+                                                text: 'Attach File'
+                                            },
+                                            {
+                                                itemId: 'attachLinkBtn',
+
+                                                xtype: 'button',
+                                                margin: '16 0 0',
+                                                ui: 'action',
+                                                iconCls: 'fa fa-link',
+                                                text: 'Attach Link'
                                             },
                                             {
                                                 xtype: 'component',
