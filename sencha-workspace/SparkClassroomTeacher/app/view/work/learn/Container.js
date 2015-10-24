@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
-    extend: 'SparkClassroom.work.learn.Main',
+    extend: 'SparkClassroom.work.learn.Container',
     xtype: 'spark-teacher-work-learn',
     requires: [
         'SparkClassroomTeacher.view.work.learn.Form'
@@ -8,7 +8,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
 
     initialize: function () {
         this.callParent(arguments);
-        
+
         this.add({
             xtype: 'spark-teacher-work-learn-form',
             docked: 'right',
