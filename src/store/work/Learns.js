@@ -8,6 +8,7 @@ Ext.define('SparkClassroom.store.work.Learns', {
     model: 'SparkClassroom.model.work.Learn',
 
     config: {
+        autoSync: true,
         // grouper: {
         //     property: 'Group',
         //     direction: 'DESC'
