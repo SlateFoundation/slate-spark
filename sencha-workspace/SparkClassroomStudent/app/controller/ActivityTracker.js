@@ -90,7 +90,7 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
             task.stop();
         } else {
             task = me.task = Ext.util.TaskManager.newTask({
-                interval: 5000,
+                interval: 60000,
                 scope: me,
                 run: me.flushTimer
             });
