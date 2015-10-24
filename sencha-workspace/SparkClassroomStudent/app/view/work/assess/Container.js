@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.view.work.assess.Container', {
-    extend: 'SparkClassroom.work.assess.Main',
+    extend: 'SparkClassroom.work.assess.Container',
     xtype: 'spark-student-work-assess',
     requires: [
         'SparkClassroomStudent.view.work.assess.AppliesGrid',
