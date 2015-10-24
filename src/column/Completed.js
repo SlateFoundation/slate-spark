@@ -27,7 +27,7 @@ Ext.define('SparkClassroom.column.Completed', {
         },
         tpl: [
             '<div class="flex-ct">',
-                '<div class="assign-control-item <tpl if="completed">is-full</tpl>">', // TODO: "assign" is an innacurate term here @ryon
+                '<div class="assign-control-item <tpl if="completed">is-full<tpl elseif="launched">is-partial</tpl>">', // TODO: "assign" is an innacurate term here @ryon
                     '<div class="assign-control-frame single-control">',
                         '<i class="assign-control-indicator"></i>',
                     '</div>',

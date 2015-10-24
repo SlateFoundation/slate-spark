@@ -28,6 +28,11 @@ Ext.define('SparkClassroom.model.work.Learn', {
             }
         },
         {
+            name: 'launched',
+            type: 'boolean',
+            defaultValue: false
+        },
+        {
             name: 'completed',
             type: 'boolean',
             defaultValue: false
