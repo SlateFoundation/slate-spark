@@ -6,7 +6,8 @@
 Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
     requires: [
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+        'SparkClassroom.SocketDomain'
     ],
 
 
@@ -36,6 +37,25 @@ Ext.define('SparkClassroomTeacher.Application', {
                 layout: 'auto',
                 scrollable: 'vertical'
             }
+        }
+    },
+
+    listen: {
+        socket: {
+            // <debug>
+            connect: function(socket) {
+                console.info('socket connected');
+            },
+            disconnect: function(socket) {
+                console.warn('socket disconnected');
+            },
+            data: function(socket, data) {
+                console.info('socket data:', data);
+            },
+            debug: function(socket, data) {
+                console.info('socket debug:', data);
+            }
+            // </debug>
         }
     },
 
