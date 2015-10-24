@@ -9,8 +9,23 @@ Ext.define('SparkClassroomStudent.view.work.conference.Container', {
     initialize: function () {
         this.callParent(arguments);
 
-        this.add({
+        this.add([{
             xtype: 'spark-student-work-conference-peerform'
-        });
+        },{
+            xtype: 'container',
+            layout: {
+                type: 'hbox',
+                pack: 'end'
+            },
+            items: [
+                {
+                    itemId: 'requestConferenceBtn',
+
+                    xtype: 'button',
+                    ui: 'action',
+                    text: 'Request a Conference'
+                }
+            ]
+        }]);
     }
 });
