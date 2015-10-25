@@ -11,7 +11,7 @@ Ext.define('SparkClassroom.work.learn.Container', {
     config: {
         itemId: 'learn',
 
-        allowToggleComplete: false,
+        allowToggleComplete: true,
 
         items: [{
             layout: 'accordion',
