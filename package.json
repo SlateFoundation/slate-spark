@@ -250,6 +250,7 @@
         "slate-core-data",
         "jarvus-gridflex",
         "jarvus-gridheight",
-        "jarvus-fuzzytime"
+        "jarvus-fuzzytime",
+        "jarvus-googlepicker"
     ]
 }
