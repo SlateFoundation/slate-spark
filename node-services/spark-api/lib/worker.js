@@ -5,33 +5,8 @@
 var path = require('path'),
     restify = require('restify'),
     cluster = require('cluster'),
-    pg = require('pg'),
     routes = require('../routes'),
-    sparkHeaderParser = require('./spark-headers'),
-    openEdClientId,
-    openEdClientSecret,
-    conString;
-
-try {
-    configFile = fs.readFileSync(path.resolve(__dirname, 'config.json'), 'utf8');
-    try {
-        configFile = JSON.parse(configFile);
-
-        openEdClientId = configFile.opened_client_id;
-        openEdClientSecret = configFile.opened_client_secret;
-        conString = configFile.pg_conn_string;
-    } catch (err) {
-        console.error('Error parsing /opt/spark/config.json.');
-        process.exit(1);
-    }
-} catch (err) {
-    if (openEdClientSecret === '' || openEdClientId === '' || conString == '') {
-        console.error('Please provide a valid config.json in /opt/spark or edit the content-proxy file directly.');
-        process.exit(1);
-    }
-}
-
-exports.createServer = createServer;
+    sparkHeaderParser = require('./spark-headers');
 
 function createServer(logger) {
     var server, config;
@@ -80,9 +55,10 @@ function createServer(logger) {
     server.on('uncaughtException', function (req, res, route, err) {
         res.statusCode = 500;
         res.json(err);
-        console.error(err);
-        process.send({type: error, error: err});
+        process.send({ type: 'error', route: route, req: req, error: err });
     });
 
     return server;
 }
+
+exports.createServer = createServer;
