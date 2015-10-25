@@ -32,19 +32,15 @@ Ext.define('SparkClassroom.work.learn.Grid', {
                 flex: 2
             },
             {
-                dataIndex: 'dok',
                 xtype: 'spark-dok-column'
             },
             {
-                dataIndex: 'category',
                 xtype: 'spark-learntype-column'
             },
             {
-                dataIndex: 'rating',
                 xtype: 'spark-rating-column'
             },
             {
-                dataIndex: 'score',
                 xtype: 'spark-score-column'
             }
             // TODO: enable when attachments are available
