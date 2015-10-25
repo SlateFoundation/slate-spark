@@ -203,7 +203,7 @@ function getHandler(req, res, next) {
                     res.json(resources);
                     return next();
 
-                }, function (err) {s
+                }, function (err) {
                     res.send(500, { error: err });
                     return next();
                 });
