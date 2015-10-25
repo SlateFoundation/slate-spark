@@ -187,7 +187,7 @@ function getHandler(req, res, next) {
                         resource.resource_id = resourceId.id;
                         resource.views = resourceId.views;
                         resource.url = resource.url;
-                        resource.launch_url = '/spark/api/work/learns/launch/' + resource.resourceId;
+                        resource.launch_url = '/spark/api/work/learns/launch/' + resource.resource_id;
                         resource.completed = resourceId.completed || false;
                         resource.launched = resourceId.launched || false;
                     });
@@ -206,7 +206,7 @@ function getHandler(req, res, next) {
 }
 
 function patchHandler(req, res, next) {
-    var origResourceId = req.params['resource-id'] || req.params.resourceid || req.params.resourceId || req.params.ResourceId || req.params.resource_id,
+    var origResourceId = req.params['resource-id'] || req.params.resource_id,
         resourceId = parseInt(origResourceId, 10),
         userId,
         completed = (req.params.complete || req.params.completed),
@@ -232,7 +232,7 @@ function patchHandler(req, res, next) {
     if (req.session.accountLevel === 'Student') {
         userId = req.session.userId;
     } else if (req.session.accountLevel === 'Developer') {
-        userId = req.params['student-id'] || req.params.studentid || req.params.studentId || req.params.student_id;
+        userId = req.params['student-id'] || req.params.student_id;
         if (!userId) {
             res.send(400, 'This is a student only endpoint. To debug you must pass a student id in the query string.');
         }
@@ -257,7 +257,7 @@ function patchHandler(req, res, next) {
           AND user_id = $1 RETURNING *`,
     [userId]).then(function(result) {
         if (sentArray) {
-            res.json(result.map(function(resource) { return { resourceId: resource.id, completed: resource.completed }; }));
+            res.json(result.map(function(resource) { return { resource_id: resource.id, completed: resource.completed }; }));
         } else {
             res.json(result[0]);
         }
@@ -269,7 +269,7 @@ function patchHandler(req, res, next) {
 }
 
 function launchHandler(req, res, next) {
-    var origResourceId = req.params['resource-id'] || req.params.resourceid || req.params.resourceId || req.params.ResourceId || req.params.resource_id,
+    var origResourceId = req.params['resource-id'] || req.params.resource_id,
         resourceId = parseInt(origResourceId, 10),
         userId;
 
@@ -290,7 +290,7 @@ function launchHandler(req, res, next) {
     if (req.session.accountLevel === 'Student') {
         userId = req.session.userId;
     } else if (req.session.accountLevel === 'Developer') {
-        userId = req.params['student-id'] || req.params.studentid || req.params.studentId || req.params.student_id;
+        userId = req.params['student-id'] || req.params.student_id;
         if (!userId) {
             res.send(400, 'This is a student only endpoint. To debug you must pass a student id in the query string.');
         }
@@ -307,7 +307,8 @@ function launchHandler(req, res, next) {
                 if (data.url) {
                     return res.redirect(data.url, next);
                 } else {
-                    res.send(500, 'Failed to launch learning resource due to an unknown error. Try refreshing this page. If you continue to receive this error please tell your teacher.');
+                    res.send(500, 'Failed to launch learning resource due to an unknown error. Try refreshing this ' +
+                                  ' page. If you continue to receive this error please tell your teacher.');
                     return next();
                 }
             }, function (reason) {
