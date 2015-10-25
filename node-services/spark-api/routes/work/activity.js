@@ -12,8 +12,6 @@ function getHandler(req, res, next) {
         return next();
     }
 
-    parseSession(req, res, next);
-
     var query = `
     SELECT a1.*
       FROM activity AS a1
@@ -45,8 +43,6 @@ INNER JOIN (SELECT user_id,
 }
 
 function postHandler(req, res, next) {
-    parseSession(req, res, next);
-
     var sectionId = req.params['section-id'] || req.params.section_id || req.params.sectionId || req.params.sectionid,
         userId = req.params['user-id'] || req.params.user_id || req.params.userId || req.params.userid,
         phase = ('' + req.params.phase).toLowerCase(),
