@@ -218,7 +218,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 width: 150,
                                                 format: 'l, n/j'
                                             }
-                                        ],
+                                        ]
                                     },
                                     {
                                         xtype: 'fieldset',
