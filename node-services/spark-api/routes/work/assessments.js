@@ -27,7 +27,7 @@ function assessmentsHandler(req, res, next) {
         return next();
     }
 
-    db.manyOrNone(`SELECT title,
+    db(req).manyOrNone(`SELECT title,
                           url,
                           vendorid,
                           gradelevel,

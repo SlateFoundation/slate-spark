@@ -27,8 +27,8 @@ function conferencesHandler(req, res, next) {
     }
 
     Promise.props({
-        questions: db.manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
-        resources: db.manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
+        questions: db(req).manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
+        resources: db(req).manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
     }).then(function(result) {
         res.json({
             questions: result.questions.map(function(question) {

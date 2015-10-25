@@ -24,7 +24,7 @@ INNER JOIN (SELECT user_id,
     WHERE complete = false
       AND section_id = $1`;
 
-    db.manyOrNone(query, [sectionId]).then(function (activities) {
+    db(req).manyOrNone(query, [sectionId]).then(function (activities) {
         res.json(activities.map(function(activity) {
             var sparkpointCode = lookup.sparkpoint.idToCode[activity.sparkpoint_id];
 
@@ -82,7 +82,7 @@ function postHandler(req, res, next) {
                 complete = $6
       RETURNING *;`;
 
-    db.one(sql, [userId, sparkpointId, sectionId, duration, phase, complete]).then(function (activity) {
+    db(req).one(sql, [userId, sparkpointId, sectionId, duration, phase, complete]).then(function (activity) {
         var sparkpointCode = lookup.sparkpoint.idToCode[activity.sparkpoint_id];
 
         if (sparkpointCode) {

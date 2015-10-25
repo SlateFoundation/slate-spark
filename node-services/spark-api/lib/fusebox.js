@@ -1,5 +1,5 @@
 var rnd = require('./util').rnd,
-    db = require('./database');
+    db = require('./database')();
 
 function normalizeFusebox(item) {
     return {

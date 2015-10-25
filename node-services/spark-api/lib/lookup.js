@@ -3,7 +3,7 @@
 var util = require('./util');
 
 var Promise = require('bluebird'),
-    db = require('./database'),
+    db = require('./database')(),
     lookup = {
         sparkpoint: {
             codeToId: {},

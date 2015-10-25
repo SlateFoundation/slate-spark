@@ -148,7 +148,7 @@ function getHandler(req, res, next) {
                     sql += 'SELECT * FROM new_learn_resources;';
                 }
 
-                db.any(sql, Object.keys(urlResourceMap).concat([userId])).then(function (resourceIdentifiers) {
+                db(req).any(sql, Object.keys(urlResourceMap).concat([userId])).then(function (resourceIdentifiers) {
                     resourceIdentifiers.forEach(function(resourceId) {
                         var resource =  urlResourceMap[resourceId.url];
                         resource.resource_id = resourceId.id;
@@ -213,7 +213,7 @@ function patchHandler(req, res, next) {
         return '(' + (resource.resource_id || resource.id) + ',' + resource.completed + ')';
     }).join(',');
 
-    db.any(`
+    db(req).any(`
         UPDATE learn_activity
            SET end_status = 'api-patch',
                end_ts = now(),
@@ -263,11 +263,11 @@ function launchHandler(req, res, next) {
         return next();
     }
 
-    db.none(`
+    db(req).none(`
         INSERT INTO learn_activity (user_id, resource_id, start_status)
              VALUES ($1, $2, $3)
         ON CONFLICT (resource_id, user_id) DO NOTHING;`, [userId, resourceId, 'launched']).then(function(data) {
-            db.one('SELECT url FROM learn_resources WHERE id = $1', resourceId).then(function(data) {
+            db(req).one('SELECT url FROM learn_resources WHERE id = $1', resourceId).then(function(data) {
                 if (data.url) {
                     return res.redirect(data.url, next);
                 } else {

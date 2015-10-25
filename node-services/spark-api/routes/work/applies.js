@@ -26,7 +26,7 @@ function appliesHandler(req, res, next) {
         return next();
     }
 
-    db.manyOrNone('SELECT * FROM spark1.s2_apply_projects WHERE standardids::JSONB ?| $1', [standardIds]).then(function (result) {
+    db(req).manyOrNone('SELECT * FROM spark1.s2_apply_projects WHERE standardids::JSONB ?| $1', [standardIds]).then(function (result) {
         res.json(result.map(function (apply) {
             return {
                 id: apply.id,
