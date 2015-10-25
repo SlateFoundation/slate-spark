@@ -60,18 +60,49 @@ function getHandler(req, res, next) {
                AND section_id = $2
                AND sparkpoint_id = $3`,
             [userId, sectionId, sparkpointIds[0]]).then(function (playlist) {
-                if (playlist) {
-                    res.json(playlist);
+                var playlistLen;
+
+                if (playlist && playlist.playlist) {
+                    playlistLen = playlist.playlist.length;
+                    playlist = playlist.playlist;
+
+                    db(req).any(`
+                        SELECT resource_id,
+                               completed,
+                               start_status = 'launched' AS launched
+                          FROM learn_activity
+                         WHERE resource_id = ANY($1)
+                           AND user_id = $2`, [playlist.map(item => item.resource_id), userId]).then(function(activities) {
+                        if (activities) {
+                            activities.forEach(function(activity) {
+                               for (var x = 0; x < playlistLen; x++) {
+                                   if (activity.resource_id === playlist[x].resource_id) {
+                                       playlist[x].completed = activity.completed;
+                                       playlist[x].start_status = activity.start_status;
+                                       break;
+                                   }
+                               }
+                            });
+
+                            res.json(playlist);
+                        } else {
+                            res.send('nothing');
+                        }
+
+                        return next();
+                    }, function(error) {
+                        res.json(playlist.playlist);
+                        next();
+                    });
                 } else {
                     res.json([]);
+                    return next();
                 }
-                next();
             }, function (err) {
                 res.statusCode = 500;
                 res.json(err);
                 next();
             });
-
         return;
     }
 
