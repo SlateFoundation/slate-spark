@@ -2,7 +2,6 @@
 Ext.define('SparkClassroomStudent.controller.work.Apply', {
     extend: 'Ext.app.Controller',
 
-
     config: {
         activeSparkpoint: null,
         activeApply: null
@@ -21,7 +20,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         chooseAgainBtn: 'spark-student-work-apply button#chooseAgainBtn',
         headerCmp: 'spark-student-work-apply #headerCmp',
         todosGrid: 'spark-student-work-apply grid#todosGrid',
-        linksCmp: 'spark-student-work-apply #linksCmp'
+        linksCmp: 'spark-student-work-apply #linksCmp',
+        attachFileButton: 'spark-panel button#attachFileBtn'
     },
 
     control: {
@@ -36,6 +36,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         },
         chooseAgainBtn: {
             tap: 'onChooseAgainTap'
+        },
+        attachFileButton: {
+            tap: 'onAttachFileButtonTap'
         }
     },
 
@@ -115,5 +118,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onChooseAgainTap: function() {
         this.setActiveApply(null);
+    },
+
+    onAttachFileButtonTap: function() {
+        //console.log('onAttachFileButtonTap');
     }
 });
