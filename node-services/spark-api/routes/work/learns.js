@@ -184,10 +184,10 @@ function getHandler(req, res, next) {
                 db.any(sql, Object.keys(urlResourceMap).concat([userId])).then(function (resourceIdentifiers) {
                     resourceIdentifiers.forEach(function(resourceId) {
                         var resource =  urlResourceMap[resourceId.url];
-                        resource.resourceId = resourceId.id;
+                        resource.resource_id = resourceId.id;
                         resource.views = resourceId.views;
                         resource.url = resource.url;
-                        resource.launchUrl = '/spark/api/work/learns/launch/' + resource.resourceId;
+                        resource.launch_url = '/spark/api/work/learns/launch/' + resource.resourceId;
                         resource.completed = resourceId.completed || false;
                         resource.launched = resourceId.launched || false;
                     });
