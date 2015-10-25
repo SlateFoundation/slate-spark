@@ -4,7 +4,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
 
     config: {
-        activeSparkpoint: null
+        activeSparkpoint: null,
+        studentSparkpoint: null
     },
 
 
@@ -29,7 +30,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect'
+                sparkpointselect: 'onSparkpointSelect',
+                studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
         store: {
@@ -37,6 +39,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 load: 'onLearnsStoreLoad',
                 update: 'onLearnsStoreUpdate'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -60,6 +65,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         this.setActiveSparkpoint(sparkpoint);
     },
 
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
+    },
+
     onLearnCtActivate: function(learnCt) {
         var me = this,
             store = me.getWorkLearnsStore();
@@ -80,6 +89,36 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     onLearnsStoreUpdate: function() {
         this.refreshLearnProgress();
+    },
+
+    onSocketData: function(socket, data) {
+        if (data.table != 'learn_activity') {
+            return;
+        }
+
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint(),
+            itemData = data.item,
+            updatedLearn;
+
+        if (studentSparkpoint.get('student_id') != itemData.user_id) {
+            return;
+        }
+
+        updatedLearn = me.getLearnGrid().getStore().getById(itemData.resource_id);
+
+        if (updatedLearn) {
+            // TODO: can we find ways to not duplicate this logic between the api and the client?
+            // Can there be an abstraction on the server side so that a higher-level event comes down
+            // with a delta to the object as returned by the API previously so we can just pass the whole
+            // data object to set?
+            updatedLearn.set({
+                launched: itemData.start_status == 'launched',
+                completed: itemData.completed
+            },{
+                dirty: false
+            });
+        }
     },
 
 
