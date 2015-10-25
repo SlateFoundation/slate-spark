@@ -5,6 +5,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
+        'Jarvus.form.GooglePicker',
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
         'SparkClassroom.column.Completed'
