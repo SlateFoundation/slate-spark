@@ -79,8 +79,8 @@ Ext.define('SparkClassroomStudent.Application', {
 
     // event handers
     onSectionSelect: function(section) {
-        Slate.API.setDefaultHeaders({
-            'Spark-Section': section
+        Slate.API.setExtraParams({
+            section_id: section
         });
     }
 });
