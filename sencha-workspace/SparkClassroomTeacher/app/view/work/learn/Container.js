@@ -6,6 +6,12 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
         'SparkClassroomTeacher.view.work.learn.Form'
     ],
 
+
+    config: {
+        allowToggleComplete: false,
+    },
+
+
     initialize: function () {
         this.callParent(arguments);
 
