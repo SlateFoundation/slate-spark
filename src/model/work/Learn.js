@@ -7,10 +7,10 @@ Ext.define('SparkClassroom.model.work.Learn', {
     ],
 
 
-    idProperty: 'resourceId',
+    idProperty: 'resource_id',
     fields: [
         {
-            name: 'resourceId',
+            name: 'resource_id',
             type: 'int'
         },
         'type',
@@ -22,7 +22,7 @@ Ext.define('SparkClassroom.model.work.Learn', {
         'attachments',
         'vendor',
         {
-            name: 'launchUrl',
+            name: 'launch_url',
             convert: function(v) {
                 return Slate.API.buildUrl(v);
             }

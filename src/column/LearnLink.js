@@ -20,7 +20,7 @@ Ext.define('SparkClassroom.column.LearnLink', {
             ')" title="{vendor:htmlEncode}">{vendor:htmlEncode}</div>',
 
             '<div class="spark-grid-row-title">',
-                '<a href="{launchUrl:htmlEncode}" title="{title:htmlEncode}" target="_blank">',
+                '<a href="{launch_url:htmlEncode}" title="{title:htmlEncode}" target="_blank">',
                     '{title:htmlEncode}',
                 '</a>',
             '</div>'
