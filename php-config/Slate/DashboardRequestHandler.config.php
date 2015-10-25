@@ -23,8 +23,8 @@ if (!empty($_SESSION['User'])) {
 			'_shortLabel' => $Section->Code,
     		'_icon' => UI\Adapters\Courses::getIcon($Section),
 			'_href' => $GLOBALS['Session']->hasAccountLevel('Teacher') ?
-                "/app/SparkClassroomTeacher/build/production/index.html#$Section->Code:gps" :
-                "/app/SparkClassroomStudent/build/production/index.html#$Section->Code::work"
+                "/spark/classroom/teacher#$Section->Code:gps" :
+                "/spark/classroom/student#$Section->Code::work"
         ];
     }
 
