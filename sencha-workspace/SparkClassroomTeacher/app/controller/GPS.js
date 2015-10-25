@@ -93,9 +93,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             });
         }
 
-        refreshTask.stop();
-        activeStudentsStore.getProxy().setExtraParam('section_id', me.getActiveSection());
-        refreshTask.start();
+        refreshTask.restart();
     },
 
     onActiveStudentsStoreEndUpdate: function() {
