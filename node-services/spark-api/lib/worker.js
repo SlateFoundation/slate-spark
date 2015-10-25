@@ -7,6 +7,7 @@ var path = require('path'),
     cluster = require('cluster'),
     pg = require('pg'),
     routes = require('../routes'),
+    sparkHeaderParser = require('./spark-headers'),
     openEdClientId,
     openEdClientSecret,
     conString;
@@ -48,6 +49,7 @@ function createServer(logger) {
     server = restify.createServer(config);
 
     server.use(restify.acceptParser(server.acceptable));
+    server.use(sparkHeaderParser());
     server.use(restify.queryParser());
     server.use(restify.bodyParser());
 

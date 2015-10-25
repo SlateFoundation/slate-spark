@@ -4,28 +4,6 @@ var db = require('../../lib/database'),
     util = require('../../lib/util'),
     lookup = require('../../lib/lookup');
 
-function parseSession(req, res, next) {
-    var session = {};
-
-    if (req.headers['x-nginx-session']) {
-        try {
-            session = JSON.parse(req.headers['x-nginx-session']);
-        } catch (e) {
-            next(new errors.InvalidContentError('Invalid JSON in x-nginx-session: ' +
-                e.message));
-            return;
-        }
-
-        req.session = session;
-
-        if (!req.session) {
-            res.statusCode = 403;
-            res.json({error: 'Authorization required', success: false});
-            return next();
-        }
-    }
-}
-
 function getHandler(req, res, next) {
     var sectionId = req.params['section-id'] || req.params.section_id || req.params.sectionId || req.params.sectionid;
 

@@ -12,49 +12,16 @@ var restify = require('restify'),
     Newsela = require('../../lib/newsela'),
     db = require('../../lib/database');
 
-// TODO: this should be a utility function, it's duped in activity.js
-function parseSession(req, res, next) {
-    var session = {};
-
-    if (req.headers['x-nginx-session']) {
-        try {
-            session = JSON.parse(req.headers['x-nginx-session']);
-        } catch (e) {
-            next(new errors.InvalidContentError('Invalid JSON in x-nginx-session: ' +
-                e.message));
-            return;
-        }
-
-        req.session = session;
-
-        if (!req.session) {
-            res.statusCode = 403;
-            res.json({ error: 'Authorization required', success: false });
-            return next();
-        }
-    }
-}
-
 function getHandler(req, res, next) {
-    parseSession(req, res, next);
-
     var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
         standardIds = [],
         openedIds = [],
         userId;
 
-
-    // DEBUG ONLY
-    if (!req.session) {
-        req.session = {};
-        req.session.accountLevel = 'Developer';
-    }
-    // END DEBUG ONLY
-
     if (req.session.accountLevel === 'Student') {
         userId = req.session.userId;
     } else {
-        userId = req.params['student-id'] || req.params.studentid || req.params.studentId || req.params.student_id || req.params.userId || req.params.user_id;
+        userId = req.params['student-id'] || req.params.student_id || req.params.user_id;
         if (!userId) {
             res.send(400, 'Requests from non-student users must pass a student id, you are logged in as a: ' +
                 req.session.accountLevel + ' and only included the following query parameters: ' + Object.keys(req.params)
@@ -176,7 +143,7 @@ function getHandler(req, res, next) {
                           FROM new_learn_resources lr
                      LEFT JOIN learn_activity la
                             ON la.resource_id = lr.id
-                           AND la.user_id = $${++x};`;
+                           AND la.user_id = $${x};`;
                 } else {
                     sql += 'SELECT * FROM new_learn_resources;';
                 }
@@ -216,8 +183,6 @@ function patchHandler(req, res, next) {
         resourceValues = [];
 
     completed = (completed == 1 || completed == true);
-
-    parseSession(req, res, next);
 
     if (isNaN(resourceId)) {
         if (!sentArray) {
@@ -273,8 +238,6 @@ function launchHandler(req, res, next) {
     var origResourceId = req.params['resource-id'] || req.params.resource_id,
         resourceId = parseInt(origResourceId, 10),
         userId;
-
-    parseSession(req, res, next);
 
     if (isNaN(resourceId)) {
         res.send(500, 'Expected a numeric resource id, you passed: ' + origResourceId);
