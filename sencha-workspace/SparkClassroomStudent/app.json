@@ -71,8 +71,7 @@
     "requires": [
         "jarvus-hotfixes",
         "jarvus-routing",
-        "spark-classroom",
-        "jarvus-fileupload"
+        "spark-classroom"
     ],
 
     /**
