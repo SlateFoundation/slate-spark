@@ -410,14 +410,14 @@ function normalize(item) {
         title: item.title,
         url: item.share_url,
         thumbnail: item.thumb,
-        dok: rnd(1, 5),
+        dok: null,
         type: item.resource_type,
         rating: {
-            teacher: rnd(0, 5),
-            student: rnd(0, 5),
+            teacher: item.rating,
+            student:  item.rating,
             vendor: item.rating
         },
-        score: rnd(0, 100),
+        score: null,
         attachments: [],
         vendor: item.contribution_name
     };

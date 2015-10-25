@@ -1,5 +1,5 @@
 var rnd = require('./util').rnd,
-    db = require('./database')
+    db = require('./database');
 
 function normalizeFusebox(item) {
     return {
@@ -7,23 +7,17 @@ function normalizeFusebox(item) {
         title: item.title,
         url: item.url,
         thumbnail: getDefaultThumbnail(item.vendorid),
-        dok: rnd(1, 5),
-        type: rnd([
-            'assessment',
-            'video',
-            'homework',
-            'exercise',
-            'game',
-            'question']),
+        dok: item.dok,
+        type: null,
         rating: {
-            teacher: rnd(0, 5),
-            student: rnd(0, 5),
-            vendor: rnd(0, 5),
+            teacher: null,
+            student: null,
+            vendor: null,
         },
-        score: rnd(0, 100),
+        score: null,
         attachments: [],
-        vendor: typeof item.vendor === 'string' ? item.vendor : 'Acme Co',
-        vendorId: item.vendorid
+        vendor: item.vendor,
+        vendor_id: item.vendorid
     };
 }
 
