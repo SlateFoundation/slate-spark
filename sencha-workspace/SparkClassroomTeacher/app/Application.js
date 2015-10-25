@@ -1,3 +1,4 @@
+/* global SparkClassroom */
 /**
  * The main application class. An instance of this class is created by app.js when it
  * calls Ext.application(). This is the ideal place to handle application launch and
@@ -78,9 +79,21 @@ Ext.define('SparkClassroomTeacher.Application', {
 
 
     // event handers
-    onSectionSelect: function(section) {
+    onSectionSelect: function(section, oldSection) {
         Slate.API.setExtraParams({
             section: section
+        });
+
+        if (oldSection) {
+            SparkClassroom.Socket.emit('unsubscribe', {
+                section: oldSection,
+                host: Slate.API.getHost()
+            });
+        }
+
+        SparkClassroom.Socket.emit('subscribe', {
+            section: section,
+            host: Slate.API.getHost()
         });
     }
 });
