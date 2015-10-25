@@ -8,6 +8,8 @@ Ext.define('SparkClassroom.work.TabBar', {
 
 
     config: {
+        activePhase: null,
+
         cls: 'spark-work-tabbar',
 
         defaultType: 'spark-work-tab',
@@ -39,5 +41,31 @@ Ext.define('SparkClassroom.work.TabBar', {
                 title: 'Assess'
             }
         ]
+    },
+
+    updateActivePhase: function(activePhase) {
+        var tabs = this.getInnerItems(),
+            tabsLen = tabs.length,
+            i = 0, tab,
+            activePhaseFound = false;
+
+        for (; i < tabsLen; i++) {
+            tab = tabs[i];
+
+            if (activePhaseFound) {
+                tab.removeCls(['spark-phase-complete', 'spark-phase-active']);
+                continue;
+            }
+
+            if (tab.getItemId() == activePhase) {
+                activePhaseFound = true;
+                tab.addCls('spark-phase-active');
+                tab.removeCls('spark-phase-complete');
+                continue;
+            }
+
+            tab.addCls('spark-phase-complete');
+            tab.removeCls('spark-phase-active');
+        }
     }
 });

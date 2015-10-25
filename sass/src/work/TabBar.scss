@@ -27,19 +27,28 @@
             color: white;
 
             .spark-tab-timer {
-                display: block;
+                color: white;
             }
 
             + .x-tab {
                 border-color: $alert-color;
             }
         }
+
+        &.spark-phase-complete, &.spark-phase-active {
+            .spark-tab-timer {
+                display: block;
+            }
+        }
+
+        &.spark-phase-active {
+            text-decoration: underline;
+        }
     }
 
     .spark-tab-timer {
         border-left: 1px solid rgba(white, .3);
         bottom: 0;
-        color: white;
         display: none;
         font-size: small;
         padding: 1.2em .6em;
