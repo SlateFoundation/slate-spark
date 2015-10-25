@@ -143,7 +143,7 @@ function getHandler(req, res, next) {
                           FROM new_learn_resources lr
                      LEFT JOIN learn_activity la
                             ON la.resource_id = lr.id
-                           AND la.user_id = $${x};`;
+                           AND la.user_id = $${++x};`;
                 } else {
                     sql += 'SELECT * FROM new_learn_resources;';
                 }

@@ -22,7 +22,7 @@ if (calledDirectly && !process.argv.some(arg => arg.indexOf('forever') !== -1 ||
 
 function spawnWorker(logger) {
     var server = worker.createServer(logger),
-        port = settings.server.port || 8080;
+        port = settings.server.port || 8090;
 
     server.listen(port, function () {
         console.info('%s listening at %s', server.name, server.url);
