@@ -126,7 +126,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         // TODO: load actual StudentSparkpoint model
         Slate.API.loadSessionData(function(success, response) {
             me.setStudentSparkpoint(me.getStudentSparkpointModel().create({
-                student_id: response.data.data.ID,
+                student_id: response.data.data.PersonID,
                 sparkpoint_id: sparkpoint // TODO: get sparkpoint_id from actual API and use that instead of code
 
                 // TODO: remove test data
