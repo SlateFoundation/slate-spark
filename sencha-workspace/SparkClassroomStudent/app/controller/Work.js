@@ -37,6 +37,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             xtype: 'spark-student-work-ct'
         },
         workTabbar: 'spark-work-tabbar',
+        learnTab: 'spark-work-tab#learn',
+        conferenceTab: 'spark-work-tab#conference',
+        applyTab: 'spark-work-tab#apply',
+        assessTab: 'spark-work-tab#assess',
 
         learnCt: {
             selector: 'spark-student-work-learn',
@@ -74,6 +78,14 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         workTabbar: {
             activetabchange: 'onWorkTabChange'
         }
+    },
+
+    listen: {
+        controller: {
+            '#': {
+                studentsparkpointload: 'onStudentSparkpointLoad'
+            }
+        },
     },
 
 
@@ -127,6 +139,37 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
 
     // event handlers
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        var me = this,
+            now = new Date(),
+            learnStartTime = studentSparkpoint.get('learn_start_time'),
+            conferenceStartTime = studentSparkpoint.get('conference_start_time'),
+            applyStartTime = studentSparkpoint.get('apply_start_time'),
+            assessStartTime = studentSparkpoint.get('assess_start_time');
+
+        me.getLearnTab().setDuration(
+            learnStartTime &&
+            ((studentSparkpoint.get('learn_finish_time') || now) - learnStartTime) / 1000
+        );
+
+        me.getConferenceTab().setDuration(
+            conferenceStartTime &&
+            ((studentSparkpoint.get('conference_finish_time') || now) - conferenceStartTime) / 1000
+        );
+
+        me.getApplyTab().setDuration(
+            applyStartTime &&
+            ((studentSparkpoint.get('apply_finish_time') || now) - applyStartTime) / 1000
+        );
+
+        me.getAssessTab().setDuration(
+            assessStartTime &&
+            ((studentSparkpoint.get('assess_finish_time') || now) - assessStartTime) / 1000
+        );
+
+        me.getWorkTabbar().setActivePhase(studentSparkpoint.get('active_phase'));
+    },
+
     onNavWorkTap: function() {
         this.redirectTo('work');
     },

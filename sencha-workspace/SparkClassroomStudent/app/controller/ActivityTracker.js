@@ -126,11 +126,6 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
             success: function(response) {
                 var r = Ext.decode(response.responseText);
 
-                me.getLearnTab().setDuration(r.learn_duration);
-                me.getConferenceTab().setDuration(r.conference_duration);
-                me.getApplyTab().setDuration(r.apply_duration);
-                me.getAssessTab().setDuration(r.assess_duration);
-
                 Ext.callback(callback, scope);
             }
         });
