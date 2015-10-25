@@ -80,7 +80,7 @@ Ext.define('SparkClassroomTeacher.Application', {
     // event handers
     onSectionSelect: function(section) {
         Slate.API.setExtraParams({
-            section_id: section
+            section: section
         });
     }
 });
