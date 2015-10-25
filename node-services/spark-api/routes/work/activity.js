@@ -42,11 +42,29 @@ function getHandler(req, res, next) {
 
 function postHandler(req, res, next) {
     var sectionId = req.params['section-id'] || req.params.section,
-        userId = req.params['user-id'] || req.params.user_id || req.params.userId || req.params.userid,
-        phase = ('' + req.params.phase).toLowerCase(),
-        duration = parseInt(req.params.duration, 10) || 0,
-        complete = req.params.complete === 'true',
-        sparkpointId = util.toSparkpointId(req.params.sparkpoint);
+        userId = req.params['user-id'] || req.params.user_id || req.params.student_id,
+        sparkpointId = util.toSparkpointId(req.params.sparkpoint),
+        allKeys = Object.keys(req.body || {}),
+        allowedKeys = [
+            'sparkpoint',
+            'learn_start_time',
+            'learn_finish_time',
+            'conference_start_time',
+            'conference_join_time',
+            'conference_finish_time',
+            'apply_start_time',
+            'apply_ready_time',
+            'apply_finish_time',
+            'assess_start_time',
+            'assess_ready_time',
+            'assess_finish_time'
+        ],
+        activeSql,
+        sparkpointSql,
+        invalidKeys = [],
+        timeKeys = [],
+        updateValues = [],
+        timeValues = [];
 
     if (!sparkpointId) {
         res.send(400, 'Invalid Sparkpoint Id: ' + sparkpointId);
@@ -55,8 +73,8 @@ function postHandler(req, res, next) {
 
     if (req.session.accountLevel === 'Student') {
         userId = req.session.userId;
-    } else if (req.session.accountLevel !== 'Developer' || !userId) {
-        res.send(400, 'This is a student only endpoint, you are logged in as a: ' + req.session.accountLevel);
+    } else if (req.session.accountLevel !== 'Student' && !userId) {
+        res.send(400, 'Non-student users must provide a student_id');
         return next();
     }
 
@@ -65,34 +83,85 @@ function postHandler(req, res, next) {
         return next();
     }
 
-    if (phase !== 'learn' && phase !== 'conference' && phase !== 'apply' && phase !== 'assess') {
-        res.send(400, 'A valid phase is required (learn, conference, apply, assess) you provided: ' + phase);
+    // This filter also sets timeKeys and timeValues
+    invalidKeys = allKeys.filter(function(key) {
+        var val;
+
+        if (key.indexOf('time') !== -1) {
+            val = parseInt(req.body[key], 10);
+
+            if (!isNaN(val)) {
+                val = "'" + new Date(val * 1000).toUTCString() + "'";
+                timeKeys.push(key);
+                timeValues.push(val);
+                updateValues.push(`${key} = ${val}`);
+            }
+        }
+
+        return allowedKeys.indexOf(key) === -1;
+    });
+
+    if (invalidKeys.length > 1) {
+        res.statusCode = 400;
+        res.json({
+            error: 'Unexpected field(s) encountered: ' + invalidKeys.join(', '),
+            body: req.body,
+            params: req.params
+        });
+
         return next();
     }
 
-    var sql = `
-    INSERT INTO activity (user_id, sparkpoint_id, section_id, ${phase}_duration, phase, complete)
-                VALUES ($1, $2, $3, $4, $5, $6)
-    ON CONFLICT (user_id, sparkpoint_id, section_id)
-  DO UPDATE SET ${phase}_duration = activity.${phase}_duration + $4,
-                phase = $5,
-                last_active = CURRENT_TIMESTAMP,
-                complete = $6
-      RETURNING *;`;
+    var activeSql = `
+        INSERT INTO section_student_active_sparkpoint
+             VALUES ($1, $2, $3, current_timestamp)
+        ON CONFLICT (section_id, student_id) DO UPDATE
+                SET opened_time = current_timestamp;`;
 
-    db(req).one(sql, [userId, sparkpointId, sectionId, duration, phase, complete]).then(function (activity) {
-        var sparkpointCode = lookup.sparkpoint.idToCode[activity.sparkpoint_id];
 
-        if (sparkpointCode) {
-            activity.sparkpoint_code = sparkpointCode;
+    db(req).none(activeSql, [userId, sectionId, sparkpointId]).then(function() {
+        if (timeKeys.length === 0) {
+            // Return existing row, no time updates
+            sparkpointSql = `
+                SELECT *
+                  FROM student_sparkpoint
+                 WHERE student_id = $1
+                   AND sparkpoint_id = $2;
+            `;
+
+            db(req).oneOrNone(sparkpointSql, [userId, sparkpointId]).then(function(record) {
+                if (record) {
+                    delete record.id;
+                    res.json(record);
+                    return next();
+                } else {
+                    // TODO: @themightychris: 404?
+                    res.json({});
+                    return next();
+                }
+            }, function (error) {
+                res.statusCode = 500;
+                res.json({error: error});
+                return next();
+            });
+        } else {
+            // Upsert time updates, return updated row
+            sparkpointSql = `INSERT INTO student_sparkpoint (student_id, sparkpoint_id,  ${timeKeys.join(', ')}) VALUES ($1, $2, ${timeValues.join(', ')}) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET ${updateValues.join(',\n')} RETURNING *;`;
+
+            db(req).one(sparkpointSql, [userId, sparkpointId]).then(function(record) {
+                delete record.id;
+                res.json(record);
+                return next();
+            }, function(error) {
+                res.statusCode = 500;
+                res.json({error: error});
+                return next();
+            });
         }
-
-        res.json(activity);
-
-        return next();
-    }, function (err) {
-        res.send(500, err);
-        return next();
+    }, function(err) {
+        res.statusCode = 500;
+        res.json({error: err});
+        next();
     });
 }
 
