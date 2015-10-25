@@ -16,9 +16,11 @@ function getHandler(req, res, next) {
     var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
         standardIds = [],
         openedIds = [],
-        userId;
+        userId,
+        sectionId = req.params.section_id,
+        isStudent = req.session.accountLevel === 'Student';
 
-    if (req.session.accountLevel === 'Student') {
+    if (isStudent) {
         userId = req.session.userId;
     } else {
         userId = req.params['student-id'] || req.params.student_id || req.params.user_id;
@@ -47,6 +49,30 @@ function getHandler(req, res, next) {
         res.contentType = 'json';
         res.send(404, new JsonApiError('Invalid sparkpoint' + (sparkpointIds.length ? 's' : '')));
         return next();
+    }
+
+    // Non student users get a cached view of the playlist
+    if (!isStudent) {
+        db(req).oneOrNone(`
+            SELECT playlist
+              FROM learn_playlist_cache
+             WHERE student_id = $1
+               AND section_id = $2
+               AND sparkpoint_id = $3`,
+            [userId, sectionId, sparkpointIds[0]]).then(function (playlist) {
+                if (playlist) {
+                    res.json(playlist);
+                } else {
+                    res.json([]);
+                }
+                next();
+            }, function (err) {
+                res.statusCode = 500;
+                res.json(err);
+                next();
+            });
+
+        return;
     }
 
     async.parallel({
@@ -149,8 +175,11 @@ function getHandler(req, res, next) {
                 }
 
                 db(req).any(sql, Object.keys(urlResourceMap).concat([userId])).then(function (resourceIdentifiers) {
+                    var cacheSql;
+
                     resourceIdentifiers.forEach(function(resourceId) {
                         var resource =  urlResourceMap[resourceId.url];
+
                         resource.resource_id = resourceId.id;
                         resource.views = resourceId.views;
                         resource.url = resource.url;
@@ -159,9 +188,22 @@ function getHandler(req, res, next) {
                         resource.launched = resourceId.launched || false;
                     });
 
+                    cacheSql = `
+                        INSERT INTO learn_playlist_cache
+                                    (student_id, section_id, sparkpoint_id, playlist, last_updated)
+                             VALUES ($1, $2, $3, $4, current_timestamp) ON CONFLICT (sparkpoint_id, student_id, section_id) DO UPDATE
+                                SET playlist = $4,
+                                    last_updated = current_timestamp;`;
+
+                    db(req).none(cacheSql, [userId, sectionId, sparkpointIds[0], JSON.stringify(resources)]).then(function() {}, function(err) {
+                        console.error('Error caching student learn playlist: ', cacheSql);
+                        console.error(err);
+                    });
+
                     res.json(resources);
                     return next();
-                }, function (err) {
+
+                }, function (err) {s
                     res.send(500, { error: err });
                     return next();
                 });
