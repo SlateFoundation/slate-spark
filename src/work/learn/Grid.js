@@ -15,6 +15,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
     ],
 
     config: {
+        allowToggleComplete: true,
+
         plugins: [
             'gridflex',
             'gridheight'
@@ -51,5 +53,19 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         ],
 
         store: 'work.Learns'
+    },
+
+    updateAllowToggleComplete: function(allowToggleComplete) {
+        var columns = this.getColumns(),
+            columnsLen = columns.length,
+            i = 0, column;
+
+        for (; i < columnsLen; i++) {
+            column = columns[i];
+            if (column.isXType('spark-completed-column')) {
+                column.setAllowToggle(allowToggleComplete);
+                break;
+            }
+        }
     }
 });

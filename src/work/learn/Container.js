@@ -11,6 +11,8 @@ Ext.define('SparkClassroom.work.learn.Container', {
     config: {
         itemId: 'learn',
 
+        allowToggleComplete: false,
+
         items: [{
             layout: 'accordion',
             items: [
@@ -41,5 +43,15 @@ Ext.define('SparkClassroom.work.learn.Container', {
                 }
             ]
         }]
+    },
+
+    updateAllowToggleComplete: function(allowToggleComplete) {
+        var grids = this.query('spark-work-learn-grid'),
+            gridsLen = grids.length,
+            i = 0;
+
+        for (; i < gridsLen; i++) {
+            grids[i].setAllowToggleComplete(allowToggleComplete);
+        }
     }
 });
