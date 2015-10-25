@@ -13,16 +13,12 @@ function getHandler(req, res, next) {
     }
 
     var query = `
-    SELECT a1.*
-      FROM activity AS a1
-INNER JOIN (SELECT user_id,
-                   MAX(last_active) AS last_active_max
-              FROM activity
-          GROUP BY user_id) AS a2
-       ON a1.user_id = a2.user_id
-      AND a1.last_active = a2.last_active_max
-    WHERE complete = false
-      AND section_id = $1`;
+        SELECT ss.*
+          FROM section_student_active_sparkpoint ssas
+          JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
+           AND ss.sparkpoint_id = ssas.sparkpoint_id
+         WHERE ssas.section_id = $1
+           AND ss.assess_finish_time IS NULL`;
 
     db(req).manyOrNone(query, [sectionId]).then(function (activities) {
         res.json(activities.map(function(activity) {
@@ -31,6 +27,8 @@ INNER JOIN (SELECT user_id,
             if (sparkpointCode) {
                 activity.sparkpoint_code = sparkpointCode;
             }
+
+            delete activity.id;
 
             return activity;
         }));
