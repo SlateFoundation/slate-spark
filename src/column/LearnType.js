@@ -28,9 +28,12 @@ Ext.define('SparkClassroom.column.LearnType', {
         cell: {
             encodeHtml: false
         },
-        renderer: function(v, r) {
+        renderer: function(learnType, r) {
+            if (!learnType) {
+                return '';
+            }
+
             var icons = this.self.icons,
-                learnType = r.get('type'),
                 icon = icons[learnType];
 
             if (icon) {

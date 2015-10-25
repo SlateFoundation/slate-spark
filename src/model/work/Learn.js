@@ -13,7 +13,10 @@ Ext.define('SparkClassroom.model.work.Learn', {
             name: 'resource_id',
             type: 'int'
         },
-        'type',
+        {
+            name: 'type',
+            allowNull: true
+        },
         'title',
         'url',
         'dok',
