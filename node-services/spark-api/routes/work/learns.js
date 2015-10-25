@@ -244,7 +244,8 @@ function patchHandler(req, res, next) {
     resources = sentArray ? req.body : [{id: resourceId, completed: completed}];
 
     resourceValues = resources.map(function(resource) {
-        return '(' + (resource.resourceId || resource.id) + ',' + resource.completed + ')';
+        // TODO: escape this
+        return '(' + (resource.resource_id || resource.id) + ',' + resource.completed + ')';
     }).join(',');
 
     db.any(`
