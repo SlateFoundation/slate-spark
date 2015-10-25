@@ -114,9 +114,6 @@ Ext.define('SparkClassroomStudent.controller.ActivityTracker', {
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/work/activity',
-            urlParams: {
-                section_id: me.getActiveSection(),
-            },
             jsonData: {
                 phase: phase,
                 complete: false,
