@@ -78,7 +78,7 @@ function getHandler(req, res, next) {
                                for (var x = 0; x < playlistLen; x++) {
                                    if (activity.resource_id === playlist[x].resource_id) {
                                        playlist[x].completed = activity.completed;
-                                       playlist[x].start_status = activity.start_status;
+                                       playlist[x].launched = activity.launched;
                                        break;
                                    }
                                }
