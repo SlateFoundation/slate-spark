@@ -5,7 +5,7 @@ var db = require('../../lib/database'),
     lookup = require('../../lib/lookup');
 
 function getHandler(req, res, next) {
-    var sectionId = req.params['section-id'] || req.params.section_id || req.params.sectionId || req.params.sectionid;
+    var sectionId = req.params['section-id'] || req.params.section;
 
     if (!sectionId) {
         res.send(400, 'sectionid is required.');
@@ -43,7 +43,7 @@ INNER JOIN (SELECT user_id,
 }
 
 function postHandler(req, res, next) {
-    var sectionId = req.params['section-id'] || req.params.section_id || req.params.sectionId || req.params.sectionid,
+    var sectionId = req.params['section-id'] || req.params.section,
         userId = req.params['user-id'] || req.params.user_id || req.params.userId || req.params.userid,
         phase = ('' + req.params.phase).toLowerCase(),
         duration = parseInt(req.params.duration, 10) || 0,

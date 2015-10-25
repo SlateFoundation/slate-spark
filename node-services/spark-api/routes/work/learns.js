@@ -17,7 +17,7 @@ function getHandler(req, res, next) {
         standardIds = [],
         openedIds = [],
         userId,
-        sectionId = req.params.section_id,
+        sectionId = req.params.section,
         isStudent = req.session.accountLevel === 'Student';
 
     if (isStudent) {
