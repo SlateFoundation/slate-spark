@@ -45,3 +45,6 @@
 [submodule "sencha-workspace/packages/jarvus-fileupload"]
 	path = sencha-workspace/packages/jarvus-fileupload
 	url = git@github.com:JarvusInnovations/jarvus-fileupload.git
+[submodule "sencha-workspace/packages/jarvus-googlepicker"]
+	path = sencha-workspace/packages/jarvus-googlepicker
+	url = https://github.com/JarvusInnovations/jarvus-googlepicker.git
