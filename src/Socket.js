@@ -179,5 +179,9 @@ Ext.define('SparkClassroom.Socket', {
                 me.getConnectionDebug() && console.error('[SOCKET.IO] max retries exceeded, giving up on reconnecting...');
             });
         }
+    },
+
+    emit: function(event, data) {
+        this.getIoSocket().emit(event, data);
     }
 });
