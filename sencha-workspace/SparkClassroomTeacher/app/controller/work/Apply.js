@@ -18,7 +18,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         headerCmp: 'spark-teacher-work-apply #headerCmp',
         timelineCmp: 'spark-teacher-work-apply #timelineCmp',
         linksCmp: 'spark-teacher-work-apply #linksCmp',
-        tasksGrid: 'spark-teacher-work-apply spark-teacher-work-apply-tasksgrid',
+        tasksGrid: 'spark-teacher-work-apply spark-work-apply-tasksgrid',
         reflectionCmp: 'spark-teacher-work-apply #reflectionCmp',
         submissionsView: 'spark-teacher-work-apply #submissionsView',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn',
