@@ -164,7 +164,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                 xtype: 'container',
                                 items: [
                                     {
-                                        itemId: 'todosGrid',
+                                        itemId: 'tasksGrid',
 
                                         xtype: 'grid',
                                         plugins: [
@@ -237,12 +237,13 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 itemId: 'linksCmp',
 
                                                 xtype: 'component',
+                                                styleHtmlContent: true,
                                                 tpl: [
-                                                    '<ul class="link-list">',
+                                                    '<ol class="link-list">',
                                                         '<tpl for=".">',
                                                             '<li class="link-list-item"><a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a></li>',
                                                         '</tpl>',
-                                                    '</ul>'
+                                                    '</ol>'
                                                 ]
                                             }
                                         ]
