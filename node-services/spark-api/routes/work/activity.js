@@ -138,11 +138,11 @@ function patchHandler(req, res, next) {
                     record = {
                         student_id: userId,
                         sparkpoint_id: sparkpointId,
-                        sparkpoint_code: lookup.sparkpoint.idToCode(sparkpointId),
+                        sparkpoint_code: lookup.sparkpoint.idToCode[sparkpointId]
                     };
 
                     timeKeys.forEach(function(key) {
-                      record[key] = null;
+                        record[key] = null;
                     });
 
                     res.json(record);
