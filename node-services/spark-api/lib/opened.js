@@ -419,7 +419,8 @@ function normalize(item) {
         },
         score: null,
         attachments: [],
-        vendor: item.contribution_name
+        vendor: item.contribution_name,
+        premium: !!item.is_premium
     };
 }
 
