@@ -24,6 +24,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     control: {
         learnCt: {
             activate: 'onLearnCtActivate'
+        },
+        readyBtn: {
+            tap: 'onReadyBtnTap'
         }
     },
 
@@ -125,6 +128,17 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 studentSparkpoint.save();
             }
         }
+    },
+
+    onReadyBtnTap: function() {
+        var studentSparkpoint = this.getStudentSparkpoint();
+
+        if (!studentSparkpoint.get('learn_finish_time')) {
+            studentSparkpoint.set('learn_finish_time', new Date());
+            studentSparkpoint.save();
+        }
+
+        this.redirectTo('work/conference')
     },
 
 
