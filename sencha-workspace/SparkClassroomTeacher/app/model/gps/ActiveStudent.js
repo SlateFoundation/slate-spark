@@ -87,29 +87,6 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             }
         },
         {
-            name: 'conference_ready',
-            allowNull: true,
-
-            persist: false,
-            convert: function(v, r) {
-                var conferenceReadyTimes = r.self.conferenceReadyTimes = r.self.conferenceReadyTimes || {},
-                    userId = r.get('student_id');
-
-                // temporarily persist value in model instance until backend is implemented
-                if (userId in conferenceReadyTimes) {
-                    if (v === undefined) {
-                        v = conferenceReadyTimes[userId];
-                    } else {
-                        conferenceReadyTimes[userId] = v;
-                    }
-                } else if(r.get('phase') == 'conference') {
-                    conferenceReadyTimes[userId] = v = Ext.Object.getSize(conferenceReadyTimes) ? new Date(Date.now() - (Math.random() * 1000 * 60 * 10)) : null;
-                }
-
-                return v || null;
-            }
-        },
-        {
             name: 'conference_group',
             type: 'int',
             allowNull: true,

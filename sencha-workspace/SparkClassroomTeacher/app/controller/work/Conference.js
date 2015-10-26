@@ -310,7 +310,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 conferencingStudentsGrid.setSelection(activeStudent);
             }
 
-            me.getWaitingCt().setHidden(!activeStudent.get('conference_ready') || conferenceGroup);
+            me.getWaitingCt().setHidden(!activeStudent.get('conference_start_time') || conferenceGroup);
             me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
             me.getConferencingCt().setHidden(!conferenceGroup);
             me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);

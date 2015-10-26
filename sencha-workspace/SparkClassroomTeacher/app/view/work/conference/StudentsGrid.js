@@ -34,7 +34,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
                             filters: [
                                 {
                                     filterFn: function(r) {
-                                        return r.get('phase') == 'conference' && r.get('conference_ready') && !r.get('conference_group');
+                                        return r.get('phase') == 'conference' && r.get('conference_start_time') && !r.get('conference_group');
                                     }
                                 }
                             ]
