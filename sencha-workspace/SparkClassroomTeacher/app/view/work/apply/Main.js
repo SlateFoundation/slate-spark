@@ -86,18 +86,20 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                     {
                         items: [
                             {
+                                xtype: 'spark-panel',
                                 title: 'Related Docs',
                                 items: [
                                     {
+                                        itemId: 'linksCmp',
+
                                         xtype: 'component',
-                                        styleHtmlContent: true,
-                                        html: [
-                                            '<ol>',
-                                                '<li><a href="#">Link to Google Doc</a></li>',
-                                                '<li><a href="#">Link to Google Doc</a></li>',
-                                                '<li><a href="#">Link to Google Doc</a></li>',
-                                            '</ol>'
-                                        ].join('')
+                                        tpl: [
+                                            '<ul class="link-list">',
+                                                '<tpl for=".">',
+                                                    '<li class="link-list-item"><a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a></li>',
+                                                '</tpl>',
+                                            '</ul>'
+                                        ]
                                     }
                                 ]
                             }

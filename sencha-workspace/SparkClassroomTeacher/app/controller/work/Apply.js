@@ -16,6 +16,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         applyCt: 'spark-teacher-work-apply',
         headerCmp: 'spark-teacher-work-apply #headerCmp',
         timelineCmp: 'spark-teacher-work-apply #timelineCmp',
+        linksCmp: 'spark-teacher-work-apply #linksCmp',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn'
     },
 
@@ -99,6 +100,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
                 finish: student && student.get('apply_finish_time'),
                 estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
             });
+
+            me.getLinksCmp().setData(apply.get('links').map(function(link) {
+                return {
+                    title: link.title || link.url.replace(/^https?:\/\//, ''),
+                    url: link.url
+                };
+            }));
 
             applyCt.show();
         } else {
