@@ -135,8 +135,17 @@ function patchHandler(req, res, next) {
                     res.json(record);
                     return next();
                 } else {
-                    // TODO: @themightychris: 404?
-                    res.json({});
+                    record = {
+                        student_id: userId,
+                        sparkpoint_id: sparkpointId,
+                        sparkpoint_code: lookup.sparkpoint.idToCode(sparkpointId),
+                    };
+
+                    timeKeys.forEach(function(key) {
+                      record[key] = null;
+                    });
+
+                    res.json(record);
                     return next();
                 }
             }, function (error) {
