@@ -4,7 +4,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     config: {
-        activeSparkpoint: null
+        studentSparkpoint: null
     },
 
 
@@ -13,30 +13,34 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     ],
 
     refs: {
-        assessCt: 'spark-student-work-assess'
+        assessCt: 'spark-student-work-assess',
+        illuminateLauncher: 'spark-student-work-assess #illuminateLauncher'
     },
 
     control: {
         assessCt: {
             activate: 'onAssessCtActivate'
+        },
+        illuminateLauncher: {
+            launchclick: 'onIlluminateLaunchClick'
         }
     },
 
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect'
+                studentsparkpointload: 'onStudentSparkpointLoad'
             }
         }
     },
 
 
     // config handlers
-    updateActiveSparkpoint: function(sparkpoint) {
+    updateStudentSparkpoint: function(studentSparkpoint) {
         var store = this.getWorkAssessmentsStore();
 
         // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
         // TODO: reload store if sparkpoints param dirty
         if (store.isLoaded()) {
@@ -46,8 +50,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     // event handlers
-    onSparkpointSelect: function(sparkpoint) {
-        this.setActiveSparkpoint(sparkpoint);
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
     },
 
     onAssessCtActivate: function(learnCt) {
@@ -66,5 +70,19 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
             appliesStore.load();
         }
+    },
+
+    onIlluminateLaunchClick: function(launcher, ev) {
+        var studentSparkpoint = this.getStudentSparkpoint();
+
+        // TODO: disable/enable the button automatically
+        if (!studentSparkpoint.get('apply_finish_time')) {
+            Ext.Msg.alert('Not Ready', 'Wait until your apply has been graded before starting your assessment');
+            ev.stopEvent();
+            return;
+        }
+
+        studentSparkpoint.set('assess_start_time', new Date());
+        studentSparkpoint.save();
     }
 });
