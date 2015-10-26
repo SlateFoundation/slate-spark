@@ -127,11 +127,10 @@ function patchHandler(req, res, next) {
 
     activeSql = `
         INSERT INTO section_student_active_sparkpoint
-                    (section_id, student_id, sparkpoint_id, opened_time)
-             VALUES ($1, $2, $3, current_timestamp)
-        ON CONFLICT (section_id, student_id, sparkpoint_id) DO UPDATE
-                SET opened_time = current_timestamp;`;
-
+                    (section_id, student_id, sparkpoint_id)
+             VALUES ($1, $2, $3)
+        ON CONFLICT (section_id, student_id) DO UPDATE
+                SET sparkpoint_id = $3`;
 
     db(req).none(activeSql, [sectionId, userId, sparkpointId]).then(function() {
         if (timeKeys.length === 0) {
