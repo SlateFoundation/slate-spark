@@ -23,7 +23,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         headerCmp: 'spark-student-work-apply #headerCmp',
         todosGrid: 'spark-student-work-apply grid#todosGrid',
         linksCmp: 'spark-student-work-apply #linksCmp',
-        attachFileButton: 'spark-panel button#attachFileBtn'
+        submissionsView: 'spark-student-work-apply #submissionsView',
+        attachFileButton: 'spark-panel button#attachFileBtn',
+        attachLinkBtn: 'spark-panel button#attachLinkBtn'
     },
 
     control: {
@@ -43,7 +45,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             tap: 'onChooseAgainTap'
         },
         attachFileButton: {
-            tap: 'onAttachFileButtonTap'
+            tap: 'onAttachFileBtnTap'
+        },
+        attachLinkBtn: {
+            tap: 'onAttachLinkBtnTap'
         }
     },
 
@@ -152,8 +157,39 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         this.setActiveApply(null);
     },
 
-    onAttachFileButtonTap: function() {
+    onAttachFileBtnTap: function() {
         //console.log('onAttachFileButtonTap');
+    },
+
+    onAttachLinkBtnTap: function() {
+        var me = this;
+
+        Ext.Msg.show({
+            title: 'Attach link',
+            message: 'Paste the link you wish to attach',
+            buttons  : Ext.MessageBox.OKCANCEL,
+            prompt: {
+                placeHolder: 'http://...'
+            },
+            fn: function(btnId, url) {
+                if (btnId != 'ok') {
+                    return;
+                }
+
+                Slate.API.request({
+                    method: 'POST',
+                    url: '/spark/api/work/applies/submissions',
+                    jsonData: {
+                        sparkpoint: me.getActiveSparkpoint(),
+                        id: me.getActiveApply().getId(),
+                        url: url
+                    },
+                    success: function(response) {
+                        me.getSubmissionsView().getStore().loadData(response.data.submissions);
+                    }
+                });
+            }
+        }).down('field').focus();
     },
 
 
