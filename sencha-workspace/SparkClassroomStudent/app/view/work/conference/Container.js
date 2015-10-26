@@ -3,14 +3,14 @@ Ext.define('SparkClassroomStudent.view.work.conference.Container', {
     extend: 'SparkClassroom.work.conference.Container',
     xtype: 'spark-student-work-conference',
     requires: [
-        'SparkClassroomStudent.view.work.conference.PeerForm'
+        'SparkClassroomStudent.view.work.conference.Worksheet'
     ],
 
     initialize: function () {
         this.callParent(arguments);
 
         this.add([{
-            xtype: 'spark-student-work-conference-peerform'
+            xtype: 'spark-student-work-conference-worksheet'
         },{
             xtype: 'container',
             layout: {

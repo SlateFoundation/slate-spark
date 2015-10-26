@@ -17,11 +17,16 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         'work.ConferenceResources@SparkClassroom.store'
     ],
 
+    models: [
+        'ConferenceWorksheet'
+    ],
+
     refs: {
         conferenceCt: 'spark-student-work-conference',
         sparkpointCt: 'spark-student-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
         resourcesList: 'spark-worklist#resources',
+        worksheetForm: 'spark-student-work-conference-worksheet',
         requestBtn: 'spark-student-work-conference #requestConferenceBtn'
     },
 
@@ -31,6 +36,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         },
         questionsList: {
             submit: 'onQuestionSubmit'
+        },
+        'spark-student-work-conference-worksheet field': {
+            change: 'onWorksheetFieldChange'
         },
         requestBtn: {
             tap: 'onRequestBtnTap'
@@ -90,9 +98,16 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     onConferenceQuestionsStoreLoad: function(questionsStore) {
-        var me = this;
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint(),
+            rawData = questionsStore.getProxy().getReader().rawData || {},
+            worksheet = me.getConferenceWorksheetModel().create(Ext.apply({
+                sparkpoint: studentSparkpoint.get('sparkpoint')
+            }, rawData.worksheet));
 
-        me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
+        me.getWorkConferenceResourcesStore().loadData(rawData.resources || []);
+
+        me.getWorksheetForm().setRecord(worksheet);
 
         me.refreshQuestions();
         me.refreshResources();
@@ -115,6 +130,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 me.refreshQuestions();
             }
         });
+    },
+
+    onWorksheetFieldChange: function(field, value) {
+        this.writeWorksheet();
     },
 
     onRequestBtnTap: function() {
@@ -185,5 +204,13 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             title: 'Resources',
             items: items
         });
-    }
+    },
+
+    writeWorksheet: Ext.Function.createBuffered(function() {
+        var worksheetForm = this.getWorksheetForm(),
+            worksheet = worksheetForm.getRecord();
+
+        worksheetForm.updateRecord(worksheet);
+        worksheet.save();
+    }, 2000)
 });

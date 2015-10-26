@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomStudent.view.work.conference.PeerForm', {
+Ext.define('SparkClassroomStudent.view.work.conference.Worksheet', {
     extend: 'Ext.form.Panel',
-    xtype: 'spark-student-work-conference-peerform',
+    xtype: 'spark-student-work-conference-worksheet',
     cls: 'content-card',
 
     config: {
@@ -11,11 +11,13 @@ Ext.define('SparkClassroomStudent.view.work.conference.PeerForm', {
         items: [
             {
                 xtype: 'textareafield',
+                name: 'restated',
                 label: 'Restate the Sparkpoint in your own words.',
                 maxRows: 3
             },
             {
                 xtype: 'textareafield',
+                name: 'steps',
                 label: 'Describe the steps used to show understanding of the skill.',
                 maxRows: 6
             },
@@ -30,13 +32,16 @@ Ext.define('SparkClassroomStudent.view.work.conference.PeerForm', {
                 },
                 items: [
                     {
-                        label: '1.'
+                        label: '1.',
+                        name: 'example_1'
                     },
                     {
-                        label: '2.'
+                        label: '2.',
+                        name: 'example_2'
                     },
                     {
-                        label: '3.'
+                        label: '3.',
+                        name: 'example_3'
                     }
                 ]
             },
@@ -53,6 +58,7 @@ Ext.define('SparkClassroomStudent.view.work.conference.PeerForm', {
                 items: [
                     {
                         xtype: 'selectfield',
+                        name: 'peer_id',
                         label: 'Peer’s name',
                         width: '18em',
                         store: 'Students',
@@ -62,6 +68,7 @@ Ext.define('SparkClassroomStudent.view.work.conference.PeerForm', {
                     },
                     {
                         xtype: 'textareafield',
+                        name: 'peer_feedback',
                         label: 'Feedback from peer'
                     }
                 ]
