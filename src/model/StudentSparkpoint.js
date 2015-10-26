@@ -1,19 +1,32 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
+    requires: [
+        'Slate.proxy.API'
+    ],
 
 
+    idProperty: 'sparkpoint',
     fields: [
-        // composite key
+        {
+            name: 'sparkpoint',
+            type: 'string'
+        },
+        {
+            name: 'section',
+            type: 'string'
+        },
         {
             name: 'student_id',
             type: 'int',
-            critical: true
+            allowNull: true,
+            persist: false
         },
         {
             name: 'sparkpoint_id',
             type: 'string',
-            critical: true
+            allowNull: true,
+            persist: false
         },
 
         // learning cycle milestone timestamps
@@ -93,5 +106,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return 'learn';
             }
         }
-    ]
+    ],
+
+    proxy: {
+        type: 'slate-api',
+        url: '/spark/api/work/activity',
+
+        writer: {
+            type: 'json',
+            allowSingle: true
+        }
+    }
 });
