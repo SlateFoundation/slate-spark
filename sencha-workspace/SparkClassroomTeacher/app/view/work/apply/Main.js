@@ -133,8 +133,10 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                         flex: 2,
                         items: [
                             {
+                                itemId: 'reflectionCmp',
+
                                 title: 'Reflection',
-                                html: 'This helps me start thinking of math as a language, not a pile of numbers. Just like any other language, math can help us communicate thoughts and ideas with each other, but we need to know the basics before they can really understand it.  At its simplest, an expression is a thought or idea communicated by language. In the same way, a mathematical expression can be considered a mathematical thought or idea communicated by the language of mathematics.  Mathematics is a language, just as English, French, German, and Pig Latin are languages. '
+                                tpl: '{[fm.nl2br(fm.htmlEncode(values.reflection))]}'
                             }
                         ]
                     },
