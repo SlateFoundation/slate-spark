@@ -2,7 +2,8 @@
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
-        'Slate.proxy.API'
+        'Slate.proxy.API',
+        'SparkClassroom.data.field.SparkDate'
     ],
 
 
@@ -32,47 +33,47 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         // learning cycle milestone timestamps
         {
             name: 'learn_start_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'learn_finish_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'conference_start_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'conference_join_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'conference_finish_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'apply_start_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'apply_ready_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'apply_finish_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'assess_start_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'assess_ready_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },{
             name: 'assess_finish_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true
         },
 
