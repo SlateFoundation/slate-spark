@@ -126,31 +126,29 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                     //     text: 'Grading Rubric'
                                     // },
                                     {
+                                        itemId: 'timelineCmp',
+
                                         cls: 'text-right',
-                                        data: {
-                                            'Start Date': '2015-03-05',
-                                            'Est. End Date': '2015-03-09'
-                                        },
                                         tpl: [
                                             '<dl class="kv-list align-right">',
-                                                '<tpl for="this.objectToArray(values)">',
+                                                '<tpl if="start">',
                                                     '<div class="kv-pair">',
-                                                        '<dt class="kv-key">{key}</dt>',
-                                                        '<dd class="kv-value">{value:date}</dd>',
+                                                        '<dt class="kv-key">Start Date</dt>',
+                                                        '<dd class="kv-value">{start:date("n/j/y")}</dd>',
                                                     '</div>',
                                                 '</tpl>',
-                                            '</dl>',
-                                            {
-                                                objectToArray: function(values){
-                                                    var array = [];
-                                                    for(var key in values){
-                                                        if(values.hasOwnProperty(key)){
-                                                            array.push({key: key, value: values[key]});
-                                                        }
-                                                    }
-                                                    return array;
-                                                }
-                                            }
+                                                '<tpl if="finish">',
+                                                    '<div class="kv-pair">',
+                                                        '<dt class="kv-key">Finish Date</dt>',
+                                                        '<dd class="kv-value">{finish:date("n/j/y")}</dd>',
+                                                    '</div>',
+                                                '<tpl elseif="estimate">',
+                                                    '<div class="kv-pair">',
+                                                        '<dt class="kv-key">Expected End Date</dt>',
+                                                        '<dd class="kv-value">{estimate:date("n/j/y")}</dd>',
+                                                    '</div>',
+                                                '</tpl>',
+                                            '</dl>'
                                         ]
                                     }
                                 ]
