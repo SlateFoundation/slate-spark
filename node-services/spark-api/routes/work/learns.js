@@ -127,7 +127,13 @@ function getHandler(req, res, next) {
                         return callback(null, []);
                     }
 
-                    callback(null, resources.resources ? resources.resources.map(OpenEd.normalize) : []);
+                    resources = resources.resources ? resources.resources.map(OpenEd.normalize) : [];
+
+                    resources = resources.filter(function(resource) {
+                        return resource.type === 'video' && !resource.premium;
+                    });
+
+                    callback(null, resources);
                 });
             },
 
