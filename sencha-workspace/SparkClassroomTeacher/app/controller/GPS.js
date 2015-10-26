@@ -111,20 +111,24 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'student_sparkpoint') {
-            return;
-        }
-
         var me = this,
+            table = data.table,
             itemData = data.item,
-            activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id),
+            activeStudent,
             updatedFields;
 
-        if (activeStudent) {
-            updatedFields = activeStudent.set(itemData, { dirty: false });
+        if (table == 'section_student_active_sparkpoint' && data.type == 'insert') {
+            // TODO: handle this without a fulle refresh if possible
+            me.getGpsActiveStudentsStore().loadUpdates();
+        }
 
-            if (updatedFields.length) {
-                me.getApplication().fireEvent('studentupdate', activeStudent, updatedFields);
+        if (table == 'student_sparkpoint') {
+            if (activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id)) {
+                updatedFields = activeStudent.set(itemData, { dirty: false });
+
+                if (updatedFields.length) {
+                    me.getApplication().fireEvent('studentupdate', activeStudent, updatedFields);
+                }
             }
         }
     },
