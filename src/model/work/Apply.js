@@ -37,11 +37,24 @@ Ext.define('SparkClassroom.model.work.Apply', {
             }
         },
 
-        // local-only
+        // student-personalized fields
         {
-            name: 'completed',
+            name: 'sparkpoint',
+            critical: true
+        },
+        {
+            name: 'selected',
             type: 'boolean',
             defaultValue: false
         }
-    ]
+    ],
+
+    proxy: {
+        type: 'slate-api',
+        url: '/spark/api/work/applies',
+        writer: {
+            type: 'json',
+            allowSingle: true
+        }
+    }
 });

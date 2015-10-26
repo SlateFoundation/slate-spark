@@ -5,12 +5,5 @@ Ext.define('SparkClassroom.store.work.Applies', {
         'Slate.proxy.API'
     ],
 
-    model: 'SparkClassroom.model.work.Apply',
-
-    config: {
-        proxy: {
-            type: 'slate-api',
-            url: '/spark/api/work/applies'
-        }
-    }
+    model: 'SparkClassroom.model.work.Apply'
 });
