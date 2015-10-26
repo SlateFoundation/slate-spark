@@ -14,6 +14,15 @@ Ext.define('SparkClassroom.Socket', {
 
     config: {
         ioSocket: null,
+        schema: null,
+
+        hostSchemas: {
+            'sandbox-school.matchbooklearning.com': 'sandbox-school',
+            'staging.spark.mta.matchbooklearning.com': 'mta-staging',
+            'staging.spark.merit.matchbooklearning.com': 'merit-staging',
+            'spark.mta.matchbooklearning.com': 'mta-live',
+            'spark.merit.matchbooklearning.com': 'merit-live',
+        },
 
         supressAlert: false,
         debug: false,
@@ -92,8 +101,13 @@ Ext.define('SparkClassroom.Socket', {
         });
     },
 
+    updateHostSchemas: function(hostSchemas) {
+        this.setSchema(hostSchemas[Slate.API.getHost()] || null);
+    },
+
     updateIoSocket: function(ioSocket, oldIoSocket) {
-        var me = this;
+        var me = this,
+            schema = me.getSchema();
 
 
         if (oldIoSocket) {
@@ -103,6 +117,10 @@ Ext.define('SparkClassroom.Socket', {
 
         if (ioSocket) {
             ioSocket.on('db', function (data) {
+                if (data.schema != schema) {
+                    return;
+                }
+
                 if (me.getOutputData()) {
                     console[me.getCollapsedData() ? 'groupCollapsed' : 'group'](data.schema + '.' + data.table + '.' + data.pk);
                     console.table([data.item], Object.keys(data.item));
