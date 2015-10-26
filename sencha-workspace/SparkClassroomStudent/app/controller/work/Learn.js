@@ -118,6 +118,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             },{
                 dirty: false
             });
+
+            // mark learn phase as started if a learn has been launched
+            if (updatedLearn.get('launched') && !studentSparkpoint.get('learn_start_time')) {
+                studentSparkpoint.set('learn_start_time', new Date());
+                studentSparkpoint.save();
+            }
         }
     },
 
