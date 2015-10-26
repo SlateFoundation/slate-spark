@@ -46,7 +46,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         this.setActiveSparkpoint(sparkpointCode);
 
         // TODO: track dirty state of extraparams?
-        proxy.setExtraParam('student_id', activeStudent.get('user_id'));
+        proxy.setExtraParam('student_id', activeStudent.get('student_id'));
         proxy.setExtraParam('sparkpoint', sparkpointCode);
 
         if (store.isLoaded()) {

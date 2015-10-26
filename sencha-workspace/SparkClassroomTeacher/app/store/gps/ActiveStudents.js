@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.store.gps.ActiveStudents', {
 
         me.createOperation('read', {
             callback: function(incomingRecords) {
-                var existingIds = me.collect('user_id'),
+                var existingIds = me.collect('student_id'),
                     i, len,
                     id, existingRecord, incomingRecord,
                     newRecords = [];

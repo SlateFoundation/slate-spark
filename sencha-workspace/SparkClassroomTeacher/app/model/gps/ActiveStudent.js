@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             persist: false,
             convert: function(v, r) {
                 var priorityGroups = r.self.priorityGroups = r.self.priorityGroups || {},
-                    userId = r.get('user_id');
+                    userId = r.get('student_id');
 
                 // temporarily persist value in model instance until backend is implemented
                 if (v === undefined) {
@@ -51,7 +51,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             convert: function(v, r) {
                 var types = ['question-general','question-academic','question-technology','bathroom','locker','nurse'],
                     helpRequests = r.self.helpRequests = r.self.helpRequests || {},
-                    userId = r.get('user_id');
+                    userId = r.get('student_id');
 
                 // temporarily persist value in model instance until backend is implemented
                 if (userId in helpRequests) {
@@ -93,7 +93,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             persist: false,
             convert: function(v, r) {
                 var conferenceReadyTimes = r.self.conferenceReadyTimes = r.self.conferenceReadyTimes || {},
-                    userId = r.get('user_id');
+                    userId = r.get('student_id');
 
                 // temporarily persist value in model instance until backend is implemented
                 if (userId in conferenceReadyTimes) {
@@ -118,7 +118,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             persist: false,
             convert: function(v, r) {
                 var conferenceGroups = r.self.conferenceGroups = r.self.conferenceGroups || {},
-                    userId = r.get('user_id');
+                    userId = r.get('student_id');
 
                 // temporarily persist value in model instance until backend is implemented
                 if (v === undefined) {
