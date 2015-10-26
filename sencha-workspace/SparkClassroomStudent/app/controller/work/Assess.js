@@ -4,6 +4,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     config: {
+        activeSparkpoint: null, // TODO: deprecate
         studentSparkpoint: null
     },
 
@@ -29,6 +30,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     listen: {
         controller: {
             '#': {
+                sparkpointselect: 'onSparkpointSelect',
                 studentsparkpointload: 'onStudentSparkpointLoad'
             }
         }
@@ -36,11 +38,11 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
+    updateActiveSparkpoint: function(sparkpoint) {
         var store = this.getWorkAssessmentsStore();
 
         // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
+        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
 
         // TODO: reload store if sparkpoints param dirty
         if (store.isLoaded()) {
@@ -50,6 +52,10 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     // event handlers
+    onSparkpointSelect: function(sparkpoint) {
+        this.setActiveSparkpoint(sparkpoint);
+    },
+
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
