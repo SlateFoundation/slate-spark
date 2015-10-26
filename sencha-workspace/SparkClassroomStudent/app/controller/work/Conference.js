@@ -96,12 +96,22 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     onQuestionSubmit: function(questionsList) {
-        this.getWorkConferenceQuestionsStore().add({
-            question: questionsList.getInnerHtmlElement().down('input').getValue(),
-            studentSubmitted: true
-        });
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint();
 
-        this.refreshQuestions();
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/work/conferences/questions',
+            jsonData: {
+                sparkpoint: studentSparkpoint.get('sparkpoint'),
+                source: 'student',
+                question: questionsList.getInnerHtmlElement().down('input').getValue()
+            },
+            success: function(response) {
+                me.getWorkConferenceQuestionsStore().loadRawData([response.data], true);
+                me.refreshQuestions();
+            }
+        });
     },
 
     onRequestBtnTap: function() {
@@ -126,7 +136,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             items.push({
                 text: question.get('question'),
-                studentSubmitted: question.get('studentSubmitted')
+                source: question.get('source')
             });
         }
 
