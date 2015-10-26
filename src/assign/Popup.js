@@ -37,7 +37,7 @@ Ext.define('SparkClassroom.assign.Popup', {
                         tpl: ['<tpl for="student.getData()">{FullName}</tpl>']
                     },
                     {
-                        dataIndex: 'sparkpoint_code',
+                        dataIndex: 'sparkpoint',
                         text: 'Current Sparkpoint',
                         flex: 1
                     }
