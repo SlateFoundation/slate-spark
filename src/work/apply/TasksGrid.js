@@ -9,6 +9,8 @@ Ext.define('SparkClassroom.work.apply.TasksGrid', {
     ],
 
     config: {
+        allowToggleComplete: false,
+
         plugins: [
             'gridflex',
             'gridheight'
@@ -50,5 +52,19 @@ Ext.define('SparkClassroom.work.apply.TasksGrid', {
                 sortable: false
             }
         ]
+    },
+
+    updateAllowToggleComplete: function(allowToggleComplete) {
+        var columns = this.getColumns(),
+            columnsLen = columns.length,
+            i = 0, column;
+
+        for (; i < columnsLen; i++) {
+            column = columns[i];
+            if (column.isXType('spark-completed-column')) {
+                column.setAllowToggle(allowToggleComplete);
+                break;
+            }
+        }
     }
 });
