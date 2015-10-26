@@ -185,7 +185,8 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                             {
                                                 xtype: 'spark-completed-column',
                                                 text: null,
-                                                width: 45
+                                                width: 45,
+                                                sortable: false
                                             },
                                             {
                                                 xtype: 'column',
@@ -198,14 +199,16 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 renderer: function(v) {
                                                     var fm = Ext.util.Format;
                                                     return fm.nl2br(fm.htmlEncode(v));
-                                                }
+                                                },
+                                                sortable: false
                                             },
                                             {
                                                 xtype: 'datecolumn',
                                                 text: 'Due Date',
                                                 dataIndex: 'date_due',
                                                 width: 150,
-                                                format: 'l, n/j'
+                                                format: 'l, n/j',
+                                                sortable: false
                                             }
                                         ]
                                     },
