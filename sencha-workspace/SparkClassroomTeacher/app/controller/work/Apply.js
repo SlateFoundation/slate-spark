@@ -130,7 +130,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
                 };
             }));
 
-            me.getTasksGrid().getStore().loadData(apply.get('todos'));
+            me.getWorkApplyTasksStore().loadData(apply.get('todos'));
 
             me.getReflectionCmp().setData(applyData);
 
