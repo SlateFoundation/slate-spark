@@ -27,7 +27,7 @@ function getHandler(req, res, next) {
 
     Promise.props({
         fuseboxQuestions: db(req).manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
-        questions: db(req).manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1', [userId, sparkpointId]),
+        questions: db(req).manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId]),
         resources: db(req).manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
         worksheet: db(req).oneOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
     }).then(function(result) {
