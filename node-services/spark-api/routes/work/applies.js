@@ -35,9 +35,12 @@ function getHandler(req, res, next) {
     db(req).manyOrNone(`
         SELECT *,
                (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS selected,
-               (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS reflection
+               (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS reflection,
+               (SELECT submissions FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS submissions,
+               (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'complete', complete)) FROM todos WHERE user_id = 7 AND apply_id = ap.id) AS my_todos
           FROM spark1.s2_apply_projects ap
          WHERE standardids::JSONB ?| $1`, [standardIds, req.studentId, sparkpointIds]).then(function (result) {
+
         res.json(result.map(function (apply) {
             return {
                 id: apply.id,
@@ -48,12 +51,13 @@ function getHandler(req, res, next) {
                 sparkpointIds: util.toSparkpointIds(apply.standardids),
                 sparkpointCodes: util.toSparkpointCodes(apply.standardids),
                 standardCodes: util.toStandardCodes(apply.standardids),
-                todos: (apply.todos || []).filter(todo => todo !== '\n').map(todo => todo.toString().trim()),
+                todos: apply.my_todos || apply.todos,
                 links: (apply.links || []).filter(link => link !== '\n').map(link => link.toString().trim()),
                 timeEstimate: apply.timestimate,
                 metadata: apply.metadata === '""' ? {} : apply.metadata,
                 selected: apply.selected || false,
-                reflection: apply.reflection
+                reflection: apply.reflection,
+                submissions: apply.submissions || []
             };
         }));
         return next();
