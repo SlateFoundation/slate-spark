@@ -46,6 +46,7 @@ function createServer(logger) {
 
     server.get('/work/conferences', routes.work.conferences.get);
     server.post('/work/conferences/questions', routes.work.conferences.questions.post);
+    server.patch('/work/conferences/worksheet', routes.work.conferences.worksheet.patch);
     server.get('/work/applies', routes.work.applies);
     server.get('/work/assessments', routes.work.assessments);
 
