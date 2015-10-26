@@ -251,6 +251,8 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                         title: 'Submitted Docs',
                                         items: [
                                             {
+                                                itemId: 'submissionsView',
+
                                                 xtype: 'dataview',
                                                 cls: 'link-list', // has-checkboxes // TODO: move back into classes
                                                 itemCls: 'link-list-item',
@@ -258,7 +260,19 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 deferEmptyText: false,
                                                 allowDeselect: true,
                                                 store: {
-                                                    fields: [ 'title', 'url' ]
+                                                    // TODO: move to model
+                                                    fields: [
+                                                        {
+                                                            name: 'url'
+                                                        },
+                                                        {
+                                                            name: 'title',
+                                                            depends: ['url'],
+                                                            convert: function(v, r) {
+                                                                return v || r.get('url').replace(/^https?:\/\//, '');
+                                                            }
+                                                        },
+                                                    ]
                                                 },
                                                 itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                             },
