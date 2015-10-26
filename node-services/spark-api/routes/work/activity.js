@@ -29,8 +29,7 @@ function getHandler(req, res, next) {
          FROM section_student_active_sparkpoint ssas
     LEFT JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
           AND ss.sparkpoint_id = ssas.sparkpoint_id
-        WHERE ssas.section_id = $1
-          AND ss.assess_finish_time IS NULL;
+        WHERE ssas.section_id = $1;
   `;
 
     db(req).manyOrNone(query, [sectionId]).then(function (activities) {
