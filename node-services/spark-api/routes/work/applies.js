@@ -34,7 +34,8 @@ function getHandler(req, res, next) {
 
     db(req).manyOrNone(`
         SELECT *,
-               (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS selected
+               (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS selected,
+               (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS reflection
           FROM spark1.s2_apply_projects ap
          WHERE standardids::JSONB ?| $1`, [standardIds, req.studentId, sparkpointIds]).then(function (result) {
         res.json(result.map(function (apply) {
@@ -51,7 +52,8 @@ function getHandler(req, res, next) {
                 links: (apply.links || []).filter(link => link !== '\n').map(link => link.toString().trim()),
                 timeEstimate: apply.timestimate,
                 metadata: apply.metadata === '""' ? {} : apply.metadata,
-                selected: apply.selected || false
+                selected: apply.selected || false,
+                reflection: apply.reflection
             };
         }));
         return next();
@@ -61,7 +63,7 @@ function getHandler(req, res, next) {
     });
 }
 
-function patchHandler(req, res, next) {
+function patchHandler(req, res, next, todos) {
     var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
         sparkpointId = sparkpointIds[0],
         userId = req.studentId,
@@ -112,14 +114,56 @@ function patchHandler(req, res, next) {
         updateSets.push(`${key} = $${++i}`);
     });
 
-    db(req).one(`
-        INSERT INTO applies
-                    (${Object.keys(apply)})
-             VALUES (${Object.keys(apply).map(function(x, i) { return '$' + (i + 1); })}) ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
-             RETURNING *
-    `, values).then(function(apply) {
-        res.json(apply);
-        return next();
+    db(req).oneOrNone('SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3', [ userId, id, sparkpointId ]).then(function(exists) {
+        if (!exists && !todos) {
+            db(req).one('SELECT todos FROM spark1.s2_apply_projects WHERE id = $1', [id]).then(function(todos) {
+                var values = [ userId, id ],
+                    todoValues;
+
+                todos = todos.todos;
+
+                todoValues = todos.map(function(todo, i) {
+                    values.push(todo);
+                    return `($1, $2, $${i+3})`;
+                });
+
+                db(req).any(`INSERT INTO todos (user_id, apply_id, todo) VALUES ${todoValues.join(',\n')} RETURNING *;`, values).then(function(todos) {
+                    return patchHandler(req, res, next, todos);
+                }, function(error) {
+                    res.statusCode = 500;
+                    res.json({error: error});
+                    return next();
+                });
+
+            }, function(error) {
+                res.statusCode = 500;
+                res.json({error: error});
+                return next();
+            });
+        } else {
+            db(req).one(`
+                INSERT INTO applies
+                            (${Object.keys(apply)})
+                     VALUES (${Object.keys(apply).map(function(x, i) { return '$' + (i + 1); })}) ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
+                     RETURNING *
+            `, values).then(function(apply) {
+                    db(req).any('SELECT id, todo, complete FROM todos WHERE user_id = $1 AND apply_id = $2', [ userId, id ]).then(function(todos) {
+                        db(req).none('UPDATE applies SET selected = false WHERE fb_apply_id != $1 AND sparkpoint_id = $2 and student_id = $3;', [id, sparkpointId, userId]);
+                        apply.todos = todos;
+                        apply.id = apply.fb_apply_id;
+                        res.json(apply);
+                        return next();
+                    }, function(error) {
+                        res.statusCode = 500;
+                        res.json({error: error});
+                        return next();
+                    });
+                }, function(error) {
+                    res.statusCode = 500;
+                    res.json({error: error});
+                    return next();
+                });
+        }
     }, function(error) {
         res.statusCode = 500;
         res.json({error: error});
