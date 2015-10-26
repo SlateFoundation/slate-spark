@@ -4,5 +4,9 @@ Ext.define('SparkClassroom.store.Todos', {
 
 
     model: 'SparkClassroom.model.Todo',
-    autoSync: true
+
+    config: {
+        autoSync: true,
+        sorters: 'id'
+    }
 });
