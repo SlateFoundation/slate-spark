@@ -6,7 +6,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Conference', {
     config: {
         source: 'gps.ActiveStudents',
         filters: [{
-            property: 'phase',
+            property: 'active_phase',
             value: 'conference'
         }],
         grouper: {

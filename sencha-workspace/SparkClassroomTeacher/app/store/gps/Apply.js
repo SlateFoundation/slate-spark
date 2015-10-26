@@ -6,7 +6,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Apply', {
     config: {
         source: 'gps.ActiveStudents',
         filters: [{
-            property: 'phase',
+            property: 'active_phase',
             value: 'apply'
         }]
     }
