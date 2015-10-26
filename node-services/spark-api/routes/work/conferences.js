@@ -21,11 +21,15 @@ function getHandler(req, res, next) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
+    if (req.session.accountLevel === 'Student') {
+        userId = req.session.userId;
+    }
+
     Promise.props({
         fuseboxQuestions: db(req).manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
         questions: db(req).manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1', [userId, sparkpointId]),
         resources: db(req).manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
-        worksheet: db(req).one('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
+        worksheet: db(req).oneOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
     }).then(function(result) {
         var questions = result.fuseboxQuestions.map(function(question) {
             return {
@@ -38,7 +42,7 @@ function getHandler(req, res, next) {
 
         res.json({
             questions: questions,
-            worksheet: result.worksheet.worksheet,
+            worksheet: result.worksheet ? result.worksheet.worksheet : null,
             resources: result.resources.map(function(resource) {
                 return {
                     id: resource.id,
@@ -61,6 +65,16 @@ function questionPostHandler(req, res, next) {
         sparkpointId = sparkpointIds[0],
         userId = req.params.student_id,
         question = req.params.question;
+
+    if (req.session.accountLevel === 'Student') {
+        userId = req.session.userId;
+    }
+
+    if (!userId) {
+        res.statusCode = 400;
+        res.json({error: "userid required", body: req.body, params: req.params});
+        return next();
+    }
 
     db(req).one(`
         INSERT INTO conference_questions
@@ -100,6 +114,16 @@ function worksheetPatchHandler(req, res, next) {
          ],
         invalidKeys = keys.filter(key => allowedKeys.indexOf(key) === -1),
         worksheet = {};
+
+    if (req.session.accountLevel === 'Student') {
+        userId = req.session.userId;
+    }
+
+    if (!userId) {
+        res.statusCode = 400;
+        res.json({error: "userid required", body: req.body, params: req.params});
+        return next();
+    }
 
     if (!sparkpointId) {
         res.statusCode = 400;
