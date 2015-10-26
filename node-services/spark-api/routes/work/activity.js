@@ -12,20 +12,36 @@ function getHandler(req, res, next) {
         return next();
     }
 
+
+
     var query = `
-        SELECT ss.*
-          FROM section_student_active_sparkpoint ssas
-          JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
-           AND ss.sparkpoint_id = ssas.sparkpoint_id
-         WHERE ssas.section_id = $1
-           AND ss.assess_finish_time IS NULL`;
+       SELECT ssas.student_id,
+              ssas.sparkpoint_id,
+              ssas.section_id,
+              ss.learn_start_time,
+              ss.learn_finish_time,
+              ss.conference_start_time,
+              ss.conference_join_time,
+              ss.conference_finish_time,
+              ss.apply_start_time,
+              ss.apply_ready_time,
+              ss.apply_finish_time,
+              ss.assess_start_time,
+              ss.assess_ready_time,
+              ss.assess_finish_time
+         FROM section_student_active_sparkpoint ssas
+    LEFT JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
+          AND ss.sparkpoint_id = ssas.sparkpoint_id
+        WHERE ssas.section_id = $1
+          AND ss.assess_finish_time IS NULL;
+  `;
 
     db(req).manyOrNone(query, [sectionId]).then(function (activities) {
         res.json(activities.map(function(activity) {
             var sparkpointCode = lookup.sparkpoint.idToCode[activity.sparkpoint_id];
 
             if (sparkpointCode) {
-                activity.sparkpoint_code = sparkpointCode;
+                activity.sparkpoint = sparkpointCode;
             }
 
             delete activity.id;
@@ -112,7 +128,7 @@ function patchHandler(req, res, next) {
         return next();
     }
 
-    var activeSql = `
+    activeSql = `
         INSERT INTO section_student_active_sparkpoint
              VALUES ($1, $2, $3, current_timestamp)
         ON CONFLICT (section_id, student_id) DO UPDATE
@@ -137,12 +153,15 @@ function patchHandler(req, res, next) {
                 } else {
                     record = {
                         student_id: userId,
-                        sparkpoint_id: sparkpointId,
-                        sparkpoint_code: lookup.sparkpoint.idToCode[sparkpointId]
+                        sparkpoint_id: sparkpointId
                     };
 
-                    timeKeys.forEach(function(key) {
-                        record[key] = null;
+                    allowedKeys.forEach(function(key) {
+                        if (key === 'sparkpoint') {
+                            record.sparkpoint = lookup.sparkpoint.idToCode[sparkpointId];
+                        } else {
+                            record[key] = null;
+                        }
                     });
 
                     res.json(record);
