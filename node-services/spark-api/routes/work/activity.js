@@ -40,7 +40,7 @@ function getHandler(req, res, next) {
     });
 }
 
-function postHandler(req, res, next) {
+function patchHandler(req, res, next) {
     var sectionId = req.params['section-id'] || req.params.section,
         userId = req.params['user-id'] || req.params.user_id || req.params.student_id,
         sparkpointId = util.toSparkpointId(req.params.sparkpoint),
@@ -167,5 +167,5 @@ function postHandler(req, res, next) {
 
 module.exports = {
     get: getHandler,
-    post: postHandler,
+    patch: patchHandler,
 };

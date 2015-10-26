@@ -49,8 +49,7 @@ function createServer(logger) {
 
     server.get('/work/activity', routes.work.activity.get);
     server.get('/work/activity/:section-id', routes.work.activity.get);
-    server.put('/work/activity', routes.work.activity.post);
-    server.post('/work/activity', routes.work.activity.post);
+    server.patch('/work/activity', routes.work.activity.patch);
 
     server.on('uncaughtException', function (req, res, route, err) {
         res.statusCode = 500;
