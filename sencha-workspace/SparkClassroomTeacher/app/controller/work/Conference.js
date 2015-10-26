@@ -264,8 +264,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         for (; i < studentsLength; i++) {
             student = students[i];
 
-            if (!student.get('conference_done')) {
-                student.set('conference_done', now);
+            if (!student.get('conference_finish_time')) {
+                student.set('conference_finish_time', now);
+                student.save();
             }
         }
     },
