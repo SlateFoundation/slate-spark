@@ -10,12 +10,12 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Worksheet', {
             '<dl class="spark-qna">',
                 '<div class="spark-qna-item">',
                     '<dt class="spark-qna-q">Restate the Sparkpoint in your own words.</dt>',
-                    '<dd class="spark-qna-a">{restated}</dd>',
+                    '<dd class="spark-qna-a">{restated:nl2br}</dd>',
                 '</div>',
 
                 '<div class="spark-qna-item">',
                     '<dt class="spark-qna-q">Describe the steps used to show understanding of the skill.</dt>',
-                    '<dd class="spark-qna-a">{steps}</dd>',
+                    '<dd class="spark-qna-a">{steps:nl2br}</dd>',
                 '</div>',
 
                 '<div class="spark-qna-item">',
@@ -36,7 +36,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Worksheet', {
 
                 '<div class="spark-qna-item">',
                     '<dt class="spark-qna-q">Feedback from peer</dt>',
-                    '<dd class="spark-qna-a">{peer_feedback}</dd>',
+                    '<dd class="spark-qna-a">{peer_feedback:nl2br}</dd>',
                 '</div>',
             '</dl>'
         ]
