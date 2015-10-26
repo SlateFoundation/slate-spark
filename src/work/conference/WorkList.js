@@ -11,7 +11,7 @@ Ext.define('SparkClassroom.work.conference.WorkList', {
             '<ol class="spark-worklist">',
                 '<tpl if="values.items.length &gt; 0">',
                     '<tpl for="items">',
-                        '<li class="spark-worklist-item <tpl if="studentSubmitted">is-student-submitted</tpl>">',
+                        '<li class="spark-worklist-item <tpl if="source == \'student\'">is-student-submitted</tpl>">',
                             '<tpl if="skipHtmlEncode">{text}<tpl else>{text:htmlEncode}</tpl>',
                             '<tpl if="linkUrl">',
                                 '&nbsp;&mdash; ',

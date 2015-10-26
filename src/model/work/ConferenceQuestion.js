@@ -5,12 +5,8 @@ Ext.define('SparkClassroom.model.work.ConferenceQuestion', {
 
     fields: [
         'id',
+        'source',
         'question',
-        'gradeLevel',
-        {
-            name: 'studentSubmitted',
-            type: 'boolean',
-            defaultValue: false
-        }
+        'gradeLevel'
     ]
 });
