@@ -13,14 +13,35 @@ Ext.define('SparkClassroom.work.assess.Container', {
         itemId: 'assess',
 
         items: [
+            // {
+            //     xtype: 'spark-simpleheading',
+            //     cls: 'spark-view-headline',
+            //     level: 1,
+            //     html: 'Select an Assessment'
+            // },
+            // {
+            //     xtype: 'spark-work-assess-assessmentsgrid'
+            // },
             {
-                xtype: 'spark-simpleheading',
-                cls: 'spark-view-headline',
-                level: 1,
-                html: 'Select an Assessment'
-            },
-            {
-                xtype: 'spark-work-assess-assessmentsgrid'
+                xtype: 'container',
+                layout: {
+                    type: 'hbox',
+                    pack: 'center'
+                },
+                items: [{
+                    itemId: 'illuminateLauncher',
+
+                    xtype: 'component',
+                    margin: '0 0 32 0',
+                    html: '<a href="https://matchbook.illuminatehc.com/login" target="_blank" class="button primary">Go to Illuminate</a>',
+                    listeners: {
+                        element: 'element',
+                        delegate: 'a',
+                        click: function(ev, t) {
+                            this.fireEvent('launchclick', this, ev, t);
+                        }
+                    }
+                }]
             },
             {
                 xtype: 'spark-panel',
