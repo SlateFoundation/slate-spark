@@ -49,6 +49,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 sparkpointselect: 'onSparkpointSelect',
                 studentsparkpointload: 'onStudentSparkpointLoad'
             }
+        },
+        store: {
+            '#work.Applies': {
+                load: 'onAppliesStoreLoad'
+            }
         }
     },
 
@@ -112,6 +117,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         if (!store.isLoaded()) {
             store.load();
         }
+    },
+
+    onAppliesStoreLoad: function(appliesStore) {
+        this.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
 
     onAppliesGridSelect: function(appliesGrid) {
