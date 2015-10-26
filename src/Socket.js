@@ -102,7 +102,7 @@ Ext.define('SparkClassroom.Socket', {
     },
 
     updateHostSchemas: function(hostSchemas) {
-        this.setSchema(hostSchemas[Slate.API.getHost()] || null);
+        this.setSchema(hostSchemas[Slate.API.getHost() || location.host] || null);
     },
 
     updateIoSocket: function(ioSocket, oldIoSocket) {
