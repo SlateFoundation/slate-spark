@@ -88,10 +88,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 'assess_finish_time'
             ],
             convert: function(v, r) {
-                if (r.get('assess_finish_time')) {
-                    return null;
-                }
-
                 if (r.get('apply_finish_time')) {
                     return 'assess';
                 }
