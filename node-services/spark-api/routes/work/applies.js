@@ -51,7 +51,7 @@ function getHandler(req, res, next) {
                 sparkpointIds: util.toSparkpointIds(apply.standardids),
                 sparkpointCodes: util.toSparkpointCodes(apply.standardids),
                 standardCodes: util.toStandardCodes(apply.standardids),
-                todos: apply.my_todos || apply.todos,
+                todos: apply.my_todos || (apply.todos || []).map(function(todo) { return { todo: todo }; }),
                 links: (apply.links || []).filter(link => link !== '\n').map(link => link.toString().trim()),
                 timeEstimate: apply.timestimate,
                 metadata: apply.metadata === '""' ? {} : apply.metadata,
