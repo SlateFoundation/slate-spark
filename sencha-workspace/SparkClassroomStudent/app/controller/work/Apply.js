@@ -21,6 +21,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         selectedApplyCt: 'spark-student-work-apply #selectedApplyCt',
         chooseAgainBtn: 'spark-student-work-apply button#chooseAgainBtn',
         headerCmp: 'spark-student-work-apply #headerCmp',
+        timelineCmp: 'spark-student-work-apply #timelineCmp',
         todosGrid: 'spark-student-work-apply grid#todosGrid',
         linksCmp: 'spark-student-work-apply #linksCmp',
         submissionsView: 'spark-student-work-apply #submissionsView',
@@ -80,32 +81,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         }
     },
 
-    updateActiveApply: function(apply) {
-        var me = this,
-            applyPickerCt = me.getApplyPickerCt(),
-            selectedApplyCt = me.getSelectedApplyCt();
-
-        if (apply) {
-            apply.set('sparkpoint', me.getActiveSparkpoint(), { dirty: false });
-
-            me.getTodosGrid().getStore().loadData(apply.get('todos'));
-
-            me.getLinksCmp().setData(apply.get('links').map(function(link) {
-                return {
-                    title: link.title || link.url.replace(/^https?:\/\//, ''),
-                    url: link.url
-                };
-            }));
-
-            me.getHeaderCmp().setData(apply.getData());
-
-            me.getReflectionField().setValue(apply.get('reflection'));
-
-            me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
-        }
-
-        applyPickerCt.setHidden(apply);
-        selectedApplyCt.setHidden(!apply);
+    updateActiveApply: function() {
+        this.syncActiveApply();
     },
 
 
@@ -143,7 +120,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onChooseSelectedApplyTap: function() {
         var me = this,
-            apply = me.getAppliesGrid().getSelection();
+            apply = me.getAppliesGrid().getSelection(),
+            studentSparkpoint = me.getStudentSparkpoint();
 
         me.setActiveApply(apply);
 
@@ -155,6 +133,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                     me.getTodosGrid().getStore().loadData(apply.get('todos'));
                 }
             });
+        }
+
+        if (!studentSparkpoint.get('apply_start_time')) {
+            studentSparkpoint.set('apply_start_time', new Date());
+            studentSparkpoint.save();
         }
     },
 
@@ -199,6 +182,43 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // controller methods
+    syncActiveApply: function() {
+        var me = this,
+            applyPickerCt = me.getApplyPickerCt(),
+            selectedApplyCt = me.getSelectedApplyCt(),
+            apply = me.getActiveApply(),
+            student = me.getStudentSparkpoint(),
+            startTime = student && student.get('apply_start_time');
+
+        if (apply) {
+            me.getHeaderCmp().setData(apply.getData());
+
+            me.getTimelineCmp().setData({
+                start: startTime,
+                finish: student && student.get('apply_finish_time'),
+                estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
+            });
+
+            apply.set('sparkpoint', me.getActiveSparkpoint(), { dirty: false });
+
+            me.getTodosGrid().getStore().loadData(apply.get('todos'));
+
+            me.getLinksCmp().setData(apply.get('links').map(function(link) {
+                return {
+                    title: link.title || link.url.replace(/^https?:\/\//, ''),
+                    url: link.url
+                };
+            }));
+
+            me.getReflectionField().setValue(apply.get('reflection'));
+
+            me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
+        }
+
+        applyPickerCt.setHidden(apply);
+        selectedApplyCt.setHidden(!apply);
+    },
+
     writeReflection: Ext.Function.createBuffered(function() {
         var apply = this.getActiveApply();
 
