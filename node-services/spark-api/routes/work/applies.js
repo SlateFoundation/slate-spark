@@ -198,8 +198,10 @@ function submissionsPostHandler(req, res, next) {
 
     db(req).oneOrNone('SELECT * FROM applies WHERE student_id = $1 AND sparkpoint_id = $2 AND fb_apply_id = $3',
         [userId, sparkpointId, id]).then(function(apply) {
+            var submission = req.body;
             if (apply) {
-                apply.submissions.push(req.body);
+                delete submission.id;
+                apply.submissions.push(submission);
                 req.body = apply;
                 return patchHandler(req, res, next);
             } else {
