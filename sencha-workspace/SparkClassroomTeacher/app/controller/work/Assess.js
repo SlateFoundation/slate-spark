@@ -84,7 +84,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             assessCt = me.getAssessCt(),
             assessmentsStore = me.getWorkAssessmentsStore(),
             learnsStore = Ext.getStore('work.Learns'),
-            appliesStore = Ext.getStore('work.Applies');;
+            appliesStore = Ext.getStore('work.Applies');
 
         if (!assessCt) {
             return;
