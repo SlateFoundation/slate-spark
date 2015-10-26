@@ -147,20 +147,35 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                                 title: 'Submitted Docs',
                                 items: [
                                     {
+                                        itemId: 'submissionsView',
+
                                         xtype: 'dataview',
-                                        cls: 'link-list',
+                                        cls: 'link-list', // has-checkboxes // TODO: move back into classes
                                         itemCls: 'link-list-item',
+                                        emptyText: 'None attached yet',
+                                        deferEmptyText: false,
                                         allowDeselect: true,
                                         store: {
-                                            fields: [ 'title', 'url' ],
-                                            data: [
+                                            // TODO: move to model
+                                            idProperty: 'url',
+                                            fields: [
                                                 {
-                                                    'title': 'essay_final_aw.doc',
-                                                    'url': 'http://example.com/essay_final_aw.doc'
-                                                }
+                                                    name: 'id',
+                                                    mapping: 'url',
+                                                },
+                                                {
+                                                    name: 'url'
+                                                },
+                                                {
+                                                    name: 'title',
+                                                    depends: ['url'],
+                                                    convert: function(v, r) {
+                                                        return v || r.get('url').replace(/^https?:\/\//, '');
+                                                    }
+                                                },
                                             ]
                                         },
-                                        itemTpl: '<a href="{url:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
+                                        itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                     }
                                 ]
                             }

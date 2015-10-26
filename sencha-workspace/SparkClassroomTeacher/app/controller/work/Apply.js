@@ -19,6 +19,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         linksCmp: 'spark-teacher-work-apply #linksCmp',
         tasksGrid: 'spark-teacher-work-apply spark-teacher-work-apply-tasksgrid',
         reflectionCmp: 'spark-teacher-work-apply #reflectionCmp',
+        submissionsView: 'spark-teacher-work-apply #submissionsView',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn'
     },
 
@@ -113,6 +114,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             me.getTasksGrid().getStore().loadData(apply.get('todos'));
 
             me.getReflectionCmp().setData(apply.getData());
+
+            me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
 
             applyCt.show();
         } else {
