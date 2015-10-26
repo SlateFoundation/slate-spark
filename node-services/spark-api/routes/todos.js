@@ -12,10 +12,20 @@ function patchHandler(req, res, next) {
     }
 
     req.body.forEach(function(todo) {
-       if (!isNaN(todo.id) && typeof todo.complete === 'boolean') {
-           query.push('UPDATE todos SET complete = ' + todo.complete + ' WHERE id = ' + todo.id + ' AND user_id = ' + req.session.userId + ';');
+       if (!isNaN(todo.id) && typeof todo.completed === 'boolean') {
+           query.push('UPDATE todos SET completed = ' + todo.completed + ' WHERE id = ' + todo.id + ' AND user_id = ' + req.session.userId + ';');
+       } else {
+           res.statusCode = 400;
+           res.json({ error: 'records should contain a boolean completed and an integer id', input: todo });
+           return next();
        }
     });
+
+    if (query.length === 0) {
+        res.statusCode = 400;
+        res.json({error: 'you must pass at least one item', body: req.body, params: req.params});
+        return next();
+    }
 
     db(req).any(query.join('\n')).then(function() {
         res.json(req.body);

@@ -37,6 +37,7 @@ function createServer(logger) {
     });
 
     server.patch('/todos', routes.todos.patch);
+
     server.get('/standards/:id', routes.standards);
     server.get('/standards', routes.standards);
 
@@ -53,6 +54,8 @@ function createServer(logger) {
     server.patch('/work/applies', routes.work.applies.patch);
     server.post('/work/applies/submissions', routes.work.applies.submissions.post);
 
+    server.get('/work/assess', routes.work.assess.get);
+    server.patch('/work/assess', routes.work.assess.patch);
     server.get('/work/assessments', routes.work.assessments);
 
     server.get('/work/activity', routes.work.activity.get);
