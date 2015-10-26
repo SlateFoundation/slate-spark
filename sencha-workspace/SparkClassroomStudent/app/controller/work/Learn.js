@@ -74,12 +74,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     onLearnCtActivate: function(learnCt) {
         var me = this,
-            store = me.getWorkLearnsStore();
+            store = me.getWorkLearnsStore(),
+            activeSparkpoint = me.getActiveSparkpoint();
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        me.getSparkpointCt().setTitle(me.getActiveSparkpoint());
+        me.getSparkpointCt().setTitle(activeSparkpoint);
 
-        if (!store.isLoaded()) { // TODO: OR extraParamsDirty
+        if (activeSparkpoint && !store.isLoaded()) { // TODO: OR extraParamsDirty
             store.load();
         } else {
             me.refreshLearnProgress();
