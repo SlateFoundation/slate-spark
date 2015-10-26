@@ -211,6 +211,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             worksheet = worksheetForm.getRecord();
 
         worksheetForm.updateRecord(worksheet);
-        worksheet.save();
+
+        if (worksheet.dirty) {
+            worksheet.save();
+        }
     }, 2000)
 });
