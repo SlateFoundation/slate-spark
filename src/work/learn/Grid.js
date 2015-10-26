@@ -26,7 +26,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         titleBar: null,
         columns:[
             {
-                xtype: 'spark-completed-column'
+                xtype: 'spark-completed-column',
+                requireLaunched: true
             },
             {
                 xtype: 'spark-learnlink-column',

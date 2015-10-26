@@ -4,7 +4,7 @@ Ext.define('SparkClassroom.column.Completed', {
 
     config: {
         allowToggle: true,
-        requireLaunched: true,
+        requireLaunched: false,
 
         cls: 'spark-completed-column',
         dataIndex: 'completed',

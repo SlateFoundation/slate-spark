@@ -6,6 +6,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'Jarvus.form.GooglePicker',
+        'SparkClassroom.store.Todos',
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
         'SparkClassroom.column.Completed'
@@ -177,19 +178,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                         deferEmptyText: false,
 
                                         store: {
-                                            fields: [
-                                                'todo',
-                                                {
-                                                    name: 'date_due',
-                                                    type: 'date',
-                                                    allowNull: true
-                                                },
-                                                {
-                                                    name: 'completed',
-                                                    type: 'boolean',
-                                                    defaultValue: false
-                                                }
-                                            ]
+                                            xclass: 'SparkClassroom.store.Todos'
                                         },
 
                                         columns: [
