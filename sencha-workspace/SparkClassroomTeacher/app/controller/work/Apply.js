@@ -64,9 +64,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         proxy.setExtraParam('student_id', activeStudent.get('student_id'));
         proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
-        if (store.isLoaded()) {
-            store.load();
-        }
+        store.load();
 
         this.syncActiveStudent();
     },

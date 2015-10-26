@@ -101,9 +101,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
                 learnsStore.load();
             }
 
-            if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
-                appliesStore.load();
-            }
+            // if (!appliesStore.isLoaded() && !appliesStore.isLoading()) { // TODO: OR extraParamsDirty
+            //     appliesStore.load();
+            // }
 
             me.getCompleteBtn().setDisabled(!student.get('assess_start_time'));
         } else {
