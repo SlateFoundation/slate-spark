@@ -90,6 +90,8 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
                 ]
             },
             {
+                itemId: 'readyForAssessBtn',
+
                 xtype: 'button',
                 ui: 'action',
                 text: 'Assess &rarr;'
