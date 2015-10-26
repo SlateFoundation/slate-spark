@@ -175,14 +175,15 @@ function getHandler(req, res, next) {
                 urlPlaceHolders = [],
                 url,
                 len,
-                x;
+                x,
+                y = 1;
 
             if (resources.length > 0) {
                 // TODO: determine how we will handle duplicate URLs from multiple vendors
                 for (x = 0, len = resources.length; x < len; x++) {
                     if (!urlResourceMap[resources[x].url]) {
                         urlResourceMap[resources[x].url] = resources[x];
-                        urlPlaceHolders.push('($' + (x + 1) + ')');
+                        urlPlaceHolders.push('($' + (y++) + ')');
                     }
                 }
 
@@ -206,7 +207,7 @@ function getHandler(req, res, next) {
                           FROM new_learn_resources lr
                      LEFT JOIN learn_activity la
                             ON la.resource_id = lr.id
-                           AND la.user_id = $${++x};`;
+                           AND la.user_id = $${y};`;
                 } else {
                     sql += 'SELECT * FROM new_learn_resources;';
                 }
