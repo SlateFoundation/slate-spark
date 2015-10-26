@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true *//*global Ext*/
-Ext.define('SparkClassroom.model.Todo', {
+Ext.define('SparkClassroom.model.Task', {
     extend: 'Ext.data.Model',
 
     fields: [

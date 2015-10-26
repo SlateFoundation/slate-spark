@@ -6,7 +6,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'Jarvus.form.GooglePicker',
-        'SparkClassroom.store.Todos',
+        'SparkClassroom.store.Tasks',
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
         'SparkClassroom.column.Completed'
@@ -176,7 +176,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                         deferEmptyText: false,
 
                                         store: {
-                                            xclass: 'SparkClassroom.store.Todos'
+                                            xclass: 'SparkClassroom.store.Tasks'
                                         },
 
                                         columns: [
