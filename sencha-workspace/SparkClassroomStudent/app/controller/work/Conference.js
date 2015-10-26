@@ -48,6 +48,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -121,6 +124,17 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             studentSparkpoint.set('conference_start_time', new Date());
             studentSparkpoint.save();
         }
+    },
+
+    onSocketData: function(socket, data) {
+        var me = this;
+
+        if (data.table != 'conference_questions') {
+            return;
+        }
+
+        me.getWorkConferenceQuestionsStore().loadRawData([data.item], true);
+        me.refreshQuestions();
     },
 
 
