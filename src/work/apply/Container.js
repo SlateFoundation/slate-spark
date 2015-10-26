@@ -254,15 +254,11 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 xtype: 'dataview',
                                                 cls: 'link-list', // has-checkboxes // TODO: move back into classes
                                                 itemCls: 'link-list-item',
+                                                emptyText: 'None attached yet',
+                                                deferEmptyText: false,
                                                 allowDeselect: true,
                                                 store: {
-                                                    fields: [ 'title', 'url' ],
-                                                    data: [
-                                                        {
-                                                            'title': 'essay_final_aw.doc',
-                                                            'url': 'http://example.com/essay_final_aw.doc'
-                                                        }
-                                                    ]
+                                                    fields: [ 'title', 'url' ]
                                                 },
                                                 itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
                                             },
