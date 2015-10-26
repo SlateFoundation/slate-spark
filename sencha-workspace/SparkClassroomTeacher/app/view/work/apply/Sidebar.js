@@ -77,9 +77,11 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
                 text: 'Assess &rarr;'
             },
             {
+                itemId: 'readyHintCmp',
+
                 cls: 'hint text-center',
                 margin: '8 0 0',
-                html: 'Confirm Alexandra W. is ready for assess.'
+                tpl: 'Confirm {student_name} is ready for assess.'
             }
         ]
     }

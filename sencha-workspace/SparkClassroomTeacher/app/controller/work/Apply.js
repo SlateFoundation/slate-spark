@@ -20,7 +20,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         tasksGrid: 'spark-teacher-work-apply spark-teacher-work-apply-tasksgrid',
         reflectionCmp: 'spark-teacher-work-apply #reflectionCmp',
         submissionsView: 'spark-teacher-work-apply #submissionsView',
-        readyBtn: 'spark-teacher-work-apply #readyForAssessBtn'
+        readyBtn: 'spark-teacher-work-apply #readyForAssessBtn',
+        readyHintCmp: 'spark-teacher-work-apply #readyHintCmp'
     },
 
     control: {
@@ -92,11 +93,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         var me = this,
             applyCt = me.getApplyCt(),
             apply = me.getActiveApply(),
+            applyData = apply && apply.getData(),
             student = me.getActiveStudent(),
             startTime = student && student.get('apply_start_time');
 
         if (apply) {
-            me.getHeaderCmp().setData(apply.getData());
+            me.getHeaderCmp().setData(applyData);
 
             me.getTimelineCmp().setData({
                 start: startTime,
@@ -113,9 +115,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             me.getTasksGrid().getStore().loadData(apply.get('todos'));
 
-            me.getReflectionCmp().setData(apply.getData());
+            me.getReflectionCmp().setData(applyData);
 
             me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
+
+            me.getReadyHintCmp().setData(student.getData());
 
             applyCt.show();
         } else {
