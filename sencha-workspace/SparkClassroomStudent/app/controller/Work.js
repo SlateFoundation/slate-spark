@@ -6,6 +6,11 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     extend: 'Ext.app.Controller',
 
 
+    config: {
+        studentSparkpoint: null
+    },
+
+
     routes: {
         'work': {
             rewrite: 'rewriteWork'
@@ -86,6 +91,9 @@ Ext.define('SparkClassroomStudent.controller.Work', {
                 studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
+        socket: {
+            data: 'onSocketData'
+        }
     },
 
 
@@ -138,10 +146,81 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
 
+    // config handlers
+    updateStudentSparkpoint: function() {
+        this.refreshTabbar();
+    },
+
+
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onNavWorkTap: function() {
+        this.redirectTo('work');
+    },
+
+    onWorkCtActivate: function() {
+        this.getNavBar().setSelectedButton(this.getWorkNavButton());
+    },
+
+    onWorkTabChange: function(tabbar, activeTab) {
+        var me = this;
+
+        me.redirectTo('work/' + activeTab.getItemId());
+    },
+
+    onSocketData: function(socket, data) {
+        if (data.table != 'student_sparkpoint') {
+            return;
+        }
+
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint(),
+            itemData = data.item;
+
+        if (
+            studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id ||
+            studentSparkpoint.get('student_id') != itemData.student_id
+        ) {
+            return;
+        }
+
+        studentSparkpoint.set(itemData, { dirty: false });
+
+        this.refreshTabbar();
+    },
+
+
+    // controller methods
+    /**
+     * @private
+     * Called by each subsection route handler to ensure container is activated
+     */
+    doShowContainer: function() {
+        var tabsCt = this.getTabsCt();
+
+        tabsCt.removeAll();
+        tabsCt.add(this.getWorkCt());
+    },
+
+    /**
+     * @private
+     * Called by each subsection route handler to highlight the proper tab in the teacher
+     * tabbar and the assign tabbar
+     */
+    doHighlightTabbars: function(section) {
+        var workTabbar = this.getWorkTabbar(),
+            assignTab = workTabbar.down('#' + section);
+
+        workTabbar.setActiveTab(assignTab);
+    },
+
+    refreshTabbar: function() {
         var me = this,
             now = new Date(),
+            studentSparkpoint = me.getStudentSparkpoint(),
             learnStartTime = studentSparkpoint.get('learn_start_time'),
             conferenceStartTime = studentSparkpoint.get('conference_start_time'),
             applyStartTime = studentSparkpoint.get('apply_start_time'),
@@ -168,44 +247,5 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         );
 
         me.getWorkTabbar().setActivePhase(studentSparkpoint.get('active_phase'));
-    },
-
-    onNavWorkTap: function() {
-        this.redirectTo('work');
-    },
-
-    onWorkCtActivate: function() {
-        this.getNavBar().setSelectedButton(this.getWorkNavButton());
-    },
-
-    onWorkTabChange: function(tabbar, activeTab) {
-        var me = this;
-
-        me.redirectTo('work/' + activeTab.getItemId());
-    },
-
-
-    // controller methods
-    /**
-     * @private
-     * Called by each subsection route handler to ensure container is activated
-     */
-    doShowContainer: function() {
-        var tabsCt = this.getTabsCt();
-
-        tabsCt.removeAll();
-        tabsCt.add(this.getWorkCt());
-    },
-
-    /**
-     * @private
-     * Called by each subsection route handler to highlight the proper tab in the teacher
-     * tabbar and the assign tabbar
-     */
-    doHighlightTabbars: function(section) {
-        var workTabbar = this.getWorkTabbar(),
-            assignTab = workTabbar.down('#' + section);
-
-        workTabbar.setActiveTab(assignTab);
     }
 });
