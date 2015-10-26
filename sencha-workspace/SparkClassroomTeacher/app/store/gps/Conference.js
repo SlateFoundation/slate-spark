@@ -13,7 +13,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Conference', {
             groupFn: function(r) {
                 var conferenceGroup = r.get('conference_group');
 
-                if (!r.get('conference_ready')) {
+                if (!r.get('conference_start_time')) {
                     return 'Working';
                 }
 
@@ -24,8 +24,8 @@ Ext.define('SparkClassroomTeacher.store.gps.Conference', {
                 return 'Group #' + conferenceGroup;
             },
             sorterFn: function(r1, r2) {
-                var conferenceReady1 = r1.get('conference_ready'),
-                    conferenceReady2 = r2.get('conference_ready'),
+                var conferenceReady1 = r1.get('conference_start_time'),
+                    conferenceReady2 = r2.get('conference_start_time'),
                     conferenceGroup1 = r1.get('conference_group'),
                     conferenceGroup2 = r2.get('conference_group'),
                     conferenceDuration1 = r1.get('conference_duration'),

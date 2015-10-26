@@ -45,6 +45,12 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                             }
 
                             return Date.now() - data.learn_start_time;
+
+                        case 'conference':
+                            if (!data.conference_start_time) {
+                                return Date.now() - data.learn_finish_time;
+                            }
+
                         default:
                             return null;
                     }
