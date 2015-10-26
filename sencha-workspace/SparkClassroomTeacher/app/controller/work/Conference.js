@@ -84,6 +84,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             '#gps.ActiveStudents': {
                 endupdate: 'onActiveStudentsStoreEndUpdate'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -165,12 +168,23 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onQuestionSubmit: function(questionsList) {
-        this.getWorkConferenceQuestionsStore().add({
-            question: questionsList.getInnerHtmlElement().down('input').getValue(),
-            studentSubmitted: true
-        });
+        var me = this,
+            student = me.getActiveStudent();
 
-        this.refreshQuestions();
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/work/conferences/questions',
+            jsonData: {
+                student_id: student.getId(),
+                sparkpoint: student.get('sparkpoint'),
+                source: 'teacher',
+                question: questionsList.getInnerHtmlElement().down('input').getValue()
+            },
+            success: function(response) {
+                me.getWorkConferenceQuestionsStore().loadRawData([response.data], true);
+                me.refreshQuestions();
+            }
+        });
     },
 
     onStartConferenceButtonTap: function() {
@@ -270,6 +284,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         }
     },
 
+    onSocketData: function(socket, data) {
+        var me = this;
+
+        if (data.table != 'conference_questions') {
+            return;
+        }
+
+        me.getWorkConferenceQuestionsStore().loadRawData([data.item], true);
+        me.refreshQuestions();
+    },
+
 
     // controller methods
     syncActiveStudent: function() {
@@ -330,7 +355,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             question = questionsStore.getAt(i);
 
             items.push({
-                text: question.get('question')
+                text: question.get('question'),
+                source: question.get('source')
             });
         }
 
