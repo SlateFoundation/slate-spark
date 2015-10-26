@@ -37,7 +37,7 @@ function getHandler(req, res, next) {
                (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS selected,
                (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS reflection,
                (SELECT submissions FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS submissions,
-               (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'complete', complete)) FROM todos WHERE user_id = 7 AND apply_id = ap.id) AS my_todos
+               (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos
           FROM spark1.s2_apply_projects ap
          WHERE standardids::JSONB ?| $1`, [standardIds, req.studentId, sparkpointIds]).then(function (result) {
 
@@ -145,13 +145,18 @@ function patchHandler(req, res, next, todos) {
                 return next();
             });
         } else {
+            if (updateSets.length === 0) {
+                res.statusCode = 400;
+                res.json({error: 'you cannot perform a no-op query, here is what you gave us', body: req.body, params: req.params });
+                return next();
+            }
             db(req).one(`
                 INSERT INTO applies
                             (${Object.keys(apply)})
                      VALUES (${Object.keys(apply).map(function(x, i) { return '$' + (i + 1); })}) ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
                      RETURNING *
             `, values).then(function(apply) {
-                    db(req).any('SELECT id, todo, complete FROM todos WHERE user_id = $1 AND apply_id = $2', [ userId, id ]).then(function(todos) {
+                    db(req).any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [ userId, id ]).then(function(todos) {
                         db(req).none('UPDATE applies SET selected = false WHERE fb_apply_id != $1 AND sparkpoint_id = $2 and student_id = $3;', [id, sparkpointId, userId]);
                         apply.todos = todos;
                         apply.id = apply.fb_apply_id;
