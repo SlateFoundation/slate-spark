@@ -8,8 +8,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
     config: {
-        activeStudent: null,
-        activeSparkpoint: null
+        activeStudent: null
     },
 
     stores: [
@@ -92,28 +91,26 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     // config handlers
     updateActiveStudent: function(activeStudent) {
         var me = this,
+            store = me.getWorkConferenceQuestionsStore(),
+            proxy = store.getProxy(),
             conferencingStudentsGrid = me.getConferencingStudentsGrid();
 
-        me.setActiveSparkpoint(activeStudent.get('sparkpoint'));
-        me.syncConferenceGroup();
-
-        if (conferencingStudentsGrid) {
-            conferencingStudentsGrid.setSelection(activeStudent);
-        }
-    },
-
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkConferenceQuestionsStore();
-
         // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        proxy.setExtraParam('student_id', activeStudent.get('student_id'));
+        proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
         // TODO: reload store if sparkpoints param dirty
         if (store.isLoaded()) {
             store.load();
         }
 
-        this.syncActiveSparkpoint();
+        me.syncActiveStudent();
+
+        me.syncConferenceGroup();
+
+        if (conferencingStudentsGrid) {
+            conferencingStudentsGrid.setSelection(activeStudent);
+        }
     },
 
 
@@ -123,14 +120,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onConferenceCtActivate: function() {
-        this.syncActiveSparkpoint();
+        this.syncActiveStudent();
         this.syncConferenceGroup();
     },
 
-    onConferenceQuestionsStoreLoad: function(questionsStore) {
+    onConferenceQuestionsStoreLoad: function(questionsStore, questions, success) {
         var me = this;
 
-        me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
+        if (success) {
+            me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
+        }
 
         me.refreshQuestions();
         me.refreshResources();
@@ -273,19 +272,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
 
     // controller methods
-    syncActiveSparkpoint: function() {
+    syncActiveStudent: function() {
         var me = this,
             conferenceCt = me.getConferenceCt(),
             conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
-            sparkpoint = me.getActiveSparkpoint();
+            student = me.getActiveStudent();
 
         if (!conferenceCt) {
             return;
         }
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (sparkpoint) {
-            me.getSparkpointCt().setTitle(sparkpoint);
+        if (student) {
+            me.getSparkpointCt().setTitle(student.get('sparkpoint'));
             conferenceCt.show();
 
             if (!conferenceQuestionsStore.isLoaded()) {
