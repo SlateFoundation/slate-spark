@@ -61,7 +61,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
                         helpRequests[userId] = v;
                     }
                 } else {
-                    helpRequests[userId] = v = Math.random() < 0.8 ? null : types[Math.floor(Math.random()*types.length)];
+                    //helpRequests[userId] = v = Math.random() < 0.8 ? null : types[Math.floor(Math.random()*types.length)];
                 }
 
                 return v || null;
