@@ -24,11 +24,11 @@ function createServer(logger) {
     server = restify.createServer(config);
 
     server.use(restify.acceptParser(server.acceptable));
-    server.use(sparkHeaderParser());
     server.use(restify.queryParser());
+    server.use(sparkHeaderParser());
     server.use(restify.bodyParser());
 
-    server.on('NotFound', function (req, res, next) {
+    server.on('NotFound', function (req, res) {
         if (logger) {
             logger.debug('404', 'Request for ' + req.url + ' not found. No route.');
         }
@@ -47,7 +47,11 @@ function createServer(logger) {
     server.get('/work/conferences', routes.work.conferences.get);
     server.post('/work/conferences/questions', routes.work.conferences.questions.post);
     server.patch('/work/conferences/worksheet', routes.work.conferences.worksheet.patch);
-    server.get('/work/applies', routes.work.applies);
+
+    server.get('/work/applies', routes.work.applies.get);
+    server.patch('/work/applies', routes.work.applies.patch);
+    server.post('/work/applies/submissions', routes.work.applies.submissions.post);
+
     server.get('/work/assessments', routes.work.assessments);
 
     server.get('/work/activity', routes.work.activity.get);

@@ -5,7 +5,7 @@ var AsnStandard = require('../../lib/asn-standard'),
     Promise = require('bluebird'),
     util = require('../../lib/util');
 
-function appliesHandler(req, res, next) {
+function getHandler(req, res, next) {
     var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
         standardIds = [];
 
@@ -21,12 +21,22 @@ function appliesHandler(req, res, next) {
     });
 
     if (standardIds.length === 0) {
-        res.contentType = 'json';
-        res.send(404, new JsonApiError('Invalid sparkpoint' + (sparkpointIds.length ? 's' : '')));
+        res.statusCode = 404;
+        res.json(new JsonApiError('Invalid sparkpoint' + (sparkpointIds.length ? 's' : '')));
         return next();
     }
 
-    db(req).manyOrNone('SELECT * FROM spark1.s2_apply_projects WHERE standardids::JSONB ?| $1', [standardIds]).then(function (result) {
+    if (!req.studentId) {
+        res.statusCode = 400;
+        res.json({error: 'userid required'});
+        return next();
+    }
+
+    db(req).manyOrNone(`
+        SELECT *,
+               (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS selected
+          FROM spark1.s2_apply_projects ap
+         WHERE standardids::JSONB ?| $1`, [standardIds, req.studentId, sparkpointIds]).then(function (result) {
         res.json(result.map(function (apply) {
             return {
                 id: apply.id,
@@ -40,7 +50,8 @@ function appliesHandler(req, res, next) {
                 todos: (apply.todos || []).filter(todo => todo !== '\n').map(todo => todo.toString().trim()),
                 links: (apply.links || []).filter(link => link !== '\n').map(link => link.toString().trim()),
                 timeEstimate: apply.timestimate,
-                metadata: apply.metadata === '""' ? {} : apply.metadata
+                metadata: apply.metadata === '""' ? {} : apply.metadata,
+                selected: apply.selected || false
             };
         }));
         return next();
@@ -50,4 +61,115 @@ function appliesHandler(req, res, next) {
     });
 }
 
-module.exports = appliesHandler;
+function patchHandler(req, res, next) {
+    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
+        sparkpointId = sparkpointIds[0],
+        userId = req.studentId,
+        isTeacher = req.isTeacher,
+        selected = (req.params.selected === 'true') ? true : (req.params.selected === 'false') ? false : (typeof req.body.selected === 'boolean') ? req.body.selected : null;
+        id = parseInt(req.params.id, 10),
+        apply = {},
+        constraintKeys = ['student_id', 'fb_apply_id', 'sparkpoint_id'],
+        updateSets = [],
+        values = [];
+
+    if (isNaN(id)) {
+        res.statusCode = 400;
+        res.json({error: 'id must be an integer, you passed: ' + req.params.id, params: req.params, body: req.body});
+        return next();
+    }
+
+    if (!sparkpointId) {
+        res.statusCode = 400;
+        res.json({error: 'sparkpoint id is required', params: req.params, body: req.body});
+        return next();
+    }
+
+    apply.fb_apply_id = id;
+
+    if (typeof selected === 'boolean') {
+        apply.selected = selected;
+    }
+
+    apply.student_id = userId;
+    apply.sparkpoint_id = sparkpointId;
+
+    if (typeof req.body.reflection === 'string') {
+        apply.reflection = req.body.reflection;
+    }
+
+    if (Array.isArray(req.body.submissions)) {
+        apply.submissions = JSON.stringify(req.body.submissions);
+    }
+
+    Object.keys(apply).forEach(function(key, i) {
+       values.push(apply[key]);
+
+       if (constraintKeys.indexOf(key) !== -1) {
+           return;
+       }
+
+        updateSets.push(`${key} = $${++i}`);
+    });
+
+    db(req).one(`
+        INSERT INTO applies
+                    (${Object.keys(apply)})
+             VALUES (${Object.keys(apply).map(function(x, i) { return '$' + (i + 1); })}) ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
+             RETURNING *
+    `, values).then(function(apply) {
+        res.json(apply);
+        return next();
+    }, function(error) {
+        res.statusCode = 500;
+        res.json({error: error});
+        return next();
+    });
+}
+
+function submissionsPostHandler(req, res, next) {
+    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
+        sparkpointId = sparkpointIds[0],
+        userId = req.studentId,
+        isTeacher = req.isTeacher,
+        id = parseInt(req.params.id, 10),
+        sql,
+        applyProject;
+
+    if (isNaN(id)) {
+        res.statusCode = 400;
+        res.json({error: 'id must be an integer, you passed: ' + req.params.id, params: req.params, body: req.body});
+        return next();
+    }
+
+    if (!sparkpointId) {
+        res.statusCode = 400;
+        res.json({error: 'sparkpoint id is required', params: req.params, body: req.body});
+        return next();
+    }
+
+    db(req).oneOrNone('SELECT * FROM applies WHERE student_id = $1 AND sparkpoint_id = $2 AND fb_apply_id = $3',
+        [userId, sparkpointId, id]).then(function(apply) {
+            if (apply) {
+                apply.submissions.push(req.body);
+                req.body = apply;
+                return patchHandler(req, res, next);
+            } else {
+                res.statusCode = 404;
+                res.json({ error: 'Unable to find apply.', params: req.params, body: req.body });
+                return next();
+            }
+    }, function(error) {
+        res.statusCode = 500;
+        res.json({error: error,  params: req.params, body: req.body });
+        return next();
+    });
+}
+
+module.exports = {
+    get: getHandler,
+    patch: patchHandler,
+    submissions: {
+        post: submissionsPostHandler
+    }
+};
