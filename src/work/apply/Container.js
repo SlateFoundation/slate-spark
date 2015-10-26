@@ -252,7 +252,7 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                         items: [
                                             {
                                                 xtype: 'dataview',
-                                                cls: 'link-list has-checkboxes',
+                                                cls: 'link-list', // has-checkboxes // TODO: move back into classes
                                                 itemCls: 'link-list-item',
                                                 allowDeselect: true,
                                                 store: {
@@ -282,12 +282,13 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 ui: 'action',
                                                 iconCls: 'fa fa-link',
                                                 text: 'Attach Link'
-                                            },
-                                            {
-                                                xtype: 'component',
-                                                margin: '16 0 0',
-                                                html: '<p class="hint">Checked documents will be added to your portfolio.</p>'
                                             }
+                                            // TODO: implement portfolio flag
+                                            // {
+                                            //     xtype: 'component',
+                                            //     margin: '16 0 0',
+                                            //     html: '<p class="hint">Checked documents will be added to your portfolio.</p>'
+                                            // }
                                         ]
                                     },
                                     {
