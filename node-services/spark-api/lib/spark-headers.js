@@ -17,6 +17,12 @@ function sparkHeaderParser(options) {
             req.session = session;
             req.schema = req.headers['x-nginx-mysql-schema'];
             req.dbHost = req.headers['x-nginx-mysql-host'];
+
+            req.isStudent = req.session.accountLevel === 'Student';
+            req.isTeacher = req.session.accountLevel === 'Teacher';
+            req.isDeveloper = req.session.accountLevel === 'Developer';
+
+            req.studentId = req.isStudent ? req.session.userId : req.params.student_id;
         }
 
         if (!req.session) {
