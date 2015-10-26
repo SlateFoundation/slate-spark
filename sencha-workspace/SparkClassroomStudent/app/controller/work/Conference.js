@@ -8,7 +8,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
     config: {
-        activeSparkpoint: null
+        activeSparkpoint: null, // TODO: deprecate
+        studentSparkpoint: null
     },
 
     stores: [
@@ -20,7 +21,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         conferenceCt: 'spark-student-work-conference',
         sparkpointCt: 'spark-student-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
-        resourcesList: 'spark-worklist#resources'
+        resourcesList: 'spark-worklist#resources',
+        requestBtn: 'spark-student-work-conference #requestConferenceBtn'
     },
 
     control: {
@@ -29,13 +31,17 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         },
         questionsList: {
             submit: 'onQuestionSubmit'
+        },
+        requestBtn: {
+            tap: 'onRequestBtnTap'
         }
     },
 
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect'
+                sparkpointselect: 'onSparkpointSelect',
+                studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
         store: {
@@ -62,6 +68,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     // event handlers
     onSparkpointSelect: function(sparkpoint) {
         this.setActiveSparkpoint(sparkpoint);
+    },
+
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
     },
 
     onConferenceCtActivate: function() {
@@ -92,6 +102,15 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         });
 
         this.refreshQuestions();
+    },
+
+    onRequestBtnTap: function() {
+        var studentSparkpoint = this.getStudentSparkpoint();
+
+        if (!studentSparkpoint.get('conference_start_time')) {
+            studentSparkpoint.set('conference_start_time', new Date());
+            studentSparkpoint.save();
+        }
     },
 
 
@@ -143,6 +162,4 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             items: items
         });
     }
-
-
 });
