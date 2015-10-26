@@ -117,10 +117,15 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         var me = this,
             itemData = data.item,
-            activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id);
+            activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id),
+            updatedFields;
 
         if (activeStudent) {
-            activeStudent.set(itemData, { dirty: false });
+            updatedFields = activeStudent.set(itemData, { dirty: false });
+
+            if (updatedFields.length) {
+                me.getApplication().fireEvent('studentupdate', activeStudent, updatedFields);
+            }
         }
     },
 
