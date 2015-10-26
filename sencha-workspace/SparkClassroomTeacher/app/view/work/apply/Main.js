@@ -2,7 +2,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-apply-main',
     requires: [
-        'SparkClassroomTeacher.view.work.apply.TaskGrid'
+        'SparkClassroomTeacher.view.work.apply.TasksGrid'
     ],
 
     config: {
@@ -116,7 +116,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                 ]
             },
             {
-                xtype: 'spark-teacher-work-apply-taskgrid'
+                xtype: 'spark-teacher-work-apply-tasksgrid'
             },
             {
                 xtype: 'container',

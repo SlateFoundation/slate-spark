@@ -17,6 +17,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         headerCmp: 'spark-teacher-work-apply #headerCmp',
         timelineCmp: 'spark-teacher-work-apply #timelineCmp',
         linksCmp: 'spark-teacher-work-apply #linksCmp',
+        tasksGrid: 'spark-teacher-work-apply spark-teacher-work-apply-tasksgrid',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn'
     },
 
@@ -107,6 +108,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
                     url: link.url
                 };
             }));
+
+            me.getTasksGrid().getStore().loadData(apply.get('todos'));
 
             applyCt.show();
         } else {
