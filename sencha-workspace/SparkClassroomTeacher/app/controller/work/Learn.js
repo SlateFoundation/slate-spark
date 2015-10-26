@@ -4,8 +4,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
 
     config: {
-        activeStudent: null,
-        activeSparkpoint: null
+        activeStudent: null
     },
 
 
@@ -40,20 +39,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     // config handlers
     updateActiveStudent: function(activeStudent) {
         var store = this.getWorkLearnsStore(),
-            proxy = store.getProxy(),
-            sparkpointCode = activeStudent.get('sparkpoint');
-
-        this.setActiveSparkpoint(sparkpointCode);
+            proxy = store.getProxy();
 
         // TODO: track dirty state of extraparams?
         proxy.setExtraParam('student_id', activeStudent.get('student_id'));
-        proxy.setExtraParam('sparkpoint', sparkpointCode);
+        proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
         if (store.isLoaded()) {
             store.load();
         }
 
-        this.syncActiveSparkpoint();
+        this.syncActiveStudent();
     },
 
 
@@ -63,7 +59,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onLearnCtActivate: function() {
-        this.syncActiveSparkpoint();
+        this.syncActiveStudent();
     },
 
     onSocketData: function(socket, data) {
@@ -98,19 +94,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
 
     // controller methods
-    syncActiveSparkpoint: function() {
+    syncActiveStudent: function() {
         var me = this,
             learnCt = me.getLearnCt(),
             store = me.getWorkLearnsStore(),
-            sparkpoint = me.getActiveSparkpoint();
+            student = me.getActiveStudent();
 
         if (!learnCt) {
             return;
         }
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (sparkpoint) {
-            me.getSparkpointCt().setTitle(sparkpoint);
+        if (student) {
+            me.getSparkpointCt().setTitle(student.get('sparkpoint'));
             learnCt.show();
 
             if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
