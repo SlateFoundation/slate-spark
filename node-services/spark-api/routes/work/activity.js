@@ -17,7 +17,7 @@ function getHandler(req, res, next) {
     var query = `
        SELECT ssas.student_id,
               ssas.sparkpoint_id,
-              ssas.section_id,
+              ssas.section_id AS section,
               ss.learn_start_time,
               ss.learn_finish_time,
               ss.conference_start_time,
