@@ -5,9 +5,10 @@ var AsnStandard = require('../../lib/asn-standard'),
     Promise = require('bluebird'),
     util = require('../../lib/util');
 
-function conferencesHandler(req, res, next) {
+function getHandler(req, res, next) {
     var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        standardIds = [];
+        standardIds = [],
+        userId = req.params['user-id'] || req.params.user_id || req.params.student_id;
 
     if (sparkpointIds.length === 0) {
         res.json(new JsonApiError('sparkpoint or sparkpoints parameter is required.'));
@@ -27,26 +28,28 @@ function conferencesHandler(req, res, next) {
     }
 
     Promise.props({
-        questions: db(req).manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
+        fuseboxQuestions: db(req).manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
+        questions: db(req).manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1', [userId]),
         resources: db(req).manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
     }).then(function(result) {
-        res.json({
-            questions: result.questions.map(function(question) {
-                return {
-                    id: question.id,
-                    question: question.question,
-                    gradeLevel: question.gradelevel,
-                };
-            }),
-
-            resources: result.resources.map(function(resource) {
-                return {
-                    id: resource.id,
-                    title: resource.title,
-                    url: resource.url,
-                    gradeLevel: resource.gradelevel,
-                };
-            })
+        var questions = result.fuseboxQuestions.map(function(question) {
+            return {
+                id: question.id,
+                question: question.question,
+                gradeLevel: question.gradelevel,
+                source: 'fusebox'
+            };
+        }).concat(result.questions);
+            res.json({
+                questions: questions,
+                resources: result.resources.map(function(resource) {
+                    return {
+                        id: resource.id,
+                        title: resource.title,
+                        url: resource.url,
+                        gradeLevel: resource.gradelevel,
+                    };
+                })
         });
 
         return next();
@@ -56,4 +59,35 @@ function conferencesHandler(req, res, next) {
     });
 }
 
-module.exports = conferencesHandler;
+function questionPostHandler(req, res, next) {
+    var sparkpointId = util.toSparkpointId(req.params.sparkpoint),
+        userId = req.params.student_id,
+        question = req.params.question;
+
+    db(req).one(`
+        INSERT INTO conference_questions
+                    (student_id, sparkpoint_id, source, question)
+             VALUES ($1, $2, $3, $4)
+          RETURNING *;
+          `,
+        [
+            userId,
+            sparkpointId,
+            (req.session.accountLevel === 'Student') ? 'student' : 'teacher',
+            question
+        ]).then(function(record) {
+            record.sparkpoint = lookup.sparkpoint.idToCode[record.sparkpoint_id];
+            res.json(record);
+            return next();
+        }, function(error) {
+           res.json({error: error});
+            return next();
+        });
+}
+
+module.exports = {
+    get: getHandler,
+    questions: {
+        post: questionPostHandler
+    }
+};

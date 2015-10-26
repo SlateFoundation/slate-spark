@@ -43,7 +43,9 @@ function createServer(logger) {
     server.get('/work/learns/launch/:resource-id', routes.work.learns.launch);
     server.patch('/work/learns/:resource-id', routes.work.learns.patch);
     server.patch('/work/learns', routes.work.learns.patch);
-    server.get('/work/conferences', routes.work.conferences);
+
+    server.get('/work/conferences', routes.work.conferences.get);
+    server.post('/work/conferences/questions', routes.work.conferences.questions.post);
     server.get('/work/applies', routes.work.applies);
     server.get('/work/assessments', routes.work.assessments);
 
