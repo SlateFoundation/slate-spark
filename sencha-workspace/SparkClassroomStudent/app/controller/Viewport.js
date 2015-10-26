@@ -118,33 +118,21 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
-        var me = this;
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpointModel().create();
 
         me.syncSelections();
         me.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
 
-        // TODO: load actual StudentSparkpoint model
-        Slate.API.loadSessionData(function(success, response) {
-            me.setStudentSparkpoint(me.getStudentSparkpointModel().create({
-                student_id: response.data.data.PersonID,
-                sparkpoint_id: sparkpoint // TODO: get sparkpoint_id from actual API and use that instead of code
+        // mark empty studentSparkpoint model as committed so uninitialized fields aren't considered dirty
+        studentSparkpoint.commit();
 
-                // TODO: remove test data
-                ,learn_start_time:          new Date(Date.now() - 1000 * 60 * 60 * 8) // 8 hours ago
-                ,learn_finish_time:         new Date(Date.now() - 1000 * 60 * 60 * 6)
+        studentSparkpoint.set('sparkpoint', sparkpoint);
 
-                ,conference_start_time:     new Date(Date.now() - 1000 * 60 * 60 * 5.75)
-                ,conference_join_time:      new Date(Date.now() - 1000 * 60 * 60 * 5.5)
-                ,conference_finish_time:    new Date(Date.now() - 1000 * 60 * 60 * 5)
-
-                ,apply_start_time:          new Date(Date.now() - 1000 * 60 * 60 * 4.75)
-                ,apply_ready_time:          new Date(Date.now() - 1000 * 60 * 60 * 3)
-                // ,apply_finish_time:         new Date(Date.now() - 1000 * 60 * 60 * 2.5)
-
-                // ,assess_start_time:         new Date(Date.now() - 1000 * 60 * 60 * 2.25)
-                // ,assess_ready_time:         new Date(Date.now() - 1000 * 60 * 60 * 1)
-                // ,assess_finish_time:        new Date(Date.now() - 1000 * 60 * 60 * 0.25)
-            }));
+        studentSparkpoint.save({
+            success: function() {
+                me.setStudentSparkpoint(studentSparkpoint);
+            }
         });
     },
 
