@@ -81,6 +81,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             selectedApplyCt = me.getSelectedApplyCt();
 
         if (apply) {
+            apply.set('sparkpoint', me.getStudentSparkpoint().get('sparkpoint'), { dirty: false });
+
             me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
                 return {
                     todo: todo,
@@ -141,16 +143,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         var me = this,
             apply = me.getAppliesGrid().getSelection();
 
-        apply.set({
-            sparkpoint: me.getStudentSparkpoint().get('sparkpoint'),
-            selected: true
-        });
-
-        apply.save({
-            success: function() {
-                me.setActiveApply(apply);
-            }
-        });
+        me.setActiveApply(apply);
+        apply.set('selected', true);
+        apply.save();
     },
 
     onChooseAgainTap: function() {
@@ -167,6 +162,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         var apply = this.getActiveApply();
 
         apply.set('reflection', this.getReflectionField().getValue());
-        apply.save();
+
+        if (apply.dirty) {
+            apply.save();
+        }
     }, 2000)
 });
