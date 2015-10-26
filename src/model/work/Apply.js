@@ -46,6 +46,10 @@ Ext.define('SparkClassroom.model.work.Apply', {
             name: 'selected',
             type: 'boolean',
             defaultValue: false
+        },
+        {
+            name: 'reflection',
+            useNull: true
         }
     ],
 

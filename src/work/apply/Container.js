@@ -226,6 +226,8 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                         title: 'Reflection',
                                         items: [
                                             {
+                                                itemId: 'reflectionField',
+
                                                 xtype: 'textareafield',
                                                 label: 'Write a paragraph about what you’ve learned with this standard.'
                                             }
