@@ -125,6 +125,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             student = me.getActiveStudent(),
             startTime = student && student.get('apply_start_time');
 
+        if (!applyCt) {
+            return;
+        }
+
         if (apply) {
             me.getHeaderCmp().setData(applyData);
 
