@@ -148,6 +148,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             applyCt = me.getApplyCt(),
             student = me.getActiveStudent();
 
+        if (!applyCt) {
+            return;
+        }
+
         applyCt.setHidden(!student);
     }
 });
