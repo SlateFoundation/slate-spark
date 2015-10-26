@@ -146,8 +146,12 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             apply = me.getAppliesGrid().getSelection();
 
         me.setActiveApply(apply);
+
         apply.set('selected', true);
-        apply.save();
+
+        if (apply.dirty) {
+            apply.save();
+        }
     },
 
     onChooseAgainTap: function() {
@@ -193,6 +197,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     // controller methods
     writeReflection: Ext.Function.createBuffered(function() {
         var apply = this.getActiveApply();
+
+        if (!apply) {
+            return;
+        }
 
         apply.set('reflection', this.getReflectionField().getValue());
 
