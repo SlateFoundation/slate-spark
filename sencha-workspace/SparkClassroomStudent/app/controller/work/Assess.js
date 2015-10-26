@@ -15,7 +15,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
     refs: {
         assessCt: 'spark-student-work-assess',
-        illuminateLauncher: 'spark-student-work-assess #illuminateLauncher'
+        illuminateLauncher: 'spark-student-work-assess #illuminateLauncher',
+        reflectionField: 'spark-student-work-assess #reflectionField'
     },
 
     control: {
@@ -24,6 +25,9 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         },
         illuminateLauncher: {
             launchclick: 'onIlluminateLaunchClick'
+        },
+        reflectionField: {
+            change: 'onReflectionFieldChange'
         }
     },
 
@@ -32,6 +36,11 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
             '#': {
                 sparkpointselect: 'onSparkpointSelect',
                 studentsparkpointload: 'onStudentSparkpointLoad'
+            }
+        },
+        store: {
+            '#work.Assessments': {
+                load: 'onAssessmentsStoreLoad'
             }
         }
     },
@@ -78,6 +87,12 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         // }
     },
 
+    onAssessmentsStoreLoad: function(assessmentsStore) {
+        var rawData = assessmentsStore.getProxy().getReader().rawData || {};
+
+        this.getReflectionField().setValue(rawData.reflection);
+    },
+
     onIlluminateLaunchClick: function(launcher, ev) {
         var studentSparkpoint = this.getStudentSparkpoint();
 
@@ -90,5 +105,26 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
         studentSparkpoint.set('assess_start_time', new Date());
         studentSparkpoint.save();
-    }
+    },
+
+    onReflectionFieldChange: function() {
+        this.writeReflection();
+    },
+
+
+    // controller methods
+    writeReflection: Ext.Function.createBuffered(function() {
+        var me = this;
+
+        Slate.API.request({
+            method: 'PATCH',
+            url: '/spark/api/work/assess',
+            urlParams: {
+                sparkpoint: me.getStudentSparkpoint().get('sparkpoint')
+            },
+            jsonData: {
+                reflection: this.getReflectionField().getValue()
+            }
+        });
+    }, 2000)
 });
