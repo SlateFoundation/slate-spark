@@ -95,11 +95,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         var me = this,
             table = data.table,
             item = data.item,
-            task;
+            task, apply, activeApply;
 
         if (table == 'todos') {
-            if (task = this.getWorkApplyTasksStore().getById(item.id)) {
+            if (task = me.getWorkApplyTasksStore().getById(item.id)) {
                 task.set(item, { dirty: false });
+            }
+        } else if (table == 'applies') {
+            if (apply = me.getWorkAppliesStore().getById(item.fb_apply_id)) {
+                apply.set({
+                    reflection: item.reflection,
+                    submissions: Ext.decode(item.submissions, true) || []
+                }, { dirty: false });
+
+                if ((activeApply = me.getActiveApply()) && activeApply.getId() == apply.getId()) {
+                    me.syncActiveApply();
+                }
             }
         }
     },
