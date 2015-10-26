@@ -301,7 +301,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         } else if (table == 'conference_worksheets') {
             student = me.getActiveStudent();
 
-            if (item.student_id = student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
+            if (student && item.student_id == student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
                 worksheetData = Ext.decode(item.worksheet, true);
                 me.getWorksheetCmp().setData(Ext.apply({
                     peer: worksheetData && Ext.getStore('Students').getById(worksheetData.peer_id)
