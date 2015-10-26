@@ -14,7 +14,7 @@ Ext.define('SparkClassroom.model.Todo', {
             }
         },
         {
-            name: 'complete',
+            name: 'completed',
             type: 'boolean',
             defaultValue: false
         }
