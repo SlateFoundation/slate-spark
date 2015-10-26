@@ -1,6 +1,10 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.work.Apply', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Ext.field.Url' // TODO: remove when attach link window is build
+    ],
+
 
     config: {
         activeSparkpoint: null,
@@ -152,11 +156,13 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     onAttachLinkBtnTap: function() {
         var me = this;
 
+        // TODO: build a custom window that enables inputting link+title
         Ext.Msg.show({
             title: 'Attach link',
             message: 'Paste the link you wish to attach',
             buttons  : Ext.MessageBox.OKCANCEL,
             prompt: {
+                xtype: 'urlfield',
                 placeHolder: 'http://...'
             },
             fn: function(btnId, url) {
