@@ -63,6 +63,14 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         }
     },
 
+    listen: {
+        controller: {
+            '#': {
+                activestudentselect: 'onActiveStudentSelect'
+            }
+        }
+    },
+
     routes: {
         'work': {
             rewrite: 'rewriteShowWork'
@@ -137,6 +145,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     onWorkTabChange: function(tabbar, activeTab) {
         this.redirectTo('work/' + activeTab.getItemId());
+    },
+
+    onActiveStudentSelect: function(activeStudent) {
+        this.redirectTo('work/' + activeStudent.get('active_phase'));
     },
 
     // controller methods
