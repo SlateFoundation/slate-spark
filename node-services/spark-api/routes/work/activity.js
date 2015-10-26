@@ -11,9 +11,6 @@ function getHandler(req, res, next) {
         res.send(400, 'sectionid is required.');
         return next();
     }
-
-
-
     var query = `
        SELECT ssas.student_id,
               ssas.sparkpoint_id,
@@ -130,12 +127,13 @@ function patchHandler(req, res, next) {
 
     activeSql = `
         INSERT INTO section_student_active_sparkpoint
+                    (section_id, student_id, sparkpoint_id, opened_time)
              VALUES ($1, $2, $3, current_timestamp)
-        ON CONFLICT (section_id, student_id) DO UPDATE
+        ON CONFLICT (section_id, student_id, sparkpoint_id) DO UPDATE
                 SET opened_time = current_timestamp;`;
 
 
-    db(req).none(activeSql, [userId, sectionId, sparkpointId]).then(function() {
+    db(req).none(activeSql, [sectionId, userId, sparkpointId]).then(function() {
         if (timeKeys.length === 0) {
             // Return existing row, no time updates
             sparkpointSql = `
