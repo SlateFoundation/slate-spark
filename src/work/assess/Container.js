@@ -48,6 +48,8 @@ Ext.define('SparkClassroom.work.assess.Container', {
                 title: 'Reflection',
                 items: [
                     {
+                        itemId: 'reflectionField',
+
                         xtype: 'textareafield',
                         label: 'How does this standard apply to everyday life?',
                         placeHolder: 'Write a paragraph about what you’ve learned with this standard.'

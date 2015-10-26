@@ -10,7 +10,12 @@ Ext.define('SparkClassroom.store.work.Assessments', {
     config: {
         proxy: {
             type: 'slate-api',
-            url: '/spark/api/work/assessments'
+            url: '/spark/api/work/assess',
+            reader: {
+                type: 'json',
+                keepRawData: true,
+                rootProperty: 'assessments',
+            }
         }
     }
 });
