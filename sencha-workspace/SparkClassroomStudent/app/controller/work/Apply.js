@@ -81,7 +81,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             selectedApplyCt = me.getSelectedApplyCt();
 
         if (apply) {
-            apply.set('sparkpoint', me.getStudentSparkpoint().get('sparkpoint'), { dirty: false });
+            apply.set('sparkpoint', me.getActiveSparkpoint(), { dirty: false });
 
             me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
                 return {
