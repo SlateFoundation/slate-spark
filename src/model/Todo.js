@@ -8,7 +8,10 @@ Ext.define('SparkClassroom.model.Todo', {
         {
             name: 'date_due',
             type: 'date',
-            allowNull: true
+            allowNull: true,
+            convert: function(v, r) {
+                return v || new Date();
+            }
         },
         {
             name: 'complete',

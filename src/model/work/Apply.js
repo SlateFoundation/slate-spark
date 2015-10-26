@@ -11,6 +11,7 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'sparkpointCodes',
         'standardCodes',
         'todos',
+        'submissions',
         {
             name: 'links',
 

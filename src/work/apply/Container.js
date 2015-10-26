@@ -261,7 +261,12 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                                 allowDeselect: true,
                                                 store: {
                                                     // TODO: move to model
+                                                    idProperty: 'url',
                                                     fields: [
+                                                        {
+                                                            name: 'id',
+                                                            mapping: 'url',
+                                                        },
                                                         {
                                                             name: 'url'
                                                         },
