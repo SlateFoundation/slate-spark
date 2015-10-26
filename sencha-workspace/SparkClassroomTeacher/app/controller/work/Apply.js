@@ -4,7 +4,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
 
     config: {
-        activeStudent: null
+        activeStudent: null,
+        activeApply: null
     },
 
     stores: [
@@ -13,16 +14,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
     refs: {
         applyCt: 'spark-teacher-work-apply',
+        headerCmp: 'spark-teacher-work-apply #headerCmp',
+        timelineCmp: 'spark-teacher-work-apply #timelineCmp',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn'
-    //     applyCt: 'spark-student-work-apply',
-    //     applyPickerCt: 'spark-student-work-apply #applyPickerCt',
-    //     appliesGrid: 'spark-student-work-apply grid#appliesGrid',
-    //     chooseSelectedApplyBtn: 'spark-student-work-apply button#chooseSelectedApplyBtn',
-    //     selectedApplyCt: 'spark-student-work-apply #selectedApplyCt',
-    //     chooseAgainBtn: 'spark-student-work-apply button#chooseAgainBtn',
-    //     headerCmp: 'spark-student-work-apply #headerCmp',
-    //     todosGrid: 'spark-student-work-apply grid#todosGrid',
-    //     linksCmp: 'spark-student-work-apply #linksCmp'
     },
 
     control: {
@@ -32,24 +26,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         readyBtn: {
             tap: 'onReadyBtnTap'
         }
-    //     applyCt: {
-    //         activate: 'onApplyCtActivate'
-    //     },
-    //     appliesGrid: {
-    //         select: 'onAppliesGridSelect'
-    //     },
-    //     chooseSelectedApplyBtn: {
-    //         tap: 'onChooseSelectedApplyTap'
-    //     },
-    //     chooseAgainBtn: {
-    //         tap: 'onChooseAgainTap'
-    //     }
     },
 
     listen: {
         controller: {
             '#': {
                 activestudentselect: 'onActiveStudentSelect'
+            }
+        },
+        store: {
+            '#work.Applies': {
+                load: 'onAppliesStoreLoad'
             }
         }
     },
@@ -64,37 +51,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         proxy.setExtraParam('student_id', activeStudent.get('student_id'));
         proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
+        this.setActiveApply(null);
         store.load();
-
-        this.syncActiveStudent();
     },
 
-    // updateActiveApply: function(apply) {
-    //     var me = this,
-    //         applyPickerCt = me.getApplyPickerCt(),
-    //         selectedApplyCt = me.getSelectedApplyCt();
-
-    //     if (apply) {
-    //         me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
-    //             return {
-    //                 todo: todo,
-    //                 date_due: new Date()
-    //             };
-    //         }));
-
-    //         me.getLinksCmp().setData(apply.get('links').map(function(link) {
-    //             return {
-    //                 title: link.title || link.url.replace(/^https?:\/\//, ''),
-    //                 url: link.url
-    //             };
-    //         }));
-
-    //         me.getHeaderCmp().setData(apply.getData());
-    //     }
-
-    //     applyPickerCt.setHidden(apply);
-    //     selectedApplyCt.setHidden(!apply);
-    // },
+    updateActiveApply: function(apply) {
+        this.syncActiveApply();
+    },
 
 
     // event handlers
@@ -103,7 +66,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     },
 
     onApplyCtActivate: function() {
-        this.syncActiveStudent();
+        this.syncActiveApply();
+    },
+
+    onAppliesStoreLoad: function(appliesStore) {
+        this.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
 
     onReadyBtnTap: function() {
@@ -115,43 +82,27 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         }
     },
 
-    // onSparkpointSelect: function(sparkpoint) {
-    //     this.setActiveSparkpoint(sparkpoint);
-    // },
-
-
-    // // TODO: handle loading data into apply section
-    // onApplyCtActivate: function() {
-    //     var store = this.getWorkAppliesStore();
-
-    //     // TODO: reload store if sparkpoints param dirty
-    //     if (!store.isLoaded()) {
-    //         store.load();
-    //     }
-    // },
-
-    // onAppliesGridSelect: function(appliesGrid) {
-    //     this.getChooseSelectedApplyBtn().enable();
-    // },
-
-    // onChooseSelectedApplyTap: function() {
-    //     this.setActiveApply(this.getAppliesGrid().getSelection());
-    // },
-
-    // onChooseAgainTap: function() {
-    //     this.setActiveApply(null);
-    // }
 
     // controller methods
-    syncActiveStudent: function() {
+    syncActiveApply: function() {
         var me = this,
             applyCt = me.getApplyCt(),
-            student = me.getActiveStudent();
+            apply = me.getActiveApply(),
+            student = me.getActiveStudent(),
+            startTime = student && student.get('apply_start_time');
 
-        if (!applyCt) {
-            return;
+        if (apply) {
+            me.getHeaderCmp().setData(apply.getData());
+
+            me.getTimelineCmp().setData({
+                start: startTime,
+                finish: student && student.get('apply_finish_time'),
+                estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
+            });
+
+            applyCt.show();
+        } else {
+            applyCt.hide();
         }
-
-        applyCt.setHidden(!student);
     }
 });

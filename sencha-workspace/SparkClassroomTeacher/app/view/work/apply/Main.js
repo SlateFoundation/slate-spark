@@ -11,23 +11,39 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                 layout: 'hbox',
                 items: [
                     {
+                        itemId: 'headerCmp',
+
+                        xtype: 'component',
                         flex: 1,
-                        html: '<h1 class="spark-view-headline">Write it<h1>'
-                            + '<div class="spark-view-prompt reading-width"><p class="lead">Write a paragraph that has both active and passive voice sentences. Be sure to underline your sentences that display the learning target.</p></div>'
+                        tpl: [
+                            '<h1 class="spark-view-headline">{title:htmlEncode}</h1>',
+                            '<div class="spark-view-prompt reading-width"><p class="lead">{instructions:htmlEncode}</p></div>' // TODO: support markdown
+                        ]
                     },
                     {
-                        html: [
+                        itemId: 'timelineCmp',
+
+                        tpl: [
                             '<dl class="kv-list align-right">',
-                                '<div class="kv-pair">',
-                                    '<dt class="kv-key">Start Date</dt>',
-                                    '<dd class="kv-value">3/2/15</dd>',
-                                '</div>',
-                                '<div class="kv-pair">',
-                                    '<dt class="kv-key">Expected End Date</dt>',
-                                    '<dd class="kv-value">3/6/15</dd>',
-                                '</div>',
+                                '<tpl if="start">',
+                                    '<div class="kv-pair">',
+                                        '<dt class="kv-key">Start Date</dt>',
+                                        '<dd class="kv-value">{start:date("n/j/y")}</dd>',
+                                    '</div>',
+                                '</tpl>',
+                                '<tpl if="finish">',
+                                    '<div class="kv-pair">',
+                                        '<dt class="kv-key">Finish Date</dt>',
+                                        '<dd class="kv-value">{finish:date("n/j/y")}</dd>',
+                                    '</div>',
+                                '<tpl elseif="estimate">',
+                                    '<div class="kv-pair">',
+                                        '<dt class="kv-key">Expected End Date</dt>',
+                                        '<dd class="kv-value">{estimate:date("n/j/y")}</dd>',
+                                    '</div>',
+                                '</tpl>',
                             '</dl>'
-                        ].join('')
+                        ]
                     }
                 ]
             },
@@ -45,28 +61,28 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Main', {
                     }
                 },
                 items: [
-                    {
-                        items: [
-                            {
-                                title: 'Applied Standards',
-                                defaults: {
-                                    xtype: 'component',
-                                    cls: 'spark-token-item'
-                                },
-                                items: [
-                                    {
-                                        html: 'CCSS.ELA.4.CC.4.A'
-                                    },
-                                    {
-                                        html: 'CCSS.ELA.4.CC.4.A'
-                                    },
-                                    {
-                                        html: 'CCSS.ELA.4.CC.4.A'
-                                    }
-                                ]
-                            }
-                        ]
-                    },
+                    // {
+                    //     items: [
+                    //         {
+                    //             title: 'Applied Standards',
+                    //             defaults: {
+                    //                 xtype: 'component',
+                    //                 cls: 'spark-token-item'
+                    //             },
+                    //             items: [
+                    //                 {
+                    //                     html: 'CCSS.ELA.4.CC.4.A'
+                    //                 },
+                    //                 {
+                    //                     html: 'CCSS.ELA.4.CC.4.A'
+                    //                 },
+                    //                 {
+                    //                     html: 'CCSS.ELA.4.CC.4.A'
+                    //                 }
+                    //             ]
+                    //         }
+                    //     ]
+                    // },
                     {
                         items: [
                             {
