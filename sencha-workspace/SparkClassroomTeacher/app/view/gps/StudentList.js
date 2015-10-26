@@ -20,9 +20,13 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                     '<a class="studentlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
                 '</tpl>',
                 '<tpl if="help_request"><span class="studentlist-request">{help_request_abbr}</span></tpl> ',
-                '<span class="studentlist-timer">',
-                    '{[Ext.util.Format.fuzzyDuration(values[values.phase+"_duration"] * 1000, true)]}',
-                '</span>',
+
+                '{% values.duration = this.getDuration(values) %}',
+                '<tpl if="duration">',
+                    '<span class="studentlist-timer">',
+                        '{duration:fuzzyDuration(true)}',
+                    '</span>',
+                '</tpl>',
                 '<tpl if="showDismissButton">',
                     '<i class="fa fa-times item-remove-btn"></i>',
                 '</tpl>',
@@ -31,7 +35,21 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 // '<tpl for="Standards">',
                     '<li class="studentlist-standard">{sparkpoint}</li>',
                 // '</tpl>',
-            '</ul>'
+            '</ul>',
+            {
+                getDuration: function(data) {
+                    switch (data.active_phase) {
+                        case 'learn':
+                            if (!data.learn_start_time) {
+                                return null;
+                            }
+
+                            return Date.now() - data.learn_start_time;
+                        default:
+                            return null;
+                    }
+                }
+            }
         ]
     },
 
