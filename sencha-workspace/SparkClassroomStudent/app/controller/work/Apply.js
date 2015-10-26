@@ -4,6 +4,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     config: {
         activeSparkpoint: null,
+        studentSparkpoint: null,
         activeApply: null
     },
 
@@ -45,7 +46,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect'
+                sparkpointselect: 'onSparkpointSelect',
+                studentsparkpointload: 'onStudentSparkpointLoad'
             }
         }
     },
@@ -97,6 +99,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         this.setActiveSparkpoint(sparkpoint);
     },
 
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
+    },
+
 
     // TODO: handle loading data into apply section
     onApplyCtActivate: function() {
@@ -113,7 +119,20 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onChooseSelectedApplyTap: function() {
-        this.setActiveApply(this.getAppliesGrid().getSelection());
+        var me = this,
+            apply = me.getAppliesGrid().getSelection();
+
+        apply.set({
+            sparkpoint: me.getStudentSparkpoint().get('sparkpoint'),
+            selected: true
+        });
+
+        apply.save({
+            success: function() {
+                me.setActiveApply(apply);
+            }
+        });
+
     },
 
     onChooseAgainTap: function() {
