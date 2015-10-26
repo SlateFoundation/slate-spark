@@ -73,9 +73,9 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
             learnsStore.load();
         }
 
-        if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
-            appliesStore.load();
-        }
+        // if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
+        //     appliesStore.load();
+        // }
     },
 
     onIlluminateLaunchClick: function(launcher, ev) {
