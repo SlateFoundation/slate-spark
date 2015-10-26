@@ -36,6 +36,7 @@ function createServer(logger) {
         res.send(404, req.url + ' was not found');
     });
 
+    server.patch('/todos', routes.todos.patch);
     server.get('/standards/:id', routes.standards);
     server.get('/standards', routes.standards);
 
