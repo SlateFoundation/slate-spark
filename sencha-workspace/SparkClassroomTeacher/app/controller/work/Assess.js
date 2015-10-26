@@ -4,8 +4,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
 
     config: {
-        activeStudent: null,
-        activeSparkpoint: null
+        activeStudent: null
     },
 
 
@@ -14,41 +13,44 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     ],
 
     refs: {
-        assessCt: 'spark-teacher-work-assess'
+        assessCt: 'spark-teacher-work-assess',
+        completeBtn: 'spark-teacher-work-assess #completeBtn'
     },
 
     control: {
         assessCt: {
             activate: 'onAssessCtActivate'
+        },
+        completeBtn: {
+            tap: 'onCompleteBtnTap'
         }
     },
 
     listen: {
         controller: {
             '#': {
-                activestudentselect: 'onActiveStudentSelect'
+                activestudentselect: 'onActiveStudentSelect',
+                studentupdate: 'onStudentUpdate'
             }
         }
     },
 
 
     // config handlers
-    updateActiveStudent: function(activeStudent) {
-        this.setActiveSparkpoint(activeStudent.get('sparkpoint'));
-    },
-
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkAssessmentsStore();
+    updateActiveStudent: function(student) {
+        var store = this.getWorkAssessmentsStore(),
+            proxy = store.getProxy();
 
         // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        proxy.setExtraParam('student_id', student.get('student_id'));
+        proxy.setExtraParam('sparkpoint', student.get('sparkpoint'));
 
         // TODO: reload store if sparkpoints param dirty
         if (store.isLoaded()) {
             store.load();
         }
 
-        this.syncActiveSparkpoint();
+        this.syncActiveStudent();
     },
 
 
@@ -57,29 +59,38 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         this.setActiveStudent(student);
     },
 
-    onSparkpointSelect: function(sparkpoint) {
-        this.setActiveSparkpoint(sparkpoint);
+    onAssessCtActivate: function() {
+        this.syncActiveStudent();
     },
 
-    onAssessCtActivate: function() {
-        this.syncActiveSparkpoint();
+    onStudentUpdate: function(student) {
+        if (student === this.getActiveStudent()) {
+            this.syncActiveStudent();
+        }
+    },
+
+    onCompleteBtnTap: function() {
+        var student = this.getActiveStudent();
+
+        student.set('assess_finish_time', new Date());
+        student.save();
     },
 
 
     // controller methods
-    syncActiveSparkpoint: function() {
+    syncActiveStudent: function() {
         var me = this,
+            student = me.getActiveStudent(),
             assessCt = me.getAssessCt(),
             assessmentsStore = me.getWorkAssessmentsStore(),
             learnsStore = Ext.getStore('work.Learns'),
-            appliesStore = Ext.getStore('work.Applies'),
-            sparkpoint = me.getActiveSparkpoint();
+            appliesStore = Ext.getStore('work.Applies');;
 
         if (!assessCt) {
             return;
         }
 
-        if (sparkpoint) {
+        if (student) {
             assessCt.show();
 
             if (!assessmentsStore.isLoaded()) { // TODO: OR extraParamsDirty
@@ -93,6 +104,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
                 appliesStore.load();
             }
+
+            me.getCompleteBtn().setDisabled(!student.get('assess_start_time'));
         } else {
             assessCt.hide();
         }

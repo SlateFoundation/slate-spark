@@ -11,20 +11,21 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
         },
         items: [
             {
-                text: 'Assign Learns'
+                text: 'Assign Learns',
+                margin: '0 16 0 0',
+                disabled: true
             },
             {
-                xtype: 'component',
-                width: '16'
-            },
-            {
-                text: 'Schedule Interaction'
+                text: 'Schedule Interaction',
+                disabled: true
             },
             {
                 xtype: 'component',
                 flex: 1
             },
             {
+                itemId: 'completeBtn',
+
                 text: 'Mark Standard Complete',
                 iconCls: 'fa fa-check'
             }
