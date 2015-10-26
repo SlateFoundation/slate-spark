@@ -293,7 +293,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             table = data.table,
             item = data.item,
-            student;
+            student, worksheetData;
 
         if (table == 'conference_questions') {
             me.getWorkConferenceQuestionsStore().loadRawData([item], true);
@@ -302,7 +302,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             student = me.getActiveStudent();
 
             if (item.student_id = student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
-                debugger;
+                worksheetData = Ext.decode(item.worksheet, true);
+                me.getWorksheetCmp().setData(Ext.apply({
+                    peer: worksheetData && Ext.getStore('Students').getById(worksheetData.peer_id)
+                }, worksheetData));
             }
         }
     },
