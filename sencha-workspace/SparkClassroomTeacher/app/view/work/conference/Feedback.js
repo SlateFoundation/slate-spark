@@ -92,6 +92,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                     },
                     {
                         xtype: 'spark-panel',
+                        disabled: true,
                         cls: 'content-card narrow',
                         title: 'Feedback',
                         items: [

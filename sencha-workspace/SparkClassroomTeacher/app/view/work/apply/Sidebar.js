@@ -10,6 +10,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
                 items: [
                     {
                         xtype: 'fieldset',
+                        disabled: true,
                         title: 'Feedback',
                         items: [
                             {
@@ -19,34 +20,6 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
                             {
                                 xtype: 'textareafield',
                                 label: 'Message'
-                            // },
-                            // {
-                            //     xtype: 'fieldset',
-                            //     cls: 'radio-group text-notrail',
-                            //     title: 'To',
-                            //     defaults: {
-                            //         labelAlign: 'left',
-                            //         labelWidth: 'auto',
-                            //         name: 'to'
-                            //     },
-                            //     items: [
-                            //         {
-                            //             xtype: 'radiofield',
-                            //             label: 'Alexandra W'
-                            //         },
-                            //         {
-                            //             xtype: 'radiofield',
-                            //             label: 'Current Standard'
-                            //         },
-                            //         {
-                            //             xtype: 'radiofield',
-                            //             label: 'All in group'
-                            //         },
-                            //         {
-                            //             xtype: 'radiofield',
-                            //             label: 'All in Conference'
-                            //         }
-                            //     ]
                             }
                         ]
                     },

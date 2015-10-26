@@ -16,6 +16,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
             },
             {
                 xtype: 'formpanel',
+                disabled: true,
                 cls: 'content-card narrow',
                 items: [
                     {
@@ -36,6 +37,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
             },
             {
                 xtype: 'formpanel',
+                disabled: true,
                 cls: 'content-card narrow',
                 items: [
                     {

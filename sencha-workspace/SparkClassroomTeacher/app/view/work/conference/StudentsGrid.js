@@ -82,7 +82,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
                         }
                     }
                    },
-                tpl: '<input class="field-control text-center input-mastery-score" placeholder="95" style="width: 100%" type="number" min="0" max="100" step="1" value="{conference_mastery_score:htmlEncode}">%'
+                tpl: '<input disabled class="field-control text-center input-mastery-score" placeholder="95" style="width: 100%" type="number" min="0" max="100" step="1" value="{conference_mastery_score:htmlEncode}">%'
             },
             {
                 width: 64,
