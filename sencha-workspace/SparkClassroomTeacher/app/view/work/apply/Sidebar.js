@@ -60,7 +60,14 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
                             '</tpl>',
                         '</ul>',
                     '</div>'
-                ]
+                ],
+                listeners: {
+                    element: 'element',
+                    click: function(ev, t) {
+                        ev.stopEvent();
+                        Ext.Msg.alert('Not implemented', 'Grading applies is not curently available, check back soon');
+                    }
+                }
             },
             {
                 itemId: 'readyForAssessBtn',
