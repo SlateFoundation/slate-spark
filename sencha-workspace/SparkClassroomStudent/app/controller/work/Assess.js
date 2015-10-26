@@ -107,8 +107,10 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         studentSparkpoint.save();
     },
 
-    onReflectionFieldChange: function() {
-        this.writeReflection();
+    onReflectionFieldChange: function(field, value, oldValue) {
+        if (oldValue !== null) {
+            this.writeReflection();
+        }
     },
 
 
