@@ -37,6 +37,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             '#gps.ActiveStudents': {
                 endupdate: 'onActiveStudentsStoreEndUpdate'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -75,25 +78,13 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onStudentsStoreLoad: function(studentsStore, students, success) {
-        var me = this,
-            refreshTask = me.refreshTask,
-            activeStudentsStore = me.getGpsActiveStudentsStore();
+        var me = this;
 
         if (!success) {
             return;
         }
 
-        // create refresh task if needed
-        if (!refreshTask) {
-            refreshTask = me.refreshTask = Ext.util.TaskManager.newTask({
-                interval: 60000,
-                fireOnStart: true,
-                scope: activeStudentsStore,
-                run: activeStudentsStore.loadUpdates
-            });
-        }
-
-        refreshTask.restart();
+        me.getGpsActiveStudentsStore().load();
     },
 
     onActiveStudentsStoreEndUpdate: function() {
@@ -117,6 +108,20 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     onHelpDismissTap: function(list, item) {
         item.getRecord().set('help_request', null);
         this.syncSelectedActiveStudent();
+    },
+
+    onSocketData: function(socket, data) {
+        if (data.table != 'student_sparkpoint') {
+            return;
+        }
+
+        var me = this,
+            itemData = data.item,
+            activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id);
+
+        if (activeStudent) {
+            activeStudent.set(itemData, { dirty: false });
+        }
     },
 
 
