@@ -34,7 +34,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        this.setActiveSparkpoint(activeStudent.get('sparkpoint_code'))
+        this.setActiveSparkpoint(activeStudent.get('sparkpoint'));
     },
 
     updateActiveSparkpoint: function(sparkpoint) {

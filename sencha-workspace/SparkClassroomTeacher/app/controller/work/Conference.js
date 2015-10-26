@@ -94,7 +94,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             conferencingStudentsGrid = me.getConferencingStudentsGrid();
 
-        me.setActiveSparkpoint(activeStudent.get('sparkpoint_code'));
+        me.setActiveSparkpoint(activeStudent.get('sparkpoint'));
         me.syncConferenceGroup();
 
         if (conferencingStudentsGrid) {

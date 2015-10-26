@@ -41,7 +41,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     updateActiveStudent: function(activeStudent) {
         var store = this.getWorkLearnsStore(),
             proxy = store.getProxy(),
-            sparkpointCode = activeStudent.get('sparkpoint_code');
+            sparkpointCode = activeStudent.get('sparkpoint');
 
         this.setActiveSparkpoint(sparkpointCode);
 

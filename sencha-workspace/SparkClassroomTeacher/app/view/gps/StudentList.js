@@ -29,7 +29,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
             '</header>',
             '<ul class="studentlist-standards">', // TODO: rename to studentlist-sparkpoints
                 // '<tpl for="Standards">',
-                    '<li class="studentlist-standard">{sparkpoint_code}</li>',
+                    '<li class="studentlist-standard">{sparkpoint}</li>',
                 // '</tpl>',
             '</ul>'
         ]
