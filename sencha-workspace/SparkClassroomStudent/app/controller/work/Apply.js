@@ -88,12 +88,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         if (apply) {
             apply.set('sparkpoint', me.getActiveSparkpoint(), { dirty: false });
 
-            me.getTodosGrid().getStore().loadData(apply.get('todos').map(function(todo) {
-                return {
-                    todo: todo,
-                    date_due: new Date()
-                };
-            }));
+            me.getTodosGrid().getStore().loadData(apply.get('todos'));
 
             me.getLinksCmp().setData(apply.get('links').map(function(link) {
                 return {
@@ -105,6 +100,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             me.getHeaderCmp().setData(apply.getData());
 
             me.getReflectionField().setValue(apply.get('reflection'));
+
+            me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
         }
 
         applyPickerCt.setHidden(apply);
