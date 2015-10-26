@@ -99,10 +99,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     onConferenceQuestionsStoreLoad: function(questionsStore) {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
             rawData = questionsStore.getProxy().getReader().rawData || {},
             worksheet = me.getConferenceWorksheetModel().create(Ext.apply({
-                sparkpoint: studentSparkpoint.get('sparkpoint')
+                sparkpoint: me.getActiveSparkpoint()
             }, rawData.worksheet));
 
         me.getWorkConferenceResourcesStore().loadData(rawData.resources || []);
