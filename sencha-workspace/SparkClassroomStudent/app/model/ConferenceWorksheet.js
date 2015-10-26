@@ -11,6 +11,11 @@ Ext.define('SparkClassroomStudent.model.ConferenceWorksheet', {
         {
             name: 'sparkpoint'
         },
+        {
+            name: 'student_id',
+            type: 'int',
+            persist: false
+        },
 
         {
             name: 'restated',
@@ -49,7 +54,8 @@ Ext.define('SparkClassroomStudent.model.ConferenceWorksheet', {
 
         writer: {
             type: 'json',
-            allowSingle: true
+            allowSingle: true,
+            writeAllFields: true
         }
     }
 });
