@@ -7,6 +7,8 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Container', {
     ],
 
     config: {
+        itemId: 'apply',
+
         items: [
             {
                 layout: 'hbox',
