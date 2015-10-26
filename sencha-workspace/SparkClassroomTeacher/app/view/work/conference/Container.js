@@ -4,7 +4,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
     xtype: 'spark-teacher-work-conference',
     requires: [
         'SparkClassroomTeacher.view.work.conference.Feedback',
-        'SparkClassroomTeacher.view.work.conference.peer.Component'
+        'SparkClassroomTeacher.view.work.conference.Worksheet'
     ],
 
     initialize: function () {
@@ -16,7 +16,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
             cls: 'sidebar-col is-wide',
             scrollable: false
         },{
-            xtype: 'spark-teacher-work-conference-peer-component'
+            xtype: 'spark-teacher-work-conference-worksheet'
         }]);
     }
 });

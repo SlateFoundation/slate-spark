@@ -24,6 +24,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         sparkpointCt: 'spark-teacher-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
         resourcesList: 'spark-worklist#resources',
+        worksheetCmp: 'spark-teacher-work-conference-worksheet',
         waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
         joinConferenceCt: 'spark-teacher-work-conference-feedback #joinConferenceCt',
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
@@ -128,11 +129,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onConferenceQuestionsStoreLoad: function(questionsStore, questions, success) {
-        var me = this;
+        var me = this,
+            rawData = questionsStore.getProxy().getReader().rawData || {},
+            worksheetData = rawData.worksheet;
 
-        if (success) {
-            me.getWorkConferenceResourcesStore().loadData(questionsStore.getProxy().getReader().rawData.resources);
-        }
+        me.getWorkConferenceResourcesStore().loadData(rawData.resources || []);
+
+        me.getWorksheetCmp().setData(Ext.apply({
+            peer: worksheetData && Ext.getStore('Students').getById(worksheetData.peer_id)
+        }, worksheetData));
 
         me.refreshQuestions();
         me.refreshResources();
@@ -285,14 +290,21 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onSocketData: function(socket, data) {
-        var me = this;
+        var me = this,
+            table = data.table,
+            item = data.item,
+            student;
 
-        if (data.table != 'conference_questions') {
-            return;
+        if (table == 'conference_questions') {
+            me.getWorkConferenceQuestionsStore().loadRawData([item], true);
+            me.refreshQuestions();
+        } else if (table == 'conference_worksheets') {
+            student = me.getActiveStudent();
+
+            if (item.student_id = student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
+                debugger;
+            }
         }
-
-        me.getWorkConferenceQuestionsStore().loadRawData([data.item], true);
-        me.refreshQuestions();
     },
 
 
