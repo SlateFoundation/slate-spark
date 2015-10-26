@@ -150,7 +150,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         apply.set('selected', true);
 
         if (apply.dirty) {
-            apply.save();
+            apply.save({
+                success: function() {
+                    me.getTodosGrid().getStore().loadData(apply.get('todos'));
+                }
+            });
         }
     },
 
