@@ -12,11 +12,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Form', {
             {
                 // TODO: hide/remove progress banner from grid
                 xtype: 'spark-work-learn-progressbanner',
-                data: {
-                    name: 'Alexandra W.',
-                    completedLearns: 3,
-                    requiredLearns: 5
-                }
+                hidden: true
             },
             {
                 xtype: 'formpanel',

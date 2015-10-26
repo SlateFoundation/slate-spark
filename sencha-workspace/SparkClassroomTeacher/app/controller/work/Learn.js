@@ -15,6 +15,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     refs: {
         learnCt: 'spark-teacher-work-learn',
         sparkpointCt: 'spark-teacher-work-learn #sparkpointCt',
+        progressBanner: 'spark-teacher-work-learn-form spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid'
     },
 
@@ -28,6 +29,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         controller: {
             '#': {
                 activestudentselect: 'onActiveStudentSelect'
+            }
+        },
+        store: {
+            '#work.Learns': {
+                load: 'onLearnsStoreLoad',
+                update: 'onLearnsStoreUpdate'
             }
         },
         socket: {
@@ -60,6 +67,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onLearnCtActivate: function() {
         this.syncActiveStudent();
+    },
+
+    onLearnsStoreLoad: function() {
+        this.refreshLearnProgress();
+    },
+
+    onLearnsStoreUpdate: function() {
+        this.refreshLearnProgress();
     },
 
     onSocketData: function(socket, data) {
@@ -115,5 +130,34 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         } else {
             learnCt.hide();
         }
+    },
+
+    refreshLearnProgress: function() {
+        var me = this,
+            progressBanner = me.getProgressBanner(),
+            learns = me.getWorkLearnsStore().getRange(),
+            count = learns.length,
+            completed = 0,
+            required = Math.min(count, 5),
+            i = 0;
+
+        if (!progressBanner) {
+            // learns tab hasn't been activated yet
+            return;
+        }
+
+        for (; i < count; i++) {
+            if (learns[i].get('completed')) {
+                completed++;
+            }
+        }
+
+        progressBanner.setData({
+            completedLearns: completed,
+            name: me.getActiveStudent().get('student_name'),
+            requiredLearns: required
+        });
+
+        progressBanner.show();
     }
 });
