@@ -13,7 +13,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     stores: [
-        'work.Applies@SparkClassroom.store'
+        'work.Applies@SparkClassroom.store',
+        'work.ApplyTasks@SparkClassroom.store'
     ],
 
     refs: {
@@ -26,7 +27,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         chooseAgainBtn: 'spark-student-work-apply button#chooseAgainBtn',
         headerCmp: 'spark-student-work-apply #headerCmp',
         timelineCmp: 'spark-student-work-apply #timelineCmp',
-        tasksGrid: 'spark-student-work-apply grid#tasksGrid',
+        tasksGrid: 'spark-student-work-apply spark-work-apply-tasksgrid',
         linksCmp: 'spark-student-work-apply #linksCmp',
         submissionsView: 'spark-student-work-apply #submissionsView',
         attachFileButton: 'spark-panel button#attachFileBtn',
@@ -207,7 +208,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
             apply.set('sparkpoint', me.getActiveSparkpoint(), { dirty: false });
 
-            me.getTasksGrid().getStore().loadData(apply.get('todos'));
+            me.getWorkApplyTasksStore().loadData(apply.get('todos'));
 
             me.getLinksCmp().setData(apply.get('links').map(function(link) {
                 return {

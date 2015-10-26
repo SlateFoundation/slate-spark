@@ -6,7 +6,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'Jarvus.form.GooglePicker',
-        'SparkClassroom.store.Tasks',
+        'SparkClassroom.work.apply.TasksGrid',
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
         'SparkClassroom.column.Completed'
@@ -165,51 +165,8 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                                 xtype: 'container',
                                 items: [
                                     {
-                                        itemId: 'tasksGrid',
-
-                                        xtype: 'grid',
-                                        plugins: [
-                                            'gridflex',
-                                            'gridheight'
-                                        ],
-                                        titleBar: false,
-                                        emptyText: 'There are no To Dos for this apply project',
-                                        deferEmptyText: false,
-
-                                        store: {
-                                            xclass: 'SparkClassroom.store.Tasks'
-                                        },
-
-                                        columns: [
-                                            {
-                                                xtype: 'spark-completed-column',
-                                                text: null,
-                                                width: 45,
-                                                sortable: false
-                                            },
-                                            {
-                                                xtype: 'column',
-                                                flex: 1,
-                                                text: 'To Dos',
-                                                dataIndex: 'todo',
-                                                cell: {
-                                                    encodeHtml: false
-                                                },
-                                                renderer: function(v) {
-                                                    var fm = Ext.util.Format;
-                                                    return fm.nl2br(fm.htmlEncode(v));
-                                                },
-                                                sortable: false
-                                            },
-                                            {
-                                                xtype: 'datecolumn',
-                                                text: 'Due Date',
-                                                dataIndex: 'date_due',
-                                                width: 150,
-                                                format: 'l, n/j',
-                                                sortable: false
-                                            }
-                                        ]
+                                        xtype: 'spark-work-apply-tasksgrid',
+                                        allowToggleComplete: true
                                     },
                                     {
                                         xtype: 'fieldset',
