@@ -16,6 +16,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         applyCt: 'spark-student-work-apply',
         applyPickerCt: 'spark-student-work-apply #applyPickerCt',
         appliesGrid: 'spark-student-work-apply grid#appliesGrid',
+        reflectionField: 'spark-student-work-apply #reflectionField',
         chooseSelectedApplyBtn: 'spark-student-work-apply button#chooseSelectedApplyBtn',
         selectedApplyCt: 'spark-student-work-apply #selectedApplyCt',
         chooseAgainBtn: 'spark-student-work-apply button#chooseAgainBtn',
@@ -31,6 +32,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         },
         appliesGrid: {
             select: 'onAppliesGridSelect'
+        },
+        reflectionField: {
+            change: 'onReflectionFieldChange'
         },
         chooseSelectedApplyBtn: {
             tap: 'onChooseSelectedApplyTap'
@@ -92,6 +96,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             }));
 
             me.getHeaderCmp().setData(apply.getData());
+
+            me.getReflectionField().setValue(apply.get('reflection'));
         }
 
         applyPickerCt.setHidden(apply);
@@ -127,6 +133,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         this.getChooseSelectedApplyBtn().enable();
     },
 
+    onReflectionFieldChange: function() {
+        this.writeReflection();
+    },
+
     onChooseSelectedApplyTap: function() {
         var me = this,
             apply = me.getAppliesGrid().getSelection();
@@ -141,7 +151,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 me.setActiveApply(apply);
             }
         });
-
     },
 
     onChooseAgainTap: function() {
@@ -150,5 +159,14 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onAttachFileButtonTap: function() {
         //console.log('onAttachFileButtonTap');
-    }
+    },
+
+
+    // controller methods
+    writeReflection: Ext.Function.createBuffered(function() {
+        var apply = this.getActiveApply();
+
+        apply.set('reflection', this.getReflectionField().getValue());
+        apply.save();
+    }, 2000)
 });
