@@ -9,7 +9,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     },
 
     stores: [
-        'work.Applies@SparkClassroom.store'
+        'work.Applies@SparkClassroom.store',
+        'work.ApplyTasks@SparkClassroom.store'
     ],
 
     refs: {
@@ -43,6 +44,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             '#work.Applies': {
                 load: 'onAppliesStoreLoad'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -84,6 +88,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         if (!student.get('apply_finish_time')) {
             student.set('apply_finish_time', new Date());
             student.save();
+        }
+    },
+
+    onSocketData: function(socket, data) {
+        var me = this,
+            table = data.table,
+            item = data.item,
+            task;
+
+        if (table == 'todos') {
+            if (task = this.getWorkApplyTasksStore().getById(item.id)) {
+                task.set(item, { dirty: false });
+            }
         }
     },
 

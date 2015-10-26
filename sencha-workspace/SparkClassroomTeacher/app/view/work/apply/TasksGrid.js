@@ -17,9 +17,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.TasksGrid', {
         emptyText: 'There are no To Dos for this apply project',
         deferEmptyText: false,
 
-        store: {
-            xclass: 'SparkClassroom.store.Tasks'
-        },
+        store: 'work.ApplyTasks',
 
         columns: [
             {
@@ -46,7 +44,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.TasksGrid', {
             {
                 xtype: 'datecolumn',
                 text: 'Due Date',
-                dataIndex: 'date_due',
+                dataIndex: 'due_date',
                 width: 150,
                 format: 'l, n/j',
                 sortable: false
