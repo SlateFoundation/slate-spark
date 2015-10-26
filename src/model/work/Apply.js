@@ -1,6 +1,10 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.work.Apply', {
     extend: 'Ext.data.Model',
+    requires: [
+        'Slate.proxy.API'
+    ],
+
 
     fields: [
         'id',

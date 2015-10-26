@@ -6,7 +6,11 @@ Ext.define('SparkClassroom.model.Task', {
         'id',
         'todo',
         {
-            name: 'date_due',
+            name: 'entry_date',
+            type: 'date'
+        },
+        {
+            name: 'due_date',
             type: 'date',
             allowNull: true,
             convert: function(v, r) {
