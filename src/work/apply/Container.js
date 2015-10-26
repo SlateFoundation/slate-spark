@@ -310,33 +310,33 @@ Ext.define('SparkClassroom.work.apply.Container', {
                                 ]
                             }
                         ]
-                    },
-                    {
-                        xtype: 'spark-panel',
-                        title: 'Feedback from Teacher',
-                        data: {
-                            feedbackNotes: [
-                                {
-                                    date: '2015-04-10',
-                                    text: 'Any information a teacher wants to leave for astudent, comments to share, and other feedback they want to offer. This could be related to any one of the fields and information on this page.'
-                                },
-                                {
-                                    date: '2015-04-07',
-                                    text: 'Any information a teacher wants to leave for astudent, comments to share, and other feedback they want to offer. This could be related to any one of the fields and information on this page.'
-                                }
-                            ]
-                        },
-                        tpl: [
-                            '<ol class="dated-list">',
-                                '<tpl for="feedbackNotes">',
-                                    '<li class="dated-list-item">',
-                                        '<h3 class="dated-list-date">{date:date}</h3>',
-                                        '<div class="dated-list-content">{text}</div>',
-                                    '</li>',
-                                '</tpl>',
-                            '</ol>'
-                        ]
                     }
+                    // {
+                    //     xtype: 'spark-panel',
+                    //     title: 'Feedback from Teacher',
+                    //     data: {
+                    //         feedbackNotes: [
+                    //             {
+                    //                 date: '2015-04-10',
+                    //                 text: 'Any information a teacher wants to leave for astudent, comments to share, and other feedback they want to offer. This could be related to any one of the fields and information on this page.'
+                    //             },
+                    //             {
+                    //                 date: '2015-04-07',
+                    //                 text: 'Any information a teacher wants to leave for astudent, comments to share, and other feedback they want to offer. This could be related to any one of the fields and information on this page.'
+                    //             }
+                    //         ]
+                    //     },
+                    //     tpl: [
+                    //         '<ol class="dated-list">',
+                    //             '<tpl for="feedbackNotes">',
+                    //                 '<li class="dated-list-item">',
+                    //                     '<h3 class="dated-list-date">{date:date}</h3>',
+                    //                     '<div class="dated-list-content">{text}</div>',
+                    //                 '</li>',
+                    //             '</tpl>',
+                    //         '</ol>'
+                    //     ]
+                    // }
                 ]
             }
         ]
