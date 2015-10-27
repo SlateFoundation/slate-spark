@@ -12,7 +12,14 @@ Ext.define('SparkClassroomTeacher.store.gps.ActiveStudents', {
         proxy: {
             type: 'slate-api',
             url: '/spark/api/work/activity'
-        }
+        },
+
+        // filter out activity that didn't match a student in the active roster
+        filters: [{
+            filterFn: function(r) {
+                return r.get('student');
+            }
+        }]
     },
 
     loadUpdates: function() {

@@ -17,7 +17,8 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             name: 'student_name',
             depends: ['student'],
             convert: function(v, r) {
-                return r.get('student').get('FullName');
+                var student = r.get('student');
+                return student ? student.get('FullName') : '[Unenrolled Student]';
             }
         },
 
