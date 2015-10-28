@@ -8,6 +8,7 @@ Ext.define('SparkClassroom.column.LearnLink', {
         dataIndex: 'title',
         text: 'Link',
         cell: {
+            cls: 'spark-learnlink-cell',
             encodeHtml: false
         },
         tpl: [
