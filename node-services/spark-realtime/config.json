@@ -1,0 +1,61 @@
+{
+  "slack": {
+    "webhookUrl": "https://hooks.slack.com/services/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"
+  },
+
+  "workers": [
+    {
+      "port": 8090,
+      "schema": "sandbox-school",
+      "nats": "nats://10.240.103.217:4222",
+      "ignore": [
+        "sessions",
+        "learn_playlist_cache"
+      ],
+      "broadcast": true
+    },
+
+    {
+      "port": 8091,
+      "schema": "merit-live",
+      "nats": "nats://10.240.103.217:4222",
+      "ignore": [
+        "sessions",
+        "learn_playlist_cache"
+      ],
+      "broadcast": true
+    },
+
+    {
+      "port": 8092,
+      "schema": "merit-staging",
+      "nats": "nats://10.240.103.217:4222",
+      "ignore": [
+        "sessions",
+        "learn_playlist_cache"
+      ],
+      "broadcast": true
+    },
+    {
+      "port": 8093,
+      "schema": "mta-live",
+      "nats": "nats://10.240.103.217:4222",
+      "ignore": [
+        "sessions",
+        "learn_playlist_cache"
+      ],
+      "broadcast": true
+    },
+
+    {
+      "port": 8094,
+      "schema": "mta-staging",
+      "nats": "nats://10.240.103.217:4222",
+      "ignore": [
+        "sessions",
+        "learn_playlist_cache"
+      ],
+      "broadcast": true
+    }
+  ]
+}
