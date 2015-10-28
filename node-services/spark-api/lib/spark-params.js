@@ -7,9 +7,17 @@ function sparkParamParser(options) {
 
     function parseSparkParams(req, res, next) {
 
-        var sectionId = req.params.section || req.params['section-id'] || req.params.section_id;
+        if (!Array.isArray(typeof req.body) && typeof req.body === 'object') {
+            for (var prop in req.body) {
+                if (typeof req.params[prop] === 'undefined') {
+                    req.params[prop] = req.body[prop];
+                }
+            }
+        }
 
-        if (req.params.sparkpoint) {
+        var sectionId = req.params.section || req.params['section-id'] || req.params.section_id || req.body.section_id || req.body.section;
+
+        if (req.params.sparkpoint || req.body.sparkpoint) {
             req.params.sparkpoint_id = lookup.sparkpoint.codeToId[req.params.sparkpoint];
         }
 

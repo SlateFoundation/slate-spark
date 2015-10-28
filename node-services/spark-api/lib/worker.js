@@ -27,7 +27,7 @@ function createServer(logger) {
     server.use(restify.acceptParser(server.acceptable));
     server.use(restify.queryParser());
     server.use(sparkHeaderParser());
-    server.use(restify.bodyParser());
+    server.use(restify.bodyParser({ mapParams: false }));
     server.use(sparkParamParser());
 
     server.on('NotFound', function (req, res) {
