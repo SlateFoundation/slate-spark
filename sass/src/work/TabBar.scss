@@ -1,6 +1,7 @@
 .spark-work-tabbar {
     background: none;
     box-shadow: 0 2px 4px rgba(black, .2);
+    height: 3.1875em;
     margin: .5em 0 2em;
     padding: 0;
 
@@ -16,14 +17,43 @@
         font-size: large;
         padding: .8em;
         position: relative;
+        @include transition(.2s);
 
         + .x-tab {
             border-left: 1px solid #ccc;
         }
 
+        &.spark-phase-active {
+            background-color: mix($neutral-dark-color, $alert-color);
+            border-color: mix($neutral-dark-color, $alert-color);
+            color: white;
+        }
+
+        &.spark-phase-complete,
+        &.spark-phase-active {
+            .spark-tab-timer {
+                display: block;
+            }
+        }
+
+        &.spark-phase-complete {
+            background-color: $neutral-dark-color;
+            color: white;
+
+            &::before {
+                color: $active-color;
+                content: '\f05d'; // fa-check-circle-o
+                font-family: FontAwesome;
+                font-size: 21px;
+                position: absolute;
+            }
+        }
+
         &.x-tab-active {
             background-color: $alert-color;
             border-color: $alert-color;
+            border-radius: .5em .5em 0 0;
+            padding: 1.2em .8em;
             color: white;
 
             .spark-tab-timer {
@@ -31,7 +61,7 @@
             }
 
             + .x-tab {
-                border-color: $alert-color;
+                border-color: transparent;
             }
         }
 
