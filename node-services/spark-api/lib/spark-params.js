@@ -1,7 +1,8 @@
 'use strict';
 
 var errors = require('restify-errors'),
-    lookup = require('./lookup');
+    lookup = require('./lookup'),
+    util = require ('./util');
 
 function sparkParamParser(options) {
 
@@ -18,7 +19,7 @@ function sparkParamParser(options) {
         var sectionId = req.params.section || req.params['section-id'] || req.params.section_id || req.body.section_id || req.body.section;
 
         if (req.params.sparkpoint || req.body.sparkpoint) {
-            req.params.sparkpoint_id = lookup.sparkpoint.codeToId[req.params.sparkpoint];
+            req.params.sparkpoint_id = util.toSparkpointId(req.params.sparkpoint || req.body.sparkpoint);
         }
 
         if (sectionId) {

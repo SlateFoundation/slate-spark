@@ -25,12 +25,14 @@ function getHandler(req, res, next) {
 
     db(req).manyOrNone(`
         SELECT *,
-               (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS selected,
-               (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS reflection,
-               (SELECT submissions FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = ANY($3) LIMIT 1) AS submissions,
-               (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos
+               (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS selected,
+               (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS reflection,
+               (SELECT submissions FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS submissions,
+               (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos,
+               (SELECT json_agg(row_to_json(reviews)) FROM (SELECT * FROM apply_reviews WHERE student_id = $2 AND apply_id = ap.id) AS reviews) AS apply_reviews,
+               (SELECT json_agg(row_to_json(reviews)) FROM (SELECT * FROM learn_reviews WHERE student_id = $2 AND resource_id = ANY (SELECT id FROM learn_resources WHERE sparkpoint_id = $3))AS reviews) AS learn_reviews
           FROM spark1.s2_apply_projects ap
-         WHERE standardids::JSONB ?| $1`, [standardIds, req.studentId, sparkpointIds]).then(function (result) {
+         WHERE standardids::JSONB ?| $1`, [standardIds, req.studentId, sparkpointId]).then(function (result) {
 
         res.json(result.map(function (apply) {
             return {
@@ -48,7 +50,9 @@ function getHandler(req, res, next) {
                 metadata: apply.metadata === '""' ? {} : apply.metadata,
                 selected: apply.selected || false,
                 reflection: apply.reflection,
-                submissions: apply.submissions || []
+                submissions: apply.submissions || [],
+                apply_reviews: apply.apply_reviews || [],
+                learn_reviews: apply.learn_reviews || []
             };
         }));
         return next();
@@ -64,7 +68,6 @@ function patchHandler(req, res, next, todos) {
     }id
 
     var sparkpointId = req.params.sparkpoint_id,
-        sparkpointId = sparkpointIds[0],
         studentId = req.studentId,
         selected = (req.params.selected.toString() === 'true'),
         id = parseInt(req.params.id, 10),
