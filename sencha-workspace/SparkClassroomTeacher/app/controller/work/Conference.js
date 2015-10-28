@@ -296,8 +296,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             student, worksheetData;
 
         if (table == 'conference_questions') {
-            me.getWorkConferenceQuestionsStore().loadRawData([item], true);
-            me.refreshQuestions();
+            student = me.getActiveStudent();
+
+            if (student && item.student_id == student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
+                me.getWorkConferenceQuestionsStore().loadRawData([item], true);
+                me.refreshQuestions();
+            }
         } else if (table == 'conference_worksheets') {
             student = me.getActiveStudent();
 
