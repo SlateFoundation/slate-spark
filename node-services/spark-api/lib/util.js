@@ -434,6 +434,29 @@ function toStandardCodes(str) {
     return returnVal;
 }
 
+function requireParams(params, req, res) {
+    console.log(params);
+
+    var missing = params.filter(function (param) {
+        return typeof req.params[param] === 'undefined';
+    });
+
+    console.log(req.params);
+    console.log(req.body);
+    console.log(missing);
+
+    if (missing.length > 0) {
+        res.statusCode = 400;
+        res.json({
+            error: 'Missing required parameter(s): ' + missing.join(', '),
+            params: req.params
+        });
+        return missing;
+    }
+
+    return false;
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     rnd: rnd,
@@ -455,4 +478,6 @@ module.exports = {
     toStandardCodes: toStandardCodes,
     toAsnId: toAsnId,
     toStandardCode: toStandardCode,
+
+    requireParams: requireParams
 };

@@ -23,6 +23,7 @@ function sparkHeaderParser(options) {
             req.isDeveloper = req.session.accountLevel === 'Developer';
 
             req.studentId = req.isStudent ? req.session.userId : req.params.student_id;
+            req.params.student_id = req.studentId;
         }
 
         if (!req.session) {
