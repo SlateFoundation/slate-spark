@@ -6,29 +6,20 @@ var AsnStandard = require('../../lib/asn-standard'),
     util = require('../../lib/util');
 
 function getHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        standardIds = [];
-
-    if (sparkpointIds.length === 0) {
-        res.json(new JsonApiError('sparkpoint or sparkpoints parameter is required.'));
+    if (util.requireParams(['sparkpoint_id', 'student_id'], req, res)) {
         return next();
     }
 
-    sparkpointIds.forEach(function (sparkpointId) {
-        (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
-            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
-        });
+    var sparkpointId = req.params.sparkpoint_id,
+        standardIds = [];
+
+    (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
     if (standardIds.length === 0) {
         res.statusCode = 404;
-        res.json(new JsonApiError('Invalid sparkpoint' + (sparkpointIds.length ? 's' : '')));
-        return next();
-    }
-
-    if (!req.studentId) {
-        res.statusCode = 400;
-        res.json({error: 'userid required'});
+        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
         return next();
     }
 
@@ -68,16 +59,19 @@ function getHandler(req, res, next) {
 }
 
 function patchHandler(req, res, next, todos) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
+    if (util.requireParams(['sparkpoint_id', 'student_id', 'selected', 'id'], req, res)) {
+        return next();
+    }id
+
+    var sparkpointId = req.params.sparkpoint_id,
         sparkpointId = sparkpointIds[0],
-        userId = req.studentId,
-        isTeacher = req.isTeacher,
-        selected = (req.params.selected === 'true') ? true : (req.params.selected === 'false') ? false : (typeof req.body.selected === 'boolean') ? req.body.selected : null;
+        studentId = req.studentId,
+        selected = (req.params.selected.toString() === 'true'),
         id = parseInt(req.params.id, 10),
-        apply = {},
         constraintKeys = ['student_id', 'fb_apply_id', 'sparkpoint_id'],
         updateSets = [],
-        values = [];
+        values = [],
+        apply;
 
     if (isNaN(id)) {
         res.statusCode = 400;
@@ -85,20 +79,12 @@ function patchHandler(req, res, next, todos) {
         return next();
     }
 
-    if (!sparkpointId) {
-        res.statusCode = 400;
-        res.json({error: 'sparkpoint id is required', params: req.params, body: req.body});
-        return next();
-    }
-
-    apply.fb_apply_id = id;
-
-    if (typeof selected === 'boolean') {
-        apply.selected = selected;
-    }
-
-    apply.student_id = userId;
-    apply.sparkpoint_id = sparkpointId;
+    apply = {
+        selected: selected,
+        fb_apply_id: id,
+        student_id: studentId,
+        sparkpoint_id: sparkpointId
+    };
 
     if (typeof req.body.reflection === 'string') {
         apply.reflection = req.body.reflection;
@@ -118,10 +104,10 @@ function patchHandler(req, res, next, todos) {
         updateSets.push(`${key} = $${++i}`);
     });
 
-    db(req).oneOrNone('SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3', [ userId, id, sparkpointId ]).then(function(exists) {
+    db(req).oneOrNone('SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3', [ studentId, id, sparkpointId ]).then(function(exists) {
         if (!exists && !todos) {
             db(req).one('SELECT todos FROM spark1.s2_apply_projects WHERE id = $1', [id]).then(function(todos) {
-                var values = [ userId, id ],
+                var values = [ studentId, id ],
                     todoValues;
 
                 todos = todos.todos;
@@ -156,8 +142,8 @@ function patchHandler(req, res, next, todos) {
                      VALUES (${Object.keys(apply).map(function(x, i) { return '$' + (i + 1); })}) ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
                      RETURNING *
             `, values).then(function(apply) {
-                    db(req).any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [ userId, id ]).then(function(todos) {
-                        db(req).none('UPDATE applies SET selected = false WHERE fb_apply_id != $1 AND sparkpoint_id = $2 and student_id = $3;', [id, sparkpointId, userId]);
+                    db(req).any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [ studentId, id ]).then(function(todos) {
+                        db(req).none('UPDATE applies SET selected = false WHERE fb_apply_id != $1 AND sparkpoint_id = $2 and student_id = $3;', [id, sparkpointId, studentId]);
                         apply.todos = todos;
                         apply.id = apply.fb_apply_id;
                         res.json(apply);
@@ -181,23 +167,17 @@ function patchHandler(req, res, next, todos) {
 }
 
 function submissionsPostHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        sparkpointId = sparkpointIds[0],
+    if (util.requireParams(['sparkpoint_id', 'id'])) {
+        return next();
+    }
+
+    var sparkpointId = req.params.sparkpoint_id,
         userId = req.studentId,
-        isTeacher = req.isTeacher,
-        id = parseInt(req.params.id, 10),
-        sql,
-        applyProject;
+        id = parseInt(req.params.id, 10);
 
     if (isNaN(id)) {
         res.statusCode = 400;
         res.json({error: 'id must be an integer, you passed: ' + req.params.id, params: req.params, body: req.body});
-        return next();
-    }
-
-    if (!sparkpointId) {
-        res.statusCode = 400;
-        res.json({error: 'sparkpoint id is required', params: req.params, body: req.body});
         return next();
     }
 

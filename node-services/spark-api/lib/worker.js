@@ -6,7 +6,8 @@ var path = require('path'),
     restify = require('restify'),
     cluster = require('cluster'),
     routes = require('../routes'),
-    sparkHeaderParser = require('./spark-headers');
+    sparkHeaderParser = require('./spark-headers'),
+    sparkParamParser = require('./spark-params');
 
 function createServer(logger) {
     var server, config;
@@ -27,6 +28,7 @@ function createServer(logger) {
     server.use(restify.queryParser());
     server.use(sparkHeaderParser());
     server.use(restify.bodyParser());
+    server.use(sparkParamParser());
 
     server.on('NotFound', function (req, res) {
         if (logger) {

@@ -5,13 +5,12 @@ var db = require('../../lib/database'),
     lookup = require('../../lib/lookup');
 
 function getHandler(req, res, next) {
-    var sectionId = req.params['section-id'] || req.params.section;
-
-    if (!sectionId) {
-        res.send(400, 'sectionid is required.');
+    if (util.requireParams(['section_id'], req, res)) {
         return next();
     }
-    var query = `
+
+    var sectionId = req.params.section_id,
+        query = `
        SELECT ssas.student_id,
               ssas.sparkpoint_id,
               ssas.section_id AS section,
@@ -53,9 +52,13 @@ function getHandler(req, res, next) {
 }
 
 function patchHandler(req, res, next) {
-    var sectionId = req.params['section-id'] || req.params.section,
-        userId = req.params['user-id'] || req.params.user_id || req.params.student_id,
-        sparkpointId = util.toSparkpointId(req.params.sparkpoint),
+    if (util.requireParams(['student_id', 'section_id', 'sparkpoint_id'], req, res)) {
+        return next();
+    }
+
+    var sectionId = req.params.section_id,
+        studentId = req.studentId,
+        sparkpointId = req.params.sparkpoint_id,
         allKeys = Object.keys(req.body || {}),
         allowedKeys = [
             'sparkpoint',
@@ -77,23 +80,6 @@ function patchHandler(req, res, next) {
         timeKeys = [],
         updateValues = [],
         timeValues = [];
-
-    if (!sparkpointId) {
-        res.send(400, 'Invalid Sparkpoint Id: ' + sparkpointId);
-        return next();
-    }
-
-    if (req.session.accountLevel === 'Student') {
-        userId = req.session.userId;
-    } else if (req.session.accountLevel !== 'Student' && !userId) {
-        res.send(400, 'Non-student users must provide a student_id');
-        return next();
-    }
-
-    if (!sectionId) {
-        res.send(400, 'Section ID is required.');
-        return next();
-    }
 
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function(key) {
@@ -131,7 +117,7 @@ function patchHandler(req, res, next) {
         ON CONFLICT (section_id, student_id) DO UPDATE
                 SET sparkpoint_id = $3`;
 
-    db(req).none(activeSql, [sectionId, userId, sparkpointId]).then(function() {
+    db(req).none(activeSql, [sectionId, studentId, sparkpointId]).then(function() {
         if (timeKeys.length === 0) {
             // Return existing row, no time updates
             sparkpointSql = `
@@ -141,14 +127,14 @@ function patchHandler(req, res, next) {
                    AND sparkpoint_id = $2;
             `;
 
-            db(req).oneOrNone(sparkpointSql, [userId, sparkpointId]).then(function(record) {
+            db(req).oneOrNone(sparkpointSql, [studentId, sparkpointId]).then(function(record) {
                 if (record) {
                     delete record.id;
                     res.json(record);
                     return next();
                 } else {
                     record = {
-                        student_id: userId,
+                        student_id: studentId,
                         sparkpoint_id: sparkpointId
                     };
 
@@ -172,7 +158,7 @@ function patchHandler(req, res, next) {
             // Upsert time updates, return updated row
             sparkpointSql = `INSERT INTO student_sparkpoint (student_id, sparkpoint_id,  ${timeKeys.join(', ')}) VALUES ($1, $2, ${timeValues.join(', ')}) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET ${updateValues.join(',\n')} RETURNING *;`;
 
-            db(req).one(sparkpointSql, [userId, sparkpointId]).then(function(record) {
+            db(req).one(sparkpointSql, [studentId, sparkpointId]).then(function(record) {
                 delete record.id;
                 res.json(record);
                 return next();

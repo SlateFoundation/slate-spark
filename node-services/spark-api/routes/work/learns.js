@@ -13,53 +13,37 @@ var restify = require('restify'),
     db = require('../../lib/database');
 
 function getHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        standardIds = [],
-        openedIds = [],
-        userId,
-        sectionId = req.params.section,
-        isStudent = req.session.accountLevel === 'Student';
-
-    if (isStudent) {
-        userId = req.session.userId;
-    } else {
-        userId = req.params['student-id'] || req.params.student_id || req.params.user_id;
-        if (!userId) {
-            res.send(400, 'Requests from non-student users must pass a student id, you are logged in as a: ' +
-                req.session.accountLevel + ' and only included the following query parameters: ' + Object.keys(req.params)
-            );
-            return next();
-        }
-    }
-
-    sparkpointIds.forEach(function (sparkpointId) {
-        (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
-            var standard = new AsnStandard(asnId);
-            standardIds = standardIds.concat(standard.asnIds);
-            openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
-        });
-    });
-
-    if (sparkpointIds.length === 0) {
-        res.json(new JsonApiError('sparkpoints or sparkpoint parameter is required.'));
+    if (util.requireParams(['sparkpoint_id', 'student_id', 'section_id'], req, res)) {
         return next();
     }
 
+    var sparkpointId = req.params.sparkpoint_id,
+        studentId = req.params.student_id,
+        sectionId = req.params.sectionid,
+        standardIds = [],
+        openedIds = [];
+
+    (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+        var standard = new AsnStandard(asnId);
+        standardIds = standardIds.concat(standard.asnIds);
+        openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
+    });
+
     if (standardIds.length === 0) {
-        res.contentType = 'json';
-        res.send(404, new JsonApiError('Invalid sparkpoint' + (sparkpointIds.length ? 's' : '')));
+        res.statusCode = 404;
+        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
         return next();
     }
 
     // Non student users get a cached view of the playlist
-    if (!isStudent) {
+    if (!req.isStudent) {
         db(req).oneOrNone(`
             SELECT playlist
               FROM learn_playlist_cache
              WHERE student_id = $1
                AND section_id = $2
                AND sparkpoint_id = $3`,
-            [userId, sectionId, sparkpointIds[0]]).then(function (playlist) {
+            [studentId, sectionId, sparkpointId]).then(function (playlist) {
                 var playlistLen;
 
                 if (playlist && playlist.playlist) {
@@ -72,7 +56,7 @@ function getHandler(req, res, next) {
                                start_status = 'launched' AS launched
                           FROM learn_activity
                          WHERE resource_id = ANY($1)
-                           AND user_id = $2`, [playlist.map(item => item.resource_id), userId]).then(function(activities) {
+                           AND user_id = $2`, [playlist.map(item => item.resource_id), studentId]).then(function(activities) {
                         if (activities) {
                             activities.forEach(function(activity) {
                                for (var x = 0; x < playlistLen; x++) {
@@ -199,7 +183,7 @@ function getHandler(req, res, next) {
                     )
                 `;
 
-                if (userId) {
+                if (studentId) {
                     sql += `
                         SELECT lr.*,
                                la.completed,
@@ -212,7 +196,7 @@ function getHandler(req, res, next) {
                     sql += 'SELECT * FROM new_learn_resources;';
                 }
 
-                db(req).any(sql, Object.keys(urlResourceMap).concat([userId])).then(function (resourceIdentifiers) {
+                db(req).any(sql, Object.keys(urlResourceMap).concat([studentId])).then(function (resourceIdentifiers) {
                     var cacheSql;
 
                     resourceIdentifiers.forEach(function(resourceId) {
@@ -233,7 +217,7 @@ function getHandler(req, res, next) {
                                 SET playlist = $4,
                                     last_updated = current_timestamp;`;
 
-                    db(req).none(cacheSql, [userId, sectionId, sparkpointIds[0], JSON.stringify(resources)]).then(function() {}, function(err) {
+                    db(req).none(cacheSql, [studentId, sectionId, sparkpointIds[0], JSON.stringify(resources)]).then(function() {}, function(err) {
                         console.error('Error caching student learn playlist: ', cacheSql);
                         console.error(err);
                     });
@@ -253,12 +237,15 @@ function getHandler(req, res, next) {
 }
 
 function patchHandler(req, res, next) {
+    if (util.requireParams(['student_id'], req, res)) {
+        return next();
+    }
+
     var origResourceId = req.params['resource-id'] || req.params.resource_id,
         resourceId = parseInt(origResourceId, 10),
-        userId,
-        completed = (req.params.complete || req.params.completed),
+        studentId = req.params.student_id,
+        completed = (req.params.complete || req.params.completed).toString(),
         sentArray = Array.isArray(req.body),
-
         resources,
         resourceValues = [];
 
@@ -266,23 +253,16 @@ function patchHandler(req, res, next) {
 
     if (isNaN(resourceId)) {
         if (!sentArray) {
-            res.send(400, 'Expected a numeric resource id, you passed: ' + origResourceId);
+            res.statusCode = 400;
+            res.json({ error: 'Expected a numeric resource id, you passed: ' + origResourceId, params: req.params });
             return next();
         }
     } else if (sentArray) {
-        res.send(400, 'An array of items can only be patched at the resource root, you passed a resource id: ' + origResourceId);
-        return next();
-    }
-
-    if (req.session.accountLevel === 'Student') {
-        userId = req.session.userId;
-    } else if (req.session.accountLevel === 'Developer') {
-        userId = req.params['student-id'] || req.params.student_id;
-        if (!userId) {
-            res.send(400, 'This is a student only endpoint. To debug you must pass a student id in the query string.');
-        }
-    } else if (!userId) {
-        res.send(400, 'This is a student only endpoint, you are logged in as a: ' + req.session.accountLevel);
+        res.statusCode = 400;
+        res.json({
+            error: 'An array of items can only be patched at the resource root, you passed a resource id: ' + origResourceId,
+            params: req.params
+        });
         return next();
     }
 
@@ -301,7 +281,7 @@ function patchHandler(req, res, next) {
           FROM (VALUES ${resourceValues}) AS r (id, completed)
         WHERE r.id = learn_activity.resource_id
           AND user_id = $1 RETURNING *`,
-    [userId]).then(function(result) {
+    [studentId]).then(function(result) {
         if (sentArray) {
             res.json(result.map(function(resource) { return { resource_id: resource.id, completed: resource.completed }; }));
         } else {
@@ -315,42 +295,28 @@ function patchHandler(req, res, next) {
 }
 
 function launchHandler(req, res, next) {
+    if (util.requireParams(['student_id'], req, res)) {
+        return next();
+    }
+
     var origResourceId = req.params['resource-id'] || req.params.resource_id,
         resourceId = parseInt(origResourceId, 10),
-        userId;
+        studentId = req.params.student_id;
 
     if (isNaN(resourceId)) {
         res.send(500, 'Expected a numeric resource id, you passed: ' + origResourceId);
         return next();
     }
 
-    // DEBUG ONLY
-    if (!req.session) {
-        req.session = {};
-        req.session.accountLevel = 'Developer';
-    }
-    // END DEBUG ONLY
-
-    if (req.session.accountLevel === 'Student') {
-        userId = req.session.userId;
-    } else if (req.session.accountLevel === 'Developer') {
-        userId = req.params['student-id'] || req.params.student_id;
-        if (!userId) {
-            res.send(400, 'This is a student only endpoint. To debug you must pass a student id in the query string.');
-        }
-    } else if (!userId) {
-        res.send(400, 'This is a student only endpoint, you are logged in as a: ' + req.session.accountLevel);
-        return next();
-    }
-
     db(req).none(`
         INSERT INTO learn_activity (user_id, resource_id, start_status)
              VALUES ($1, $2, $3)
-        ON CONFLICT (resource_id, user_id) DO NOTHING;`, [userId, resourceId, 'launched']).then(function(data) {
+        ON CONFLICT (resource_id, user_id) DO NOTHING;`, [studentId, resourceId, 'launched']).then(function(data) {
             db(req).one('SELECT url FROM learn_resources WHERE id = $1', resourceId).then(function(data) {
                 if (data.url) {
                     return res.redirect(data.url, next);
                 } else {
+                    // TODO : add javascript to refresh 3 times then close the page or take you back to the playlist...
                     res.send(500, 'Failed to launch learning resource due to an unknown error. Try refreshing this ' +
                                   ' page. If you continue to receive this error please tell your teacher.');
                     return next();
@@ -360,7 +326,7 @@ function launchHandler(req, res, next) {
                 return next();
             });
     }, function (error) {
-        res.send(500, reason);
+        res.send(500, error);
         return next();
     });
 }

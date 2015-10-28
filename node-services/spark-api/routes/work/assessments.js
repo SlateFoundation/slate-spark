@@ -7,23 +7,20 @@ var AsnStandard = require('../../lib/asn-standard'),
     fusebox = require('../../lib/fusebox');
 
 function assessmentsHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        standardIds = [];
-
-    if (sparkpointIds.length === 0) {
-        res.json(new JsonApiError('sparkpoint or sparkpoints parameter is required.'));
+    if (util.requireParams(['sparkpoint_id'], req, res)) {
         return next();
     }
 
-    sparkpointIds.forEach(function(sparkpointId) {
-        (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
-            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
-        });
+    var sparkpointId = req.params.sparkpoint_id,
+        standardIds = [];
+
+    (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
+        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
     if (standardIds.length === 0) {
-        res.contentType = 'json';
-        res.send(404, new JsonApiError('invalid sparkpoint' + (sparkpointIds.length ? 's' : '')));
+        res.statusCode = 404;
+        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
         return next();
     }
 

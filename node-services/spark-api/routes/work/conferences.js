@@ -6,23 +6,22 @@ var AsnStandard = require('../../lib/asn-standard'),
     util = require('../../lib/util');
 
 function getHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        sparkpointId = sparkpointIds[0],
-        standardIds = [],
-        userId = req.params['user-id'] || req.params.user_id || req.params.student_id;
-
-    if (!sparkpointId) {
-        res.statusCode = 400;
-        res.json(new JsonApiError('Invalid spark point id: ' + sparkpointId));
+    if (util.requireParams(['sparkpoint_id', 'student_id'], req, res)) {
         return next();
     }
+
+    var sparkpointId = req.params.sparkpoint_id,
+        standardIds = [],
+        userId = req.params.student_id;
 
     (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
-    if (req.session.accountLevel === 'Student') {
-        userId = req.session.userId;
+    if (standardIds.length === 0) {
+        res.statusCode = 404;
+        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
+        return next();
     }
 
     Promise.props({
@@ -61,20 +60,13 @@ function getHandler(req, res, next) {
 }
 
 function questionPostHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        sparkpointId = sparkpointIds[0],
-        userId = req.params.student_id,
-        question = req.params.question;
-
-    if (req.session.accountLevel === 'Student') {
-        userId = req.session.userId;
-    }
-
-    if (!userId) {
-        res.statusCode = 400;
-        res.json({error: "userid required", body: req.body, params: req.params});
+    if (util.requireParams(['sparkpoint_id', 'student_id', 'question'], req, res)) {
         return next();
     }
+
+    var sparkpointId = req.params.sparkpoint_id,
+        studentId = req.params.student_id,
+        question = req.params.question;
 
     db(req).one(`
         INSERT INTO conference_questions
@@ -98,13 +90,16 @@ function questionPostHandler(req, res, next) {
 }
 
 function worksheetPatchHandler(req, res, next) {
-    var sparkpointIds = util.toSparkpointIds(req.params.sparkpoint || req.params.sparkpoints),
-        sparkpointId = sparkpointIds[0],
-        userId = req.params.student_id,
+    if (util.requireParams(['sparkpoint_id', 'student_id'], req, res)) {
+        return next();
+    }
+
+    var sparkpointId = req.params.sparkpoint_id,
+        studentId = req.params.student_id,
         keys = Object.keys(req.body || {}),
         allowedKeys = [
             'sparkpoint',
-            'restated',
+            'restated',,
             'steps',
             'example_1',
             'example_2',
@@ -114,22 +109,6 @@ function worksheetPatchHandler(req, res, next) {
          ],
         invalidKeys = keys.filter(key => allowedKeys.indexOf(key) === -1),
         worksheet = {};
-
-    if (req.session.accountLevel === 'Student') {
-        userId = req.session.userId;
-    }
-
-    if (!userId) {
-        res.statusCode = 400;
-        res.json({error: "userid required", body: req.body, params: req.params});
-        return next();
-    }
-
-    if (!sparkpointId) {
-        res.statusCode = 400;
-        res.json({ error: 'sparkpoint id required', params: req.params, body: req.body });
-        return next();
-    }
 
     if (invalidKeys.length > 0) {
         res.statusCode = 400;
@@ -158,12 +137,12 @@ function worksheetPatchHandler(req, res, next) {
           RETURNING *;
           `,
         [
-            userId,
+            studentId,
             sparkpointId,
             worksheet
         ]).then(function(record) {
             record = record.worksheet;
-            record.student_id = userId;
+            record.student_id = studentId;
             record.sparkpoint = lookup.sparkpoint.idToCode[sparkpointId];
             res.json(record);
             return next();
