@@ -16,15 +16,17 @@ function sparkParamParser(options) {
             }
         }
 
-        var sectionId = req.params.section || req.params['section-id'] || req.params.section_id || req.body.section_id || req.body.section;
+        var sectionId = req.params.section || req.params['section-id'] || req.params.section_id;
 
-        if (req.params.sparkpoint || req.body.sparkpoint) {
-            req.params.sparkpoint_id = util.toSparkpointId(req.params.sparkpoint || req.body.sparkpoint);
+        if (req.params.sparkpoint) {
+            req.params.sparkpoint_id = util.toSparkpointId(req.params.sparkpoint);
         }
 
         if (sectionId) {
             req.params.section_id = sectionId;
         }
+
+        req.params.section_id = req.params.section;
 
         return next();
     }

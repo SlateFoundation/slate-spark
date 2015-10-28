@@ -75,7 +75,7 @@ function questionPostHandler(req, res, next) {
           RETURNING *;
           `,
         [
-            userId,
+            studentId,
             sparkpointId,
             (req.session.accountLevel === 'Student') ? 'student' : 'teacher',
             question
