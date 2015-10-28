@@ -8,6 +8,7 @@ Ext.define('SparkClassroomTeacher.view.TabBar', {
 
         layout: {
             type: 'hbox',
+            align: 'stretch',
             pack: 'center'
         },
 
@@ -21,12 +22,12 @@ Ext.define('SparkClassroomTeacher.view.TabBar', {
                 itemId: 'work'
             },
             {
-                title: 'Competency Overview<br><small>Coming Soon</small>',
+                title: 'Competency Overview <small>Coming Soon</small>',
                 itemId: 'competencies',
                 disabled: !location.search.match(/\WenableAlpha(\W|$)/)
             },
             {
-                title: 'Assign<br><small>Coming Soon</small>',
+                title: 'Assign <small>Coming Soon</small>',
                 itemId: 'assign',
                 disabled: !location.search.match(/\WenableAlpha(\W|$)/)
             }
