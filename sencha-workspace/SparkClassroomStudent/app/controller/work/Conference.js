@@ -145,14 +145,23 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     onSocketData: function(socket, data) {
-        var me = this;
+        var me = this,
+            itemData = data.item,
+            studentSparkpoint;
 
         if (data.table != 'conference_questions') {
             return;
         }
 
-        me.getWorkConferenceQuestionsStore().loadRawData([data.item], true);
-        me.refreshQuestions();
+        studentSparkpoint = me.getStudentSparkpoint();
+
+        if (
+            studentSparkpoint.get('student_id') == itemData.student_id &&
+            studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
+        ) {
+            me.getWorkConferenceQuestionsStore().loadRawData([itemData], true);
+            me.refreshQuestions();
+        }
     },
 
 
