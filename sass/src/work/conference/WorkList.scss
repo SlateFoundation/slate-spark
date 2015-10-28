@@ -25,10 +25,8 @@
     }
 
     &.is-student-submitted {
-        &::after {
+        .fa {
             color: mix($color, $active-color, 30%);
-            content: $fa-var-graduation-cap;
-            font-family: FontAwesome;
             margin-left: .5em;
         }
     }
