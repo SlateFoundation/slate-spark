@@ -160,14 +160,14 @@ function getHandler(req, res, next) {
                 url,
                 len,
                 x,
-                y = 1;
+                y = 3;
 
             if (resources.length > 0) {
                 // TODO: determine how we will handle duplicate URLs from multiple vendors
                 for (x = 0, len = resources.length; x < len; x++) {
                     if (!urlResourceMap[resources[x].url]) {
                         urlResourceMap[resources[x].url] = resources[x];
-                        urlPlaceHolders.push('($' + (y++) + ')');
+                        urlPlaceHolders.push('($2, $' + (y++) + ')');
                     }
                 }
 
@@ -176,9 +176,9 @@ function getHandler(req, res, next) {
 
                 var sql = `
                     WITH new_learn_resources AS (
-                        INSERT INTO learn_resources AS lr (url)
+                        INSERT INTO learn_resources AS lr (sparkpoint_id, url)
                         VALUES ${urlPlaceHolders}
-                        ON CONFLICT (url) DO UPDATE SET views = lr.views + 1
+                        ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
                         RETURNING url, id, views
                     )
                 `;
@@ -191,12 +191,12 @@ function getHandler(req, res, next) {
                           FROM new_learn_resources lr
                      LEFT JOIN learn_activity la
                             ON la.resource_id = lr.id
-                           AND la.user_id = $${y};`;
+                           AND la.user_id = $1;`;
                 } else {
                     sql += 'SELECT * FROM new_learn_resources;';
                 }
 
-                db(req).any(sql, Object.keys(urlResourceMap).concat([studentId])).then(function (resourceIdentifiers) {
+                db(req).any(sql, [studentId, sparkpointId].concat(Object.keys(urlResourceMap))).then(function (resourceIdentifiers) {
                     var cacheSql;
 
                     resourceIdentifiers.forEach(function(resourceId) {
@@ -217,7 +217,7 @@ function getHandler(req, res, next) {
                                 SET playlist = $4,
                                     last_updated = current_timestamp;`;
 
-                    db(req).none(cacheSql, [studentId, sectionId, sparkpointIds[0], JSON.stringify(resources)]).then(function() {}, function(err) {
+                    db(req).none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]).then(function() {}, function(err) {
                         console.error('Error caching student learn playlist: ', cacheSql);
                         console.error(err);
                     });
@@ -244,12 +244,10 @@ function patchHandler(req, res, next) {
     var origResourceId = req.params['resource-id'] || req.params.resource_id,
         resourceId = parseInt(origResourceId, 10),
         studentId = req.params.student_id,
-        completed = (req.params.complete || req.params.completed).toString(),
+        completed = (req.params.complete || req.params.completed || false).toString(),
         sentArray = Array.isArray(req.body),
         resources,
         resourceValues = [];
-
-    completed = (completed == 1 || completed == true);
 
     if (isNaN(resourceId)) {
         if (!sentArray) {
@@ -265,6 +263,8 @@ function patchHandler(req, res, next) {
         });
         return next();
     }
+
+    completed = (completed === '1' || completed === 'true');
 
     resources = sentArray ? req.body : [{id: resourceId, completed: completed}];
 

@@ -64,6 +64,9 @@ function createServer(logger) {
     server.get('/work/activity/:section-id', routes.work.activity.get);
     server.patch('/work/activity', routes.work.activity.patch);
 
+    server.patch('/work/reviews/applies', routes.work.reviews.patch('applies', 'apply_id', 'apply_reviews'));
+    server.patch('/work/reviews/learns', routes.work.reviews.patch('learns', 'resource_id', 'learn_reviews'));
+
     server.on('uncaughtException', function (req, res, route, err) {
         res.statusCode = 500;
         res.json(err);
