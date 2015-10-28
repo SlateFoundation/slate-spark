@@ -1,0 +1,28 @@
+.x-msgbox {
+    box-shadow: 0 .25em 1em rgba(black, .3);
+}
+
+.x-msgbox-title {
+    min-height: 2.25em;
+
+    .x-title {
+        font-size: small;
+        font-weight: bold;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+    }
+}
+
+.x-msgbox-inner {
+    line-height: (4/3);
+    padding: 1em;
+    text-align: center;
+}
+
+.x-msgbox-buttons {
+    padding: 0 1em 1em;
+
+    .x-button {
+        border-radius: $button-border-radius;
+    }
+}
