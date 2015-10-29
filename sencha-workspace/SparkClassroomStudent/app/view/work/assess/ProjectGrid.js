@@ -62,8 +62,7 @@ Ext.define('SparkClassroomStudent.view.work.assess.AppliesGrid', {
             filters: [
                 {
                     filterFn: function(apply) {
-                        console.log(apply);
-                        return apply.get('completed');
+                        return apply.get('selected');
                     }
                 }
             ]
