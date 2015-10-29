@@ -19,7 +19,7 @@ function getHandler(req, res, next) {
 
     var sparkpointId = req.params.sparkpoint_id,
         studentId = req.params.student_id,
-        sectionId = req.params.sectionid,
+        sectionId = req.params.section_id,
         standardIds = [],
         openedIds = [];
 
