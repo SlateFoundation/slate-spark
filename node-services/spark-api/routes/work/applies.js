@@ -149,7 +149,7 @@ function patchHandler(req, res, next, todos) {
                      RETURNING *
             `, values).then(function(apply) {
                     db(req).any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [ studentId, id ]).then(function(todos) {
-                        db(req).none('UPDATE applies SET selected = false WHERE fb_apply_id != $1 AND sparkpoint_id = $2 and student_id = $3;', [id, sparkpointId, studentId]);
+                        db(req).none('UPDATE applies SET selected = false WHERE selected = true AND fb_apply_id != $1 AND sparkpoint_id = $2 AND student_id = $3;', [id, sparkpointId, studentId]);
                         apply.todos = todos;
                         apply.id = apply.fb_apply_id;
                         res.json(apply);
