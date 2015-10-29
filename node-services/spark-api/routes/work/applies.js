@@ -63,13 +63,13 @@ function getHandler(req, res, next) {
 }
 
 function patchHandler(req, res, next, todos) {
-    if (util.requireParams(['sparkpoint_id', 'student_id', 'selected', 'id'], req, res)) {
+    if (util.requireParams(['sparkpoint_id', 'student_id', 'id'], req, res)) {
         return next();
     }id
 
     var sparkpointId = req.params.sparkpoint_id,
         studentId = req.studentId,
-        selected = (req.params.selected.toString() === 'true'),
+        selected = req.params.selected,
         id = parseInt(req.params.id, 10),
         constraintKeys = ['student_id', 'fb_apply_id', 'sparkpoint_id'],
         updateSets = [],
@@ -83,11 +83,14 @@ function patchHandler(req, res, next, todos) {
     }
 
     apply = {
-        selected: selected,
         fb_apply_id: id,
         student_id: studentId,
         sparkpoint_id: sparkpointId
     };
+
+    if (typeof selected === 'boolean') {
+        apply.selected = selected;
+    }
 
     if (typeof req.body.reflection === 'string') {
         apply.reflection = req.body.reflection;
@@ -170,7 +173,7 @@ function patchHandler(req, res, next, todos) {
 }
 
 function submissionsPostHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'id'])) {
+    if (util.requireParams(['sparkpoint_id', 'id'], req, res)) {
         return next();
     }
 
