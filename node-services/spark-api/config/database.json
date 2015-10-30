@@ -1,0 +1,11 @@
+{
+  "postgresql":
+  {
+    "sharedConnection": {
+      "host": "10.240.103.217",
+      "username": "spark",
+      "password": "SparkPoint2015",
+      "database": "spark"
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "instances": [
+    {
+      "key": "sandbox-school",
+      "mysql": {
+        "schema": "sandbox-school"
+      },
+      "postgresql": {
+        "database": "spark",
+        "username": "sandbox-school",
+        "host": "10.240.103.217",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": false
+    },
+    {
+      "key": "mta-live",
+      "mysql": {
+        "schema": "mta-live"
+      },
+      "postgresql": {
+        "database": "spark",
+        "username": "mta-live",
+        "host": "10.240.103.217",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": true
+    },
+    {
+      "key": "mta-staging",
+      "mysql": {
+        "schema": "mta-staging"
+      },
+      "postgresql": {
+        "database": "spark",
+        "host": "10.240.103.217",
+        "username": "mta-staging",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": false
+    },
+    {
+      "key": "merit-live",
+      "mysql": {
+        "schema": "merit-live"
+      },
+      "postgresql": {
+        "database": "spark",
+        "username": "merit-live",
+        "host": "10.240.103.217",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": true
+    },
+    {
+      "key": "merit-staging",
+      "mysql": {
+        "schema": "merit-staging"
+      },
+      "postgresql": {
+        "database": "spark",
+        "username": "merit-staging",
+        "host": "10.240.103.217",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": false
+    }
+  ]
+}
