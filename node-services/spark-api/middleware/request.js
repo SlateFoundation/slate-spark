@@ -6,8 +6,8 @@ const util = require('./../lib/util');
 // This should be loaded AFTER session
 
 module.exports = function *parseRequest(next) {
-    var body = this.body,
-        query = this.query;
+    var body = this.request.body,
+        query = this.request.query;
     
     if (!Array.isArray(body) && typeof body === 'object') {
         for (var prop in body) {

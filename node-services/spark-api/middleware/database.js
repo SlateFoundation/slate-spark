@@ -6,7 +6,6 @@ var promise = require('bluebird'),
     Pgp = require('pg-promise')({ promiseLib: promise });
 
 function objToConnectionString(obj) {
-    console.log(`postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}`);
     return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}`;
 }
 
