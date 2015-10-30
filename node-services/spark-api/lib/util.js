@@ -1,6 +1,6 @@
 'use strict';
 
-var lookup = require('./lookup.js');
+var lookup = require('./lookup');
 
 /** @module util */
 

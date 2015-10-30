@@ -1,14 +1,19 @@
 var AsnStandard = require('../lib/asn-standard'),
     lookup = require('../lib/lookup');
 
-function standardsHandler(req, res, next) {
-    if (req.params.id) {
-        res.json(new AsnStandard(req.params.id));
-    } else {
-        res.json(Object.keys(lookup.standard.idToCode).map(id => new AsnStandard(id)));
+module.exports = {
+    get: function *standardsHandler(standardId) {
+
+        standardId || (standardId = this.query.id);
+
+        if (standardId) {
+            this.body = new AsnStandard(standardId);
+        } else {
+            this.throw(404);
+        }
+    },
+
+    list: function *standardsHandler() {
+        this.body = standardsHandler.cache || (standardsHandler.cache = Object.keys(lookup.standard.idToCode).map(id => new AsnStandard(id)));
     }
-
-    next();
-}
-
-module.exports = standardsHandler;
+};

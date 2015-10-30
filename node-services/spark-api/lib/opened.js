@@ -140,7 +140,7 @@ var rnd = require('./util').rnd,
     configFile;
 
 try {
-    configFile = fs.readFileSync(path.resolve(__dirname, '../config.json'), 'utf8');
+    configFile = fs.readFileSync(path.resolve(__dirname, '../config/opened.json'), 'utf8');
     try {
         configFile = JSON.parse(configFile);
 
