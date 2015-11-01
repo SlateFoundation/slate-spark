@@ -3,7 +3,11 @@
 var promise = require('bluebird'),
     monitor = require('pg-monitor'),
     Knex = require('knex'),
-    Pgp = require('pg-promise')({ promiseLib: promise });
+    options = { promiseLib: promise},
+    Pgp = require('pg-promise')(options);
+
+monitor.attach(options);
+monitor.setTheme('matrix');
 
 function objToConnectionString(obj) {
     return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}`;
