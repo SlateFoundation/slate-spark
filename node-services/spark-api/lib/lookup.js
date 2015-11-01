@@ -28,7 +28,7 @@ var Promise = require('bluebird'),
         },
     };
 
-Promise.using(
+Promise.all([
     db.many(`
     SELECT id,
            code,
@@ -62,9 +62,11 @@ Promise.using(
        SELECT DISTINCT(vendor_id)
          FROM vendor_standards_crosswalk
      );
-    `),
+    `)]).then(function (result) {
+    var [sparkpoints, standards, uniqueStandardCodes, vendorCrosswalk, vendors] = result;
 
-    function (sparkpoints, standards, uniqueStandardCodes, vendorCrosswalk, vendors) {
+        console.log('[LOOKUP] Loaded ' + sparkpoints.length + ' sparkpoints');
+
         sparkpoints.forEach(function (sparkpoint) {
             if (typeof sparkpoint.code === 'string') {
                 lookup.sparkpoint.codeToId[sparkpoint.code.toLowerCase()] = sparkpoint.id;
@@ -105,8 +107,9 @@ Promise.using(
         vendors.forEach(function (vendor) {
             lookup.vendor.nameToId[vendor.name.toString().toLowerCase()] = vendor.id;
             lookup.vendor.idToName[vendor.id] = vendor.name;
-            console.log(vendor);
         });
+    }, function(error) {
+        throw error;
     });
 
 module.exports = lookup;
