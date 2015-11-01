@@ -7,7 +7,8 @@ const util = require('./../lib/util');
 
 module.exports = function *parseRequest(next) {
     var body = this.request.body,
-        query = this.request.query;
+        query = this.request.query,
+        ctx = this;
     
     if (!Array.isArray(body) && typeof body === 'object') {
         for (var prop in body) {
@@ -30,6 +31,17 @@ module.exports = function *parseRequest(next) {
     if (query.section) {
         query.section_id = query.section;
     }
+
+    this.require = function(params) {
+        var query = ctx.query,
+            missing = params.filter(function(param) {
+               return query[param] === undefined;
+            });
+
+        if (missing.length > 0) {
+            return ctx.throw('Missing required parameters: ' + missing.join(', '), 400);
+        }
+    };
 
     yield next;
 };
