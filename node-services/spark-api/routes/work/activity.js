@@ -1,17 +1,15 @@
-var db = require('../../lib/database'),
-    JsonApiError = require('../../lib/error').JsonApiError,
-    Promise = require('bluebird'),
-    util = require('../../lib/util'),
+var util = require('../../lib/util'),
     lookup = require('../../lib/lookup');
 
-function getHandler(req, res, next) {
-    if (util.requireParams(['section_id'], req, res)) {
-        return next();
-    }
+function *getHandler() {
+    var activities = [];
 
-    var sectionId = req.params.section_id,
+    this.require(['section_id']);
+
+    var sectionId = this.query.section_id,
         query = `
-       SELECT ssas.student_id,
+       SELECT sparkpoints.code AS sparkpoint,
+              ssas.student_id,
               ssas.sparkpoint_id,
               ssas.section_id AS section,
               ss.learn_start_time,
@@ -28,38 +26,19 @@ function getHandler(req, res, next) {
          FROM section_student_active_sparkpoint ssas
     LEFT JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
           AND ss.sparkpoint_id = ssas.sparkpoint_id
+         JOIN sparkpoints ON ssas.sparkpoint_id = sparkpoints.id
         WHERE ssas.section_id = $1;
   `;
 
-    db(req).manyOrNone(query, [sectionId]).then(function (activities) {
-        res.json(activities.map(function(activity) {
-            var sparkpointCode = lookup.sparkpoint.idToCode[activity.sparkpoint_id];
-
-            if (sparkpointCode) {
-                activity.sparkpoint = sparkpointCode;
-            }
-
-            delete activity.id;
-
-            return activity;
-        }));
-
-        return next();
-    }, function (error) {
-        res.send(500, new JsonApiError(error));
-        return next();
-    });
+    this.body = yield this.pgp.manyOrNone(query, [sectionId]);
 }
 
-function patchHandler(req, res, next) {
-    if (util.requireParams(['student_id', 'section_id', 'sparkpoint_id'], req, res)) {
-        return next();
-    }
+function *patchHandler(req, res, next) {
+    this.require(['student_id', 'section_id', 'sparkpoint_id']);
 
-    var sectionId = req.params.section_id,
-        studentId = req.studentId,
-        sparkpointId = req.params.sparkpoint_id,
-        allKeys = Object.keys(req.body || {}),
+    var sectionId = this.query.section_id,
+        studentId = this.studentId,
+        sparkpointId = this.query.sparkpoint_id,
         allowedKeys = [
             'sparkpoint',
             'learn_start_time',
@@ -74,19 +53,19 @@ function patchHandler(req, res, next) {
             'assess_ready_time',
             'assess_finish_time'
         ],
-        activeSql,
-        sparkpointSql,
-        invalidKeys = [],
         timeKeys = [],
         updateValues = [],
-        timeValues = [];
+        timeValues = [],
+        body = this.request.body,
+        allKeys = Object.keys(body || {}),
+        invalidKeys, activeSql, sparkpointSql, record;
 
     // This filter also sets timeKeys and timeValues
-    invalidKeys = allKeys.filter(function(key) {
+    invalidKeys = allKeys.filter(function (key) {
         var val;
 
         if (key.indexOf('time') !== -1) {
-            val = parseInt(req.body[key], 10);
+            val = parseInt(body[key], 10);
 
             if (!isNaN(val)) {
                 val = "'" + new Date(val * 1000).toUTCString() + "'";
@@ -100,14 +79,11 @@ function patchHandler(req, res, next) {
     });
 
     if (invalidKeys.length > 1) {
-        res.statusCode = 400;
-        res.json({
+        this.throw({
             error: 'Unexpected field(s) encountered: ' + invalidKeys.join(', '),
             body: req.body,
             params: req.params
-        });
-
-        return next();
+        }, 400);
     }
 
     activeSql = `
@@ -115,64 +91,53 @@ function patchHandler(req, res, next) {
                     (section_id, student_id, sparkpoint_id)
              VALUES ($1, $2, $3)
         ON CONFLICT (section_id, student_id) DO UPDATE
-                SET sparkpoint_id = $3`;
+                SET sparkpoint_id = $3;`;
 
-    db(req).none(activeSql, [sectionId, studentId, sparkpointId]).then(function() {
-        if (timeKeys.length === 0) {
-            // Return existing row, no time updates
-            sparkpointSql = `
-                SELECT *
-                  FROM student_sparkpoint
-                 WHERE student_id = $1
-                   AND sparkpoint_id = $2;
-            `;
+    yield this.pgp.oneOrNone(activeSql, [sectionId, studentId, sparkpointId]);
 
-            db(req).oneOrNone(sparkpointSql, [studentId, sparkpointId]).then(function(record) {
-                if (record) {
-                    delete record.id;
-                    res.json(record);
-                    return next();
-                } else {
-                    record = {
-                        student_id: studentId,
-                        sparkpoint_id: sparkpointId
-                    };
+    if (timeKeys.length === 0) {
+        // Return existing row, no time updates
+        sparkpointSql = `
+            SELECT *
+              FROM student_sparkpoint
+             WHERE student_id = $1
+               AND sparkpoint_id = $2;
+        `;
 
-                    allowedKeys.forEach(function(key) {
-                        if (key === 'sparkpoint') {
-                            record.sparkpoint = lookup.sparkpoint.idToCode[sparkpointId];
-                        } else {
-                            record[key] = null;
-                        }
-                    });
+        record = yield this.pgp.oneOrNone(sparkpointSql, [studentId, sparkpointId]);
 
-                    res.json(record);
-                    return next();
-                }
-            }, function (error) {
-                res.statusCode = 500;
-                res.json({error: error});
-                return next();
-            });
+        if (record) {
+            // TODO: @themightychris: It seems like this response would not contain the sparkpoint,
+            // only the sparkpoint id... does this matter to you and have you encountered it?
+            delete record.id;
         } else {
-            // Upsert time updates, return updated row
-            sparkpointSql = `INSERT INTO student_sparkpoint (student_id, sparkpoint_id,  ${timeKeys.join(', ')}) VALUES ($1, $2, ${timeValues.join(', ')}) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET ${updateValues.join(',\n')} RETURNING *;`;
+            record = {
+                student_id: studentId,
+                sparkpoint_id: sparkpointId
+            };
 
-            db(req).one(sparkpointSql, [studentId, sparkpointId]).then(function(record) {
-                delete record.id;
-                res.json(record);
-                return next();
-            }, function(error) {
-                res.statusCode = 500;
-                res.json({error: error});
-                return next();
+            allowedKeys.forEach(function (key) {
+                if (key === 'sparkpoint') {
+                    record.sparkpoint = util.toSparkpointId(sparkpointId);
+                } else {
+                    record[key] = null;
+                }
             });
         }
-    }, function(err) {
-        res.statusCode = 500;
-        res.json({error: err});
-        next();
-    });
+
+        this.body = record;
+    } else {
+        // Upsert time updates, return updated row
+        sparkpointSql = `
+            INSERT INTO student_sparkpoint (student_id, sparkpoint_id,  ${timeKeys.join(', ')})
+                                    VALUES ($1, $2, ${timeValues.join(', ')}) ON CONFLICT (student_id, sparkpoint_id)
+                             DO UPDATE SET ${updateValues.join(',\n')}
+                                 RETURNING *;`;
+
+        record = yield this.pgp.one(sparkpointSql, [studentId, sparkpointId]);
+        delete record.id;
+        this.body = record;
+    }
 }
 
 module.exports = {
