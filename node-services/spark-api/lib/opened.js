@@ -1,14 +1,12 @@
 'use strict';
 
-var rnd = require('./util').rnd,
-    filterObjectKeys = require('./util').filterObjectKeys,
+var filterObjectKeys = require('./util').filterObjectKeys,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
-    restify = require('restify'),
-    db = require('./database')(),
+    Promise = require('bluebird'),
+    request = require('koa-request'),
     path = require('path'),
     fs = require('fs'),
-    JsonApiError = require('./error').JsonApiError,
 
     re = {
         isNumeric: /\d+/,
@@ -131,13 +129,15 @@ var rnd = require('./util').rnd,
     openEdRenewalInterval,
     openEdClientSecret = '',
     openEdClientId = '',
-
-    openEdClient = restify.createJsonClient({
-        url: 'https://api.opened.io/',
-        accept: 'application/json'
-    }),
-
-    configFile;
+    openEdClientBaseUrl = 'https://api.opened.io',
+    configFile,
+    openEdClient,
+    clientOptions = {
+        headers: {
+            accept: 'application/json'
+        },
+        json: true
+    };
 
 try {
     configFile = fs.readFileSync(path.resolve(__dirname, '../config/opened.json'), 'utf8');
@@ -164,12 +164,13 @@ if (openEdClientSecret === '' || openEdClientId === '') {
     process.exit(1);
 }
 
-function getAccessToken(cb) {
+function* getAccessToken() {
     var params = {
         client_id: openEdClientId,
         client_secret: openEdClientSecret,
         grant_type: 'client_credentials'
-    };
+    },
+    token;
 
     if (openEdRefreshToken) {
         params.grant_type = 'refresh_token';
@@ -177,26 +178,33 @@ function getAccessToken(cb) {
     }
 
     // clear existing token
-    delete openEdClient.headers.authorization;
+    delete clientOptions.headers.authorization;
 
-    openEdClient.post('/oauth/token', params, function (err, req, res, obj) {
-        if (err) {
-            return cb(new JsonApiError(generateErrorString(err)), null);
-        }
+    clientOptions.uri = openEdClientBaseUrl + '/oauth/token';
+    clientOptions.body = params;
+    clientOptions.method = 'POST';
 
-        // Automatically renew our access token 30 seconds before it is set to expire
-        if (openEdRenewalInterval) {
-            clearInterval(openEdRenewalInterval);
-        }
+    token = yield request(clientOptions);
 
-        openEdRenewalInterval = setInterval(getAccessToken, (parseInt(obj.expires_in, 10) - 30) * 1000);
+    delete clientOptions.body;
+    delete clientOptions.uri;
+    delete clientOptions.method;
 
-        openEdAccessToken = obj.access_token;
-        openEdRefreshToken = obj.refresh_token;
-        openEdClient.headers.authorization = 'Bearer ' + openEdAccessToken;
+    // Automatically renew our access token 30 seconds before it is set to expire
+    if (openEdRenewalInterval) {
+        clearInterval(openEdRenewalInterval);
+    }
 
-        cb(err, obj);
-    });
+    token = token.body;
+
+    openEdRenewalInterval = setInterval(getAccessToken, (parseInt(token.expires_in, 10) - 30) * 1000);
+    openEdAccessToken = token.access_token;
+    openEdRefreshToken = token.refresh_token;
+
+    // set new token
+    clientOptions.headers.authorization = 'Bearer ' + openEdAccessToken;
+
+    return openEdAccessToken;
 }
 
 function validateParam(param, val) {
@@ -345,10 +353,11 @@ function generateErrorString(err) {
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
 }
 
-function getResources(params, cb) {
+function* getResources(params, cb) {
     var url = '/resources.json',
         resourceTypes = params.resource_types ? Array.isArray(params.resource_types) ? params.resource_types : params.resource_types.split(',') : [],
-        queryString = qs.stringify(filterObjectKeys(openEdParameters, params));
+        queryString = qs.stringify(filterObjectKeys(openEdParameters, params)),
+        resources;
 
     if (resourceTypes) {
         queryString += (queryString !== '' ? '&' : '') + resourceTypes.map(function (resourceType) {
@@ -361,28 +370,15 @@ function getResources(params, cb) {
     }
 
     if (!openEdAccessToken) {
-        return getAccessToken(function (err) {
-            if (err) {
-                console.error('Error generating openEdAccessToken');
-                cb(new JsonApiError(generateErrorString(err)));
-            } else {
-                getResources(params, cb);
-            }
-        });
+        yield getAccessToken();
     }
 
-    openEdClient.get(url, function (err, req, res, data) {
-        if (err) {
-            console.error('Failure to retrieve: ' + url);
-            console.error('HTTP: ' + res.statusCode);
-            console.error(req._headers);
-            console.error(res.headers);
-            console.error(data);
-            return cb(new JsonApiError(generateErrorString(err)), null);
-        }
+    // TODO: trailing & may cause an issue
+    clientOptions.uri = openEdClientBaseUrl + url;
 
-        cb(null, data);
-    });
+    resources = yield request(clientOptions);
+
+    return resources.body;
 }
 
 function validateParams(params) {
