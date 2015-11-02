@@ -168,7 +168,7 @@ function* getHandler() {
 }
 
 function* patchHandler() {
-    var resources = this.body,
+    var resources = this.request.body,
         invalidResources = [],
         validResources = [],
         requiredKeys = ['student_id', 'resource_id'],
