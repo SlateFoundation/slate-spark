@@ -315,7 +315,7 @@ function* launchHandler(resourceId) {
              VALUES ($1, $2, $3)
         ON CONFLICT (resource_id, user_id) DO NOTHING;`, [studentId, resourceId, 'launched']);
 
-    learnResource = yield db(req).one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
+    learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
         this.response.redirect(learnResource.url);
