@@ -1,42 +1,47 @@
-var db = require('../lib/database');
-
-function patchHandler(req, res, next) {
+function* patchHandler() {
     var ids = [],
         completes = [],
         todos = [],
-        query = [];
+        query = [],
+        body = this.request.body,
+        ctx = this;
 
-    if (!Array.isArray(req.body)) {
-        res.json({error: 'request body should be an array', body: req.body });
-        return next();
+    if (!Array.isArray(body)) {
+        return this.throw('Request body should be an array of todos', 400);
     }
 
-    req.body.forEach(function(todo) {
+    body.forEach(function(todo) {
        if (!isNaN(todo.id) && typeof todo.completed === 'boolean') {
-           query.push('UPDATE todos SET completed = ' + todo.completed + ' WHERE id = ' + todo.id + ' AND user_id = ' + req.session.userId + ';');
+           query.push(
+               `UPDATE todos SET completed = ${todo.completed} WHERE id = ${todo.id} AND user_id = ${ctx.studentId} RETURNING *;`
+           );
        } else {
-           res.statusCode = 400;
-           res.json({ error: 'records should contain a boolean completed and an integer id', input: todo });
-           return next();
+           ctx.throw('Todo records should contain a boolean completed and an integer id', 400);
        }
     });
 
     if (query.length === 0) {
-        res.statusCode = 400;
-        res.json({error: 'you must pass at least one item', body: req.body, params: req.params});
-        return next();
+        return this.throw('Request body should be an array of one or more todos', 400);
     }
 
-    db(req).any(query.join('\n')).then(function() {
-        res.json(req.body);
-        return next();
-    }, function(error) {
-        res.statusCode = 500;
-        res.json({error: error, query: query.join('\n')});
-        return next();
-    });
+    this.body = yield this.pgp.any(query.join('\n'));
+}
+
+function* getHandler() {
+    var query = 'SELECT * FROM todos WHERE user_id = $1',
+        vals = [this.studentId],
+        completed = this.query.completed ? this.query.completed.toString() : null;
+
+    if (completed) {
+        completed = completed === 'true';
+        query += ' AND completed = $2';
+        vals.push(completed);
+    }
+
+    this.body = yield this.pgp.manyOrNone(query, vals);
 }
 
 module.exports = {
-    patch: patchHandler
+    patch: patchHandler,
+    get: getHandler
 };

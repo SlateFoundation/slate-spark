@@ -51,6 +51,10 @@ app.use(_.get('/work/conferences', routes.work.conferences.get));
 app.use(_.post('/work/conferences/questions', routes.work.conferences.questions.post));
 app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet.patch));
 
+// Todos
+app.use(_.get('/todos', routes.todos.get));
+app.use(_.patch('/todos', routes.todos.patch));
+
 // Debugging
 app.use(_.get('/test', routes.test.get));
 
