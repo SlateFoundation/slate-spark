@@ -1,46 +1,40 @@
 var AsnStandard = require('../../lib/asn-standard'),
     lookup = require('../../lib/lookup'),
-    db = require('../../lib/database'),
+    db = require('../../middleware/database'),
     JsonApiError = require('../../lib/error').JsonApiError,
     Promise = require('bluebird'),
     util = require('../../lib/util'),
     fusebox = require('../../lib/fusebox');
 
-function assessmentsHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id'], req, res)) {
-        return next();
-    }
+function *assessmentsHandler() {
+    this.require(['sparkpoint_id']);
 
-    var sparkpointId = req.params.sparkpoint_id,
-        standardIds = [];
+    var sparkpointId = this.query.sparkpoint_id,
+        standardIds = [],
+        assessments;
 
     (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
     if (standardIds.length === 0) {
-        res.statusCode = 404;
-        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
-        return next();
+        this.throw('No academic standards are associated with sparkpoint id: ' + sparkpointId, 404);
     }
 
-    db(req).manyOrNone(`SELECT title,
-                          url,
-                          vendorid,
-                          gradelevel,
-                          standards,
-                          standardids,
-                          v.name AS vendor
-                     FROM spark1.s2_assessments
-                     JOIN spark1.s2_vendors v
-                       ON v.id = spark1.s2_assessments.vendorid
-                    WHERE standardids::JSONB ?| $1`, [standardIds]).then(function (assessments) {
-            res.json(assessments.map(fusebox.normalizeAssessment));
-        return next();
-    }, function(err) {
-        res.json(new JsonApiError(err));
-        return next();
-    });
+    assessments = yield this.pgp.any(
+        `SELECT title,
+                url,
+                vendorid,
+                gradelevel,
+                standards,
+                standardids,
+                v.name AS vendor
+           FROM spark1.s2_assessments
+           JOIN spark1.s2_vendors v
+             ON v.id = spark1.s2_assessments.vendorid
+          WHERE standardids::JSONB ?| $1`, [standardIds]);
+
+    this.body = assessments.map(fusebox.normalizeAssessment);
 }
 
 module.exports = assessmentsHandler;
