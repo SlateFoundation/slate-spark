@@ -46,6 +46,11 @@ app.use(_.get('/work/learns', routes.work.learns.get));
 app.use(_.get('/work/learns/launch/:resourceId', routes.work.learns.launch));
 app.use(_.patch('/work/learns', routes.work.learns.patch));
 
+// Applies
+app.use(_.get('/work/applies', routes.work.applies.get))
+app.use(_.patch('/work/applies', routes.work.applies.patch))
+app.use(_.post('/work/applies/submissions', routes.work.applies.submissions.post));
+
 // Conferences
 app.use(_.get('/work/conferences', routes.work.conferences.get));
 app.use(_.post('/work/conferences/questions', routes.work.conferences.questions.post));
