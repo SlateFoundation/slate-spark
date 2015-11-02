@@ -4,11 +4,13 @@ var koa = require('koa'),
     middleware = require('./middleware'),
     jsonBody = require('koa-json-body'),
     _ = require('koa-route'),
-    routes = require('./routes');
+    routes = require('./routes'),
+    error = require('koa-error');
 
 console.log(config);
 
 app.use(middleware.response_time);
+app.use(error());
 app.use(middleware.logger);
 app.use(middleware.session);
 app.use(jsonBody({}));
