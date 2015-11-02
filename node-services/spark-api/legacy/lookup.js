@@ -1,21 +1,20 @@
 'use strict';
 
-var util = require('./util');
-
-var Promise = require('bluebird'),
-    db = require('./database')(),
+var util = require('./../lib/util'),
+    Promise = require('bluebird'),
+    db = require('./../lib/database')(),
     lookup = {
         sparkpoint: {
             codeToId: {},
             idToCode: {},
-            idToAsnIds: {},
+            idToAsnIds: {}
         },
 
         standard: {
             codeToId: {},
             idToCode: {},
             idToAsnIds: {},
-            idToSparkpointId: {},
+            idToSparkpointId: {}
         },
 
         vendor: {
@@ -24,9 +23,10 @@ var Promise = require('bluebird'),
             vendorCodeToAsnId: {},
             vendorIdentifierToAsnId: {},
             nameToId: {},
-            idToName: {},
+            idToName: {}
         },
-    };
+    },
+    fs = require('fs');
 
 Promise.all([
     db.many(`
@@ -63,9 +63,12 @@ Promise.all([
          FROM vendor_standards_crosswalk
      );
     `)]).then(function (result) {
-    var [sparkpoints, standards, uniqueStandardCodes, vendorCrosswalk, vendors] = result;
 
-        console.log('[LOOKUP] Loaded ' + sparkpoints.length + ' sparkpoints');
+    var sparkpoints = result[0],
+        standards = result[1],
+        uniqueStandardCodes = result[2],
+        vendorCrosswalk = result[3],
+        vendors = result[4];
 
         sparkpoints.forEach(function (sparkpoint) {
             if (typeof sparkpoint.code === 'string') {
@@ -108,6 +111,9 @@ Promise.all([
             lookup.vendor.nameToId[vendor.name.toString().toLowerCase()] = vendor.id;
             lookup.vendor.idToName[vendor.id] = vendor.name;
         });
+
+    // fs.writeFileSync('./lookup.json', JSON.stringify(lookup));
+
     }, function(error) {
         throw error;
     });
