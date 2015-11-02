@@ -1,7 +1,7 @@
 'use strict';
 
-const lookup = require('./../lib/lookup');
-const util = require('./../lib/util');
+var lookup = require('./../lib/lookup'),
+    util = require('./../lib/util');
 
 // This should be loaded AFTER session
 

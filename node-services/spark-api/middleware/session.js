@@ -20,6 +20,7 @@ module.exports = function *parseSession(next) {
 
         this.userId = session.userId;
         this.studentId = this.isStudent ? session.userId : query.student_id;
+        query.student_id = this.studentId;
     }
 
     if (!this.userId) {
