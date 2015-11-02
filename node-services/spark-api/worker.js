@@ -62,5 +62,3 @@ app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet
 app.use(_.get('/todos', routes.todos.get));
 app.use(_.patch('/todos', routes.todos.patch));
 
-// Debugging
-app.use(_.get('/test', routes.test.get));
