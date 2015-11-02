@@ -78,8 +78,9 @@ function normalizeAssessment(item) {
 
 function* getFuseboxResources(asnIds) {
     var query = `
-    SELECT title,
+    SELECT DISTINCT ON (url)
            url,
+           title,
            vendorid,
            gradelevel,
            standards,
