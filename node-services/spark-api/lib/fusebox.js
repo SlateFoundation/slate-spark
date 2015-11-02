@@ -1,5 +1,4 @@
-var rnd = require('./util').rnd,
-    db = require('./database')();
+var db = require('./database')();
 
 function normalizeFusebox(item) {
     return {
@@ -65,21 +64,19 @@ getDefaultThumbnail.vendors = [
 getDefaultThumbnail.baseUrl = 'https://storage.googleapis.com/spark-fusebox/vendor-logos/';
 
 function normalizeAssessment(item) {
-    var completed = rnd([true, false]);
-
     return {
-        completed: completed,
+        completed: false,
         title: item.title,
         url: item.url,
         thumbnail: getDefaultThumbnail(item.vendorid),
-        score: completed ? rnd(0, 100) : null,
+        score: null,
         attachments: [],
         vendor: item.vendor,
         vendorId: item.vendorid
     };
 }
 
-function getFuseboxResources(asnIds, cb) {
+function* getFuseboxResources(asnIds) {
     var query = `
     SELECT title,
            url,
@@ -92,7 +89,8 @@ function getFuseboxResources(asnIds, cb) {
       JOIN spark1.s2_vendors v
         ON v.id = spark1.s2_learn_links.vendorid`,
         params = [],
-        where = [];
+        where = [],
+        resources;
 
     if (asnIds.length > 1) {
         params.push(asnIds);
@@ -108,12 +106,9 @@ function getFuseboxResources(asnIds, cb) {
 
     query += ';';
 
-    db.manyOrNone(query, params).then(function (resources) {
-        cb(null, resources.map(normalizeFusebox));
-    }, function (err) {
-        console.error(err);
-        cb(err, []);
-    });
+    resources = yield db.manyOrNone(query, params);
+
+    return resources.map(normalizeFusebox);
 }
 
 module.exports = {
