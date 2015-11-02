@@ -10,18 +10,18 @@ var restify = require('restify'),
     AsnStandard = require('../../lib/asn-standard'),
     Fusebox = require('../../lib/fusebox'),
     Newsela = require('../../lib/newsela'),
-    db = require('../../lib/database');
+    db = require('../../middleware/database');
 
-function getHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'student_id', 'section_id'], req, res)) {
-        return next();
-    }
+function* getHandler() {
+    this.require(['sparkpoint_id', 'student_id', 'section_id']);
 
-    var sparkpointId = req.params.sparkpoint_id,
-        studentId = req.params.student_id,
-        sectionId = req.params.section_id,
+    var sparkpointId = this.query.sparkpoint_id,
+        studentId = this.query.student_id,
+        sectionId = this.query.section_id,
         standardIds = [],
-        openedIds = [];
+        openedIds = [],
+        ctx = this,
+        playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox;
 
     (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
@@ -30,305 +30,300 @@ function getHandler(req, res, next) {
     });
 
     if (standardIds.length === 0) {
-        res.statusCode = 404;
-        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
-        return next();
+        return this.throw('No academic standards are associated with sparkpoint id: ' + sparkpointId, 404);
     }
 
-    // Non student users get a cached view of the playlist
-    if (!req.isStudent) {
-        db(req).oneOrNone(`
+    // Non-student users get a cached view of the playlist
+    if (!this.isStudent) {
+        playlist = yield this.pgp.oneOrNone(`
             SELECT playlist
               FROM learn_playlist_cache
              WHERE student_id = $1
                AND section_id = $2
                AND sparkpoint_id = $3`,
-            [studentId, sectionId, sparkpointId]).then(function (playlist) {
-                var playlistLen;
+            [studentId, sectionId, sparkpointId]);
 
-                if (playlist && playlist.playlist) {
-                    playlistLen = playlist.playlist.length;
-                    playlist = playlist.playlist;
+        if (!playlist) {
+            return this.body = [];
+        } else {
+            playlist = playlist.playlist;
+            playlistLen = playlist.length;
+            resourceIds = playlist.map(item => item.resource_id);
+        }
 
-                    db(req).any(`
-                        SELECT resource_id,
-                               completed,
-                               start_status = 'launched' AS launched
-                          FROM learn_activity
-                         WHERE resource_id = ANY($1)
-                           AND user_id = $2`, [playlist.map(item => item.resource_id), studentId]).then(function(activities) {
-                        if (activities) {
-                            activities.forEach(function(activity) {
-                               for (var x = 0; x < playlistLen; x++) {
-                                   if (activity.resource_id === playlist[x].resource_id) {
-                                       playlist[x].completed = activity.completed;
-                                       playlist[x].launched = activity.launched;
-                                       break;
-                                   }
-                               }
-                            });
+        activities = yield this.pgp.manyOrNone(`
+            SELECT resource_id,
+                   completed,
+                   start_status = 'launched' AS launched
+              FROM learn_activity
+             WHERE resource_id = ANY($1)
+               AND user_id = $2`, [resourceIds, studentId]);
 
-                            res.json(playlist);
-                        } else {
-                            res.send('nothing');
-                        }
-
-                        return next();
-                    }, function(error) {
-                        res.json(playlist.playlist);
-                        next();
-                    });
-                } else {
-                    res.json([]);
-                    return next();
+        activities.forEach(function (activity) {
+            for (x = 0; x < playlistLen; x++) {
+                if (activity.resource_id === playlist[x].resource_id) {
+                    playlist[x].completed = activity.completed;
+                    playlist[x].launched = activity.launched;
+                    break;
                 }
-            }, function (err) {
-                res.statusCode = 500;
-                res.json(err);
-                next();
-            });
-        return;
-    }
-
-    async.parallel({
-            opened: function (callback) {
-                var params = {
-                    limit: 50,
-                    standard: openedIds,
-                };
-
-                if (req.session && req.session.accountLevel === 'Student') {
-                    params.resource_types = ['video', 'homework', 'exercise', 'game', 'question', 'other'];
-                }
-
-                if (openedIds.length === 0) {
-                    return callback(null, []);
-                }
-
-                OpenEd.getResources(params, function (err, resources) {
-                    if (err) {
-                        console.error('Error getting OpenEd resources: ' + err);
-                        return callback(null, []);
-                    }
-
-                    resources = resources.resources ? resources.resources.map(OpenEd.normalize) : [];
-
-                    resources = resources.filter(function(resource) {
-                        return resource.type === 'video' && !resource.premium;
-                    });
-
-                    callback(null, resources);
-                });
-            },
-
-            fusebox: function (callback) {
-                if (standardIds.length === 0) {
-                    callback(null, []);
-                }
-
-                Fusebox.getResources(standardIds, callback);
-            },
-
-            /*newsela: function (callback) {
-                var standardCodes;
-
-                if (standardIds.length === 0) {
-                    callback(null, []);
-                }
-
-                standardCodes = util.toStandardCodes(standardIds).filter(function (code) {
-                    return code.indexOf('CCSS.ELA-Literacy.CCRA.R') === 0;
-                });
-
-                if (standardCodes.length > 0) {
-                    Newsela.getResources(standardCodes, function (err, resources) {
-                        if (err) {
-                            return callback(null, []);
-                        }
-
-                        callback(null, []);
-                    });
-                }
-            }*/
-        },
-
-        function (err, results) {
-
-            var resources = results.opened.concat(results.fusebox),
-                urlResourceMap = {},
-                urlPlaceHolders = [],
-                url,
-                len,
-                x,
-                y = 3;
-
-            if (resources.length > 0) {
-                // TODO: determine how we will handle duplicate URLs from multiple vendors
-                for (x = 0, len = resources.length; x < len; x++) {
-                    if (!urlResourceMap[resources[x].url]) {
-                        urlResourceMap[resources[x].url] = resources[x];
-                        urlPlaceHolders.push('($2, $' + (y++) + ')');
-                    }
-                }
-
-                // TODO: what kind of treatment/normalization should we do on URLs
-                urlPlaceHolders.join(',\n');
-
-                var sql = `
-                    WITH new_learn_resources AS (
-                        INSERT INTO learn_resources AS lr (sparkpoint_id, url)
-                        VALUES ${urlPlaceHolders}
-                        ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
-                        RETURNING url, id, views
-                    )
-                `;
-
-                if (studentId) {
-                    sql += `
-                        SELECT lr.*,
-                               la.completed,
-                               la.start_status = 'launched' AS launched
-                          FROM new_learn_resources lr
-                     LEFT JOIN learn_activity la
-                            ON la.resource_id = lr.id
-                           AND la.user_id = $1;`;
-                } else {
-                    sql += 'SELECT * FROM new_learn_resources;';
-                }
-
-                db(req).any(sql, [studentId, sparkpointId].concat(Object.keys(urlResourceMap))).then(function (resourceIdentifiers) {
-                    var cacheSql;
-
-                    resourceIdentifiers.forEach(function(resourceId) {
-                        var resource =  urlResourceMap[resourceId.url];
-
-                        resource.resource_id = resourceId.id;
-                        resource.views = resourceId.views;
-                        resource.url = resource.url;
-                        resource.launch_url = '/spark/api/work/learns/launch/' + resource.resource_id;
-                        resource.completed = resourceId.completed || false;
-                        resource.launched = resourceId.launched || false;
-                    });
-
-                    cacheSql = `
-                        INSERT INTO learn_playlist_cache
-                                    (student_id, section_id, sparkpoint_id, playlist, last_updated)
-                             VALUES ($1, $2, $3, $4, current_timestamp) ON CONFLICT (sparkpoint_id, student_id, section_id) DO UPDATE
-                                SET playlist = $4,
-                                    last_updated = current_timestamp;`;
-
-                    db(req).none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]).then(function() {}, function(err) {
-                        console.error('Error caching student learn playlist: ', cacheSql);
-                        console.error(err);
-                    });
-
-                    res.json(resources);
-                    return next();
-
-                }, function (err) {
-                    res.send(500, { error: err });
-                    return next();
-                });
-            } else {
-                res.json(resources);
-                return next();
             }
         });
+
+        return this.body = playlist;
+    }
+
+    params = {
+        limit: 50,
+        standard: openedIds,
+    };
+
+    if (this.student) {
+        params.resource_types = ['video', 'homework', 'exercise', 'game', 'question', 'other'];
+    }
+
+    if (openedIds.length === 0) {
+        opened = [];
+    } else {
+        opened = yield OpenEd.getResources(params);
+
+        opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
+
+        // TODO: HACK: filter out premium content and non-video content until we start using SSO
+        opened = opened.filter(function (resource) {
+            return resource.type === 'video' && !resource.premium;
+        });
+    }
+
+    if (standardIds.length === 0) {
+        fusebox = [];
+    } else {
+        fusebox = yield Fusebox.getResources(standardIds);
+    }
+
+    var resources = opened.concat(fusebox),
+        urlResourceMap = {},
+        urlPlaceHolders = [],
+        url,
+        len,
+        x,
+        y = 3,
+        resourceIdentifiers;
+
+    if (resources.length > 0) {
+        // TODO: determine how we will handle duplicate URLs from multiple vendors
+        for (x = 0, len = resources.length; x < len; x++) {
+            if (!urlResourceMap[resources[x].url]) {
+                urlResourceMap[resources[x].url] = resources[x];
+                urlPlaceHolders.push('($2, $' + (y++) + ')');
+            }
+        }
+
+        // TODO: what kind of treatment/normalization should we do on URLs
+        urlPlaceHolders.join(',\n');
+
+        var sql = `
+        WITH new_learn_resources AS (
+            INSERT INTO learn_resources AS lr (sparkpoint_id, url)
+            VALUES ${urlPlaceHolders}
+            ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
+            RETURNING url, id, views
+        )
+    `;
+
+        if (studentId) {
+            sql += `
+            SELECT lr.*,
+                   la.completed,
+                   la.start_status = 'launched' AS launched
+              FROM new_learn_resources lr
+         LEFT JOIN learn_activity la
+                ON la.resource_id = lr.id
+               AND la.user_id = $1;`;
+        } else {
+            sql += 'SELECT * FROM new_learn_resources;';
+        }
+
+        resourceIdentifiers = yield ctx.pgp.manyOrNone(sql, [studentId, sparkpointId].concat(Object.keys(urlResourceMap)));
+
+        resourceIdentifiers.forEach(function (resourceId) {
+            var resource = urlResourceMap[resourceId.url];
+            resource.resource_id = resourceId.id;
+            resource.views = resourceId.views;
+            resource.launch_url = '/spark/api/work/learns/launch/' + resource.resource_id;
+            resource.completed = resourceId.completed || false;
+            resource.launched = resourceId.launched || false;
+        });
+
+        cacheSql = `
+            INSERT INTO learn_playlist_cache
+                        (student_id, section_id, sparkpoint_id, playlist, last_updated)
+                 VALUES ($1, $2, $3, $4, current_timestamp) ON CONFLICT (sparkpoint_id, student_id, section_id) DO UPDATE
+                    SET playlist = $4,
+                        last_updated = current_timestamp;`;
+
+        yield ctx.pgp.none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]);
+    }
+
+    this.body = resources;
 }
 
-function patchHandler(req, res, next) {
-    if (util.requireParams(['student_id'], req, res)) {
-        return next();
+function* patchHandler() {
+    var resources = this.body,
+        invalidResources = [],
+        validResources = [],
+        requiredKeys = ['student_id', 'resource_id'],
+        allKeys = ['student_id', 'resource_id', 'comment', 'rating', 'completed'],
+        activityQueryValues = [],
+        reviewQueryValues = [],
+        activitySql = [],
+        reviewSql = [],
+        learnActivityQuery,
+        studentId = this.studentId,
+        activity,
+        ctx = this;
+
+    if (!Array.isArray(resources) || resources.length === 0) {
+        return this.throw('Body should be an array of one or more learns.', 400);
     }
 
-    var origResourceId = req.params['resource-id'] || req.params.resource_id,
-        resourceId = parseInt(origResourceId, 10),
-        studentId = req.params.student_id,
-        completed = (req.params.complete || req.params.completed || false).toString(),
-        sentArray = Array.isArray(req.body),
-        resources,
-        resourceValues = [];
+    resources.forEach(function(resource) {
+        var errors = [],
+            invalidKeys,
+            reviewPlaceholders = [],
+            reviewKeys = ['student_id', 'resource_id'],
+            activityPlaceholders = ['student_id', 'resource_id'],
+            activityKeys = [];
 
-    if (isNaN(resourceId)) {
-        if (!sentArray) {
-            res.statusCode = 400;
-            res.json({ error: 'Expected a numeric resource id, you passed: ' + origResourceId, params: req.params });
-            return next();
+        if (ctx.isStudent) {
+            resource.student_id = ctx.studentId;
         }
-    } else if (sentArray) {
-        res.statusCode = 400;
-        res.json({
-            error: 'An array of items can only be patched at the resource root, you passed a resource id: ' + origResourceId,
-            params: req.params
-        });
-        return next();
-    }
 
-    completed = (completed === '1' || completed === 'true');
+        if (isNaN(resource.resource_id)) {
+            errors.push('resource_id must be numeric, you passed: ' + resource.resource_id);
+        }
 
-    resources = sentArray ? req.body : [{id: resourceId, completed: completed}];
-
-    resourceValues = resources.map(function(resource) {
-        // TODO: escape this
-        return '(' + (resource.resource_id || resource.id) + ',' + resource.completed + ')';
-    }).join(',');
-
-    db(req).any(`
-        UPDATE learn_activity
-           SET end_status = 'api-patch',
-               end_ts = now(),
-               completed = r.completed
-          FROM (VALUES ${resourceValues}) AS r (id, completed)
-        WHERE r.id = learn_activity.resource_id
-          AND user_id = $1 RETURNING *`,
-    [studentId]).then(function(result) {
-        if (sentArray) {
-            res.json(result.map(function(resource) { return { resource_id: resource.id, completed: resource.completed }; }));
+        if (typeof resource.completed !== 'undefined' && typeof resource.completed !== 'boolean') {
+            errors.push('completed must be a boolean, you passed: ' + resource.completed);
         } else {
-            res.json(result[0]);
+            activityPlaceholders.push(activityQueryValues.push(resource.student_id));
+            activityPlaceholders.push(activityQueryValues.push(resource.resource_id));
+            activityPlaceholders.push(activityQueryValues.push(resource.completed));
+            activityKeys.push('completed');
+
         }
-        return next();
-    }, function(err) {
-        res.send(500, err);
-        return next();
+
+        if (resource.rating) {
+            if (isNaN(resource.rating) || resource.rating > 10 || resource.rating < 0) {
+                errors.push('rating must be a number between 1 and 10, you passed: ' + resource.rating);
+            } else {
+                reviewPlaceholders.push(reviewQueryValues.push(resource.student_id));
+                reviewPlaceholders.push(reviewQueryValues.push(resource.resource_id));
+                reviewPlaceholders.push(reviewQueryValues.push(resource.rating));
+                reviewKeys.push('rating');
+            }
+        }
+
+        if (resource.comment) {
+            if (typeof resource.comment !== 'string') {
+            errors.push('comment must be a string, you passed: ' + resource.comment);
+            } else {
+                if (!resource.rating) {
+                    reviewPlaceholders.push(reviewQueryValues.push(resource.student_id));
+                    reviewPlaceholders.push(reviewQueryValues.push(resource.resource_id));
+                }
+                reviewPlaceholders.push(reviewQueryValues.push(resource.comment));
+                reviewKeys.push('comment');
+            }
+        }
+
+        requiredKeys.forEach(function(key) {
+            if (typeof resource[key] === 'undefined') {
+                errors.push('Missing required key: ' + key);
+            }
+        });
+
+        invalidKeys = Object.keys(resource).filter(function(key) {
+            return allKeys.indexOf(key) === -1;
+        });
+
+        if (invalidKeys.length > 0) {
+            errors.push('Unexpected key(s) encountered: ' + invalidKeys.join(', '));
+        }
+
+        if (errors.length > 0) {
+            resource.errors = errors;
+            invalidResources.push(resource);
+            return;
+        }
+
+        if (reviewPlaceholders.length > 0) {
+            reviewSql.push(`INSERT INTO learn_activity VALUES(${activityKeys}) ON CONFLICT (student_id, resource_id) DO UPDATE  ${util.generateSet(activityKeys, activityPlaceholders, requiredKeys)} RETURNING *'`);
+        }
+
+        if (activityPlaceholders.length > 0) {
+            activitySql.push(`INSERT INTO learn_activity VALUES(${activityKeys}) ON CONFLICT (student_id, resource_id) DO UPDATE ${util.generateSet(activityKeys, activityPlaceholders, requiredKeys)} RETURNING *'`);
+        }
+    });
+
+    if (invalidResources.length > 0) {
+        this.throw(
+            400,
+            `${invalidResources.length} invalid resource(s) and ${validResources.length} valid resource(s) were passed.`,
+            {
+                invalid: invalidResources,
+                valid: validResources,
+                params: this.query,
+                body: this.body
+            }
+        );
+    }
+
+    learnActivityQuery =
+        `UPDATE learn_activity
+            SET end_status = 'api-patch',
+                end_ts = now(),
+                completed = r.completed
+           FROM (VALUES ${resourceValues}) AS r (id, completed)
+          WHERE r.id = learn_activity.resource_id
+            AND user_id = $1 RETURNING *`;
+
+    activity = yield this.pgp.any(learnActivityQuery, [studentId]);
+
+    this.body = activity.map(function(resource) {
+        return {
+            resource_id: resource.id,
+            completed: resource.completed
+        };
     });
 }
 
-function launchHandler(req, res, next) {
-    if (util.requireParams(['student_id'], req, res)) {
-        return next();
-    }
+function* launchHandler(resourceId) {
+    this.require(['student_id']);
 
-    var origResourceId = req.params['resource-id'] || req.params.resource_id,
+    var origResourceId = resourceId || this.query.resource_id,
         resourceId = parseInt(origResourceId, 10),
-        studentId = req.params.student_id;
+        studentId = this.studentId,
+        learnResource;
 
     if (isNaN(resourceId)) {
         res.send(500, 'Expected a numeric resource id, you passed: ' + origResourceId);
         return next();
     }
 
-    db(req).none(`
+    yield this.pgp.none(`
         INSERT INTO learn_activity (user_id, resource_id, start_status)
              VALUES ($1, $2, $3)
-        ON CONFLICT (resource_id, user_id) DO NOTHING;`, [studentId, resourceId, 'launched']).then(function(data) {
-            db(req).one('SELECT url FROM learn_resources WHERE id = $1', resourceId).then(function(data) {
-                if (data.url) {
-                    return res.redirect(data.url, next);
-                } else {
-                    // TODO : add javascript to refresh 3 times then close the page or take you back to the playlist...
-                    res.send(500, 'Failed to launch learning resource due to an unknown error. Try refreshing this ' +
-                                  ' page. If you continue to receive this error please tell your teacher.');
-                    return next();
-                }
-            }, function (reason) {
-                res.send(500, reason);
-                return next();
-            });
-    }, function (error) {
-        res.send(500, error);
-        return next();
-    });
+        ON CONFLICT (resource_id, user_id) DO NOTHING;`, [studentId, resourceId, 'launched']);
+
+    learnResource = yield db(req).one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
+
+    if (learnResource.url) {
+        this.response.redirect(learnResource.url);
+    } else {
+        // TODO : add javascript to refresh 3 times then close the page or take you back to the playlist...
+        this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
+            ' page. If you continue to receive this error please tell your teacher.', 500);
+    }
 }
 
 module.exports = {
