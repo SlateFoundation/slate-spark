@@ -18,15 +18,6 @@ const password = 'TpgeVl04Os9Ot7t2H7rySjREhxFiKZ';
 ['sandbox-school', 'mta-live', 'mta-staging', 'merit-live', 'merit-staging', 'fusebox-live'].forEach(function(schema) {
     var username = schema;
     connections[schema] = pgp(`postgres://${username}:${password}@${host}/${db}`);
-   /*
-    console.log(`
- DROP SCHEMA IF EXISTS "${schema}";
- DROP USER IF EXISTS "${schema}";
- CREATE USER "${schema}" WITH PASSWORD 'TpgeVl04Os9Ot7t2H7rySjREhxFiKZ';
- CREATE SCHEMA IF NOT EXISTS "${schema}" AUTHORIZATION "${schema}";
- ALTER ROLE "${schema}" SET search_path TO "${schema}", spark, slate, public;
-`);
-*/
 });
 
 monitor.attach(options);

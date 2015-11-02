@@ -276,7 +276,6 @@ function arrayToGradeRange(input, pkStr) {
     return ret;
 }
 
-
 /**
  * Returns a boolean indicating whether the given string is a number greater than zero
  *
@@ -435,15 +434,10 @@ function toStandardCodes(str) {
 }
 
 function requireParams(params, req, res) {
-    console.log(params);
 
     var missing = params.filter(function (param) {
         return typeof req.params[param] === 'undefined';
     });
-
-    console.log(req.params);
-    console.log(req.body);
-    console.log(missing);
 
     if (missing.length > 0) {
         res.statusCode = 400;
@@ -455,6 +449,15 @@ function requireParams(params, req, res) {
     }
 
     return false;
+}
+
+function generateSet(keys, placeholders, constraintKeys) {
+    constraintKeys = constraintKeys = [];
+    return 'SET ' + keys.filter(function(key) {
+            return constraintKeys.indexOf(key) === -1;
+        }).map(function(key, i) {
+            return `${key} = ${placeholders[i]}`
+        }).join(', ');
 }
 
 module.exports = {
@@ -479,5 +482,8 @@ module.exports = {
     toAsnId: toAsnId,
     toStandardCode: toStandardCode,
 
-    requireParams: requireParams
+    requireParams: requireParams,
+    generateSet: generateSet,
+
+    bind: require('co-bind')
 };

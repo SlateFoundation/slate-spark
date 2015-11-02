@@ -6,9 +6,7 @@ var path = require('path'),
     cluster = require('cluster'),
     config = require('yaml-config'),
     settings = config.readConfig(path.join(__dirname, 'config.yaml')),
-    worker = require('./lib/worker'),
-    logging = require('./lib/logging'),
-
+    worker = require('./worker'),
     NODE_ENV = process.env.NODE_ENV || 'development',
     calledDirectly = require.main === module;
 
@@ -20,13 +18,8 @@ if (calledDirectly && !process.argv.some(arg => arg.indexOf('forever') !== -1 ||
     process.exit(1);
 }
 
-function spawnWorker(logger) {
-    var server = worker.createServer(logger),
-        port = settings.server.port || 8090;
-
-    server.listen(port, function () {
-        console.info('%s listening at %s', server.name, server.url);
-    });
+function spawnWorker() {
+    worker.listen(settings.server.port || 8090);
 }
 
 function createCluster(logger) {
@@ -52,13 +45,11 @@ function createCluster(logger) {
             });
         });
     } else {
-        spawnWorker(logger);
+        spawnWorker();
     }
 }
 
 function run(cluster) {
-    var logger = logging.createLogger(settings.logs);
-
     if (NODE_ENV === 'production' || Boolean(settings.server.cluster) || cluster) {
         createCluster();
     }
