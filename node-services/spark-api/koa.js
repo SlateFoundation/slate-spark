@@ -37,6 +37,10 @@ app.use(_.patch('/work/activity', routes.work.activity.patch));
 // Assessments
 app.use(_.get('/work/assessments', routes.work.assessments));
 
+// Assess
+app.use(_.get('/work/assess', routes.work.assess.get))
+app.use(_.patch('/work/assess', routes.work.assess.patch));
+
 // Learns
 app.use(_.get('/work/learns', routes.work.learns.get));
 app.use(_.get('/work/learns/launch/:resourceId', routes.work.learns.launch));

@@ -2,32 +2,25 @@
 
 var AsnStandard = require('../../lib/asn-standard'),
     lookup = require('../../lib/lookup'),
-    db = require('../../lib/database'),
-    JsonApiError = require('../../lib/error').JsonApiError,
-    Promise = require('bluebird'),
-    util = require('../../lib/util'),
     fusebox = require('../../lib/fusebox');
 
-function getHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'student_id'], req, res)) {
-        return next();
-    }
+function *getHandler() {
+    this.require(['sparkpoint_id', 'student_id']);
 
-    var sparkpointId = req.params.sparkpoint_id,
-        standardIds = [];
+    var sparkpointId = this.query.sparkpoint_id,
+        standardIds = [],
+        assessments,
+        reflection;
 
     (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
     if (standardIds.length === 0) {
-        res.statusCode = 404;
-        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
-        return next();
+        return this.throw('No academic standards are associated with spark point id: ' + sparkpointId, 404);
     }
 
-    Promise.props({
-        assessments: db(req).manyOrNone(`SELECT title,
+    assessments = yield this.pgp.manyOrNone(`SELECT title,
                           url,
                           vendorid,
                           gradelevel,
@@ -37,49 +30,32 @@ function getHandler(req, res, next) {
                      FROM spark1.s2_assessments
                      JOIN spark1.s2_vendors v
                        ON v.id = spark1.s2_assessments.vendorid
-                    WHERE standardids::JSONB ?| $1`, [standardIds]),
-        reflection: db(req).oneOrNone(`SELECT reflection FROM assesses WHERE sparkpoint_id = $1 and student_id = $2`, [sparkpointId, req.studentId])
-    }).then(function(result) {
-        var assessments = result.assessments ? result.assessments.map(fusebox.normalizeAssessment) : [];
+                    WHERE standardids::JSONB ?| $1`, [standardIds]);
 
-        res.json({
-            assessments: assessments,
-            reflection: result.reflection ? result.reflection.reflection : ''
-        });
+    reflection = yield this.pgp.oneOrNone(
+        `SELECT reflection FROM assesses WHERE sparkpoint_id = $1 and student_id = $2`,
+        [sparkpointId, this.studentId]
+    );
 
-        return next();
-    }, function(err) {
-        res.statusCode = 500;
-        res.json(new JsonApiError(err));
-        return next();
-    });
+    this.body = {
+        assessments: assessments.map(fusebox.normalizeAssessment),
+        reflection: reflection ? reflection.reflection : ''
+    };
 }
 
-function patchHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'student_id', 'reflection'], req, res)) {
-        return next();
-    }
+function *patchHandler() {
+    this.require(['sparkpoint_id', 'student_id', 'reflection']);
 
-    var sparkpointId = req.params.sparkpoint_id,
-        reflection = req.params.reflection;
+    var sparkpointId = this.query.sparkpoint_id,
+        reflection = this.query.reflection;
 
-    db(req).one(`
+    this.body = yield this.pgp.one(`
             INSERT INTO assesses
                  VALUES ($1, $2, $3) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE
                     SET reflection = $3
               RETURNING *`,
-        [
-            req.studentId,
-            sparkpointId,
-            reflection
-        ]).then(function(assess) {
-        res.json(assess);
-        return next();
-    }, function(error) {
-        res.statusCode = 500;
-        res.json({error: error});
-        return next();
-    });
+        [this.studentId,  sparkpointId, reflection]
+    );
 }
 
 module.exports = {
