@@ -1,74 +1,66 @@
 var AsnStandard = require('../../lib/asn-standard'),
     lookup = require('../../lib/lookup'),
-    db = require('../../lib/database'),
+    db = require('../../middleware/database'),
     JsonApiError = require('../../lib/error').JsonApiError,
     Promise = require('bluebird'),
     util = require('../../lib/util');
 
-function getHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'student_id'], req, res)) {
-        return next();
-    }
+function* getHandler() {
+    this.require(['sparkpoint_id', 'student_id']);
 
-    var sparkpointId = req.params.sparkpoint_id,
+    var sparkpointId = this.query.sparkpoint_id,
         standardIds = [],
-        userId = req.params.student_id;
+        userId = this.studentId,
+        result,
+        questions;
 
     (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
     if (standardIds.length === 0) {
-        res.statusCode = 404;
-        res.json({ error: 'No academic standards are associated with sparkpoint id: ' + sparkpointId, params: req.params });
-        return next();
+        return this.throw('No academic standards are associated with spark point id: ' + sparkpointId, 404);
     }
 
-    Promise.props({
-        fuseboxQuestions: db(req).manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
-        questions: db(req).manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId]),
-        resources: db(req).manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
-        worksheet: db(req).oneOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
-    }).then(function(result) {
-        var questions = result.fuseboxQuestions.map(function(question) {
-            return {
-                id: question.id,
-                question: question.question,
-                gradeLevel: question.gradelevel,
-                source: 'fusebox'
-            };
-        }).concat(result.questions);
-
-        res.json({
-            questions: questions,
-            worksheet: result.worksheet ? result.worksheet.worksheet : null,
-            resources: result.resources.map(function(resource) {
-                return {
-                    id: resource.id,
-                    title: resource.title,
-                    url: resource.url,
-                    gradeLevel: resource.gradelevel,
-                };
-            })
-        });
-
-        return next();
-    }, function(err) {
-        res.json(new JsonApiError(err));
-        return next();
+    result = yield Promise.props({
+        fuseboxQuestions: this.pgp.manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
+        questions: this.pgp.manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId]),
+        resources: this.pgp.manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
+        worksheet: this.pgp.manyOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
     });
+
+    questions = result.fuseboxQuestions.map(function(question) {
+        return {
+            id: question.id,
+            question: question.question,
+            gradeLevel: question.gradelevel,
+            source: 'fusebox'
+        };
+    }).concat(result.questions);
+
+    this.body = {
+        questions: questions,
+        worksheet: result.worksheet ? result.worksheet.worksheet : null,
+        resources: result.resources.map(function(resource) {
+            return {
+                id: resource.id,
+                title: resource.title,
+                url: resource.url,
+                gradeLevel: resource.gradelevel,
+            };
+        })
+    };
 }
 
-function questionPostHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'student_id', 'question'], req, res)) {
-        return next();
-    }
+function* questionPostHandler() {
+    this.require(['sparkpoint_id', 'student_id', 'question']);
 
-    var sparkpointId = req.params.sparkpoint_id,
-        studentId = req.params.student_id,
-        question = req.params.question;
+    var sparkpointId = this.query.sparkpoint_id,
+        studentId = this.studentId,
+        question = this.query.question,
+        record;
 
-    db(req).one(`
+    record = yield this.pgp.one(`
         INSERT INTO conference_questions
                     (student_id, sparkpoint_id, source, question)
              VALUES ($1, $2, $3, $4)
@@ -77,29 +69,24 @@ function questionPostHandler(req, res, next) {
         [
             studentId,
             sparkpointId,
-            (req.session.accountLevel === 'Student') ? 'student' : 'teacher',
+            this.isStudent ? 'student' : 'teacher',
             question
-        ]).then(function(record) {
-            record.sparkpoint = lookup.sparkpoint.idToCode[record.sparkpoint_id];
-            res.json(record);
-            return next();
-        }, function(error) {
-           res.json({ error: error });
-            return next();
-        });
+        ]);
+
+    record.sparkpoint = lookup.sparkpoint.idToCode[record.sparkpoint_id];
+    this.body = record;
 }
 
-function worksheetPatchHandler(req, res, next) {
-    if (util.requireParams(['sparkpoint_id', 'student_id'], req, res)) {
-        return next();
-    }
+function* worksheetPatchHandler(req, res, next) {
+    this.require(['sparkpoint_id', 'student_id']);
 
-    var sparkpointId = req.params.sparkpoint_id,
-        studentId = req.params.student_id,
-        keys = Object.keys(req.body || {}),
+    var sparkpointId = this.query.sparkpoint_id,
+        studentId = this.studentId,
+        body = this.request.body,
+        keys = Object.keys(body || {}),
         allowedKeys = [
             'sparkpoint',
-            'restated',,
+            'restated',
             'steps',
             'example_1',
             'example_2',
@@ -108,29 +95,22 @@ function worksheetPatchHandler(req, res, next) {
             'peer_feedback'
          ],
         invalidKeys = keys.filter(key => allowedKeys.indexOf(key) === -1),
-        worksheet = {};
+        worksheet = {},
+        record;
 
     if (invalidKeys.length > 0) {
-        res.statusCode = 400;
-
-        res.json({
-            error: 'The following invalid key(s) were passed: ' + invalidKeys.join(',') + '. Valid keys are: ' + allowedKeys.join(', '),
-            body: req.body,
-            params: req.params
-        });
-
-        return next();
+        return this.throw(`The following invalid key(s) were passed: ${invalidKeys.join(',')}. Valid keys are: ${allowedKeys.join(', ')}`, 400);
     }
 
     allowedKeys.forEach(function(key) {
         if (key === 'sparkpoint') {
             return;
         } else {
-            worksheet[key] = req.body[key] || null;
+            worksheet[key] = body[key] || null;
         }
     });
 
-    db(req).one(`
+    record = yield this.pgp.one(`
         INSERT INTO conference_worksheets
                     (student_id, sparkpoint_id, worksheet)
              VALUES ($1, $2, $3) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET worksheet = $3
@@ -140,16 +120,14 @@ function worksheetPatchHandler(req, res, next) {
             studentId,
             sparkpointId,
             worksheet
-        ]).then(function(record) {
-            record = record.worksheet;
-            record.student_id = studentId;
-            record.sparkpoint = lookup.sparkpoint.idToCode[sparkpointId];
-            res.json(record);
-            return next();
-        }, function(error) {
-            res.json({error: error});
-            return next();
-        });
+        ]);
+
+
+    record = record.worksheet;
+    record.student_id = studentId;
+    record.sparkpoint = lookup.sparkpoint.idToCode[sparkpointId];
+
+    this.body = record;
 }
 
 module.exports = {
