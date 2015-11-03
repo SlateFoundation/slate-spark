@@ -53,7 +53,7 @@ function *getHandler() {
     });
 }
 
-function *patchHandler(todos) {
+function *patchHandler() {
     this.require(['sparkpoint_id', 'student_id', 'id']);
 
     var sparkpointId = this.query.sparkpoint_id,
@@ -66,7 +66,10 @@ function *patchHandler(todos) {
         apply,
         body = this.request.body,
         exists,
-        todoValues;
+        todoValues,
+        todoPlaceholders,
+        todosPopulated,
+        todos;
 
     if (isNaN(id)) {
         this.throw('id must be an integer, you passed: ' + this.query.id, 400);
@@ -104,52 +107,60 @@ function *patchHandler(todos) {
         'SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3',
         [studentId, id, sparkpointId]);
 
-    if (!exists && !todos) {
+    todosPopulated = yield this.pgp.oneOrNone(`
+        SELECT 1
+          FROM todos
+         WHERE todos.apply_id = $1
+           AND todos.user_id = $2
+         LIMIT 1;
+     `, [studentId, id]);
+
+    if (!todosPopulated) {
         todos = yield this.pgp.one('SELECT todos FROM spark1.s2_apply_projects WHERE id = $1', [id]);
 
-        values = [studentId, id];
+        todoValues = [studentId, id];
 
         todos = todos.todos;
 
-        todoValues = todos.map(function (todo, i) {
-            values.push(todo);
+        todoPlaceholders = todos.map(function (todo, i) {
+            todoValues.push(todo);
             return `($1, $2, $${i + 3})`;
         });
 
-        todos = yield this.pgp.any(`
+        todos = yield this.pgp.manyOrNone(`
             INSERT INTO todos (user_id, apply_id, todo)
-                              VALUES ${todoValues.join(',\n')}
+                              VALUES ${todoPlaceholders.join(',\n')}
                               ON CONFLICT (user_id, apply_id, md5(todo)) DO NOTHING
-            RETURNING *;`, values);
-        yield util.bind(patchHandler, this, todos);
-
-    } else {
-        if (updateSets.length === 0) {
-            return this.throw('You cannot perform a no-op query.', 400);
-        }
-
-        apply = yield this.pgp.one(`
-            INSERT INTO applies
-                        (${Object.keys(apply)})
-                 VALUES (${Object.keys(apply).map(function (x, i) {
-            return '$' + (i + 1);
-        })})
-            ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
-                 RETURNING *
-        `, values);
-
-        todos = yield this.pgp.any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [studentId, id]);
-
-        yield this.pgp.none(
-            'UPDATE applies SET selected = false WHERE selected = true AND fb_apply_id != $1 AND sparkpoint_id = $2 AND student_id = $3;',
-            [id, sparkpointId, studentId]
-        );
-
-        apply.todos = todos;
-        apply.id = apply.fb_apply_id;
-        this.body = apply;
-        return apply;
+            RETURNING *;`, todoValues);
     }
+
+    if (todos.length === 0) {
+        todos = yield this.pgp.any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [studentId, id]);
+    }
+
+    if (updateSets.length === 0 && exists) {
+        return this.throw('You cannot perform a no-op query.', 400);
+    }
+
+    apply = yield this.pgp.one(`
+        INSERT INTO applies
+                    (${Object.keys(apply)})
+             VALUES (${Object.keys(apply).map(function (x, i) {
+        return '$' + (i + 1);
+    })})
+        ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
+             RETURNING *
+    `, values);
+
+    yield this.pgp.none(
+        'UPDATE applies SET selected = false WHERE selected = true AND fb_apply_id != $1 AND sparkpoint_id = $2 AND student_id = $3;',
+        [id, sparkpointId, studentId]
+    );
+
+    apply.todos = todos;
+    apply.id = apply.fb_apply_id;
+
+    this.body = apply;
 }
 
 function *submissionsPostHandler() {
