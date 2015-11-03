@@ -9,7 +9,8 @@ var koa = require('koa'),
     jsonBody = require('koa-json-body'),
     _ = require('koa-route'),
     routes = require('./routes/index'),
-    error = require('koa-error');
+    error = require('koa-error'),
+    request = require('koa-request');
 
 app.use(middleware.response_time);
 app.use(error());
@@ -25,8 +26,6 @@ app.use(middleware.database.pgp({
     config: config.database,
     slateConfig: config.slate
 }));
-
-console.log(config);
 
 // Standards
 app.use(_.get('/standards/:id', routes.standards.get));
@@ -62,3 +61,41 @@ app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet
 app.use(_.get('/todos', routes.todos.get));
 app.use(_.patch('/todos', routes.todos.patch));
 
+// Feedback
+app.use(_.get('/feedback', routes.feedback.get));
+app.use(_.patch('/feedback', routes.feedback.patch));
+app.use(_.delete('/feedback', routes.feedback.delete));
+
+function postErrorToSlack(error, ctx) {
+
+    delete ctx.request.headers['x-nginx-session'];
+
+    return request({
+        method: 'POST',
+        url: 'https://hooks.slack.com/services/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',
+        json: true,
+        body: {
+            text: [
+                `<!channel> *HTTP ${ctx.response.status} ${ctx.request.method} ${ctx.request.url}* (${new Date()})`,
+                '*Stack:*',
+                '```' + error.stack + '```',
+                '*Request:*',
+                '```' + JSON.stringify(ctx.request, null, '   ') + '```',
+                '*Session:*',
+                '```' + JSON.stringify(ctx.session, null, '   ') + '```',
+                '@jmealo',
+                ].join('\n')
+        }
+    });
+}
+
+// TODO: use node production/development variables in startup scripts and package.json scripts
+if (require('os').hostname().indexOf('slack') !== -1) {
+    app.on('error', function(error, ctx) {
+        postErrorToSlack(error, ctx)(function(error, response) {
+            if (error) {
+                console.error('Error posting error to Slack:\n', error, response);
+            }
+        });
+    });
+}
