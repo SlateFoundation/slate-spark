@@ -82,8 +82,7 @@ function postErrorToSlack(error, ctx) {
                 '*Request:*',
                 '```' + JSON.stringify(ctx.request, null, '   ') + '```',
                 '*Session:*',
-                '```' + JSON.stringify(ctx.session, null, '   ') + '```',
-                '@jmealo',
+                '```' + JSON.stringify(ctx.session, null, '   ') + '```'
                 ].join('\n')
         }
     });
