@@ -60,6 +60,8 @@ app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet
 // Todos
 app.use(_.get('/todos', routes.todos.get));
 app.use(_.patch('/todos', routes.todos.patch));
+// TODO: @themightychris: We're using a POST where we usually use PATCH
+app.use(_.post('/todos', routes.todos.patch));
 
 // Feedback
 app.use(_.get('/feedback', routes.feedback.get));
