@@ -34,7 +34,7 @@ function *getHandler() {
 }
 
 function *patchHandler(req, res, next) {
-    this.require(['student_id', 'section_id', 'sparkpoint_id']);
+    this.require(['student_id', 'section_id']);
 
     var sectionId = this.query.section_id,
         studentId = this.studentId,
@@ -60,6 +60,16 @@ function *patchHandler(req, res, next) {
         allKeys = Object.keys(body || {}),
         invalidKeys, activeSql, sparkpointSql, record;
 
+
+    // Allow setting sparkpoint = null
+    if (!sparkpointId) {
+        if (this.query.sparkpoint !== null) {
+            this.require(['sparkpoint_id']);
+        } else {
+            sparkpointId = null;
+        }
+    }
+
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function (key) {
         var val;
@@ -78,12 +88,8 @@ function *patchHandler(req, res, next) {
         return allowedKeys.indexOf(key) === -1;
     });
 
-    if (invalidKeys.length > 1) {
-        this.throw({
-            error: 'Unexpected field(s) encountered: ' + invalidKeys.join(', '),
-            body: req.body,
-            params: req.params
-        }, 400);
+    if (invalidKeys.length > 0) {
+        this.throw(new Error('Unexpected field(s) encountered: ' + invalidKeys.join(', ')), 400);
     }
 
     activeSql = `
