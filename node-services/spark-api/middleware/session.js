@@ -4,7 +4,6 @@
 
 module.exports = function *parseSession(next) {
     var headers = this.headers,
-        query = this.query,
         session;
 
     if (headers['x-nginx-session']) {
@@ -19,13 +18,16 @@ module.exports = function *parseSession(next) {
         this.isDeveloper = session.accountLevel === 'Developer';
 
         this.userId = session.userId;
-        this.studentId = this.isStudent ? session.userId : query.student_id;
-        query.student_id = this.studentId;
+        this.studentId = this.isStudent ? session.userId : this.query.student_id;
+        this.query.student_id = this.studentId;
+        this.session = session;
     }
 
     if (!this.userId) {
         this.throw('Authentication required', 403);
     }
+
+    this.set('X-Session', JSON.stringify(this.session));
 
     yield next;
 };
