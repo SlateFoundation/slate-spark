@@ -65,7 +65,8 @@ function *patchHandler(todos) {
         values = [],
         apply,
         body = this.request.body,
-        exists;
+        exists,
+        todoValues;
 
     if (isNaN(id)) {
         this.throw('id must be an integer, you passed: ' + this.query.id, 400);
@@ -103,11 +104,10 @@ function *patchHandler(todos) {
         'SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3',
         [studentId, id, sparkpointId]);
 
-    if (!exists && !todos) {
+    if (!exists) {
         todos = yield this.pgp.one('SELECT todos FROM spark1.s2_apply_projects WHERE id = $1', [id]);
 
-        var values = [studentId, id],
-            todoValues;
+        values = [studentId, id];
 
         todos = todos.todos;
 
@@ -117,7 +117,7 @@ function *patchHandler(todos) {
         });
 
         todos = yield this.pgp.any(`INSERT INTO todos (user_id, apply_id, todo) VALUES ${todoValues.join(',\n')} RETURNING *;`, values);
-        this.body = yield* patchHandler(todos);
+        yield util.bind(patchHandler, this, todos);
 
     } else {
         if (updateSets.length === 0) {
