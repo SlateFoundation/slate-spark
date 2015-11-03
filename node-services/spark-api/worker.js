@@ -64,9 +64,8 @@ app.use(_.patch('/todos', routes.todos.patch));
 app.use(_.post('/todos', routes.todos.patch));
 
 // Feedback
-app.use(_.get('/feedback', routes.feedback.get));
-app.use(_.patch('/feedback', routes.feedback.patch));
-app.use(_.delete('/feedback', routes.feedback.delete));
+app.use(_.get('/work/feedback', routes.work.feedback.get));
+app.use(_.post('/work/feedback', routes.work.feedback.post));
 
 function postErrorToSlack(error, ctx) {
 
