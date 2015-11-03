@@ -83,6 +83,10 @@ function postErrorToSlack(error, ctx) {
                 '```' + error.stack + '```',
                 '*Request:*',
                 '```' + JSON.stringify(ctx.request, null, '   ') + '```',
+                '*Query:*',
+                '```' + JSON.stringify(ctx.request.query, null, '   ') + '```',
+                '*Body:*',
+                '```' + JSON.stringify(ctx.request.body, null, '   ') + '```',
                 '*Session:*',
                 '```' + JSON.stringify(ctx.session, null, '   ') + '```'
                 ].join('\n')
