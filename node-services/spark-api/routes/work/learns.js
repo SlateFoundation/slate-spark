@@ -180,7 +180,8 @@ function* patchHandler() {
         learnActivityQuery,
         studentId = this.studentId,
         activity,
-        ctx = this;
+        ctx = this,
+        resourceValues;
 
     if (!Array.isArray(resources) || resources.length === 0) {
         return this.throw('Body should be an array of one or more learns.', 400);
@@ -277,6 +278,10 @@ function* patchHandler() {
             }
         );
     }
+
+    resourceValues = resources.map(function(resource) {
+        return '(' + (resource.resource_id || resource.id) + ',' + resource.completed + ')';
+    }).join(',');
 
     learnActivityQuery =
         `UPDATE learn_activity
