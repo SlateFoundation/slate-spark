@@ -43,8 +43,10 @@ DashboardRequestHandler::$sources[] = UI\Tools::class;
 DashboardRequestHandler::$sources[] = [UI\Adapters\ManageSlate::class, 'getManageLinks'];
 DashboardRequestHandler::$sources[] = UI\Adapters\User::class;
 
-DashboardRequestHandler::$sources[] = [
-    'Manage Slate' => [
-        'Narrative Reports' => '/manage#progress/narratives'
-    ]
-];
+if ($GLOBALS['Session']->hasAccountLevel('Teacher')) {
+    DashboardRequestHandler::$sources[] = [
+        'Manage Slate' => [
+            'Narrative Reports' => '/manage#progress/narratives'
+        ]
+    ];
+}
