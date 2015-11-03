@@ -104,7 +104,7 @@ function *patchHandler(todos) {
         'SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3',
         [studentId, id, sparkpointId]);
 
-    if (!exists) {
+    if (!exists && !todos) {
         todos = yield this.pgp.one('SELECT todos FROM spark1.s2_apply_projects WHERE id = $1', [id]);
 
         values = [studentId, id];
@@ -116,7 +116,11 @@ function *patchHandler(todos) {
             return `($1, $2, $${i + 3})`;
         });
 
-        todos = yield this.pgp.any(`INSERT INTO todos (user_id, apply_id, todo) VALUES ${todoValues.join(',\n')} RETURNING *;`, values);
+        todos = yield this.pgp.any(`
+            INSERT INTO todos (user_id, apply_id, todo)
+                              VALUES ${todoValues.join(',\n')}
+                              ON CONFLICT (user_id, apply_id, md5(todo)) DO NOTHING
+            RETURNING *;`, values);
         yield util.bind(patchHandler, this, todos);
 
     } else {
