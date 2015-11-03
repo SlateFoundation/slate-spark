@@ -46,7 +46,10 @@ function* getHandler() {
         if (!playlist) {
             return this.body = [];
         } else {
-            playlist = playlist.playlist;
+            playlist = playlist.playlist.map(function(item) {
+                item.launch_url = item.url;
+                return item;
+            });
             playlistLen = playlist.length;
             resourceIds = playlist.map(item => item.resource_id);
         }
