@@ -74,6 +74,10 @@ function *patchHandler(req, res, next) {
     invalidKeys = allKeys.filter(function (key) {
         var val;
 
+        if (key === 'student_id') {
+            return;
+        }
+
         if (key.indexOf('time') !== -1) {
             val = parseInt(body[key], 10);
 
