@@ -90,7 +90,7 @@ function postErrorToSlack(error, ctx) {
 }
 
 // TODO: use node production/development variables in startup scripts and package.json scripts
-if (require('os').hostname().indexOf('slack') !== -1) {
+if (require('os').hostname().indexOf('spark') !== -1) {
     app.on('error', function(error, ctx) {
         postErrorToSlack(error, ctx)(function(error, response) {
             if (error) {
