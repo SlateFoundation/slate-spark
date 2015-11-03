@@ -46,6 +46,8 @@ Ext.define('SparkRepositoryManager.model.AssessmentType', {
 
     proxy: {
         type: 'spark-records',
+        limitParam: null,
+        startParam: null,
         url: '/spark2/assessment-types'
     }
 });

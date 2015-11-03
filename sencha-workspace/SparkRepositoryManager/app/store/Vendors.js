@@ -14,7 +14,8 @@ Ext.define('SparkRepositoryManager.store.Vendors', {
 
     proxy: {
         noCache: false,
-        limitParam: '',
+        limitParam: null,
+        startParam: null,
         type: 'spark-records',
         url: '/spark2/vendors',
         include: 'Domains'

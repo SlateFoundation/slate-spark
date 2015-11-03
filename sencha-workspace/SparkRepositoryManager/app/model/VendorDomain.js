@@ -50,6 +50,8 @@ Ext.define('SparkRepositoryManager.model.VendorDomain', {
 
     proxy: {
         type: 'spark-records',
+        limitParam: null,
+        startParam: null,
         url: '/spark2/vendor-domains'
     }
 });
