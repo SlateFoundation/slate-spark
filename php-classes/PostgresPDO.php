@@ -13,6 +13,7 @@ class PostgresPDO
     public static $database = 'spark';
     public static $username = 'spark';
     public static $password = 'SparkPoint2015';
+    public static $application_name = 'spark-repository-manager';
 
     protected static $connection;
     public static function getConnection()
@@ -20,12 +21,13 @@ class PostgresPDO
         if (!static::$connection) {
             static::$connection = new PDO(
                 sprintf(
-                    'pgsql:host=%s;port=%u;dbname=%s;user=%s;password=%s',
+                    'pgsql:host=%s;port=%u;dbname=%s;user=%s;password=%s;application_name=%s',
                     static::$host,
                     static::$port,
                     static::$database,
                     static::$username,
-                    static::$password
+                    static::$password,
+                    static::$application_name
                 )
             );
 
