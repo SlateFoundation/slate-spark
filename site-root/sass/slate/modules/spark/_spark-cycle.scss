@@ -1,0 +1,54 @@
+.spark-cycle-nav {
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    margin-bottom: 2em;
+}
+
+.spark-cycle {
+    @include display-flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.spark-cycle-item {
+    @include flex(1);
+    margin: 0;
+    padding: 0;
+
+    + .spark-cycle-item {
+        border-left: 1px solid darken($button-color, 7);
+    }
+
+    + .is-current {
+        border-left-color: $base-color;
+    }
+
+    .is-current + & {
+        border-left-color: $base-color;
+    }
+
+    a {
+        @include link-colors($text-color);
+        text-decoration: none;
+    }
+}
+
+.spark-cycle-link {
+    background-color: $button-color;
+    color: $text-color;
+    display: block;
+    overflow: hidden;
+    padding: .5em 1em;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: lighten($button-color, 7);
+    }
+
+    .is-current > & {
+        @include contrasted($base-color);
+        box-shadow: none; // counter focus ring
+    }
+}
