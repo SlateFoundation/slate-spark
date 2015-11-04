@@ -136,7 +136,7 @@ function *patchHandler() {
         }
     }
 
-    if (todos.length === 0) {
+    if (!Array.isArray(todos)) {
         todos = yield this.pgp.any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [studentId, id]);
     }
 
