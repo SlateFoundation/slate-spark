@@ -122,16 +122,18 @@ function *patchHandler() {
 
         todos = todos.todos;
 
-        todoPlaceholders = todos.map(function (todo, i) {
-            todoValues.push(todo);
-            return `($1, $2, $${i + 3})`;
-        });
+        if (Array.isArray(todos) && todos.length > 0) {
+            todoPlaceholders = todos.map(function (todo, i) {
+                todoValues.push(todo);
+                return `($1, $2, $${i + 3})`;
+            });
 
-        todos = yield this.pgp.manyOrNone(`
+            todos = yield this.pgp.manyOrNone(`
             INSERT INTO todos (user_id, apply_id, todo)
                               VALUES ${todoPlaceholders.join(',\n')}
                               ON CONFLICT (user_id, apply_id, md5(todo)) DO NOTHING
             RETURNING *;`, todoValues);
+        }
     }
 
     if (todos.length === 0) {
