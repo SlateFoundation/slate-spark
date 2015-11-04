@@ -10,7 +10,7 @@ monitor.attach(options);
 monitor.setTheme('matrix');
 
 function objToConnectionString(obj) {
-    return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}`;
+    return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}?application_name=spark-api`;
 }
 
 function initializePgp(config, slateConfig) {
