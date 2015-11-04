@@ -96,10 +96,12 @@ function postErrorToSlack(error, ctx) {
 // TODO: use node production/development variables in startup scripts and package.json scripts
 if (require('os').hostname().indexOf('spark') !== -1) {
     app.on('error', function(error, ctx) {
-        postErrorToSlack(error, ctx)(function(error, response) {
-            if (error) {
-                console.error('Error posting error to Slack:\n', error, response);
-            }
-        });
+        if (ctx.response.status != 400) {
+            postErrorToSlack(error, ctx)(function(error, response) {
+                if (error) {
+                    console.error('Error posting error to Slack:\n', error, response);
+                }
+            });
+        }
     });
 }
