@@ -5,7 +5,7 @@ function postErrorToSlack(error, ctx, details) {
 
     return request({
         method: 'POST',
-        url: 'https://hooks.slack.com/services/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',
+        url: 'https://hooks.slack.com/services/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',
         json: true,
         body: {
             text: [
