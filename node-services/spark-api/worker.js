@@ -10,7 +10,7 @@ var koa = require('koa'),
     _ = require('koa-route'),
     routes = require('./routes/index'),
     error = require('koa-error'),
-    request = require('koa-request');
+    slack = require('./lib/slack');
 
 app.use(middleware.response_time);
 app.use(error());
@@ -72,37 +72,13 @@ app.use(_.get('/work/mastery-check-scores', routes.work['mastery-check-scores'].
 app.use(_.patch('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
 app.use(_.post('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
 
-function postErrorToSlack(error, ctx) {
 
-    delete ctx.request.headers['x-nginx-session'];
-
-    return request({
-        method: 'POST',
-        url: 'https://hooks.slack.com/services/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',
-        json: true,
-        body: {
-            text: [
-                `<!channel> *HTTP ${ctx.response.status} ${ctx.request.method} ${ctx.request.url}* (${new Date()})`,
-                '*Stack:*',
-                '```' + error.stack + '```',
-                '*Request:*',
-                '```' + JSON.stringify(ctx.request, null, '   ') + '```',
-                '*Query:*',
-                '```' + JSON.stringify(ctx.request.query, null, '   ') + '```',
-                '*Body:*',
-                '```' + JSON.stringify(ctx.request.body, null, '   ') + '```',
-                '*Session:*',
-                '```' + JSON.stringify(ctx.session, null, '   ') + '```'
-                ].join('\n')
-        }
-    });
-}
 
 // TODO: use node production/development variables in startup scripts and package.json scripts
 if (require('os').hostname().indexOf('spark') !== -1) {
     app.on('error', function(error, ctx) {
         if (ctx.response.status != 400) {
-            postErrorToSlack(error, ctx)(function(error, response) {
+            slack.postErrorToSlack(error, ctx)(function(error, response) {
                 if (error) {
                     console.error('Error posting error to Slack:\n', error, response);
                 }

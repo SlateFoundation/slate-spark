@@ -148,19 +148,19 @@ try {
         openEdClientSecret = configFile.opened_client_secret;
 
     } catch (err) {
-        console.error('Error parsing ' + path.resolve(__dirname, '../config.json'));
+        console.error('OPENED: Error parsing ' + path.resolve(__dirname, '../config.json'));
         process.exit(1);
     }
 } catch (err) {
     if (openEdClientSecret === '' || openEdClientId === '') {
-        console.error('Please provide a valid config.json in ' + path.resolve(__dirname, '../config.json') + ' or edit the content-proxy file directly.');
+        console.error('OPENED: Please provide a valid config.json in ' + path.resolve(__dirname, '../config.json') + ' or edit the content-proxy file directly.');
         console.error(err);
         process.exit(1);
     }
 }
 
 if (openEdClientSecret === '' || openEdClientId === '') {
-    console.error('Please provide a valid config.json in ' + path.resolve(__dirname, '../config.json') + ' or edit the content-proxy file directly.');
+    console.error('OPENED: Please provide a valid config.json in ' + path.resolve(__dirname, '../config.json') + ' or edit the content-proxy file directly.');
     process.exit(1);
 }
 
@@ -377,6 +377,17 @@ function* getResources(params, cb) {
     clientOptions.uri = openEdClientBaseUrl + url;
 
     resources = yield request(clientOptions);
+
+    if (resources.statusCode !== 200 || // HTTP error
+        typeof request.body !== 'object' || // empty body
+        !Array.isArray(request.body.resources) || // missing resource property
+        request.body.resources.length === 0 // coverage gap
+    ) {
+        console.error('OPENED: HTTP ' + resources.statusCode + ' is not what we expected: ');
+        console.log(clientOptions);
+        console.error(resources);
+        return resources;
+    }
 
     return resources.body;
 }

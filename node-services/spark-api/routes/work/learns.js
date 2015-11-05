@@ -10,7 +10,8 @@ var restify = require('restify'),
     AsnStandard = require('../../lib/asn-standard'),
     Fusebox = require('../../lib/fusebox'),
     Newsela = require('../../lib/newsela'),
-    db = require('../../middleware/database');
+    db = require('../../middleware/database'),
+    slack = require('../../lib/slack');
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id', 'section_id']);
@@ -88,6 +89,10 @@ function* getHandler() {
         opened = [];
     } else {
         opened = yield OpenEd.getResources(params);
+
+        if (!Array.isArray(opened.resources)) {
+            yield slack.postErrorToSlack('OpenEd failed to return resources!', this, opened);
+        }
 
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
 
