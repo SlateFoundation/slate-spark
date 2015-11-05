@@ -117,7 +117,7 @@ function *patchHandler() {
         people,
         authorNames = {};
 
-    if (!Array.isArray(teacherFeedback)) {
+    if (!Array.isArray(teacherFeedback) || teacherFeedback.length === 0) {
         this.throw(new Error('Request body should be a JSON array of one or more feedback objects'), 400);
     }
 
@@ -125,7 +125,7 @@ function *patchHandler() {
         this.throw(new Error('Students cannot post feedback'), 403);
     }
 
-    teacherFeedback = teacherFeedback.map(function(feedback) {
+    teacherFeedback.forEach(function(feedback) {
         feedback = validateFeedback.apply(ctx, arguments);
 
         if (feedback.errors) {
