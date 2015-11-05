@@ -40,7 +40,7 @@ function* getHandler() {
 
     this.body = {
         questions: questions,
-        worksheet: result.worksheet ? result.worksheet.worksheet : null,
+        worksheet: result.worksheet ? result.worksheet : null,
         resources: result.resources.map(function(resource) {
             return {
                 id: resource.id,
