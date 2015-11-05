@@ -67,6 +67,11 @@ app.use(_.get('/work/feedback', routes.work.feedback.get));
 app.use(_.patch('/work/feedback', routes.work.feedback.patch));
 app.use(_.post('/work/feedback', routes.work.feedback.patch));
 
+// Mastery Check Scores
+app.use(_.get('/work/mastery-check-scores', routes.work['mastery-check-scores'].get));
+app.use(_.patch('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
+app.use(_.post('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
+
 function postErrorToSlack(error, ctx) {
 
     delete ctx.request.headers['x-nginx-session'];
