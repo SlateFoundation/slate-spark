@@ -379,9 +379,9 @@ function* getResources(params, cb) {
     resources = yield request(clientOptions);
 
     if (resources.statusCode !== 200 || // HTTP error
-        typeof request.body !== 'object' || // empty body
-        !Array.isArray(request.body.resources) || // missing resource property
-        request.body.resources.length === 0 // coverage gap
+        typeof resources.body !== 'object' || // empty body
+        !Array.isArray(resources.body.resources) || // missing resource property
+        resources.body.resources.length === 0 // coverage gap
     ) {
         console.error('OPENED: HTTP ' + resources.statusCode + ' is not what we expected: ');
         console.log(clientOptions);
