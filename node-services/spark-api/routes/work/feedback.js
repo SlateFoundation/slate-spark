@@ -104,7 +104,7 @@ function *getHandler() {
     });
 }
 
-function *postHandler() {
+function *patchHandler() {
     var teacherFeedback = this.request.body,
         ctx = this,
         rejected = [],
@@ -173,5 +173,5 @@ function *postHandler() {
 
 module.exports = {
     get: getHandler,
-    post: postHandler
+    post: patchHandler
 };

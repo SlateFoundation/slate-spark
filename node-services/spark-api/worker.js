@@ -60,12 +60,12 @@ app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet
 // Todos
 app.use(_.get('/todos', routes.todos.get));
 app.use(_.patch('/todos', routes.todos.patch));
-// TODO: @themightychris: We're using a POST where we usually use PATCH
 app.use(_.post('/todos', routes.todos.patch));
 
 // Feedback
 app.use(_.get('/work/feedback', routes.work.feedback.get));
-app.use(_.post('/work/feedback', routes.work.feedback.post));
+app.use(_.patch('/work/feedback', routes.work.feedback.patch));
+app.use(_.post('/work/feedback', routes.work.feedback.patch));
 
 function postErrorToSlack(error, ctx) {
 
