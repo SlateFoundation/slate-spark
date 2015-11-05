@@ -353,13 +353,13 @@ function generateErrorString(err) {
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
 }
 
-function* getResources(params, cb) {
+function* getResources(params) {
     var url = '/resources.json',
         resourceTypes = params.resource_types ? Array.isArray(params.resource_types) ? params.resource_types : params.resource_types.split(',') : [],
         queryString = qs.stringify(filterObjectKeys(openEdParameters, params)),
         resources;
 
-    if (resourceTypes) {
+    if (resourceTypes.length > 0) {
         queryString += (queryString !== '' ? '&' : '') + resourceTypes.map(function (resourceType) {
                 return 'resource_types[]=' + resourceType;
             }).join('&');
@@ -372,8 +372,7 @@ function* getResources(params, cb) {
     if (!openEdAccessToken) {
         yield getAccessToken();
     }
-
-    // TODO: trailing & may cause an issue
+    
     clientOptions.uri = openEdClientBaseUrl + url;
 
     resources = yield request(clientOptions);

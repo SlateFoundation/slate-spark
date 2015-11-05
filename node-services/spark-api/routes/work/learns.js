@@ -81,8 +81,8 @@ function* getHandler() {
         standard: openedIds,
     };
 
-    if (this.student) {
-        params.resource_types = ['video', 'homework', 'exercise', 'game', 'question', 'other'];
+    if (this.isStudent) {
+        params.resource_types = ['video'/*, 'homework', 'exercise', 'game', 'question', 'other'*/];
     }
 
     if (openedIds.length === 0) {
