@@ -22,6 +22,8 @@ function *getHandler() {
                (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS selected,
                (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS reflection,
                (SELECT submissions FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS submissions,
+               (SELECT grade FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS grade,
+               (SELECT "FirstName" || \' \' || "LastName" FROM people WHERE "ID" = (SELECT graded_by FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1)) AS graded_by,
                (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos,
                (SELECT json_agg(row_to_json(reviews)) FROM (SELECT * FROM apply_reviews WHERE student_id = $2 AND apply_id = ap.id) AS reviews) AS apply_reviews,
                (SELECT json_agg(row_to_json(reviews)) FROM (SELECT * FROM learn_reviews WHERE student_id = $2 AND resource_id = ANY (SELECT id FROM learn_resources WHERE sparkpoint_id = $3))AS reviews) AS learn_reviews
@@ -48,7 +50,9 @@ function *getHandler() {
             reflection: apply.reflection,
             submissions: apply.submissions || [],
             apply_reviews: apply.apply_reviews || [],
-            learn_reviews: apply.learn_reviews || []
+            learn_reviews: apply.learn_reviews || [],
+            grade: apply.grade || null,
+            graded_by: apply.graded_by || null
         };
     });
 }
@@ -91,6 +95,17 @@ function *patchHandler() {
 
     if (Array.isArray(body.submissions)) {
         apply.submissions = JSON.stringify(body.submissions);
+    }
+
+    if (typeof body.grade === 'number') {
+        if (body.grade < 0 && body.grade > 4) {
+            this.throw(new Error('Grades should be between 1-4'));
+        } else if (!this.isTeacher) {
+            this.throw(new Error('Only teachers can grade applies'), 403);
+        } else {
+            apply.grade = body.grade;
+            apply.graded_by = this.userId;
+        }
     }
 
     Object.keys(apply).forEach(function(key, i) {
