@@ -26,7 +26,7 @@ function* getHandler() {
         fuseboxQuestions: this.pgp.manyOrNone('SELECT * FROM spark1.s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
         questions: this.pgp.manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId]),
         resources: this.pgp.manyOrNone('SELECT * FROM spark1.s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
-        worksheet: this.pgp.manyOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
+        worksheet: this.pgp.one('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
     });
 
     questions = result.fuseboxQuestions.map(function(question) {
@@ -40,7 +40,7 @@ function* getHandler() {
 
     this.body = {
         questions: questions,
-        worksheet: result.worksheet ? result.worksheet : null,
+        worksheet: result.worksheet ? result.worksheet.worksheet : null,
         resources: result.resources.map(function(resource) {
             return {
                 id: resource.id,
