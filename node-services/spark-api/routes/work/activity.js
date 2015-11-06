@@ -2,8 +2,6 @@ var util = require('../../lib/util'),
     lookup = require('../../lib/lookup');
 
 function *getHandler() {
-    var activities = [];
-
     this.require(['section_id']);
 
     var sectionId = this.query.section_id,
@@ -22,7 +20,8 @@ function *getHandler() {
               ss.apply_finish_time,
               ss.assess_start_time,
               ss.assess_ready_time,
-              ss.assess_finish_time
+              ss.assess_finish_time,
+              ss.conference_group_id
          FROM section_student_active_sparkpoint ssas
     LEFT JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
           AND ss.sparkpoint_id = ssas.sparkpoint_id
@@ -51,7 +50,8 @@ function *patchHandler(req, res, next) {
             'apply_finish_time',
             'assess_start_time',
             'assess_ready_time',
-            'assess_finish_time'
+            'assess_finish_time',
+            'conference_group_id'
         ],
         timeKeys = [],
         updateValues = [],
@@ -76,6 +76,15 @@ function *patchHandler(req, res, next) {
 
         if (key === 'student_id') {
             return;
+        }
+
+        if (key === 'conference_group_id') {
+            val = parseInt(body.conference_group_id, 10);
+            if (!isNaN(val)) {
+                timeKeys.push('conference_group_id');
+                timeValues.push(val);
+                updateValues.push(`conference_group_id = ${val}`)
+            }
         }
 
         if (key.indexOf('time') !== -1) {

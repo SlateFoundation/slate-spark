@@ -77,7 +77,7 @@ function *patchHandler() {
         ctx = this;
 
     if (!Array.isArray(conferenceGroups)) {
-        this.throw(new Error('The request body should be a JSON array of conference group objects'))
+        this.throw(new Error('The request body should be a JSON array of conference group objects'), 400);
     }
 
     conferenceGroups.forEach(function(group) {
