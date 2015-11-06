@@ -90,6 +90,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
 
+
+    // controller template methods
     onLaunch: function() {
         var me = this;
 
@@ -104,6 +106,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         ]);
     },
 
+
+    // config handlers
     updateSelectedSection: function(section, oldSection) {
         var me = this,
             studentsStore = me.getStudentsStore();
@@ -140,6 +144,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         this.getApplication().fireEvent('studentsparkpointload', studentSparkpoint, oldStudentSparkpoint);
     },
 
+
+    // event handlers
     onBeforeRedirect: function(token, resume) {
         var sectionCode = this.getSelectedSection(),
             sparkpointCode = this.getSelectedSparkpoint();
@@ -174,6 +180,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         this.setSelectedSparkpoint(sparkpoint.getId());
     },
 
+
+    // controller methods
     syncSelections: Ext.Function.createBuffered(function() {
         var me = this,
             sectionCode = me.getSelectedSection(),

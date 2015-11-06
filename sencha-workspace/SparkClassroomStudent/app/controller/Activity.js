@@ -26,6 +26,7 @@ Ext.define('SparkClassroomStudent.controller.Activity', {
         }
     },
 
+
     // event handlers
     onNavActivityTap: function(btn) {
         this.getNavBar().toggleSubpanel(this.getActivityCt(), btn);
