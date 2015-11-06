@@ -135,8 +135,8 @@ function *patchHandler() {
     }
 
     // Deselect other applies for student/sparkpoint and update the student_sparkpoint table
-    if (apply.selected !== undefined) {
-        if (apply.selected) {
+    if (selected !== undefined) {
+        if (selected) {
             yield this.pgp.none(`
             UPDATE applies
                SET selected = false
@@ -153,7 +153,7 @@ function *patchHandler() {
                    selected_fb_apply_id = $2
              WHERE student_id = $3
                AND sparkpoint_id = $4
-               AND selected_fb_apply_id != $2;`,
+               AND (selected_fb_apply_id != $2 OR selected_fb_apply_id IS NULL)`,
                 [apply.id, apply.fb_apply_id, studentId, sparkpointId]
             );
         } else {
