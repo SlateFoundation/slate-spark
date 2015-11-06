@@ -81,7 +81,7 @@ function rnd(a, b) {
 }
 
 /**
- * Returns a copy of an object minus the properties in keys
+ * Returns a copy of an object including only the properties in keys
  *
  * @alias module:util.filterObjectKeys
  *
@@ -96,6 +96,30 @@ function filterObjectKeys(keys, obj) {
         .keys(obj)
         .filter(function (key) {
             return keys.indexOf(key) !== -1;
+        }).forEach(function (key) {
+            filteredObj[key] = obj[key];
+        });
+
+    return filteredObj;
+}
+
+
+/**
+ * Returns a copy of an object including all properties EXCEPT the properties in keys
+ *
+ * @alias module:util.excludeObjectKeys
+ *
+ * @param {Array} keys
+ * @param {Object} obj
+ * @returns {Object}
+ */
+function excludeObjectKeys(keys, obj) {
+    var filteredObj = {};
+
+    Object
+        .keys(obj)
+        .filter(function (key) {
+            return keys.indexOf(key) === -1;
         }).forEach(function (key) {
             filteredObj[key] = obj[key];
         });
@@ -451,8 +475,59 @@ function requireParams(params, req, res) {
     return false;
 }
 
+function QueryBuilder() {
+    this.values = [];
+    this.tables = {};
+}
+
+QueryBuilder.prototype.push = function push(table, column, value) {
+    var idx = this.values.indexOf(value);
+    idx = (idx === -1) ? (this.values.push(value) -1) : idx;
+    this.tables[table] || (this.tables[table] = {});
+    this.tables[table][column] = idx;
+    return idx;
+};
+
+QueryBuilder.prototype.pop = function pop(tableName, reset) {
+    reset = (typeof reset === 'boolean') ? reset : true;
+
+    var table = this.tables[tableName],
+        columns = Object.keys(table),
+        returnVal = {
+            columns: table,
+            placeholders: columns.map(key => `$${table[key]+1}`),
+            values: columns.map(key => this.values[table[key]]),
+            allValues: this.values
+        };
+
+    if (reset) {
+        delete this.tables[tableName];
+    }
+
+    return returnVal;
+};
+
+QueryBuilder.prototype.getSet = function getSet(table, constraintColumns) {
+    var state = this.pop(table, false),
+        setColumns = Object.keys(state.columns).filter(key => constraintColumns.indexOf(key) === -1);
+
+    return setColumns.map(column => `${column} = $${state.columns[column] + 1}`).join(', ');
+};
+
+QueryBuilder.prototype.getValues = function getValues(table, order) {
+    var state = this.pop(table, false),
+    order = order || Object.keys(state.columns);
+    return order.map(column => `$${state.columns[column] + 1}`).join(', ');
+};
+
+QueryBuilder.prototype.getWhere = function getWhere(table, constraintColumns) {
+    var state = this.pop(table, false),
+        setColumns = Object.keys(state.columns).filter(key => constraintColumns.indexOf(key) !== -1);
+    return setColumns.map(column => `${column} = $${state.columns[column] + 1}`).join(' AND ');
+};
+
 function generateSet(keys, placeholders, constraintKeys) {
-    constraintKeys = constraintKeys = [];
+    constraintKeys = constraintKeys || [];
     return 'SET ' + keys.filter(function(key) {
             return constraintKeys.indexOf(key) === -1;
         }).map(function(key, i) {
@@ -460,8 +535,45 @@ function generateSet(keys, placeholders, constraintKeys) {
         }).join(', ');
 }
 
+function* groupQueries(queries, values, records, ctx) {
+    var cteQuery = [],
+        selectQuery = ['SELECT result FROM ('],
+        results;
+
+    queries.forEach(function (query, idx) {
+        var first = (++idx === 1);
+
+        cteQuery.push(`${(first ? 'WITH ' : ',')} i${idx} AS (${query})`);
+
+        if (!first) {
+            selectQuery.push('UNION ALL');
+        }
+
+        selectQuery.push(`  SELECT ${idx} AS sort_order, to_json(i${idx}) AS result FROM i${idx}`)
+    });
+
+    selectQuery.push(') s ORDER BY sort_order;');
+
+    results = yield ctx.pgp.tx(function () {
+        return this.batch([this.any(cteQuery.join('\n') + '\n' + selectQuery.join('\n'), values)]).catch(function (error) {
+            ctx.throw(500, error.getErrors().pop());
+        });
+    });
+
+    results = results[0].map(result => result.result);
+
+    return records.map(function(record) {
+        return Object.assign.apply(null, record.queries.map(function(idx) {
+            if (typeof results[idx] === 'object') {
+                return excludeObjectKeys(['user_id', 'id'], results[idx]);
+            }
+        }));
+    });
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
+    excludeObjectKeys: excludeObjectKeys,
     rnd: rnd,
 
     isGteZero: isGteZero,
@@ -484,6 +596,8 @@ module.exports = {
 
     requireParams: requireParams,
     generateSet: generateSet,
+    QueryBuilder: QueryBuilder,
+    groupQueries: groupQueries,
 
     bind: require('co-bind')
 };
