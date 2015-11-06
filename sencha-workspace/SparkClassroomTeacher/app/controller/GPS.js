@@ -131,7 +131,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         if (table == 'section_student_active_sparkpoint' && data.type == 'insert') {
             // TODO: handle this without a full refresh if possible
-            me.getGpsActiveStudentsStore().loadUpdates();
+            me.refreshGps();
         }
 
         if (table == 'student_sparkpoint') {
@@ -182,5 +182,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         if (section) {
             me.setActiveSectionId(section.getId());
         }
-    }
+    },
+
+    refreshGps: Ext.Function.createBuffered(function() {
+        this.getGpsActiveStudentsStore().loadUpdates();
+    }, 1000)
 });
