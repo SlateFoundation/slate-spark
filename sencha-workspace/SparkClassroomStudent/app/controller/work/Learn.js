@@ -105,7 +105,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             itemData = data.item,
             updatedLearn;
 
-        if (studentSparkpoint.get('student_id') != itemData.user_id) {
+        if (!studentSparkpoint || studentSparkpoint.get('student_id') != itemData.user_id) {
             return;
         }
 

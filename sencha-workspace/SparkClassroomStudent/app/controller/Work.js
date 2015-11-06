@@ -181,15 +181,13 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             itemData = data.item;
 
         if (
-            studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id ||
-            studentSparkpoint.get('student_id') != itemData.student_id
+            studentSparkpoint &&
+            studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
+            studentSparkpoint.get('student_id') == itemData.student_id
         ) {
-            return;
+            studentSparkpoint.set(itemData, { dirty: false });
+            me.refreshTabbar();
         }
-
-        studentSparkpoint.set(itemData, { dirty: false });
-
-        this.refreshTabbar();
     },
 
 

@@ -156,6 +156,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         studentSparkpoint = me.getStudentSparkpoint();
 
         if (
+            studentSparkpoint &&
             studentSparkpoint.get('student_id') == itemData.student_id &&
             studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
         ) {
