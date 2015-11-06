@@ -4,7 +4,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
 
     config: {
-        activeSparkpoint: null,
         studentSparkpoint: null
     },
 
@@ -33,7 +32,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect',
                 studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
@@ -50,24 +48,27 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
 
     // config handlers
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkLearnsStore();
+    updateStudentSparkpoint: function(studentSparkpoint) {
+        var me = this,
+            store = me.getWorkLearnsStore(),
+            learnCt = me.getLearnCt(),
+            sparkpointCt = me.getSparkpointCt(),
+            sparkpointCode = studentSparkpoint.get('sparkpoint');
 
-        // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
 
-        // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
+        if (store.isLoaded() || (learnCt && learnCt.isPainted())) {
+            store.removeAll();
             store.load();
+        }
+
+        if (sparkpointCt) {
+            sparkpointCt.setTitle(sparkpointCode);
         }
     },
 
 
     // event handlers
-    onSparkpointSelect: function(sparkpoint) {
-        this.setActiveSparkpoint(sparkpoint);
-    },
-
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
@@ -75,12 +76,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     onLearnCtActivate: function(learnCt) {
         var me = this,
             store = me.getWorkLearnsStore(),
-            activeSparkpoint = me.getActiveSparkpoint();
+            studentSparkpoint = me.getStudentSparkpoint();
 
-        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        me.getSparkpointCt().setTitle(activeSparkpoint);
+        me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
 
-        if (activeSparkpoint && !store.isLoaded()) { // TODO: OR extraParamsDirty
+        if (studentSparkpoint && !store.isLoaded()) {
             store.load();
         } else {
             me.refreshLearnProgress();
@@ -153,6 +153,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         if (!progressBanner) {
             // learns tab hasn't been activated yet
+            return;
+        }
+
+        if (!count) {
+            progressBanner.hide();
             return;
         }
 
