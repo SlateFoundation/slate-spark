@@ -89,10 +89,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     onLearnsStoreLoad: function() {
         this.refreshLearnProgress();
+        this.ensureLearnPhaseStarted();
     },
 
     onLearnsStoreUpdate: function() {
         this.refreshLearnProgress();
+        this.ensureLearnPhaseStarted();
     },
 
     onSocketData: function(socket, data) {
@@ -123,11 +125,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 dirty: false
             });
 
-            // mark learn phase as started if a learn has been launched
-            if (updatedLearn.get('launched') && !studentSparkpoint.get('learn_start_time')) {
-                studentSparkpoint.set('learn_start_time', new Date());
-                studentSparkpoint.save();
-            }
+            me.ensureLearnPhaseStarted();
         }
     },
 
@@ -173,5 +171,19 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         progressBanner.show();
 
         me.getReadyBtn().setDisabled(completed < required);
+    },
+
+    ensureLearnPhaseStarted: function() {
+        var studentSparkpoint = this.getStudentSparkpoint();
+
+        // mark learn phase as started if any learn has been launched
+        if (
+            studentSparkpoint &&
+            !studentSparkpoint.get('learn_start_time') &&
+            this.getWorkLearnsStore().findExact('launched', true) != -1
+        ) {
+            studentSparkpoint.set('learn_start_time', new Date());
+            studentSparkpoint.save();
+        }
     }
 });
