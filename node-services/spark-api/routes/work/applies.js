@@ -1,6 +1,9 @@
+'use strict';
+
 var AsnStandard = require('../../lib/asn-standard'),
     lookup = require('../../lib/lookup'),
-    util = require('../../lib/util');
+    util = require('../../lib/util'),
+    QueryBuilder = util.QueryBuilder;
 
 function *getHandler() {
     this.require(['sparkpoint_id', 'student_id']);
@@ -25,8 +28,7 @@ function *getHandler() {
                (SELECT grade FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS grade,
                (SELECT "FirstName" || \' \' || "LastName" FROM people WHERE "ID" = (SELECT graded_by FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1)) AS graded_by,
                (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos,
-               (SELECT json_agg(row_to_json(reviews)) FROM (SELECT * FROM apply_reviews WHERE student_id = $2 AND apply_id = ap.id) AS reviews) AS apply_reviews,
-               (SELECT json_agg(row_to_json(reviews)) FROM (SELECT * FROM learn_reviews WHERE student_id = $2 AND resource_id = ANY (SELECT id FROM learn_resources WHERE sparkpoint_id = $3))AS reviews) AS learn_reviews
+               (SELECT row_to_json(reviews) FROM (SELECT rating, comment FROM apply_reviews WHERE student_id = $2 AND apply_id = ap.id) AS reviews) AS review
           FROM spark1.s2_apply_projects ap
          WHERE standardids::JSONB ?| $1`,
         [standardIds, this.studentId, sparkpointId]
@@ -49,8 +51,8 @@ function *getHandler() {
             selected: apply.selected || false,
             reflection: apply.reflection,
             submissions: apply.submissions || [],
-            apply_reviews: apply.apply_reviews || [],
-            learn_reviews: apply.learn_reviews || [],
+            comment: apply.review ? apply.review.comment : null,
+            rating: apply.review ? apply.review.rating : null,
             grade: apply.grade || null,
             graded_by: apply.graded_by || null
         };
@@ -64,118 +66,156 @@ function *patchHandler() {
         studentId = this.studentId,
         selected = this.query.selected,
         id = parseInt(this.query.id, 10),
-        constraintKeys = ['student_id', 'fb_apply_id', 'sparkpoint_id'],
-        updateSets = [],
-        values = [],
+        reflection = this.query.reflection,
+        submissions = this.query.submissions,
+        grade = this.query.grade,
+        rating = this.query.rating,
+        comment = this.query.comment,
         apply,
-        body = this.request.body,
-        exists,
-        todoValues,
-        todoPlaceholders,
-        todosPopulated,
-        todos;
+        review,
+        values = [],
+        constraintKeys = ['sparkpoint_id', 'student_id', 'fb_apply_id'],
+        todos,
+        _ = new QueryBuilder();
 
     if (isNaN(id)) {
-        this.throw('id must be an integer, you passed: ' + this.query.id, 400);
+        this.throw(new Error('id must be an integer, you passed: ' + this.query.id), 400);
     }
 
     apply = {
         fb_apply_id: id,
         student_id: studentId,
-        sparkpoint_id: sparkpointId
+        sparkpoint_id: sparkpointId,
     };
 
     if (typeof selected === 'boolean') {
         apply.selected = selected;
+        _.push('applies', 'selected', apply.selected);
     }
 
-    if (typeof body.reflection === 'string') {
-        apply.reflection = body.reflection;
+    if (typeof reflection === 'string') {
+        apply.reflection = reflection;
+        _.push('applies', 'reflection', reflection);
     }
 
-    if (Array.isArray(body.submissions)) {
-        apply.submissions = JSON.stringify(body.submissions);
-    }
-
-    if (typeof body.grade === 'number') {
-        if (body.grade < 0 && body.grade > 4) {
+    if (typeof grade === 'number') {
+        if (grade < 0 && grade > 4) {
             this.throw(new Error('Grades should be between 1-4'));
         } else if (!this.isTeacher) {
             this.throw(new Error('Only teachers can grade applies'), 403);
         } else {
-            apply.grade = body.grade;
+            _.push('applies', 'grade', grade);
+            _.push('applies', 'graded_by', this.userId);
+            apply.grade = grade;
             apply.graded_by = this.userId;
         }
     }
 
-    Object.keys(apply).forEach(function(key, i) {
-       values.push(apply[key]);
+    if (typeof rating === 'number') {
+        _.push('apply_reviews', 'rating', rating);
+    }
 
-       if (constraintKeys.indexOf(key) !== -1) {
-           return;
-       }
+    if (typeof comment === 'string') {
+        _.push('apply_reviews', 'comment', comment);
+    }
 
-        updateSets.push(`${key} = $${++i}`);
-    });
+    // Selecting a new apply should deselect other applies for that student and sparkpoint
+    if (apply.selected) {
+        yield this.pgp.none(`
+        UPDATE applies
+           SET selected = false
+         WHERE selected = true
+           AND fb_apply_id != $1
+           AND sparkpoint_id = $2
+           AND student_id = $3;`,
+            [id, sparkpointId, studentId]
+        );
+    }
 
-    exists = yield this.pgp.oneOrNone(
-        'SELECT 1 FROM applies WHERE student_id = $1 AND fb_apply_id = $2 AND sparkpoint_id = $3',
-        [studentId, id, sparkpointId]);
+    if (_.tables.applies) {
+        _.push('applies', 'fb_apply_id', apply.fb_apply_id);
+        _.push('applies', 'student_id', apply.student_id);
+        _.push('applies', 'sparkpoint_id', apply.sparkpoint_id);
 
-    todosPopulated = yield this.pgp.oneOrNone(`
-        SELECT 1
-          FROM todos
-         WHERE todos.apply_id = $1
-           AND todos.user_id = $2
-         LIMIT 1;
-     `, [studentId, id]);
+        let set = _.getSet('applies', constraintKeys);
+        let values = _.getValues('applies');
+        let columns = Object.keys(_.pop('applies').columns);
 
-    if (!todosPopulated) {
-        todos = yield this.pgp.one('SELECT todos FROM spark1.s2_apply_projects WHERE id = $1', [id]);
+        apply = yield this.pgp.one(`
+            INSERT INTO applies (${columns})
+                         VALUES (${values}) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET ${set}
+            RETURNING *;`, _.values
+        );
+    }
 
-        todoValues = [studentId, id];
+    if (_.tables.apply_reviews) {
+        _.push('apply_reviews', 'apply_id', apply.fb_apply_id);
+        _.push('apply_reviews', 'student_id', apply.student_id);
 
-        todos = todos.todos;
+        let set = _.getSet('apply_reviews', ['apply_id', 'student_id']);
+        let values = _.getValues('apply_reviews');
+        let columns = Object.keys(_.pop('apply_reviews').columns);
 
-        if (Array.isArray(todos) && todos.length > 0) {
-            todoPlaceholders = todos.map(function (todo, i) {
-                todoValues.push(todo);
-                return `($1, $2, $${i + 3})`;
-            });
+        apply = yield this.pgp.one(`
+            INSERT INTO apply_reviews (${columns})
+                         VALUES (${values}) ON CONFLICT (apply_id, student_id) DO UPDATE SET ${set}
+            RETURNING *;`, _.values
+        );
+    }
 
-            todos = yield this.pgp.manyOrNone(`
+    // Selects todos from todos table, if they don't exist populate them from the fusebox and return them
+    todos = yield this.pgp.manyOrNone(`
+        WITH existing_user_todos AS (
+          SELECT id,
+                 todo,
+                 completed
+            FROM todos
+           WHERE user_id = $1
+             AND apply_id = $2
+        ORDER BY id ASC
+        ),
+
+        todos AS (
+            SELECT json_array_elements_text(todos::json) AS todo
+              FROM spark1.s2_apply_projects
+             WHERE id = $1 AND
+             EXISTS(SELECT 1 FROM existing_user_todos) = false
+        ),
+
+        new_user_todos AS (
             INSERT INTO todos (user_id, apply_id, todo)
-                              VALUES ${todoPlaceholders.join(',\n')}
-                              ON CONFLICT (user_id, apply_id, md5(todo)) DO NOTHING
-            RETURNING *;`, todoValues);
+                SELECT $1 AS user_id,
+                       $2 AS apply_id,
+                       todo
+                  FROM (SELECT todo FROM todos) AS t
+            RETURNING id, todo, completed
+        )
+
+        SELECT * FROM existing_user_todos
+        UNION ALL
+        SELECT * FROM new_user_todos;
+    `, [ id, studentId ]);
+
+    if (review) {
+        if (review.rating) {
+            apply.rating = review.rating;
+        }
+
+        if (review.comment) {
+            apply.comment = review.comment;
         }
     }
 
-    if (!Array.isArray(todos)) {
-        todos = yield this.pgp.any('SELECT id, todo, completed FROM todos WHERE user_id = $1 AND apply_id = $2', [studentId, id]);
-    }
-
-    if (updateSets.length === 0 && exists) {
-        return this.throw('You cannot perform a no-op query.', 400);
-    }
-
-    apply = yield this.pgp.one(`
-        INSERT INTO applies
-                    (${Object.keys(apply)})
-             VALUES (${Object.keys(apply).map(function (x, i) {
-        return '$' + (i + 1);
-    })})
-        ON CONFLICT (student_id, fb_apply_id, sparkpoint_id) DO UPDATE SET ${updateSets.join(",\n")}
-             RETURNING *
-    `, values);
-
-    yield this.pgp.none(
-        'UPDATE applies SET selected = false WHERE selected = true AND fb_apply_id != $1 AND sparkpoint_id = $2 AND student_id = $3;',
-        [id, sparkpointId, studentId]
-    );
-
     apply.todos = todos;
     apply.id = apply.fb_apply_id;
+
+    if (typeof apply.graded_by === 'number') {
+        let graded_by = yield this.pgp.one(
+            'SELECT "FirstName" || \' \' || "LastName" AS graded_by FROM people WHERE "ID" = $1 LIMIT 1',
+            [apply.graded_by]);
+
+        apply.graded_by =  graded_by.graded_by;
+    }
 
     this.body = apply;
 }
@@ -184,34 +224,62 @@ function *submissionsPostHandler() {
     this.require(['sparkpoint_id', 'id']);
 
     var sparkpointId = this.query.sparkpoint_id,
-        userId = this.studentId,
         id = parseInt(this.query.id, 10),
-        apply,
         submission = this.request.body;
 
     if (isNaN(id)) {
         return this.throw('id must be an integer, you passed: ' + this.query.id, 400);
     }
 
-    apply = yield this.pgp.oneOrNone(
-        'SELECT * FROM applies WHERE student_id = $1 AND sparkpoint_id = $2 AND fb_apply_id = $3',
-        [userId, sparkpointId, id]
-    );
-
-    if (apply) {
-        delete submission.id;
-        apply.submissions.push(submission);
-        this.request.body = apply;
-        yield util.bind(patchHandler, this);
-    } else {
-        this.throw('Unable to find apply id: ' + this.query.id, 404);
+    if (typeof submission.url !== 'string') {
+        return this.throw('url must be a string, you passed: ' + submission.url);
     }
+
+    delete submission.id;
+
+    this.body = yield this.pgp.one(`
+            INSERT INTO applies (sparkpoint_id, student_id, fb_apply_id, submissions)
+                         VALUES ($1, $2, $3, jsonb_build_array($4::JSONB)) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET
+                                submissions = jsonb_array_push_unique($4::JSONB, applies.submissions)
+                       RETURNING *;`,
+        [sparkpointId, this.studentId, id, submission]
+    );
+}
+
+function *submissionsDeleteHandler() {
+    this.require(['sparkpoint_id', 'id', 'url']);
+
+    var sparkpointId = this.query.sparkpoint_id,
+        id = parseInt(this.query.id, 10),
+        submission = {
+            sparkpoint: util.toSparkpointCode(sparkpointId),
+            url: this.query.url
+        };
+
+    if (isNaN(id)) {
+        return this.throw('id must be an integer, you passed: ' + this.query.id, 400);
+    }
+
+    if (typeof submission.url !== 'string') {
+        return this.throw('url must be a string, you passed: ' + submission.url);
+    }
+
+    this.body = yield this.pgp.one(`
+            UPDATE applies
+               SET submissions = jsonb_remove_array_element($4::JSONB, submissions)
+             WHERE sparkpoint_id = $1
+               AND student_id = $2
+               AND fb_apply_id = $3
+         RETURNING *;`,
+        [sparkpointId, this.studentId, id, submission]
+    );
 }
 
 module.exports = {
     get: getHandler,
     patch: patchHandler,
     submissions: {
-        post: submissionsPostHandler
+        post: submissionsPostHandler,
+        delete: submissionsDeleteHandler
     }
 };

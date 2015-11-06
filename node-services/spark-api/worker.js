@@ -51,6 +51,7 @@ app.use(_.patch('/work/learns', routes.work.learns.patch));
 app.use(_.get('/work/applies', routes.work.applies.get))
 app.use(_.patch('/work/applies', routes.work.applies.patch))
 app.use(_.post('/work/applies/submissions', routes.work.applies.submissions.post));
+app.use(_.delete('/work/applies/submissions', routes.work.applies.submissions.delete));
 
 // Conferences
 app.use(_.get('/work/conferences', routes.work.conferences.get));
