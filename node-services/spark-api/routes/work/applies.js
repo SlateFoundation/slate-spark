@@ -67,7 +67,6 @@ function *patchHandler() {
         selected = this.query.selected,
         id = parseInt(this.query.id, 10),
         reflection = this.query.reflection,
-        submissions = this.query.submissions,
         grade = this.query.grade,
         rating = this.query.rating,
         comment = this.query.comment,
@@ -119,19 +118,6 @@ function *patchHandler() {
         _.push('apply_reviews', 'comment', comment);
     }
 
-    // Selecting a new apply should deselect other applies for that student and sparkpoint
-    if (apply.selected) {
-        yield this.pgp.none(`
-        UPDATE applies
-           SET selected = false
-         WHERE selected = true
-           AND fb_apply_id != $1
-           AND sparkpoint_id = $2
-           AND student_id = $3;`,
-            [id, sparkpointId, studentId]
-        );
-    }
-
     if (_.tables.applies) {
         _.push('applies', 'fb_apply_id', apply.fb_apply_id);
         _.push('applies', 'student_id', apply.student_id);
@@ -146,6 +132,41 @@ function *patchHandler() {
                          VALUES (${values}) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET ${set}
             RETURNING *;`, _.values
         );
+    }
+
+    // Deselect other applies for student/sparkpoint and update the student_sparkpoint table
+    if (apply.selected !== undefined) {
+        if (apply.selected) {
+            yield this.pgp.none(`
+            UPDATE applies
+               SET selected = false
+             WHERE selected = true
+               AND fb_apply_id != $1
+               AND sparkpoint_id = $2
+               AND student_id = $3;`,
+                [id, sparkpointId, studentId]
+            );
+
+            yield this.pgp.none(`
+            UPDATE student_sparkpoint
+               SET selected_apply_id = $1,
+                   selected_fb_apply_id = $2
+             WHERE student_id = $3
+               AND sparkpoint_id = $4
+               AND selected_fb_apply_id != $2;`,
+                [apply.id, apply.fb_apply_id, studentId, sparkpointId]
+            );
+        } else {
+            yield this.pgp.none(`
+            UPDATE student_sparkpoint
+               SET selected_apply_id = NULL,
+                   selected_fb_apply_id = NULL
+             WHERE student_id = $1
+               AND sparkpoint_id = $2
+               AND selected_fb_apply_id = $3;`,
+                [studentId, sparkpointId, apply.fb_apply_id || apply.id]
+            );
+        }
     }
 
     if (_.tables.apply_reviews) {
