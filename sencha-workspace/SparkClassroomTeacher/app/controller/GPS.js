@@ -8,7 +8,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     config: {
         selectedActiveStudent: null,
-        activeSection: null
+        activeSection: null,
+        activeSectionId: null
     },
 
 
@@ -33,6 +34,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         store: {
             '#Students': {
                 load: 'onStudentsStoreLoad'
+            },
+            '#Sections': {
+                load: 'onSectionsStoreLoad'
             },
             '#gps.ActiveStudents': {
                 endupdate: 'onActiveStudentsStoreEndUpdate'
@@ -71,6 +75,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.getApplication().fireEvent('activestudentselect', activeStudent, oldActiveStudent);
     },
 
+    updateActiveSection: function() {
+        this.syncActiveSection();
+    },
+
 
     // event handlers
     onSectionSelect: function(section) {
@@ -85,6 +93,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
 
         me.getGpsActiveStudentsStore().load();
+    },
+
+    onSectionsStoreLoad: function() {
+        this.syncActiveSection();
     },
 
     onActiveStudentsStoreEndUpdate: function() {
@@ -118,7 +130,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             updatedFields;
 
         if (table == 'section_student_active_sparkpoint' && data.type == 'insert') {
-            // TODO: handle this without a fulle refresh if possible
+            // TODO: handle this without a full refresh if possible
             me.getGpsActiveStudentsStore().loadUpdates();
         }
 
@@ -159,6 +171,16 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             addPriorityButton.show();
         } else {
             addPriorityButton.hide();
+        }
+    },
+
+    syncActiveSection: function() {
+        var me = this,
+            sectionCode = me.getActiveSection(),
+            section = sectionCode && me.getStore('Sections').findRecord('Code', sectionCode);
+
+        if (section) {
+            me.setActiveSectionId(section.getId());
         }
     }
 });
