@@ -8,8 +8,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     config: {
         selectedActiveStudent: null,
-        activeSection: null,
-        activeSectionId: null
+        activeSection: null
     },
 
 
@@ -34,9 +33,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         store: {
             '#Students': {
                 load: 'onStudentsStoreLoad'
-            },
-            '#Sections': {
-                load: 'onSectionsStoreLoad'
             },
             '#gps.ActiveStudents': {
                 endupdate: 'onActiveStudentsStoreEndUpdate'
@@ -75,10 +71,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.getApplication().fireEvent('activestudentselect', activeStudent, oldActiveStudent);
     },
 
-    updateActiveSection: function() {
-        this.syncActiveSection();
-    },
-
 
     // event handlers
     onSectionSelect: function(section) {
@@ -93,10 +85,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
 
         me.getGpsActiveStudentsStore().load();
-    },
-
-    onSectionsStoreLoad: function() {
-        this.syncActiveSection();
     },
 
     onActiveStudentsStoreEndUpdate: function() {
@@ -174,16 +162,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             addPriorityButton.show();
         } else {
             addPriorityButton.hide();
-        }
-    },
-
-    syncActiveSection: function() {
-        var me = this,
-            sectionCode = me.getActiveSection(),
-            section = sectionCode && me.getStore('Sections').findRecord('Code', sectionCode);
-
-        if (section) {
-            me.setActiveSectionId(section.getId());
         }
     },
 
