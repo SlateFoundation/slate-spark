@@ -2,5 +2,9 @@
 Ext.define('SparkClassroom.store.work.Applies', {
     extend: 'Ext.data.Store',
 
-    model: 'SparkClassroom.model.work.Apply'
+    model: 'SparkClassroom.model.work.Apply',
+
+    config: {
+        trackRemoved: false
+    }
 });

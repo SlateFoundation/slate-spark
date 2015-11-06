@@ -8,6 +8,7 @@ Ext.define('SparkClassroom.store.work.Assessments', {
     model: 'SparkClassroom.model.work.Assessment',
 
     config: {
+        trackRemoved: false,
         proxy: {
             type: 'slate-api',
             url: '/spark/api/work/assess',

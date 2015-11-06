@@ -8,6 +8,7 @@ Ext.define('SparkClassroom.store.work.ConferenceQuestions', {
     model: 'SparkClassroom.model.work.ConferenceResource',
 
     config: {
+        trackRemoved: false,
         proxy: {
             type: 'slate-api',
             url: '/spark/api/work/conferences',
