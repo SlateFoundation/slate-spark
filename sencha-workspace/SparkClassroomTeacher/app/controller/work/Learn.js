@@ -91,7 +91,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             return;
         }
 
-        updatedLearn = me.getLearnGrid().getStore().getById(itemData.resource_id);
+        updatedLearn = me.getWorkLearnsStore().getById(itemData.resource_id);
 
         if (updatedLearn) {
             // TODO: can we find ways to not duplicate this logic between the api and the client?
