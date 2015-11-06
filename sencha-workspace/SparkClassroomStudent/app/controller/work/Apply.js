@@ -151,7 +151,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onAttachLinkBtnTap: function() {
-        var me = this;
+        var me = this,
+            apply = me.getActiveApply();
 
         // TODO: build a custom window that enables inputting link+title
         Ext.Msg.show({
@@ -166,13 +167,13 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 if (btnId != 'ok') {
                     return;
                 }
-debugger;
+
                 Slate.API.request({
                     method: 'POST',
                     url: '/spark/api/work/applies/submissions',
                     jsonData: {
-                        sparkpoint: me.getActiveSparkpoint(),
-                        id: me.getActiveApply().getId(),
+                        sparkpoint: apply.get('sparkpoint'),
+                        id: apply.getId(),
                         url: url
                     },
                     success: function(response) {
