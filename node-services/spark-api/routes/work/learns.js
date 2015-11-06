@@ -1,3 +1,5 @@
+'use strict';
+
 var restify = require('restify'),
     fs = require('fs'),
     path = require('path'),
@@ -11,7 +13,8 @@ var restify = require('restify'),
     Fusebox = require('../../lib/fusebox'),
     Newsela = require('../../lib/newsela'),
     db = require('../../middleware/database'),
-    slack = require('../../lib/slack');
+    slack = require('../../lib/slack'),
+    QueryBuilder = util.QueryBuilder;
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id', 'section_id']);
@@ -22,7 +25,7 @@ function* getHandler() {
         standardIds = [],
         openedIds = [],
         ctx = this,
-        playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox;
+        playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews;
 
     (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
@@ -73,6 +76,23 @@ function* getHandler() {
             }
         });
 
+        reviews = yield this.pgp.manyOrNone(`
+            SELECT rating,
+                   comment,
+              FROM learn_reviews
+             WHERE resource_id = ANY($1)
+               AND student_id = $2`, [resourceIds, studentId]);
+
+        reviews.forEach(function (review) {
+            for (x = 0; x < playlistLen; x++) {
+                if (review.resource_id === playlist[x].resource_id) {
+                    playlist[x].rating = review.rating;
+                    playlist[x].comment = review.comment;
+                    break;
+                }
+            }
+        });
+
         return this.body = playlist;
     }
 
@@ -115,7 +135,8 @@ function* getHandler() {
         len,
         x,
         y = 3,
-        resourceIdentifiers;
+        resourceIdentifiers,
+        cacheSql;
 
     if (resources.length > 0) {
         // TODO: determine how we will handle duplicate URLs from multiple vendors
@@ -142,11 +163,16 @@ function* getHandler() {
             sql += `
             SELECT lr.*,
                    la.completed,
-                   la.start_status = 'launched' AS launched
+                   la.start_status = 'launched' AS launched,
+                   learn_reviews.comment as comment,
+                   learn_reviews.rating as rating
               FROM new_learn_resources lr
          LEFT JOIN learn_activity la
                 ON la.resource_id = lr.id
-               AND la.user_id = $1;`;
+               AND la.user_id = $1
+         LEFT JOIN learn_reviews
+                ON learn_reviews.resource_id = lr.id
+               AND learn_reviews.student_id = $1;`;
         } else {
             sql += 'SELECT * FROM new_learn_resources;';
         }
@@ -155,11 +181,16 @@ function* getHandler() {
 
         resourceIdentifiers.forEach(function (resourceId) {
             var resource = urlResourceMap[resourceId.url];
+
+            resource.rating = resource.rating || {};
+            resource.rating.user = resourceId.rating || null;
+
             resource.resource_id = resourceId.id;
             resource.views = resourceId.views;
             resource.launch_url = '/spark/api/work/learns/launch/' + resource.resource_id;
             resource.completed = resourceId.completed || false;
             resource.launched = resourceId.launched || false;
+            resource.comment = resourceId.comment || null;
         });
 
         cacheSql = `
@@ -176,20 +207,15 @@ function* getHandler() {
 }
 
 function* patchHandler() {
+    const requiredKeys = ['student_id', 'resource_id'];
+    const allKeys = ['student_id', 'resource_id', 'comment', 'rating', 'completed'];
+
     var resources = this.request.body,
         invalidResources = [],
         validResources = [],
-        requiredKeys = ['student_id', 'resource_id'],
-        allKeys = ['student_id', 'resource_id', 'comment', 'rating', 'completed'],
-        activityQueryValues = [],
-        reviewQueryValues = [],
-        activitySql = [],
-        reviewSql = [],
-        learnActivityQuery,
-        studentId = this.studentId,
-        activity,
+        _ = new QueryBuilder(),
         ctx = this,
-        resourceValues;
+        recordQueries = [];
 
     if (!Array.isArray(resources) || resources.length === 0) {
         return this.throw('Body should be an array of one or more learns.', 400);
@@ -197,11 +223,9 @@ function* patchHandler() {
 
     resources.forEach(function(resource) {
         var errors = [],
-            invalidKeys,
-            reviewPlaceholders = [],
-            reviewKeys = ['student_id', 'resource_id'],
-            activityPlaceholders = ['student_id', 'resource_id'],
-            activityKeys = [];
+            invalidKeys;
+
+        resource.queries = [];
 
         if (ctx.isStudent) {
             resource.student_id = ctx.studentId;
@@ -213,46 +237,40 @@ function* patchHandler() {
 
         if (typeof resource.completed !== 'undefined' && typeof resource.completed !== 'boolean') {
             errors.push('completed must be a boolean, you passed: ' + resource.completed);
-        } else {
-            activityPlaceholders.push(activityQueryValues.push(resource.student_id));
-            activityPlaceholders.push(activityQueryValues.push(resource.resource_id));
-            activityPlaceholders.push(activityQueryValues.push(resource.completed));
-            activityKeys.push('completed');
-
+        } else if (typeof resource.completed === 'boolean') {
+            _.push('learn_activity', 'user_id', resource.student_id);
+            _.push('learn_activity', 'resource_id', resource.resource_id);
+            _.push('learn_activity', 'completed', resource.completed);
         }
 
         if (resource.rating) {
             if (isNaN(resource.rating) || resource.rating > 10 || resource.rating < 0) {
                 errors.push('rating must be a number between 1 and 10, you passed: ' + resource.rating);
             } else {
-                reviewPlaceholders.push(reviewQueryValues.push(resource.student_id));
-                reviewPlaceholders.push(reviewQueryValues.push(resource.resource_id));
-                reviewPlaceholders.push(reviewQueryValues.push(resource.rating));
-                reviewKeys.push('rating');
+                _.push('learn_reviews', 'student_id', resource.student_id);
+                _.push('learn_reviews', 'resource_id', resource.resource_id);
+                _.push('learn_reviews', 'rating', resource.rating);
             }
         }
 
         if (resource.comment) {
             if (typeof resource.comment !== 'string') {
-            errors.push('comment must be a string, you passed: ' + resource.comment);
+                errors.push('comment must be a string, you passed: ' + resource.comment);
             } else {
-                if (!resource.rating) {
-                    reviewPlaceholders.push(reviewQueryValues.push(resource.student_id));
-                    reviewPlaceholders.push(reviewQueryValues.push(resource.resource_id));
-                }
-                reviewPlaceholders.push(reviewQueryValues.push(resource.comment));
-                reviewKeys.push('comment');
+                _.push('learn_reviews', 'student_id', resource.student_id);
+                _.push('learn_reviews', 'resource_id', resource.resource_id);
+                _.push('learn_reviews', 'comment', resource.comment);
             }
         }
 
-        requiredKeys.forEach(function(key) {
+        requiredKeys.forEach(function (key) {
             if (typeof resource[key] === 'undefined') {
-                errors.push('Missing required key: ' + key);
+                errors.push('Missing key: ' + key);
             }
         });
 
-        invalidKeys = Object.keys(resource).filter(function(key) {
-            return allKeys.indexOf(key) === -1;
+        invalidKeys = Object.keys(resource).filter(function (key) {
+            return allKeys.indexOf(key) === -1 && key !== 'queries';
         });
 
         if (invalidKeys.length > 0) {
@@ -265,49 +283,42 @@ function* patchHandler() {
             return;
         }
 
-        if (reviewPlaceholders.length > 0) {
-            reviewSql.push(`INSERT INTO learn_activity VALUES(${activityKeys}) ON CONFLICT (student_id, resource_id) DO UPDATE  ${util.generateSet(activityKeys, activityPlaceholders, requiredKeys)} RETURNING *'`);
+        if (_.tables.learn_activity) {
+            let set = _.getSet('learn_activity', ['user_id', 'resource_id']);
+            let values = _.getValues('learn_activity');
+            let where = _.getWhere('learn_activity', ['user_id', 'resource_id']);
+            _.pop('learn_activity', true);
+
+            resource.queries.push(recordQueries.push(`UPDATE learn_activity SET ${set} WHERE ${where} RETURNING *`) - 1);
         }
 
-        if (activityPlaceholders.length > 0) {
-            activitySql.push(`INSERT INTO learn_activity VALUES(${activityKeys}) ON CONFLICT (student_id, resource_id) DO UPDATE ${util.generateSet(activityKeys, activityPlaceholders, requiredKeys)} RETURNING *'`);
+        if (_.tables.learn_reviews) {
+            let set = _.getSet('learn_reviews', requiredKeys);
+            let values = _.getValues('learn_reviews');
+            let columns = Object.keys(_.pop('learn_reviews', true).columns).join(', ');
+
+            resource.queries.push(recordQueries.push(`
+                INSERT INTO learn_reviews (${columns})
+                                   VALUES (${values}) ON CONFLICT (student_id, resource_id) DO UPDATE
+                                   SET ${set}
+                                RETURNING *`) - 1);
         }
     });
 
     if (invalidResources.length > 0) {
         this.throw(
             400,
-            `${invalidResources.length} invalid resource(s) and ${validResources.length} valid resource(s) were passed.`,
+            `${invalidResources.length} invalid resource(s) and ${validResources.length} valid resource(s) were passed.\n` + JSON.stringify(
             {
                 invalid: invalidResources,
                 valid: validResources,
                 params: this.query,
                 body: this.body
-            }
+            }, null, '  ')
         );
     }
 
-    resourceValues = resources.map(function(resource) {
-        return '(' + (resource.resource_id || resource.id) + ',' + resource.completed + ')';
-    }).join(',');
-
-    learnActivityQuery =
-        `UPDATE learn_activity
-            SET end_status = 'api-patch',
-                end_ts = now(),
-                completed = r.completed
-           FROM (VALUES ${resourceValues}) AS r (id, completed)
-          WHERE r.id = learn_activity.resource_id
-            AND user_id = $1 RETURNING *`;
-
-    activity = yield this.pgp.any(learnActivityQuery, [studentId]);
-
-    this.body = activity.map(function(resource) {
-        return {
-            resource_id: resource.id,
-            completed: resource.completed
-        };
-    });
+    this.body = yield *util.groupQueries(recordQueries, _.values, resources, ctx);
 }
 
 function* launchHandler(resourceId) {
@@ -333,7 +344,7 @@ function* launchHandler(resourceId) {
     if (learnResource.url) {
         this.response.redirect(learnResource.url);
     } else {
-        // TODO : add javascript to refresh 3 times then close the page or take you back to the playlist...
+        // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
         this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
             ' page. If you continue to receive this error please tell your teacher.', 500);
     }
