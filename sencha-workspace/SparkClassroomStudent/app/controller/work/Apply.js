@@ -1,3 +1,4 @@
+/* global Slate */
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.work.Apply', {
     extend: 'Ext.app.Controller',
@@ -7,7 +8,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     config: {
-        activeSparkpoint: null,
         studentSparkpoint: null,
         activeApply: null
     },
@@ -61,7 +61,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect',
                 studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
@@ -74,14 +73,16 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // config handlers
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkAppliesStore();
+    updateStudentSparkpoint: function(studentSparkpoint) {
+        var me = this,
+            store = me.getWorkAppliesStore(),
+            applyCt = me.getApplyCt();
 
-        // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
-        // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
+        if (store.isLoaded() || (applyCt && applyCt.isPainted())) {
+            me.setActiveApply(null);
+            store.removeAll();
             store.load();
         }
     },
@@ -92,10 +93,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // event handlers
-    onSparkpointSelect: function(sparkpoint) {
-        this.setActiveSparkpoint(sparkpoint);
-    },
-
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
@@ -105,8 +102,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     onApplyCtActivate: function() {
         var store = this.getWorkAppliesStore();
 
-        // TODO: reload store if sparkpoints param dirty
-        if (!store.isLoaded()) {
+        if (this.getStudentSparkpoint() && !store.isLoaded()) {
             store.load();
         }
     },
@@ -170,7 +166,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 if (btnId != 'ok') {
                     return;
                 }
-
+debugger;
                 Slate.API.request({
                     method: 'POST',
                     url: '/spark/api/work/applies/submissions',
@@ -194,19 +190,19 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             applyPickerCt = me.getApplyPickerCt(),
             selectedApplyCt = me.getSelectedApplyCt(),
             apply = me.getActiveApply(),
-            student = me.getStudentSparkpoint(),
-            startTime = student && student.get('apply_start_time');
+            studentSparkpoint = me.getStudentSparkpoint(),
+            startTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
 
         if (apply) {
             me.getHeaderCmp().setData(apply.getData());
 
             me.getTimelineCmp().setData({
                 start: startTime,
-                finish: student && student.get('apply_finish_time'),
+                finish: studentSparkpoint && studentSparkpoint.get('apply_finish_time'),
                 estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
             });
 
-            apply.set('sparkpoint', me.getActiveSparkpoint(), { dirty: false });
+            apply.set('sparkpoint', studentSparkpoint.get('sparkpoint'), { dirty: false });
 
             me.getWorkApplyTasksStore().loadData(apply.get('todos'));
 
