@@ -58,6 +58,10 @@ app.use(_.get('/work/conferences', routes.work.conferences.get));
 app.use(_.post('/work/conferences/questions', routes.work.conferences.questions.post));
 app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet.patch));
 
+// Conference groups
+app.use(_.patch('/work/conference-groups', routes.work['conference-groups'].patch));
+app.use(_.get('/work/conference-groups', routes.work['conference-groups'].get));
+
 // Todos
 app.use(_.get('/todos', routes.todos.get));
 app.use(_.patch('/todos', routes.todos.patch));

@@ -318,7 +318,7 @@ function* patchHandler() {
         );
     }
 
-    this.body = yield *util.groupQueries(recordQueries, _.values, resources, ctx);
+    this.body = yield *util.groupQueries(recordQueries, _.values, resources, ctx, ['user_id', 'id']);
 }
 
 function* launchHandler(resourceId) {

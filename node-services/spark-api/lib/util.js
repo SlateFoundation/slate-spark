@@ -301,7 +301,7 @@ function arrayToGradeRange(input, pkStr) {
 }
 
 /**
- * Returns a boolean indicating whether the given string is a number greater than zero
+ * Returns a boolean indicating whether the given string is a number greater than or equal to zero
  *
  * @alias module:util.isGteZero
  *
@@ -311,6 +311,19 @@ function arrayToGradeRange(input, pkStr) {
 function isGteZero(str) {
     str = parseInt('' + str, 10);
     return !isNaN(str) && str >= 0;
+}
+
+/**
+ * Returns a boolean indicating whether the given string is a number greater than zero
+ *
+ * @alias module:util.isGtZero
+ *
+ * @param {String} str
+ * @returns {Boolean}
+ */
+function isGtZero(str) {
+    str = parseInt('' + str, 10);
+    return !isNaN(str) && str > 0;
 }
 
 
@@ -526,6 +539,22 @@ QueryBuilder.prototype.getWhere = function getWhere(table, constraintColumns) {
     return setColumns.map(column => `${column} = $${state.columns[column] + 1}`).join(' AND ');
 };
 
+QueryBuilder.prototype.getUpsert = function getUpsert(table, constraintColumns, reset) {
+    var values = this.getValues(table),
+        set = this.getSet(table, constraintColumns),
+        columns = Object.keys(this.pop(table, reset).columns);
+
+    if (constraintColumns.length === 1 &&
+        constraintColumns[0] === 'id' &&
+        columns.indexOf('id') === -1
+    ) {
+        values += (`, nextval('${table}_id_seq')`);
+        columns.push('id');
+    }
+
+    return `INSERT INTO ${table} (${columns.join(', ')}) VALUES(${values}) ON CONFLICT(${constraintColumns.join(', ')}) DO UPDATE SET ${set} RETURNING *`;
+};
+
 function generateSet(keys, placeholders, constraintKeys) {
     constraintKeys = constraintKeys || [];
     return 'SET ' + keys.filter(function(key) {
@@ -535,10 +564,12 @@ function generateSet(keys, placeholders, constraintKeys) {
         }).join(', ');
 }
 
-function* groupQueries(queries, values, records, ctx) {
+function* groupQueries(queries, values, records, ctx, excludeKeys) {
     var cteQuery = [],
         selectQuery = ['SELECT result FROM ('],
         results;
+
+    excludeKeys = excludeKeys || [];
 
     queries.forEach(function (query, idx) {
         var first = (++idx === 1);
@@ -565,10 +596,28 @@ function* groupQueries(queries, values, records, ctx) {
     return records.map(function(record) {
         return Object.assign.apply(null, record.queries.map(function(idx) {
             if (typeof results[idx] === 'object') {
-                return excludeObjectKeys(['user_id', 'id'], results[idx]);
+                return excludeObjectKeys(excludeKeys, results[idx]);
             }
         }));
     });
+}
+
+function isString(val) {
+    return typeof val === 'string';
+}
+
+function isDate(val) {
+    return new Date(val).toString() !== 'Invalid Date';
+}
+
+function allowNull(fn) {
+    return function (val) {
+        if (val === null) {
+            return true;
+        } else {
+            return fn(val);
+        }
+    };
 }
 
 module.exports = {
@@ -576,10 +625,14 @@ module.exports = {
     excludeObjectKeys: excludeObjectKeys,
     rnd: rnd,
 
+    allowNull: allowNull,
     isGteZero: isGteZero,
+    isGtZero: isGtZero,
     isAsnId: isAsnId,
     isMatchbookId: isMatchbookId,
     isAsnStyleId: isAsnStyleId,
+    isDate: isDate,
+    isString: isString,
 
     arrayToGradeRange: arrayToGradeRange,
     gradeRangeToArray: gradeRangeToArray,
