@@ -14,28 +14,29 @@ Ext.define('SparkClassroomStudent.model.ConferenceWorksheet', {
         {
             name: 'student_id',
             type: 'int',
+            allowNull: true,
             persist: false
         },
 
         {
             name: 'restated',
-            allowNull: true
+            type: 'string'
         },
         {
             name: 'steps',
-            allowNull: true
+            type: 'string'
         },
         {
             name: 'example_1',
-            allowNull: true
+            type: 'string'
         },
         {
             name: 'example_2',
-            allowNull: true
+            type: 'string'
         },
         {
             name: 'example_3',
-            allowNull: true
+            type: 'string'
         },
         {
             name: 'peer_id',
@@ -44,7 +45,7 @@ Ext.define('SparkClassroomStudent.model.ConferenceWorksheet', {
         },
         {
             name: 'peer_feedback',
-            allowNull: true
+            type: 'string'
         },
     ],
 
