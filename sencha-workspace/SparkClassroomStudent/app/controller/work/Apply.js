@@ -9,7 +9,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     config: {
         studentSparkpoint: null,
-        activeApply: null
+        activeApply: null,
+        renderedApply: null
     },
 
     stores: [
@@ -75,20 +76,54 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
-            store = me.getWorkAppliesStore(),
-            applyCt = me.getApplyCt();
+            store = me.getWorkAppliesStore();
 
+        me.setActiveApply(null);
+        store.removeAll();
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
+        store.load();
+    },
 
-        if (store.isLoaded() || (applyCt && applyCt.isPainted())) {
-            me.setActiveApply(null);
-            store.removeAll();
-            store.load();
+    updateActiveApply: function(apply) {
+        if (this.getApplyCt()) {
+            this.setRenderedApply(apply);
         }
     },
 
-    updateActiveApply: function() {
-        this.syncActiveApply();
+    updateRenderedApply: function(apply) {
+        var me = this,
+            applyPickerCt = me.getApplyPickerCt(),
+            selectedApplyCt = me.getSelectedApplyCt(),
+            studentSparkpoint = me.getStudentSparkpoint(),
+            startTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
+
+        if (apply) {
+            me.getHeaderCmp().setData(apply.getData());
+
+            me.getTimelineCmp().setData({
+                start: startTime,
+                finish: studentSparkpoint && studentSparkpoint.get('apply_finish_time'),
+                estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
+            });
+
+            apply.set('sparkpoint', studentSparkpoint.get('sparkpoint'), { dirty: false });
+
+            me.getWorkApplyTasksStore().loadData(apply.get('todos'));
+
+            me.getLinksCmp().setData(apply.get('links').map(function(link) {
+                return {
+                    title: link.title || link.url.replace(/^https?:\/\//, ''),
+                    url: link.url
+                };
+            }));
+
+            me.getReflectionField().setValue(apply.get('reflection'));
+
+            me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
+        }
+
+        applyPickerCt.setHidden(apply);
+        selectedApplyCt.setHidden(!apply);
     },
 
 
@@ -97,14 +132,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         this.setStudentSparkpoint(studentSparkpoint);
     },
 
-
-    // TODO: handle loading data into apply section
     onApplyCtActivate: function() {
-        var store = this.getWorkAppliesStore();
-
-        if (this.getStudentSparkpoint() && !store.isLoaded()) {
-            store.load();
-        }
+        this.setRenderedApply(this.getActiveApply());
     },
 
     onAppliesStoreLoad: function(appliesStore) {
@@ -186,43 +215,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // controller methods
-    syncActiveApply: function() {
-        var me = this,
-            applyPickerCt = me.getApplyPickerCt(),
-            selectedApplyCt = me.getSelectedApplyCt(),
-            apply = me.getActiveApply(),
-            studentSparkpoint = me.getStudentSparkpoint(),
-            startTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
-
-        if (apply) {
-            me.getHeaderCmp().setData(apply.getData());
-
-            me.getTimelineCmp().setData({
-                start: startTime,
-                finish: studentSparkpoint && studentSparkpoint.get('apply_finish_time'),
-                estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
-            });
-
-            apply.set('sparkpoint', studentSparkpoint.get('sparkpoint'), { dirty: false });
-
-            me.getWorkApplyTasksStore().loadData(apply.get('todos'));
-
-            me.getLinksCmp().setData(apply.get('links').map(function(link) {
-                return {
-                    title: link.title || link.url.replace(/^https?:\/\//, ''),
-                    url: link.url
-                };
-            }));
-
-            me.getReflectionField().setValue(apply.get('reflection'));
-
-            me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
-        }
-
-        applyPickerCt.setHidden(apply);
-        selectedApplyCt.setHidden(!apply);
-    },
-
     writeReflection: Ext.Function.createBuffered(function() {
         var apply = this.getActiveApply();
 
