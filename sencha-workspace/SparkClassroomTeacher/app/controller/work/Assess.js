@@ -37,17 +37,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
 
     // config handlers
-    updateActiveStudent: function(student) {
+    updateActiveStudent: function(activeStudent) {
         var store = this.getWorkAssessmentsStore(),
             proxy = store.getProxy();
 
-        // TODO: track dirty state of extraparams?
-        proxy.setExtraParam('student_id', student.get('student_id'));
-        proxy.setExtraParam('sparkpoint', student.get('sparkpoint'));
+        if (activeStudent) {
+            // TODO: track dirty state of extraparams?
+            proxy.setExtraParam('student_id', activeStudent.get('student_id'));
+            proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
-        // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
-            store.load();
+            // TODO: reload store if sparkpoints param dirty
+            if (store.isLoaded()) {
+                store.load();
+            }
         }
 
         this.syncActiveStudent();

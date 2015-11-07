@@ -100,13 +100,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             proxy = store.getProxy(),
             conferencingStudentsGrid = me.getConferencingStudentsGrid();
 
-        // TODO: track dirty state of extraparams?
-        proxy.setExtraParam('student_id', activeStudent.get('student_id'));
-        proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
+        if (activeStudent) {
+            // TODO: track dirty state of extraparams?
+            proxy.setExtraParam('student_id', activeStudent.get('student_id'));
+            proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
-        // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
-            store.load();
+            // TODO: reload store if sparkpoints param dirty
+            if (store.isLoaded()) {
+                store.load();
+            }
         }
 
         me.syncActiveStudent();

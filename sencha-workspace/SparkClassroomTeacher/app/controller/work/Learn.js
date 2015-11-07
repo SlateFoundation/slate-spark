@@ -48,12 +48,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         var store = this.getWorkLearnsStore(),
             proxy = store.getProxy();
 
-        // TODO: track dirty state of extraparams?
-        proxy.setExtraParam('student_id', activeStudent.get('student_id'));
-        proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
+        if (activeStudent) {
+            // TODO: track dirty state of extraparams?
+            proxy.setExtraParam('student_id', activeStudent.get('student_id'));
+            proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
 
-        if (store.isLoaded()) {
-            store.load();
+            if (store.isLoaded()) {
+                store.load();
+            }
         }
 
         this.syncActiveStudent();

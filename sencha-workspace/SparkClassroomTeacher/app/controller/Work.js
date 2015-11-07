@@ -148,7 +148,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     onActiveStudentSelect: function(activeStudent) {
-        this.redirectTo('work/' + activeStudent.get('active_phase'));
+        this.redirectTo(activeStudent ? 'work/' + activeStudent.get('active_phase') : 'gps');
     },
 
     // controller methods

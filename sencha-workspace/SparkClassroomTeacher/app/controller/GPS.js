@@ -66,6 +66,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     // config handlers
+    updateActiveSection: function() {
+        this.setSelectedActiveStudent(null);
+    },
+
     updateSelectedActiveStudent: function(activeStudent, oldActiveStudent) {
         this.syncSelectedActiveStudent();
         this.getApplication().fireEvent('activestudentselect', activeStudent, oldActiveStudent);
