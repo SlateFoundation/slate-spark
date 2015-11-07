@@ -82,10 +82,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
         // flush any worksheet changes
-        if (oldStudentSparkpoint) {
-            me.writeWorksheetTask.cancel();
-            me.writeWorksheet();
-        }
+        me.writeWorksheetTask.cancel();
+        me.writeWorksheet();
 
         if (!studentSparkpoint) {
             return;
@@ -270,7 +268,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     writeWorksheet: function() {
         var worksheetForm = this.getWorksheetForm(),
-            worksheet = worksheetForm.getRecord();
+            worksheet = worksheetForm && worksheetForm.getRecord();
 
         if (!worksheet) {
             return;
