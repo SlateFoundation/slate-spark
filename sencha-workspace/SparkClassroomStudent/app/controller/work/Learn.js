@@ -51,16 +51,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
             store = me.getWorkLearnsStore(),
-            learnCt = me.getLearnCt(),
             sparkpointCt = me.getSparkpointCt(),
             sparkpointCode = studentSparkpoint.get('sparkpoint');
 
         store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-
-        if (store.isLoaded() || (learnCt && learnCt.isPainted())) {
-            store.removeAll();
-            store.load();
-        }
+        store.removeAll();
+        store.load();
 
         if (sparkpointCt) {
             sparkpointCt.setTitle(sparkpointCode);
@@ -75,16 +71,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     onLearnCtActivate: function(learnCt) {
         var me = this,
-            store = me.getWorkLearnsStore(),
             studentSparkpoint = me.getStudentSparkpoint();
 
         me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
-
-        if (studentSparkpoint && !store.isLoaded()) {
-            store.load();
-        } else {
-            me.refreshLearnProgress();
-        }
+        me.refreshLearnProgress();
     },
 
     onLearnsStoreLoad: function() {
