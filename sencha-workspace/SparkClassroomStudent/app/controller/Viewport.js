@@ -123,6 +123,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
         var me = this,
+            tabsCt = me.getTabsCt(),
             studentSparkpoint = me.getStudentSparkpointModel().create();
 
         me.syncSelections();
@@ -133,8 +134,10 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
         studentSparkpoint.set('sparkpoint', sparkpoint);
 
+        tabsCt.setMasked({xtype: 'loadmask', message: 'Opening Sparkpoint&hellip;'});
         studentSparkpoint.save({
             success: function() {
+                tabsCt.setMasked(false);
                 me.setStudentSparkpoint(studentSparkpoint);
             }
         });
