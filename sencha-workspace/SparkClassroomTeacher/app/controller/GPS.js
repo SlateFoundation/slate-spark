@@ -35,6 +35,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 load: 'onStudentsStoreLoad'
             },
             '#gps.ActiveStudents': {
+                update: 'onActiveStudentStoreUpdate',
                 endupdate: 'onActiveStudentsStoreEndUpdate'
             }
         },
@@ -89,6 +90,19 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
 
         me.getGpsActiveStudentsStore().load();
+    },
+
+    onActiveStudentStoreUpdate: function(store, activeStudent, operation, modifiedFieldNames) {
+        var me = this;
+
+        // reselect active student if sparkpoint has changed
+        if (
+            me.getSelectedActiveStudent() === activeStudent &&
+            modifiedFieldNames.indexOf('sparkpoint') !== -1
+        ) {
+            me.setSelectedActiveStudent(null);
+            me.setSelectedActiveStudent(activeStudent);
+        }
     },
 
     onActiveStudentsStoreEndUpdate: function() {
