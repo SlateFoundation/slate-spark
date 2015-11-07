@@ -29,6 +29,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         'work.conference.Container'
     ],
 
+    stores: [
+        'work.Feedback@SparkClassroom.store'
+    ],
+
     refs: {
         navBar: 'spark-student-navbar',
         workNavButton: 'spark-student-navbar button#work',
