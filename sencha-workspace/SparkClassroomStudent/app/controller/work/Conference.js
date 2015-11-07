@@ -141,7 +141,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         conferenceCt.setMasked(false);
     },
 
-    onQuestionSubmit: function(questionsList) {
+    onQuestionSubmit: function() {
         var me = this,
             studentSparkpoint = me.getStudentSparkpoint();
 
@@ -151,7 +151,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             jsonData: {
                 sparkpoint: studentSparkpoint.get('sparkpoint'),
                 source: 'student',
-                question: questionsList.getInnerHtmlElement().down('input').getValue()
+                question: me.getQuestionInputEl().getValue()
             },
             success: function(response) {
                 me.getWorkConferenceQuestionsStore().loadRawData([response.data], true);
@@ -176,7 +176,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     onSocketData: function(socket, data) {
         var me = this,
             itemData = data.item,
-            studentSparkpoint;
+            studentSparkpoint,
+            questionInputEl, questionInputValue, questionInputFocused;
 
         if (data.table != 'conference_questions') {
             return;
@@ -189,8 +190,25 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             studentSparkpoint.get('student_id') == itemData.student_id &&
             studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
         ) {
+            // capture question input
+            questionInputEl = me.getQuestionInputEl();
+            questionInputValue = questionInputEl.getValue();
+            questionInputFocused = questionInputEl.dom === document.activeElement;
+
             me.getWorkConferenceQuestionsStore().loadRawData([itemData], true);
             me.refreshQuestions();
+
+            // restore question input
+            questionInputEl = me.getQuestionInputEl();
+
+            if (questionInputValue) {
+                questionInputEl.dom.value = questionInputValue;
+            }
+
+            if (questionInputFocused) {
+                console.log('restoring focus');
+                questionInputEl.focus();
+            }
         }
     },
 
@@ -257,5 +275,9 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         if (worksheet.dirty) {
             worksheet.save();
         }
+    },
+
+    getQuestionInputEl: function() {
+        return this.getQuestionsList().getInnerHtmlElement().down('input');
     }
 });
