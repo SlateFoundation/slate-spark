@@ -84,9 +84,13 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         store.load();
     },
 
-    updateActiveApply: function(apply) {
+    updateActiveApply: function(apply, oldApply) {
         if (this.getApplyCt()) {
             this.setRenderedApply(apply);
+        }
+
+        if (oldApply) {
+            oldApply.set('selected', false, { dirty: false });
         }
     },
 
