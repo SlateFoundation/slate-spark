@@ -74,7 +74,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
+    updateStudentSparkpoint: function(studentSparkpoint, oldStudentSparkpoint) {
         var me = this,
             store = me.getWorkConferenceQuestionsStore(),
             conferenceCt = me.getConferenceCt(),
@@ -82,8 +82,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             sparkpointCode = studentSparkpoint.get('sparkpoint');
 
         // flush any worksheet changes
-        me.writeWorksheetTask.cancel();
-        me.writeWorksheet();
+        if (oldStudentSparkpoint) {
+            me.writeWorksheetTask.cancel();
+            me.writeWorksheet();
+        }
 
         // load/update questions store
         store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
