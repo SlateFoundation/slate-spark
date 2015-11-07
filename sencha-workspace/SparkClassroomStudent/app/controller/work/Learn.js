@@ -52,10 +52,15 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         var me = this,
             store = me.getWorkLearnsStore(),
             sparkpointCt = me.getSparkpointCt(),
-            sparkpointCode = studentSparkpoint.get('sparkpoint');
+            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
+
+        store.removeAll();
+
+        if (!studentSparkpoint) {
+            return;
+        }
 
         store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-        store.removeAll();
         store.load();
 
         if (sparkpointCt) {

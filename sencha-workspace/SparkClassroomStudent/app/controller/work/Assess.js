@@ -49,6 +49,10 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         var store = this.getWorkAssessmentsStore(),
            assessCt = this.getAssessCt();
 
+        if (!studentSparkpoint) {
+            return;
+        }
+
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
         if (store.isLoaded() || (assessCt && assessCt.isPainted())) {

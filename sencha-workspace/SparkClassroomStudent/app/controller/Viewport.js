@@ -112,6 +112,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         var me = this,
             studentsStore = me.getStudentsStore();
 
+        me.setSelectedSparkpoint(null);
+
         if (section) {
             studentsStore.getProxy().setUrl('/sections/' + section + '/students');
             studentsStore.load();
@@ -128,6 +130,11 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
         me.syncSelections();
         me.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
+
+        if (!sparkpoint) {
+            me.setStudentSparkpoint(null);
+            return;
+        }
 
         // mark empty studentSparkpoint model as committed so uninitialized fields aren't considered dirty
         studentSparkpoint.commit();

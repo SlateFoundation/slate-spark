@@ -80,6 +80,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
         me.setActiveApply(null);
         store.removeAll();
+
+        if (!studentSparkpoint) {
+            return;
+        }
+
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
         store.load();
     },

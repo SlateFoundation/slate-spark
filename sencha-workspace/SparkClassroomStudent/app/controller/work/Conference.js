@@ -79,12 +79,16 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             store = me.getWorkConferenceQuestionsStore(),
             conferenceCt = me.getConferenceCt(),
             sparkpointCt = me.getSparkpointCt(),
-            sparkpointCode = studentSparkpoint.get('sparkpoint');
+            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
         // flush any worksheet changes
         if (oldStudentSparkpoint) {
             me.writeWorksheetTask.cancel();
             me.writeWorksheet();
+        }
+
+        if (!studentSparkpoint) {
+            return;
         }
 
         // load/update questions store

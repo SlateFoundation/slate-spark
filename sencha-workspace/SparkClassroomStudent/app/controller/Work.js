@@ -147,8 +147,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
 
     // config handlers
-    updateStudentSparkpoint: function() {
-        this.refreshTabbar();
+    updateStudentSparkpoint: function(studentSparkpoint) {
+        if (studentSparkpoint) {
+            this.refreshTabbar();
+        }
     },
 
 
