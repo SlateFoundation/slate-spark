@@ -6,6 +6,9 @@
  */
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Ext.util.DelayedTask'
+    ],
 
     config: {
         studentSparkpoint: null
@@ -62,6 +65,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
 
+    // controller template methods
+    init: function() {
+        var me = this;
+
+        me.writeWorksheetTask = new Ext.util.DelayedTask(me.writeWorksheet, me);
+    },
+
+
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
@@ -70,12 +81,17 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             sparkpointCt = me.getSparkpointCt(),
             sparkpointCode = studentSparkpoint.get('sparkpoint');
 
-        store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
+        // flush any worksheet changes
+        me.writeWorksheetTask.cancel();
+        me.writeWorksheet();
 
+        // load/update questions store
+        store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
         if (store.isLoaded() || (conferenceCt && conferenceCt.isPainted())) {
             store.load();
         }
 
+        // update title bar
         if (sparkpointCt) {
             sparkpointCt.setTitle(sparkpointCode);
         }
@@ -145,7 +161,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     onWorksheetFieldChange: function(field, value) {
-        this.writeWorksheet();
+        this.writeWorksheetTask.delay(5000);
     },
 
     onRequestBtnTap: function() {
@@ -228,14 +244,18 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         });
     },
 
-    writeWorksheet: Ext.Function.createBuffered(function() {
+    writeWorksheet: function() {
         var worksheetForm = this.getWorksheetForm(),
             worksheet = worksheetForm.getRecord();
+
+        if (!worksheet) {
+            return;
+        }
 
         worksheetForm.updateRecord(worksheet);
 
         if (worksheet.dirty) {
             worksheet.save();
         }
-    }, 2000)
+    }
 });
