@@ -161,7 +161,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     onWorksheetFieldChange: function(field, value) {
-        this.writeWorksheetTask.delay(5000);
+        this.writeWorksheetTask.delay(1000);
     },
 
     onRequestBtnTap: function() {
