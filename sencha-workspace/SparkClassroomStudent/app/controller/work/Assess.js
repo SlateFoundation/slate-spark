@@ -4,7 +4,6 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     config: {
-        activeSparkpoint: null, // TODO: deprecate
         studentSparkpoint: null
     },
 
@@ -34,7 +33,6 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     listen: {
         controller: {
             '#': {
-                sparkpointselect: 'onSparkpointSelect',
                 studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
@@ -47,44 +45,29 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
 
     // config handlers
-    updateActiveSparkpoint: function(sparkpoint) {
-        var store = this.getWorkAssessmentsStore();
+    updateStudentSparkpoint: function(studentSparkpoint) {
+        var store = this.getWorkAssessmentsStore(),
+           assessCt = this.getAssessCt();
 
-        // TODO: track dirty state of extraparams?
-        store.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
-        // TODO: reload store if sparkpoints param dirty
-        if (store.isLoaded()) {
+        if (store.isLoaded() || (assessCt && assessCt.isPainted())) {
             store.load();
         }
     },
 
 
     // event handlers
-    onSparkpointSelect: function(sparkpoint) {
-        this.setActiveSparkpoint(sparkpoint);
-    },
-
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
 
     onAssessCtActivate: function(learnCt) {
-        var assessmentsStore = this.getWorkAssessmentsStore(),
-            learnsStore = Ext.getStore('work.Learns'),
-            appliesStore = Ext.getStore('work.Applies');
+        var assessmentsStore = this.getWorkAssessmentsStore();
 
-        if (!assessmentsStore.isLoaded()) { // TODO: OR extraParamsDirty
+        if (this.getStudentSparkpoint() && !assessmentsStore.isLoaded()) {
             assessmentsStore.load();
         }
-
-        if (!learnsStore.isLoaded()) { // TODO: OR extraParamsDirty
-            learnsStore.load();
-        }
-
-        // if (!appliesStore.isLoaded()) { // TODO: OR extraParamsDirty
-        //     appliesStore.load();
-        // }
     },
 
     onAssessmentsStoreLoad: function(assessmentsStore) {
