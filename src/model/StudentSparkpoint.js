@@ -20,14 +20,12 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         {
             name: 'student_id',
             type: 'int',
-            allowNull: true,
-            persist: false
+            allowNull: true
         },
         {
             name: 'sparkpoint_id',
             type: 'string',
-            allowNull: true,
-            persist: false
+            allowNull: true
         },
 
         // learning cycle milestone timestamps
