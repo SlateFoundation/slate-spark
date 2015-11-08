@@ -5,7 +5,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
     requires: [
         'Ext.data.ChainedStore',
         'SparkClassroom.work.FeedbackView',
-        'SparkClassroomTeacher.view.work.learn.Form'
+        'SparkClassroomTeacher.view.work.learn.Sidebar'
     ],
 
 
@@ -18,10 +18,9 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
         this.callParent(arguments);
 
         this.add([{
-            xtype: 'spark-teacher-work-learn-form',
             docked: 'right',
-            cls: 'sidebar-col',
-            scrollable: false
+
+            xtype: 'spark-teacher-work-learn-sidebar'
         },{
             xtype: 'spark-feedbackview',
 

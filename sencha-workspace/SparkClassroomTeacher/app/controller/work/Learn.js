@@ -15,7 +15,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     refs: {
         learnCt: 'spark-teacher-work-learn',
         sparkpointCt: 'spark-teacher-work-learn #sparkpointCt',
-        progressBanner: 'spark-teacher-work-learn-form spark-work-learn-progressbanner',
+        progressBanner: 'spark-teacher-work-learn-sidebar spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid'
     },
 
