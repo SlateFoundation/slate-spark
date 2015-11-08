@@ -199,7 +199,7 @@ function *patchHandler() {
         todos AS (
             SELECT json_array_elements_text(todos::json) AS todo
               FROM spark1.s2_apply_projects
-             WHERE id = $1 AND
+             WHERE id = $2 AND
              EXISTS(SELECT 1 FROM existing_user_todos) = false
         ),
 
