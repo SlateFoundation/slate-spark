@@ -35,7 +35,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         addStudentSelectField: 'spark-teacher-work-conference-studentsgrid selectfield',
         feedbackSubjectField: 'spark-teacher-work-conference-feedback #feedbackSubjectField',
         feedbackMessageField: 'spark-teacher-work-conference-feedback #feedbackMessageField',
-        feedbackBtn: 'spark-teacher-work-conference-feedback #feedbackBtn',
+        feedbackBtn: 'spark-teacher-work-conference-feedback #sendBtn',
         readyBtn: 'spark-teacher-work-conference-feedback #readyBtn'
     },
 
@@ -238,7 +238,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             feedbackBtn.disable();
             readyBtn.disable();
         } else {
-            feedbackBtn.setText('Leave feedback for ' + subjectText);
+            feedbackBtn.setText('Send feedback to ' + subjectText);
             readyBtn.setText('Mark ' + subjectText + ' ready for Apply &rarr;');
             feedbackBtn.enable();
             readyBtn.enable();

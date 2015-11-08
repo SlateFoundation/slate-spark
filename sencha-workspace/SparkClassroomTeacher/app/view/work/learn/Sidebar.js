@@ -4,7 +4,8 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Sidebar', {
     xtype: 'spark-teacher-work-learn-sidebar',
     requires: [
         'Ext.field.Number',
-        'SparkClassroom.work.learn.ProgressBanner'
+        'SparkClassroom.work.learn.ProgressBanner',
+        'SparkClassroomTeacher.view.FeedbackForm'
     ],
 
     config: {
@@ -37,25 +38,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Sidebar', {
                 ]
             },
             {
-                xtype: 'formpanel',
-                cls: 'content-card narrow',
-                items: [
-                    {
-                        xtype: 'fieldset',
-                        title: 'Feedback',
-                        items: [
-                            {
-                                xtype: 'textareafield',
-                                label: 'Message'
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'button',
-                        ui: 'action',
-                        text: 'Log'
-                    }
-                ]
+                xtype: 'spark-teacher-feedbackform'
             }
         ]
     }

@@ -1,34 +1,15 @@
 Ext.define('SparkClassroomTeacher.view.work.apply.Sidebar', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-apply-sidebar',
+    requires: [
+        'SparkClassroomTeacher.view.FeedbackForm'
+    ],
+
 
     config: {
         items: [
             {
-                xtype: 'formpanel',
-                cls: 'content-card narrow',
-                items: [
-                    {
-                        xtype: 'fieldset',
-                        disabled: true,
-                        title: 'Feedback',
-                        items: [
-                            {
-                                xtype: 'textfield',
-                                label: 'Subject'
-                            },
-                            {
-                                xtype: 'textareafield',
-                                label: 'Message'
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'button',
-                        ui: 'action',
-                        text: 'Log'
-                    }
-                ]
+                xtype: 'spark-teacher-feedbackform'
             },
             // {
             //     xtype: 'spark-panel',

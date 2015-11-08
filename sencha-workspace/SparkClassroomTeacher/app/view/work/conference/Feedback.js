@@ -4,7 +4,8 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
     xtype: 'spark-teacher-work-conference-feedback',
     requires: [
         'SparkClassroom.work.Timer',
-        'SparkClassroomTeacher.view.work.conference.StudentsGrid'
+        'SparkClassroomTeacher.view.work.conference.StudentsGrid',
+        'SparkClassroomTeacher.view.FeedbackForm'
     ],
 
     config: {
@@ -91,34 +92,11 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                         cls: 'sidebar-grid'
                     },
                     {
-                        xtype: 'spark-panel',
-                        disabled: true,
-                        cls: 'content-card narrow',
-                        title: 'Feedback',
-                        items: [
-                            {
-                                itemId: 'feedbackSubjectField',
-
-                                xtype: 'textfield',
-                                label: 'Subject'
-                            },
-                            {
-                                itemId: 'feedbackMessageField',
-
-                                xtype: 'textareafield',
-                                label: 'Message'
-                            },
-                            {
-                                itemId: 'feedbackBtn',
-
-                                xtype: 'button',
-                                margin: '16 0 0',
-                                ui: 'action',
-                                iconCls: 'fa fa-send',
-                                disabled: true,
-                                text: 'Select students to leave feedback'
-                            }
-                        ]
+                        xtype: 'spark-teacher-feedbackform',
+                        sendButton: {
+                            text: 'Select students to send feedback',
+                            disabled: true
+                        }
                     },
                     {
                         itemId: 'readyBtn',
