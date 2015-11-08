@@ -39,10 +39,18 @@ function initializeKnex(config, slateConfig) {
 
     (slateConfig.instances || [])
         .filter(instance => instance.postgresql)
-        .forEach(instance => knexConnections[instance.key] = Knex({
-            client: 'pg',
-            connection: objToConnectionString(instance.postgresql)
-        }));
+        .forEach(function(instance) {
+            let connection = Knex({
+                client: 'pg',
+                connection: objToConnectionString(instance.postgresql)
+            });
+
+            knexConnections[instance.key] = connection;
+
+            connection.on('query', function(query) {
+                console.log(query.sql);
+            });
+        });
 
     return knexConnections;
 }
