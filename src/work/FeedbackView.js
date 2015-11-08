@@ -25,6 +25,7 @@ Ext.define('SparkClassroom.work.FeedbackView', {
             '</h3>',
             '<div class="dated-list-content">{[fm.nl2br(fm.htmlEncode(values.message))]}</div>'
         ],
-        emptyText: 'None yet for this phase'
+        emptyText: 'None yet for this phase',
+        deferEmptyText: false
     }
 });
