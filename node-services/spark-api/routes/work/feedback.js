@@ -1,20 +1,27 @@
 'use strict';
 
 /*
- SET search_path = "sandbox-school", "spark", "public";
+ SET search_path = "merit-staging", "spark", "public";
 
- CREATE TABLE IF NOT EXISTS teacher_feedback(
- id serial PRIMARY KEY,
+ DROP TABLE IF EXISTS teacher_feedback CASCADE;
+
+ CREATE TABLE teacher_feedback (
+ id serial primary key,
  student_id integer,
  author_id integer,
- sparkpoint_id char(8) NOT NULL,
+ sparkpoint_id character(8) NOT NULL,
  phase gps_phase NOT NULL,
  message text NOT NULL,
- created_time timestamp DEFAULT current_timestamp NOT NULL,
-
- UNIQUE(sparkpoint_id, phase, student_id, author_id)
+ created_time timestamp without time zone DEFAULT now() NOT NULL
  );
- */
+
+
+ ALTER TABLE teacher_feedback OWNER TO "merit-staging";
+
+ CREATE INDEX teacher_feedback_student_id_sparkpoint_id_idx ON teacher_feedback(student_id);
+ CREATE INDEX teacher_feedback_sparkpoint_id_phase_sparkpoint_id_idx ON teacher_feedback(sparkpoint_id, phase);
+ CREATE INDEX teacher_feedback_author_id_idx ON teacher_feedback(author_id);
+*/
 
 var util = require('../../lib/util');
 
@@ -148,11 +155,7 @@ function *patchHandler() {
         };
     }
 
-    query = `INSERT INTO teacher_feedback (${REQUIRED_COLUMNS.join(', ')}) VALUES
-        ${placeholders.join(',\n')} ON CONFLICT (sparkpoint_id, phase, student_id, author_id) DO UPDATE SET
-    message = EXCLUDED.message
-    WHERE teacher_feedback.message != EXCLUDED.message
-    RETURNING *;`;
+    query = `INSERT INTO teacher_feedback (${REQUIRED_COLUMNS.join(', ')}) VALUES ${placeholders.join(',\n')} RETURNING *`;
 
     people = yield this
         .knex('people')
