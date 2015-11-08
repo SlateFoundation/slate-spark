@@ -15,7 +15,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
         'work.ConferenceResources@SparkClassroom.store',
-        'work.ConferenceGroups'
+        'work.ConferenceGroups',
+        'work.GroupFeedback'
     ],
 
     refs: {
@@ -86,6 +87,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             },
             '#gps.ActiveStudents': {
                 endupdate: 'onActiveStudentsStoreEndUpdate'
+            },
+            '#work.Feedback': {
+                load: 'onWorkFeedbackLoad'
             }
         },
         socket: {
@@ -132,7 +136,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         this.syncConferenceGroup();
     },
 
-    onConferenceQuestionsStoreLoad: function(questionsStore, questions, success) {
+    onConferenceQuestionsStoreLoad: function(questionsStore, questions) {
         var me = this,
             rawData = questionsStore.getProxy().getReader().rawData || {},
             worksheetData = rawData.worksheet;
@@ -145,6 +149,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
         me.refreshQuestions();
         me.refreshResources();
+    },
+
+    onWorkFeedbackLoad: function(feedbackStore) {
+        this.getWorkGroupFeedbackStore().loadRecords(feedbackStore.queryRecords('phase', 'conference')); // TODO: use { addRecords: true } and smart clearing if aggregating feedback for whole group
     },
 
     onActiveStudentsStoreEndUpdate: function() {
@@ -257,7 +265,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onFeedbackButtonTap: function() {
         var me = this,
-            feedbackStore = me.getFeedbackView().getStore(),
+            groupFeedbackStore = me.getWorkGroupFeedbackStore(),
             feedbackMessageField = me.getFeedbackMessageField(),
             message = feedbackMessageField.getValue(),
             students = me.getConferencingStudentsGrid().getSelections(),
@@ -269,12 +277,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             return;
         }
 
-        feedbackStore.beginUpdate();
+        groupFeedbackStore.beginUpdate();
 
         for (; i < studentsLength; i++) {
             student = students[i];
 
-            feedbackStore.add({
+            groupFeedbackStore.add({
                 student_id: student.getId(),
                 sparkpoint: student.get('sparkpoint'),
                 phase: 'conference',
@@ -282,7 +290,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             });
         }
 
-        feedbackStore.endUpdate();
+        groupFeedbackStore.endUpdate();
 
         feedbackMessageField.reset();
     },

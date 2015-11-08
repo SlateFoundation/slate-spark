@@ -3,7 +3,6 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
     extend: 'SparkClassroom.work.conference.Container',
     xtype: 'spark-teacher-work-conference',
     requires: [
-        'SparkClassroom.store.work.Feedback',
         'SparkClassroom.work.FeedbackView',
         'SparkClassroomTeacher.view.work.conference.Feedback',
         'SparkClassroomTeacher.view.work.conference.Worksheet'
@@ -21,10 +20,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
             xtype: 'spark-teacher-work-conference-worksheet'
         },{
             xtype: 'spark-feedbackview',
-
-            store: {
-                xclass: 'SparkClassroom.store.work.Feedback'
-            }
+            store: 'work.GroupFeedback'
         }]);
     }
 });
