@@ -195,7 +195,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         if (tableName == 'student_sparkpoint') {
             if (
                 (studentSparkpoint = me.getStudentSparkpoint()) &&
-                studentSparkpoint.getId()== itemData.sparkpoint_id &&
+                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
                 studentSparkpoint.get('student_id') == itemData.student_id
             ) {
                 studentSparkpoint.set(itemData, { dirty: false });
@@ -204,7 +204,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         } else if (tableName == 'teacher_feedback') {
             if (
                 (studentSparkpoint = me.getStudentSparkpoint()) &&
-                studentSparkpoint.getId() == itemData.sparkpoint_id &&
+                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
                 studentSparkpoint.get('student_id') == itemData.student_id
             ) {
                 me.getWorkFeedbackStore().loadData([itemData], true);
