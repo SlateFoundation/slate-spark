@@ -3,6 +3,8 @@ Ext.define('SparkClassroomStudent.view.work.conference.Container', {
     extend: 'SparkClassroom.work.conference.Container',
     xtype: 'spark-student-work-conference',
     requires: [
+        'Ext.data.ChainedStore',
+        'SparkClassroom.work.FeedbackView',
         'SparkClassroomStudent.view.work.conference.Worksheet'
     ],
 
@@ -26,6 +28,17 @@ Ext.define('SparkClassroomStudent.view.work.conference.Container', {
                     text: 'Request a Conference'
                 }
             ]
+        },{
+            xtype: 'spark-feedbackview',
+
+            store: {
+                type: 'chained',
+                source: 'work.Feedback',
+                filters: [{
+                    property: 'phase',
+                    value: 'conference'
+                }]
+            }
         }]);
     }
 });
