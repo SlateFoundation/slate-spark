@@ -158,8 +158,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             this.refreshTabbar();
 
             feedbackStore.getProxy().setExtraParams({
-                student_id: studentSparkpoint.getId(),
-                sparkpoint: studentSparkpoint.get('sparkpoint')
+                student_id: studentSparkpoint.get('student_id'),
+                sparkpoint: studentSparkpoint.getId()
             });
             feedbackStore.load();
         }
@@ -195,7 +195,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         if (tableName == 'student_sparkpoint') {
             if (
                 (studentSparkpoint = me.getStudentSparkpoint()) &&
-                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
+                studentSparkpoint.getId()== itemData.sparkpoint_id &&
                 studentSparkpoint.get('student_id') == itemData.student_id
             ) {
                 studentSparkpoint.set(itemData, { dirty: false });
@@ -204,7 +204,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         } else if (tableName == 'teacher_feedback') {
             if (
                 (studentSparkpoint = me.getStudentSparkpoint()) &&
-                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
+                studentSparkpoint.getId() == itemData.sparkpoint_id &&
                 studentSparkpoint.get('student_id') == itemData.student_id
             ) {
                 me.getWorkFeedbackStore().loadData([itemData], true);
