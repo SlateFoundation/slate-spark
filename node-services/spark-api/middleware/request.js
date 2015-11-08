@@ -23,6 +23,19 @@ module.exports = function *parseRequest(next) {
         }
     }
 
+    if (query.sparkpoint_id) {
+        if (!util.isMatchbookId(query.sparkpoint_id)) {
+            if (util.toSparkpointId(query.sparkpoint_id)) {
+                return ctx.throw(new Error(`sparkpoint code passed as a sparkpoint_id: ${query.sparkpoint_id}`), 400);
+            } else {
+                return ctx.throw(
+                    new Error(`A sparkpoint_id is 8 characters and starts with M. You passed: ${query.sparkpoint_id}`),
+                    400
+                );
+            }
+        }
+    }
+
     if (query.sparkpoint) {
         query.sparkpoint_id = util.toSparkpointId(query.sparkpoint);
     }
@@ -39,7 +52,7 @@ module.exports = function *parseRequest(next) {
             });
 
         if (missing.length > 0) {
-            return ctx.throw('Missing required parameters: ' + missing.join(', '), 400);
+            return ctx.throw(new Error('Missing required parameters: ' + missing.join(', ')), 400);
         }
     };
 
