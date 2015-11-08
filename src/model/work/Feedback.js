@@ -1,6 +1,12 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.work.Feedback', {
     extend: 'Ext.data.Model',
+    requires: [
+        'Ext.data.identifier.Negative'
+    ],
+
+
+    identifier: 'negative',
 
     fields: [
         // server-assigned fields
