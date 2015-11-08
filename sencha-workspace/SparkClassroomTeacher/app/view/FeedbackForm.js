@@ -19,9 +19,8 @@ Ext.define('SparkClassroomTeacher.view.FeedbackForm', {
                 title: 'Feedback'
             },
             {
-                itemId: 'messageField',
-
                 xtype: 'textareafield',
+                name: 'message',
                 label: 'Message'
             }
         ]

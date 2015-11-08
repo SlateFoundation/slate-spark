@@ -21,6 +21,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         tasksGrid: 'spark-teacher-work-apply spark-work-apply-tasksgrid',
         reflectionCmp: 'spark-teacher-work-apply #reflectionCmp',
         submissionsView: 'spark-teacher-work-apply #submissionsView',
+        feedbackMessageField: 'spark-teacher-work-apply spark-teacher-feedbackform textareafield',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn',
         readyHintCmp: 'spark-teacher-work-apply #readyHintCmp'
     },
@@ -28,6 +29,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     control: {
         applyCt: {
             activate: 'onApplyCtActivate'
+        },
+        'spark-teacher-work-apply spark-teacher-feedbackform button#sendBtn': {
+            tap: 'onFeedbackSendTap'
         },
         readyBtn: {
             tap: 'onReadyBtnTap'
@@ -82,6 +86,26 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
     onAppliesStoreLoad: function(appliesStore) {
         this.setActiveApply(appliesStore.query('selected', true).first() || null);
+    },
+
+    onFeedbackSendTap: function() {
+        var activeStudent = this.getActiveStudent(),
+            feedbackMessageField = this.getFeedbackMessageField(),
+            message = (feedbackMessageField.getValue() || '').trim();
+
+        if (!message) {
+            Ext.Msg.alert('Feedback', 'Enter a message before sending feedback');
+            return;
+        }
+
+        Ext.getStore('work.Feedback').add({
+            student_id: activeStudent.getId(),
+            sparkpoint: activeStudent.get('sparkpoint'),
+            phase: 'apply',
+            message: message
+        });
+
+        feedbackMessageField.reset();
     },
 
     onReadyBtnTap: function() {

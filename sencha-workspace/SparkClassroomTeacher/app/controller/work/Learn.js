@@ -16,12 +16,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         learnCt: 'spark-teacher-work-learn',
         sparkpointCt: 'spark-teacher-work-learn #sparkpointCt',
         progressBanner: 'spark-teacher-work-learn-sidebar spark-work-learn-progressbanner',
-        learnGrid: 'spark-work-learn-grid'
+        learnGrid: 'spark-work-learn-grid',
+        feedbackMessageField: 'spark-teacher-work-learn spark-teacher-feedbackform textareafield'
     },
 
     control: {
         learnCt: {
             activate: 'onLearnCtActivate'
+        },
+        'spark-teacher-work-learn spark-teacher-feedbackform button#sendBtn': {
+            tap: 'onFeedbackSendTap'
         }
     },
 
@@ -77,6 +81,26 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onLearnsStoreUpdate: function() {
         this.refreshLearnProgress();
+    },
+
+    onFeedbackSendTap: function() {
+        var activeStudent = this.getActiveStudent(),
+            feedbackMessageField = this.getFeedbackMessageField(),
+            message = (feedbackMessageField.getValue() || '').trim();
+
+        if (!message) {
+            Ext.Msg.alert('Feedback', 'Enter a message before sending feedback');
+            return;
+        }
+
+        Ext.getStore('work.Feedback').add({
+            student_id: activeStudent.getId(),
+            sparkpoint: activeStudent.get('sparkpoint'),
+            phase: 'learn',
+            message: message
+        });
+
+        feedbackMessageField.reset();
     },
 
     onSocketData: function(socket, data) {

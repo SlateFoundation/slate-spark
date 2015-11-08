@@ -33,10 +33,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         pauseBtn: 'spark-teacher-work-conference-feedback #timerPauseBtn',
         conferencingStudentsGrid: 'spark-teacher-work-conference-studentsgrid',
         addStudentSelectField: 'spark-teacher-work-conference-studentsgrid selectfield',
-        feedbackSubjectField: 'spark-teacher-work-conference-feedback #feedbackSubjectField',
-        feedbackMessageField: 'spark-teacher-work-conference-feedback #feedbackMessageField',
-        feedbackBtn: 'spark-teacher-work-conference-feedback #sendBtn',
-        readyBtn: 'spark-teacher-work-conference-feedback #readyBtn'
+        feedbackMessageField: 'spark-teacher-work-conference-feedback spark-teacher-feedbackform textareafield',
+        feedbackBtn: 'spark-teacher-work-conference-feedback button#sendBtn',
+        readyBtn: 'spark-teacher-work-conference-feedback button#readyBtn',
+
+        feedbackView: 'spark-teacher-work-conference spark-feedbackview'
     },
 
     control: {
@@ -256,23 +257,33 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onFeedbackButtonTap: function() {
         var me = this,
-            feedbackSubjectField = me.getFeedbackSubjectField(),
+            feedbackStore = me.getFeedbackView().getStore(),
             feedbackMessageField = me.getFeedbackMessageField(),
-            students = this.getConferencingStudentsGrid().getSelections(),
+            message = feedbackMessageField.getValue(),
+            students = me.getConferencingStudentsGrid().getSelections(),
             studentsLength = students.length,
-            i = 0, student,
-            feedback = {
-                subject: feedbackSubjectField.getValue(),
-                message: feedbackMessageField.getValue()
-            };
+            i = 0, student;
+
+        if (!message) {
+            Ext.Msg.alert('Feedback', 'Enter a message before sending feedback');
+            return;
+        }
+
+        feedbackStore.beginUpdate();
 
         for (; i < studentsLength; i++) {
             student = students[i];
-            student.get('conference_feedback').push(feedback);
-            student.set('conference_feedback_count'); // force count to refresh
+
+            feedbackStore.add({
+                student_id: student.getId(),
+                sparkpoint: student.get('sparkpoint'),
+                phase: 'conference',
+                message: message
+            });
         }
 
-        feedbackSubjectField.reset();
+        feedbackStore.endUpdate();
+
         feedbackMessageField.reset();
     },
 
