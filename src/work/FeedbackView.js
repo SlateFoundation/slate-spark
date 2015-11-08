@@ -19,7 +19,10 @@ Ext.define('SparkClassroom.work.FeedbackView', {
 
         itemCls: 'dated-list-item',
         itemTpl: [
-            '<h3 class="dated-list-date">{created_time:date} by {author_name}</h3>',
+            '<h3 class="dated-list-date">',
+                'By <a href="{[Slate.API.buildUrl("/people/" + values.author_id)]}" target="_blank">{author_name}</a>',
+                ' on <time datetime="{created_time:date("C")}">{created_time:date("l, F d \\\\a\\\\t Y g:i A")}</time>',
+            '</h3>',
             '<div class="dated-list-content">{message}</div>'
         ],
         emptyText: 'None yet for this phase'
