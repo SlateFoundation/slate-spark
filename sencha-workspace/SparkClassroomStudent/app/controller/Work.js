@@ -186,21 +186,29 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'student_sparkpoint') {
-            return;
-        }
-
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
-            itemData = data.item;
+            tableName = data.table,
+            itemData = data.item,
+            studentSparkpoint;
 
-        if (
-            studentSparkpoint &&
-            studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
-            studentSparkpoint.get('student_id') == itemData.student_id
-        ) {
-            studentSparkpoint.set(itemData, { dirty: false });
-            me.refreshTabbar();
+
+        if (tableName == 'student_sparkpoint') {
+            if (
+                (studentSparkpoint = me.getStudentSparkpoint()) &&
+                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
+                studentSparkpoint.get('student_id') == itemData.student_id
+            ) {
+                studentSparkpoint.set(itemData, { dirty: false });
+                me.refreshTabbar();
+            }
+        } else if (tableName == 'teacher_feedback') {
+            if (
+                (studentSparkpoint = me.getStudentSparkpoint()) &&
+                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
+                studentSparkpoint.get('student_id') == itemData.student_id
+            ) {
+                me.getWorkFeedbackStore().loadData([itemData], true);
+            }
         }
     },
 
