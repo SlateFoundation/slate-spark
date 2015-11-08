@@ -100,8 +100,13 @@ function *getHandler() {
         this.throw(new Error(`Invalid learning phase: ${query.phase}, allowed values are: ${PHASES.join(', ')}`), 400);
     }
 
-    teacherFeedback = yield this.knex('teacher_feedback')
+    console.log(this.knex('teacher_feedback')
         .join('people', 'teacher_feedback.author_id', 'people.ID')
+        .select('teacher_feedback.*', this.knex.raw(`(people."FirstName" || ' ' || people."LastName") AS author_name`))
+        .where(query));
+
+    teacherFeedback = yield this.knex('teacher_feedback')
+        .leftJoin('people', 'teacher_feedback.author_id', 'people.ID')
         .select('teacher_feedback.*', this.knex.raw(`(people."FirstName" || ' ' || people."LastName") AS author_name`))
         .where(query);
 
