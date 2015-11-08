@@ -2,7 +2,8 @@
 Ext.define('SparkClassroom.model.work.Feedback', {
     extend: 'Ext.data.Model',
     requires: [
-        'Ext.data.identifier.Negative'
+        'Ext.data.identifier.Negative',
+        'SparkClassroom.data.field.SparkDate'
     ],
 
 
@@ -23,7 +24,7 @@ Ext.define('SparkClassroom.model.work.Feedback', {
         },
         {
             name: 'created_time',
-            type: 'date',
+            type: 'sparkdate',
             allowNull: true,
             persist: false
         },
