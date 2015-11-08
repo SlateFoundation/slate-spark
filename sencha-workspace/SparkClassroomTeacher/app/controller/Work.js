@@ -138,6 +138,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         workCt.add(this.getAssessCt());
     },
 
+
     // event handlers
     onNavWorkTap: function() {
         this.redirectTo('work');
@@ -152,8 +153,19 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     onActiveStudentSelect: function(activeStudent) {
+        var feedbackStore = this.getWorkFeedbackStore();
+
         this.redirectTo(activeStudent ? 'work/' + activeStudent.get('active_phase') : 'gps');
+
+        if (activeStudent) {
+            feedbackStore.getProxy().setExtraParams({
+                student_id: activeStudent.getId(),
+                sparkpoint: activeStudent.get('sparkpoint')
+            });
+            feedbackStore.load();
+        }
     },
+
 
     // controller methods
     /**
@@ -181,5 +193,4 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         workTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab);
     }
-
 });
