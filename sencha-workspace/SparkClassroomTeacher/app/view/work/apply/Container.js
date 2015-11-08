@@ -2,6 +2,8 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Container', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-apply',
     requires: [
+        'Ext.data.ChainedStore',
+        'SparkClassroom.work.FeedbackView',
         'SparkClassroom.work.apply.TasksGrid',
         'SparkClassroomTeacher.view.work.apply.Sidebar'
     ],
@@ -190,6 +192,18 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Container', {
                 docked: 'right',
                 cls: 'sidebar-col',
                 xtype: 'spark-teacher-work-apply-sidebar'
+            },
+            {
+                xtype: 'spark-feedbackview',
+
+                store: {
+                    type: 'chained',
+                    source: 'work.Feedback',
+                    filters: [{
+                        property: 'phase',
+                        value: 'apply'
+                    }]
+                }
             }
         ]
     }
