@@ -44,7 +44,7 @@ function *getHandler() {
             sparkpointIds: util.toSparkpointIds(apply.standardids),
             sparkpointCodes: util.toSparkpointCodes(apply.standardids),
             standardCodes: util.toStandardCodes(apply.standardids),
-            todos: (Array.isArray(apply.my_todos) && apply.my_todos.length > 0) ? apply.my_todos : (apply.todos || []).map(function(todo) { return { todo: todo }; }),
+            todos: (Array.isArray(apply.my_todos) && apply.my_todos.length > 0) ? apply.my_todos : (apply.todos || []).map(function(todo) { return { todo: todo, completed: false }; }),
             links: (apply.links || []).filter(link => link !== '\n').map(link => link.toString().trim()),
             timeEstimate: apply.timestimate,
             metadata: apply.metadata === '""' ? {} : apply.metadata,
@@ -215,7 +215,7 @@ function *patchHandler() {
         SELECT * FROM existing_user_todos
         UNION ALL
         SELECT * FROM new_user_todos;
-    `, [ id, studentId ]);
+    `, [ studentId, id ]);
 
     if (review) {
         if (review.rating) {
