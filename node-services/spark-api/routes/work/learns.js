@@ -78,7 +78,7 @@ function* getHandler() {
 
         reviews = yield this.pgp.manyOrNone(`
             SELECT rating,
-                   comment,
+                   comment
               FROM learn_reviews
              WHERE resource_id = ANY($1)
                AND student_id = $2`, [resourceIds, studentId]);
