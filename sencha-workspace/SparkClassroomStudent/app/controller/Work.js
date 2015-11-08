@@ -152,8 +152,16 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
+        var feedbackStore = this.getWorkFeedbackStore();
+
         if (studentSparkpoint) {
             this.refreshTabbar();
+
+            feedbackStore.getProxy().setExtraParams({
+                student_id: studentSparkpoint.getId(),
+                sparkpoint: studentSparkpoint.get('sparkpoint')
+            });
+            feedbackStore.load();
         }
     },
 
