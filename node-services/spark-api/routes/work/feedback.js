@@ -16,7 +16,7 @@
  );
  */
 
-var util = require('../../lib/util')
+var util = require('../../lib/util');
 
 const SEARCH_COLUMNS = ['phase', 'sparkpoint_id', 'student_id'];
 const PHASES = ['learn', 'conference', 'apply', 'assess'];
@@ -173,5 +173,6 @@ function *patchHandler() {
 
 module.exports = {
     get: getHandler,
-    post: patchHandler
+    post: patchHandler,
+    patch: patchHandler
 };

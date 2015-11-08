@@ -70,7 +70,7 @@ app.use(_.post('/todos', routes.todos.patch));
 // Feedback
 app.use(_.get('/work/feedback', routes.work.feedback.get));
 app.use(_.patch('/work/feedback', routes.work.feedback.patch));
-app.use(_.post('/work/feedback', routes.work.feedback.patch));
+app.use(_.post('/work/feedback', routes.work.feedback.post));
 
 // Mastery Check Scores
 app.use(_.get('/work/mastery-check-scores', routes.work['mastery-check-scores'].get));
