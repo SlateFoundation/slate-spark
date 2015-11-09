@@ -87,7 +87,7 @@ function *getHandler() {
         .filter(key => SEARCH_COLUMNS.indexOf(key) !== -1)
         .forEach(key => query[key] = this.query[key]);
 
-    if (query.phase && PHASES.indexOf(query.phase)) {
+    if (query.phase && PHASES.indexOf(query.phase) === -1) {
         this.throw(new Error(`Invalid learning phase: ${query.phase}, allowed values are: ${PHASES.join(', ')}`), 400);
     }
 
