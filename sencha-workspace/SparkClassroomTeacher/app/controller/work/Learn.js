@@ -83,8 +83,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             if (store.isLoaded()) {
                 store.load();
             }
-
-            activeStudent.loadMasteryCheckScore('learn', 'refreshMasteryCheckScore', me);
         }
 
         me.syncActiveStudent();
@@ -100,7 +98,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onLearnCtActivate: function() {
         this.syncActiveStudent();
-        this.refreshMasteryCheckScore();
     },
 
     onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames, details) {
@@ -198,6 +195,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
                 store.load();
             }
+
+            student.loadMasteryCheckScore('learn', 'refreshMasteryCheckScore', me);
         } else {
             learnCt.hide();
         }
