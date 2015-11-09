@@ -74,8 +74,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     onCompleteBtnTap: function() {
         var student = this.getActiveStudent();
 
-        student.set('assess_finish_time', new Date());
-        student.save();
+        if (!student.get('assess_finish_time')) {
+            student.set('assess_finish_time', new Date());
+            student.save();
+        }
     },
 
 
