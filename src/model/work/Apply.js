@@ -54,7 +54,11 @@ Ext.define('SparkClassroom.model.work.Apply', {
         },
         {
             name: 'reflection',
-            useNull: true
+            allowNull: true
+        },
+        {
+            name: 'grade',
+            allowNull: true
         }
     ],
 
