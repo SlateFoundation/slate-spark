@@ -86,6 +86,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 load: 'onConferenceQuestionsStoreLoad'
             },
             '#gps.ActiveStudents': {
+                update: 'onActiveStudentsStoreUpdate',
                 endupdate: 'onActiveStudentsStoreEndUpdate'
             },
             '#work.Feedback': {
@@ -155,6 +156,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         this.getWorkGroupFeedbackStore().loadRecords(feedbackStore.queryRecords('phase', 'conference')); // TODO: use { addRecords: true } and smart clearing if aggregating feedback for whole group
     },
 
+    onActiveStudentsStoreUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+        if (modifiedFieldNames.indexOf('conference_group') != -1 && activeStudent.get('conference_group')) {
+            activeStudent.loadMasteryCheckScore('conference');
+        }
+    },
+
     onActiveStudentsStoreEndUpdate: function() {
         var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
             now = new Date(),
@@ -170,7 +177,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             members = activeStudentsStore.query('conference_group', groupId).getRange();
 
             if (existingGroup = groupsStore.getById(groupId)) {
-                existingGroup.set('members', members)
+                existingGroup.set('members', members);
             } else {
                 groupsStore.add({
                     id: groupId,
