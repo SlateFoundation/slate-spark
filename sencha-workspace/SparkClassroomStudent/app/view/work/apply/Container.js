@@ -269,6 +269,8 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                                         ]
                                     },
                                     {
+                                        itemId: 'submitBtn',
+
                                         xtype: 'button',
                                         ui: 'action',
                                         margin: '0 34 24',

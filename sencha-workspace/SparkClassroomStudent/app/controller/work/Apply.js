@@ -31,8 +31,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         tasksGrid: 'spark-student-work-apply spark-work-apply-tasksgrid',
         linksCmp: 'spark-student-work-apply #linksCmp',
         submissionsView: 'spark-student-work-apply #submissionsView',
-        attachFileButton: 'spark-panel button#attachFileBtn',
-        attachLinkBtn: 'spark-panel button#attachLinkBtn'
+        attachFileButton: 'spark-student-work-apply button#attachFileBtn',
+        attachLinkBtn: 'spark-student-work-apply button#attachLinkBtn',
+        submitBtn: 'spark-student-work-apply button#submitBtn'
     },
 
     control: {
@@ -56,6 +57,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         },
         attachLinkBtn: {
             tap: 'onAttachLinkBtnTap'
+        },
+        submitBtn: {
+            tap: 'onSubmitBtnTap'
         }
     },
 
@@ -220,6 +224,16 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 });
             }
         }).down('field').focus();
+    },
+
+    onSubmitBtnTap: function() {
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint();
+
+        if (!studentSparkpoint.get('apply_ready_time')) {
+            studentSparkpoint.set('apply_ready_time', new Date());
+            studentSparkpoint.save();
+        }
     },
 
 
