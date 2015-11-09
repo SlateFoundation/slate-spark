@@ -11,8 +11,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     ],
 
     stores: [
-        'work.Feedback@SparkClassroom.store',
-        'work.MasteryCheckScores@SparkClassroom.store'
+        'work.Feedback@SparkClassroom.store'
     ],
 
     refs: {
@@ -73,6 +72,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             '#': {
                 activestudentselect: 'onActiveStudentSelect'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -155,23 +157,37 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     onActiveStudentSelect: function(activeStudent) {
         var me = this,
-            feedbackStore = me.getWorkFeedbackStore(),
-            masteryCheckScoresStore = me.getWorkMasteryCheckScoresStore(),
-            extraParams;
+            feedbackStore = me.getWorkFeedbackStore();
 
         me.redirectTo(activeStudent ? 'work/' + activeStudent.get('active_phase') : 'gps');
 
         if (activeStudent) {
-            extraParams = {
+            feedbackStore.getProxy().setExtraParams({
                 student_id: activeStudent.getId(),
                 sparkpoint: activeStudent.get('sparkpoint')
-            };
-
-            feedbackStore.getProxy().setExtraParams(extraParams);
+            });
             feedbackStore.load();
+        }
+    },
 
-            masteryCheckScoresStore.getProxy().setExtraParams(extraParams);
-            masteryCheckScoresStore.load();
+    onSocketData: function(socket, data) {
+        if (data.table != 'mastery_check_scores') {
+            return;
+        }
+
+        var itemData = data.item,
+            phase = itemData.phase,
+            activeStudent = Ext.getStore('gps.ActiveStudents').getById(itemData.student_id),
+            scoreRecord;
+
+        if (
+            activeStudent &&
+            activeStudent.get('sparkpoint_id') == itemData.sparkpoint_id &&
+            (scoreRecord = activeStudent.get(phase + '_score_record'))
+        ) {
+            // TODO: how to get new teacher name if teacher_id changes?
+            scoreRecord.set(itemData, { dirty: false });
+            activeStudent.set(phase + '_score');
         }
     },
 

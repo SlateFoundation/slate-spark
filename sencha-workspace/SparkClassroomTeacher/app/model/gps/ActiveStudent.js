@@ -1,6 +1,11 @@
+/* global SparkClassroom */
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
     extend: 'SparkClassroom.model.StudentSparkpoint',
+    requires: [
+        'SparkClassroom.model.work.MasteryCheckScore'
+    ],
+
 
     idProperty: 'student_id',
     fields: [
@@ -19,6 +24,20 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             convert: function(v, r) {
                 var student = r.get('student');
                 return student ? student.get('FullName') : '[Unenrolled Student]';
+            }
+        },
+
+        {
+            name: 'learn_score_record',
+            defaultValue: null
+        },
+        {
+            name: 'learn_score',
+            depends: ['learn_score_record'],
+            convert: function(v, r) {
+                var record = r.get('learn_score_record');
+
+                return record ? record.get('score') : record;
             }
         },
 
@@ -123,5 +142,52 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
                 return r.get('conference_feedback').length;
             }
         }
-    ]
+    ],
+
+    loadMasteryCheckScore: function(phase, callback, scope) {
+        var me = this,
+            recordProperty = phase + '_score_record',
+            record = me.get(recordProperty);
+
+        if (record) {
+            Ext.callback(callback, scope, [record]);
+            return;
+        }
+
+        SparkClassroom.model.work.MasteryCheckScore.load(null, {
+            params: {
+                student_id: me.getId(),
+                sparkpoint: me.get('sparkpoint')
+            },
+            callback: function(record, operation, success) {
+                if (!success) {
+                    record = false;
+                }
+
+                me.set(recordProperty, record, { dirty: false });
+                Ext.callback(callback, scope, [record]);
+            }
+        });
+    },
+
+    saveMasteryCheckScore: function(phase, score) {
+        var me = this,
+            recordProperty = phase + '_score_record',
+            record = me.get(recordProperty);
+
+        if (record) {
+            record.set('score', score);
+            me.set(phase + '_score'); // force calculated field to refresh
+        } else {
+            record = new SparkClassroom.model.work.MasteryCheckScore({
+                student_id: me.getId(),
+                sparkpoint: me.get('sparkpoint'),
+                phase: phase,
+                score: score
+            });
+            me.set(recordProperty, record);
+        }
+
+        record.save();
+    }
 });

@@ -1,3 +1,4 @@
+/* global { */
 /* global Slate */
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.controller.work.Learn', {
@@ -5,8 +6,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
 
     config: {
-        activeStudent: null,
-        masteryCheckScoreRecord: null
+        activeStudent: null
     },
 
 
@@ -42,12 +42,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             }
         },
         store: {
+            '#gps.ActiveStudents': {
+                update: 'onActiveStudentUpdate'
+            },
             '#work.Learns': {
                 load: 'onLearnsStoreLoad',
                 update: 'onLearnsStoreUpdate'
-            },
-            '#work.MasteryCheckScores': {
-                load: 'onMasteryCheckScoresLoad'
             }
         },
         socket: {
@@ -65,10 +65,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
 
     // config handlers
-    updateActiveStudent: function(activeStudent) {
+    updateActiveStudent: function(activeStudent, oldActiveStudent) {
         var me = this,
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy();
+
+        if (oldActiveStudent) {
+            me.writeMasteryCheckScoreTask.cancel();
+            me.writeMasteryCheckScore(oldActiveStudent);
+        }
 
         if (activeStudent) {
             // TODO: track dirty state of extraparams?
@@ -78,17 +83,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             if (store.isLoaded()) {
                 store.load();
             }
+
+            activeStudent.loadMasteryCheckScore('learn', 'refreshMasteryCheckScore', me);
         }
 
         me.syncActiveStudent();
 
-        me.writeMasteryCheckScoreTask.cancel();
-        me.writeMasteryCheckScore();
-        me.setMasteryCheckScoreRecord(null);
-    },
-
-    updateMasteryCheckScoreRecord: function() {
-        this.refreshMasteryCheckScore();
+        me.refreshMasteryCheckScore();
     },
 
 
@@ -100,6 +101,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     onLearnCtActivate: function() {
         this.syncActiveStudent();
         this.refreshMasteryCheckScore();
+    },
+
+    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames, details) {
+        if (
+            activeStudent === this.getActiveStudent() &&
+            modifiedFieldNames.indexOf('learn_score') != -1
+        ) {
+            this.refreshMasteryCheckScore();
+        }
     },
 
     onLearnsStoreLoad: function() {
@@ -223,41 +233,48 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     refreshMasteryCheckScore: function() {
-        var masteryCheckScoreRecord = this.getMasteryCheckScoreRecord(),
-            masteryCheckScoreField = this.getMasteryCheckScoreField();
+        var activeStudent = this.getActiveStudent(),
+            scoreField = this.getMasteryCheckScoreField(),
+            score;
 
-        if (masteryCheckScoreField) {
-            masteryCheckScoreField.setValue(masteryCheckScoreRecord ? masteryCheckScoreRecord.get('score') : null);
+        if (scoreField) {
+            if (activeStudent) {
+                score = activeStudent.get('learn_score');
+
+                scoreField.setPlaceHolder(score === null ? '↻' : '95');
+                scoreField.setValue(score);
+            } else {
+                scoreField.setPlaceHolder('');
+                scoreField.setValue(null);
+            }
         }
     },
 
-    writeMasteryCheckScore: function() {
+    writeMasteryCheckScore: function(activeStudent) {
         var me = this,
-            masteryCheckScoreRecord = me.getMasteryCheckScoreRecord(),
-            masteryCheckScoreField = me.getMasteryCheckScoreField(),
-            masteryCheckScore = masteryCheckScoreField && masteryCheckScoreField.getValue(),
-            activeStudent;
+            scoreField = me.getMasteryCheckScoreField(),
+            score = scoreField && scoreField.getValue(),
+            oldScore;
 
-        if (!masteryCheckScore) {
+        if (!scoreField) {
             return;
         }
 
-        if (masteryCheckScore < 0 || masteryCheckScore > 100) {
-            Ext.Msg.alert('Mastery Check Score', 'Enter a number between 0 and 100 for mastery check score');
+        activeStudent = activeStudent || me.getActiveStudent();
+
+        if (!activeStudent) {
             return;
         }
 
-        if (masteryCheckScoreRecord) {
-            masteryCheckScoreRecord.set('score', masteryCheckScore);
-        } else {
-            activeStudent = me.getActiveStudent();
+        oldScore = activeStudent.get('learn_score');
 
-            me.setMasteryCheckScoreRecord(Ext.getStore('work.MasteryCheckScores').add({
-                student_id: activeStudent.getId(),
-                sparkpoint: activeStudent.get('sparkpoint'),
-                phase: 'learn',
-                score: masteryCheckScore
-            })[0]);
+        if ((oldScore !== score) && !(oldScore === false && score === null)) {
+            if (score !== null && (score < 0 || score > 100)) {
+                Ext.Msg.alert('Mastery Check Score', 'Enter a number between 0 and 100 for mastery check score');
+                return;
+            }
+
+            activeStudent.saveMasteryCheckScore('learn', score);
         }
     }
 });
