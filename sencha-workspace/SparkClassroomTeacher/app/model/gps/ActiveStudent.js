@@ -42,6 +42,20 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         },
 
         {
+            name: 'conference_score_record',
+            defaultValue: null
+        },
+        {
+            name: 'conference_score',
+            depends: ['conference_score_record'],
+            convert: function(v, r) {
+                var record = r.get('conference_score_record');
+
+                return record ? record.get('score') : record;
+            }
+        },
+
+        {
             name: 'priority_group',
             type: 'int',
             allowNull: true,
@@ -157,7 +171,8 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         SparkClassroom.model.work.MasteryCheckScore.load(null, {
             params: {
                 student_id: me.getId(),
-                sparkpoint: me.get('sparkpoint')
+                sparkpoint: me.get('sparkpoint'),
+                phase: phase
             },
             callback: function(record, operation, success) {
                 if (!success) {

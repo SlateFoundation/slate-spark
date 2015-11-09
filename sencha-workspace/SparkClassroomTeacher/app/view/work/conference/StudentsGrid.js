@@ -67,7 +67,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
             },
             {
                 width: 80,
-                dataIndex: 'conference_mastery_score',
+                dataIndex: 'conference_score',
                 text: 'Mastery Score',
                 align: 'center',
                 cell: {
@@ -78,11 +78,11 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
                         delegate: '.input-mastery-score',
                         buffer: 500,
                         keypress: function(ev, t) {
-                            this.getRecord().set('conference_mastery_score', t.value);
+                            this.getRecord().saveMasteryCheckScore('conference', t.value);
                         }
                     }
                    },
-                tpl: '<input disabled class="field-control text-center input-mastery-score" placeholder="95" style="width: 100%" type="number" min="0" max="100" step="1" value="{conference_mastery_score:htmlEncode}">%'
+                tpl: '<input class="field-control text-center input-mastery-score" placeholder="<tpl if="conference_score === null">↻<tpl else>95</tpl>" style="width: 100%" type="number" min="0" max="100" step="1" value="{conference_score:htmlEncode}">%'
             },
             {
                 width: 64,
