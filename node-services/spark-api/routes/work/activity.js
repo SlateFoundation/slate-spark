@@ -125,11 +125,7 @@ function *patchHandler(req, res, next) {
 
         record = yield this.pgp.oneOrNone(sparkpointSql, [studentId, sparkpointId]);
 
-        if (record) {
-            // TODO: @themightychris: It seems like this response would not contain the sparkpoint,
-            // only the sparkpoint id... does this matter to you and have you encountered it?
-            delete record.id;
-        } else {
+        if (!record) {
             record = {
                 student_id: studentId,
                 sparkpoint_id: sparkpointId
@@ -143,8 +139,6 @@ function *patchHandler(req, res, next) {
                 }
             });
         }
-
-        this.body = record;
     } else {
         // Upsert time updates, return updated row
         sparkpointSql = `
@@ -154,9 +148,11 @@ function *patchHandler(req, res, next) {
                                  RETURNING *;`;
 
         record = yield this.pgp.one(sparkpointSql, [studentId, sparkpointId]);
-        delete record.id;
-        this.body = record;
     }
+
+    delete record.id;
+    record.sparkpoint = util.toSparkpointCode(record.sparkpoint_id);
+    this.body = record;
 }
 
 module.exports = {
