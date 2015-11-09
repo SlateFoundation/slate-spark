@@ -109,6 +109,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         // reselect active student if sparkpoint has changed
         if (
+            operation == 'edit' &&
             me.getSelectedActiveStudent() === activeStudent &&
             modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {

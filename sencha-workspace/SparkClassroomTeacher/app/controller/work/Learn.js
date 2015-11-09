@@ -104,6 +104,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames, details) {
         if (
+            operation == 'edit' &&
             activeStudent === this.getActiveStudent() &&
             modifiedFieldNames.indexOf('learn_score') != -1
         ) {

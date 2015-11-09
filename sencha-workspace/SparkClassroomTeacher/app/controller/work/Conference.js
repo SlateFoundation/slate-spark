@@ -155,7 +155,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onActiveStudentsStoreUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
-        if (modifiedFieldNames.indexOf('conference_group') != -1 && activeStudent.get('conference_group')) {
+        if (
+            operation == 'edit' &&
+            modifiedFieldNames.indexOf('conference_group') != -1 &&
+            activeStudent.get('conference_group')
+        ) {
             activeStudent.loadMasteryCheckScore('conference');
         }
     },
