@@ -119,7 +119,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
         var requestConfig = {};
 
         if (query) {
-            requestConfig.url = '/spark/fusebox/sparkpoints';
+            requestConfig.url = '/spark/api/sparkpoints/autocomplete';
             requestConfig.params = {
                 q: query
             };
