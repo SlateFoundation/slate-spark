@@ -11,7 +11,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     ],
 
     stores: [
-        'work.Feedback@SparkClassroom.store'
+        'work.Feedback@SparkClassroom.store',
+        'work.MasteryCheckScores@SparkClassroom.store'
     ],
 
     refs: {
@@ -153,16 +154,24 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     onActiveStudentSelect: function(activeStudent) {
-        var feedbackStore = this.getWorkFeedbackStore();
+        var me = this,
+            feedbackStore = me.getWorkFeedbackStore(),
+            masteryCheckScoresStore = me.getWorkMasteryCheckScoresStore(),
+            extraParams;
 
-        this.redirectTo(activeStudent ? 'work/' + activeStudent.get('active_phase') : 'gps');
+        me.redirectTo(activeStudent ? 'work/' + activeStudent.get('active_phase') : 'gps');
 
         if (activeStudent) {
-            feedbackStore.getProxy().setExtraParams({
+            extraParams = {
                 student_id: activeStudent.getId(),
                 sparkpoint: activeStudent.get('sparkpoint')
-            });
+            };
+
+            feedbackStore.getProxy().setExtraParams(extraParams);
             feedbackStore.load();
+
+            masteryCheckScoresStore.getProxy().setExtraParams(extraParams);
+            masteryCheckScoresStore.load();
         }
     },
 

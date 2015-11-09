@@ -18,10 +18,11 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Sidebar', {
             },
             {
                 xtype: 'formpanel',
-                disabled: true,
                 cls: 'content-card narrow',
                 items: [
                     {
+                        itemId: 'masteryCheckScoreField',
+
                         xtype: 'numberfield',
                         label: 'Mastery Check Score',
                         labelAlign: 'left',
@@ -30,6 +31,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Sidebar', {
                         inputCls: 'input-mastery-score',
                         minValue: 0,
                         maxValue: 100,
+                        maxLength: 3,
                         stepValue: 1,
                         clearIcon: false,
                         placeHolder: '95',
