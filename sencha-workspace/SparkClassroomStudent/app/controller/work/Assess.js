@@ -90,8 +90,10 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
             return;
         }
 
-        studentSparkpoint.set('assess_start_time', new Date());
-        studentSparkpoint.save();
+        if (!studentSparkpoint.get('assess_start_time')) {
+            studentSparkpoint.set('assess_start_time', new Date());
+            studentSparkpoint.save();
+        }
     },
 
     onReflectionFieldChange: function(field, value, oldValue) {
