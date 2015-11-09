@@ -91,7 +91,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         // load/update questions store
         store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-        if (store.isLoaded() || (conferenceCt && conferenceCt.isPainted())) {
+        if (store.isLoaded() || (conferenceCt && conferenceCt.hasParent())) {
             store.load();
         }
 

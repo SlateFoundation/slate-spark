@@ -59,7 +59,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
-        if (store.isLoaded() || (assessCt && assessCt.isPainted())) {
+        if (store.isLoaded() || (assessCt && assessCt.hasParent())) {
             store.load();
         }
     },
