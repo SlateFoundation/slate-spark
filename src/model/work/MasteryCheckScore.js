@@ -48,7 +48,8 @@ Ext.define('SparkClassroom.model.work.MasteryCheckScore', {
         },
         {
             name: 'score',
-            type: 'int'
+            type: 'int',
+            allowNull: true
         },
 
         // server-side derived data
