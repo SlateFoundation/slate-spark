@@ -161,6 +161,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             activeStudent.get('conference_group')
         ) {
             activeStudent.loadMasteryCheckScore('conference');
+
+            if (!activeStudent.get('conference_join_time')) {
+                activeStudent.set('conference_join_time', new Date());
+                activeStudent.save();
+            }
         }
     },
 
