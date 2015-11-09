@@ -24,7 +24,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         layout: 'hbox',
                         defaults: {
                             xtype: 'spark-gps-studentlist',
-                            //grouped: true,
+                            grouped: true,
                             flex: 1
                         },
                         items: [
@@ -38,8 +38,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 itemId: 'conferenceList',
 
                                 store: 'gps.Conference',
-                                title: 'Conference',
-                                grouped: true
+                                title: 'Conference'
                             },
                             {
                                 itemId: 'applyList',

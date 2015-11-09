@@ -40,29 +40,13 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 getDuration: function(data) {
                     switch (data.active_phase) {
                         case 'learn':
-                            if (!data.learn_start_time) {
-                                return null;
-                            }
-
-                            return Date.now() - data.learn_start_time;
-
+                            return data.learn_subphase_duration;
                         case 'conference':
-                            if (!data.conference_start_time) {
-                                return Date.now() - data.learn_finish_time;
-                            }
-
-                            return Date.now() - data.conference_start_time;
-
+                            return data.conference_subphase_duration;
                         case 'apply':
-                            return Date.now() - data.conference_finish_time;
-
+                            return data.apply_subphase_duration;
                         case 'assess':
-                            if (!data.assess_start_time) {
-                                return null;
-                            }
-
-                            return Date.now() - data.assess_start_time;
-
+                            return data.assess_subphase_duration;
                         default:
                             return null;
                     }
