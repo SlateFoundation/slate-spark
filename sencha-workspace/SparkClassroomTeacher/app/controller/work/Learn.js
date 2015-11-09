@@ -186,7 +186,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             store = me.getWorkLearnsStore(),
             student = me.getActiveStudent();
 
-        if (!learnCt) {
+        if (!learnCt || !learnCt.isPainted()) {
             return;
         }
 
