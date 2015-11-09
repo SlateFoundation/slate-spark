@@ -16,14 +16,14 @@ body {
 }
 
 .visually-hidden {
-    border: 0; 
-    clip: rect(0 0 0 0); 
+    border: 0;
+    clip: rect(0 0 0 0);
     height: 1px;
-    position: absolute; 
+    position: absolute;
     margin: -1px;
-    overflow: hidden; 
+    overflow: hidden;
     padding: 0;
-    width: 1px; 
+    width: 1px;
 }
 
 .x-dock > .x-dock-body {
@@ -61,11 +61,11 @@ a {
 }
 
 ::-moz-placeholder {
-   color: $placeholder-color;  
+   color: $placeholder-color;
 }
 
-:-ms-input-placeholder {  
-   color: $placeholder-color;  
+:-ms-input-placeholder {
+   color: $placeholder-color;
 }
 
 .text-active {
@@ -158,7 +158,7 @@ a {
 }
 
 .dated-list {
-    
+
 }
 
 .link-list {
@@ -211,7 +211,7 @@ a {
 }
 
 .spark-qna {
-    
+
 }
 
 .spark-qna-item {
@@ -255,20 +255,20 @@ a {
 
     .number-line-track-filler {
         background-color: $base-color;
-        width: 30%;
+        width: 0;
     }
-    
+
     .number-line-items {
         display: flex;
         list-style: none;
         margin: 0%;
         padding: 0;
     }
-    
+
     .number-line-item {
         flex: 1;
     }
-    
+
     .number-line-target {
         background-color: white;
         border: 1px solid #ccc;
@@ -285,19 +285,19 @@ a {
         text-align: center;
         text-decoration: none;
         width: 1.75em;
-    
+
         &:hover,
         &:focus {
             background-color: mix($base-color, white, 7%);
             border-color: $base-color;
         }
-    
+
         &.is-filled {
             background-color: $base-color;
             border-color: white;
             box-shadow: 0 0 0 1px white;
             color: white;
-    
+
             &:hover,
             &:focus {
                 background-color: darken($base-color, 7);
