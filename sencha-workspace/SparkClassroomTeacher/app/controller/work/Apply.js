@@ -22,6 +22,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         reflectionCmp: 'spark-teacher-work-apply #reflectionCmp',
         submissionsView: 'spark-teacher-work-apply #submissionsView',
         feedbackMessageField: 'spark-teacher-work-apply spark-teacher-feedbackform textareafield',
+        gradePanel: 'spark-teacher-work-apply-gradepanel',
         readyBtn: 'spark-teacher-work-apply #readyForAssessBtn',
         readyHintCmp: 'spark-teacher-work-apply #readyHintCmp'
     },
@@ -32,6 +33,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         },
         'spark-teacher-work-apply spark-teacher-feedbackform button#sendBtn': {
             tap: 'onFeedbackSendTap'
+        },
+        gradePanel: {
+            gradechange: 'onGradePanelGradeChange'
         },
         readyBtn: {
             tap: 'onReadyBtnTap'
@@ -108,6 +112,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         feedbackMessageField.reset();
     },
 
+    onGradePanelGradeChange: function(gradePanel, grade) {
+        var apply = this.getActiveApply();
+        apply.set('grade', grade);
+
+        if (apply.dirty) {
+            apply.save();
+        }
+    },
+
     onReadyBtnTap: function() {
         var student = this.getActiveStudent();
 
@@ -131,7 +144,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             if (apply = me.getWorkAppliesStore().getById(item.fb_apply_id)) {
                 apply.set({
                     reflection: item.reflection,
-                    submissions: Ext.decode(item.submissions, true) || []
+                    submissions: Ext.decode(item.submissions, true) || [],
+                    grade: item.grade
                 }, { dirty: false });
 
                 if ((activeApply = me.getActiveApply()) && activeApply.getId() == apply.getId()) {
@@ -178,6 +192,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
 
             me.getReadyHintCmp().setData(student.getData());
+
+            me.getGradePanel().setGrade(apply.get('grade'));
 
             applyCt.show();
         } else {
