@@ -20,8 +20,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     ],
 
     refs: {
-        gpsList: 'spark-gps-studentlist#conferenceList',
-
         conferenceCt: 'spark-teacher-work-conference',
         sparkpointCt: 'spark-teacher-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
@@ -264,9 +262,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     onAddStudentSelectFieldChange: function(selectField, student) {
         if (student) {
             student.set('conference_group', this.getActiveStudent().get('conference_group'));
-
-            // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
-            this.getGpsList().refresh();
         }
     },
 
@@ -409,9 +404,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             me.getJoinConferenceCt().setHidden(!me.getWorkConferenceGroupsStore().getCount());
             me.getConferencingCt().setHidden(!conferenceGroup);
             me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
-
-            // TODO: remove this hack, figure out why the list doesn't refresh itself consistently when conference_group gets set
-            me.getGpsList().refresh();
         }
     },
 

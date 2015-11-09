@@ -2,7 +2,7 @@
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.util.TaskManager'
+        'Ext.util.DelayedTask'
     ],
 
 
@@ -66,6 +66,16 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
 
+    // controller templates methods
+    init: function() {
+        var me = this;
+
+        me.workaroundRefreshQueue = [];
+        me.workaroundListCache = {};
+        me.workaroundRefreshListsTask = new Ext.util.DelayedTask(me.workaroundRefreshLists, me);
+    },
+
+
     // config handlers
     updateActiveSection: function() {
         this.setSelectedActiveStudent(null);
@@ -93,7 +103,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onActiveStudentStoreUpdate: function(store, activeStudent, operation, modifiedFieldNames) {
-        var me = this;
+        var me = this,
+            workaroundRefreshQueue = me.workaroundRefreshQueue,
+            listId;
 
         // reselect active student if sparkpoint has changed
         if (
@@ -102,6 +114,13 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         ) {
             me.setSelectedActiveStudent(null);
             me.setSelectedActiveStudent(activeStudent);
+        }
+
+        // populate workaround queue
+        listId = activeStudent.get('active_phase') + 'List';
+        if (workaroundRefreshQueue.indexOf(listId) == -1) {
+            workaroundRefreshQueue.push(listId);
+            me.workaroundRefreshListsTask.delay(500);
         }
     },
 
@@ -185,5 +204,20 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     refreshGps: Ext.Function.createBuffered(function() {
         this.getGpsActiveStudentsStore().loadUpdates();
-    }, 1000)
+    }, 1000),
+
+    /**
+     * This function manually refreshes all the lists queued for refresh to workaround bugs with lists refreshing themselves after chained store updates
+     */
+    workaroundRefreshLists: function() {
+        var me = this,
+            gpsCt = me.getGpsCt(),
+            workaroundListCache = me.workaroundListCache,
+            workaroundRefreshQueue = me.workaroundRefreshQueue,
+            listId;
+
+        while (listId = workaroundRefreshQueue.pop()) {
+            (workaroundListCache[listId] || (workaroundListCache[listId] = gpsCt.down('#'+listId))).refresh();
+        }
+    }
 });
