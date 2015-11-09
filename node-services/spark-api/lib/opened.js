@@ -136,7 +136,8 @@ var filterObjectKeys = require('./util').filterObjectKeys,
         headers: {
             accept: 'application/json'
         },
-        json: true
+        json: true,
+        timeout: 5000
     };
 
 try {
@@ -372,7 +373,7 @@ function* getResources(params) {
     if (!openEdAccessToken) {
         yield getAccessToken();
     }
-    
+
     clientOptions.uri = openEdClientBaseUrl + url;
 
     resources = yield request(clientOptions);
