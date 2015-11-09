@@ -25,7 +25,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
             itemTpl: [
                 '<div class="flex-ct">',
                     '<div class="sparkpoint-code flex-1">{code}</div>',
-                    
+
                     '<tpl if="recommended">',
                         '<div class="sparkpoint-recommended"></div>',
                     '</tpl>',
@@ -83,19 +83,23 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
             },
             {
                 text: 'Standards',
-                itemId: 'standards'
+                itemId: 'standards',
+                disabled: true
             },
             {
                 text: 'GPS',
-                itemId: 'gps'
+                itemId: 'gps',
+                disabled: true
             },
             {
                 text: 'Activity',
-                itemId: 'activity'
+                itemId: 'activity',
+                disabled: true
             },
             {
                 text: 'Help',
-                itemId: 'help'
+                itemId: 'help',
+                disabled: true
             }
         ]
     },
