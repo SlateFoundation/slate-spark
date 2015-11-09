@@ -108,7 +108,12 @@ function* getHandler() {
     if (openedIds.length === 0) {
         opened = [];
     } else {
-        opened = yield OpenEd.getResources(params);
+        try {
+            opened = yield OpenEd.getResources(params);
+        } catch (e) {
+            console.error('OPENED: ', e);
+            opened = [];
+        }
 
         if (!Array.isArray(opened.resources)) {
             yield slack.postErrorToSlack('OpenEd failed to return resources!', this, opened);
