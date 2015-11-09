@@ -10,6 +10,8 @@ Ext.define('SparkClassroomStudent.view.work.assess.Footer', {
         },
         items: [
             {
+                itemId: 'submitBtn',
+
                 xtype: 'button',
                 ui: 'action',
                 text: 'Submit for Grading'

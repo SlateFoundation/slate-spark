@@ -15,7 +15,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     refs: {
         assessCt: 'spark-student-work-assess',
         illuminateLauncher: 'spark-student-work-assess #illuminateLauncher',
-        reflectionField: 'spark-student-work-assess #reflectionField'
+        reflectionField: 'spark-student-work-assess #reflectionField',
+        submitBtn: 'spark-student-work-assess button#submitBtn'
     },
 
     control: {
@@ -27,6 +28,9 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         },
         reflectionField: {
             change: 'onReflectionFieldChange'
+        },
+        submitBtn: {
+            tap: 'onSubmitBtnTap'
         }
     },
 
@@ -99,6 +103,21 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     onReflectionFieldChange: function(field, value, oldValue) {
         if (oldValue !== null) {
             this.writeReflection();
+        }
+    },
+
+    onSubmitBtnTap: function() {
+        var studentSparkpoint = this.getStudentSparkpoint();
+
+        // TODO: disable/enable the button automatically
+        if (!studentSparkpoint.get('assess_start_time')) {
+            Ext.Msg.alert('Not Ready', 'You must launch Illuminate and complete your assessment as directed before submitting for grading');
+            return;
+        }
+
+        if (!studentSparkpoint.get('assess_ready_time')) {
+            studentSparkpoint.set('assess_ready_time', new Date());
+            studentSparkpoint.save();
         }
     },
 
