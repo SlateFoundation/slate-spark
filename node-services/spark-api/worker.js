@@ -10,7 +10,9 @@ var koa = require('koa'),
     _ = require('koa-route'),
     routes = require('./routes/index'),
     error = require('koa-error'),
-    slack = require('./lib/slack');
+    slack = require('./lib/slack'),
+    json = require('koa-json');
+
 
 app.use(middleware.response_time);
 app.use(error());
@@ -26,6 +28,7 @@ app.use(middleware.database.pgp({
     config: config.database,
     slateConfig: config.slate
 }));
+app.use(json());
 
 // Standards
 app.use(_.get('/standards/:id', routes.standards.get));
