@@ -100,6 +100,107 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return 'learn';
             }
+        },
+        {
+            name: 'learn_subphase_duration',
+            persist: false,
+            depends: [
+                'learn_start_time'
+            ],
+            convert: function(v, r) {
+                var learnStartTime = r.get('learn_start_time');
+
+                if (!learnStartTime) {
+                    return null;
+                }
+
+                return Date.now() - learnStartTime;
+            }
+        },
+        {
+            name: 'conference_subphase_duration',
+            persist: false,
+            depends: [
+                'learn_start_time',
+                'conference_start_time'
+            ],
+            convert: function(v, r) {
+                var learnFinishTime = r.get('learn_finish_time'),
+                    conferenceStartTime = r.get('conference_start_time'),
+                    conferenceJoinTime = r.get('conference_join_time');
+
+                if (!learnFinishTime) {
+                    return null;
+                }
+
+                if (!conferenceStartTime) {
+                    return Date.now() - learnFinishTime;
+                }
+
+                if (!conferenceJoinTime) {
+                    return Date.now() - conferenceStartTime;
+                }
+
+                return Date.now() - conferenceJoinTime;
+            }
+        },
+        {
+            name: 'apply_subphase_duration',
+            persist: false,
+            depends: [
+                'conference_finish_time'
+            ],
+            convert: function(v, r) {
+                var conferenceFinishTime = r.get('conference_finish_time'),
+                    applyStartTime = r.get('apply_start_time'),
+                    applyReadyTime = r.get('apply_ready_time');
+
+                if (!conferenceFinishTime) {
+                    return null;
+                }
+
+                if (!applyStartTime) {
+                    return Date.now() - conferenceFinishTime;
+                }
+
+                if (!applyReadyTime) {
+                    return Date.now() - applyStartTime;
+                }
+
+                return Date.now() - applyReadyTime;
+            }
+        },
+        {
+            name: 'assess_subphase_duration',
+            persist: false,
+            depends: [
+                'apply_finish_time',
+                'assess_start_time'
+            ],
+            convert: function(v, r) {
+                var applyFinishTime = r.get('apply_finish_time'),
+                    assessStartTime = r.get('assess_start_time'),
+                    assessReadyTime = r.get('assess_ready_time'),
+                    assessFinishTime = r.get('assess_finish_time');
+
+                if (!applyFinishTime) {
+                    return null;
+                }
+
+                if (!assessStartTime) {
+                    return Date.now() - applyFinishTime;
+                }
+
+                if (!assessReadyTime) {
+                    return Date.now() - assessStartTime;
+                }
+
+                if (!assessFinishTime) {
+                    return Date.now() - assessReadyTime;
+                }
+
+                return Date.now() - assessFinishTime;
+            }
         }
     ],
 
