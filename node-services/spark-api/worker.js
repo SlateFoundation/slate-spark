@@ -77,7 +77,9 @@ app.use(_.get('/work/mastery-check-scores', routes.work['mastery-check-scores'].
 app.use(_.patch('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
 app.use(_.post('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
 
-
+// Sparkpoints
+app.use(_.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get));
+app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get));
 
 // TODO: use node production/development variables in startup scripts and package.json scripts
 if (require('os').hostname().indexOf('spark') !== -1) {
