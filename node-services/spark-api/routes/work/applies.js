@@ -99,7 +99,7 @@ function *patchHandler() {
 
     if (typeof grade === 'number') {
         if (grade < 0 && grade > 4) {
-            this.throw(new Error('Grades should be between 1-4'));
+            this.throw(new Error('Grades should be between 0-4'));
         } else if (!this.isTeacher) {
             this.throw(new Error('Only teachers can grade applies'), 403);
         } else {
