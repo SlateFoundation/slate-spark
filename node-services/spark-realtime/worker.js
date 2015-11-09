@@ -60,6 +60,10 @@ io.use(function (socket, next) {
 nats.subscribe(config.schema + '.>', function (msg) {
     var data, userId;
 
+    if (!msg) {
+        return;
+    }
+
     msg = JSON.parse(msg);
 
     if (!msg.item || config.ignore.indexOf(msg.table) !== -1) {
