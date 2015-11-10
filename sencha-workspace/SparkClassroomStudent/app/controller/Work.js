@@ -92,7 +92,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     listen: {
         controller: {
             '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad'
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                studentsparkpointupdate: 'onStudentSparkpointUpdate'
             }
         },
         socket: {
@@ -171,6 +172,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         this.setStudentSparkpoint(studentSparkpoint);
     },
 
+    onStudentSparkpointUpdate: function() {
+        this.refreshTabbar();
+    },
+
     onNavWorkTap: function() {
         this.redirectTo('work');
     },
@@ -189,7 +194,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         var me = this,
             tableName = data.table,
             itemData = data.item,
-            studentSparkpoint;
+            studentSparkpoint, modifiedFieldNames;
 
 
         if (tableName == 'student_sparkpoint') {
@@ -198,8 +203,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
                 studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
                 studentSparkpoint.get('student_id') == itemData.student_id
             ) {
-                studentSparkpoint.set(itemData, { dirty: false });
-                me.refreshTabbar();
+                modifiedFieldNames = studentSparkpoint.set(itemData, { dirty: false });
+                me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames);
             }
         } else if (tableName == 'teacher_feedback') {
             if (
