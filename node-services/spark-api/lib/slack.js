@@ -1,7 +1,9 @@
 var request = require('koa-request');
 
-function postErrorToSlack(error, ctx, details) {
+function postErrorToSlack(error, ctx, details, broadcast) {
     delete ctx.request.headers['x-nginx-session'];
+
+    broadcast = typeof broadcast === 'boolean' ? broadcast : true;
 
     return request({
         method: 'POST',
@@ -9,7 +11,8 @@ function postErrorToSlack(error, ctx, details) {
         json: true,
         body: {
             text: [
-                `<!channel> *HTTP ${ctx.response.status} ${ctx.request.method} ${ctx.request.url}* (${new Date()})`,
+                broadcast ? '<!channel>' : '',
+                `*HTTP ${ctx.response.status} ${ctx.request.method} ${ctx.request.url}* (${new Date()})`,
                 '*Stack:*',
                 '```' + error.stack + '```',
                 '*Request:*',

@@ -112,11 +112,12 @@ function* getHandler() {
             opened = yield OpenEd.getResources(params);
         } catch (e) {
             console.error('OPENED: ', e);
+            yield slack.postErrorToSlack('An error occurred retrieving OpenEd results', this, e, true);
             opened = [];
         }
 
         if (!Array.isArray(opened.resources)) {
-            yield slack.postErrorToSlack('OpenEd failed to return resources!', this, opened);
+            yield slack.postErrorToSlack('OpenEd failed to return resources!', this, opened, false);
         }
 
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
