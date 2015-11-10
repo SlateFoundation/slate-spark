@@ -106,14 +106,17 @@ function* getHandler() {
     }
 
     if (openedIds.length === 0) {
-        opened = [];
+        let error = new Error('OPENED: Unable to lookup vendor ids for specified standards: ' + standardIds.join(', '));
+        console.error(error);
+        yield slack.postErrorToSlack(error, this, { standardIds: standardIds }, true);
+        opened = { resources: [] };
     } else {
         try {
             opened = yield OpenEd.getResources(params);
         } catch (e) {
             console.error('OPENED: ', e);
-            yield slack.postErrorToSlack('An error occurred retrieving OpenEd results', this, e, true);
-            opened = [];
+            yield slack.postErrorToSlack(e, this, null, true);
+            opened = { resources: [] };
         }
 
         if (!Array.isArray(opened.resources)) {

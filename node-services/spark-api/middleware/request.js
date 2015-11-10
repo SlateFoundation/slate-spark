@@ -38,6 +38,9 @@ module.exports = function *parseRequest(next) {
 
     if (query.sparkpoint) {
         query.sparkpoint_id = util.toSparkpointId(query.sparkpoint);
+        if (!query.sparkpoint_id) {
+            ctx.throw(new Error(`${query.sparkpoint} is an invalid sparkpoint`), 404);
+        }
     }
 
     // TODO: migrate database schemas to section_id, right now section is stored as section_id in postgresql
