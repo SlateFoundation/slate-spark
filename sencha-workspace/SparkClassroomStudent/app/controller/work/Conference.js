@@ -124,6 +124,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         if (studentSparkpoint && !conferenceQuestionsStore.isLoaded()) {
             conferenceQuestionsStore.load();
         }
+
+        me.refreshRequestBtn();
     },
 
     onConferenceQuestionsStoreBeforeLoad: function() {

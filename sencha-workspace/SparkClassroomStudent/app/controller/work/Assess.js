@@ -79,11 +79,14 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     },
 
     onAssessCtActivate: function(learnCt) {
-        var assessmentsStore = this.getWorkAssessmentsStore();
+        var me = this,
+            assessmentsStore = me.getWorkAssessmentsStore();
 
-        if (this.getStudentSparkpoint() && !assessmentsStore.isLoaded()) {
+        if (me.getStudentSparkpoint() && !assessmentsStore.isLoaded()) {
             assessmentsStore.load();
         }
+
+        me.refreshSubmitBtn();
     },
 
     onAssessmentsStoreLoad: function(assessmentsStore) {

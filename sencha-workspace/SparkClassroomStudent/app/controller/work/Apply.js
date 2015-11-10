@@ -153,7 +153,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onApplyCtActivate: function() {
-        this.setRenderedApply(this.getActiveApply());
+        var me = this;
+
+        me.setRenderedApply(me.getActiveApply());
+        me.refreshSubmitBtn();
     },
 
     onAppliesStoreLoad: function(appliesStore) {
