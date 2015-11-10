@@ -137,7 +137,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
             me.getAppliesGrid().setSelection(apply);
         }
-debugger;
+
         me.getApplyPickerCt().setHidden(apply);
         me.getSelectedApplyCt().setHidden(!apply);
     },
