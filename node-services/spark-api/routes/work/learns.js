@@ -109,14 +109,14 @@ function* getHandler() {
         let error = new Error('OPENED: Unable to lookup vendor ids for specified standards: ' + standardIds.join(', '));
         console.error(error);
         yield slack.postErrorToSlack(error, this, { standardIds: standardIds }, true);
-        opened = { resources: [] };
+        opened = [];
     } else {
         try {
             opened = yield OpenEd.getResources(params);
         } catch (e) {
             console.error('OPENED: ', e);
             yield slack.postErrorToSlack(e, this, null, true);
-            opened = { resources: [] };
+            opened = [];
         }
 
         if (!Array.isArray(opened.resources)) {
