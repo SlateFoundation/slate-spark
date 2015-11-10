@@ -181,7 +181,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         progressBanner.show();
 
         readyBtn.setDisabled(learnFinishTime || completed < required);
-        readyBtn.setText(learnFinishTime ? 'Conference started': 'Ready for Conference');
+        readyBtn.setText(learnFinishTime ? 'Conference Started': 'Ready for Conference');
     },
 
     ensureLearnPhaseStarted: function() {
