@@ -287,7 +287,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
 
         requestBtn.setDisabled(conferenceStartTime || !studentSparkpoint.get('learn_finish_time'));
-        requestBtn.setText(conferenceStartTime ? 'Conference Requested' : 'Request a Conference');
+        requestBtn.setText(conferenceStartTime ? 'Conference Requested' : requestBtn.config.text);
     },
 
     writeWorksheet: function() {

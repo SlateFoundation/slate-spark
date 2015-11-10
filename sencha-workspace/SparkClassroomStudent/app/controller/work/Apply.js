@@ -259,7 +259,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         }
 
         submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('apply_start_time'));
-        submitBtn.setText(applyReadyTime ? 'Submitted to Teacher' : 'Submit to Teacher');
+        submitBtn.setText(applyReadyTime ? 'Submitted to Teacher' : submitBtn.config.text);
     },
 
     writeReflection: Ext.Function.createBuffered(function() {
