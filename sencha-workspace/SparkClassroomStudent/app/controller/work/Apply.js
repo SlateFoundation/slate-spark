@@ -108,8 +108,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     updateRenderedApply: function(apply) {
         var me = this,
-            applyPickerCt = me.getApplyPickerCt(),
-            selectedApplyCt = me.getSelectedApplyCt(),
             studentSparkpoint = me.getStudentSparkpoint(),
             startTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
 
@@ -139,9 +137,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
             me.getAppliesGrid().setSelection(apply);
         }
-
-        applyPickerCt.setHidden(apply);
-        selectedApplyCt.setHidden(!apply);
+debugger;
+        me.getApplyPickerCt().setHidden(apply);
+        me.getSelectedApplyCt().setHidden(!apply);
     },
 
 
