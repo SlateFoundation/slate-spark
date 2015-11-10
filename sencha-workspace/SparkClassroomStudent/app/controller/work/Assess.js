@@ -37,7 +37,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     listen: {
         controller: {
             '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad'
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                studentsparkpointupdate: 'onStudentSparkpointUpdate'
             }
         },
         store: {
@@ -50,8 +51,9 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
-        var store = this.getWorkAssessmentsStore(),
-           assessCt = this.getAssessCt();
+        var me = this,
+            store = me.getWorkAssessmentsStore(),
+            assessCt = me.getAssessCt();
 
         if (!studentSparkpoint) {
             return;
@@ -62,12 +64,18 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         if (store.isLoaded() || (assessCt && assessCt.hasParent())) {
             store.load();
         }
+
+        me.refreshSubmitBtn();
     },
 
 
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onStudentSparkpointUpdate: function() {
+        this.refreshSubmitBtn();
     },
 
     onAssessCtActivate: function(learnCt) {
@@ -118,11 +126,25 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         if (!studentSparkpoint.get('assess_ready_time')) {
             studentSparkpoint.set('assess_ready_time', new Date());
             studentSparkpoint.save();
+            this.refreshSubmitBtn();
         }
     },
 
 
     // controller methods
+    refreshSubmitBtn: function() {
+        var submitBtn = this.getSubmitBtn(),
+            studentSparkpoint = this.getStudentSparkpoint(),
+            assessReadyTime = studentSparkpoint && studentSparkpoint.get('assess_ready_time');
+
+        if (!submitBtn || !studentSparkpoint) {
+            return;
+        }
+
+        submitBtn.setDisabled(assessReadyTime || !studentSparkpoint.get('assess_start_time'));
+        submitBtn.setText(assessReadyTime ? 'Submitted to Teacher' : 'Submit to Teacher');
+    },
+
     writeReflection: Ext.Function.createBuffered(function() {
         var me = this;
 
