@@ -15,6 +15,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
     refs: {
         applyCt: 'spark-teacher-work-apply',
+        applyPickerCt: 'spark-teacher-work-apply #applyPickerCt',
+        selectedApplyCt: 'spark-teacher-work-apply #selectedApplyCt',
         headerCmp: 'spark-teacher-work-apply #headerCmp',
         timelineCmp: 'spark-teacher-work-apply #timelineCmp',
         linksCmp: 'spark-teacher-work-apply #linksCmp',
@@ -194,10 +196,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             me.getReadyHintCmp().setData(student.getData());
 
             me.getGradePanel().setGrade(apply.get('grade'));
-
-            applyCt.show();
-        } else {
-            applyCt.hide();
         }
+
+        me.getApplyPickerCt().setHidden(apply);
+        me.getSelectedApplyCt().setHidden(!apply);
     }
 });
