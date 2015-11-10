@@ -51,6 +51,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             }
         },
         store: {
+            '#gps.ActiveStudents': {
+                update: 'onActiveStudentUpdate'
+            },
             '#work.Applies': {
                 load: 'onAppliesStoreLoad'
             }
@@ -63,7 +66,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        var store = this.getWorkAppliesStore(),
+        var me = this,
+            store = me.getWorkAppliesStore(),
             proxy = store.getProxy();
 
         if (activeStudent) {
@@ -73,7 +77,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             store.load();
         }
 
-        this.setActiveApply(null);
+        me.setActiveApply(null);
+
+        me.syncReadyState();
     },
 
     updateActiveApply: function(apply) {
@@ -86,8 +92,18 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         this.setActiveStudent(student);
     },
 
+    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+        if (
+            operation == 'edit' &&
+            activeStudent === this.getActiveStudent()
+        ) {
+            this.syncReadyState();
+        }
+    },
+
     onApplyCtActivate: function() {
         this.syncActiveApply();
+        this.syncReadyState();
     },
 
     onAppliesStoreLoad: function(appliesStore) {
@@ -129,6 +145,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         if (!student.get('apply_finish_time')) {
             student.set('apply_finish_time', new Date());
             student.save();
+            this.syncReadyState();
         }
     },
 
@@ -200,5 +217,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
         me.getApplyPickerCt().setHidden(apply);
         me.getSelectedApplyCt().setHidden(!apply);
+    },
+
+    syncReadyState: function() {
+        var me = this,
+            gradePanel = me.getGradePanel(),
+            readyBtn = me.getReadyBtn(),
+            student = me.getActiveStudent(),
+            applyReadyTime = student && student.get('apply_ready_time'),
+            applyFinishTime = student && student.get('apply_finish_time');
+
+        if (!gradePanel || !readyBtn || !student) {
+            return;
+        }
+
+        gradePanel.setHidden(!applyReadyTime);
+        readyBtn.setText(applyFinishTime ? 'Moved to Assess' : readyBtn.config.text);
+        readyBtn.setDisabled(!applyReadyTime || applyFinishTime);
     }
 });
