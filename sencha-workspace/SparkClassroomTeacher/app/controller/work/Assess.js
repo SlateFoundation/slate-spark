@@ -29,8 +29,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     listen: {
         controller: {
             '#': {
-                activestudentselect: 'onActiveStudentSelect',
-                studentupdate: 'onStudentUpdate'
+                activestudentselect: 'onActiveStudentSelect'
+            }
+        },
+        store: {
+            '#gps.ActiveStudents': {
+                update: 'onActiveStudentUpdate'
             }
         }
     },
@@ -65,8 +69,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         this.syncActiveStudent();
     },
 
-    onStudentUpdate: function(student) {
-        if (student === this.getActiveStudent()) {
+    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+        if (
+            operation == 'edit' &&
+            activeStudent === this.getActiveStudent() &&
+            modifiedFieldNames.indexOf('assess_ready_time') != -1
+        ) {
             this.syncActiveStudent();
         }
     },
