@@ -130,14 +130,16 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     onReadyBtnTap: function() {
-        var studentSparkpoint = this.getStudentSparkpoint();
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint();
 
         if (!studentSparkpoint.get('learn_finish_time')) {
             studentSparkpoint.set('learn_finish_time', new Date());
             studentSparkpoint.save();
+            me.refreshLearnProgress();
         }
 
-        this.redirectTo('work/conference')
+        me.redirectTo('work/conference')
     },
 
 
