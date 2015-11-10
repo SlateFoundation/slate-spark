@@ -32,7 +32,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     listen: {
         controller: {
             '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad'
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                studentsparkpointupdate: 'onStudentSparkpointUpdate'
             }
         },
         store: {
@@ -72,6 +73,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onStudentSparkpointUpdate: function() {
+        this.refreshLearnProgress();
     },
 
     onLearnCtActivate: function(learnCt) {
@@ -140,13 +145,16 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     refreshLearnProgress: function() {
         var me = this,
             progressBanner = me.getProgressBanner(),
+            readyBtn = me.getReadyBtn(),
+            studentSparkpoint = me.getStudentSparkpoint(),
+            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_finish_time'),
             learns = me.getWorkLearnsStore().getRange(),
             count = learns.length,
             completed = 0,
             required = Math.min(count, 5),
             i = 0;
 
-        if (!progressBanner) {
+        if (!progressBanner || !readyBtn) {
             // learns tab hasn't been activated yet
             return;
         }
@@ -170,7 +178,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         progressBanner.show();
 
-        me.getReadyBtn().setDisabled(completed < required);
+        readyBtn.setDisabled(learnFinishTime || completed < required);
+        readyBtn.setText(learnFinishTime ? 'Conference started': 'Ready for Conference');
     },
 
     ensureLearnPhaseStarted: function() {
