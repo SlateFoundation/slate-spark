@@ -136,6 +136,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             me.getReflectionField().setValue(apply.get('reflection'));
 
             me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
+
+            me.getAppliesGrid().setSelection(apply);
         }
 
         applyPickerCt.setHidden(apply);
