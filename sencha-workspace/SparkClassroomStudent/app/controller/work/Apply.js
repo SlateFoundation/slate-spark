@@ -41,7 +41,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             activate: 'onApplyCtActivate'
         },
         appliesGrid: {
-            select: 'onAppliesGridSelect'
+            selectionchange: 'onAppliesGridSelectionChange'
         },
         reflectionField: {
             change: 'onReflectionFieldChange'
@@ -152,6 +152,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onStudentSparkpointUpdate: function() {
         this.refreshSubmitBtn();
+        this.refreshChooseSelectedApplyBtn();
     },
 
     onApplyCtActivate: function() {
@@ -165,8 +166,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         this.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
 
-    onAppliesGridSelect: function(appliesGrid) {
-        this.getChooseSelectedApplyBtn().enable();
+    onAppliesGridSelectionChange: function() {
+        this.refreshChooseSelectedApplyBtn();
     },
 
     onReflectionFieldChange: function() {
@@ -193,6 +194,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         if (!studentSparkpoint.get('apply_start_time')) {
             studentSparkpoint.set('apply_start_time', new Date());
             studentSparkpoint.save();
+            me.refreshChooseSelectedApplyBtn();
         }
     },
 
@@ -251,6 +253,30 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // controller methods
+    refreshChooseSelectedApplyBtn: function() {
+        var me = this,
+            chooseSelectedApplyBtn = me.getChooseSelectedApplyBtn(),
+            studentSparkpoint = me.getStudentSparkpoint(),
+            appliesGrid = me.getAppliesGrid(),
+            gridSelection = appliesGrid && appliesGrid.getSelections()[0],
+            applyStartTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
+
+        if (!chooseSelectedApplyBtn || !studentSparkpoint) {
+            return;
+        }
+
+        chooseSelectedApplyBtn.setDisabled(!studentSparkpoint.get('conference_finish_time') || !gridSelection);
+        chooseSelectedApplyBtn.setText(
+            applyStartTime ?
+            (
+                gridSelection && gridSelection.getId() === studentSparkpoint.get('selected_fb_apply_id') ?
+                'Return to Selected Apply &rarr;' :
+                'Switch to Selected Apply &rarr;'
+            ) :
+            chooseSelectedApplyBtn.config.text
+        );
+    },
+
     refreshSubmitBtn: function() {
         var submitBtn = this.getSubmitBtn(),
             studentSparkpoint = this.getStudentSparkpoint(),
