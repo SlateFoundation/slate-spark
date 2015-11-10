@@ -108,7 +108,7 @@ function* getHandler() {
     if (openedIds.length === 0) {
         let error = new Error('OPENED: Unable to lookup vendor ids for specified standards: ' + standardIds.join(', '));
         console.error(error);
-        yield slack.postErrorToSlack(error, this, { standardIds: standardIds }, true);
+        // yield slack.postErrorToSlack(error, this, { standardIds: standardIds }, true);
         opened = [];
     } else {
         try {
