@@ -102,7 +102,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         this.syncActiveStudent();
     },
 
-    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames, details) {
+    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
         if (
             operation == 'edit' &&
             activeStudent === this.getActiveStudent() &&
