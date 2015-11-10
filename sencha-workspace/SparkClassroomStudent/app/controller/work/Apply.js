@@ -66,7 +66,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     listen: {
         controller: {
             '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad'
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                studentsparkpointupdate: 'onStudentSparkpointUpdate'
             }
         },
         store: {
@@ -91,6 +92,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
         store.load();
+
+        me.refreshSubmitBtn();
     },
 
     updateActiveApply: function(apply, oldApply) {
@@ -143,6 +146,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onStudentSparkpointUpdate: function() {
+        this.refreshSubmitBtn();
     },
 
     onApplyCtActivate: function() {
@@ -233,11 +240,25 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         if (!studentSparkpoint.get('apply_ready_time')) {
             studentSparkpoint.set('apply_ready_time', new Date());
             studentSparkpoint.save();
+            this.refreshSubmitBtn();
         }
     },
 
 
     // controller methods
+    refreshSubmitBtn: function() {
+        var submitBtn = this.getSubmitBtn(),
+            studentSparkpoint = this.getStudentSparkpoint(),
+            applyReadyTime = studentSparkpoint && studentSparkpoint.get('apply_ready_time');
+
+        if (!submitBtn || !studentSparkpoint) {
+            return;
+        }
+
+        submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('apply_start_time'));
+        submitBtn.setText(applyReadyTime ? 'Submitted to Teacher' : 'Submit to Teacher');
+    },
+
     writeReflection: Ext.Function.createBuffered(function() {
         var apply = this.getActiveApply();
 
