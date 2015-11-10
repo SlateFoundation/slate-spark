@@ -109,7 +109,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             //     appliesStore.load();
             // }
 
-            me.getCompleteBtn().setDisabled(!student.get('assess_start_time'));
+            me.getCompleteBtn().setDisabled(!student.get('assess_ready_time'));
         } else {
             assessCt.hide();
         }
