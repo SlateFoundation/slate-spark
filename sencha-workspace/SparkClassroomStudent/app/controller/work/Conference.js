@@ -50,7 +50,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     listen: {
         controller: {
             '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad'
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                studentsparkpointupdate: 'onStudentSparkpointUpdate'
             }
         },
         store: {
@@ -99,11 +100,18 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         if (sparkpointCt) {
             sparkpointCt.setTitle(sparkpointCode);
         }
+
+        // update request button text/disabled
+        me.refreshRequestBtn();
     },
 
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onStudentSparkpointUpdate: function() {
+        this.refreshRequestBtn();
     },
 
     onConferenceCtActivate: function() {
@@ -174,6 +182,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         if (!studentSparkpoint.get('conference_start_time')) {
             studentSparkpoint.set('conference_start_time', new Date());
             studentSparkpoint.save();
+            this.refreshRequestBtn();
         }
     },
 
@@ -264,6 +273,19 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             title: 'Resources',
             items: items
         });
+    },
+
+    refreshRequestBtn: function() {
+        var requestBtn = this.getRequestBtn(),
+            studentSparkpoint = this.getStudentSparkpoint(),
+            conferenceStartTime = studentSparkpoint && studentSparkpoint.get('conference_start_time');
+
+        if (!requestBtn || !studentSparkpoint) {
+            return;
+        }
+
+        requestBtn.setDisabled(conferenceStartTime || !studentSparkpoint.get('learn_finish_time'));
+        requestBtn.setText(conferenceStartTime ? 'Conference Requested' : 'Request a Conference');
     },
 
     writeWorksheet: function() {
