@@ -374,24 +374,24 @@ function toSparkpointId(sparkpoint) {
     sparkpoint = '' + sparkpoint;
 
     if (isAsnId(sparkpoint)) {
-        return lookup.standard.idToSparkpointId[sparkpoint];
+        return lookup.entities.sparkpoint.idToSparkpointId[sparkpoint.toLowerCase()];
     }
 
-    return isMatchbookId(sparkpoint) ? sparkpoint : lookup.sparkpoint.codeToId[sparkpoint.toLowerCase()];
+    return isMatchbookId(sparkpoint) ? sparkpoint : lookup.codeToId('sparkpoint', sparkpoint);
 }
 
 function toSparkpointCode(sparkpoint) {
     sparkpoint = '' + sparkpoint;
 
     if (isMatchbookId(sparkpoint)) {
-        return lookup.sparkpoint.idToCode[sparkpoint];
+        return lookup.sparkpoint.idToCode[sparkpoint.toLowerCase()];
     }
 
     if (isAsnId(sparkpoint)) {
-        return lookup.sparkpoint.idToCode[lookup.standard.idToSparkpointId[sparkpoint]];
+        return lookup.entities.sparkpoint.idToCode[lookup.entities.standard.idToSparkpointId[sparkpoint].toLowerCase()];
     }
 
-    return lookup.sparkpoint.idToCode[lookup.sparkpoint.codeToId[sparkpoint.toLowerCase()]];
+    return lookup.entities.sparkpoint.idToCode[lookup.entities.sparkpoint.codeToId[sparkpoint.toLowerCase()]];
 }
 
 function toSparkpointIds(str) {
@@ -429,17 +429,17 @@ function toAsnId(asnId) {
         return asnId;
     }
 
-    return lookup.standard.codeToId[asnId];
+    return lookup.entities.standard.codeToId[asnId];
 }
 
 function toStandardCode(standardCode) {
     standardCode = '' + standardCode;
 
     if (isAsnId(standardCode)) {
-        return lookup.standard.idToCode[standardCode];
+        return lookup.entities.standard.idToCode[standardCode.toLowerCase()];
     }
 
-    return lookup.standard.idToCode[lookup.standard.codeToId[standardCode.toLowerCase()]];
+    return lookup.entities.standard.idToCode[lookup.entities.standard.codeToId[standardCode.toLowerCase()]];
 }
 
 function toAsnIds(str) {
