@@ -155,8 +155,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onActiveStudentsStoreUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+        if (operation != 'edit') {
+            return;
+        }
+
         if (
-            operation == 'edit' &&
             modifiedFieldNames.indexOf('conference_group') != -1 &&
             activeStudent.get('conference_group')
         ) {
@@ -166,6 +169,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 activeStudent.set('conference_join_time', new Date());
                 activeStudent.save();
             }
+        } else if (
+            modifiedFieldNames.indexOf('conference_start_time') != -1
+        ) {
+            this.syncConferenceGroup()
         }
     },
 
