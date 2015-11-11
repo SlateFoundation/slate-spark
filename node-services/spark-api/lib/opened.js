@@ -126,7 +126,7 @@ var filterObjectKeys = require('./util').filterObjectKeys,
 
     openEdAccessToken = null,
     openEdRefreshToken = null,
-    openEdRenewalInterval,
+    openEdTokenExpiration = new Date().getTime(),
     openEdClientSecret = '',
     openEdClientId = '',
     openEdClientBaseUrl = 'https://api.opened.io',
@@ -166,6 +166,12 @@ if (openEdClientSecret === '' || openEdClientId === '') {
 }
 
 function* getAccessToken() {
+    if (new Date().getTime() < openEdTokenExpiration) {
+        return;
+    } else {
+        console.log(`OPENED: ${openEdAccessToken} access token expired, renewing...`);
+    }
+
     var params = {
         client_id: openEdClientId,
         client_secret: openEdClientSecret,
@@ -191,19 +197,13 @@ function* getAccessToken() {
     delete clientOptions.uri;
     delete clientOptions.method;
 
-    // Automatically renew our access token 30 seconds before it is set to expire
-    if (openEdRenewalInterval) {
-        clearInterval(openEdRenewalInterval);
-    }
-
     token = token.body;
 
-    openEdRenewalInterval = setInterval(getAccessToken, (parseInt(token.expires_in, 10) - 30) * 1000);
     openEdAccessToken = token.access_token;
     openEdRefreshToken = token.refresh_token;
-
-    // set new token
     clientOptions.headers.authorization = 'Bearer ' + openEdAccessToken;
+
+    openEdTokenExpiration = new Date().getTime() + (parseInt(token.expires_in, 10) * 1000);
 
     return openEdAccessToken;
 }
@@ -370,9 +370,7 @@ function* getResources(params) {
         url += '?' + queryString;
     }
 
-    if (!openEdAccessToken) {
-        yield getAccessToken();
-    }
+    yield getAccessToken();
 
     clientOptions.uri = openEdClientBaseUrl + url;
 
