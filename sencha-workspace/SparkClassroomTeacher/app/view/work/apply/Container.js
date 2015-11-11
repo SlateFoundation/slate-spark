@@ -142,15 +142,15 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Container', {
                         margin: '0 -12',
                         defaults: {
                             xtype: 'spark-panel',
-                            padding: 12
+                            margin: 12
                         },
                         items: [
                             {
                                 itemId: 'reflectionCmp',
                                 flex: 2,
 
-                                    title: 'Reflection',
-                                    tpl: '{[fm.nl2br(fm.htmlEncode(values.reflection))]}'
+                                title: 'Reflection',
+                                tpl: '{[fm.nl2br(fm.htmlEncode(values.reflection))]}'
                             },
                             {
                                 flex: 1,
