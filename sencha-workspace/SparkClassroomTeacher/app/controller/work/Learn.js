@@ -72,11 +72,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy();
 
-        if (oldActiveStudent) {
-            me.writeMasteryCheckScoreTask.cancel();
-            me.writeMasteryCheckScore(oldActiveStudent);
-        }
-
         if (activeStudent) {
             // TODO: track dirty state of extraparams?
             proxy.setExtraParam('student_id', activeStudent.get('student_id'));
@@ -125,7 +120,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onMasteryCheckScoreFieldChange: function() {
-        this.writeMasteryCheckScoreTask.delay(1000);
+        this.writeMasteryCheckScoreTask.delay(500);
     },
 
     onFeedbackSendTap: function() {

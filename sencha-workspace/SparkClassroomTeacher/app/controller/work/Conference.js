@@ -163,6 +163,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             modifiedFieldNames.indexOf('conference_group') != -1 &&
             activeStudent.get('conference_group')
         ) {
+            // TODO: do this somewhere else when groups are persistent
             activeStudent.loadMasteryCheckScore('conference');
 
             if (!activeStudent.get('conference_join_time')) {
