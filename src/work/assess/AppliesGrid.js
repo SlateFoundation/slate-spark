@@ -1,11 +1,13 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroom.work.assess.AppliesGrid', {
-    extend: 'Ext.grid.Grid',
+    extend: 'SparkClassroom.EditableGrid',
     xtype: 'spark-work-assess-appliesgrid',
     requires: [
         'Ext.data.ChainedStore',
         'Jarvus.plugin.GridFlex',
-        'Jarvus.plugin.GridHeight'
+        'Jarvus.plugin.GridHeight',
+        'SparkClassroom.column.StudentRating',
+        'SparkClassroom.column.StudentComment'
     ],
 
     config: {
@@ -22,37 +24,10 @@ Ext.define('SparkClassroom.work.assess.AppliesGrid', {
                 flex: 1
             },
             {
-                dataIndex: 'Rating',
-                width: 130,
-                text: 'Rating',
-                cell: {
-                    encodeHtml: false
-                },
-                tpl: [
-                    '<select class="field-control">',
-                        '<option>10</option>',
-                        '<option>9</option>',
-                        '<option>8</option>',
-                        '<option>7</option>',
-                        '<option>6</option>',
-                        '<option>5</option>',
-                        '<option>4</option>',
-                        '<option>3</option>',
-                        '<option>2</option>',
-                        '<option>1</option>',
-                    '</select>'
-                ]
+                xtype: 'spark-column-studentrating'
             },
             {
-                dataIndex: 'Comment',
-                text: 'Comment',
-                flex: 1,
-                cell: {
-                    encodeHtml: false
-                },
-                tpl: [
-                    '<input class="field-control" style="width: 100%" value="{comment:htmlEncode}">'
-                ]
+                xtype: 'spark-column-studentcomment'
             }
         ],
 

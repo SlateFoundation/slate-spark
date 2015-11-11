@@ -5,12 +5,14 @@ Ext.define('SparkClassroom.work.assess.Container', {
     requires: [
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
-        'SparkClassroom.work.assess.AssessmentsGrid',
+        // 'SparkClassroom.work.assess.AssessmentsGrid',
         'SparkClassroom.work.assess.LearnsGrid',
         'SparkClassroom.work.assess.AppliesGrid'
     ],
 
     config: {
+        enableEditing: false,
+
         itemId: 'assess',
 
         items: [
@@ -64,5 +66,15 @@ Ext.define('SparkClassroom.work.assess.Container', {
                 xtype: 'spark-work-assess-appliesgrid'
             }
         ]
+    },
+
+    updateEnableEditing: function(enableEditing) {
+        var grids = this.query('spark-editablegrid'),
+            gridsLen = grids.length,
+            i = 0;
+
+        for (; i < gridsLen; i++) {
+            grids[i].setEnableEditing(enableEditing);
+        }
     }
 });
