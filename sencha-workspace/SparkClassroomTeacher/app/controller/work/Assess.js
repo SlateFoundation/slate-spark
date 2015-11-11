@@ -14,6 +14,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     refs: {
         assessCt: 'spark-teacher-work-assess',
+        reflectionCt: 'spark-teacher-work-assess #reflectionCt',
         completeBtn: 'spark-teacher-work-assess #completeBtn'
     },
 
@@ -35,7 +36,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         store: {
             '#gps.ActiveStudents': {
                 update: 'onActiveStudentUpdate'
+            },
+            '#work.Assessments': {
+                load: 'onAssessmentsStoreLoad'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -79,12 +86,33 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         }
     },
 
+    onAssessmentsStoreLoad: function(assessStore) {
+        this.getReflectionCt().setData(assessStore.getProxy().getReader().rawData);
+    },
+
     onCompleteBtnTap: function() {
         var student = this.getActiveStudent();
 
         if (!student.get('assess_finish_time')) {
             student.set('assess_finish_time', new Date());
             student.save();
+        }
+    },
+
+    onSocketData: function(socket, data) {
+        if (data.table != 'assesses') {
+            return;
+        }
+
+        var student = this.getActiveStudent(),
+            itemData = data.item;
+
+        if (
+            student &&
+            itemData.student_id == student.getId() &&
+            itemData.sparkpoint_id == student.get('sparkpoint_id')
+        ) {
+            this.getReflectionCt().setData(itemData);
         }
     },
 
