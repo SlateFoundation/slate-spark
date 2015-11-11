@@ -6,6 +6,11 @@ Ext.define('SparkClassroomStudent.view.work.assess.Container', {
         'SparkClassroomStudent.view.work.assess.Footer'
     ],
 
+
+    config: {
+        enableEditing: true
+    },
+
     initialize: function () {
         this.callParent(arguments);
 
