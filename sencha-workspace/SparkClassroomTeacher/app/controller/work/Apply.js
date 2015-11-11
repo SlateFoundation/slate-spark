@@ -21,7 +21,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         timelineCmp: 'spark-teacher-work-apply #timelineCmp',
         linksCmp: 'spark-teacher-work-apply #linksCmp',
         tasksGrid: 'spark-teacher-work-apply spark-work-apply-tasksgrid',
-        reflectionCmp: 'spark-teacher-work-apply #reflectionCmp',
+        reflectionCt: 'spark-teacher-work-apply #reflectionCt',
         submissionsView: 'spark-teacher-work-apply #submissionsView',
         feedbackMessageField: 'spark-teacher-work-apply spark-teacher-feedbackform textareafield',
         gradePanel: 'spark-teacher-work-apply-gradepanel',
@@ -206,7 +206,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             me.getWorkApplyTasksStore().loadData(apply.get('todos'));
 
-            me.getReflectionCmp().setData(applyData);
+            me.getReflectionCt().setData(applyData);
 
             me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
 

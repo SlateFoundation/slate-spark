@@ -146,7 +146,7 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Container', {
                         },
                         items: [
                             {
-                                itemId: 'reflectionCmp',
+                                itemId: 'reflectionCt',
                                 flex: 2,
 
                                 title: 'Reflection',
