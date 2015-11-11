@@ -11,8 +11,9 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
     fields: [
         {
             name: 'student',
-            depends: ['student_id'],
+            persist: false,
             mapping: 'student_id',
+            depends: ['student_id'],
             convert: function(v, r) {
                 return Ext.getStore('Students').getById(v);
             }
@@ -20,6 +21,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
         {
             name: 'student_name',
+            persist: false,
             depends: ['student'],
             convert: function(v, r) {
                 var student = r.get('student');
@@ -190,7 +192,10 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             recordProperty = phase + '_score_record',
             record = me.get(recordProperty);
 
-        if (record) {
+        if (
+            record &&
+            record.get('sparkpoint') == me.get('sparkpoint')
+        ) {
             record.set('score', score);
             me.set(phase + '_score'); // force calculated field to refresh
         } else {
