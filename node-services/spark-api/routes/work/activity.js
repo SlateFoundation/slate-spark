@@ -109,8 +109,8 @@ function *patchHandler(req, res, next) {
         INSERT INTO section_student_active_sparkpoint
                     (section_id, student_id, sparkpoint_id)
              VALUES ($1, $2, $3)
-        ON CONFLICT (section_id, student_id) DO UPDATE
-                SET sparkpoint_id = $3;`;
+        ON CONFLICT (section_id, student_id, sparkpoint_id) DO UPDATE
+                SET last_accessed = CURRENT_TIMESTAMP;`;
 
     yield this.pgp.oneOrNone(activeSql, [sectionId, studentId, sparkpointId]);
 
