@@ -10,6 +10,7 @@ function *getHandler() {
               ssas.student_id,
               ssas.sparkpoint_id,
               ssas.section_id AS section,
+              ssas.last_accessed,
               ss.learn_start_time,
               ss.learn_finish_time,
               ss.conference_start_time,
@@ -109,8 +110,13 @@ function *patchHandler(req, res, next) {
         INSERT INTO section_student_active_sparkpoint
                     (section_id, student_id, sparkpoint_id)
              VALUES ($1, $2, $3)
-        ON CONFLICT (section_id, student_id, sparkpoint_id) DO UPDATE
-                SET last_accessed = CURRENT_TIMESTAMP;`;
+        ON CONFLICT (section_id, student_id, sparkpoint_id) DO `;
+
+    if (this.isTeacher) {
+        activeSql += 'NOTHING;';
+    } else {
+        activeSql += 'UPDATE SET last_accessed = CURRENT_TIMESTAMP;';
+    }
 
     yield this.pgp.oneOrNone(activeSql, [sectionId, studentId, sparkpointId]);
 
