@@ -47,12 +47,16 @@ Ext.define('SparkClassroom.work.assess.Container', {
                 }]
             },
             {
+                itemId: 'reflectionCt',
+
                 xtype: 'spark-panel',
                 title: 'Reflection',
+                tpl: '{[fm.nl2br(fm.htmlEncode(values.reflection))]}',
                 items: [
                     {
                         itemId: 'reflectionField',
 
+                        hidden: true,
                         xtype: 'textareafield',
                         label: 'How does this standard apply to everyday life?',
                         placeHolder: 'Write a paragraph about what you’ve learned with this standard.'
@@ -76,5 +80,7 @@ Ext.define('SparkClassroom.work.assess.Container', {
         for (; i < gridsLen; i++) {
             grids[i].setEnableEditing(enableEditing);
         }
+
+        this.down('#reflectionField').setHidden(!enableEditing);
     }
 });
