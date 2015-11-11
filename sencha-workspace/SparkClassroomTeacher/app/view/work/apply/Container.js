@@ -153,42 +153,42 @@ Ext.define('SparkClassroomTeacher.view.work.apply.Container', {
                                 tpl: '{[fm.nl2br(fm.htmlEncode(values.reflection))]}'
                             },
                             {
+                                itemId: 'submissionsView',
                                 flex: 1,
 
-                                title: 'Submitted Docs',
-                                items: [
-                                    {
-                                        itemId: 'submissionsView',
-
-                                        xtype: 'dataview',
-                                        cls: 'link-list', // has-checkboxes // TODO: move back into classes
-                                        itemCls: 'link-list-item',
-                                        emptyText: 'None attached yet',
-                                        deferEmptyText: false,
-                                        allowDeselect: true,
-                                        store: {
-                                            // TODO: move to model
-                                            idProperty: 'url',
-                                            fields: [
-                                                {
-                                                    name: 'id',
-                                                    mapping: 'url',
-                                                },
-                                                {
-                                                    name: 'url'
-                                                },
-                                                {
-                                                    name: 'title',
-                                                    depends: ['url'],
-                                                    convert: function(v, r) {
-                                                        return v || r.get('url').replace(/^https?:\/\//, '');
-                                                    }
-                                                },
-                                            ]
+                                xtype: 'dataview',
+                                cls: 'spark-panel link-list', // has-checkboxes // TODO: move back into classes
+                                itemCls: 'link-list-item',
+                                emptyText: 'None attached yet',
+                                deferEmptyText: false,
+                                allowDeselect: true,
+                                store: {
+                                    // TODO: move to model
+                                    idProperty: 'url',
+                                    fields: [
+                                        {
+                                            name: 'id',
+                                            mapping: 'url',
                                         },
-                                        itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'
-                                    }
-                                ]
+                                        {
+                                            name: 'url'
+                                        },
+                                        {
+                                            name: 'title',
+                                            depends: ['url'],
+                                            convert: function(v, r) {
+                                                return v || r.get('url').replace(/^https?:\/\//, '');
+                                            }
+                                        },
+                                    ]
+                                },
+                                itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>',
+
+                                items: {
+                                    xtype: 'title',
+                                    baseCls: 'spark-panel-title',
+                                    title: 'Submitted Docs'
+                                }
                             }
                         ]
                     },
