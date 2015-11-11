@@ -269,7 +269,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             readyBtn.disable();
         } else {
             feedbackBtn.setText('Send feedback to ' + subjectText);
-            readyBtn.setText('Mark ' + subjectText + ' ready for Apply &rarr;');
+            readyBtn.setText('Mark ' + subjectText + ' Ready for Apply &rarr;');
             feedbackBtn.enable();
             readyBtn.enable();
         }
