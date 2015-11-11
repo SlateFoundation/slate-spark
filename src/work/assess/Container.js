@@ -6,7 +6,8 @@ Ext.define('SparkClassroom.work.assess.Container', {
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
         'SparkClassroom.work.assess.AssessmentsGrid',
-        'SparkClassroom.work.assess.LearnsGrid'
+        'SparkClassroom.work.assess.LearnsGrid',
+        'SparkClassroom.work.assess.AppliesGrid'
     ],
 
     config: {
@@ -58,6 +59,9 @@ Ext.define('SparkClassroom.work.assess.Container', {
             },
             {
                 xtype: 'spark-work-assess-learnsgrid'
+            },
+            {
+                xtype: 'spark-work-assess-appliesgrid'
             }
         ]
     }
