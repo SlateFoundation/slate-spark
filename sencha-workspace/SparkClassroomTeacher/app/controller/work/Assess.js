@@ -80,9 +80,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         if (
             operation == 'edit' &&
             activeStudent === this.getActiveStudent() &&
-            modifiedFieldNames.indexOf('assess_ready_time') != -1
+            (
+                modifiedFieldNames.indexOf('assess_ready_time') != -1 ||
+                modifiedFieldNames.indexOf('assess_finish_time') != -1
+            )
         ) {
-            this.syncActiveStudent();
+            this.refreshCompleteBtn();
         }
     },
 
@@ -96,6 +99,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         if (!student.get('assess_finish_time')) {
             student.set('assess_finish_time', new Date());
             student.save();
+            this.refreshCompleteBtn();
         }
     },
 
@@ -145,9 +149,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             //     appliesStore.load();
             // }
 
-            me.getCompleteBtn().setDisabled(!student.get('assess_ready_time'));
+            me.refreshCompleteBtn();
         } else {
             assessCt.hide();
         }
+    },
+
+    refreshCompleteBtn: function() {
+        var completeBtn = this.getCompleteBtn(),
+            student = this.getActiveStudent(),
+            assessFinishTime = student && student.get('assess_finish_time');
+
+        if (!completeBtn || !student) {
+            return;
+        }
+
+        completeBtn.setDisabled(assessFinishTime || !student.get('assess_ready_time'));
+        completeBtn.setText(assessFinishTime ? 'Standard Completed' : completeBtn.config.text);
     }
 });
