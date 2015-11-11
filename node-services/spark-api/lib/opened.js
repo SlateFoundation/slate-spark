@@ -175,7 +175,7 @@ function* getAccessToken() {
 
     if (openEdRefreshToken) {
         params.grant_type = 'refresh_token';
-        params.refresh_token = openEdRefrescbToken;
+        params.refresh_token = openEdRefreshToken;
     }
 
     // clear existing token

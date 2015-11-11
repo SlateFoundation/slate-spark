@@ -23,7 +23,7 @@ function postErrorToSlack(error, ctx, details, broadcast) {
 
     text.push('*Request:*\n```' + JSON.stringify(ctx.request, null, '   ') + '```');
 
-    if (Object.keys(ctx.query).length > 0) {
+    if (ctx.query && Object.keys(ctx.query).length > 0) {
         text.push('*Query:*\n```' + JSON.stringify(ctx.query, null, '   ') + '```');
     }
 
@@ -31,7 +31,7 @@ function postErrorToSlack(error, ctx, details, broadcast) {
         text.push('*Request Body:*\n```' + JSON.stringify(ctx.body, null, '   ') + '```');
     }
 
-    if (Object.keys(ctx.session).length > 0) {
+    if (ctx.session && Object.keys(ctx.session).length > 0) {
         text.push('*Session:*\n```' + JSON.stringify(ctx.session, null, '   ') + '```');
     }
 
