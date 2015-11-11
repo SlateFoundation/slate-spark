@@ -153,21 +153,39 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         var me = this,
             table = data.table,
             item = data.item,
-            task, apply, activeApply;
+            task, apply, activeApply,
+            student, appliesStore, modifiedFieldNames;
 
         if (table == 'todos') {
-            if (task = me.getWorkApplyTasksStore().getById(item.id)) {
+            student = me.getActiveStudent();
+
+            if (
+                student &&
+                item.user_id == student.getId() &&
+                (task = me.getWorkApplyTasksStore().getById(item.id))
+            ) {
                 task.set(item, { dirty: false });
             }
         } else if (table == 'applies') {
-            if (apply = me.getWorkAppliesStore().getById(item.fb_apply_id)) {
-                apply.set({
+            student = me.getActiveStudent();
+            appliesStore = me.getWorkAppliesStore();
+
+            if (
+                student &&
+                item.student_id == student.getId() &&
+                item.sparkpoint_id == student.get('sparkpoint_id') &&
+                (apply = appliesStore.getById(item.fb_apply_id))
+            ) {
+                modifiedFieldNames = apply.set({
                     reflection: item.reflection,
                     submissions: Ext.decode(item.submissions, true) || [],
-                    grade: item.grade
+                    grade: item.grade,
+                    selected: item.selected
                 }, { dirty: false });
 
-                if ((activeApply = me.getActiveApply()) && activeApply.getId() == apply.getId()) {
+                if (modifiedFieldNames.indexOf('selected') != -1) {
+                    me.setActiveApply(appliesStore.query('selected', true).first() || null);
+                } else if ((activeApply = me.getActiveApply()) && activeApply.getId() == apply.getId()) {
                     me.syncActiveApply();
                 }
             }
