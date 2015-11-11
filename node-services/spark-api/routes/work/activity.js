@@ -34,7 +34,7 @@ function *getHandler() {
 }
 
 function *patchHandler(req, res, next) {
-    this.require(['student_id', 'section_id']);
+    this.require(['student_id', 'section_id', 'sparkpoint_id']);
 
     var sectionId = this.query.section_id,
         studentId = this.studentId,
@@ -60,16 +60,6 @@ function *patchHandler(req, res, next) {
         body = this.request.body,
         allKeys = Object.keys(body || {}),
         invalidKeys, activeSql, sparkpointSql, record;
-
-
-    // Allow setting sparkpoint = null
-    if (!sparkpointId) {
-        if (this.query.sparkpoint !== null) {
-            this.require(['sparkpoint_id']);
-        } else {
-            sparkpointId = null;
-        }
-    }
 
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function (key) {
