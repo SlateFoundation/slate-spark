@@ -6,19 +6,24 @@ function *getHandler() {
 
     var sectionId = this.query.section_id,
         query = `
-        SELECT t.*, code AS sparkpoint FROM (
-           SELECT section_id,
-                  ss.*,
-                  last_accessed,
-                  ROW_NUMBER() OVER (
-                    PARTITION BY ssas.student_id
-                        ORDER BY ssas.id desc) AS rn
-             FROM section_student_active_sparkpoint ssas
-             JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id AND last_accessed IS NOT NULL
-        ) t
-        JOIN sparkpoints ON t.sparkpoint_id = sparkpoints.id
-        WHERE section_id = $1
-          AND t.rn = 1;`;
+            SELECT t.last_accessed,
+                   t.section_id,
+                   ss.*,
+                   code AS sparkpoint
+              FROM (
+                       SELECT student_id,
+                              sparkpoint_id,
+                              section_id,
+                              last_accessed,
+                              ROW_NUMBER() OVER (
+                                PARTITION BY ssas.student_id, ssas.section_id
+                                    ORDER BY ssas.last_accessed desc) AS rn
+                         FROM "sandbox-school".section_student_active_sparkpoint ssas
+                         WHERE section_id = $1 AND last_accessed IS NOT NULL
+                    ) t
+              JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id AND ss.student_id = t.student_id
+              JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
+              WHERE t.rn = 1;`;
 
     records = yield this.pgp.manyOrNone(query, [sectionId]);
 
