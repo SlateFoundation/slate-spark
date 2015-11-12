@@ -100,8 +100,8 @@ function *patchHandler(req, res, next) {
 
     activeSql = `
         INSERT INTO section_student_active_sparkpoint
-                    (section_id, student_id, sparkpoint_id)
-             VALUES ($1, $2, $3)
+                    (section_id, student_id, sparkpoint_id${this.isStudent ? ', last_accessed' : ''})
+             VALUES ($1, $2, $3${this.isStudent ? ', now()::timestamp without time zone' : ''})
         ON CONFLICT (section_id, student_id, sparkpoint_id) DO `;
 
     if (this.isTeacher) {
