@@ -10,24 +10,30 @@ Ext.define('SparkClassroomTeacher.view.assign.TabBar', {
         },
         items: [
             {
-                title: 'Learn &amp; Practice',
-                itemId: 'learn'
+                itemId: 'learn',
+
+                title: 'Learn &amp; Practice'
             },
             {
-                title: 'Conference Questions',
-                itemId: 'conference-questions'
+                itemId: 'conference-questions',
+
+                title: 'Conference Questions'
             },
             {
-                title: 'Conference Resources',
-                itemId: 'conference-resources'
+                itemId: 'conference-resources',
+
+                title: 'Conference Resources'
             },
             {
-                title: 'Apply',
-                itemId: 'apply'
+                itemId: 'apply',
+
+                title: 'Apply'
             },
             {
+                itemId: 'assess',
+
                 title: 'Assess',
-                itemId: 'assess'
+                disabled: true
             }
         ]
     }
