@@ -75,8 +75,79 @@ function* autocompleteGetHandler(input) {
     this.body = result;
 }
 
+function* suggestedGetHandler() {
+   this.require(['student_id', 'section_id']);
+
+    var currentLimit = parseInt(this.query.current, 10) || 5,
+        queuedLimit = parseInt(this.query.queued, 10) || 5,
+        pastLimit = parseInt(this.query.past, 10) || 5,
+        studentId = this.query.student_id,
+        sectionId = this.query.section_id,
+        results = yield this.pgp.one(`
+   WITH past AS (
+            SELECT code AS sparkpoint,
+                   ss.*,
+                   last_accessed,
+                   section_id,
+                   student_title
+              FROM section_student_active_sparkpoint ssas
+         LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
+               AND ss.student_id = $1
+              JOIN sparkpoints ON sparkpoints.id = ssas.sparkpoint_id
+             WHERE ssas.section_id = $2
+               AND ss.apply_finish_time IS NOT NULL
+               AND ssas.student_id = $1
+          ORDER BY ssas.id
+             LIMIT $3
+         ),
+
+         current AS (
+            SELECT code AS sparkpoint,
+                   ss.*,
+                   last_accessed,
+                   section_id,
+                   student_title
+              FROM section_student_active_sparkpoint ssas
+        RIGHT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
+               AND ss.student_id = $1
+              JOIN sparkpoints ON sparkpoints.id = ssas.sparkpoint_id
+             WHERE ssas.section_id = $2
+               AND ssas.last_accessed IS NOT NULL
+               AND ssas.student_id = $1
+               AND ss.apply_finish_time IS NULL
+          ORDER BY ssas.id
+             LIMIT $4
+         ),
+
+        queued AS (
+            SELECT ssas.*,
+                   student_title,
+                   code AS sparkpoint
+              FROM section_student_active_sparkpoint ssas
+              JOIN sparkpoints ON sparkpoints.id = ssas.sparkpoint_id
+             WHERE last_accessed IS NULL
+               AND section_id = $2
+               AND ssas.student_id = $1
+          ORDER BY ssas.id
+           LIMIT $5
+       )
+
+       SELECT json_agg(j) AS sparkpoints FROM (
+            SELECT row_to_json(past) j FROM past
+            UNION ALL
+            SELECT row_to_json(current) j FROM current
+            UNION ALL
+            SELECT row_to_json(queued) j FROM queued
+        ) t;`, [ studentId, sectionId, pastLimit, currentLimit, queuedLimit ]);
+
+    this.body = results.sparkpoints;
+}
+
 module.exports = {
     autocomplete: {
         get: autocompleteGetHandler
+    },
+    suggested: {
+        get: suggestedGetHandler
     }
 };

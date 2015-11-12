@@ -102,7 +102,7 @@ function *patchHandler(req, res, next) {
     if (this.isTeacher) {
         activeSql += 'NOTHING;';
     } else {
-        activeSql += 'UPDATE SET last_accessed = CURRENT_TIMESTAMP;';
+        activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
     }
 
     yield this.pgp.oneOrNone(activeSql, [sectionId, studentId, sparkpointId]);
