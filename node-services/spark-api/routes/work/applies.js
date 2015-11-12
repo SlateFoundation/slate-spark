@@ -208,7 +208,7 @@ function *patchHandler() {
                 SELECT $1 AS user_id,
                        $2 AS apply_id,
                        todo
-                  FROM (SELECT todo FROM todos) AS t
+                  FROM (SELECT todo FROM todos) t ON CONFLICT (user_id, apply_id, md5(todo)) DO NOTHING
             RETURNING id, todo, completed
         )
 
