@@ -6,31 +6,28 @@ function *getHandler() {
 
     var sectionId = this.query.section_id,
         query = `
-       SELECT sparkpoints.code AS sparkpoint,
-              ssas.student_id,
-              ssas.sparkpoint_id,
-              ssas.section_id AS section,
-              ssas.last_accessed,
-              ss.learn_start_time,
-              ss.learn_finish_time,
-              ss.conference_start_time,
-              ss.conference_join_time,
-              ss.conference_finish_time,
-              ss.apply_start_time,
-              ss.apply_ready_time,
-              ss.apply_finish_time,
-              ss.assess_start_time,
-              ss.assess_ready_time,
-              ss.assess_finish_time,
-              ss.conference_group_id
-         FROM section_student_active_sparkpoint ssas
-    LEFT JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
-          AND ss.sparkpoint_id = ssas.sparkpoint_id
-         JOIN sparkpoints ON ssas.sparkpoint_id = sparkpoints.id
-        WHERE ssas.section_id = $1;
-  `;
+        SELECT t.*, code AS sparkpoint FROM (
+           SELECT section_id,
+                  ss.*,
+                  last_accessed,
+                  ROW_NUMBER() OVER (
+                    PARTITION BY ssas.student_id
+                        ORDER BY ssas.id desc) AS rn
+             FROM section_student_active_sparkpoint ssas
+             JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id AND last_accessed IS NOT NULL
+        ) t
+        JOIN sparkpoints ON t.sparkpoint_id = sparkpoints.id
+        WHERE section_id = $1
+          AND t.rn = 1;`;
 
-    this.body = yield this.pgp.manyOrNone(query, [sectionId]);
+    records = yield this.pgp.manyOrNone(query, [sectionId]);
+
+    records.forEach(function(record) {
+        delete record.section_id;
+        delete record.rn;
+    });
+
+    this.body = records;
 }
 
 function *patchHandler(req, res, next) {
