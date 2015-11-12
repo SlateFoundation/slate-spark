@@ -5,10 +5,10 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
-        'Ext.grid.plugin.PagingToolbar',
-        'SparkClassroom.widget.GridColumnFilter',
-        'SparkClassroom.column.Sparkpoints',
-        'SparkClassroom.column.Grade',
+        // 'Ext.grid.plugin.PagingToolbar',
+        // 'SparkClassroom.widget.GridColumnFilter',
+        // 'SparkClassroom.column.Sparkpoints',
+        // 'SparkClassroom.column.Grade',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.CreatedBy',
         'SparkClassroom.column.CreatedDate',
@@ -18,17 +18,17 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
     config: {
         plugins: [
             'gridflex',
-            'gridheight',
-            'gridpagingtoolbar'
+            'gridheight'
+            // 'gridpagingtoolbar'
         ],
         titleBar: null,
         columns:[
-            {
-                xtype: 'spark-sparkpoints-column'
-            },
-            {
-                xtype: 'spark-grade-column'
-            },
+            // {
+            //     xtype: 'spark-sparkpoints-column'
+            // },
+            // {
+            //     xtype: 'spark-grade-column'
+            // },
             {
                 dataIndex: 'question',
                 text: 'Guiding Questions',

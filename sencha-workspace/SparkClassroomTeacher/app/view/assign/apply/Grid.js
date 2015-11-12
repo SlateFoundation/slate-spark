@@ -5,9 +5,9 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
-        'Ext.grid.plugin.PagingToolbar',
-        'SparkClassroom.column.Sparkpoints',
-        'SparkClassroom.column.Grade',
+        // 'Ext.grid.plugin.PagingToolbar',
+        // 'SparkClassroom.column.Sparkpoints',
+        // 'SparkClassroom.column.Grade',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.CreatedBy',
@@ -17,19 +17,19 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
     config: {
         plugins: [
             'gridflex',
-            'gridheight',
-            'gridpagingtoolbar'
+            'gridheight'
+            // 'gridpagingtoolbar'
         ],
         grouped: true,
         titleBar: null,
         store: 'assign.Apply',
         columns:[
-            {
-                xtype: 'spark-sparkpoints-column'
-            },
-            {
-                xtype: 'spark-grade-column'
-            },
+            // {
+            //     xtype: 'spark-sparkpoints-column'
+            // },
+            // {
+            //     xtype: 'spark-grade-column'
+            // },
             {
                 xtype: 'spark-title-column'
             },

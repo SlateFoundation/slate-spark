@@ -5,15 +5,15 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
-        'Ext.grid.plugin.PagingToolbar',
-        'SparkClassroom.widget.GridColumnFilter',
-        'SparkClassroom.column.Sparkpoints',
-        'SparkClassroom.column.Grade',
+        // 'Ext.grid.plugin.PagingToolbar',
+        // 'SparkClassroom.widget.GridColumnFilter',
+        // 'SparkClassroom.column.Sparkpoints',
+        // 'SparkClassroom.column.Grade',
         'SparkClassroom.column.Link',
         'SparkClassroom.column.LearnType',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.Rating',
-        'SparkClassroom.column.Attachment',
+        // 'SparkClassroom.column.Attachment',
         'SparkClassroom.column.AssignMulti',
         'SparkClassroom.column.Flag'
     ],
@@ -21,18 +21,18 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
     config: {
         plugins: [
             'gridflex',
-            'gridheight',
-            'gridpagingtoolbar'
+            'gridheight'
+            // 'gridpagingtoolbar'
         ],
         titleBar: null,
         store: 'assign.Learn',
         columns:[
-            {
-                xtype: 'spark-sparkpoints-column'
-            },
-            {
-                xtype: 'spark-grade-column'
-            },
+            // {
+            //     xtype: 'spark-sparkpoints-column'
+            // },
+            // {
+            //     xtype: 'spark-grade-column'
+            // },
             {
                 flex: 2,
                 xtype: 'spark-link-column',
@@ -51,9 +51,9 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             {
                 xtype: 'spark-rating-column'
             },
-            {
-                xtype: 'spark-attachment-column'
-            },
+            // {
+            //     xtype: 'spark-attachment-column'
+            // },
             {
                 xtype: 'spark-assign-column-multi'
             },
@@ -61,77 +61,77 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 xtype: 'spark-flag-column'
             }
         ]
-    },
-
-    initialize: function() {
-        var me = this;
-
-        me.callParent();
-
-        me.container.add({
-            xtype: 'headercontainer',
-            defaults: {
-                xtype: 'spark-grid-column-filter'
-            },
-            layout: 'hbox',
-            items: [
-                // TODO not all columns actually have filters, and those that do need real values
-                // TODO measure column widths/flex values automatically pls
-                {
-                    width: 208,
-                    options: [
-                        { text: 'Sparkpoints' }
-                    ]
-                },
-                {
-                    width: 80,
-                    options: [
-                        { text: 'Grade' }
-                    ]
-                },
-                {
-                    flex: 1,
-                    options: [
-                        { text: 'Learn' }
-                    ]
-                },
-                {
-                    width: 64,
-                    options: [
-                        { text: 'Type' }
-                    ]
-                },
-                {
-                    width: 64,
-                    options: [
-                        { text: 'DOK' }
-                    ]
-                },
-                {
-                    width: 112,
-                    options: [
-                        { text: 'Ratings' }
-                    ]
-                },
-                {
-                    width: 144,
-                    options: [
-                        { text: 'Attachment' }
-                    ]
-                },
-                {
-                    width: 176,
-                    options: [
-                        { text: 'Assign' }
-                    ]
-                },
-                {
-                    width: 64,
-                    options: [
-                        { text: 'Flag' }
-                    ]
-                }
-            ]
-        });
     }
+
+    // initialize: function() {
+    //     var me = this;
+
+    //     me.callParent();
+
+    //     me.container.add({
+    //         xtype: 'headercontainer',
+    //         defaults: {
+    //             xtype: 'spark-grid-column-filter'
+    //         },
+    //         layout: 'hbox',
+    //         items: [
+    //             // TODO not all columns actually have filters, and those that do need real values
+    //             // TODO measure column widths/flex values automatically pls
+    //             {
+    //                 width: 208,
+    //                 options: [
+    //                     { text: 'Sparkpoints' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 80,
+    //                 options: [
+    //                     { text: 'Grade' }
+    //                 ]
+    //             },
+    //             {
+    //                 flex: 1,
+    //                 options: [
+    //                     { text: 'Learn' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 64,
+    //                 options: [
+    //                     { text: 'Type' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 64,
+    //                 options: [
+    //                     { text: 'DOK' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 112,
+    //                 options: [
+    //                     { text: 'Ratings' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 144,
+    //                 options: [
+    //                     { text: 'Attachment' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 176,
+    //                 options: [
+    //                     { text: 'Assign' }
+    //                 ]
+    //             },
+    //             {
+    //                 width: 64,
+    //                 options: [
+    //                     { text: 'Flag' }
+    //                 ]
+    //             }
+    //         ]
+    //     });
+    // }
 });
