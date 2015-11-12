@@ -3,13 +3,21 @@
 var suggestionCache = {};
 
 function* autocompleteGetHandler(input) {
-    var result;
+    var result,
+        patternSafeInput;
 
     input = (typeof input === 'string') ? input : this.query.q;
 
     if (typeof input !== 'string') {
         return this.body = [];
     }
+
+    patternSafeInput = input
+        .replace(/[\[|\]|\|\^|\$|\%|\(|\)|\?|\+|\{|\}|\=|\\]/g, '')
+        /* Escape characters that appear in sparkpoint codes */
+        .replace('*', '\\*')
+        .replace(/\./g, '\\.')
+        .replace(/\-/g, '\\-');
 
     // TODO: invalidate cache when sparkpoints and standards tables change
     result = suggestionCache[input];
@@ -45,7 +53,7 @@ function* autocompleteGetHandler(input) {
                      sp.student_title,
                      similarity(code, $1) AS match
                 FROM sparkpoints sp
-              WHERE code ~* $1
+              WHERE code ~* $2
             LIMIT 10),
           standards_code AS (
               SELECT sp.id,
@@ -54,7 +62,7 @@ function* autocompleteGetHandler(input) {
                      similarity(standards.code, $1) AS match
                 FROM standards
                 JOIN sparkpoints sp ON standards.asn_id = sp.metadata->>'asn_id'
-              WHERE standards.code ~* $1
+              WHERE standards.code ~* $2
             LIMIT 10)
 
         SELECT id, code, student_title FROM (
@@ -68,7 +76,7 @@ function* autocompleteGetHandler(input) {
           ORDER BY match DESC
           LIMIT 10
         ) results;`,
-            [input]
+            [ input, patternSafeInput ]
         );
     }
 
