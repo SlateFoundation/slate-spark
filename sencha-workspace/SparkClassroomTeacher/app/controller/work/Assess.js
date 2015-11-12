@@ -109,14 +109,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         }
 
         var student = this.getActiveStudent(),
-            itemData = data.item;
+            itemData = data.item,
+            reflectionCt;
 
         if (
             student &&
             itemData.student_id == student.getId() &&
-            itemData.sparkpoint_id == student.get('sparkpoint_id')
+            itemData.sparkpoint_id == student.get('sparkpoint_id') &&
+            (reflectionCt = this.getReflectionCt())
         ) {
-            this.getReflectionCt().setData(itemData);
+            reflectionCt.setData(itemData);
         }
     },
 
