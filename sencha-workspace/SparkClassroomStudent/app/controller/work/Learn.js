@@ -161,24 +161,23 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             return;
         }
 
-        if (!count) {
-            progressBanner.hide();
-            return;
-        }
-
-        for (; i < count; i++) {
-            if (learns[i].get('completed')) {
-                completed++;
+        if (count) {
+            for (; i < count; i++) {
+                if (learns[i].get('completed')) {
+                    completed++;
+                }
             }
+
+            progressBanner.setData({
+                completedLearns: completed,
+                name: null,
+                requiredLearns: required
+            });
+
+            progressBanner.show();
+        } else {
+            progressBanner.hide();
         }
-
-        progressBanner.setData({
-            completedLearns: completed,
-            name: null,
-            requiredLearns: required
-        });
-
-        progressBanner.show();
 
         readyBtn.setDisabled(learnFinishTime || completed < required);
         readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
