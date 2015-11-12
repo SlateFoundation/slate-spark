@@ -93,15 +93,30 @@ function* suggestedGetHandler() {
         sectionId = this.query.section_id,
         results = yield this.pgp.one(`
    WITH past AS (
-            SELECT code AS sparkpoint,
-                   ss.*,
-                   last_accessed,
-                   section_id,
-                   student_title
+            SELECT sp.code,
+                   ss.sparkpoint_id AS id,
+                   ss.student_id,
+                   ss.learn_start_time,
+                   ss.learn_finish_time,
+                   ss.conference_start_time,
+                   ss.conference_join_time,
+                   ss.conference_finish_time,
+                   ss.apply_start_time,
+                   ss.apply_ready_time,
+                   ss.apply_finish_time,
+                   ss.assess_start_time,
+                   ss.assess_ready_time,
+                   ss.assess_finish_time,
+                   ss.conference_group_id,
+                   ss.selected_apply_id,
+                   ss.selected_fb_apply_id,
+                   ssas.last_accessed,
+                   ssas.section_id,
+                   sp.student_title
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
                AND ss.student_id = $1
-              JOIN sparkpoints ON sparkpoints.id = ssas.sparkpoint_id
+              JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
              WHERE ssas.section_id = $2
                AND ss.apply_finish_time IS NOT NULL
                AND ssas.student_id = $1
@@ -110,15 +125,30 @@ function* suggestedGetHandler() {
          ),
 
          current AS (
-            SELECT code AS sparkpoint,
-                   ss.*,
-                   last_accessed,
-                   section_id,
-                   student_title
+            SELECT sp.code,
+                   ss.sparkpoint_id AS id,
+                   ss.student_id,
+                   ss.learn_start_time,
+                   ss.learn_finish_time,
+                   ss.conference_start_time,
+                   ss.conference_join_time,
+                   ss.conference_finish_time,
+                   ss.apply_start_time,
+                   ss.apply_ready_time,
+                   ss.apply_finish_time,
+                   ss.assess_start_time,
+                   ss.assess_ready_time,
+                   ss.assess_finish_time,
+                   ss.conference_group_id,
+                   ss.selected_apply_id,
+                   ss.selected_fb_apply_id,
+                   ssas.last_accessed,
+                   ssas.section_id,
+                   sp.student_title
               FROM section_student_active_sparkpoint ssas
         RIGHT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
                AND ss.student_id = $1
-              JOIN sparkpoints ON sparkpoints.id = ssas.sparkpoint_id
+              JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
              WHERE ssas.section_id = $2
                AND ssas.last_accessed IS NOT NULL
                AND ssas.student_id = $1
@@ -128,11 +158,14 @@ function* suggestedGetHandler() {
          ),
 
         queued AS (
-            SELECT ssas.*,
-                   student_title,
-                   code AS sparkpoint
+            SELECT ssas.section_id,
+                   ssas.student_id,
+                   ssas.sparkpoint_id as id,
+                   ssas.last_accessed,
+                   sp.student_title,
+                   sp.code
               FROM section_student_active_sparkpoint ssas
-              JOIN sparkpoints ON sparkpoints.id = ssas.sparkpoint_id
+              JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
              WHERE last_accessed IS NULL
                AND section_id = $2
                AND ssas.student_id = $1
