@@ -130,7 +130,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         me.getSuggestionsList().select(
             (query && suggestionsStore.query('code', query, false, false, true).first()) ||
             (selectedSparkpoint && suggestionsStore.getById(selectedSparkpoint.getId())) ||
-            0
+            suggestionsStore.getCount() ? 0 : null
         );
     },
 
