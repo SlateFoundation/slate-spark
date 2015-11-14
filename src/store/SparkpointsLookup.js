@@ -58,6 +58,8 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
         sorters: [{
             property: 'last_accessed',
             direction: 'DESC'
+        },{
+            property: 'code'
         }]
     }
 });
