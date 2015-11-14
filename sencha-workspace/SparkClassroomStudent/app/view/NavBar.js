@@ -36,6 +36,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                     '</tpl>',
                 '</div>' // close flex or description
             ],
+            emptyText: 'No suggestions available, type a code or part of the title to find sparkpoints',
             store: 'SparkpointsLookup'
         },
 
