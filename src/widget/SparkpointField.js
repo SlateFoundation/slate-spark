@@ -37,6 +37,8 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
             scope: this,
             itemtap: 'onSuggestionsListItemTap'
         });
+
+        suggestionsList.getStore().on('load', 'onSuggestionsStoreLoad', this);
     },
 
     updateQuery: function(query) {
@@ -59,9 +61,8 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         me.fireEvent('sparkpointselect', me, sparkpoint, oldSparkpoint);
     },
 
-    onFieldFocus: function(sparkpointField) {
-        var me = this,
-            suggestionsList = me.getSuggestionsList();
+    onFieldFocus: function(me) {
+        var suggestionsList = me.getSuggestionsList();
 
         suggestionsList.setVisibility(false);
 
@@ -70,15 +71,26 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         }
 
         suggestionsList.show();
-        suggestionsList.alignTo(sparkpointField, 'tl-bl');
+        suggestionsList.alignTo(me, 'tl-bl');
 
-        me.setQuery(sparkpointField.getValue()||'');
+        me.setQuery(me.getValue()||'');
 
         suggestionsList.setVisibility(true);
     },
 
-    onFieldChange: function(sparkpointField, value) {
-        this.setQuery(value);
+    onFieldChange: function(me, value) {
+        me.setQuery(value);
+    },
+
+    onSuggestionsStoreLoad: function(suggestionsStore) {
+        var me = this,
+            query = me.getQuery();
+
+        me.getSuggestionsList().select(
+            (query && suggestionsStore.query('code', query, false, false, true).first()) ||
+            suggestionsStore.getById(me.getSelectedSparkpoint().getId()) ||
+            0
+        );
     },
 
     onSuggestionsListItemTap: function(suggestionsList, index, target, sparkpoint) {
