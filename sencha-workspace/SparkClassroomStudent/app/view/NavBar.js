@@ -5,8 +5,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     requires: [
         'Ext.field.Text',
         'Ext.dataview.List',
-        'Slate.proxy.API',
-        'SparkClassroom.model.Sparkpoint'
+        'SparkClassroom.store.SparkpointsLookup'
     ],
 
     config: {
@@ -29,8 +28,8 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                     '<tpl if="recommended">',
                         '<div class="sparkpoint-recommended"></div>',
                     '</tpl>',
-                    '<tpl if="completed_date">',
-                        '<div class="sparkpoint-completed-date">{completed_date:date("n/j/y")}</div>',
+                    '<tpl if="assess_finish_time">',
+                        '<div class="sparkpoint-completed-date">{assess_finish_time:date("n/j/y")}</div>',
                     '</tpl>',
                     '<tpl if="student_title">',
                         '</div>', // close flex container
@@ -39,10 +38,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                 '</div>' // close flex or description
             ],
             store: {
-                type: 'store',
-                groupField: 'group',
-                model: 'SparkClassroom.model.Sparkpoint',
-                proxy: 'slate-api'
+                type: 'spark-sparkpointslookup'
             }
         },
 
@@ -66,7 +62,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                 cls: 'spark-navbar-sparkpoint-selector',
                 label: 'Sparkpoint',
                 labelCls: 'visually-hidden',
-                placeHolder: 'Select Sparkpoints'
+                placeHolder: 'Select Sparkpoint'
             },
             {
                 xtype: 'label',
@@ -116,18 +112,16 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     },
 
     updateSparkpointQuery: function(query) {
-        var requestConfig = {};
+        var loadConfig = {};
 
         if (query) {
-            requestConfig.url = '/spark/api/sparkpoints/autocomplete';
-            requestConfig.params = {
+            loadConfig.url = '/spark/api/sparkpoints/autocomplete';
+            loadConfig.params = {
                 q: query
             };
-        } else {
-            requestConfig.url = '/spark/suggested-sparkpoints';
         }
 
-        this.getSparkpointsList().getStore().load(requestConfig);
+        this.getSparkpointsList().getStore().load(loadConfig);
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
