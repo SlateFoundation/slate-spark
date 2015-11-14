@@ -31,7 +31,7 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
                     assessFinish2 = r2.get('assess_finish_time'),
                     current1 = r1.get('learn_start_time') && !assessFinish1,
                     current2 = r2.get('learn_start_time') && !assessFinish2;
-debugger;
+
                 // current first
                 if (current1 && !current2) {
                     return -1;
