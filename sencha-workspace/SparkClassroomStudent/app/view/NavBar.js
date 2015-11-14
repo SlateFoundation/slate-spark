@@ -16,7 +16,10 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
 
         items: [
             {
-                xtype: 'spark-sparkpointfield'
+                xtype: 'spark-sparkpointfield',
+                suggestionsList: {
+                    store: 'SparkpointsLookup'
+                }
             },
             {
                 xtype: 'label',
