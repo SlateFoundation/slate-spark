@@ -120,8 +120,10 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             studentsStore.load();
         }
 
-        me.syncSelections();
         me.getApplication().fireEvent('sectionselect', section, oldSection);
+
+        // called buffered sync method
+        me.syncSelections();
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
@@ -129,7 +131,6 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             tabsCt = me.getTabsCt(),
             studentSparkpoint = me.getStudentSparkpointModel().create();
 
-        me.syncSelections();
         me.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
 
         if (!sparkpoint) {
@@ -149,6 +150,9 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
                 me.setStudentSparkpoint(studentSparkpoint);
             }
         });
+
+        // call buffered sync method
+        me.syncSelections();
     },
 
     updateStudentSparkpoint: function(studentSparkpoint, oldStudentSparkpoint) {
