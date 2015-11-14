@@ -4,41 +4,14 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     xtype: 'spark-student-navbar',
     requires: [
         'Ext.field.Text',
-        'Ext.dataview.List'
+        'Ext.dataview.List',
+        'SparkClassroom.widget.SparkpointSuggestions'
     ],
 
     config: {
         selectedSparkpoint: null,
         sparkpointQuery: null,
-        sparkpointsList: {
-            itemId: 'sparkpointsList',
-
-            xtype: 'list',
-            cls: 'spark-navbar-sparkpoint-selector-list',
-            left: 0,
-            width: 350,
-            height: 450,
-
-            grouped: true,
-            itemTpl: [
-                '<div class="flex-ct">',
-                    '<div class="sparkpoint-code flex-1">{code}</div>',
-
-                    '<tpl if="recommended">',
-                        '<div class="sparkpoint-recommended"></div>',
-                    '</tpl>',
-                    '<tpl if="assess_finish_time">',
-                        '<div class="sparkpoint-completed-date">{assess_finish_time:date("n/j/y")}</div>',
-                    '</tpl>',
-                    '<tpl if="student_title">',
-                        '</div>', // close flex container
-                        '<div class="sparkpoint-title">{student_title}', // open description container
-                    '</tpl>',
-                '</div>' // close flex or description
-            ],
-            emptyText: 'No suggestions available, type a code or part of the title to find sparkpoints',
-            store: 'SparkpointsLookup'
-        },
+        sparkpointsList: true,
 
         control: {
             'textfield#sparkpointSelector': {
@@ -99,7 +72,11 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     },
 
     applySparkpointsList: function(config, oldList) {
-        return Ext.factory(config, Ext.dataview.List, oldList);
+        if (config === true) {
+            config = {};
+        }
+
+        return Ext.factory(config, SparkClassroom.widget.SparkpointSuggestions, oldList);
     },
 
     updateSparkpointsList: function(sparkpointsList) {
