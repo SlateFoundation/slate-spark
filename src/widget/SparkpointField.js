@@ -20,7 +20,8 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         listeners: {
             focus: 'onFieldFocus',
             change: { fn: 'onFieldChange', buffer: 250 },
-            action: 'onFieldAction'
+            action: 'onFieldAction',
+            keyup: 'onFieldKeyUp'
         }
     },
 
@@ -88,6 +89,37 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
         me.setSelectedSparkpoint(suggestionsList.getSelection());
         suggestionsList.hide();
+    },
+
+    onFieldKeyUp: function(me, ev) {
+        var key = ev.getKey(),
+            isDown = key == ev.DOWN,
+            list, store, index, max;
+
+        if (!isDown && key != ev.UP) {
+            return;
+        }
+
+        list = this.getSuggestionsList();
+        store = list.getStore();
+        max = store.getCount() - 1;
+
+        if (!max) {
+            return;
+        }
+
+        index = store.indexOf(list.getSelection());
+
+        if (index == -1) {
+            index = isDown ? 0 : max;
+        } else if (isDown) {
+            index = index == max ? 0 : index + 1;
+        } else {
+            index = index == 0 ? max : index - 1;
+        }
+
+        list.select(index);
+        list.scrollToRecord(list.getSelection());
     },
 
     onSuggestionsStoreLoad: function(suggestionsStore) {
