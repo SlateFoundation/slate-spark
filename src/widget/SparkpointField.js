@@ -92,11 +92,12 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
     onSuggestionsStoreLoad: function(suggestionsStore) {
         var me = this,
-            query = me.getQuery();
+            query = me.getQuery(),
+            selectedSparkpoint = me.getSelectedSparkpoint();
 
         me.getSuggestionsList().select(
             (query && suggestionsStore.query('code', query, false, false, true).first()) ||
-            suggestionsStore.getById(me.getSelectedSparkpoint().getId()) ||
+            (selectedSparkpoint && suggestionsStore.getById(selectedSparkpoint.getId())) ||
             0
         );
     },
