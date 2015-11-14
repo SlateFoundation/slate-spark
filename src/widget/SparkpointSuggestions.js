@@ -1,6 +1,9 @@
 Ext.define('SparkClassroom.widget.SparkpointSuggestions', {
     extend: 'Ext.dataview.List',
     xtype: 'spark-sparkpointsuggestions',
+    requires: [
+        'SparkClassroom.store.SparkpointsLookup'
+    ],
 
 
     config: {
@@ -9,7 +12,9 @@ Ext.define('SparkClassroom.widget.SparkpointSuggestions', {
         width: 350,
         height: 450,
 
-        store: 'SparkpointsLookup',
+        store: {
+            type: 'spark-sparkpointslookup'
+        },
         grouped: true,
         itemTpl: [
             '<div class="flex-ct">',
