@@ -150,7 +150,6 @@ function* suggestedGetHandler() {
                AND ss.student_id = $1
               JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
              WHERE ssas.section_id = $2
-               AND ssas.last_accessed IS NOT NULL
                AND ssas.student_id = $1
                AND ss.apply_finish_time IS NULL
           ORDER BY ssas.last_accessed
