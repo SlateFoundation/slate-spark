@@ -199,20 +199,41 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     // controller methods
     syncSelections: Ext.Function.createBuffered(function() {
         var me = this,
+            appCt = me.getAppCt(),
+            sparkpointsLookupStore = me.getSparkpointsLookupStore(),
             sectionCode = me.getSelectedSection(),
             sparkpointCode = me.getSelectedSparkpoint(),
             token = Ext.util.History.getToken(),
-            prefixMatch = token && this.tokenPrefixRe.exec(token);
+            prefixMatch = token && this.tokenPrefixRe.exec(token),
+            finishSync = function() {
+                me.getSectionSelect().setValue(sectionCode || null);
+                me.getSparkpointSelect().setValue(sparkpointCode || null);
 
-        me.getSectionSelect().setValue(sectionCode || null);
-        me.getSparkpointSelect().setValue(sparkpointCode || null);
+                //show section dependant components
+                me.getNavBar().setHidden(!sectionCode);
+                me.getWelcomeCmp().setHidden(sectionCode && sparkpointCode);
+                me.getTabsCt().setHidden(!sparkpointCode);
 
-        //show section dependant components
-        me.getNavBar().setHidden(!sectionCode);
-        me.getWelcomeCmp().setHidden(sectionCode && sparkpointCode);
-        me.getTabsCt().setHidden(!sparkpointCode);
+                // redirect with the current un-prefixed route or the default section to write the new section into the route
+                me.redirectTo((prefixMatch && prefixMatch[4]) || 'work');
+            },
+            latestCurrentSparkpoint;
 
-        // redirect with the current un-prefixed route or the default section to write the new section into the route
-        this.redirectTo((prefixMatch && prefixMatch[4]) || 'work');
+        if (sectionCode && !sparkpointCode) {
+            appCt.setMasked({xtype: 'loadmask', message: 'Resuming last sparkpoint&hellip;'});
+            sparkpointsLookupStore.load({
+                callback: function(sparkpoints, operation, success) {
+                    if (success && (latestCurrentSparkpoint = sparkpointsLookupStore.getAt(0))) {
+                        me.setSelectedSparkpoint(latestCurrentSparkpoint.getId());
+                    } else {
+                        finishSync();
+                    }
+
+                    appCt.setMasked(false);
+                }
+            });
+        } else {
+            finishSync();
+        }
     }, 10)
 });
