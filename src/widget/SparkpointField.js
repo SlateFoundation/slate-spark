@@ -35,7 +35,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
     updateSuggestionsList: function(suggestionsList) {
         suggestionsList.on({
             scope: this,
-            select: 'onSuggestionsListSelect'
+            itemtap: 'onSuggestionsListItemTap'
         });
     },
 
@@ -81,7 +81,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         this.setQuery(value);
     },
 
-    onSuggestionsListSelect: function(suggestionsList, sparkpoint) {
+    onSuggestionsListItemTap: function(suggestionsList, index, target, sparkpoint) {
         this.setSelectedSparkpoint(sparkpoint);
         suggestionsList.hide();
     }
