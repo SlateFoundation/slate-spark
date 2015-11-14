@@ -37,7 +37,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             xtype: 'spark-titlebar'
         },
         sectionSelect: 'spark-titlebar #sectionSelect',
-        sparkpointSelect: 'spark-student-navbar #sparkpointSelector',
+        sparkpointSelect: 'spark-student-navbar spark-sparkpointfield',
 
         navBar: {
             selector: 'spark-student-navbar',

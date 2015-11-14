@@ -5,6 +5,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     requires: [
         'Ext.field.Text',
         'Ext.dataview.List',
+        'SparkClassroom.widget.SparkpointField',
         'SparkClassroom.widget.SparkpointSuggestions'
     ],
 
@@ -14,7 +15,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
         sparkpointsList: true,
 
         control: {
-            'textfield#sparkpointSelector': {
+            'spark-sparkpointfield': {
                 focus: 'onSparkpointFieldFocus',
                 change: { fn: 'onSparkpointFieldChange', buffer: 250 }
             }
@@ -27,13 +28,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
 
         items: [
             {
-                itemId: 'sparkpointSelector',
-
-                xtype: 'textfield',
-                cls: 'spark-navbar-sparkpoint-selector',
-                label: 'Sparkpoint',
-                labelCls: 'visually-hidden',
-                placeHolder: 'Select Sparkpoint'
+                xtype: 'spark-sparkpointfield'
             },
             {
                 xtype: 'label',
@@ -101,7 +96,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
         var me = this,
-            sparkpointSelector = me.down('#sparkpointSelector');
+            sparkpointSelector = me.down('spark-sparkpointfield');
 
         sparkpointSelector.setValue(sparkpoint.getId());
         sparkpointSelector.fireEvent('sparkpointselect', sparkpointSelector, sparkpoint, oldSparkpoint);
