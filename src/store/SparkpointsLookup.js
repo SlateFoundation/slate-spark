@@ -24,7 +24,12 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
                     return 'Current';
                 }
 
-                return 'Next Up';
+                // all other results that do include student-personalized data
+                if (r.get('last_accessed')) {
+                    return 'Next Up';
+                }
+
+                return '';
             },
             sorterFn: function(r1, r2) {
                 var assessFinish1 = r1.get('assess_finish_time'),
