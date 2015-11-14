@@ -19,7 +19,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     stores: [
         'Sections@SparkClassroom.store',
-        'Students@SparkClassroom.store'
+        'Students@SparkClassroom.store',
+        'SparkpointsLookup@SparkClassroom.store'
     ],
 
     models: [

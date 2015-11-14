@@ -4,8 +4,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     xtype: 'spark-student-navbar',
     requires: [
         'Ext.field.Text',
-        'Ext.dataview.List',
-        'SparkClassroom.store.SparkpointsLookup'
+        'Ext.dataview.List'
     ],
 
     config: {
@@ -37,9 +36,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                     '</tpl>',
                 '</div>' // close flex or description
             ],
-            store: {
-                type: 'spark-sparkpointslookup'
-            }
+            store: 'SparkpointsLookup'
         },
 
         control: {
