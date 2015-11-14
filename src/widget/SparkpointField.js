@@ -19,7 +19,8 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
         listeners: {
             focus: 'onFieldFocus',
-            change: { fn: 'onFieldChange', buffer: 250 }
+            change: { fn: 'onFieldChange', buffer: 250 },
+            action: 'onFieldAction'
         }
     },
 
@@ -80,6 +81,13 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
     onFieldChange: function(me, value) {
         me.setQuery(value);
+    },
+
+    onFieldAction: function(me) {
+        var suggestionsList = me.getSuggestionsList();
+
+        me.setSelectedSparkpoint(suggestionsList.getSelection());
+        suggestionsList.hide();
     },
 
     onSuggestionsStoreLoad: function(suggestionsStore) {
