@@ -1,24 +1,19 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.Sparkpoint', {
-    extend: 'Ext.data.Model',
+    extend: 'SparkClassroom.model.StudentSparkpoint',
 
     idProperty: 'code',
     fields: [
-        // general sparkpoint fileds
+        // general sparkpoint fields
+        'id',
         'code',
         'student_title',
         'teacher_title',
 
-        // student-specific metadata
+        // student-personalized results
         {
-            name: 'recommended',
-            type: 'boolean',
-            defaultValue: false
-        },
-        {
-            name: 'completed_date',
-            type: 'date',
-            dateFormat: 'timestamp'
+            name: 'last_accesssed',
+            type: 'sparkdate'
         }
     ]
 });
