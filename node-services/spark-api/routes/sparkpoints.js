@@ -158,17 +158,33 @@ function* suggestedGetHandler() {
          ),
 
         queued AS (
-            SELECT ssas.section_id,
-                   ssas.student_id,
-                   ssas.sparkpoint_id as id,
+            SELECT sp.code,
+                   ss.sparkpoint_id AS id,
+                   ss.student_id,
+                   ss.learn_start_time,
+                   ss.learn_finish_time,
+                   ss.conference_start_time,
+                   ss.conference_join_time,
+                   ss.conference_finish_time,
+                   ss.apply_start_time,
+                   ss.apply_ready_time,
+                   ss.apply_finish_time,
+                   ss.assess_start_time,
+                   ss.assess_ready_time,
+                   ss.assess_finish_time,
+                   ss.conference_group_id,
+                   ss.selected_apply_id,
+                   ss.selected_fb_apply_id,
                    ssas.last_accessed,
-                   sp.student_title,
-                   sp.code
+                   ssas.section_id,
+                   sp.student_title
               FROM section_student_active_sparkpoint ssas
+         LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
+               AND ss.student_id = $1
               JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
-             WHERE last_accessed IS NULL
-               AND section_id = $2
+             WHERE ssas.section_id = $2
                AND ssas.student_id = $1
+               AND ss.learn_start_time IS NULL
           ORDER BY ssas.id
            LIMIT $5
        )
