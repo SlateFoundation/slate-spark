@@ -124,7 +124,7 @@ function *patchHandler(req, res, next) {
     values = [sectionId, studentId, sparkpointId];
 
     if (this.isTeacher) {
-        activeSql += 'NOTHING;';
+        activeSql += 'UPDATE SET recommender_id = $4;';
         values.push(this.userId);
     } else {
         activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
