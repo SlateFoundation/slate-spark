@@ -31,6 +31,7 @@ function *getHandler() {
                        sparkpoint_id,
                        section_id,
                        last_accessed,
+                       recommender_id,
                        ROW_NUMBER() OVER (
                          PARTITION BY ssas.student_id, ssas.section_id
                              ORDER BY ssas.last_accessed desc) AS rn
