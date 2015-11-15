@@ -11,11 +11,12 @@ var koa = require('koa'),
     routes = require('./routes/index'),
     error = require('koa-error'),
     slack = require('./lib/slack'),
-    json = require('koa-json');
-
+    json = require('koa-json'),
+    cluster = require('cluster');
 
 app.use(middleware.response_time);
 app.use(error());
+app.use(middleware.process);
 app.use(middleware.logger);
 app.use(middleware.session);
 app.use(jsonBody({}));
@@ -98,5 +99,19 @@ if (require('os').hostname().indexOf('spark') !== -1) {
                 }
             });
         }
+    });
+}
+
+app.port = 8090;
+
+if (cluster.isMaster) {
+    app.listen(app.port);
+} else {
+    app.use(function* () {
+        if (this.req.checkContinue) {
+            this.res.writeContinue();
+        }
+
+        yield;
     });
 }

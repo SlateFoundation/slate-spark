@@ -1,10 +1,7 @@
 'use strict';
 
-const uuid = require('node-uuid');
-
 module.exports = function *logger(next) {
     var start = new Date;
-    this.set('X-Request-Id', uuid.v1());
 
     yield next;
 
