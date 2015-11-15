@@ -112,6 +112,7 @@ function* suggestedGetHandler() {
                    ss.selected_fb_apply_id,
                    ssas.last_accessed,
                    ssas.section_id,
+                   ssas.recommender_id,
                    sp.student_title
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
@@ -144,6 +145,7 @@ function* suggestedGetHandler() {
                    ss.selected_fb_apply_id,
                    ssas.last_accessed,
                    ssas.section_id,
+                   ssas.recommender_id,
                    sp.student_title
               FROM section_student_active_sparkpoint ssas
         RIGHT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
@@ -176,6 +178,7 @@ function* suggestedGetHandler() {
                    ss.selected_fb_apply_id,
                    ssas.last_accessed,
                    ssas.section_id,
+                   ssas.recommender_id,
                    sp.student_title
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id

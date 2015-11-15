@@ -10,6 +10,7 @@ function *getHandler() {
                    t.section_id,
                    t.student_id,
                    t.sparkpoint_id,
+                   t.recommender_id,
                    learn_start_time,
                    learn_finish_time,
                    conference_start_time,
@@ -77,7 +78,7 @@ function *patchHandler(req, res, next) {
         timeValues = [],
         body = this.request.body,
         allKeys = Object.keys(body || {}),
-        invalidKeys, activeSql, sparkpointSql, record;
+        invalidKeys, activeSql, sparkpointSql, record, values;
 
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function (key) {
@@ -116,17 +117,20 @@ function *patchHandler(req, res, next) {
 
     activeSql = `
         INSERT INTO section_student_active_sparkpoint
-                    (section_id, student_id, sparkpoint_id${this.isStudent ? ', last_accessed' : ''})
-             VALUES ($1, $2, $3${this.isStudent ? ', now()::timestamp without time zone' : ''})
+                    (section_id, student_id, sparkpoint_id, ${this.isStudent ? 'last_accessed' : 'recommender_id'})
+             VALUES ($1, $2, $3, ${this.isStudent ? 'now()::timestamp without time zone' : '$4'})
         ON CONFLICT (section_id, student_id, sparkpoint_id) DO `;
+
+    values = [sectionId, studentId, sparkpointId];
 
     if (this.isTeacher) {
         activeSql += 'NOTHING;';
+        values.push(this.userId);
     } else {
         activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
     }
 
-    yield this.pgp.oneOrNone(activeSql, [sectionId, studentId, sparkpointId]);
+    yield this.pgp.oneOrNone(activeSql, values);
 
     if (timeKeys.length === 0) {
         // Return existing row, no time updates
