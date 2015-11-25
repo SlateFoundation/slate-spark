@@ -18,6 +18,10 @@ class PostgresConnection extends AbstractSqlConnection
             $dsn .= ';host=' . ($pdo['host'] ?: 'localhost');
             $dsn .= ';port=' . ($pdo['port'] ?: 5432);
 
+            if (!empty($pdo['application_name'])) {
+                $dsn .= ';application_name=' . $pdo['application_name'];
+            }
+
             $pdo = new PDO($dsn, $pdo['username'], $pdo['password']);
         }
 
