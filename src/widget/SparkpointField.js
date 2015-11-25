@@ -59,7 +59,8 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
         var me = this;
 
-        me.setValue(sparkpoint.getId());
+        me.setValue(sparkpoint ? sparkpoint.getId() : null);
+
         me.fireEvent('sparkpointselect', me, sparkpoint, oldSparkpoint);
     },
 
