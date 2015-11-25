@@ -164,7 +164,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 }
 
                 if (!applyReadyTime) {
-                    return Date.now() - applyStartTime;
+                    return Date.now() - Math.max(conferenceFinishTime, applyStartTime);
                 }
 
                 return Date.now() - applyReadyTime;
