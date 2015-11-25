@@ -263,7 +263,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             return;
         }
 
-        chooseSelectedApplyBtn.setDisabled(!studentSparkpoint.get('conference_finish_time') || !gridSelection);
+        chooseSelectedApplyBtn.setDisabled(!gridSelection);
         chooseSelectedApplyBtn.setText(
             applyStartTime ?
             (
@@ -284,7 +284,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             return;
         }
 
-        submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('apply_start_time'));
+        submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('conference_finish_time') || !studentSparkpoint.get('apply_start_time'));
         submitBtn.setText(applyReadyTime ? 'Submitted to Teacher' : submitBtn.config.text);
     },
 
