@@ -12,15 +12,23 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         'work.Assessments@SparkClassroom.store'
     ],
 
+    models: [
+        'StudentSparkpoint@SparkClassroom.model'
+    ],
+
     refs: {
         assessCt: 'spark-teacher-work-assess',
         reflectionCt: 'spark-teacher-work-assess #reflectionCt',
+        sparkpointField: 'spark-teacher-work-assess  spark-sparkpointfield',
         completeBtn: 'spark-teacher-work-assess #completeBtn'
     },
 
     control: {
         assessCt: {
             activate: 'onAssessCtActivate'
+        },
+        sparkpointField: {
+            sparkpointselect: 'onSparkpointFieldChange'
         },
         completeBtn: {
             tap: 'onCompleteBtnTap'
@@ -93,13 +101,42 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         this.getReflectionCt().setData(assessStore.getProxy().getReader().rawData);
     },
 
+    onSparkpointFieldChange: function(sparkpointField, sparkpoint) {
+        this.refreshCompleteBtn();
+    },
+
     onCompleteBtnTap: function() {
-        var student = this.getActiveStudent();
+        var me = this,
+            student = me.getActiveStudent(),
+            sparkpointField = me.getSparkpointField(),
+            recommendedSparkpoint = sparkpointField.getSelectedSparkpoint(),
+            completeBtnDirty = false,
+            studentSparkpoint;
 
         if (!student.get('assess_finish_time')) {
             student.set('assess_finish_time', new Date());
             student.save();
-            this.refreshCompleteBtn();
+
+            completeBtnDirty = true;
+        }
+
+        if (recommendedSparkpoint) {
+            me.getCompleteBtn().disable();
+
+            studentSparkpoint = me.getStudentSparkpointModel().create({
+                sparkpoint: recommendedSparkpoint.getId()
+            });
+
+            studentSparkpoint.set('student_id', student.getId());
+
+            studentSparkpoint.save({
+                callback: function(studentSparkpoint, operation, success) {
+                    sparkpointField.setSelectedSparkpoint(null);
+                    sparkpointField.setQuery(null);
+                }
+            });
+        } else if (completeBtnDirty) {
+            me.refreshCompleteBtn();
         }
     },
 
@@ -151,6 +188,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             //     appliesStore.load();
             // }
 
+            me.getSparkpointField().getSuggestionsList().getStore().getProxy().setExtraParam('student_id', student.getId());
+
             me.refreshCompleteBtn();
         } else {
             assessCt.hide();
@@ -158,15 +197,28 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     },
 
     refreshCompleteBtn: function() {
-        var completeBtn = this.getCompleteBtn(),
-            student = this.getActiveStudent(),
-            assessFinishTime = student && student.get('assess_finish_time');
+        var me = this,
+            completeBtn = me.getCompleteBtn(),
+            sparkpointField = me.getSparkpointField(),
+            selectedSparkpoint = sparkpointField.getSelectedSparkpoint(),
+            student = me.getActiveStudent(),
+            assessFinishTime = student && student.get('assess_finish_time')
 
         if (!completeBtn || !student) {
             return;
         }
 
-        completeBtn.setDisabled(assessFinishTime || !student.get('assess_ready_time'));
-        completeBtn.setText(assessFinishTime ? 'Standard Completed' : completeBtn.config.text);
+        sparkpointField.setDisabled(!student.get('assess_ready_time'));
+
+        completeBtn.setDisabled((assessFinishTime && !selectedSparkpoint) || !student.get('assess_ready_time'));
+        completeBtn.setText(
+            assessFinishTime ?
+            (
+                selectedSparkpoint ?
+                'Suggest Next Sparkpoint' :
+                'Sparkpoint Completed'
+            ) :
+            completeBtn.config.text
+        );
     }
 });
