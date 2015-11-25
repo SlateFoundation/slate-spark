@@ -14,6 +14,18 @@ Ext.define('SparkClassroom.model.Sparkpoint', {
         {
             name: 'last_accesssed',
             type: 'sparkdate'
+        },
+        {
+            name: 'recommender_id',
+            type: 'int',
+            allowNull: true
+        },
+        {
+            name: 'recommended',
+            mapping: 'recommender_id',
+            convert: function(v) {
+                return !!v;
+            }
         }
     ]
 });

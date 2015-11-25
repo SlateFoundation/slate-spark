@@ -56,6 +56,9 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
             }
         },
         sorters: [{
+            property: 'recommended',
+            direction: 'DESC'
+        },{
             property: 'last_accessed',
             direction: 'DESC'
         },{
