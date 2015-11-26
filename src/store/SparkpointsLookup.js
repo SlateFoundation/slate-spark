@@ -25,11 +25,7 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
                 }
 
                 // all other results that do include student-personalized data
-                if (r.get('last_accessed')) {
-                    return 'Next Up';
-                }
-
-                return '';
+                return 'Next Up';
             },
             sorterFn: function(r1, r2) {
                 var assessFinish1 = r1.get('assess_finish_time'),
@@ -45,9 +41,9 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
                 }
 
                 // next up second
-                if (assessFinish1 && !assessFinish2) {
+                if (!assessFinish1 && assessFinish2) {
                     return -1;
-                } else if (!assessFinish1 && assessFinish2) {
+                } else if (assessFinish1 && !assessFinish2) {
                     return 1;
                 }
 
@@ -56,7 +52,7 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
             }
         },
         sorters: [{
-            property: 'recommended',
+            property: 'recommended_time',
             direction: 'DESC'
         },{
             property: 'last_accessed',

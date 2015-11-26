@@ -26,6 +26,11 @@ Ext.define('SparkClassroom.model.Sparkpoint', {
             convert: function(v) {
                 return !!v;
             }
+        },
+        {
+            name: 'recommended_time',
+            type: 'sparkdate',
+            allowNull: true
         }
     ]
 });
