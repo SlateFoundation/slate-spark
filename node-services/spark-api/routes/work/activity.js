@@ -11,6 +11,7 @@ function *getHandler() {
                    t.student_id,
                    t.sparkpoint_id,
                    t.recommender_id,
+                   t.recommended_time,
                    learn_start_time,
                    learn_finish_time,
                    conference_start_time,
@@ -32,16 +33,17 @@ function *getHandler() {
                        section_id,
                        last_accessed,
                        recommender_id,
+                       recommended_time,
                        ROW_NUMBER() OVER (
                          PARTITION BY ssas.student_id, ssas.section_id
-                             ORDER BY ssas.last_accessed desc) AS rn
+                             ORDER BY ssas.last_accessed DESC) AS rn
                   FROM section_student_active_sparkpoint ssas
                  WHERE section_id = $1 AND last_accessed IS NOT NULL
               ) t
-            LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
-                  AND ss.student_id = t.student_id
-                 JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
-                WHERE t.rn = 1;`;
+         LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
+               AND ss.student_id = t.student_id
+              JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
+             WHERE t.rn = 1;`;
 
     records = yield this.pgp.manyOrNone(query, [sectionId]);
 
@@ -118,14 +120,14 @@ function *patchHandler(req, res, next) {
 
     activeSql = `
         INSERT INTO section_student_active_sparkpoint
-                    (section_id, student_id, sparkpoint_id, ${this.isStudent ? 'last_accessed' : 'recommender_id'})
-             VALUES ($1, $2, $3, ${this.isStudent ? 'now()::timestamp without time zone' : '$4'})
+                    (section_id, student_id, sparkpoint_id, ${this.isStudent ? 'last_accessed' : 'recommended_time, recommender_id'})
+             VALUES ($1, $2, $3, now()::timestamp without time zone ${this.isStudent ? '' : ', $4'})
         ON CONFLICT (section_id, student_id, sparkpoint_id) DO `;
 
     values = [sectionId, studentId, sparkpointId];
 
     if (this.isTeacher) {
-        activeSql += 'UPDATE SET recommender_id = $4;';
+        activeSql += 'UPDATE SET recommender_id = $4, recommended_time = now()::timestamp without time zone;';
         values.push(this.userId);
     } else {
         activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
