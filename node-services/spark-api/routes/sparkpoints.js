@@ -122,7 +122,7 @@ function* suggestedGetHandler() {
              WHERE ssas.section_id = $2
                AND ss.apply_finish_time IS NOT NULL
                AND ssas.student_id = $1
-          ORDER BY ssas.recommended_time DESC NULLS FIRST, ssas.last_accessed DESC
+          ORDER BY ssas.last_accessed DESC
              LIMIT $3
          ),
 
@@ -156,7 +156,7 @@ function* suggestedGetHandler() {
              WHERE ssas.section_id = $2
                AND ssas.student_id = $1
                AND ss.apply_finish_time IS NULL
-          ORDER BY ssas.recommended_time DESC NULLS FIRST, ssas.last_accessed DESC
+          ORDER BY ssas.last_accessed DESC
              LIMIT $4
          ),
 
@@ -190,7 +190,7 @@ function* suggestedGetHandler() {
              WHERE ssas.section_id = $2
                AND ssas.student_id = $1
                AND ss.learn_start_time IS NULL
-          ORDER BY ssas.recommended_time DESC NULLS FIRST, ssas.last_accessed DESC
+          ORDER BY ssas.recommended_time DESC, ssas.last_accessed DESC
            LIMIT $5
        )
 
