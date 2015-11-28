@@ -88,7 +88,7 @@ app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get))
 app.use(_.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get));
 
 // OpenEd
-app.use(_.get('/opened/csv', routes.opened.index.csv.get));
+// app.use(_.get('/opened/csv', routes.opened.index.csv.get));
 
 // Test
 app.use(_.get('/test', routes.test.get));
