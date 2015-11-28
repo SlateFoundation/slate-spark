@@ -98,7 +98,7 @@ function *patchHandler() {
         // HACK: Temporary workaround for not-null constraint failing
         // BETTER HACK: SET section_id = EXCLUDED.section_id (we'd need to modify or throw out query builder)
         if (group.id && !group.section_id) {
-            group.section_id = this.request.section_id;
+            group.section_id = ctx.query.section_id;
         }
 
         for (let prop in group) {
