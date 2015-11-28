@@ -2,9 +2,10 @@
 
 var util = require('../../lib/util'),
     allowNull = util.allowNull,
+    isString = util.isString,
     fieldValidators = {
         id: allowNull(util.isGtZero),
-        section_id: util.isGteZero,
+        section_id: isString,
         opened_time: allowNull(util.isDate),
         timer_time: allowNull(util.isDate),
         closed_time: allowNull(util.isDate),
@@ -42,6 +43,10 @@ function validateConferenceGroup(group, errors) {
         }
     }
 
+    if (!group.id && !group.section_id) {
+        errorList.push('You must pass either an id or a section_id to identify the group.');
+    }
+
     if (errorList.length > 0 && errors === undefined) {
         group.errors = errorList;
     }
@@ -74,13 +79,28 @@ function *patchHandler() {
     var conferenceGroups = this.request.body,
         _ = new util.QueryBuilder(),
         recordQueries = [],
-        ctx = this;
+        ctx = this,
+        errors = [];
 
     if (!Array.isArray(conferenceGroups)) {
         this.throw(new Error('The request body should be a JSON array of conference group objects'), 400);
     }
 
+    if (!this.isTeacher) {
+        this.throw(new Error('This is a teacher only endpoint.'), 403);
+        return;
+    }
+
     conferenceGroups.forEach(function(group) {
+
+        validateConferenceGroup(group, errors);
+
+        // HACK: Temporary workaround for not-null constraint failing
+        // BETTER HACK: SET section_id = EXCLUDED.section_id (we'd need to modify or throw out query builder)
+        if (group.id && !group.section_id) {
+            group.section_id = this.request.section_id;
+        }
+
         for (let prop in group) {
             _.push('conference_groups', prop, group[prop]);
         }
@@ -88,8 +108,15 @@ function *patchHandler() {
         group.queries = [recordQueries.push(_.getUpsert('conference_groups', ['id'], true)) - 1];
     });
 
+    this.body = conferenceGroups;
 
-    this.body = yield util.groupQueries(recordQueries, _.values, conferenceGroups, ctx);
+    if (errors.length > 0) {
+        this.throw(new Error(errors.join(', ')), 400);
+        return;
+    }
+
+    this.body = yield* util.groupQueries(recordQueries, _.values, conferenceGroups, this);
+
 }
 
 module.exports = {

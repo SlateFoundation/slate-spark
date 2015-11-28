@@ -64,6 +64,7 @@ app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet
 
 // Conference groups
 app.use(_.patch('/work/conference-groups', routes.work['conference-groups'].patch));
+app.use(_.post('/work/conference-groups', routes.work['conference-groups'].patch));
 app.use(_.get('/work/conference-groups', routes.work['conference-groups'].get));
 
 // Todos
@@ -85,6 +86,9 @@ app.use(_.post('/work/mastery-check-scores', routes.work['mastery-check-scores']
 app.use(_.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get));
+
+// OpenEd
+app.use(_.get('/opened/csv', routes.opened.index.csv.get));
 
 // Test
 app.use(_.get('/test', routes.test.get));
