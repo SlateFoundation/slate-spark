@@ -1,6 +1,9 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.Sparkpoint', {
     extend: 'SparkClassroom.model.StudentSparkpoint',
+    requires: [
+        'SparkClassroom.data.field.SparkDate'
+    ],
 
     idProperty: 'code',
     fields: [
