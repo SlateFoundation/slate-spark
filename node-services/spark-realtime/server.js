@@ -1,9 +1,10 @@
 var cluster = require('cluster'),
-    config = require('./config.json'),
+    path = require('path'),
+    config = require(path.resolve(__dirname, 'config.json')),
     workers;
 
 cluster.setupMaster({
-    exec: 'worker.js',
+    exec: path.resolve(__dirname, 'worker.js'),
     silent: false
 });
 
