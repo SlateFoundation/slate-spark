@@ -123,27 +123,6 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             }
         },
         {
-            name: 'conference_group',
-            type: 'int',
-            allowNull: true,
-
-            // TODO: remove this when backend is implemented
-            persist: false,
-            convert: function(v, r) {
-                var conferenceGroups = r.self.conferenceGroups = r.self.conferenceGroups || {},
-                    userId = r.get('student_id');
-
-                // temporarily persist value in model instance until backend is implemented
-                if (v === undefined) {
-                    v = conferenceGroups[userId];
-                } else {
-                    conferenceGroups[userId] = v;
-                }
-
-                return v || null;
-            }
-        },
-        {
             name: 'conference_feedback',
             persist: false,
             convert: function(v) {
@@ -209,5 +188,26 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         }
 
         record.save();
+    },
+
+    saveConferenceGroup: function(groupId) {
+        var me = this;
+        console.log('Saving %s to group %s', me.get('student_name'), groupId);
+
+
+        me.beginEdit();
+
+        me.set('conference_group_id', groupId);
+
+        if (groupId && !me.get('conference_join_time')) {
+            me.set('conference_join_time', new Date());
+        }
+
+        me.endEdit();
+
+
+        if (me.dirty) {
+            me.save();
+        }
     }
 });

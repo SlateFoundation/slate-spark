@@ -9,14 +9,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
     config: {
+        selectedSection: null,
         activeStudent: null
     },
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
         'work.ConferenceResources@SparkClassroom.store',
-        'work.ConferenceGroups',
+        'work.ConferenceGroups@SparkClassroom.store',
         'work.GroupFeedback'
+    ],
+
+    models: [
+        'work.ConferenceGroup@SparkClassroom.model',
     ],
 
     refs: {
@@ -76,6 +81,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     listen: {
         controller: {
             '#': {
+                sectionselect: 'onSectionSelect',
                 activestudentselect: 'onActiveStudentSelect'
             }
         },
@@ -84,8 +90,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 load: 'onConferenceQuestionsStoreLoad'
             },
             '#gps.ActiveStudents': {
-                update: 'onActiveStudentsStoreUpdate',
-                endupdate: 'onActiveStudentsStoreEndUpdate'
+                load: 'onActiveStudentsStoreLoad',
+                update: 'onActiveStudentsStoreUpdate'
+            },
+            '#work.ConferenceGroups': {
+                load: 'onConferenceGroupsStoreLoad'
             },
             '#work.Feedback': {
                 load: 'onWorkFeedbackLoad'
@@ -98,6 +107,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
 
     // config handlers
+    updateSelectedSection: function(section) {
+        var groupsStore = this.getWorkConferenceGroupsStore();
+
+        if (section && groupsStore.isLoaded()) {
+            groupsStore.load();
+        }
+    },
+
     updateActiveStudent: function(activeStudent) {
         var me = this,
             store = me.getWorkConferenceQuestionsStore(),
@@ -126,13 +143,24 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
 
     // event handlers
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
+    },
+
     onActiveStudentSelect: function(student) {
         this.setActiveStudent(student);
     },
 
     onConferenceCtActivate: function() {
-        this.syncActiveStudent();
-        this.syncConferenceGroup();
+        var me = this,
+            groupsStore = me.getWorkConferenceGroupsStore();
+
+        me.syncActiveStudent();
+        me.syncConferenceGroup();
+
+        if (!groupsStore.isLoaded()) {
+            groupsStore.load();
+        }
     },
 
     onConferenceQuestionsStoreLoad: function(questionsStore, questions) {
@@ -154,56 +182,34 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         this.getWorkGroupFeedbackStore().loadRecords(feedbackStore.queryRecords('phase', 'conference')); // TODO: use { addRecords: true } and smart clearing if aggregating feedback for whole group
     },
 
+    onActiveStudentsStoreLoad: function() {
+        this.syncConferenceGroupMembers();
+    },
+
     onActiveStudentsStoreUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+        var me = this;
+
         if (operation != 'edit') {
             return;
         }
 
         if (
-            modifiedFieldNames.indexOf('conference_group') != -1 &&
-            activeStudent.get('conference_group')
+            activeStudent === me.getActiveStudent() &&
+            (
+                modifiedFieldNames.indexOf('conference_start_time') != -1 ||
+                modifiedFieldNames.indexOf('conference_group_id') != -1
+            )
         ) {
-            // TODO: do this somewhere else when groups are persistent
-            activeStudent.loadMasteryCheckScore('conference');
+            me.syncConferenceGroup();
+        }
 
-            if (!activeStudent.get('conference_join_time')) {
-                activeStudent.set('conference_join_time', new Date());
-                activeStudent.save();
-            }
-        } else if (
-            modifiedFieldNames.indexOf('conference_start_time') != -1
-        ) {
-            this.syncConferenceGroup()
+        if (modifiedFieldNames.indexOf('conference_group_id') != -1) {
+            me.syncConferenceGroupMembers();
         }
     },
 
-    onActiveStudentsStoreEndUpdate: function() {
-        var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
-            now = new Date(),
-            groupsStore = this.getWorkConferenceGroupsStore(),
-            groupIds = activeStudentsStore.collect('conference_group'),
-            groupsCount = groupIds.length, i = 0,
-            groupId, existingGroup, members;
-
-        groupsStore.beginUpdate();
-
-        for (; i < groupsCount; i++) {
-            groupId = groupIds[i];
-            members = activeStudentsStore.query('conference_group', groupId).getRange();
-
-            if (existingGroup = groupsStore.getById(groupId)) {
-                existingGroup.set('members', members);
-            } else {
-                groupsStore.add({
-                    id: groupId,
-                    members: members,
-                    timer_started: now,
-                    timer_base: now
-                });
-            }
-        }
-
-        groupsStore.endUpdate();
+    onConferenceGroupsStoreLoad: function() {
+        this.syncConferenceGroupMembers();
     },
 
     onQuestionSubmit: function() {
@@ -227,13 +233,30 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onStartConferenceButtonTap: function() {
-        this.getActiveStudent().set('conference_group', 1 + (Ext.getStore('gps.ActiveStudents').max('conference_group') || 0));
-        this.syncConferenceGroup();
+        var me = this,
+            activeStudent = me.getActiveStudent(),
+            group = me.getWorkConferenceGroupModel().create({
+                section_id: me.getSelectedSection()
+            });
+
+        group.save({
+            callback: function(group, operation, success) {
+                if (success) {
+                    me.getWorkConferenceGroupsStore().add(group);
+                    activeStudent.saveConferenceGroup(group.getId());
+                    me.syncConferenceGroup();
+                } else {
+                    Ext.Logger.warn('Failed to create conference group');
+                }
+            }
+        });
     },
 
     onJoinConferenceViewItemTap: function(dataview, index, target, group, e) {
+        var activeStudent = this.getActiveStudent();
+
         if (e.getTarget('.spark-conference-join-btn')) {
-            this.getActiveStudent().set('conference_group', group.getId());
+            activeStudent.saveConferenceGroup(group.getId());
             this.syncConferenceGroup();
         }
     },
@@ -253,8 +276,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onConferencingStudentsGridItemDismissTap: function(grid, item) {
-        item.getRecord().set('conference_group', null);
-        this.syncConferenceGroup();
+        var activeStudent = item.getRecord();
+
+        activeStudent.saveConferenceGroup(0); // TODO: null instead of 0
+
+        if (activeStudent === this.getActiveStudent()) {
+            this.syncConferenceGroup();
+        }
     },
 
     onConferencingStudentsGridSelectionChange: function(grid) {
@@ -278,7 +306,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onAddStudentSelectFieldChange: function(selectField, student) {
         if (student) {
-            student.set('conference_group', this.getActiveStudent().get('conference_group'));
+            student.saveConferenceGroup(this.getActiveStudent().get('conference_group_id'));
+            selectField.setValue(null);
         }
     },
 
@@ -357,7 +386,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 }
 
                 if (questionInputFocused) {
-                    console.log('restoring focus');
                     questionInputEl.focus();
                 }
             }
@@ -405,13 +433,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     syncConferenceGroup: function() {
         var me = this,
             activeStudent = me.getActiveStudent(),
-            conferenceGroup = activeStudent && activeStudent.get('conference_group'),
+            conferenceGroup = activeStudent && activeStudent.get('conference_group_id'),
             conferencingStudentsGrid = me.getConferencingStudentsGrid(),
             conferencingStudentsStore = conferencingStudentsGrid && conferencingStudentsGrid.getStore();
 
         if (activeStudent && me.getConferenceCt()) {
             conferencingStudentsStore.clearFilter(true);
-            conferencingStudentsStore.filter('conference_group', conferenceGroup);
+            conferencingStudentsStore.filter('conference_group_id', conferenceGroup);
 
             if (!conferencingStudentsGrid.getSelections().length) {
                 conferencingStudentsGrid.setSelection(activeStudent);
@@ -422,6 +450,31 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             me.getConferencingCt().setHidden(!conferenceGroup);
             me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
         }
+    },
+
+    syncConferenceGroupMembers: function() {
+        var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
+            groupsStore = this.getWorkConferenceGroupsStore(),
+            groupsCount = groupsStore.getCount(),
+            i = 0, group;
+
+        if (!groupsStore.isLoaded() || !activeStudentsStore.isLoaded()) {
+            return;
+        }
+
+        groupsStore.beginUpdate();
+
+        for (; i < groupsCount; i++) {
+            group = groupsStore.getAt(i);
+
+            group.set({
+                members: activeStudentsStore.query('conference_group_id', group.getId()).getRange()
+            },{
+                dirty: false
+            });
+        }
+
+        groupsStore.endUpdate();
     },
 
     refreshQuestions: function() {

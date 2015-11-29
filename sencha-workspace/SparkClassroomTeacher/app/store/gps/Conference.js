@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Conference', {
         }],
         grouper: {
             groupFn: function(r) {
-                var conferenceGroup = r.get('conference_group');
+                var conferenceGroup = r.get('conference_group_id');
 
                 if (!r.get('conference_start_time')) {
                     return 'Working';
@@ -32,8 +32,8 @@ Ext.define('SparkClassroomTeacher.store.gps.Conference', {
                     conferenceReady2 = r2.get('conference_start_time'),
                     conferenceJoined1 = r1.get('conference_join_time'),
                     conferenceJoined2 = r2.get('conference_join_time'),
-                    conferenceGroup1 = r1.get('conference_group'),
-                    conferenceGroup2 = r2.get('conference_group');
+                    conferenceGroup1 = r1.get('conference_group_id'),
+                    conferenceGroup2 = r2.get('conference_group_id');
 
                 // working first
                 if (conferenceReady1 && !conferenceReady2) {
