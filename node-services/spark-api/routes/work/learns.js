@@ -10,7 +10,6 @@ var fs = require('fs'),
     lookup = require('../../lib/lookup'),
     AsnStandard = require('../../lib/asn-standard'),
     Fusebox = require('../../lib/fusebox'),
-    Newsela = require('../../lib/newsela'),
     db = require('../../middleware/database'),
     slack = require('../../lib/slack'),
     QueryBuilder = util.QueryBuilder;
