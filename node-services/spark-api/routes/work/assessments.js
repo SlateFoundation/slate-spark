@@ -29,9 +29,9 @@ function *assessmentsHandler() {
                 standards,
                 standardids,
                 v.name AS vendor
-           FROM spark1.s2_assessments
-           JOIN spark1.s2_vendors v
-             ON v.id = spark1.s2_assessments.vendorid
+           FROM slate1.s2_assessments
+           JOIN slate1.s2_vendors v
+             ON v.id = slate1.s2_assessments.vendorid
           WHERE standardids::JSONB ?| $1`, [standardIds]);
 
     this.body = assessments.map(fusebox.normalizeAssessment);
