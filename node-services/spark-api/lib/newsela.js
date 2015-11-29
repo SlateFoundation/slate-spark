@@ -1,5 +1,4 @@
-var restify = require('restify'),
-    client = restify.createJsonClient({
+var client = restify.createJsonClient({
         url: 'https://newsela.com/api/v0'
     });
 

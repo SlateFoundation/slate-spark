@@ -1,7 +1,6 @@
 'use strict';
 
-var restify = require('restify'),
-    fs = require('fs'),
+var fs = require('fs'),
     path = require('path'),
     server,
     async = require('async'),
