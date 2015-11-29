@@ -23,7 +23,7 @@ module.exports = function *parseSession(next) {
         this.session = session;
     }
 
-    if (!this.userId) {
+    if (!this.userId && this.request.path !== '/healthcheck') {
         this.throw('Authentication required', 403);
     }
 

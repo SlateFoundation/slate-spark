@@ -63,8 +63,10 @@ function pgp(options) {
 
         if (schema) {
             this.pgp = global.pgpConnections[schema];
+        } else if (this.request.path === '/healthcheck') {
+            this.pgp =  global.pgpConnections.shared;
         } else {
-            throw new Error('If you are not behind a load balancer; you must pretend to be. See README.md.');
+            this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
 
         this.sharedPgp = global.pgpConnections.shared;
@@ -81,8 +83,10 @@ function knex(options) {
 
         if (schema) {
             this.knex = global.knexConnections[schema];
+        } else if (this.request.path === '/healthcheck') {
+            this.pgp = global.knexConnections.shared;
         } else {
-            throw new Error('If you are not behind a load balancer; you must pretend to be. See README.md.');
+            this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
 
         this.sharedknex = global.knexConnections.shared;
