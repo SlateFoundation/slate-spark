@@ -106,7 +106,7 @@ if (require('os').hostname().indexOf('spark') !== -1) {
     });
 }
 
-app.port = 8090;
+app.port = 9090;
 
 if (cluster.isMaster) {
     app.listen(app.port);
