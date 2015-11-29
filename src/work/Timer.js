@@ -9,10 +9,8 @@ Ext.define('SparkClassroom.work.Timer', {
     config: {
         record: null,
         paused: false,
-        startedField: 'timer_started',
-        baseField: 'timer_base',
-        bankedField: 'timer_banked',
-        pausedField: 'timer_paused',
+        baseField: 'timer_time',
+        bankedField: 'accrued_seconds',
 
         cls: 'spark-work-timer',
         data: {
@@ -43,28 +41,10 @@ Ext.define('SparkClassroom.work.Timer', {
 
     updateRecord: function(record, oldRecord) {
         var me = this,
-            refreshTask = me.refreshTask,
-            startedField = me.getStartedField(),
-            baseField = me.getBaseField(),
-            pausedField = me.getPausedField(),
-            now = new Date(),
-            paused;
+            refreshTask = me.refreshTask;
 
         if (record) {
-            if (pausedField) {
-                me.setPaused(paused = !!record.get(pausedField));
-            } else {
-                paused = me.getPaused();
-            }
-
-            if (!paused && startedField && !record.get(startedField)) {
-                record.set(startedField, now);
-            }
-
-            if (!paused && !record.get(baseField)) {
-                record.set(baseField, now);
-            }
-
+            me.setPaused(!record.get(me.getBaseField()));
             me.refresh();
             refreshTask.start();
         } else {
@@ -85,7 +65,6 @@ Ext.define('SparkClassroom.work.Timer', {
             record = me.getRecord(),
             baseField = me.getBaseField(),
             bankedField = me.getBankedField(),
-            pausedField = me.getPausedField(),
             baseTime = record && record.get(baseField);
 
         if (record) {
@@ -93,8 +72,10 @@ Ext.define('SparkClassroom.work.Timer', {
                 refreshTask.stop();
 
                 if (baseTime) {
+                    record.beginEdit();
                     record.set(bankedField, record.get(bankedField) + (Date.now() - baseTime) / 1000);
                     record.set(baseField, null);
+                    record.endEdit();
                 }
             } else {
                 if (!baseTime) {
@@ -102,10 +83,6 @@ Ext.define('SparkClassroom.work.Timer', {
                 }
 
                 refreshTask.start();
-            }
-
-            if (pausedField) {
-                record.set(pausedField, paused);
             }
         }
 

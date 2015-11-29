@@ -75,6 +75,13 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             allowNull: true
         },
 
+        // other persistent student+sparkpoint state
+        {
+            name: 'conference_group_id',
+            type: 'int',
+            allowNull: true
+        },
+
         // locally calculated fields
         {
             name: 'active_phase',
