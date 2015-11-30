@@ -127,6 +127,24 @@ if (PRODUCTION) {
 
 app.port = 9090;
 
+/*
+nc.subscribe('cache.*.public.*.*', function(msg, reply, subject) {
+    var tokens = subject.split('.'),
+        action = tokens[1],
+        pk = tokens.pop(),
+        table = tokens.pop();
+
+    Object.keys(cluster.workers).forEach(function(id) {
+        cluster.workers[id].send({
+            type: 'cache',
+            action: action,
+            entity: table,
+            pk: pk
+        });
+    });
+});
+*/
+
 if (cluster.isMaster) {
     module.exports.onCacheEvent = cacheBuster;
     app.listen(app.port);
