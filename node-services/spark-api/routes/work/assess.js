@@ -27,9 +27,9 @@ function *getHandler() {
                           standards,
                           standardids,
                           v.name AS vendor
-                     FROM slate1.s2_assessments
-                     JOIN slate1.s2_vendors v
-                       ON v.id = slate1.s2_assessments.vendorid
+                     FROM s2_assessments
+                     JOIN s2_vendors v
+                       ON v.id = s2_assessments.vendorid
                     WHERE standardids::JSONB ?| $1`, [standardIds]);
 
     reflection = yield this.pgp.oneOrNone(
