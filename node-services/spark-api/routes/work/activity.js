@@ -81,6 +81,7 @@ function *patchHandler(req, res, next) {
         timeValues = [],
         body = this.request.body,
         allKeys = Object.keys(body || {}),
+        self = this,
         invalidKeys, activeSql, sparkpointSql, record, values;
 
     // This filter also sets timeKeys and timeValues
@@ -92,12 +93,24 @@ function *patchHandler(req, res, next) {
         }
 
         if (key === 'conference_group_id') {
-            val = parseInt(body.conference_group_id, 10);
-            if (!isNaN(val)) {
-                timeKeys.push('conference_group_id');
-                timeValues.push(val);
-                updateValues.push(`conference_group_id = ${val}`)
+            // Allow null values and values that cast to a number, silently ignore invalid values
+
+            if (body.conference_group_id !== null) {
+                val = parseInt(body.conference_group_id, 10);
+
+                if (isNaN(val)) {
+                    self.throw(
+                        `conference_group_id must be a number or null, you provided: ${body.conference_group_id}`,
+                        400
+                    );
+                }
+            } else {
+                val = 'NULL';
             }
+
+            timeKeys.push('conference_group_id');
+            timeValues.push(val);
+            updateValues.push(`conference_group_id = ${val}`);
         }
 
         if (key.indexOf('time') !== -1) {
@@ -173,6 +186,7 @@ function *patchHandler(req, res, next) {
 
     delete record.id;
     record.sparkpoint = util.toSparkpointCode(record.sparkpoint_id);
+
     this.body = record;
 }
 
