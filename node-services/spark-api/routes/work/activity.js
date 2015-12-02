@@ -26,6 +26,8 @@ function *getHandler() {
                    conference_group_id,
                    selected_apply_id,
                    selected_fb_apply_id,
+                   learn_mastery_check_score,
+                   conference_mastery_check_score,
                    code AS sparkpoint
               FROM (
                 SELECT student_id,
@@ -74,7 +76,9 @@ function *patchHandler(req, res, next) {
             'assess_start_time',
             'assess_ready_time',
             'assess_finish_time',
-            'conference_group_id'
+            'conference_group_id',
+            'learn_mastery_check_score',
+            'conference_mastery_check_score'
         ],
         timeKeys = [],
         updateValues = [],
@@ -111,9 +115,7 @@ function *patchHandler(req, res, next) {
             timeKeys.push('conference_group_id');
             timeValues.push(val);
             updateValues.push(`conference_group_id = ${val}`);
-        }
-
-        if (key.indexOf('time') !== -1) {
+        } else if (key.indexOf('time') !== -1) {
             val = parseInt(body[key], 10);
 
             if (!isNaN(val)) {
@@ -122,6 +124,23 @@ function *patchHandler(req, res, next) {
                 timeValues.push(val);
                 updateValues.push(`${key} = ${val}`);
             }
+        } else if (key.indexOf('mastery_check_score') !== -1) {
+            if (body[key] !== null) {
+                val = parseInt(body[key], 10);
+
+                if (isNaN(val) || val < 1 || val > 100) {
+                    self.throw(
+                        `${key} must be a number between 1 and 100 or null, you provided: ${body[key]}`,
+                        400
+                    );
+                }
+            } else {
+                val = 'NULL';
+            }
+
+            timeKeys.push(key);
+            timeValues.push(val);
+            updateValues.push(`${key} = ${val}`);
         }
 
         return allowedKeys.indexOf(key) === -1;

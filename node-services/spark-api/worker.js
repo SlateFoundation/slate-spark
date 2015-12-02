@@ -77,11 +77,6 @@ app.use(_.get('/work/feedback', routes.work.feedback.get));
 app.use(_.patch('/work/feedback', routes.work.feedback.patch));
 app.use(_.post('/work/feedback', routes.work.feedback.post));
 
-// Mastery Check Scores
-app.use(_.get('/work/mastery-check-scores', routes.work['mastery-check-scores'].get));
-app.use(_.patch('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
-app.use(_.post('/work/mastery-check-scores', routes.work['mastery-check-scores'].patch));
-
 // Sparkpoints
 app.use(_.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get));
