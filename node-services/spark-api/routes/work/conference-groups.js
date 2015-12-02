@@ -95,6 +95,15 @@ function *patchHandler() {
 
         validateConferenceGroup(group, errors);
 
+        // Accept numeric times
+        for(let prop in group) {
+            let val = group[prop];
+
+            if (prop.slice(-5) === '_time' && !isNaN(val)) {
+                group[prop] = "'" + new Date(val * 1000).toUTCString() + "'";
+            }
+        }
+
         // HACK: Temporary workaround for not-null constraint failing
         // BETTER HACK: SET section_id = EXCLUDED.section_id (we'd need to modify or throw out query builder)
         if (group.id && !group.section_id) {
