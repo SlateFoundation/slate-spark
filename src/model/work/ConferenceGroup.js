@@ -28,15 +28,13 @@ Ext.define('SparkClassroom.model.work.ConferenceGroup', {
         {
             name: 'closed_time',
             type: 'sparkdate',
-            allowNull: true,
-            dateWriteFormat: 'C' // TODO: remove when default unix timestamp works again
+            allowNull: true
         },
 
         {
             name: 'timer_time',
             type: 'sparkdate',
-            allowNull: true,
-            dateWriteFormat: 'C' // TODO: remove when default unix timestamp works again
+            allowNull: true
         },
         {
             name: 'accrued_seconds',

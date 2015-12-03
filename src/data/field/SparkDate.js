@@ -14,5 +14,13 @@ Ext.define('SparkClassroom.data.field.SparkDate', {
         }
 
         return new Date(v);
+    },
+
+    serialize: function(v) {
+        if (Ext.isDate(v)) {
+            return Math.round(v/1000);
+        }
+
+        return null;
     }
 });
