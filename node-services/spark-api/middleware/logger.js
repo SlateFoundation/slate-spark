@@ -6,5 +6,10 @@ module.exports = function *logger(next) {
     yield next;
 
     var ms = new Date - start;
-    console.log('%s %s - %s', this.method, this.url, ms, 'ms');
+
+    if (process.env.NODE_ENV === 'production') {
+        console.log('[%s] - %s %s - %s - %s', start.toUTCString(), this.method, this.url, ms, 'ms', this.requestId);
+    } else {
+        console.log('[%s] - %s %s - %s - %s', start.toUTCString(), this.method, this.url, ms, 'ms');
+    }
 };

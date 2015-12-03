@@ -9,6 +9,8 @@ module.exports = function *parseRequest(next) {
     var body = this.request.body,
         query = this.request.query,
         ctx = this;
+
+    this.requestId = this.headers['x-nginx-request-id'];
     
     if (!Array.isArray(body) && typeof body === 'object') {
         for (var prop in body) {
