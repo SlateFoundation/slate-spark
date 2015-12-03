@@ -86,6 +86,7 @@ function *patchHandler(req, res, next) {
         body = this.request.body,
         allKeys = Object.keys(body || {}),
         self = this,
+        hasMasteryCheckScores = false,
         invalidKeys, activeSql, sparkpointSql, record, values;
 
     // This filter also sets timeKeys and timeValues
@@ -130,6 +131,8 @@ function *patchHandler(req, res, next) {
                 );
             }
         } else if (key.indexOf('mastery_check_score') !== -1) {
+            hasMasteryCheckScores = true;
+
             if (!self.isTeacher) {
                 self.throw(new Error('Only teachers can set mastery check scores.'), 403);
             }
@@ -174,7 +177,11 @@ function *patchHandler(req, res, next) {
         activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
     }
 
-    yield this.pgp.oneOrNone(activeSql, values);
+    if (!hasMasteryCheckScores) {
+        // Do not set the recommended time when a teacher posts a mastery check score
+        yield this.pgp.oneOrNone(activeSql, values);
+
+    }
 
     if (timeKeys.length === 0) {
         // Return existing row, no time updates
