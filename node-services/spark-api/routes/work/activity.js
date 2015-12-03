@@ -123,8 +123,17 @@ function *patchHandler(req, res, next) {
                 timeKeys.push(key);
                 timeValues.push(val);
                 updateValues.push(`${key} = ${val}`);
+            } else {
+                self.throw(
+                    `${key} must should be the number of seconds since epoch in UTC, you provided: ${body[key]}`,
+                    400
+                );
             }
         } else if (key.indexOf('mastery_check_score') !== -1) {
+            if (!self.isTeacher) {
+                self.throw(new Error('Only teachers can set mastery check scores.'), 403);
+            }
+
             if (body[key] !== null) {
                 val = parseInt(body[key], 10);
 
