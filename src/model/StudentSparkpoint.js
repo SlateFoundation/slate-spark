@@ -81,6 +81,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'int',
             allowNull: true
         },
+        {
+            name: 'learn_mastery_check_score',
+            type: 'int',
+            allowNull: true
+        },
+        {
+            name: 'conference_mastery_check_score',
+            type: 'int',
+            allowNull: true
+        },
 
         // locally calculated fields
         {
