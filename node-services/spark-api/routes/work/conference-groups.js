@@ -99,8 +99,20 @@ function *patchHandler() {
         for(let prop in group) {
             let val = group[prop];
 
-            if (prop.slice(-5) === '_time' && !isNaN(val)) {
-                group[prop] = new Date(val * 1000).toUTCString();
+            if (prop.slice(-5) === '_time') {
+                if (val === null) {
+                    group[prop] = null;
+                } else {
+                    val = parseInt(val, 10);
+
+                    if (!isNaN(val)) {
+                        group[prop] = new Date(val * 1000).toUTCString();
+                    } else {
+                        ctx.throw(new Error(
+                            `${prop} must be null or the number of seconds since epoch; you provided: ${group[prop]}`
+                        ), 400);
+                    }
+                }
             }
         }
 
