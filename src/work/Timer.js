@@ -61,7 +61,6 @@ Ext.define('SparkClassroom.work.Timer', {
 
     updatePaused: function(paused) {
         var me = this,
-            refreshTask = me.refreshTask,
             record = me.getRecord(),
             baseField = me.getBaseField(),
             bankedField = me.getBankedField(),
@@ -69,8 +68,6 @@ Ext.define('SparkClassroom.work.Timer', {
 
         if (record) {
             if (paused) {
-                refreshTask.stop();
-
                 if (baseTime) {
                     record.beginEdit();
                     record.set(bankedField, record.get(bankedField) + (Date.now() - baseTime) / 1000);
@@ -81,8 +78,6 @@ Ext.define('SparkClassroom.work.Timer', {
                 if (!baseTime) {
                     record.set(baseField, new Date());
                 }
-
-                refreshTask.start();
             }
         }
 
@@ -100,6 +95,8 @@ Ext.define('SparkClassroom.work.Timer', {
         if (baseTime) {
             seconds += (Date.now() - baseTime) / 1000;
         }
+
+        me.setPaused(!baseTime);
 
         me.setData({
             minutes: Math.floor(seconds / 60),
