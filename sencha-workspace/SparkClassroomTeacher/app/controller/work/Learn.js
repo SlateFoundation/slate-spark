@@ -83,8 +83,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
 
         me.syncActiveStudent();
-
-        me.refreshMasteryCheckScore();
     },
 
 
@@ -98,12 +96,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+        var scoreField;
+
         if (
             operation == 'edit' &&
             activeStudent === this.getActiveStudent() &&
-            modifiedFieldNames.indexOf('learn_score') != -1
+            modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
         ) {
-            this.refreshMasteryCheckScore();
+            scoreField = this.getMasteryCheckScoreField();
+            scoreField.setValue(activeStudent.get('learn_mastery_check_score'));
+            scoreField.resetOriginalValue()
         }
     },
 
@@ -113,10 +115,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onLearnsStoreUpdate: function() {
         this.refreshLearnProgress();
-    },
-
-    onMasteryCheckScoresLoad: function(masteryCheckScoresStore) {
-        this.setMasteryCheckScoreRecord(masteryCheckScoresStore.findRecord('phase', 'learn'));
     },
 
     onMasteryCheckScoreFieldChange: function() {
@@ -178,6 +176,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     syncActiveStudent: function() {
         var me = this,
             learnCt = me.getLearnCt(),
+            scoreField = me.getMasteryCheckScoreField(),
             store = me.getWorkLearnsStore(),
             student = me.getActiveStudent();
 
@@ -188,13 +187,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
         if (student) {
             me.getSparkpointCt().setTitle(student.get('sparkpoint'));
+
+            scoreField.setValue(student.get('learn_mastery_check_score'));
+            scoreField.resetOriginalValue();
+
             learnCt.show();
 
             if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
                 store.load();
             }
-
-            student.loadMasteryCheckScore('learn', 'refreshMasteryCheckScore', me);
         } else {
             learnCt.hide();
         }
@@ -229,49 +230,25 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         progressBanner.show();
     },
 
-    refreshMasteryCheckScore: function() {
-        var activeStudent = this.getActiveStudent(),
-            scoreField = this.getMasteryCheckScoreField(),
-            score;
-
-        if (scoreField) {
-            if (activeStudent) {
-                score = activeStudent.get('learn_score');
-
-                scoreField.setPlaceHolder(score === null ? '↻' : '95');
-                scoreField.setValue(score);
-            } else {
-                scoreField.setPlaceHolder('');
-                scoreField.setValue(null);
-            }
-        }
-    },
-
-    writeMasteryCheckScore: function(activeStudent) {
+    writeMasteryCheckScore: function() {
         var me = this,
+            activeStudent = me.getActiveStudent(),
             scoreField = me.getMasteryCheckScoreField(),
-            score = scoreField && scoreField.getValue(),
-            oldScore;
+            score = scoreField && scoreField.getValue();
 
-        if (!scoreField) {
+        if (!scoreField || !activeStudent) {
             return;
         }
 
-        activeStudent = activeStudent || me.getActiveStudent();
-
-        if (!activeStudent) {
+        if (score !== null && (score < 0 || score > 100)) {
+            Ext.Msg.alert('Mastery Check Score', 'Enter a number between 0 and 100 for mastery check score');
             return;
         }
 
-        oldScore = activeStudent.get('learn_score');
+        activeStudent.set('learn_mastery_check_score', score);
 
-        if ((oldScore !== score) && !(oldScore === false && score === null)) {
-            if (score !== null && (score < 0 || score > 100)) {
-                Ext.Msg.alert('Mastery Check Score', 'Enter a number between 0 and 100 for mastery check score');
-                return;
-            }
-
-            activeStudent.saveMasteryCheckScore('learn', score);
+        if (activeStudent.dirty) {
+            activeStudent.save();
         }
     }
 });

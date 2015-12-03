@@ -6,6 +6,7 @@ Ext.define('SparkClassroomTeacher.store.gps.ActiveStudents', {
     ],
 
 
+    // TODO: use autoSync and eliminate manual calls to record.save() everywhere?
     model: 'SparkClassroomTeacher.model.gps.ActiveStudent',
 
     config: {
