@@ -16,6 +16,8 @@ module.exports = function *parseSession(next) {
         this.isDeveloper = session.accountLevel === 'Developer';
         this.isTeacher   = this.isDeveloper || session.accountLevel === 'Administrator' || session.accountLevel === 'Teacher';
         this.isStudent   = session.accountLevel === 'Student';
+        this.role = session.accountLevel.toLowerCase();
+        this.username = session.username;
 
         this.userId = session.userId;
         this.studentId = this.isStudent ? session.userId : this.query.student_id;

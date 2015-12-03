@@ -64,12 +64,22 @@ function pgp(options) {
         if (schema) {
             this.pgp = global.pgpConnections[schema];
         } else if (this.request.path === '/healthcheck') {
-            this.pgp =  global.pgpConnections.shared;
+            this.pgp = global.pgpConnections.shared;
         } else {
             this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
 
         this.sharedPgp = global.pgpConnections.shared;
+
+        this.guc = function(query) {
+            return `
+                SET spark.user_id = ${this.userId};
+                SET spark.role = ${this.role};
+                SET spark.request_id = ${this.requestId};
+                SET application_name = 'spark-api_${this.username}_${this.requestId}';
+                ${query}
+            `;
+        }
 
         yield next;
     };
