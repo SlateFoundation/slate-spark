@@ -100,7 +100,7 @@ function *patchHandler() {
             let val = group[prop];
 
             if (prop.slice(-5) === '_time' && !isNaN(val)) {
-                group[prop] = "'" + new Date(val * 1000).toUTCString() + "'";
+                group[prop] = new Date(val * 1000).toUTCString();
             }
         }
 
