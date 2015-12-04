@@ -3,6 +3,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-conference-feedback',
     requires: [
+        'Ext.data.ChainedStore',
         'SparkClassroom.work.Timer',
         'SparkClassroomTeacher.view.work.conference.StudentsGrid',
         'SparkClassroomTeacher.view.FeedbackForm'
@@ -41,7 +42,16 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                                 items: [
                                     {
                                         xtype: 'dataview',
-                                        store: 'work.ConferenceGroups',
+                                        store: {
+                                            type: 'chained',
+                                            source: 'work.ConferenceGroups',
+                                            filters: [
+                                                function(group) {
+                                                    var members = group.get('members');
+                                                    return members && members.length;
+                                                }
+                                            ]
+                                        },
                                         itemCls: 'spark-conference-listing',
                                         itemTpl: [
                                             '<ul class="spark-conference-member-list">',
