@@ -40,6 +40,12 @@ Ext.define('SparkClassroom.model.work.ConferenceGroup', {
             name: 'accrued_seconds',
             type: 'int',
             defaultValue: 0
+        },
+
+        // local-only fields
+        {
+            name: 'members',
+            persist: false
         }
     ],
 
