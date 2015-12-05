@@ -459,8 +459,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     syncConferenceGroupMembers: function() {
         var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
             groupsStore = this.getWorkConferenceGroupsStore(),
-            groupsCount = groupsStore.getCount(),
-            i = 0, group;
+            groups = groupsStore.getRange(),
+            groupsCount = groups.length,
+            i = 0, group, members;
 
         if (!groupsStore.isLoaded() || !activeStudentsStore.isLoaded()) {
             return;
@@ -469,13 +470,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         groupsStore.beginUpdate();
 
         for (; i < groupsCount; i++) {
-            group = groupsStore.getAt(i);
+            group = groups[i];
+            members = activeStudentsStore.query('conference_group_id', group.getId()).getRange();
 
-            group.set({
-                members: activeStudentsStore.query('conference_group_id', group.getId()).getRange()
-            },{
-                dirty: false
-            });
+            if (members.length) {
+                group.set({ members: members }, { dirty: false });
+            } else {
+                // close empty group and remove from store
+                groupsStore.remove(group);
+                group.set('closed_time', new Date());
+                group.save();
+            }
         }
 
         groupsStore.endUpdate();
