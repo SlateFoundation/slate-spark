@@ -57,7 +57,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     // config handlers
     updateActiveStudent: function(activeStudent) {
-        var store = this.getWorkAssessmentsStore(),
+        var me = this,
+            sparkpointField = me.getSparkpointField(),
+            store = me.getWorkAssessmentsStore(),
             proxy = store.getProxy();
 
         if (activeStudent) {
@@ -71,7 +73,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             }
         }
 
-        this.syncActiveStudent();
+        if (sparkpointField) {
+            sparkpointField.getSuggestionsList().hide();
+        }
+
+        me.syncActiveStudent();
     },
 
 
