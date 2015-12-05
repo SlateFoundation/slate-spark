@@ -346,17 +346,30 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onReadyButtonTap: function() {
         var now = new Date(),
-            students = this.getConferencingStudentsGrid().getSelections(),
-            studentsLength = students.length,
-            i = 0, student;
+            studentsGrid = this.getConferencingStudentsGrid(),
+            selectedStudents = studentsGrid.getSelections(),
+            selectedStudentsLength = selectedStudents.length,
+            i = 0, student,
+            unreadyStudentIndex, group;
 
-        for (; i < studentsLength; i++) {
-            student = students[i];
+        for (; i < selectedStudentsLength; i++) {
+            student = selectedStudents[i];
 
             if (!student.get('conference_finish_time')) {
                 student.set('conference_finish_time', now);
                 student.save();
             }
+        }
+
+        unreadyStudentIndex = studentsGrid.getStore().findBy(function(student) {
+            return !student.get('conference_finish_time');
+        });
+
+        if (
+            unreadyStudentIndex == -1 &&
+            (group = this.getWorkConferenceGroupsStore().getById(student.get('conference_group_id')))
+        ) {
+            group.set('closed_time', new Date());
         }
     },
 
