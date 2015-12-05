@@ -6,6 +6,7 @@ Ext.define('SparkClassroom.store.work.ConferenceGroups', {
     model: 'SparkClassroom.model.work.ConferenceGroup',
 
     config: {
-        autoSync: true
+        autoSync: true,
+        trackRemoved: false
     }
 });
