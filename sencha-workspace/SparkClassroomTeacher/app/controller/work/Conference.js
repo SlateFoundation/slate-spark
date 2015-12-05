@@ -32,6 +32,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         worksheetCmp: 'spark-teacher-work-conference-worksheet',
         waitingCt: 'spark-teacher-work-conference-feedback #waitingCt',
         joinConferenceCt: 'spark-teacher-work-conference-feedback #joinConferenceCt',
+        joinConeferenceDataview: 'spark-teacher-work-conference-feedback #joinConferenceCt dataview',
         conferencingCt: 'spark-teacher-work-conference-feedback #conferencingCt',
         timer: 'spark-teacher-work-conference-feedback spark-work-timer',
         pauseBtn: 'spark-teacher-work-conference-feedback #timerPauseBtn',
@@ -457,7 +458,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     syncConferenceGroupMembers: function() {
-        var activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
+        var joinConeferenceDataview = this.getJoinConeferenceDataview(),
+            activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
             groupsStore = this.getWorkConferenceGroupsStore(),
             groups = groupsStore.getRange(),
             groupsCount = groups.length,
@@ -473,17 +475,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             group = groups[i];
             members = activeStudentsStore.query('conference_group_id', group.getId()).getRange();
 
-            if (members.length) {
-                group.set({ members: members }, { dirty: false });
-            } else {
-                // close empty group and remove from store
-                groupsStore.remove(group);
+            group.beginEdit();
+            group.set({ members: members }, { dirty: false });
+
+            if (!members.length) {
                 group.set('closed_time', new Date());
-                group.save();
             }
+            group.endEdit();
         }
 
         groupsStore.endUpdate();
+
+        // Force dataview to refresh after store changes
+        // TODO: remove this #hack when underlying #framework-bug gets fixed
+        if (joinConeferenceDataview) {
+            joinConeferenceDataview.refresh();
+        }
     },
 
     refreshQuestions: function() {

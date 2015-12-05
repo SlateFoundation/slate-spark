@@ -47,8 +47,8 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Feedback', {
                                             source: 'work.ConferenceGroups',
                                             filters: [
                                                 function(group) {
-                                                    var members = group.get('members');
-                                                    return members && members.length;
+
+                                                    return !group.get('closed_time');
                                                 }
                                             ]
                                         },
