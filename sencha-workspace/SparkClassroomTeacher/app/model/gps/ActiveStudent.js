@@ -110,8 +110,6 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
     saveConferenceGroup: function(groupId) {
         var me = this;
-        console.log('Saving %s to group %s', me.get('student_name'), groupId);
-
 
         me.beginEdit();
 
