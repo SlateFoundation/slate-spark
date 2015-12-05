@@ -173,7 +173,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             assessCt = me.getAssessCt(),
             assessmentsStore = me.getWorkAssessmentsStore(),
             learnsStore = Ext.getStore('work.Learns'),
-            appliesStore = Ext.getStore('work.Applies');
+            // appliesStore = Ext.getStore('work.Applies'),
+            sparkpointField = me.getSparkpointField(),
+            sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
 
         if (!assessCt) {
             return;
@@ -194,7 +196,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             //     appliesStore.load();
             // }
 
-            me.getSparkpointField().getSuggestionsList().getStore().getProxy().setExtraParam('student_id', student.getId());
+            sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', student.getId());
+
+            if (sparkpointSuggestionsStore.isLoaded()) {
+                sparkpointSuggestionsStore.load();
+            }
 
             me.refreshCompleteBtn();
         } else {
