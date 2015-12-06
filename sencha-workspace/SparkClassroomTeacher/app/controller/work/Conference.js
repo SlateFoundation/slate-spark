@@ -279,7 +279,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     onConferencingStudentsGridItemDismissTap: function(grid, item) {
         var activeStudent = item.getRecord();
 
-        activeStudent.saveConferenceGroup(0); // TODO: null instead of 0
+        activeStudent.saveConferenceGroup(null);
 
         if (activeStudent === this.getActiveStudent()) {
             this.syncConferenceGroup();

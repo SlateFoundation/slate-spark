@@ -113,7 +113,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
         me.beginEdit();
 
-        me.set('conference_group_id', groupId);
+        me.set('conference_group_id', groupId || null);
 
         if (groupId && !me.get('conference_join_time')) {
             me.set('conference_join_time', new Date());
