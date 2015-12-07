@@ -4,6 +4,8 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
     xtype: 'spark-teacher-work-conference-studentsgrid',
     requires: [
         'Ext.data.ChainedStore',
+        'Ext.grid.cell.Widget',
+        'Ext.field.Number',
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight'
     ],
@@ -75,24 +77,40 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
                 text: 'Mastery Score',
                 align: 'center',
                 cell: {
-                    encodeHtml: false,
-                    align: 'center',
-                    listeners: {
-                        element: 'element',
-                        delegate: '.input-mastery-score',
-                        buffer: 500,
-                        keypress: function(ev, t) {
-                            var studentSparkpoint = this.getRecord();
+                    xtype: 'widgetcell',
+                    widget: {
+                        xtype: 'numberfield',
+                        inputCls: 'input-mastery-score',
+                        minValue: 0,
+                        maxValue: 100,
+                        maxLength: 3,
+                        stepValue: 1,
+                        clearIcon: false,
+                        placeHolder: '95',
+                        style: { textAlign: 'center' },
+                        listeners: {
+                            buffer: 500,
+                            change: function(scoreField, score) {
+                                var studentSparkpoint = this.getParent().getRecord();
 
-                            studentSparkpoint.set('conference_mastery_check_score', t.value);
+                                if (Ext.isEmpty(score)) {
+                                    score = null;
+                                }
 
-                            if (studentSparkpoint.dirty) {
-                                studentSparkpoint.save();
+                                if (score !== null && (score < 0 || score > 100)) {
+                                    Ext.Msg.alert('Mastery Check Score', 'Enter a number between 0 and 100 for mastery check score');
+                                    return;
+                                }
+
+                                studentSparkpoint.set('conference_mastery_check_score', score);
+
+                                if (studentSparkpoint.dirty) {
+                                    studentSparkpoint.save();
+                                }
                             }
                         }
                     }
-                   },
-                tpl: '<input class="field-control text-center input-mastery-score" placeholder="95" style="width: 100%" type="number" min="0" max="100" step="1" value="{conference_mastery_check_score:htmlEncode}">%'
+                }
             },
             {
                 width: 64,
