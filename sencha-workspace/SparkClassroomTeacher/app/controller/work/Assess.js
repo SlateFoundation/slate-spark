@@ -25,7 +25,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     control: {
         assessCt: {
-            activate: 'onAssessCtActivate'
+            activate: 'onAssessCtActivate',
+            deactivate: 'onAssessCtDeactivate'
         },
         sparkpointField: {
             sparkpointselect: 'onSparkpointFieldChange'
@@ -88,6 +89,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     onAssessCtActivate: function() {
         this.syncActiveStudent();
+    },
+
+    onAssessCtDeactivate: function() {
+        var sparkpointField = this.getSparkpointField();
+
+        if (sparkpointField) {
+            sparkpointField.getSuggestionsList().hide();
+        }
     },
 
     onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
