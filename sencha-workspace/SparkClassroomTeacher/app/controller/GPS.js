@@ -215,6 +215,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     /**
      * This function manually refreshes all the lists queued for refresh to workaround bugs with lists refreshing themselves after chained store updates
+     * TODO: remove this #hack when underlying #framework-bug gets fixed
      */
     workaroundRefreshLists: function() {
         var me = this,
