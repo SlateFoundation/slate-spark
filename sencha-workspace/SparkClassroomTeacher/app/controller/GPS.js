@@ -2,7 +2,8 @@
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.util.DelayedTask'
+        'Ext.util.DelayedTask',
+        'SparkClassroom.data.field.SparkDate'
     ],
 
 
@@ -156,7 +157,16 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             updatedFields;
 
         if (table == 'section_student_active_sparkpoint') {
-            if (itemData.section_id == me.getActiveSection()) {
+            if (
+                itemData.section_id == me.getActiveSection() &&
+                (
+                    !(activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id)) ||
+                    (
+                        activeStudent.get('sparkpoint_id') != itemData.sparkpoint_id &&
+                        activeStudent.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
+                    )
+                )
+            ) {
                 // TODO: handle this without a full refresh if possible
                 me.refreshGps();
             }
