@@ -61,7 +61,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             tap: 'onPauseBtnTap'
         },
         timer: {
-            pausedchange: 'onTimerPausedChange'
+            statechange: 'onTimerStateChange'
         },
         conferencingStudentsGrid: {
             itemdismisstap: 'onConferencingStudentsGridItemDismissTap',
@@ -257,15 +257,36 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     onPauseBtnTap: function() {
         var timer = this.getTimer();
 
-        timer.setPaused(!timer.getPaused());
+        timer.toggle();
     },
 
-    onTimerPausedChange: function(timer, paused) {
-        var pauseBtn = this.getPauseBtn();
+    onTimerStateChange: function(timer, state) {
+        var pauseBtn = this.getPauseBtn(),
+            text, disabled = false;
 
-        if (pauseBtn) {
-            pauseBtn.setText(paused ? 'Resume Conference' : 'Pause Conference');
+        if (!pauseBtn) {
+            return;
         }
+
+        switch (state) {
+            case 'idle':
+                text = 'Conference Pending';
+                disabled = true;
+                break;
+            case 'paused':
+                text = 'Resume Conference';
+                break;
+            case 'running':
+                text = 'Pause Conference';
+                break;
+            case 'stopped':
+                text = 'Conference Finished';
+                disabled = true;
+                break;
+        }
+
+        pauseBtn.setText(text);
+        pauseBtn.setDisabled(disabled);
     },
 
     onConferencingStudentsGridItemDismissTap: function(grid, item) {
