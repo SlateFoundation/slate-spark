@@ -52,5 +52,28 @@ Ext.define('SparkClassroom.model.work.ConferenceGroup', {
     proxy: {
         type: 'slate-api',
         url: '/spark/api/work/conference-groups'
+    },
+
+    close: function() {
+        var me = this,
+            timerTime = me.get('timer_time'),
+            now = new Date(),
+            changes = {},
+            dirty = false;
+
+        if (!me.get('closed_time')) {
+            changes.closed_time = now;
+            dirty = true;
+        }
+
+        if (timerTime) {
+            changes.accrued_seconds = me.get('accrued_seconds') + (now - timerTime) / 1000;
+            changes.timer_time = null;
+            dirty = true;
+        }
+
+        if (dirty) {
+            me.set(changes);
+        }
     }
 });
