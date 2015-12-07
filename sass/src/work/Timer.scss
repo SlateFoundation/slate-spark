@@ -49,16 +49,30 @@
         font-feature-settings: "tnum";
       }
 
-    &.timer-paused {
+    &.timer-paused, &.timer-stopped {
         border-color: $alert-color;
 
         .timer-icon {
             background-color: $alert-color;
         }
+    }
 
+    &.timer-paused {
         .timer-counter {
                     animation: spark-work-timer-blink 1s steps(3, start) infinite;
             -webkit-animation: spark-work-timer-blink 1s steps(3, start) infinite;
+        }
+    }
+
+    &.timer-idle {
+        border-color: $neutral-dark-color;
+
+        .timer-icon {
+            background-color: $neutral-dark-color;
+        }
+
+        .timer-counter {
+            visibility: hidden;
         }
     }
 }

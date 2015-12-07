@@ -8,9 +8,10 @@ Ext.define('SparkClassroom.work.Timer', {
 
     config: {
         record: null,
-        paused: false,
+        state: 'running',
         baseField: 'timer_time',
         bankedField: 'accrued_seconds',
+        closedField: 'closed_time',
 
         cls: 'spark-work-timer',
         data: {
@@ -39,68 +40,116 @@ Ext.define('SparkClassroom.work.Timer', {
         me.callParent(arguments);
     },
 
+
+    // config handlers
     updateRecord: function(record, oldRecord) {
         var me = this,
             refreshTask = me.refreshTask;
 
+        me.refresh();
+
         if (record) {
-            me.setPaused(!record.get(me.getBaseField()));
-            me.refresh();
             refreshTask.start();
         } else {
             refreshTask.stop();
-            me.setData(null);
         }
 
         me.fireEvent('recordchange', me, record, oldRecord);
     },
 
-    applyPaused: function(paused) {
-        return !!paused;
-    },
-
-    updatePaused: function(paused) {
-        var me = this,
-            record = me.getRecord(),
-            baseField = me.getBaseField(),
-            bankedField = me.getBankedField(),
-            baseTime = record && record.get(baseField);
-
-        if (record) {
-            if (paused) {
-                if (baseTime) {
-                    record.beginEdit();
-                    record.set(bankedField, record.get(bankedField) + (Date.now() - baseTime) / 1000);
-                    record.set(baseField, null);
-                    record.endEdit();
-                }
-            } else {
-                if (!baseTime) {
-                    record.set(baseField, new Date());
-                }
-            }
+    applyState: function(state) {
+        if (state != 'paused' && state != 'stopped' && state != 'running') {
+            state = 'idle';
         }
 
-        me.toggleCls('timer-paused', paused);
-
-        me.fireEvent('pausedchange', me, paused);
+        return state;
     },
 
+    updateState: function(state, oldState) {
+        var me = this;
+
+        if (oldState) {
+            me.removeCls('timer-' + oldState);
+        }
+
+        if (state) {
+            me.addCls('timer-' + state);
+        }
+
+        me.fireEvent('statechange', me, state, oldState);
+    },
+
+
+    // timer methods
     refresh: function() {
         var me = this,
             record = me.getRecord(),
-            baseTime = record.get(me.getBaseField()),
-            seconds = record.get(me.getBankedField()) || 0;
+            baseTime, seconds;
+
+        if (!record) {
+            me.setData(null);
+            me.setState('idle');
+            return;
+        }
+
+        baseTime = record.get(me.getBaseField());
+        seconds = record.get(me.getBankedField()) || 0;
 
         if (baseTime) {
             seconds += (Date.now() - baseTime) / 1000;
         }
 
-        me.setPaused(!baseTime);
+        me.setState(
+            record.get(me.getClosedField()) ?
+            'stopped' :
+            (
+                baseTime ?
+                'running' :
+                'paused'
+            )
+        );
 
         me.setData({
             minutes: Math.floor(seconds / 60),
             seconds: Math.floor(seconds) % 60
         });
+    },
+
+    pause: function() {
+        var me = this,
+            record = me.getRecord(),
+            baseField = me.getBaseField(),
+            bankedField = me.getBankedField();
+
+        if (!record || me.getState() != 'running') {
+            return;
+        }
+
+        record.beginEdit();
+        record.set(bankedField, record.get(bankedField) + (Date.now() - record.get(baseField)) / 1000);
+        record.set(baseField, null);
+        record.endEdit();
+    },
+
+    resume: function() {
+        var me = this,
+            record = me.getRecord();
+
+        if (!record || me.getState() != 'paused') {
+            return;
+        }
+
+        record.set(me.getBaseField(), new Date());
+    },
+
+    toggle: function() {
+        var me = this;
+
+        switch (me.getState()) {
+            case 'running':
+                return me.pause();
+            case 'paused':
+                return me.resume();
+        }
     }
 });
