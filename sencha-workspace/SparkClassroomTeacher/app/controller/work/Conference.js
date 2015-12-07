@@ -306,7 +306,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onFeedbackButtonTap: function() {
         var me = this,
-            groupFeedbackStore = me.getWorkGroupFeedbackStore(),
+            feedbackStore = Ext.getStore('work.Feedback'),
             feedbackMessageField = me.getFeedbackMessageField(),
             message = feedbackMessageField.getValue(),
             students = me.getConferencingStudentsGrid().getSelections(),
@@ -318,12 +318,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             return;
         }
 
-        groupFeedbackStore.beginUpdate();
+        feedbackStore.beginUpdate();
 
         for (; i < studentsLength; i++) {
             student = students[i];
-
-            groupFeedbackStore.add({
+            feedbackStore.add({
                 student_id: student.getId(),
                 sparkpoint: student.get('sparkpoint'),
                 phase: 'conference',
@@ -331,7 +330,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             });
         }
 
-        groupFeedbackStore.endUpdate();
+        feedbackStore.endUpdate();
 
         feedbackMessageField.reset();
     },
