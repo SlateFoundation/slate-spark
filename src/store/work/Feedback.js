@@ -9,6 +9,7 @@ Ext.define('SparkClassroom.store.work.Feedback', {
     config: {
         model: 'SparkClassroom.model.work.Feedback',
         autoSync: true,
+        trackRemoved: false,
         sorters: [{
             property: 'created_time',
             direction: 'DESC'
