@@ -16,12 +16,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
         'work.ConferenceResources@SparkClassroom.store',
-        'work.ConferenceGroups@SparkClassroom.store',
-        'work.GroupFeedback'
+        'work.ConferenceGroups@SparkClassroom.store'
     ],
 
     models: [
-        'work.ConferenceGroup@SparkClassroom.model',
+        'work.ConferenceGroup@SparkClassroom.model'
     ],
 
     refs: {
@@ -96,9 +95,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             },
             '#work.ConferenceGroups': {
                 load: 'onConferenceGroupsStoreLoad'
-            },
-            '#work.Feedback': {
-                load: 'onWorkFeedbackLoad'
             }
         },
         socket: {
@@ -177,10 +173,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
         me.refreshQuestions();
         me.refreshResources();
-    },
-
-    onWorkFeedbackLoad: function(feedbackStore) {
-        this.getWorkGroupFeedbackStore().loadRecords(feedbackStore.queryRecords('phase', 'conference')); // TODO: use { addRecords: true } and smart clearing if aggregating feedback for whole group
     },
 
     onActiveStudentsStoreLoad: function() {

@@ -20,7 +20,15 @@ Ext.define('SparkClassroomTeacher.view.work.conference.Container', {
             xtype: 'spark-teacher-work-conference-worksheet'
         },{
             xtype: 'spark-feedbackview',
-            store: 'work.GroupFeedback'
+
+            store: {
+                type: 'chained',
+                source: 'work.Feedback',
+                filters: [{
+                    property: 'phase',
+                    value: 'conference'
+                }]
+            }
         }]);
     }
 });
