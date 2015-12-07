@@ -467,7 +467,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             groupsStore = this.getWorkConferenceGroupsStore(),
             groups = groupsStore.getRange(),
             groupsCount = groups.length,
-            i = 0, group, members;
+            i = 0, group, members,
+            filterReadyStudents = function(student) {
+                return !student.get('conference_finish_time');
+            };
 
         if (!groupsStore.isLoaded() || !activeStudentsStore.isLoaded()) {
             return;
@@ -477,14 +480,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
         for (; i < groupsCount; i++) {
             group = groups[i];
-            members = activeStudentsStore.query('conference_group_id', group.getId()).getRange();
+            members = activeStudentsStore.query('conference_group_id', group.getId());
 
             group.beginEdit();
-            group.set({ members: members }, { dirty: false });
 
-            if (!members.length) {
+            group.set({ members: members.getRange() }, { dirty: false });
+
+            // close group if all students are ready
+            if (!members.findBy(filterReadyStudents)) {
                 group.close();
             }
+
             group.endEdit();
         }
 
