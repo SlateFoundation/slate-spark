@@ -57,7 +57,8 @@ function validateConferenceGroup(group, errors) {
 function *getHandler() {
     var id = util.isGteZero(this.query.id) ? this.query.id : null,
         sectionId = this.query.section_id,
-        limit = util.isGteZero(this.query.limit) ? this.query.limit : 50,
+        limit = util.isGtZero(this.query.limit) ? this.query.limit : 50,
+        offset = util.isGteZero(this.query.offset) ? this.query.offset : 0,
         query;
 
     if (id) {
@@ -89,9 +90,12 @@ function *getHandler() {
                   AND ss.student_id = t.student_id
                   AND ss.conference_group_id IS NOT NULL
                 WHERE t.rn = 1
-             ) LIMIT $2`;
+             ) ORDER BY opened_time
+               OFFSET $2
+               LIMIT $3
+           `;
 
-        this.body = yield this.pgp.any(query, [sectionId, limit]);
+        this.body = yield this.pgp.any(query, [sectionId, offset, limit]);
     }
 }
 
