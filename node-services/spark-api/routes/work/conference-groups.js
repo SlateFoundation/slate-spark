@@ -55,24 +55,44 @@ function validateConferenceGroup(group, errors) {
 }
 
 function *getHandler() {
-    var where = ['closed_time IS NULL'],
-        id = util.isGteZero(this.query.id) ? this.query.id : null,
+    var id = util.isGteZero(this.query.id) ? this.query.id : null,
         sectionId = this.query.section_id,
-        vals = [],
-        limit = util.isGteZero(this.query.limit) ? `LIMIT ${limit}` : 'LIMIT 50';
+        limit = util.isGteZero(this.query.limit) ? this.query.limit : 50,
+        query;
 
-    // use section_id in query, but not if PK is also included
-    if (!id && sectionId) {
-        where.push('section_id = $1');
-        vals.push(sectionId);
-    } else if (id) {
-        where.push('id = $1');
-        vals.push(id);
+    if (id) {
+        query = `
+        SELECT *
+          FROM conference_groups
+         WHERE id = $1`;
+
+        this.body = yield this.pgp.any(query, id);
+    } else {
+        query = `SELECT *
+               FROM conference_groups
+              WHERE section_id = $1
+                AND closed_time IS NULL OR id = ANY(SELECT conference_group_id FROM (
+                   SELECT student_id,
+                          sparkpoint_id,
+                          section_id,
+                          last_accessed,
+                          ROW_NUMBER() OVER (
+                            PARTITION BY ssas.student_id,
+                                         ssas.section_id
+                                ORDER BY ssas.last_accessed DESC
+                          ) AS rn
+                     FROM section_student_active_sparkpoint ssas
+                    WHERE section_id = $1
+                      AND last_accessed IS NOT NULL
+                 ) t
+                 JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
+                  AND ss.student_id = t.student_id
+                  AND ss.conference_group_id IS NOT NULL
+                WHERE t.rn = 1
+             ) LIMIT $2`;
+
+        this.body = yield this.pgp.any(query, [sectionId, limit]);
     }
-
-    this.body = yield this.pgp.manyOrNone(`
-        SELECT * FROM conference_groups WHERE ${where.join(' AND ')} ${limit}`, vals
-    );
 }
 
 function *patchHandler() {
