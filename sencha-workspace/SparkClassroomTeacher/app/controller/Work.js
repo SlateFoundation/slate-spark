@@ -76,9 +76,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             '#': {
                 activestudentselect: 'onActiveStudentSelect'
             }
-        },
-        socket: {
-            data: 'onSocketData'
         }
     },
 
@@ -190,27 +187,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     onActiveStudentSelect: function(activeStudent) {
         this.setActiveStudent(activeStudent);
-    },
-
-    onSocketData: function(socket, data) {
-        if (data.table != 'mastery_check_scores') {
-            return;
-        }
-
-        var itemData = data.item,
-            phase = itemData.phase,
-            activeStudent = Ext.getStore('gps.ActiveStudents').getById(itemData.student_id),
-            scoreRecord;
-
-        if (
-            activeStudent &&
-            activeStudent.get('sparkpoint_id') == itemData.sparkpoint_id &&
-            (scoreRecord = activeStudent.get(phase + '_score_record'))
-        ) {
-            // TODO: how to get new teacher name if teacher_id changes?
-            scoreRecord.set(itemData, { dirty: false });
-            activeStudent.set(phase + '_score');
-        }
     },
 
 
