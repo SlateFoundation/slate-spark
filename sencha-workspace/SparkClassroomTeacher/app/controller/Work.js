@@ -18,6 +18,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         'work.Feedback@SparkClassroom.store'
     ],
 
+    models: [
+        'Person@Slate.model.person'
+    ],
+
     refs: {
         navBar: 'spark-navbar',
         workNavButton: 'spark-navbar button#work',
@@ -207,8 +211,24 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
                 workFeedbackStore = me.getWorkFeedbackStore();
 
                 doLoadFeedback = function() {
+                    var sameAuthorFeedback, newFeedback;
+
                     if (!workFeedbackStore.getById(itemData.id)) {
-                        workFeedbackStore.loadData([itemData], true);
+                        sameAuthorFeedback = workFeedbackStore.findRecord('author_id', itemData.author_id);
+
+                        newFeedback = workFeedbackStore.add(Ext.apply({
+                            author_name: sameAuthorFeedback ? sameAuthorFeedback.get('author_name') : null
+                        }, itemData))[0];
+
+                        if (!sameAuthorFeedback) {
+                            me.getPersonModel().load(newFeedback.get('author_id'), {
+                                callback: function(author, operation, success) {
+                                    if (success) {
+                                        newFeedback.set('author_name', author.get('FullName'), { dirty: false });
+                                    }
+                                }
+                            });
+                        }
                     }
                 };
 
