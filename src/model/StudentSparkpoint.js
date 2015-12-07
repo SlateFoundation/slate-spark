@@ -77,6 +77,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
         // other persistent student+sparkpoint state
         {
+            name: 'last_accessed',
+            type: 'sparkdate',
+            allowNull: true
+        },
+        {
             name: 'conference_group_id',
             type: 'int',
             allowNull: true
