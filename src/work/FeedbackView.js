@@ -20,7 +20,14 @@ Ext.define('SparkClassroom.work.FeedbackView', {
         itemCls: 'dated-list-item',
         itemTpl: [
             '<h3 class="dated-list-date">',
-                'By <a href="{[Slate.API.buildUrl("/people/" + values.author_id)]}" target="_blank">{author_name}</a>',
+                'By ',
+                '<a href="{[Slate.API.buildUrl("/people/" + values.author_id)]}" target="_blank">',
+                    '<tpl if="author_name">',
+                        '{author_name}',
+                    '<tpl else>',
+                        'teacher #{author_id}',
+                    '</tpl>',
+                '</a>',
                 ' on <time datetime="{created_time:date("C")}">{created_time:date("l, F d \\\\a\\\\t Y g:i A")}</time>',
             '</h3>',
             '<div class="dated-list-content">{[fm.nl2br(fm.htmlEncode(values.message))]}</div>'
