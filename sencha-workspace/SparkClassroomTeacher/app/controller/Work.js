@@ -76,6 +76,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             '#': {
                 activestudentselect: 'onActiveStudentSelect'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -187,6 +190,38 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     onActiveStudentSelect: function(activeStudent) {
         this.setActiveStudent(activeStudent);
+    },
+
+    onSocketData: function(socket, data) {
+        var me = this,
+            tableName = data.table,
+            itemData = data.item,
+            activeStudent, workFeedbackStore, doLoadFeedback;
+
+        if (tableName == 'teacher_feedback') {
+            if (
+                (activeStudent = me.getActiveStudent()) &&
+                activeStudent.getId() == itemData.student_id &&
+                activeStudent.get('sparkpoint_id') == itemData.sparkpoint_id
+            ) {
+                workFeedbackStore = me.getWorkFeedbackStore();
+
+                doLoadFeedback = function() {
+                    if (!workFeedbackStore.getById(itemData.id)) {
+                        workFeedbackStore.loadData([itemData], true);
+                    }
+                };
+
+                // if the socket event beats the POST response, the proxy will fail to when it tries to
+                // realize the phantom record into one with an id that got slipped into the store already, so
+                // avoid appending items to the store during a sync
+                if (workFeedbackStore.isSyncing) {
+                    workFeedbackStore.on('write', doLoadFeedback, me, { single: true });
+                } else {
+                    doLoadFeedback();
+                }
+            }
+        }
     },
 
 
