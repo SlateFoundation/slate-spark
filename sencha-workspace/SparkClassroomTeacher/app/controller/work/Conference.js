@@ -390,7 +390,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             table = data.table,
             item = data.item,
             questionInputEl, questionInputValue, questionInputFocused,
-            student, worksheetData, worksheetCmp, group;
+            student, worksheetData, worksheetCmp,
+            groupsStore, group;
 
         if (table == 'conference_questions') {
             student = me.getActiveStudent();
@@ -429,8 +430,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 }
             }
         } else if (table == 'conference_groups') {
-            if (group = me.getWorkConferenceGroupsStore().getById(item.id)) {
+            groupsStore = me.getWorkConferenceGroupsStore();
+
+            if (group = groupsStore.getById(item.id)) {
                 group.set(item, { dirty: false });
+            } else if(item.section_id == me.getSelectedSection()) {
+                groupsStore.add(item);
             }
         }
     },
