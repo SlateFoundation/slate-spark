@@ -360,7 +360,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             unreadyStudentIndex == -1 &&
             (group = this.getWorkConferenceGroupsStore().getById(student.get('conference_group_id')))
         ) {
-            group.set('closed_time', new Date());
+            group.close();
         }
     },
 
@@ -483,7 +483,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             group.set({ members: members }, { dirty: false });
 
             if (!members.length) {
-                group.set('closed_time', new Date());
+                group.close();
             }
             group.endEdit();
         }
