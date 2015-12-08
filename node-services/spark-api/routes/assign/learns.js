@@ -7,26 +7,52 @@ function *getHandler() {
 }
 
 function *patchHandler() {
-    var required_students = this.request.body.required_students,
+    var requestBody = this.request.body,
+        required_students = this.request.body.required_students,
         assignment_students = this.request.body.assignment_students,
         checkSanity = typeof this.request.body.check_sanity === 'boolean' ? this.request.body.check_sanity : true,
         required_section = this.request.body.required_section,
         assignmentSection = this.request.body.assignment_section,
+        resource_id = this.request.body.resource_id,
+        resourceId = parseInt(resource_id, 10),
+        sparkpointId = this.query.sparkpoint_id,
+        sectionId = this.query.section_id,
         requiredSection,
         assignmentStudents,
         assignmentValues,
         requiredStudents,
-        requiredValues;
+        requiredValues,
+        allowedKeys = [
+            'resource_id',
+            'assignment_section',
+            'assignment_students',
+            'required_section',
+            'required_students',
+            'sparkpoint_id',
+            'section_id',
+            'sparkpoint',
+            'section',
+            'check_sanity'
+        ],
+        invalidKeys;
 
     /***********************************************
      | Start request body validation/sanitization  |
      ***********************************************/
+
+    this.require(['section_id', 'sparkpoint_id']);
 
     if (!this.isTeacher) {
         this.throw(
             new Error(`Only teachers can assign learns; you are logged in as a: ${this.session.accountLevel}`),
             403
         );
+    }
+
+    invalidKeys = Object.keys(this.request.body).filter(key => allowedKeys.indexOf(key) === -1);
+
+    if (invalidKeys.length > 0) {
+        this.throw(new Error(`Allowed keys are ${allowedKeys.join(', ')}; you passed: ${invalidKeys.join(', ')}`), 400);
     }
 
     if (required_section) {
@@ -109,6 +135,15 @@ function *patchHandler() {
             this.throw(new Error('Invalid required_students: ' + e.message), 400);
         }
     }
+
+    if (resource_id !== undefined && isNaN(resourceId)) {
+        this.throw(new Error(`resource_id must be numeric, you provided: ${resource_id}`), 400);
+    }
+
+    if ((assignmentSection || assignmentStudents) && resource_id === undefined) {
+        this.throw(new Error('resource_id is required when assignment_section or assignment_students provided.'), 400);
+    }
+
     /*********************************************
      | End request body validation/sanitization  |
      *********************************************/
