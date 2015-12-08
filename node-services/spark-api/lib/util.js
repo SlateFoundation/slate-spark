@@ -620,6 +620,25 @@ function allowNull(fn) {
     };
 }
 
+function getNumericKeys(obj) {
+    return (Array.isArray(obj) ? obj : Object.keys(obj)).map(key => parseInt(key, 10)).filter(key => !isNaN(key));
+}
+
+function getNonNumericKeys(obj) {
+    return (Array.isArray(obj) ? obj : Object.keys(obj)).filter(key => isNaN(key));
+}
+
+function validateNumericKeys(obj) {
+    var keys = Object.keys(obj),
+        numericKeys = getNumericKeys(keys);
+
+    if (keys.length !== numericKeys.length) {
+        throw new Error('Keys should be numeric, you passed: ' + getNonNumericKeys(keys).join(','));
+    } else {
+        return numericKeys;
+    }
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     excludeObjectKeys: excludeObjectKeys,
@@ -633,6 +652,10 @@ module.exports = {
     isAsnStyleId: isAsnStyleId,
     isDate: isDate,
     isString: isString,
+
+    getNumericKeys: getNumericKeys,
+    getNonNumericKeys: getNonNumericKeys,
+    validateNumericKeys: validateNumericKeys,
 
     arrayToGradeRange: arrayToGradeRange,
     gradeRangeToArray: gradeRangeToArray,
