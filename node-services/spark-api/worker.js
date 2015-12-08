@@ -56,6 +56,7 @@ app.use(_.get('/work/applies', routes.work.applies.get))
 app.use(_.patch('/work/applies', routes.work.applies.patch))
 app.use(_.post('/work/applies/submissions', routes.work.applies.submissions.post));
 app.use(_.delete('/work/applies/submissions', routes.work.applies.submissions.delete));
+app.use(_.post('/work/applies/backfill_metadata', routes.work.applies.backfill));
 
 // Conferences
 app.use(_.get('/work/conferences', routes.work.conferences.get));
@@ -90,6 +91,12 @@ app.use(_.get('/test', routes.test.get));
 
 // Healthcheck
 app.use(_.get('/healthcheck', routes.healthcheck.get));
+
+// Assignments
+app.use(_.get('/assign/learns', routes.assign.learns.get));
+app.use(_.patch('/assign/learns', routes.assign.learns.patch));
+app.use(_.get('/assign/applies', routes.assign.applies.get));
+app.use(_.patch('/assign/applies', routes.assign.applies.patch));
 
 // TODO: use node production/development variables in startup scripts and package.json scripts
 if (require('os').hostname().indexOf('spark') !== -1) {
