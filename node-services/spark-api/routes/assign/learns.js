@@ -56,17 +56,22 @@ function *patchHandler() {
     }
 
     if (required_section) {
-        requiredSection = parseInt(required_section, 10);
+        if (required_section === null) {
+            requiredSection = null;
+        } else {
+            requiredSection = parseInt(required_section, 10);
 
-        if (isNaN(requiredSection)) {
-            this.throw(new Error(`required_section must be numeric, you passed: ${required_section}`), 400);
+            if (isNaN(requiredSection)) {
+                this.throw(new Error(`required_section must be numeric or null, you passed: ${required_section}`), 400);
+            }
         }
     }
 
     if (!(assignmentSection === undefined ||
         assignmentSection === 'required' ||
         assignmentSection === 'recommended' ||
-        assignmentSection === 'hidden')) {
+        assignmentSection === 'hidden' ||
+        assignmentSection === null)) {
 
         this.throw(
             new Error(`assignment_section must be: required, recommended or hidden. You passed: ${assignmentSection}`),
@@ -83,15 +88,15 @@ function *patchHandler() {
             assignmentValues = assignmentStudents.map(studentId => assignment_students[studentId]);
 
             assignmentValues.forEach(function(val, i) {
-                if (val !== 'required' && val !== 'recommended' && val !== 'hidden') {
+                if (val !== 'required' && val !== 'recommended' && val !== 'hidden' && val !== null) {
                     invalidAssignmentValues.push(val);
-                } else if (checkSanity && assignmentSection && assignmentSection === val) {
+                } else if (checkSanity && assignmentSection && assignmentSection === val && val !== null) {
                     redundantStudentAssignments.push(assignmentStudents[i]);
                 }
             });
 
             if (invalidAssignmentValues.length > 0) {
-                throw new Error('valid values are: required, recommended or hidden. You passed: ' +
+                throw new Error('valid values are: required, recommended, hidden or null. You passed: ' +
                     invalidAssignmentValues.join(', ')
                 );
             }

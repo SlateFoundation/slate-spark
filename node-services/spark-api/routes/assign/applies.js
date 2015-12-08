@@ -55,15 +55,16 @@ function *patchHandler() {
             assignmentValues = assignmentStudents.map(studentId => assignment_students[studentId]);
 
             assignmentValues.forEach(function(val, i) {
-                if (val !== 'required' && val !== 'recommended' && val !== 'hidden') {
+                // Sending a null value should delete any student-specific values for that student
+                if (val !== 'required' && val !== null) {
                     invalidAssignmentValues.push(val);
-                } else if (checkSanity && assignmentSection && assignmentSection === val) {
+                } else if (checkSanity && assignmentSection && assignmentSection === val && val !== null) {
                     redundantStudentAssignments.push(assignmentStudents[i]);
                 }
             });
 
             if (invalidAssignmentValues.length > 0) {
-                throw new Error('valid values are: required, recommended or hidden. You passed: ' +
+                throw new Error('valid values are: required or null. You passed: ' +
                     invalidAssignmentValues.join(', ')
                 );
             }
