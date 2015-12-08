@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
         'SparkClassroom.column.Title',
         'SparkClassroom.column.URL',
         'SparkClassroom.column.Vendor',
-        'SparkClassroom.column.AssignSingle',
+        'SparkClassroom.column.Assignments',
         'SparkClassroom.column.Flag'
 
     ],
@@ -42,7 +42,7 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
                 xtype: 'spark-vendor-column'
             },
             {
-                xtype: 'spark-assign-column-single'
+                xtype: 'spark-column-assignments'
             },
             {
                 xtype: 'spark-flag-column'

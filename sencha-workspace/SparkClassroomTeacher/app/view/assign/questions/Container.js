@@ -12,7 +12,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
         'SparkClassroom.column.Title',
         'SparkClassroom.column.CreatedBy',
         'SparkClassroom.column.CreatedDate',
-        'SparkClassroom.column.AssignSingle'
+        'SparkClassroom.column.Assignments'
     ],
 
     config: {
@@ -41,7 +41,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
                 xtype: 'spark-createddate-column'
             },
             {
-                xtype: 'spark-assign-column-single'
+                xtype: 'spark-column-assignments'
             }
         ],
 

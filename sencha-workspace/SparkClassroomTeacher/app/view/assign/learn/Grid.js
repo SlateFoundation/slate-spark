@@ -14,7 +14,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.Rating',
         // 'SparkClassroom.column.Attachment',
-        'SparkClassroom.column.AssignMulti',
+        'SparkClassroom.column.Assignments',
         'SparkClassroom.column.Flag'
     ],
 
@@ -55,7 +55,24 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
             //     xtype: 'spark-attachment-column'
             // },
             {
-                xtype: 'spark-assign-column-multi'
+                xtype: 'spark-column-assignments',
+                flags: [
+                    {
+                        id: 'required',
+                        text: 'Required',
+                        icon: 'exclamation-triangle'
+                    },
+                    {
+                        id: 'recommended',
+                        text: 'Recommended',
+                        icon: 'thumbs-up'
+                    },
+                    {
+                        id: 'hide',
+                        text: 'Hide',
+                        icon: 'times-circle'
+                    }
+                ],
             },
             {
                 xtype: 'spark-flag-column'

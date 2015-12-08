@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
         'SparkClassroom.column.Title',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.CreatedBy',
-        'SparkClassroom.column.AssignSingle'
+        'SparkClassroom.column.Assignments'
     ],
 
     config: {
@@ -40,7 +40,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
                 xtype: 'spark-createdby-column'
             },
             {
-                xtype: 'spark-assign-column-single'
+                xtype: 'spark-column-assignments'
             }
         ]
     }
