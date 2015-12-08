@@ -5,10 +5,15 @@ Ext.define('SparkClassroom.assign.Popup', {
         'Ext.grid.Grid',
         'Jarvus.plugin.GridFlex'
     ],
+    uses: [
+        'SparkClassroom.column.Assignments'
+    ],
 
     manageBorders: false, // manageBorders adds a class that leaks down to the grid and hides the bottom border on its header
 
     config: {
+        flags: null,
+
         cls: 'spark-teacher-assign-popup',
         floating: true,
         height: 400,
@@ -27,7 +32,7 @@ Ext.define('SparkClassroom.assign.Popup', {
                 ],
                 columns: [
                     {
-                        xtype: 'spark-assign-column-multi',
+                        xtype: 'spark-column-assignments',
                         showTrigger: false
                     },
                     {
@@ -74,5 +79,9 @@ Ext.define('SparkClassroom.assign.Popup', {
         me.setLeft(x);
         me.setTop(y);
         me.setVisibility(true);
+    },
+
+    updateFlags: function(flags) {
+        this.down('spark-column-assignments').setFlags(flags);
     }
 });
