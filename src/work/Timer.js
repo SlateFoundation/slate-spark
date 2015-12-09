@@ -96,7 +96,7 @@ Ext.define('SparkClassroom.work.Timer', {
         seconds = record.get(me.getBankedField()) || 0;
 
         if (baseTime) {
-            seconds += (Date.now() - baseTime) / 1000;
+            seconds += Math.max(0, (Date.now() - baseTime) / 1000);
         }
 
         me.setState(
