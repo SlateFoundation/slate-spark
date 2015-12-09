@@ -33,6 +33,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         'work.Feedback@SparkClassroom.store'
     ],
 
+    models: [
+        'Person@Slate.model.person'
+    ],
+
     refs: {
         navBar: 'spark-student-navbar',
         workNavButton: 'spark-student-navbar button#work',
@@ -194,7 +198,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         var me = this,
             tableName = data.table,
             itemData = data.item,
-            studentSparkpoint, modifiedFieldNames;
+            studentSparkpoint, modifiedFieldNames,
+            workFeedbackStore, sameAuthorFeedback, newFeedback;
 
 
         if (tableName == 'student_sparkpoint') {
@@ -210,9 +215,25 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             if (
                 (studentSparkpoint = me.getStudentSparkpoint()) &&
                 studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
-                studentSparkpoint.get('student_id') == itemData.student_id
+                studentSparkpoint.get('student_id') == itemData.student_id &&
+                (workFeedbackStore = me.getWorkFeedbackStore()) &&
+                !workFeedbackStore.getById(itemData.id)
             ) {
-                me.getWorkFeedbackStore().loadData([itemData], true);
+                sameAuthorFeedback = workFeedbackStore.findRecord('author_id', itemData.author_id);
+
+                newFeedback = workFeedbackStore.add(Ext.apply({
+                    author_name: sameAuthorFeedback ? sameAuthorFeedback.get('author_name') : null
+                }, itemData))[0];
+
+                if (!sameAuthorFeedback) {
+                    me.getPersonModel().load(newFeedback.get('author_id'), {
+                        callback: function(author, operation, success) {
+                            if (success) {
+                                newFeedback.set('author_name', author.get('FullName'), { dirty: false });
+                            }
+                        }
+                    });
+                }
             }
         }
     },
