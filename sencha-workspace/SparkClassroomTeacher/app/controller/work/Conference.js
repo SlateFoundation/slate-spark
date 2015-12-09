@@ -229,7 +229,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             activeStudent = me.getActiveStudent(),
             group = me.getWorkConferenceGroupModel().create({
-                section_id: me.getSelectedSection()
+                section_id: me.getSelectedSection(),
+                timer_time: new Date()
             });
 
         group.save({
