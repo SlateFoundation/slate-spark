@@ -73,13 +73,13 @@ function pgp(options) {
 
         this.guc = function(query) {
             return `
-                SET spark.user_id = ${this.userId};
-                SET spark.role = ${this.role};
-                SET spark.request_id = ${this.requestId};
+                SET spark.user_id = '${this.userId}';
+                SET spark.role = '${this.role}';
+                SET spark.request_id = '${this.requestId}';
                 SET application_name = 'spark-api_${this.username}_${this.requestId}';
                 ${query}
             `;
-        }
+        };
 
         yield next;
     };
