@@ -141,7 +141,7 @@ io.use(function (socket, next) {
         socket.section = null;
         socket.student = session.accountLevel === 'Student';
 
-        userConnectionCount[socket.session.username] || (user[socket.session.username] = 0);
+        userConnectionCount[socket.session.username] || (userConnectionCount[socket.session.username] = 0);
         userConnectionCount[socket.session.username]++;
         userLastSeen[socket.session.username] = new Date();
 
