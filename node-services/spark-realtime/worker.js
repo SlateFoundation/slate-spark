@@ -94,7 +94,7 @@ function requestHandler(req, res) {
             break;
 
         case '/users/online':
-            res.send(JSON.stringify(getOnlineUsers(), null, '\t'));
+            res.end(JSON.stringify(getOnlineUsers(), null, '\t'));
             break;
 
         case '/users/offline':
