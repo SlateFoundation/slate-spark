@@ -130,8 +130,8 @@ io.use(function (socket, next) {
 
     stats.connections.last_connection_at = new Date();
 
-    if (connectionCount > stats.max) {
-        stats.peak_connections = connectionCount;
+    if (connectionCount > stats.connections.peak) {
+        stats.connections.peak = connectionCount;
     }
 
     if (session) {
