@@ -192,10 +192,6 @@ io.use(function (socket, next) {
         function disconnectHandler (socket) {
             userConnectionCount[session.username]--;
             userLastSeen[session.username] = new Date();
-
-            if (section && sections[section]) {
-                sections[section].teacher = null;
-            }
         }
 
         socket.on('disconnect', disconnectHandler);
