@@ -189,7 +189,7 @@ io.use(function (socket, next) {
             }
         });
 
-        socket.on('disconnect', function (socket) {
+        function disconnectHandler (socket) {
             if (socket.session) {
                 userConnectionCount[socket.session.username]--;
                 userLastSeen[socket.session.username] = new Date();
@@ -198,7 +198,10 @@ io.use(function (socket, next) {
             if (socket.section && sections[socket.section]) {
                 sections[socket.section].teacher = null;
             }
-        });
+        }
+
+        socket.on('disconnect', disconnectHandler);
+        socket.on('error', disconnectHandler);
 
         return next();
     }
