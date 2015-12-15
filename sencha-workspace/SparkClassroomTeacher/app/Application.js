@@ -57,6 +57,9 @@ Ext.define('SparkClassroomTeacher.Application', {
             },
             data: function(socket, data) {
                 console.info('socket data:', data);
+            }
+            emit: function(socket, event, data) {
+                console.info('socket emit %s:', event, data);
             },
             debug: function(socket, data) {
                 console.info('socket debug:', data);
