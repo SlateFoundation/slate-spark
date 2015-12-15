@@ -200,6 +200,9 @@ Ext.define('SparkClassroom.Socket', {
     },
 
     emit: function(event, data) {
-        this.getIoSocket().emit(event, data);
+        var me = this;
+
+        me.getIoSocket().emit(event, data);
+        me.fireEvent('emit', me, event, data);
     }
 });
