@@ -30,6 +30,8 @@ Ext.define('SparkClassroomTeacher.Application', {
     ],
 
     config: {
+        activeSection: null,
+
         viewport: {
             items: {
                 itemId: 'appCt',
@@ -48,20 +50,22 @@ Ext.define('SparkClassroomTeacher.Application', {
             }
         },
         socket: {
+            reconnect: 'onSocketReconnect'
+
             // <debug>
-            connect: function(socket) {
+            ,connect: function(socket) {
                 console.info('socket connected');
-            },
-            disconnect: function(socket) {
+            }
+            ,disconnect: function(socket) {
                 console.warn('socket disconnected');
-            },
-            data: function(socket, data) {
+            }
+            ,data: function(socket, data) {
                 console.info('socket data:', data);
             }
-            emit: function(socket, event, data) {
+            ,emit: function(socket, event, data) {
                 console.info('socket emit %s:', event, data);
-            },
-            debug: function(socket, data) {
+            }
+            ,debug: function(socket, data) {
                 console.info('socket debug:', data);
             }
             // </debug>
@@ -81,8 +85,10 @@ Ext.define('SparkClassroomTeacher.Application', {
     },
 
 
-    // event handers
-    onSectionSelect: function(section, oldSection) {
+    // config handlers
+    updateActiveSection: function(section, oldSection) {
+        var apiHost = Slate.API.getHost();
+
         Slate.API.setExtraParams({
             section: section
         });
@@ -90,13 +96,30 @@ Ext.define('SparkClassroomTeacher.Application', {
         if (oldSection) {
             SparkClassroom.Socket.emit('unsubscribe', {
                 section: oldSection,
-                host: Slate.API.getHost()
+                host: apiHost
             });
         }
 
         SparkClassroom.Socket.emit('subscribe', {
             section: section,
-            host: Slate.API.getHost()
+            host: apiHost
         });
+    },
+
+
+    // event handers
+    onSectionSelect: function(section, oldSection) {
+        this.setActiveSection(section);
+    },
+
+    onSocketReconnect: function() {
+        var section = this.getActiveSection();
+
+        if (section) {
+            SparkClassroom.Socket.emit('subscribe', {
+                section: section,
+                host: Slate.API.getHost()
+            });
+        }
     }
 });
