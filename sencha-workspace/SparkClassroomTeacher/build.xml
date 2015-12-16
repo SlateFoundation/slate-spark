@@ -39,12 +39,23 @@
             <target name="-after-build"/>
     -->
 
+    <target name="-before-init">
+        <if>
+            <isset property="build.compression.closure.jar"/>
+            <then>
+                <property name="build.compression" value=""/>
+                <property name="enable.resource.compression" value=""/>
+            </then>
+        </if>
+    </target>
+
     <target name="-after-build">
         <if>
             <isset property="build.compression.closure.jar"/>
             <then>
-                <echo>Compressing with closure ${build.dir}/app.js</echo>
                 <move file="${build.dir}/app.js" tofile="${build.dir}/app.debug.js"></move>
+
+                <echo>Compressing with closure ${build.dir}/app.js</echo>
                 <java jar="${build.compression.closure.jar}" fork="true" failonerror="true">
                     <sysproperty key="DEBUG" value="true"/>
                     <arg value="--warning_level=QUIET"/>
