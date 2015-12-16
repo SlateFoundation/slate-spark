@@ -39,6 +39,16 @@
             <target name="-after-build"/>
     -->
 
+    <target name="-before-init">
+        <if>
+            <isset property="build.compression.closure.jar"/>
+            <then>
+                <property name="build.compression" value=""/>
+                <property name="enable.resource.compression" value=""/>
+            </then>
+        </if>
+    </target>
+
     <target name="-after-build">
         <if>
             <isset property="build.compression.closure.jar"/>
