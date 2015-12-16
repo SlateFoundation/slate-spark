@@ -2,6 +2,13 @@
 
 'use strict';
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
+if (PRODUCTION) {
+    var newrelic = require('newrelic'),
+        slack = require('./lib/slack');
+}
+
 var koa = require('koa'),
     app = module.exports = koa(),
     config = require('./config/index'),
@@ -10,9 +17,12 @@ var koa = require('koa'),
     _ = require('koa-route'),
     routes = require('./routes/index'),
     error = require('koa-error'),
-    slack = require('./lib/slack'),
     json = require('koa-json'),
     cluster = require('cluster');
+
+if (PRODUCTION) {
+    app.use(middleware.newrelic(newrelic));
+}
 
 app.use(middleware.response_time);
 app.use(error());
@@ -97,10 +107,12 @@ app.use(_.patch('/assign/learns', routes.assign.learns.patch));
 app.use(_.get('/assign/applies', routes.assign.applies.get));
 app.use(_.patch('/assign/applies', routes.assign.applies.patch));
 
-// TODO: use node production/development variables in startup scripts and package.json scripts
-if (require('os').hostname().indexOf('spark') !== -1) {
+if (PRODUCTION) {
     app.on('error', function(error, ctx) {
         if (ctx.response.status != 400) {
+
+            newrelic.noticeError(error);
+
             slack.postErrorToSlack(error, ctx)(function(error, response) {
                 if (error) {
                     console.error('Error posting error to Slack:\n', error, response);
