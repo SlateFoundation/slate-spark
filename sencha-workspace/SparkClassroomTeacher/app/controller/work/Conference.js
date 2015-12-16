@@ -229,7 +229,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             activeStudent = me.getActiveStudent(),
             group = me.getWorkConferenceGroupModel().create({
-                section_id: me.getSelectedSection(),
+                section_code: me.getSelectedSection(),
                 timer_time: new Date()
             });
 
@@ -435,7 +435,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
             if (group = groupsStore.getById(item.id)) {
                 group.set(item, { dirty: false });
-            } else if(item.section_id == me.getSelectedSection()) {
+            } else if(item.section_code == me.getSelectedSection()) {
                 groupsStore.add(item);
             }
         }
