@@ -30,7 +30,7 @@ function *getHandler() {
                      FROM fusebox_assessments
                      JOIN fusebox_vendors v
                        ON v.id = fusebox_assessments.vendorid
-                    WHERE standardids::JSONB ?| $1`, [standardIds]);
+                    WHERE standardids ?| $1`, [standardIds]);
 
     reflection = yield this.pgp.oneOrNone(
         `SELECT reflection FROM assesses WHERE sparkpoint_id = $1 and student_id = $2`,

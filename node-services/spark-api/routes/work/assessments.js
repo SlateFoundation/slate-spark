@@ -32,7 +32,7 @@ function *assessmentsHandler() {
            FROM fusebox_assessments
            JOIN fusebox_vendors v
              ON v.id = fusebox_assessments.vendorid
-          WHERE standardids::JSONB ?| $1`, [standardIds]);
+          WHERE standardids ?| $1`, [standardIds]);
 
     this.body = assessments.map(fusebox.normalizeAssessment);
 }
