@@ -10,7 +10,7 @@ var promise = require('bluebird'),
     },
     pgp = require('pg-promise')(options),
     connections = {},
-    sharedConnection = pgp(`postgres://spark:SparkPoint2015@${host}/${db}`);
+    sharedConnection = pgp(`postgres://spark:SparkPoint2015@${host}/${db}?application_name=spark-api`);
 
 // TODO: change passwords and move to a config file in a repo with git-crypt
 const password = 'TpgeVl04Os9Ot7t2H7rySjREhxFiKZ';
@@ -24,22 +24,4 @@ monitor.attach(options);
 
 monitor.setTheme('matrix');
 
-module.exports = function db(req) {
-    var connection;
-
-    if (req) {
-        if (req.schema) {
-            connection = connections[req.schema];
-
-            if (connection) {
-                return connection;
-            } else {
-                throw new Error('Could not find a database connection for schema: ' + req.schema);
-            }
-        }
-
-        throw new Error('Unable to determine database schema from session in request. This should NEVER happen!');
-    } else {
-        return sharedConnection;
-    }
-};
+module.exports = sharedConnection;
