@@ -19,9 +19,7 @@ Ext.define('SparkClassroom.model.work.Apply', {
         {
             name: 'links',
 
-            /**
-             * Normalize old array-of-urls format to new array of title/url pair objects
-             */
+            // normalize old array-of-urls format to new array of title/url pair objects
             convert: function (value) {
                 if (!Ext.isArray(value) || !Ext.isString(value[0])) {
                     return value;
