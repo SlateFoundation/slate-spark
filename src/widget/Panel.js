@@ -7,8 +7,13 @@ Ext.define('SparkClassroom.widget.Panel', {
     xtype: 'spark-panel',
 
     config: {
-        baseCls: 'spark-panel',
-        title: null
+        /**
+         * An optional title for the panel
+         */
+        title: null,
+
+        // @inheritdoc
+        baseCls: 'spark-panel'
     },
 
     // @private
@@ -35,6 +40,10 @@ Ext.define('SparkClassroom.widget.Panel', {
         }
     },
 
+    /**
+     * Gets title of panel
+     * @return {String} The current title
+     */
     getTitle: function() {
         var title = this._title;
 
