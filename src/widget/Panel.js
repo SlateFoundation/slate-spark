@@ -1,3 +1,7 @@
+/* global Ext */
+/**
+ * A minimal container for providing a stylized box with optional title
+ */
 Ext.define('SparkClassroom.widget.Panel', {
     extend: 'Ext.Container',
     xtype: 'spark-panel',
@@ -7,9 +11,7 @@ Ext.define('SparkClassroom.widget.Panel', {
         title: null
     },
 
-    /**
-     * @private
-     */
+    // @private
    applyTitle: function(title) {
         if (typeof title == 'string') {
             title = {title: title};
@@ -23,9 +25,7 @@ Ext.define('SparkClassroom.widget.Panel', {
         return Ext.factory(title, Ext.Title, this._title);
     },
 
-    /**
-     * @private
-     */
+    // @private
     updateTitle: function(newTitle, oldTitle) {
         if (newTitle) {
             this.add(newTitle);
@@ -35,9 +35,6 @@ Ext.define('SparkClassroom.widget.Panel', {
         }
     },
 
-    /**
-     * @private
-     */
     getTitle: function() {
         var title = this._title;
 
