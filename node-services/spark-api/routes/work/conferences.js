@@ -23,9 +23,9 @@ function* getHandler() {
     }
 
     result = yield Promise.props({
-        fuseboxQuestions: this.pgp.manyOrNone('SELECT * FROM s2_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
+        fuseboxQuestions: this.pgp.manyOrNone('SELECT * FROM fusebox_guiding_questions WHERE standardids::JSONB ?| $1', [standardIds]),
         questions: this.pgp.manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId]),
-        resources: this.pgp.manyOrNone('SELECT * FROM s2_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
+        resources: this.pgp.manyOrNone('SELECT * FROM fusebox_conference_resources WHERE standardids::JSONB ?| $1', [standardIds]),
         worksheet: this.pgp.oneOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
     });
 

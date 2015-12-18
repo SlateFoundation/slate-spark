@@ -86,9 +86,9 @@ function* getFuseboxResources(asnIds) {
            standards,
            standardids,
            v.name AS vendor
-      FROM slate1.s2_learn_links
-      JOIN slate1.s2_vendors v
-        ON v.id = slate1.s2_learn_links.vendorid`,
+      FROM slate1.fusebox_learn_links
+      JOIN slate1.fusebox_vendors v
+        ON v.id = slate1.fusebox_learn_links.vendorid`,
         params = [],
         where = [],
         resources;

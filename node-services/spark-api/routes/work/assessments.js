@@ -29,9 +29,9 @@ function *assessmentsHandler() {
                 standards,
                 standardids,
                 v.name AS vendor
-           FROM s2_assessments
-           JOIN s2_vendors v
-             ON v.id = s2_assessments.vendorid
+           FROM fusebox_assessments
+           JOIN fusebox_vendors v
+             ON v.id = fusebox_assessments.vendorid
           WHERE standardids::JSONB ?| $1`, [standardIds]);
 
     this.body = assessments.map(fusebox.normalizeAssessment);

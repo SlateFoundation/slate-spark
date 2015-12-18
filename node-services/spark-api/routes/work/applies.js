@@ -29,7 +29,7 @@ function *getHandler() {
                (SELECT "FirstName" || \' \' || "LastName" FROM people WHERE "ID" = (SELECT graded_by FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1)) AS graded_by,
                (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos,
                (SELECT row_to_json(reviews) FROM (SELECT rating, comment FROM apply_reviews WHERE student_id = $2 AND apply_id = ap.id) AS reviews) AS review
-          FROM s2_apply_projects ap
+          FROM fusebox_apply_projects ap
          WHERE standardids::JSONB ?| $1`,
         [standardIds, this.studentId, sparkpointId]
     );
@@ -203,7 +203,7 @@ function *patchHandler() {
 
         todos AS (
             SELECT json_array_elements_text(todos::json) AS todo
-              FROM s2_apply_projects
+              FROM fusebox_apply_projects
              WHERE id = $2 AND
              EXISTS(SELECT 1 FROM existing_user_todos) = false
         ),
