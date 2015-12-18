@@ -5,7 +5,8 @@ var util = require('../../lib/util'),
     isString = util.isString,
     fieldValidators = {
         id: allowNull(util.isGtZero),
-        section_id: isString,
+        section_id: allowNull(util.isGteZero),
+        section_code: allowNull(isString),
         opened_time: allowNull(util.isDate),
         timer_time: allowNull(util.isDate),
         closed_time: allowNull(util.isDate),
@@ -43,9 +44,13 @@ function validateConferenceGroup(group, errors) {
         }
     }
 
-    if (!group.id && !group.section_id) {
-        errorList.push('You must pass either an id or a section_id to identify the group.');
+    if (!group.id && !group.section_id && !group.section_code) {
+        errorList.push('You must pass either a (group) id, section_id or section_code to identify the group.');
     }
+
+    // TEMPORARY HACK
+    group.section_id = group.section_id || group.section_code;
+    delete group.section_code;
 
     if (errorList.length > 0 && errors === undefined) {
         group.errors = errorList;
