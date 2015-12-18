@@ -1,4 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/**
+ * The GPS controller manages the GPS section of the teacher interface that shows what phase
+ * every student in the selected section is in and provides for selection of students.
+ *
+ * ## Responsibilities
+ * - **(bug workaround)** {@link #method-workaroundRefreshLists Force refresh} on GPS lists when data changes
+ * - Track selected student and fire {@link SparkClassroomTeacher.Application#event-activestudentselect activestudentselect application event}
+ */
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
     requires: [
@@ -8,7 +16,16 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     config: {
+        /**
+         * @private
+         * Tracks the currently selected {@link SparkClassroomTeacher.model.gps.ActiveStudent}
+         */
         selectedActiveStudent: null,
+
+        /**
+         * @private
+         * Tracks section last selected via {@link #event-sectionselect}
+         */
         activeSection: null
     },
 
@@ -214,6 +231,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     }, 1000),
 
     /**
+     * @private
      * This function manually refreshes all the lists queued for refresh to workaround bugs with lists refreshing themselves after chained store updates
      * TODO: remove this #hack when underlying #framework-bug gets fixed
      */

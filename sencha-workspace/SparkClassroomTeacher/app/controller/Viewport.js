@@ -1,4 +1,15 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/**
+ * The Viewport controller is the first controller loaded in the application. It manages
+ * the top-level framing and navigation.
+ *
+ * ## Responsibilities
+ * - Instantiate top-level components and insert them into the global {@link Ext.Viewport} container
+ * - Trigger load of the global {@link SparkClassroom.store.Sections Sections} store
+ * - Handle interactions with the section selector, synchronize it with the current route, and
+ * fire the {@link SparkClassroomTeacher.Application#event-sectionselect sectionselect application event}
+ * - Rewrite and preprocess routes to prefix routes with selected section, transparently to the rest of the app
+ */
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
@@ -8,6 +19,10 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     tokenSectionRe: /^([^:]+):(.*)$/,
 
     config: {
+        /**
+         * @private
+         * Tracks section last selected via {@link #event-sectionselect}
+         */
         selectedSection: null
     },
 

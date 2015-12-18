@@ -1,8 +1,16 @@
+/* global Ext */
+/* global Slate */
 /* global SparkClassroom */
 /**
  * The main application class. An instance of this class is created by app.js when it
- * calls Ext.application(). This is the ideal place to handle application launch and
- * initialization details.
+ * calls Ext.application(). It is a special controller that is responsible for loading
+ * all other controllers and configuring the application at the top level.
+ *
+ * ## Responsibilities
+ * - Define controllers and their load order
+ * - Configure viewport
+ * - Maintain socket connection to spark-realtime backend
+ * - Present UI to reload application if HTML5 manifest cache gets updated (not currently in use)
  */
 Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
@@ -10,6 +18,20 @@ Ext.define('SparkClassroomTeacher.Application', {
         'Ext.MessageBox',
         'SparkClassroom.SocketDomain'
     ],
+
+    /**
+     * @event sectionselect
+     * Fires when the user selects a course section.
+     * @param {String} section The code for the newly selected section
+     * @param {String/null} oldSection The code for the previously selected section if any
+     */
+
+    /**
+     * @event activestudentselect
+     * Fires when the user selects a course section.
+     * @param {SparkClassroomTeacher.model.gps.ActiveStudent} activeStudent The code for the newly selected section
+     * @param {SparkClassroomTeacher.model.gps.ActiveStudent/null} oldActiveStudent The code for the previously selected section if any
+     */
 
 
     name: 'SparkClassroomTeacher',
@@ -30,8 +52,17 @@ Ext.define('SparkClassroomTeacher.Application', {
     ],
 
     config: {
+        /**
+         * @private
+         * Tracks section last selected via {@link #event-sectionselect}
+         */
         activeSection: null,
 
+        /**
+         * @inheritdoc
+         * @private
+         * Preconfigure the viewport to start with a top-level scrollable container for the main UI components
+         */
         viewport: {
             items: {
                 itemId: 'appCt',
