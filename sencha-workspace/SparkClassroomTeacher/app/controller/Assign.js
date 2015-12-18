@@ -1,4 +1,16 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/**
+ * The Assign controller handles activating the top-level
+ * "Assign" tab and manages navigation between its immediate
+ * subtabs for each content type
+ *
+ * ## Responsibilities
+ * - Realize /assign and /assign/{contentType} routes
+ * - Ensure "Assign" tab is selected in navbar and teacher tabs when
+ * screen gets activated
+ * - Instantiating and activating correct subsection for each subtab
+ * on select
+ */
 Ext.define('SparkClassroomTeacher.controller.Assign', {
     extend: 'Ext.app.Controller',
 

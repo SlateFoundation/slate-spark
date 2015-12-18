@@ -1,4 +1,19 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/**
+ * The Work controller handles activating the top-level
+ * "Work" tab and manages navigation between its immediate
+ * subtabs for each learning phase
+ *
+ * ## Responsibilities
+ * - Realize /work and /work/{phase} routes
+ * - Ensure "Student Work" tab is selected in navbar and teacher tabs
+ * when screen gets activated
+ * - Instantiating and activating correct subsection for each subtab
+ * on select
+ * - Instantiating global feedback store and loading feedback for all phases
+ * when a student is selected
+ * - Updating global feedback store with realtime changes received from socket
+ */
 Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
 

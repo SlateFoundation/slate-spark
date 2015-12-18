@@ -1,4 +1,13 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/**
+ * The Competencies controller handles activating the top-level
+ * "Competency Overview" tab and manages all UI within it
+ *
+ * ## Responsibilities
+ * - Realize /competencies route
+ * - Ensure "Competency Overview" tab is selected in navbar and
+ * teacher tabs when screen gets activated
+ */
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
 
@@ -34,6 +43,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
       	'competencies': 'showCompetencies'
     },
 
+
     // route handlers
     showCompetencies: function(){
         var tabsCt = this.getTabsCt();
@@ -66,5 +76,4 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         teacherTabbar.setActiveTab(teacherTab);
     }
-
 });
