@@ -27,7 +27,7 @@ module.exports = function *parseRequest(next) {
 
     var sparkpoint = query.sparkpoint_id || query.sparkpoint || query.sparkpoint_code;
 
-    if (!util.isMatchbookId(sparkpoint)) {
+    if (sparkpoint && !util.isMatchbookId(sparkpoint)) {
         let sparkpoint = query.sparkpoint || query.sparkpoint_code;
 
         query.sparkpoint_id = yield lookup.codeToId('sparkpoint', sparkpoint);
