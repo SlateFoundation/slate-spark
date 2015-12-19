@@ -26,7 +26,7 @@ if (PRODUCTION) {
 }
 
 app.use(middleware.response_time);
-app.use(error());
+app.use(error({ template: './config/error.html' }));
 app.use(middleware.process);
 app.use(middleware.logger);
 app.use(middleware.session);
