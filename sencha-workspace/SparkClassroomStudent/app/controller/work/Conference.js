@@ -1,4 +1,4 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/*jslint browser: true, undef: true, laxcomma:true *//*global Ext,Slate*/
 /**
  * TODO:
  * - Embed a store in each list that it internally binds to
@@ -191,6 +191,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     onSocketData: function(socket, data) {
         var me = this,
             itemData = data.item,
+            questionsStore,
             studentSparkpoint,
             questionInputEl, questionInputValue, questionInputFocused;
 
@@ -198,31 +199,34 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             return;
         }
 
+        questionsStore = me.getWorkConferenceQuestionsStore();
         studentSparkpoint = me.getStudentSparkpoint();
 
         if (
             studentSparkpoint &&
+            questionsStore.isLoaded() &&
             studentSparkpoint.get('student_id') == itemData.student_id &&
             studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
         ) {
             // capture question input
-            questionInputEl = me.getQuestionInputEl();
-            questionInputValue = questionInputEl.getValue();
-            questionInputFocused = questionInputEl.dom === document.activeElement;
+            if (questionInputEl = me.getQuestionInputEl()) {
+                questionInputValue = questionInputEl.getValue();
+                questionInputFocused = questionInputEl.dom === document.activeElement;
+            }
 
-            me.getWorkConferenceQuestionsStore().loadRawData([itemData], true);
+            questionsStore.loadRawData([itemData], true);
             me.refreshQuestions();
 
             // restore question input
-            questionInputEl = me.getQuestionInputEl();
+            if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputValue) {
+                    questionInputEl.dom.value = questionInputValue;
+                }
 
-            if (questionInputValue) {
-                questionInputEl.dom.value = questionInputValue;
-            }
-
-            if (questionInputFocused) {
-                console.log('restoring focus');
-                questionInputEl.focus();
+                if (questionInputFocused) {
+                    console.log('restoring focus');
+                    questionInputEl.focus();
+                }
             }
         }
     },
@@ -231,9 +235,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     // controller methods
     refreshQuestions: function() {
         var me = this,
+            questionsList = me.getQuestionsList(),
             questionsStore = me.getWorkConferenceQuestionsStore(),
             count = questionsStore.getCount(), i = 0, question,
             items = [];
+
+        if (!questionsList) {
+            return;
+        }
 
         for (; i < count; i++) {
             question = questionsStore.getAt(i);
@@ -249,7 +258,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             skipHtmlEncode: true
         });
 
-        me.getQuestionsList().setData({
+        questionsList.setData({
             title: 'Guiding Questions',
             items: items
         });
@@ -306,6 +315,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     getQuestionInputEl: function() {
-        return this.getQuestionsList().getInnerHtmlElement().down('input');
+        var questionsList = this.getQuestionsList();
+
+        return questionsList && questionsList.getInnerHtmlElement().down('input');
     }
 });
