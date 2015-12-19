@@ -31,7 +31,6 @@ app.use(middleware.process);
 app.use(middleware.logger);
 app.use(middleware.session);
 app.use(jsonBody({}));
-app.use(middleware.request);
 app.use(middleware.database.knex({
     config: config.database,
     slateConfig: config.slate
@@ -40,9 +39,9 @@ app.use(middleware.database.pgp({
     config: config.database,
     slateConfig: config.slate
 }));
-app.use(json());
-
 app.use(lookup.initialize);
+app.use(middleware.request);
+app.use(json());
 
 // Standards
 app.use(_.get('/standards/:id', routes.standards.get));

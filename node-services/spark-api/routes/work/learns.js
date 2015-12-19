@@ -25,7 +25,7 @@ function* getHandler() {
         ctx = this,
         playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews;
 
-    (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+    (lookup.entities.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
         standardIds = standardIds.concat(standard.asnIds);
         openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
@@ -159,7 +159,7 @@ function* getHandler() {
 
         var sql = `
         WITH new_learn_resources AS (
-            INSERT INTO learn_resources AS lr (sparkpoint_id, url)
+            INSERT INTO learn_resources AS lr (sparkpoint_id, url, metadata)
             VALUES ${urlPlaceHolders}
             ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
             RETURNING url, id, views

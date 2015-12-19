@@ -1,11 +1,8 @@
 'use strict';
 
-var db = require('./database.js'),
+var slateCfg = require('../config/slate.json'),
+    db,
     entities = {
-        /*section: {
-            arguments: ['section', 'sections', 'ID', 'Code']
-        },*/
-
         sparkpoint: {
             arguments: ['sparkpoint', 'sparkpoints', 'id', 'code', ['abbreviation'], function* (lookup) {
                 var results = yield db.any(`SELECT id, code, metadata->>'asn_id' AS asn_id FROM sparkpoints`);
@@ -23,7 +20,6 @@ var db = require('./database.js'),
                         lookup.asnIdToSparkpointIds[result.asn_id] = [result.id];
                         entities.standard.idToSparkpointId[result.asn_id] = result.id;
                     }
-
                 });
             }]
         },
@@ -44,13 +40,26 @@ var db = require('./database.js'),
     },
     initialized = false;
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
+for (var x = 0, len = slateCfg.instances.length; x < len; x++) {
+    let key = slateCfg.instances[x].key;
+    entities[key] = { initialized: false };
+}
+
 function* populateLookupTable(entity, tableName, idColumn, codeColumn, additionalColumns, customFn) {
     additionalColumns = additionalColumns || [];
     entities[entity] || (entities[entity] = {});
 
-    var lookup = entities[entity],
-        columns = [idColumn, codeColumn].concat(additionalColumns),
-        results = yield db.any(`SELECT ${columns.map(column => '"' + column + '"').join(',')} FROM ${tableName}`);
+    var columns = [idColumn, codeColumn].concat(additionalColumns),
+        results = yield db.any(`SELECT ${columns.map(column => '"' + column + '"').join(',')} FROM ${tableName}`),
+        lookup;
+
+    if (typeof entity === 'string') {
+        lookup = entities[entity];
+    } else {
+        lookup = entity;
+    }
 
     lookup.idColumn = idColumn;
     lookup.codeColumn = codeColumn;
@@ -64,8 +73,8 @@ function* populateLookupTable(entity, tableName, idColumn, codeColumn, additiona
             code = result[codeColumn];
 
         if (id && code) {
-            lookup.idToCode[id.toLowerCase()] = code;
-            lookup.codeToId[code.toLowerCase()] = id;
+            lookup.idToCode[id.toString().toLowerCase()] = code;
+            lookup.codeToId[code.toString().toLowerCase()] = id;
         }
     });
 
@@ -74,13 +83,13 @@ function* populateLookupTable(entity, tableName, idColumn, codeColumn, additiona
     }
 }
 
-function* idToCode(entity, id) {
-    var lookup = entities[entity],
+function* idToCode(entity, id, schema) {
+    var lookup = schema ? entities[schema][entity] : entities[entity],
         idToCode = lookup.idToCode,
         cachedCode;
 
     if (idToCode) {
-        cachedCode = idToCode[id.toLowerCase()];
+        cachedCode = idToCode[id.toString().toLowerCase()];
     }
 
     if (cachedCode) {
@@ -93,13 +102,13 @@ function* idToCode(entity, id) {
     }
 }
 
-function* codeToId(entity, code) {
-    var lookup = entities[entity],
+function* codeToId(entity, code, schema) {
+    var lookup = schema ? entities[schema][entity] : entities[entity],
         codeToId = lookup.codeToId,
         cachedCode;
 
     if (codeToId) {
-        cachedCode = codeToId[code.toLowerCase()];
+        cachedCode = codeToId[code.toString().toLowerCase()];
     }
 
     if (cachedCode) {
@@ -112,13 +121,13 @@ function* codeToId(entity, code) {
     }
 }
 
-function* codeToDisplayName(entity, code) {
+function* codeToDisplayName(entity, code, schema) {
     if (!entities[entity].codeToDisplayName) {
         yield populateLookupTable.call(null, entities.arguments);
     }
 }
 
-function* idToDisplayName(entity, id) {
+function* idToDisplayName(entity, id, schema) {
     if (!entities[entity].idToDisplayName) {
         yield populateLookupTable.call(null, entities.arguments);
     }
@@ -126,19 +135,35 @@ function* idToDisplayName(entity, id) {
 
 function *initialize(next) {
     if (!initialized) {
+        db = this.pgp;
         initialized = true;
 
         console.log('Initializing lookup tables...');
 
         for (var entity in entities) {
-            console.log(`Populating ${entity} lookup table...`);
-            yield populateLookupTable.apply(null, entities[entity].arguments);
+            if (entities[entity].arguments) {
+                console.log(`Populating ${entity} lookup table...`);
+                yield populateLookupTable.apply(null, entities[entity].arguments);
+            }
         }
-
-        yield next;
-    } else {
-        yield next;
     }
+
+    if (!entities[this.schema].initialized) {
+        db = this.pgp;
+        entities[this.schema].initialized = true;
+
+        for (var x = 0, len = slateCfg.instances.length; x < len; x++) {
+            let key = slateCfg.instances[x].key;
+
+            if (key === this.schema) {
+                console.log(`Populating ${key} sections lookup table...`);
+                entities[key].section = {};
+                yield populateLookupTable.apply(null, [entities[key].section, `"${key}".course_sections`, 'ID', 'Code']);
+            }
+        }
+    }
+
+    yield next;
 }
 
 module.exports = {

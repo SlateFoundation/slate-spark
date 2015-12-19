@@ -25,29 +25,35 @@ module.exports = function *parseRequest(next) {
         }
     }
 
-    if (query.sparkpoint_id) {
-        if (!util.isMatchbookId(query.sparkpoint_id)) {
-            if (util.toSparkpointId(query.sparkpoint_id)) {
-                return ctx.throw(new Error(`sparkpoint code passed as a sparkpoint_id: ${query.sparkpoint_id}`), 400);
-            } else {
-                return ctx.throw(
-                    new Error(`A sparkpoint_id is 8 characters and starts with M. You passed: ${query.sparkpoint_id}`),
-                    400
-                );
-            }
-        }
-    }
+    var sparkpoint = query.sparkpoint_id || query.sparkpoint || query.sparkpoint_code;
 
-    if (query.sparkpoint) {
-        query.sparkpoint_id = util.toSparkpointId(query.sparkpoint);
+    if (!util.isMatchbookId(sparkpoint)) {
+        let sparkpoint = query.sparkpoint || query.sparkpoint_code;
+
+        query.sparkpoint_id = yield lookup.codeToId('sparkpoint', sparkpoint);
+
         if (!query.sparkpoint_id) {
             ctx.throw(new Error(`${query.sparkpoint} is an invalid sparkpoint`), 404);
         }
+
+        delete query.sparkpoint;
+        delete query.sparkpoint_code;
     }
 
-    // TODO: migrate database schemas to section_id, right now section is stored as section_id in postgresql
-    if (query.section) {
-        query.section_id = query.section;
+    if (query.section || query.section_code) {
+        let section = query.section || query.section_code;
+
+        if (util.isGtZero(section)) {
+            query.section_id = section;
+        } else {
+            query.section_id = yield lookup.codeToId('section', section, this.schema);
+        }
+
+        delete query.section_code;
+
+        if (typeof query.section === 'string') {
+            delete query.section;
+        }
     }
 
     this.require = function(params) {

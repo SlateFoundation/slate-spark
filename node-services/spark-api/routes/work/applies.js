@@ -12,7 +12,7 @@ function *getHandler() {
         standardIds = [],
         applies;
 
-    (lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+    (lookup.entities.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 

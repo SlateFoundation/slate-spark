@@ -384,7 +384,7 @@ function toSparkpointCode(sparkpoint) {
     sparkpoint = '' + sparkpoint;
 
     if (isMatchbookId(sparkpoint)) {
-        return lookup.sparkpoint.idToCode[sparkpoint.toLowerCase()];
+        return lookup.entities.sparkpoint.idToCode[sparkpoint.toLowerCase()];
     }
 
     if (isAsnId(sparkpoint)) {

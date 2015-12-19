@@ -23,6 +23,7 @@ module.exports = function *parseSession(next) {
         this.studentId = this.isStudent ? session.userId : this.query.student_id;
         this.query.student_id = this.studentId;
         this.session = session;
+        this.schema = this.header['x-nginx-mysql-schema'];
     }
 
     if (!this.userId && this.request.path !== '/healthcheck') {
