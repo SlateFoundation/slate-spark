@@ -13,17 +13,17 @@ function AsnStandard(standard) {
     this.vendorIdentifiers = {};
 
     if (util.isAsnId(standard)) {
-        asnIds = lookup.standard.idToAsnIds[standard];
+        asnIds = lookup.entities.standard.idToAsnIds[standard];
     } else {
-        asnIds = lookup.standard.idToAsnIds[lookup.standard.codeToId[standard.toString().toLowerCase()]];
+        asnIds = lookup.entities.idToAsnIds[lookup.entities.standard.codeToId[standard.toString().toLowerCase()]];
     }
 
     if (Array.isArray(asnIds)) {
         this.asnIds = asnIds;
 
         asnIds.forEach(function (asnId) {
-            var sparkPointId = lookup.standard.idToSparkpointId[asnId],
-                code = lookup.standard.idToCode[asnId];
+            var sparkPointId = lookup.entities.standard.idToSparkpointId[asnId],
+                code = lookup.entities.standard.idToCode[asnId];
 
             if (sparkPointId) {
                 self.sparkpoints.push(sparkPointId);
@@ -35,9 +35,9 @@ function AsnStandard(standard) {
         });
     }
 
-    for (vendorName in lookup.vendor.nameToId) {
-        vendorId = lookup.vendor.nameToId[vendorName];
-        vendorName = lookup.vendor.idToName[vendorId];
+    for (vendorName in lookup.entities.vendor.nameToId) {
+        vendorId = lookup.entities.vendor.nameToId[vendorName];
+        vendorName = lookup.entities.vendor.idToName[vendorId];
         this.vendorCodes[vendorName] = this.toVendorCodes(vendorId);
         this.vendorIdentifiers[vendorName] = this.toVendorIdentifiers(vendorId);
     }
@@ -51,7 +51,7 @@ AsnStandard.prototype.toVendorCodes = function toVendorCodes(vendor) {
         vendorCodes = [];
 
     this.asnIds.forEach(function (asnId) {
-        var vendorCode = lookup.vendor.asnIdToVendorCode[vendorId][asnId];
+        var vendorCode = lookup.entities.vendor.asnIdToVendorCode[vendorId][asnId];
 
         if (vendorCode) {
             vendorCodes.push(vendorCode);
@@ -62,11 +62,11 @@ AsnStandard.prototype.toVendorCodes = function toVendorCodes(vendor) {
 };
 
 AsnStandard.prototype.toVendorIdentifiers = function toVendorIdentifiers(vendor) {
-    var vendorId = (typeof vendor === 'string') ? lookup.vendor.nameToId[vendor] : vendor,
+    var vendorId = (typeof vendor === 'string') ? lookup.entities.vendor.nameToId[vendor] : vendor,
         vendorIdentifiers = [];
 
     this.asnIds.forEach(function (asnId) {
-        var vendorIdentifier = lookup.vendor.asnIdToVendorIdentifier[vendorId][asnId];
+        var vendorIdentifier = lookup.entities.vendor.asnIdToVendorIdentifier[vendorId][asnId];
 
         if (vendorIdentifier) {
             vendorIdentifiers.push(vendorIdentifier);

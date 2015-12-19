@@ -1,6 +1,7 @@
 'use strict';
 
 var slateCfg = require('../config/slate.json'),
+    legacyLookup = require('./lookup.json'),
     db,
     entities = {
         sparkpoint: {
@@ -15,7 +16,8 @@ var slateCfg = require('../config/slate.json'),
 
                 results.forEach(function(result) {
                     if (result.id && result.code && result.asn_id) {
-                        lookup.idToAsnIds[result.id.toLowerCase()] = result.asn_id;
+                        // TODO: This is psuedo support for multiple ASN IDs associated to a single spark point
+                        lookup.idToAsnIds[result.id] = [result.asn_id];
                         lookup.codeToAsnIds[result.code.toLowerCase()] = result.asn_id;
                         lookup.asnIdToSparkpointIds[result.asn_id] = [result.id];
                         entities.standard.idToSparkpointId[result.asn_id] = result.id;
@@ -36,7 +38,9 @@ var slateCfg = require('../config/slate.json'),
                     lookup.codeToDisplayName[result.Username] = lookup.idToDisplayName[result.ID];
                 });
             }]
-        }*/
+        }*/,
+
+        vendor: legacyLookup.vendor
     },
     initialized = false;
 
@@ -146,6 +150,24 @@ function *initialize(next) {
                 yield populateLookupTable.apply(null, entities[entity].arguments);
             }
         }
+
+        let idToAsnIds = yield db.one(`
+            WITH asn_ids AS (
+              SELECT asn_id,
+                     ARRAY[asn_id] AS children_ids
+                FROM public.standards
+               WHERE leaf = true
+              UNION
+              SELECT asn_id,
+                     children_ids
+                FROM public.standards
+               WHERE leaf = false
+            )
+
+            SELECT json_object_agg("asn_id", "children_ids") AS json FROM asn_ids;
+        `);
+
+        entities.standard.idToAsnIds = idToAsnIds.json;
     }
 
     if (!entities[this.schema].initialized) {
