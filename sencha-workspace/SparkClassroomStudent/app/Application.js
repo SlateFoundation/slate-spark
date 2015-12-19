@@ -15,8 +15,8 @@ Ext.define('SparkClassroomStudent.Application', {
     name: 'SparkClassroomStudent',
 
     controllers: [
-        'analytics.Clicky',
-        'analytics.TrackJS',
+        'analytics.Clicky@SparkClassroom.controller',
+        'analytics.TrackJS@SparkClassroom.controller',
 
         'Viewport',
 
