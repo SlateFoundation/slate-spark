@@ -12,6 +12,7 @@ function* autocompleteGetHandler(input) {
         return this.body = [];
     }
 
+
     patternSafeInput = input
         .replace(/[\[|\]|\|\^|\$|\%|\(|\)|\?|\+|\{|\}|\=|\\]/g, '')
         /* Escape characters that appear in sparkpoint codes */
@@ -205,11 +206,19 @@ function* suggestedGetHandler() {
     this.body = results.sparkpoints;
 }
 
+function bustSuggestionCache() {
+    for (var prop in suggestionCache) {
+        delete suggestionCache[prop];
+    }
+}
+
 module.exports = {
     autocomplete: {
         get: autocompleteGetHandler
     },
     suggested: {
         get: suggestedGetHandler
-    }
+    },
+    suggestionCache: suggestionCache,
+    bustSuggestionCache: bustSuggestionCache
 };
