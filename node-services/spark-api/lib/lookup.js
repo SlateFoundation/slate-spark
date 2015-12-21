@@ -179,6 +179,22 @@ function *initialize(next) {
             });
         });
 
+        nc.subscribe('cache.*.*.course_sections.*', function (msg, reply, subject) {
+            var tokens = subject.split('.'),
+                action = tokens[1],
+                pk = tokens.pop(),
+                table = tokens.pop(),
+                schema = tokens.pop();
+
+            cacheBuster({
+                type: 'cache',
+                action: action,
+                entity: table,
+                pk: pk,
+                schema: schema
+            });
+        });
+
         console.log('Initializing lookup tables...');
 
         for (var entity in entities) {
@@ -257,6 +273,27 @@ function cacheBuster(msg) {
             co(function*() {
                 yield populateLookupTable.apply(null, entities.sparkpoint.arguments);
                 entities.sparkpoint.timeout = null;
+            });
+        }, 1000);
+    } else if (msg.entity === 'course_sections') {
+        if (entities.sparkpoint.timeout) {
+            console.log('Waiting until changes stop coming in for 1s to bust course_sections lookup table...');
+            clearTimeout(entities.sparkpoint.timeout);
+        }
+
+        entities[msg.schema].section.timeout = setTimeout(function() {
+            console.log(`Busting ${msg.schema} course_sections lookup table...`);
+
+            co(function*() {
+                yield db.none(`REFRESH MATERIALIZED VIEW "${msg.schema}".course_sections`);
+
+                yield populateLookupTable.apply(null, [
+                    entities[msg.schema].section,
+                    `"${msg.schema}".course_sections`,
+                    'ID',
+                    'Code'
+                ]);
+                entities[msg.schema].section.timeout = null;
             });
         }, 1000);
     }
