@@ -100,16 +100,23 @@ function* idToCode(entity, id, schema) {
         cachedCode;
 
     if (idToCode) {
-        cachedCode = idToCode[id.toString().toLowerCase()];
+        cachedCode = idToCode[id];
     }
 
     if (cachedCode) {
         return cachedCode;
     } else {
-        yield db.oneOrNone(
-            `SELECT ${lookup.codeColumn} FROM ${lookup.tableName} WHERE ${lookup.idColumn} = $1 LIMIT 1`,
+        let value = db.oneOrNone(
+            `SELECT "${lookup.codeColumn}" FROM ${lookup.tableName} WHERE "${lookup.idColumn}" = $1 LIMIT 1`,
             [id]
         );
+
+        if (value) {
+            idToCode[id] = value[lookup.codeColumn];
+            return value[lookup.codeColumn];
+        } else {
+            return null;
+        }
     }
 }
 
@@ -125,10 +132,17 @@ function* codeToId(entity, code, schema) {
     if (cachedCode) {
         return cachedCode;
     } else {
-        yield db.oneOrNone(
-            `SELECT ${lookup.idColumn} FROM ${lookup.tableName} WHERE ${lookup.codeColumn} = $1 LIMIT 1`,
+        let value = yield db.oneOrNone(
+            `SELECT "${lookup.idColumn}" FROM ${lookup.tableName} WHERE "${lookup.codeColumn}" = $1 LIMIT 1`,
             [code]
         );
+
+        if (value) {
+            codeToId[code.toString().toLowerCase()] = value[lookup.idColumn];
+            return value[lookup.idColumn];
+        } else {
+            return null;
+        }
     }
 }
 
