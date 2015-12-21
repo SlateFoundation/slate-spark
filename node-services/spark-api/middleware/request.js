@@ -47,6 +47,10 @@ module.exports = function *parseRequest(next) {
             query.section_id = section;
         } else {
             query.section_id = yield lookup.codeToId('section', section, this.schema);
+
+            if (!query.section_id) {
+                ctx.throw(new Error(`${section} is not a valid section_id or section_code`), 404);
+            }
         }
 
         delete query.section_code;
