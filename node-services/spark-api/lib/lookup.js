@@ -1,9 +1,17 @@
 'use strict';
 
 var slateCfg = require('../config/slate.json'),
+    nats = require('nats'),
+    co = require('co'),
+    natsCfg = require('../config/nats.json'),
     legacyLookup = require('./lookup.json'),
+    bustSuggestionCache = require('../routes/sparkpoints').bustSuggestionCache,
     db,
     entities = {
+        standard: {
+            arguments: ['standard', 'standards', 'asn_id', 'code']
+        },
+
         sparkpoint: {
             arguments: ['sparkpoint', 'sparkpoints', 'id', 'code', ['abbreviation'], function* (lookup) {
                 var results = yield db.any(`SELECT id, code, metadata->>'asn_id' AS asn_id FROM sparkpoints`);
@@ -23,12 +31,11 @@ var slateCfg = require('../config/slate.json'),
                         entities.standard.idToSparkpointId[result.asn_id] = result.id;
                     }
                 });
-            }]
-        },
 
-        standard: {
-            arguments: ['standard', 'standards', 'asn_id', 'code']
-        }/*,
+            }]
+        }
+
+        /*,
 
         person: {
             arguments: ['person', 'people', 'ID', 'Username', ['FirstName', 'LastName'], function(lookup, results) {
@@ -142,6 +149,22 @@ function *initialize(next) {
         db = this.pgp;
         initialized = true;
 
+        var nc = nats.connect(natsCfg);
+
+        nc.subscribe('cache.*.public.*.*', function (msg, reply, subject) {
+            var tokens = subject.split('.'),
+                action = tokens[1],
+                pk = tokens.pop(),
+                table = tokens.pop();
+
+            cacheBuster({
+                type: 'cache',
+                action: action,
+                entity: table,
+                pk: pk
+            });
+        });
+
         console.log('Initializing lookup tables...');
 
         for (var entity in entities) {
@@ -186,6 +209,43 @@ function *initialize(next) {
     }
 
     yield next;
+}
+
+function cacheBuster(msg) {
+    if (msg.entity === 'standards') {
+        if (entities.standard.timeout) {
+            console.log('Waiting until changes stop coming in for 1s to bust standard lookup table...');
+            clearTimeout(entities.standard.timeout);
+        }
+
+        entities.standard.timeout = setTimeout(function() {
+            console.log('Busting standard lookup table...');
+
+            bustSuggestionCache();
+
+            co(function*() {
+                yield populateLookupTable.apply(null, entities.standard.arguments);
+                entities.standard.timeout = null;
+            });
+
+        }, 1000);
+    } else if (msg.entity === 'sparkpoints') {
+        if (entities.sparkpoint.timeout) {
+            console.log('Waiting until changes stop coming in for 1s to bust sparkpoint lookup table...');
+            clearTimeout(entities.sparkpoint.timeout);
+        }
+
+        entities.sparkpoint.timeout = setTimeout(function() {
+            console.log('Busting sparkpoint lookup table...');
+
+            bustSuggestionCache();
+
+            co(function*() {
+                yield populateLookupTable.apply(null, entities.sparkpoint.arguments);
+                entities.sparkpoint.timeout = null;
+            });
+        }, 1000);
+    }
 }
 
 module.exports = {
