@@ -126,30 +126,9 @@ if (PRODUCTION) {
 
 app.port = 9090;
 
-/*
-nc.subscribe('cache.*.public.*.*', function(msg, reply, subject) {
-    var tokens = subject.split('.'),
-        action = tokens[1],
-        pk = tokens.pop(),
-        table = tokens.pop();
-
-    Object.keys(cluster.workers).forEach(function(id) {
-        cluster.workers[id].send({
-            type: 'cache',
-            action: action,
-            entity: table,
-            pk: pk
-        });
-    });
-});
-*/
-
 if (cluster.isMaster) {
-    module.exports.onCacheEvent = cacheBuster;
     app.listen(app.port);
 } else {
-    process.on('message', cacheBuster);
-    
     app.use(function* () {
         if (this.req.checkContinue) {
             this.res.writeContinue();
@@ -157,30 +136,4 @@ if (cluster.isMaster) {
 
         yield;
     });
-}
-
-function cacheBuster(msg) {
-    if (msg.entity === 'standards') {
-        if (lookup.entities.standard.timeout) {
-            console.log('Waiting until changes stop coming in for 1s to bust standard lookup table...');
-            clearTimeout(lookup.entities.standard.timeout);
-        }
-
-        lookup.entities.standard.timeout = setTimeout(function() {
-            console.log('Busting standard lookup table...');
-            lookup.populateLookupTable.call(null, lookup.entities.standard.arguments);
-            lookup.entities.standard.timeout = null;
-        }, 1000);
-    } else if (msg.entity === 'sparkpoints') {
-        if (lookup.entities.sparkpoint.timeout) {
-            console.log('Waiting until changes stop coming in for 1s to bust sparkpoint lookup table...');
-            clearTimeout(lookup.entities.sparkpoint.timeout);
-        }
-
-        lookup.entities.sparkpoint.timeout = setTimeout(function() {
-            console.log('Busting sparkpoint lookup table...');
-            lookup.populateLookupTable.call(null, lookup.entities.sparkpoint.arguments);
-            lookup.entities.sparkpoint.timeout = null;
-        }, 1000);
-    }
 }
