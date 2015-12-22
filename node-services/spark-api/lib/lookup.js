@@ -273,6 +273,8 @@ LookupTable.prototype.codeToId = function* codeToId(code) {
 module.exports = function* (next) {
     // TODO: When lookup references this.app does it leak memory by keeping a reference to this (request context)?
 
+    this.schema = this.header['x-nginx-mysql-schema'];
+
     // Initialize global/shared lookup tables
     if (!initialized) {
         initialized = true;
