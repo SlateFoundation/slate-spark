@@ -273,8 +273,6 @@ LookupTable.prototype.codeToId = function* codeToId(code) {
 module.exports = function* (next) {
     // TODO: When lookup references this.app does it leak memory by keeping a reference to this (request context)?
 
-    this.schema = this.header['x-nginx-mysql-schema'];
-
     // Initialize global/shared lookup tables
     if (!initialized) {
         initialized = true;
@@ -320,7 +318,7 @@ module.exports = function* (next) {
         shared.vendor = result.json;
     }
 
-    if (!(schema[this.schema] instanceof LookupTable)) {
+    if (!this.healthcheck && !(schema[this.schema] instanceof LookupTable)) {
         schema[this.schema] || (schema[this.schema] = {});
 
         for (let entity in perSchool) {
@@ -336,7 +334,11 @@ module.exports = function* (next) {
         }
     }
 
-    this.lookup = Object.assign(shared, schema[this.schema]);
+    if (this.healthcheck) {
+        this.lookup = shared;
+    } else {
+        this.lookup = Object.assign(shared, schema[this.schema]);
+    }
 
     this.app.context.lookup || (this.app.context.lookup = {
         shared: shared,
