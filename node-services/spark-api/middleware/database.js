@@ -4,7 +4,9 @@ var promise = require('bluebird'),
     monitor = require('pg-monitor'),
     Knex = require('knex'),
     options = { promiseLib: promise},
-    Pgp = require('pg-promise')(options);
+    Pgp = require('pg-promise')(options),
+    knexConnections = {},
+    pgpConnections = {};
 
 monitor.attach(options);
 monitor.setTheme('matrix');
@@ -14,8 +16,6 @@ function objToConnectionString(obj) {
 }
 
 function initializePgp(config, slateConfig) {
-    var pgpConnections = {};
-
     if (config.postgresql && config.postgresql.sharedConnection) {
         pgpConnections.shared = Pgp(objToConnectionString(config.postgresql.sharedConnection));
     }
@@ -28,8 +28,6 @@ function initializePgp(config, slateConfig) {
 }
 
 function initializeKnex(config, slateConfig) {
-    var knexConnections = {};
-
     if (config.postgresql && config.postgresql.sharedConnection) {
         knexConnections.shared = Knex({
             client: 'pg',
@@ -59,17 +57,21 @@ function pgp(options) {
     return function *pgp(next) {
         var schema = this.header['x-nginx-mysql-schema'];
 
-        global.pgpConnections || (global.pgpConnections = initializePgp(options.config, options.slateConfig));
+        this.app.context.pgp || (this.app.context.pgp = initializePgp(options.config, options.slateConfig));
 
         if (schema) {
-            this.pgp = global.pgpConnections[schema];
+            this.pgp = this.app.context.pgp[schema];
         } else if (this.request.path === '/healthcheck') {
-            this.pgp = global.pgpConnections.shared;
+            this.pgp = this.app.context.pgp.shared;
         } else {
             this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
 
-        this.sharedPgp = global.pgpConnections.shared;
+        if (!this.pgp) {
+            this.throw(new Error(`Unable to initialize pgp.. (Check if ${this.schema} is a valid Slate instance)`));
+        }
+
+        this.sharedPgp = this.app.context.pgp.shared;
 
         this.guc = function(query) {
             return `
@@ -89,17 +91,21 @@ function knex(options) {
     return function *knex(next) {
         var schema = this.header['x-nginx-mysql-schema'];
 
-        global.knexConnections || (global.knexConnections = initializeKnex(options.config, options.slateConfig));
+        this.app.context.knex || (this.app.context.knex = initializeKnex(options.config, options.slateConfig));
 
         if (schema) {
-            this.knex = global.knexConnections[schema];
+            this.knex = this.app.context.knex[schema];
         } else if (this.request.path === '/healthcheck') {
-            this.pgp = global.knexConnections.shared;
+            this.knex = this.app.context.knex.shared;
         } else {
             this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
 
-        this.sharedknex = global.knexConnections.shared;
+        if (!this.knex) {
+            this.throw(new Error(`Unable to initialize knex... (Check if ${this.schema} is a valid Slate instance)`));
+        }
+
+        this.sharedKnex = this.app.context.knex.shared;
 
         yield next;
     };
@@ -107,6 +113,7 @@ function knex(options) {
 
 module.exports = {
     knex: knex,
-    pgp: pgp
+    pgp: pgp,
+    knexConnections: knexConnections,
+    pgpConnections: pgpConnections
 };
-
