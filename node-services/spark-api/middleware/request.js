@@ -10,6 +10,8 @@ module.exports = function *parseRequest(next) {
         ctx = this;
 
     this.requestId = this.headers['x-nginx-request-id'];
+
+    this.healthcheck = this.request.path === '/healthcheck';
     
     if (!Array.isArray(body) && typeof body === 'object') {
         for (var prop in body) {

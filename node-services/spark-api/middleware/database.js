@@ -61,7 +61,7 @@ function pgp(options) {
 
         if (schema) {
             this.pgp = this.app.context.pgp[schema];
-        } else if (this.request.path === '/healthcheck') {
+        } else if (this.healthcheck) {
             this.pgp = this.app.context.pgp.shared;
         } else {
             this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
