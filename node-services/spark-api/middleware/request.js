@@ -1,7 +1,6 @@
 'use strict';
 
-var lookup = require('./../lib/lookup'),
-    util = require('./../lib/util');
+var util = require('./../lib/util');
 
 // This should be loaded AFTER session
 
@@ -30,7 +29,7 @@ module.exports = function *parseRequest(next) {
     if (sparkpoint && !util.isMatchbookId(sparkpoint)) {
         let sparkpoint = query.sparkpoint || query.sparkpoint_code;
 
-        query.sparkpoint_id = yield lookup.codeToId('sparkpoint', sparkpoint);
+        query.sparkpoint_id = yield this.lookup.sparkpoint.codeToId(sparkpoint);
 
         if (!query.sparkpoint_id) {
             ctx.throw(new Error(`${query.sparkpoint} is an invalid sparkpoint`), 404);
@@ -44,13 +43,13 @@ module.exports = function *parseRequest(next) {
         let section = query.section || query.section_code;
 
         if (util.isGtZero(section)) {
-            query.section_id = section;
+            query.section_id = this.lookup.section.cache.codeToId[yield this.lookup.section.idToCode(section)];
         } else {
-            query.section_id = yield lookup.codeToId('section', section, this.schema);
+            query.section_id = yield this.lookup.section.codeToId(section);
+        }
 
-            if (!query.section_id) {
-                ctx.throw(new Error(`${section} is not a valid section_id or section_code`), 404);
-            }
+        if (!query.section_id) {
+            ctx.throw(new Error(`${section} is not a valid section_id or section_code`), 404);
         }
 
         delete query.section_code;

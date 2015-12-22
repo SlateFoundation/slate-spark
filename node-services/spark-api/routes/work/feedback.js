@@ -35,8 +35,8 @@ function validateFeedback(feedback) {
     feedback = feedback || {};
 
     var errors = [],
-        sparkpointId = util.toSparkpointId(feedback.sparkpoint_id || feedback.sparkpoint);
-
+        sparkpointId = this.lookup.sparkpoint.cache.codeToId[feedback.sparkpoint.toString().toLowerCase()] ||
+                       this.lookup.sparkpoint.cache.idToCode[feedback.sparkpoint_id];
     // phase
     if (PHASES.indexOf(feedback.phase) === -1) {
         errors.push('Invalid phase: ' + feedback.phase);
@@ -46,7 +46,7 @@ function validateFeedback(feedback) {
 
     // sparkpoint / sparkpoint_id
     if (!sparkpointId) {
-        errors.push('Invalid sparkpoint: ' + feedback.sparkpoint_id || feedback.sparkpoint);
+        errors.push('Invalid sparkpoint: ' + (feedback.sparkpoint_id || feedback.sparkpoint));
     } else {
         normalized.sparkpoint_id = sparkpointId;
     }

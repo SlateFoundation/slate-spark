@@ -25,6 +25,7 @@ if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
 }
 
+app.context.config = config;
 app.use(middleware.response_time);
 app.use(error({ template: __dirname + '/config/error.html' }));
 app.use(middleware.process);
@@ -39,7 +40,7 @@ app.use(middleware.database.pgp({
     config: config.database,
     slateConfig: config.slate
 }));
-app.use(lookup.initialize);
+app.use(lookup);
 app.use(middleware.request);
 app.use(json());
 

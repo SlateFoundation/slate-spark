@@ -7,12 +7,11 @@ var fs = require('fs'),
     OpenEd = require('../../lib/opened'),
     util = require('../../lib/util'),
     JsonApiError = require('../../lib/error').JsonApiError,
-    lookup = require('../../lib/lookup'),
-    AsnStandard = require('../../lib/asn-standard'),
     Fusebox = require('../../lib/fusebox'),
     db = require('../../middleware/database'),
     slack = require('../../lib/slack'),
-    QueryBuilder = util.QueryBuilder;
+    QueryBuilder = util.QueryBuilder,
+    AsnStandard;
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id', 'section_id']);
@@ -25,7 +24,10 @@ function* getHandler() {
         ctx = this,
         playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews;
 
-    (lookup.entities.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+    // TODO: There should be a better way to share the app context between modules
+    AsnStandard || (AsnStandard = require('../../lib/asn-standard')(this.app));
+
+    (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
         standardIds = standardIds.concat(standard.asnIds);
         openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);

@@ -4,307 +4,342 @@ var slateCfg = require('../config/slate.json'),
     nats = require('nats'),
     co = require('co'),
     natsCfg = require('../config/nats.json'),
-    legacyLookup = require('./lookup.json'),
+    nc = nats.connect(natsCfg),
     bustSuggestionCache = require('../routes/sparkpoints').bustSuggestionCache,
-    db,
-    entities = {
+    util = require('util'),
+    shared = {
         standard: {
-            arguments: ['standard', 'standards', 'asn_id', 'code']
+            entity: 'standard',
+            idColumn: 'asn_id',
+            customGenerator: function* () {
+                // This unrolls non-leaf standards providing a way to get all of the ASN Ids for a standard and its
+                // children. This is primarily used for vendor cross walking.
+                var idToAsnIds = yield this.pgp.one(`
+                    WITH asn_ids AS (
+                      SELECT asn_id,
+                             ARRAY[asn_id] AS children_ids
+                        FROM public.standards
+                       WHERE leaf = true
+                      UNION
+                      SELECT asn_id,
+                             children_ids
+                        FROM public.standards
+                       WHERE leaf = false
+                    )
+                    SELECT json_object_agg("asn_id", "children_ids") AS json FROM asn_ids;
+                `);
+
+                this.idToAsnIds = idToAsnIds.json;
+            },
+            onCacheBust: bustSuggestionCache
         },
 
         sparkpoint: {
-            arguments: ['sparkpoint', 'sparkpoints', 'id', 'code', ['abbreviation'], function* (lookup) {
-                var results = yield db.any(`SELECT id, code, metadata->>'asn_id' AS asn_id FROM sparkpoints`);
+            entity: 'sparkpoint',
+            additionColumns: ['abbreviation'],
+            customGenerator: function* () {
+                var results = yield this.pgp.any(`SELECT id, code, metadata->>'asn_id' AS asn_id FROM sparkpoints`),
+                    self = this;
 
-                lookup.idToAsnIds || (lookup.idToAsnIds = {});
-                lookup.codeToAsnIds || (lookup.codeToAsnIds = {});
-                lookup.asnIdToSparkpointIds || (lookup.asnIdToSparkpointIds = {});
+                this.idToAsnIds || (this.idToAsnIds = {});
+                this.codeToAsnIds || (this.codeToAsnIds = {});
+                this.asnIdToSparkpointIds || (this.asnIdToSparkpointIds = {});
 
-                entities.standard.idToSparkpointId || (entities.standard.idToSparkpointId = {});
+                shared.standard.idToSparkpointId || (shared.standard.idToSparkpointId = {});
 
-                results.forEach(function(result) {
+                results.forEach(function (result) {
                     if (result.id && result.code && result.asn_id) {
                         // TODO: This is psuedo support for multiple ASN IDs associated to a single spark point
-                        lookup.idToAsnIds[result.id] = [result.asn_id];
-                        lookup.codeToAsnIds[result.code.toLowerCase()] = result.asn_id;
-                        lookup.asnIdToSparkpointIds[result.asn_id] = [result.id];
-                        entities.standard.idToSparkpointId[result.asn_id] = result.id;
+                        self.idToAsnIds[result.id] = [result.asn_id];
+                        self.codeToAsnIds[result.code.toLowerCase()] = result.asn_id;
+                        self.asnIdToSparkpointIds[result.asn_id] = [result.id];
+                        shared.standard.idToSparkpointId[result.asn_id] = result.id;
                     }
                 });
+            },
+            onCacheBust: bustSuggestionCache
+        },
 
-            }]
-        }
-
-        /*,
+        vendor: require('../legacy/vendor.json')
+    },
+    perSchool = {
+        section: {
+            entity: 'course_section',
+            idColumn: 'ID',
+            codeColumn: 'Code',
+            onCacheBust: function* () {
+                yield this.pgp.none(`REFRESH MATERIALIZED VIEW "${this.schema}".course_sections`);
+            }
+        },
 
         person: {
-            arguments: ['person', 'people', 'ID', 'Username', ['FirstName', 'LastName'], function(lookup, results) {
+            entity: 'person',
+            tableName: 'people',
+            idColumn: 'ID',
+            codeColumn: 'Username',
+            additionColumns: ['FirstName', 'LastName'],
+            customFunction: function(results) {
+                var self = this;
+                
                 results.forEach(function(result) {
                     let displayName = result.FirstName + ' ' + result.LastName;
-                    lookup.idToDisplayName[result.ID] = displayName;
-                    lookup.codeToDisplayName[result.Username] = lookup.idToDisplayName[result.ID];
-                });
-            }]
-        }*/,
 
-        vendor: legacyLookup.vendor
+                    self.idToDisplayName || (self.idToDisplayName = {});
+                    self.codeToDisplayName || (self.codeToDisplayName = {});
+
+                    self.idToDisplayName[result.ID] = displayName;
+                    self.codeToDisplayName[result.Username] = self.idToDisplayName[result.ID];
+                });
+            },
+            onCacheBust: function* () {
+                yield this.pgp.none(`REFRESH MATERIALIZED VIEW "${this.schema}".people`);
+            }
+        }
     },
+    schema =  {},
     initialized = false;
 
-const PRODUCTION = process.env.NODE_ENV === 'production';
+function LookupTable(options) {
+    var self = this;
 
-for (var x = 0, len = slateCfg.instances.length; x < len; x++) {
-    let key = slateCfg.instances[x].key;
-    entities[key] = { initialized: false };
-}
+    Object.assign(this, {
+        idColumn: 'id',
+        codeColumn: 'code',
+        populated: false,
+        additionalColumns: [],
+        autoPopulate: false,
+        populating: false,
+        schema: 'public',
+        autoBust: true,
+        onCacheBust: false,
+        timeout: null,
+        cache: {}
+    }, options);
 
-function* populateLookupTable(entity, tableName, idColumn, codeColumn, additionalColumns, customFn) {
-    additionalColumns = additionalColumns || [];
-    entities[entity] || (entities[entity] = {});
+    this.tableName = this.tableName || this.entity + 's';
 
-    var columns = [idColumn, codeColumn].concat(additionalColumns),
-        results = yield db.any(`SELECT ${columns.map(column => '"' + column + '"').join(',')} FROM ${tableName}`),
-        lookup;
-
-    if (typeof entity === 'string') {
-        lookup = entities[entity];
-    } else {
-        lookup = entity;
+    if (!this.entity) {
+        throw new Error('entity is a required');
     }
 
-    lookup.idColumn = idColumn;
-    lookup.codeColumn = codeColumn;
-    lookup.tableName = tableName;
+    if (this.autoBust) {
+        console.log(`Subscribing to: cache.*.${this.schema}.${this.tableName}.*`);
 
-    lookup.idToCode = lookup.idToCode || {};
-    lookup.codeToId = lookup.codeToId || {};
+        nc.subscribe(`cache.*.${this.schema}.${this.tableName}.*`, function (msg, reply, subject) {
+
+            var [, action, pk, table, schema] = subject.split('.'),
+                event = {
+                    type: 'cache',
+                    action: action,
+                    entity: table,
+                    pk: pk,
+                    schema: schema
+                };
+
+            if (self.timeout) {
+                console.log(`Waiting 1s for changes to stop before re-populating ${self.schema}.${self.tableName}...`);
+                return;
+            }
+
+            self.timeout = setTimeout(function () {
+                console.log(`Busting ${self.schema}.${self.tableName} lookup table...`);
+
+                co(function*() {
+                    if (self.onCacheBust) {
+                        if (self.onCacheBust.constructor.name === 'GeneratorFunction') {
+                            yield self.onCacheBust.apply(self, [event]);
+                        } else {
+                            self.onCacheBust.apply(self, [event]);
+                        }
+                    }
+
+                    yield self.populate();
+                    self.timeout = null;
+                });
+            });
+        });
+    }
+
+    if (this.autoPopulate) {
+        co(function*() {
+            if (!self.populating) {
+                yield self.populate();
+            }
+        });
+    }
+}
+
+LookupTable.prototype.populate = function* populate (pgp) {
+    var {entity, tableName, idColumn, codeColumn, additionalColumns, customFunction, customGenerator, schema, cache} = this,
+        columns = [idColumn, codeColumn].concat(additionalColumns),
+        columnsQuoted = columns
+            .map(column => `"${column}"`)
+            .join(','),
+        results = yield this.pgp.any(`
+            SELECT ${columnsQuoted}
+              FROM "${schema}"."${tableName}"
+              WHERE "${codeColumn}" IS NOT NULL
+        `),
+        self = this;
+
+    console.log(`Populating ${schema}.${tableName} lookup table...`);
+
+    // Blow out / initialize lookup tables
+    cache.idToCode = {};
+    cache.codeToId = {};
 
     results.forEach(function(result) {
         var id = result[idColumn],
             code = result[codeColumn];
 
         if (id && code) {
-            lookup.idToCode[id.toString().toLowerCase()] = code;
-            lookup.codeToId[code.toString().toLowerCase()] = id;
+            cache.idToCode[id] = code;
+            cache.codeToId[code.toString().toLowerCase()] = id;
         }
     });
 
-    if (customFn) {
-        yield customFn(lookup, results, columns);
+    if (customFunction) {
+        customFunction.apply(this, [results, columns]);
     }
-}
 
-function* idToCode(entity, id, schema) {
-    var lookup = schema ? entities[schema][entity] : entities[entity],
-        idToCode = lookup.idToCode,
+    if (customGenerator) {
+        yield customGenerator.apply(this, [results, columns]);
+    }
+
+    console.log(`${schema}.${tableName} populated with ${results.length.toLocaleString()} ${entity}(s).`);
+};
+
+LookupTable.prototype.idToCode = function* idToCode(id) {
+    var {codeColumn, idColumn, cache} = this,
         cachedCode;
 
-    if (idToCode) {
-        cachedCode = idToCode[id];
+    if (cache.idToCode) {
+        cachedCode = cache.idToCode[id];
     }
 
     if (cachedCode) {
         return cachedCode;
     } else {
-        let value = db.oneOrNone(
-            `SELECT "${lookup.codeColumn}" FROM ${lookup.tableName} WHERE "${lookup.idColumn}" = $1 LIMIT 1`,
+        console.log(this);
+
+        let value = yield this.pgp.oneOrNone(
+            `SELECT "${codeColumn}" FROM "${this.schema}"."${this.tableName}" WHERE "${idColumn}" = $1 LIMIT 1`,
             [id]
         );
 
         if (value) {
-            idToCode[id] = value[lookup.codeColumn];
-            return value[lookup.codeColumn];
+            let code = value[codeColumn];
+
+            cache.idToCode[id] = code;
+            cache.codeToId[code.toString().toLowerCase()] = id;
+
+            return code;
         } else {
             return null;
         }
     }
-}
+};
 
-function* codeToId(entity, code, schema) {
-    var lookup = schema ? entities[schema][entity] : entities[entity],
-        codeToId = lookup.codeToId,
+LookupTable.prototype.codeToId = function* codeToId(code) {
+    var {codeColumn, idColumn, cache} = this,
+        codeKey = code.toString().toLowerCase(),
         cachedCode;
 
-    if (codeToId) {
-        cachedCode = codeToId[code.toString().toLowerCase()];
+    if (cache.codeToId) {
+        cachedCode = cache.codeToId[codeKey];
     }
 
     if (cachedCode) {
         return cachedCode;
     } else {
-        let value = yield db.oneOrNone(
-            `SELECT "${lookup.idColumn}" FROM ${lookup.tableName} WHERE "${lookup.codeColumn}" = $1 LIMIT 1`,
+        let value = yield this.pgp.oneOrNone(
+            `SELECT "${idColumn}" FROM "${this.schema}"."${this.tableName}" WHERE "${codeColumn}" = $1 LIMIT 1`,
             [code]
         );
 
         if (value) {
-            codeToId[code.toString().toLowerCase()] = value[lookup.idColumn];
-            return value[lookup.idColumn];
+            let id = value[idColumn];
+
+            cache.codeToId[codeKey] = id;
+            cache.idToCode[id] = code;
+
+            return id;
         } else {
             return null;
         }
     }
-}
+};
 
-function* codeToDisplayName(entity, code, schema) {
-    if (!entities[entity].codeToDisplayName) {
-        yield populateLookupTable.call(null, entities.arguments);
-    }
-}
+module.exports = function* (next) {
+    // TODO: When lookup references this.app does it leak memory by keeping a reference to this (request context)?
 
-function* idToDisplayName(entity, id, schema) {
-    if (!entities[entity].idToDisplayName) {
-        yield populateLookupTable.call(null, entities.arguments);
-    }
-}
-
-function *initialize(next) {
+    // Initialize global/shared lookup tables
     if (!initialized) {
-        db = this.pgp;
         initialized = true;
 
-        var nc = nats.connect(natsCfg);
+        for (var entity in shared) {
+            if (!(shared[entity] instanceof LookupTable) && shared[entity].entity) {
+                shared[entity] = new LookupTable(
+                    Object.assign({ pgp: this.app.context.pgp.shared }, shared[entity])
+                );
 
-        nc.subscribe('cache.*.public.*.*', function (msg, reply, subject) {
-            var tokens = subject.split('.'),
-                action = tokens[1],
-                pk = tokens.pop(),
-                table = tokens.pop();
-
-            cacheBuster({
-                type: 'cache',
-                action: action,
-                entity: table,
-                pk: pk
-            });
-        });
-
-        nc.subscribe('cache.*.*.course_sections.*', function (msg, reply, subject) {
-            var tokens = subject.split('.'),
-                action = tokens[1],
-                pk = tokens.pop(),
-                table = tokens.pop(),
-                schema = tokens.pop();
-
-            cacheBuster({
-                type: 'cache',
-                action: action,
-                entity: table,
-                pk: pk,
-                schema: schema
-            });
-        });
-
-        console.log('Initializing lookup tables...');
-
-        for (var entity in entities) {
-            if (entities[entity].arguments) {
-                console.log(`Populating ${entity} lookup table...`);
-                yield populateLookupTable.apply(null, entities[entity].arguments);
+                yield shared[entity].populate();
             }
         }
 
-        let idToAsnIds = yield db.one(`
-            WITH asn_ids AS (
-              SELECT asn_id,
-                     ARRAY[asn_id] AS children_ids
-                FROM public.standards
-               WHERE leaf = true
-              UNION
-              SELECT asn_id,
-                     children_ids
-                FROM public.standards
-               WHERE leaf = false
-            )
+        let result = yield this.app.context.pgp.shared.one(`
+            SELECT json_build_object(
+                'idToName',
+                (SELECT json_object_agg(id, name) FROM vendors),
 
-            SELECT json_object_agg("asn_id", "children_ids") AS json FROM asn_ids;
+                'nameToId',
+                (SELECT json_object_agg(lower(name), id) FROM vendors),
+
+                'asnIdToVendorIdentifier',
+                (SELECT json_object_agg(id,
+                    (SELECT json_object_agg(asn_id, vendor_identifier)
+                       FROM vendor_standards_crosswalk
+                      WHERE asn_id IS NOT NULL
+                        AND vendor_id = vendors.id
+                    )
+                ) FROM vendors),
+
+                'asnIdToVendorCode',
+                (SELECT json_object_agg(id,
+                    (SELECT json_object_agg(asn_id, lower(vendor_code))
+                       FROM vendor_standards_crosswalk
+                      WHERE asn_id IS NOT NULL
+                        AND vendor_id = vendors.id
+                    )
+                ) FROM vendors)
+            ) AS json;
         `);
 
-        entities.standard.idToAsnIds = idToAsnIds.json;
+        shared.vendor = result.json;
     }
 
-    if (!entities[this.schema].initialized) {
-        db = this.pgp;
-        entities[this.schema].initialized = true;
+    if (!(schema[this.schema] instanceof LookupTable)) {
+        schema[this.schema] || (schema[this.schema] = {});
 
-        for (var x = 0, len = slateCfg.instances.length; x < len; x++) {
-            let key = slateCfg.instances[x].key;
+        for (let entity in perSchool) {
+            schema[this.schema][entity] = new LookupTable(
+                Object.assign(
+                    { pgp: this.app.context.pgp[this.schema] },
+                    perSchool[entity],
+                    { schema: this.schema }
+                )
+            );
 
-            if (key === this.schema) {
-                console.log(`Populating ${key} sections lookup table...`);
-                entities[key].section = {};
-                yield populateLookupTable.apply(null, [entities[key].section, `"${key}".course_sections`, 'ID', 'Code']);
-            }
+            yield schema[this.schema][entity].populate();
         }
     }
+
+    this.lookup = Object.assign(shared, schema[this.schema]);
+
+    this.app.context.lookup || (this.app.context.lookup = {
+        shared: shared,
+        schema: schema
+    });
 
     yield next;
-}
-
-function cacheBuster(msg) {
-    if (msg.entity === 'standards') {
-        if (entities.standard.timeout) {
-            console.log('Waiting until changes stop coming in for 1s to bust standard lookup table...');
-            clearTimeout(entities.standard.timeout);
-        }
-
-        entities.standard.timeout = setTimeout(function() {
-            console.log('Busting standard lookup table...');
-
-            bustSuggestionCache();
-
-            co(function*() {
-                yield populateLookupTable.apply(null, entities.standard.arguments);
-                entities.standard.timeout = null;
-            });
-
-        }, 1000);
-    } else if (msg.entity === 'sparkpoints') {
-        if (entities.sparkpoint.timeout) {
-            console.log('Waiting until changes stop coming in for 1s to bust sparkpoint lookup table...');
-            clearTimeout(entities.sparkpoint.timeout);
-        }
-
-        entities.sparkpoint.timeout = setTimeout(function() {
-            console.log('Busting sparkpoint lookup table...');
-
-            bustSuggestionCache();
-
-            co(function*() {
-                yield populateLookupTable.apply(null, entities.sparkpoint.arguments);
-                entities.sparkpoint.timeout = null;
-            });
-        }, 1000);
-    } else if (msg.entity === 'course_sections') {
-        if (entities.sparkpoint.timeout) {
-            console.log('Waiting until changes stop coming in for 1s to bust course_sections lookup table...');
-            clearTimeout(entities.sparkpoint.timeout);
-        }
-
-        entities[msg.schema].section.timeout = setTimeout(function() {
-            console.log(`Busting ${msg.schema} course_sections lookup table...`);
-
-            co(function*() {
-                yield db.none(`REFRESH MATERIALIZED VIEW "${msg.schema}".course_sections`);
-
-                yield populateLookupTable.apply(null, [
-                    entities[msg.schema].section,
-                    `"${msg.schema}".course_sections`,
-                    'ID',
-                    'Code'
-                ]);
-                entities[msg.schema].section.timeout = null;
-            });
-        }, 1000);
-    }
-}
-
-module.exports = {
-    initialize: initialize,
-    populateLookupTable: populateLookupTable,
-    entities: entities,
-    idToCode: idToCode,
-    codeToId: codeToId,
-    idToDisplayName: idToDisplayName,
-    codeToDisplayName: codeToDisplayName
 };
