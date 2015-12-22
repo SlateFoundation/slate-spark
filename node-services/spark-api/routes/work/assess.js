@@ -1,8 +1,7 @@
 'use strict';
 
-var AsnStandard = require('../../lib/asn-standard'),
-    lookup = require('../../lib/lookup'),
-    fusebox = require('../../lib/fusebox');
+var fusebox = require('../../lib/fusebox'),
+    AsnStandard;
 
 function *getHandler() {
     this.require(['sparkpoint_id', 'student_id']);
@@ -11,6 +10,9 @@ function *getHandler() {
         standardIds = [],
         assessments,
         reflection;
+
+    // TODO: There should be a better way to share the app context between modules
+    AsnStandard || (AsnStandard = require('../../lib/asn-standard')(this.app));
 
     (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);

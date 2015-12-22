@@ -1,10 +1,4 @@
-var AsnStandard = require('../../lib/asn-standard'),
-    lookup = require('../../lib/lookup'),
-    db = require('../../middleware/database'),
-    JsonApiError = require('../../lib/error').JsonApiError,
-    Promise = require('bluebird'),
-    util = require('../../lib/util'),
-    fusebox = require('../../lib/fusebox');
+var AsnStandard;
 
 function *assessmentsHandler() {
     this.require(['sparkpoint_id']);
@@ -12,6 +6,9 @@ function *assessmentsHandler() {
     var sparkpointId = this.query.sparkpoint_id,
         standardIds = [],
         assessments;
+
+    // TODO: There should be a better way to share the app context between modules
+    AsnStandard || (AsnStandard = require('../../lib/asn-standard')(this.app));
 
     (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
