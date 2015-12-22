@@ -207,6 +207,8 @@ function* suggestedGetHandler() {
 }
 
 function bustSuggestionCache() {
+    console.log('Busting spark point suggestion cache...');
+
     for (var prop in suggestionCache) {
         delete suggestionCache[prop];
     }
