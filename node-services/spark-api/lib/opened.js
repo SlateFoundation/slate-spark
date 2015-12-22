@@ -383,7 +383,7 @@ function* getResources(params) {
     ) {
         console.error('OPENED: HTTP ' + resources.statusCode + ' is not what we expected: ');
         console.log(clientOptions);
-        console.error(resources);
+        console.error(resources.body);
         return resources;
     }
 
