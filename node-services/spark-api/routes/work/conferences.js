@@ -14,7 +14,7 @@ function* getHandler() {
         result,
         questions;
 
-    (lookup.entities.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
+    (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
@@ -73,7 +73,8 @@ function* questionPostHandler() {
             question
         ]);
 
-    record.sparkpoint = lookup.entities.sparkpoint.idToCode[record.sparkpoint_id];
+    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(record.sparkpoint_id);
+
     this.body = record;
 }
 
@@ -125,7 +126,7 @@ function* worksheetPatchHandler(req, res, next) {
 
     record = record.worksheet;
     record.student_id = studentId;
-    record.sparkpoint = lookup.entities.sparkpoint.idToCode[sparkpointId];
+    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(sparkpointId);
 
     this.body = record;
 }
