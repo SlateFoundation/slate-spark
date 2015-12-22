@@ -71,7 +71,7 @@ function* questionPostHandler() {
             question
         ]);
 
-    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(record.sparkpoint_id);
+    record.sparkpoint = this.lookup.sparkpoint.cache.idToCode[record.sparkpoint_id];
 
     this.body = record;
 }
@@ -124,7 +124,7 @@ function* worksheetPatchHandler(req, res, next) {
 
     record = record.worksheet;
     record.student_id = studentId;
-    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(sparkpointId);
+    record.sparkpoint = this.lookup.sparkpoint.cache.idToCode[sparkpointId];
 
     this.body = record;
 }
