@@ -1,79 +1,84 @@
-var util = require('./util'),
-    lookup = require('./lookup');
+module.exports = function (app) {
+    var util = require('./util'),
+        lookup = app.context.lookup;
 
-function AsnStandard(standard) {
-    var self = this,
-        asnIds,
-        vendorName,
-        vendorId;
+    function AsnStandard(standard) {
+        var self = this,
+            asnIds,
+            vendorName,
+            vendorId,
+            standardId;
 
-    this.sparkpoints = [];
-    this.codes = [];
-    this.vendorCodes = {};
-    this.vendorIdentifiers = {};
+        this.sparkpoints = [];
+        this.codes = [];
+        this.vendorCodes = {};
+        this.vendorIdentifiers = {};
 
-    if (util.isAsnId(standard)) {
-        asnIds = lookup.entities.standard.idToAsnIds[standard];
-    } else {
-        asnIds = lookup.entities.idToAsnIds[lookup.entities.standard.codeToId[standard.toString().toLowerCase()]];
+        standardId = util.isAsnId(standard) ? standard : lookup.shared.standard.cache.codeToId[standard];
+
+        if (standardId) {
+            asnIds = lookup.shared.standard.idToAsnIds[standard];
+        } else {
+            throw new Error(`Invalid standard passed to AsnStandard constructor: ${standard}`);
+        }
+
+        if (Array.isArray(asnIds)) {
+            this.asnIds = asnIds;
+
+            asnIds.forEach(function (asnId) {
+                var sparkPointId = lookup.shared.standard.idToSparkpointId[asnId],
+                    code = lookup.shared.standard.idToCode[asnId];
+
+                if (sparkPointId) {
+                    self.sparkpoints.push(sparkPointId);
+                }
+
+                if (code) {
+                    self.codes.push(code);
+                }
+            });
+        }
+
+        for (vendorName in lookup.shared.vendor.nameToId) {
+            vendorId = lookup.shared.vendor.nameToId[vendorName];
+            vendorName = lookup.shared.vendor.idToName[vendorId];
+            this.vendorCodes[vendorName] = this.toVendorCodes(vendorId);
+            this.vendorIdentifiers[vendorName] = this.toVendorIdentifiers(vendorId);
+        }
+
+        this.sparkpoint = this.sparkpoints[0];
+        this.code = this.codes[0];
     }
 
-    if (Array.isArray(asnIds)) {
-        this.asnIds = asnIds;
+    AsnStandard.prototype.toVendorCodes = function toVendorCodes(vendor) {
+        var vendorId = (typeof vendor === 'string') ? lookup.shared.vendor.nameToId[vendor] : vendor,
+            vendorCodes = [];
 
-        asnIds.forEach(function (asnId) {
-            var sparkPointId = lookup.entities.standard.idToSparkpointId[asnId],
-                code = lookup.entities.standard.idToCode[asnId];
+        this.asnIds.forEach(function (asnId) {
+            var vendorCode = lookup.shared.vendor.asnIdToVendorCode[vendorId][asnId];
 
-            if (sparkPointId) {
-                self.sparkpoints.push(sparkPointId);
-            }
-
-            if (code) {
-                self.codes.push(code);
+            if (vendorCode) {
+                vendorCodes.push(vendorCode);
             }
         });
-    }
 
-    for (vendorName in lookup.entities.vendor.nameToId) {
-        vendorId = lookup.entities.vendor.nameToId[vendorName];
-        vendorName = lookup.entities.vendor.idToName[vendorId];
-        this.vendorCodes[vendorName] = this.toVendorCodes(vendorId);
-        this.vendorIdentifiers[vendorName] = this.toVendorIdentifiers(vendorId);
-    }
+        return vendorCodes;
+    };
 
-    this.sparkpoint = this.sparkpoints[0];
-    this.code = this.codes[0];
-}
+    AsnStandard.prototype.toVendorIdentifiers = function toVendorIdentifiers(vendor) {
+        var vendorId = (typeof vendor === 'string') ? lookup.shared.vendor.nameToId[vendor] : vendor,
+            vendorIdentifiers = [];
 
-AsnStandard.prototype.toVendorCodes = function toVendorCodes(vendor) {
-    var vendorId = (typeof vendor === 'string') ? lookup.vendor.nameToId[vendor] : vendor,
-        vendorCodes = [];
+        this.asnIds.forEach(function (asnId) {
+            var vendorIdentifier = lookup.shared.vendor.asnIdToVendorIdentifier[vendorId][asnId];
 
-    this.asnIds.forEach(function (asnId) {
-        var vendorCode = lookup.entities.vendor.asnIdToVendorCode[vendorId][asnId];
+            if (vendorIdentifier) {
+                vendorIdentifiers.push(vendorIdentifier);
+            }
+        });
 
-        if (vendorCode) {
-            vendorCodes.push(vendorCode);
-        }
-    });
+        return vendorIdentifiers;
+    };
 
-    return vendorCodes;
+    return AsnStandard;
 };
-
-AsnStandard.prototype.toVendorIdentifiers = function toVendorIdentifiers(vendor) {
-    var vendorId = (typeof vendor === 'string') ? lookup.entities.vendor.nameToId[vendor] : vendor,
-        vendorIdentifiers = [];
-
-    this.asnIds.forEach(function (asnId) {
-        var vendorIdentifier = lookup.entities.vendor.asnIdToVendorIdentifier[vendorId][asnId];
-
-        if (vendorIdentifier) {
-            vendorIdentifiers.push(vendorIdentifier);
-        }
-    });
-
-    return vendorIdentifiers;
-};
-
-module.exports = AsnStandard;
