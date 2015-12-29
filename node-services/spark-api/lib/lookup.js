@@ -190,11 +190,11 @@ LookupTable.prototype.populate = function* populate (pgp) {
 
     results.forEach(function(result) {
         var id = result[idColumn],
-            code = result[codeColumn];
+            code = '' + result[codeColumn];
 
         if (id && code) {
             cache.idToCode[id] = code;
-            cache.codeToId[code.toString().toLowerCase()] = id;
+            cache.codeToId[code.toLowerCase()] = id;
         }
     });
 
@@ -228,10 +228,10 @@ LookupTable.prototype.idToCode = function* idToCode(id) {
         );
 
         if (value) {
-            let code = value[codeColumn];
+            let code = '' + value[codeColumn];
 
             cache.idToCode[id] = code;
-            cache.codeToId[code.toString().toLowerCase()] = id;
+            cache.codeToId[code.toLowerCase()] = id;
 
             return code;
         } else {
@@ -242,7 +242,7 @@ LookupTable.prototype.idToCode = function* idToCode(id) {
 
 LookupTable.prototype.codeToId = function* codeToId(code) {
     var {codeColumn, idColumn, cache} = this,
-        codeKey = code.toString().toLowerCase(),
+        codeKey = ('' + code).toLowerCase(),
         cachedCode;
 
     if (cache.codeToId) {

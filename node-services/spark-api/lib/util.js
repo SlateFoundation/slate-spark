@@ -1,7 +1,5 @@
 'use strict';
 
-var lookup = require('./lookup');
-
 /** @module util */
 
 /**
@@ -370,6 +368,114 @@ function isAsnStyleId(code) {
     return (/^[SM][\dA-F]{7}$/).test('' + code);
 }
 
+function toSparkpointId(sparkpoint) {
+    var lookup = global.app.context.lookup;
+
+    sparkpoint = '' + sparkpoint;
+
+    if (isAsnId(sparkpoint)) {
+        return lookup.shared.standard.idToSparkpointId[sparkpoint];
+    }
+
+    return isMatchbookId(sparkpoint) ? sparkpoint : lookup.codeToId('sparkpoint', sparkpoint);
+}
+
+function toSparkpointCode(sparkpoint) {
+    var lookup = global.app.context.lookup;
+
+    sparkpoint = '' + sparkpoint;
+
+    if (isMatchbookId(sparkpoint)) {
+        return lookup.shared.sparkpoint.idToCode[sparkpoint.toLowerCase()];
+    }
+
+    if (isAsnId(sparkpoint)) {
+        return lookup.shared.sparkpoint.idToCode[lookup.shared.standard.idToSparkpointId[sparkpoint].toLowerCase()];
+    }
+
+    return lookup.shared.sparkpoint.idToCode[lookup.shared.sparkpoint.codeToId[sparkpoint.toLowerCase()]];
+}
+
+function toSparkpointIds(str) {
+    var returnVal = [];
+
+    ('' + str).split(',').forEach(function (sparkpoint) {
+        sparkpoint = toSparkpointId(sparkpoint);
+
+        if (sparkpoint) {
+            returnVal.push(sparkpoint);
+        }
+    });
+
+    return returnVal;
+}
+
+function toSparkpointCodes(str) {
+    var returnVal = [];
+
+    ('' + str).split(',').forEach(function (sparkpoint) {
+        sparkpoint = toSparkpointCode(sparkpoint);
+
+        if (sparkpoint) {
+            returnVal.push(sparkpoint);
+        }
+    });
+
+    return returnVal;
+}
+
+function toAsnId(asnId) {
+    var lookup = global.app.context.lookup;
+
+    asnId = '' + asnId;
+
+    if (isAsnId(asnId)) {
+        return asnId;
+    }
+
+    return lookup.shared.standard.codeToId[asnId];
+}
+
+function toStandardCode(standardCode) {
+    var lookup = global.app.context.lookup;
+    
+    standardCode = '' + standardCode;
+
+    if (isAsnId(standardCode)) {
+        return lookup.shared.standard.idToCode[standardCode.toLowerCase()];
+    }
+
+    return lookup.shared.standard.idToCode[lookup.shared.standard.codeToId[standardCode.toLowerCase()]];
+}
+
+function toAsnIds(str) {
+    var returnVal = [];
+
+    ('' + str).split(',').forEach(function (standard) {
+        standard = toAsnId(standard);
+
+        if (standard) {
+            returnVal.push(standard);
+        }
+    });
+
+    return returnVal;
+}
+
+function toStandardCodes(str) {
+    var returnVal = [];
+
+    ('' + str).split(',').forEach(function (standard) {
+        standard = toStandardCode(standard);
+
+        if (standard) {
+            returnVal.push(standard);
+        }
+    });
+
+    return returnVal;
+}
+
 function requireParams(params, req, res) {
 
     var missing = params.filter(function (param) {
@@ -559,6 +665,16 @@ module.exports = {
 
     arrayToGradeRange: arrayToGradeRange,
     gradeRangeToArray: gradeRangeToArray,
+
+    toSparkpointIds: toSparkpointIds,
+    toSparkpointCodes: toSparkpointCodes,
+    toSparkpointId: toSparkpointId,
+    toSparkpointCode: toSparkpointCode,
+
+    toAsnIds: toAsnIds,
+    toStandardCodes: toStandardCodes,
+    toAsnId: toAsnId,
+    toStandardCode: toStandardCode,
 
     requireParams: requireParams,
     generateSet: generateSet,

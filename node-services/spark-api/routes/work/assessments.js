@@ -1,4 +1,4 @@
-var AsnStandard;
+var AsnStandard = require('../../lib/asn-standard');
 
 function *assessmentsHandler() {
     this.require(['sparkpoint_id']);
@@ -6,9 +6,6 @@ function *assessmentsHandler() {
     var sparkpointId = this.query.sparkpoint_id,
         standardIds = [],
         assessments;
-
-    // TODO: There should be a better way to share the app context between modules
-    AsnStandard || (AsnStandard = require('../../lib/asn-standard')(this.app));
 
     (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);

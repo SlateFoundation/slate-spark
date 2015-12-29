@@ -1,4 +1,4 @@
-var AsnStandard;
+var AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id']);
@@ -8,9 +8,6 @@ function* getHandler() {
         userId = this.studentId,
         result,
         questions;
-
-    // TODO: There should be a better way to share the app context between modules
-    AsnStandard || (AsnStandard = require('../../lib/asn-standard')(this.app));
 
     (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
@@ -71,7 +68,7 @@ function* questionPostHandler() {
             question
         ]);
 
-    record.sparkpoint = this.lookup.sparkpoint.cache.idToCode[record.sparkpoint_id];
+    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(record.sparkpoint_id);
 
     this.body = record;
 }
@@ -124,7 +121,7 @@ function* worksheetPatchHandler(req, res, next) {
 
     record = record.worksheet;
     record.student_id = studentId;
-    record.sparkpoint = this.lookup.sparkpoint.cache.idToCode[sparkpointId];
+    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(sparkpointId);
 
     this.body = record;
 }

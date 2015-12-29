@@ -11,7 +11,7 @@ var fs = require('fs'),
     db = require('../../middleware/database'),
     slack = require('../../lib/slack'),
     QueryBuilder = util.QueryBuilder,
-    AsnStandard;
+    AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id', 'section_id']);
@@ -23,9 +23,6 @@ function* getHandler() {
         openedIds = [],
         ctx = this,
         playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews;
-
-    // TODO: There should be a better way to share the app context between modules
-    AsnStandard || (AsnStandard = require('../../lib/asn-standard')(this.app));
 
     (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
