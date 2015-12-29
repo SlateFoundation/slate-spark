@@ -10,7 +10,7 @@ if (PRODUCTION) {
 }
 
 var koa = require('koa'),
-    app = module.exports = koa(),
+    app = global.app = module.exports = koa(),
     config = require('./config/index'),
     middleware = require('./middleware/index'),
     jsonBody = require('koa-json-body'),
@@ -19,7 +19,8 @@ var koa = require('koa'),
     error = require('koa-error'),
     json = require('koa-json'),
     cluster = require('cluster'),
-    lookup = require('./lib/lookup');
+    lookup = require('./lib/lookup'),
+    requestToCurl = require('koa-request-to-curl');
 
 if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
@@ -27,6 +28,7 @@ if (PRODUCTION) {
 
 app.context.config = config;
 app.use(middleware.response_time);
+app.use(requestToCurl());
 app.use(error({ template: __dirname + '/config/error.html' }));
 app.use(middleware.process);
 app.use(middleware.logger);
