@@ -82,19 +82,19 @@ nats.subscribe(config.schema + '.>', function (msg) {
         data, userId;
 
     if (!msg) {
-        stats.nats.dropped.increment();
+        stats.aggregates.nats.dropped.increment();
         return;
     }
 
     msg = JSON.parse(msg);
 
     if (!msg.item || config.ignore.indexOf(msg.table) !== -1) {
-        stats.nats.ignored.increment();
+        stats.aggregates.nats.ignored.increment();
         return;
     }
 
     if (config.broadcast) {
-        stats.outgoing.broadcast.increment();
+        stats.aggregates.outgoing.broadcast.increment();
         return io.emit('db', msg);
     }
 
@@ -106,10 +106,10 @@ nats.subscribe(config.schema + '.>', function (msg) {
     }
 
     if (userId) {
-        stats.outgoing.identified.increment();
+        stats.aggregates.outgoing.identified.increment();
         io.to('user:' + userId).emit('db', msg);
     } else {
-        stats.outgoing.unidentified.increment();
+        stats.aggregates.outgoing.unidentified.increment();
         console.log('Unable to associate database event with user: ' + msg);
     }
 });
