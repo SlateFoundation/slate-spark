@@ -1,231 +1,100 @@
+'use strict';
+
 var config = JSON.parse(process.env.SPARK_REALTIME),
+    middleware = require('./middleware/index'),
+    http = require('http'),
     nats = require('nats').connect(config.nats),
-    server = require('http').createServer(requestHandler),
-    io = require('socket.io')(server),
-    stats = {
-        connections: {
-            peak: 0,
-            current: 0,
-            last_connection_at: null
-        },
+    server = global.httpServer = http.createServer(),
+    io;
 
-        subscriptions: {
-            peak: 0,
-            current: 0,
-            last_subscription_at: null
-        },
+function initMiddleware() {
+    config.middleware = config.middleware || {};
 
-        incoming: {
-            total: 0,
-            last_message_at: null
-        },
-
-        outgoing: {
-            broadcast: 0,
-            total: 0,
-            identified: 0,
-            unidentified: 0,
-            last_message_at: null
-        },
-
-        nats: {
-            total_messages: 0,
-            dropped_mesages: 0,
-            ignored_messages: 0,
-            last_message_at: null
-        },
-
-        users: {
-            online: 0,
-            offline: 0
-        }
-    },
-    sections = {},
-    userConnectionCount = {},
-    userLastSeen = {};
-
-function getOnlineUsers() {
-    var online = [];
-
-    for (var user in userConnectionCount) {
-        if (userConnectionCount[user] > 0) {
-            online.push(user);
-        }
+    // We must initialize the middleware prior to initializing socket.io in order to attach any http request handlers
+    for (var name in middleware) {
+        middleware[name] = middleware[name](config.middleware[name] || {});
     }
 
-    return online;
+    io = global.io = require('socket.io')(server);
+
+    (config.middleware.load_order || Object.keys(middleware)).forEach(function(name) {
+        io.use(middleware[name]);
+    });
 }
 
-function getOfflineUsers() {
-    var offline = [];
-
-    for (var user in userConnectionCount) {
-        if (userConnectionCount[user] <= 0) {
-            offline.push(user);
-        }
-    }
-
-    return offline;
-}
-
-function requestHandler(req, res) {
-    var healthcheck;
-
-    switch (req.url) {
-        case '/healthcheck':
-            stats.connections.current = io.sockets.sockets.length;
-            stats.memory_usage = process.memoryUsage();
-            stats.outgoing.total = (stats.outgoing.identified + stats.outgoing.broadcast);
-            stats.users.online = getOnlineUsers().length;
-            stats.users.offline = getOfflineUsers().length;
-            res.end(JSON.stringify(stats, null, '\t'));
-            break;
-
-        case '/sections':
-            res.end(JSON.stringify(sections, null, '\t'));
-            break;
-
-        case '/users/connection_count':
-            res.end(JSON.stringify(userConnectionCount, null, '\t'));
-            break;
-
-        case '/users/last_seen':
-            res.end(JSON.stringify(userLastSeen, null, '\t'));
-            break;
-
-        case '/users/online':
-            res.end(JSON.stringify(getOnlineUsers(), null, '\t'));
-            break;
-
-        case '/users/offline':
-            res.end(JSON.stringify(getOfflineUsers(), null, '\t'));
-            break;
-
-        case '/users':
-            var users = {},
-                connectionCount;
-
-            for (var user in userConnectionCount) {
-                connectionCount = userConnectionCount[user];
-
-                users[user] = {
-                    status: connectionCount  <= 0 ? 'offline' : 'online',
-                    last_seen: userLastSeen[user],
-                    connections: connectionCount
-                };
-            }
-
-            res.end(JSON.stringify(users, null, '\t'));
-
-            break;
-        default:
-            res.httpStatus = 404;
-            res.end('File not found');
-    }
-}
-
-io.use(function (socket, next) {
-    var session = socket.request.headers['x-nginx-session'],
-        connectionCount = io.sockets.sockets.length;
-
-    stats.connections.last_connection_at = new Date();
-
-    if (connectionCount > stats.connections.peak) {
-        stats.connections.peak = connectionCount;
-    }
-
-    if (session) {
-        session = JSON.parse(session);
-
-        socket.session = session;
-        socket.section = null;
-        socket.student = session.accountLevel === 'Student';
-
-        userConnectionCount[socket.session.username] || (userConnectionCount[socket.session.username] = 0);
-        userConnectionCount[socket.session.username]++;
-        userLastSeen[socket.session.username] = new Date();
-
-        socket.on('subscribe', function subscribe(data) {
-            console.log(socket.session.username + ' subscribed to ' + data.section);
-
-            stats.subscriptions.last_subscription_at = new Date();
-            stats.incoming.last_message_at = new Date();
-            stats.incoming.total++;
-
-            if (++stats.subscriptions.current > stats.subscriptions.peak) {
-                stats.subscriptions.peak = stats.subscriptions.current;
-            }
-
-            socket.join('section:' + data.section);
-            socket.section = data.section;
-            sections[data.section] = sections[data.section] || {teachers: [], students: []};
-
-            if (socket.student) {
-                if (sections[data.section].students.indexOf(socket.session.userId) === -1) {
-                    sections[data.section].students.push(socket.session.userId);
-                }
-            } else if (sections[data.section].teachers.indexOf(socket.session.userId) === -1) {
-                sections[data.section].teachers.push(socket.session.userId);
-            }
-        });
-
-        socket.on('unsubscribe', function unsubscribe(data) {
-            var idx;
-
-            stats.subscriptions.current--;
-            stats.incoming.total++;
-
-            console.log(socket.session.username + ' unsubscribed from ' + data.section);
-            socket.leave('section:' + data.section);
-            socket.section = null;
-            sections[data.section] = sections[data.section] || {teachers: [], students: []};
-
-            if (socket.student) {
-                idx = sections[data.section].students.indexOf(socket.session.userId);
-                sections[data.section].students = sections[data.section].students.slice(idx, 1);
-            } else {
-                idx = sections[data.section].teachers.indexOf(socket.session.userId);
-                sections[data.section].teachers = sections[data.section].teachers.slice(idx, 1);
-            }
-        });
-
-        function disconnectHandler (socket) {
-            userConnectionCount[session.username]--;
-            userLastSeen[session.username] = new Date();
-        }
-
-        socket.on('disconnect', disconnectHandler);
-        socket.on('error', disconnectHandler);
-
-        return next();
-    }
-
-    next(new Error('Authentication error'));
-});
+initMiddleware();
 
 server.listen(config.port);
 
-nats.subscribe(config.schema + '.>', function (msg) {
-    var data, userId;
+io.use(function (socket, next) {
+    var stats = global.stats,
+        sections = stats.sections;
 
-    stats.nats.total_messages++;
-    stats.nats.last_message_at = new Date();
+    socket.on('subscribe', function subscribe(data) {
+        console.log(socket.session.username + ' subscribed to ' + data.section);
+
+        stats.aggregates.subscriptions.increment();
+        stats.aggregates.incoming.increment();
+
+        socket.stats.subscriptions.increment();
+
+        socket.join('section:' + data.section);
+        socket.section = data.section;
+
+        sections[data.section] || (sections[data.section] || { teachers: [], students: [] });
+
+        if (socket.student) {
+            if (sections[data.section].students.indexOf(socket.session.userId) === -1) {
+                sections[data.section].students.push(socket.session.userId);
+            }
+        } else if (sections[data.section].teachers.indexOf(socket.session.userId) === -1) {
+            sections[data.section].teachers.push(socket.session.userId);
+        }
+    });
+
+    socket.on('unsubscribe', function unsubscribe(data) {
+        var sections = global.stats.sections,
+            idx;
+
+        console.log(socket.session.username + ' unsubscribed from ' + data.section);
+
+        stats.aggregates.subscriptions.decrement();
+        stats.aggregates.incoming.increment();
+
+        socket.leave('section:' + data.section);
+        socket.section = null;
+        sections[data.section] || (sections[data.section] || { teachers: [], students: [] });
+
+        if (socket.isStudent) {
+            idx = sections[data.section].students.indexOf(socket.session.userId);
+            sections[data.section].students = sections[data.section].students.slice(idx, 1);
+        } else {
+            idx = sections[data.section].teachers.indexOf(socket.session.userId);
+            sections[data.section].teachers = sections[data.section].teachers.slice(idx, 1);
+        }
+    });
+
+    return next();
+});
+
+nats.subscribe(config.schema + '.>', function (msg) {
+    var stats = global.stats,
+        data, userId;
 
     if (!msg) {
-        stats.nats.dropped_mesages++;
+        stats.nats.dropped.increment();
         return;
     }
 
     msg = JSON.parse(msg);
 
     if (!msg.item || config.ignore.indexOf(msg.table) !== -1) {
-        stats.nats.ignored_messages++;
+        stats.nats.ignored.increment();
         return;
     }
 
     if (config.broadcast) {
-        stats.outgoing.last_message_at = new Date();
-        stats.outgoing.broadcast++;
+        stats.outgoing.broadcast.increment();
         return io.emit('db', msg);
     }
 
@@ -237,11 +106,10 @@ nats.subscribe(config.schema + '.>', function (msg) {
     }
 
     if (userId) {
-        stats.outgoing.identified++;
-        stats.outgoing.last_message_at = new Date();
+        stats.outgoing.identified.increment();
         io.to('user:' + userId).emit('db', msg);
     } else {
-        stats.outgoing.unidentified++;
+        stats.outgoing.unidentified.increment();
         console.log('Unable to associate database event with user: ' + msg);
     }
 });
@@ -264,7 +132,7 @@ process.on('uncaughtException', function (err) {
 
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log('Notification successfully send to Slack.');
+                console.log('Notification successfully sent to Slack.');
             }
             process.exit(1);
         });
