@@ -33,13 +33,14 @@ function ioSession(options) {
 
             try {
                 session = JSON.parse(session);
+                console.log(session);
             } catch (e) {
                 return next(e);
             }
 
             // Verify that all required keys are present
             if (requiredKeys) {
-                let missingKeys = requiredKeys.filter(key => session[key] !== undefined);
+                let missingKeys = requiredKeys.filter(key => session[key] === undefined);
 
                 if (missingKeys.length > 0) {
                     return next(new Error(`Session is missing required key(s): ${missingKeys.join(', ')}`));
