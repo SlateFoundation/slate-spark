@@ -140,6 +140,8 @@ function ioStats(options) {
             connections: new SimpleMetric('connections')
         });
 
+        socket.stats = users[socket.session.userId];
+
         aggregates.connections.set(global.io.sockets.sockets.length);
 
         if (socket.stats.connections.current === 0) {
