@@ -132,11 +132,11 @@ function ioStats(options) {
     };
 
     return function statsCollector(socket, next) {
-        if (!this.session.userId) {
+        if (!socket.session.userId) {
             return next();
         }
 
-        users[this.session.userId] || (users[this.session.userId] = {
+        users[socket.session.userId] || (users[socket.session.userId] = {
             connections: new SimpleMetric('connections')
         });
 
