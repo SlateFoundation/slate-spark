@@ -1,4 +1,5 @@
-var AsnStandard = require('../../lib/asn-standard');
+var AsnStandard = require('../../lib/asn-standard'),
+    Promise = require('bluebird');
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id']);
