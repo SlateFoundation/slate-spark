@@ -21,4 +21,4 @@ The first time you build the app, it will download the correct version of the fr
 
 ## Connecting to a server
 You can connect SparkClassroomTeacher to any remote data instance that has CORS enabled by appending the query
-parameter `apiHost` when loading the page.
+parameter `apiHost` when loading the page. To use HTTPS when connecting to `apiHost`, set `apiSSL=1` as well.
