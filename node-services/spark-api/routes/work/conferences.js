@@ -26,7 +26,7 @@ function* getHandler() {
                  question,
                  gradelevel AS "gradeLevel"
             FROM fusebox_guiding_questions
-           WHERE standardids?| $1
+           WHERE standardids ?| $1
         ),
 
         questions AS (
