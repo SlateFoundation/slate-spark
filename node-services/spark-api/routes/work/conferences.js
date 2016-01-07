@@ -1,5 +1,6 @@
-var AsnStandard = require('../../lib/asn-standard'),
-    Promise = require('bluebird');
+'use strict';
+
+var AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
     this.require(['sparkpoint_id', 'student_id']);
@@ -18,34 +19,64 @@ function* getHandler() {
         return this.throw('No academic standards are associated with spark point id: ' + sparkpointId, 404);
     }
 
-    result = yield Promise.props({
-        fuseboxQuestions: this.pgp.manyOrNone('SELECT * FROM fusebox_guiding_questions WHERE standardids?| $1', [standardIds]),
-        questions: this.pgp.manyOrNone('SELECT id, source, question FROM conference_questions WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId]),
-        resources: this.pgp.manyOrNone('SELECT * FROM fusebox_conference_resources WHERE standardids ?| $1', [standardIds]),
-        worksheet: this.pgp.oneOrNone('SELECT worksheet from conference_worksheets WHERE student_id = $1 AND sparkpoint_id = $2', [userId, sparkpointId])
-    });
+    result = yield this.pgp.one(`
+        WITH fusebox_questions AS (
+          SELECT id,
+                 'fusebox'::text AS source,
+                 question,
+                 gradelevel AS "gradeLevel"
+            FROM fusebox_guiding_questions
+           WHERE standardids?| $1
+        ),
 
-    questions = result.fuseboxQuestions.map(function(question) {
-        return {
-            id: question.id,
-            question: question.question,
-            gradeLevel: question.gradelevel,
-            source: 'fusebox'
-        };
-    }).concat(result.questions);
+        questions AS (
+            SELECT id,
+                   source::text,
+                   question,
+                   NULL as "gradeLevel"
+              FROM conference_questions
+             WHERE student_id = $2
+               AND sparkpoint_id = $3
 
-    this.body = {
-        questions: questions,
-        worksheet: result.worksheet ? result.worksheet.worksheet : null,
-        resources: result.resources.map(function(resource) {
-            return {
-                id: resource.id,
-                title: resource.title,
-                url: resource.url,
-                gradeLevel: resource.gradelevel,
-            };
-        })
-    };
+             UNION ALL
+
+             SELECT *
+               FROM fusebox_questions
+        ),
+
+        resources AS (
+          SELECT id,
+                 title,
+                 url,
+                 gradelevel AS "gradeLevel"
+            FROM fusebox_conference_resources
+           WHERE standardids ?| $1
+        )
+
+        SELECT json_build_object(
+            'questions',
+            (
+               SELECT json_agg(row_to_json(questions))
+                 FROM questions
+            ),
+
+            'resources',
+            (
+              SELECT json_agg(row_to_json(resources))
+                FROM resources
+            ),
+
+            'worksheet',
+            (
+                SELECT worksheet
+                  FROM conference_worksheets
+                 WHERE student_id = $2
+                   AND sparkpoint_id = $3
+           )
+        ) AS json;
+    `, [standardIds, userId, sparkpointId]);
+
+    this.body = result.json;
 }
 
 function* questionPostHandler() {
