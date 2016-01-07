@@ -33,7 +33,6 @@ function ioSession(options) {
 
             try {
                 session = JSON.parse(session);
-                console.log(session);
             } catch (e) {
                 return next(e);
             }
@@ -62,7 +61,11 @@ function ioSession(options) {
         socket.isStudent = socket.accountLevel === 'Student';
         socket.isTeacher = !socket.isStudent;
 
-        next();
+        console.log(session);
+
+        socket.join('user:' + session.userId);
+
+        return next();
     };
 }
 
