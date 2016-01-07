@@ -40,9 +40,7 @@ function ioStats(options) {
         if (this.current > this.max) {
             this.max = this.current;
             this.max_timestamp = now;
-        }
-
-        if (this.current < this.min || !this.min_timestamp) {
+        } else if (this.current < this.min || !this.min_timestamp) {
             this.min = this.current;
             this.min_timestamp = now;
         }
@@ -110,20 +108,35 @@ function ioStats(options) {
     users = {},
     sections = {};
 
-    // HTTP request handler
-    global.httpServer.on('request', function statsRequestHandler(req, res) {
-        switch (req.url) {
-            case '/stats':
-            case '/healthcheck':
-                aggregates.connections.set(io.sockets.sockets.length);
-                aggregates.memory_usage.set(process.memoryUsage());
-                res.end(JSON.stringify(aggregates, null, '\t'));
-                break;
-            default:
-                res.httpStatus = 404;
-                res.end('File not found');
+    function disconnectHandler () {
+        aggregates.connections.set(this.server.sockets.sockets.length);
+
+        this.stats.connections.decrement();
+        this.stats.last_seen = new Date();
+
+        if (this.stats.connections.current === 0) {
+            aggregates.users.online.decrement();
+            aggregates.users.offline.increment();
         }
-    });
+    }
+
+    if (options.httpServer) {
+        options.httpServer.on('request', function statsRequestHandler(req, res) {
+            switch (req.url) {
+                case '/stats':
+                case '/healthcheck':
+                    aggregates.connections.set(global.io.sockets.sockets.length);
+                    aggregates.memory_usage.set(process.memoryUsage());
+                    res.setHeader('Content-Type', 'application/json');
+                    let body = JSON.stringify(aggregates, null, '\t');
+                    res.end(body);
+                    break;
+                default:
+                    res.statusCode = 404;
+                    return res.end('File not found');
+            }
+        });
+    }
 
     global.stats = {
         aggregates: aggregates,
@@ -132,45 +145,41 @@ function ioStats(options) {
     };
 
     return function statsCollector(socket, next) {
-        if (!socket.session.userId) {
-            return next();
-        }
+        try {
+            var session = socket.session;
 
-        users[socket.session.userId] || (users[socket.session.userId] = {
-            connections: new SimpleMetric('connections')
-        });
-
-        socket.stats = users[socket.session.userId];
-
-        aggregates.connections.set(global.io.sockets.sockets.length);
-
-        if (socket.stats.connections.current === 0) {
-            aggregates.users.online.increment();
-
-            if (socket.stats.last_seen) {
-                aggregates.users.offline.decrement();
+            if (!session || !session.userId) {
+                return next();
             }
-        }
 
-        socket.stats.last_seen = new Date();
-        socket.stats.connections.increment();
+            users[session.userId] || (users[session.userId] = {
+                connections: new SimpleMetric('connections'),
+                subscriptions: new SimpleMetric('subscriptions')
+            });
 
-        function disconnectHandler (socket) {
-            aggregates.connections.set(global.io.sockets.sockets.length);
+            socket.stats = users[session.userId];
 
-            socket.stats.connections.decrement();
-            socket.stats.last_seen = new Date();
+            aggregates.connections.set(socket.server.sockets.sockets.length);
 
             if (socket.stats.connections.current === 0) {
-                aggregates.users.online.decrement();
-                aggregates.users.offline.increment();
+                aggregates.users.online.increment();
+
+                if (socket.stats.last_seen) {
+                    aggregates.users.offline.decrement();
+                }
             }
+
+            socket.stats.last_seen = new Date();
+            socket.stats.connections.increment();
+
+            socket.on('disconnect', disconnectHandler);
+            socket.on('error', disconnectHandler);
+
+            return next();
+        } catch (e) {
+            console.error(e);
+            throw e;
         }
-
-        socket.on('disconnect', disconnectHandler);
-        socket.on('error', disconnectHandler);
-
-        next();
     };
 }
 
