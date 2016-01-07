@@ -1,7 +1,6 @@
 'use strict';
 
-var slateCfg = require('../config/slate.json'),
-    nats = require('nats'),
+var nats = require('nats'),
     co = require('co'),
     natsCfg = require('../config/nats.json'),
     nc = nats.connect(natsCfg),
