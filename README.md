@@ -7,7 +7,6 @@ It shares many components with the **spark-classroom-student** app via the **spa
 ## Getting started with development
 1. [Install latest 6.x Sencha CMD](https://www.sencha.com/products/extjs/cmd-download/)
 2. `git clone --recursive -b develop git@github.com:JarvusInnovations/spark-classroom-teacher.git`
-   or `git clone --recursive -b develop https://github.com/JarvusInnovations/spark-classroom-teacher.git`
 3. `cd spark-classroom-teacher/sencha-workspace/SparkClassroomTeacher`
 4. `sencha app build`
 
