@@ -270,7 +270,12 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             learnStartTime = studentSparkpoint.get('learn_start_time'),
             conferenceStartTime = studentSparkpoint.get('conference_start_time'),
             applyStartTime = studentSparkpoint.get('apply_start_time'),
-            assessStartTime = studentSparkpoint.get('assess_start_time');
+            assessStartTime = studentSparkpoint.get('assess_start_time'),
+            workTabbar = me.getWorkTabbar();
+
+        if (!workTabbar) {
+            return;
+        }
 
         me.getLearnTab().setDuration(
             learnStartTime &&
@@ -292,6 +297,6 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             ((studentSparkpoint.get('assess_finish_time') || now) - assessStartTime) / 1000
         );
 
-        me.getWorkTabbar().setActivePhase(studentSparkpoint.get('active_phase'));
+        workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
     }
 });
