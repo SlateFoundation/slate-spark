@@ -32,7 +32,7 @@ function* getHandler() {
         ),
 
         questions AS (
-            SELECT *
+            SELECT *, 1 AS RN
               FROM fusebox_questions
 
             UNION ALL
@@ -40,10 +40,12 @@ function* getHandler() {
             SELECT id,
                    source::text,
                    question,
-                   NULL as "gradeLevel"
+                   NULL as "gradeLevel",
+                   2 AS RN
               FROM conference_questions
              WHERE student_id = $2
                AND sparkpoint_id = $3
+          ORDER BY RN, id ASC
         ),
 
         resources AS (
