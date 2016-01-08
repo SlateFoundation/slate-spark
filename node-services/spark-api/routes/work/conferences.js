@@ -32,6 +32,11 @@ function* getHandler() {
         ),
 
         questions AS (
+            SELECT *
+              FROM fusebox_questions
+
+            UNION ALL
+
             SELECT id,
                    source::text,
                    question,
@@ -39,11 +44,6 @@ function* getHandler() {
               FROM conference_questions
              WHERE student_id = $2
                AND sparkpoint_id = $3
-
-             UNION ALL
-
-             SELECT *
-               FROM fusebox_questions
         ),
 
         resources AS (
