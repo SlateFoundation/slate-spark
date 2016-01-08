@@ -17,9 +17,12 @@ Ext.define('SparkClassroom.model.work.ConferenceGroup', {
         },
         {
             name: 'section_id',
+            type: 'integer'
+        },
+        {
+            name: 'section_code',
             type: 'string'
         },
-
         {
             name: 'opened_time',
             type: 'sparkdate',
