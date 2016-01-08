@@ -390,31 +390,39 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             table = data.table,
             item = data.item,
+            questionsStore,
             questionInputEl, questionInputValue, questionInputFocused,
             student, worksheetData, worksheetCmp,
             groupsStore, group;
 
         if (table == 'conference_questions') {
             student = me.getActiveStudent();
+            questionsStore = me.getWorkConferenceQuestionsStore();
 
-            if (student && item.student_id == student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
+            if (
+                student &&
+                questionsStore.isLoaded() &&
+                item.student_id == student.getId() &&
+                item.sparkpoint_id == student.get('sparkpoint_id')
+            ) {
                 // capture question input
-                questionInputEl = me.getQuestionInputEl();
-                questionInputValue = questionInputEl.getValue();
-                questionInputFocused = questionInputEl.dom === document.activeElement;
+                if (questionInputEl = me.getQuestionInputEl()) {
+                    questionInputValue = questionInputEl.getValue();
+                    questionInputFocused = questionInputEl.dom === document.activeElement;
+                }
 
-                me.getWorkConferenceQuestionsStore().loadRawData([item], true);
+                questionsStore.loadRawData([item], true);
                 me.refreshQuestions();
 
                 // restore question input
-                questionInputEl = me.getQuestionInputEl();
+                if (questionInputEl = me.getQuestionInputEl()) {
+                    if (questionInputValue) {
+                        questionInputEl.dom.value = questionInputValue;
+                    }
 
-                if (questionInputValue) {
-                    questionInputEl.dom.value = questionInputValue;
-                }
-
-                if (questionInputFocused) {
-                    questionInputEl.focus();
+                    if (questionInputFocused) {
+                        questionInputEl.focus();
+                    }
                 }
             }
         } else if (table == 'conference_worksheets') {
@@ -532,9 +540,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     refreshQuestions: function() {
         var me = this,
+            questionsList = me.getQuestionsList(),
             questionsStore = me.getWorkConferenceQuestionsStore(),
             count = questionsStore.getCount(), i = 0, question,
             items = [];
+
+        if (!questionsList) {
+            cehuct;
+        }
 
         for (; i < count; i++) {
             question = questionsStore.getAt(i);
@@ -550,7 +563,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             skipHtmlEncode: true
         });
 
-        me.getQuestionsList().setData({
+        questionsList.setData({
             title: 'Guiding Questions',
             items: items
         });
@@ -579,6 +592,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     getQuestionInputEl: function() {
-        return this.getQuestionsList().getInnerHtmlElement().down('input');
+        var questionsList = this.getQuestionsList();
+
+        return questionsList && questionsList.getInnerHtmlElement().down('input');
     }
 });
