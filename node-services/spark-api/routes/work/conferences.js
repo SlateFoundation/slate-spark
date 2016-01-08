@@ -19,7 +19,9 @@ function* getHandler() {
         return this.throw('No academic standards are associated with spark point id: ' + sparkpointId, 404);
     }
 
-    result = yield this.pgp.one(`
+    result = yield this.pgp.one(
+        //language=SQL
+        `
         WITH fusebox_questions AS (
           SELECT id,
                  'fusebox'::text AS source,

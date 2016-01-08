@@ -44,7 +44,7 @@ function validateConferenceGroup(group, errors) {
         }
     }
 
-    if (!group.id && !group.section_id && !group.section_code) {
+    if (!group.id && !group.section_id) {
         errorList.push('You must pass either a (group) id, section_id or section_code to identify the group.');
     }
 
@@ -116,7 +116,7 @@ function *patchHandler() {
         return;
     }
 
-    conferenceGroups.forEach(function(group) {
+    conferenceGroups.forEach(function (group) {
 
         if (group.section_code) {
             group.section_id = ctx.lookup.section.cache.codeToId[group.section_code.toLowerCase()];
@@ -126,7 +126,7 @@ function *patchHandler() {
         validateConferenceGroup(group, errors);
 
         // Accept numeric times
-        for(let prop in group) {
+        for (let prop in group) {
             let val = group[prop];
 
             if (prop.slice(-5) === '_time') {
@@ -164,8 +164,12 @@ function *patchHandler() {
         return;
     }
 
-    this.body = yield* util.groupQueries(recordQueries, _.values, conferenceGroups, this);
+    let results = yield* util.groupQueries(recordQueries, _.values, conferenceGroups, this);
 
+    this.body = results.map(function (group) {
+        group.section_code = ctx.lookup.section.cache.idToCode[group.section_id];
+        return group;
+    });
 }
 
 module.exports = {

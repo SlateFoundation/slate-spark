@@ -41,9 +41,9 @@ module.exports = function *parseRequest(next) {
         delete query.sparkpoint_code;
     }
 
-    if (query.section || query.section_code) {
-        let section = query.section || query.section_code;
+    var section = query.section_id || query.section || query.section_code;
 
+    if (section) {
         if (util.isGtZero(section)) {
             query.section_id = this.lookup.section.cache.codeToId[yield this.lookup.section.idToCode(section)];
         } else {
