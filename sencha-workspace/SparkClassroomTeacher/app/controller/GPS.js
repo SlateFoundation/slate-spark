@@ -175,7 +175,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         if (table == 'section_student_active_sparkpoint') {
             if (
-                itemData.section_id == me.getActiveSection() &&
+                itemData.section_code == me.getActiveSection() &&
                 (
                     !(activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id)) ||
                     (
