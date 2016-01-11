@@ -19,48 +19,93 @@ function *getHandler() {
         return this.throw(new Error('No academic standards are associated with spark point id: ' + sparkpointId), 404);
     }
 
-    applies = yield this.pgp.manyOrNone(`
-        SELECT *,
-               (SELECT selected FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS selected,
-               (SELECT reflection FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS reflection,
-               (SELECT submissions FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS submissions,
-               (SELECT grade FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1) AS grade,
-               (SELECT "FirstName" || \' \' || "LastName" FROM people WHERE "ID" = (SELECT graded_by FROM applies a WHERE a.fb_apply_id = ap.id AND student_id = $2 AND sparkpoint_id = $3 LIMIT 1)) AS graded_by,
-               (SELECT json_agg(json_build_object('id', id, 'todo', todo, 'completed', completed)) FROM todos WHERE user_id = $2 AND apply_id = ap.id) AS my_todos,
-               (SELECT row_to_json(reviews) FROM (SELECT rating, comment FROM apply_reviews WHERE student_id = $2 AND apply_id = ap.id) AS reviews) AS review
-          FROM fusebox_apply_projects ap
-         WHERE standardids ?| $1`,
-        [standardIds, this.studentId, sparkpointId]
-    );
+    applies = yield this.pgp.one(/*language=SQL*/
+    `
+    SELECT json_agg(json_build_object(
+        'id',
+        ap.id,
+        'title',
+        ap.title,
+        'instructions',
+        ap.instructions,
+        'dok',
+        ap.dok,
+        'gradeLevel',
+        ap.gradelevel,
+        'timeEstimate',
+        ap.timeestimate,
+        'sparkpointIds',
+        (SELECT json_agg(id)
+           FROM sparkpoints
+          WHERE metadata->>'asn_id' = ANY($3)
+        ),
+        'sparkpointCodes',
+        (SELECT json_agg(code)
+           FROM sparkpoints
+          WHERE metadata->>'asn_id' = ANY($3)
+        ),
+        'standardCodes',
+        ap.standards,
+        'todos',
+        (SELECT json_agg(todo) FROM (
+            SELECT json_build_object(
+                       'id',
+                       id,
+                       'todo',
+                       todo,
+                       'completed',
+                       completed
+                   ) AS todo
+            FROM todos
+           WHERE user_id = $1
+             AND apply_id = ap.id
+           UNION ALL
+           SELECT json_build_object(
+                      'todo',
+                      todo,
+                      'completed',
+                      false
+                  ) AS todo
+             FROM jsonb_array_elements(ap.todos) AS todo
+        ) AS all_todos),
+        'links',
+        (SELECT CASE WHEN jsonb_typeof(link) = 'string'
+                THEN jsonb_build_object('title', link, 'url', link)
+                ELSE link
+                END
+         FROM jsonb_array_elements(ap.links) AS link
+        ),
+        'metadata',
+        CASE
+          WHEN ap.metadata = '""'
+          THEN '{}'::JSONB
+          ELSE ap.metadata::JSONB
+        END,
+        'selected',
+        CASE WHEN a.selected IS NULL THEN false ELSE true END,
+        'reflection',
+        a.reflection,
+        'submissions',
+        a.submissions,
+        'comment',
+        ar.comment,
+        'rating',
+        ar.rating,
+        'grade',
+        a.grade,
+        'graded_by',
+        CASE WHEN a.graded_by IS NOT NULL
+             THEN (SELECT "FirstName" || ' ' || "LastName" FROM people WHERE "ID" = a.graded_by)
+             ELSE null
+        END
+    )) AS json
+         FROM fusebox_apply_projects ap
+    LEFT JOIN applies a ON a.fb_apply_id = ap.id
+    LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
+        WHERE standardids ?| $3;
+    `, [this.student_id, sparkpointId, standardIds]);
 
-    this.body = applies.map(function (apply) {
-        return {
-            id: apply.id,
-            title: apply.title,
-            instructions: apply.instructions,
-            gradeLevel: apply.gradeLevel,
-            dok: apply.dok,
-            sparkpointIds: util.toSparkpointIds(apply.standardids),
-            sparkpointCodes: util.toSparkpointCodes(apply.standardids),
-            standardCodes: util.toStandardCodes(apply.standardids),
-            todos: (Array.isArray(apply.my_todos) && apply.my_todos.length > 0) ?
-                apply.my_todos : (apply.todos || []).map(function(todo) {
-                return { todo: todo, completed: false };
-            }),
-            links: (apply.links || []).map(function(link) {
-                return typeof link === 'string' ? { url: link, title: link } : link;
-            }),
-            timeEstimate: apply.timestimate,
-            metadata: apply.metadata === '""' ? {} : apply.metadata,
-            selected: apply.selected || false,
-            reflection: apply.reflection,
-            submissions: apply.submissions || [],
-            comment: apply.review ? apply.review.comment : null,
-            rating: apply.review ? apply.review.rating : null,
-            grade: apply.grade || null,
-            graded_by: apply.graded_by || null
-        };
-    });
+    this.body = applies.json;
 }
 
 function *patchHandler() {
