@@ -386,14 +386,14 @@ function toSparkpointCode(sparkpoint) {
     sparkpoint = '' + sparkpoint;
 
     if (isMatchbookId(sparkpoint)) {
-        return lookup.shared.sparkpoint.idToCode[sparkpoint.toLowerCase()];
+        return lookup.shared.sparkpoint.cache.idToCode[sparkpoint.toLowerCase()];
     }
 
     if (isAsnId(sparkpoint)) {
-        return lookup.shared.sparkpoint.idToCode[lookup.shared.standard.idToSparkpointId[sparkpoint].toLowerCase()];
+        return lookup.shared.sparkpoint.cache.idToCode[lookup.shared.sparkpoint.asnIdToSparkpointIds[sparkpoint][0]];
     }
 
-    return lookup.shared.sparkpoint.idToCode[lookup.shared.sparkpoint.codeToId[sparkpoint.toLowerCase()]];
+    return lookup.shared.sparkpoint.cache.idToCode[lookup.shared.sparkpoint.codeToId[sparkpoint.toLowerCase()]];
 }
 
 function toSparkpointIds(str) {
@@ -442,10 +442,10 @@ function toStandardCode(standardCode) {
     standardCode = '' + standardCode;
 
     if (isAsnId(standardCode)) {
-        return lookup.shared.standard.idToCode[standardCode.toLowerCase()];
+        return lookup.shared.standard.cache.idToCode[standardCode];
     }
 
-    return lookup.shared.standard.idToCode[lookup.shared.standard.codeToId[standardCode.toLowerCase()]];
+    return lookup.shared.standard.cache.idToCode[lookup.shared.standard.cache.codeToId[standardCode.toLowerCase()]];
 }
 
 function toAsnIds(str) {
