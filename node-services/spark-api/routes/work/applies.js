@@ -47,27 +47,31 @@ function *getHandler() {
         'standardCodes',
         ap.standards,
         'todos',
-        (SELECT json_agg(todo) FROM (
-            SELECT json_build_object(
+        CASE WHEN a.selected IS NULL
+             THEN (
+                SELECT json_agg(json_build_object(
+                       'todo',
+                       todo,
+                       'completed',
+                       false
+                 )) AS todo
+               FROM jsonb_array_elements(ap.todos) AS todo
+             )
+             ELSE (
+                SELECT json_agg(todo) FROM (
+                    SELECT json_build_object(
                        'id',
                        id,
                        'todo',
                        todo,
                        'completed',
                        completed
-                   ) AS todo
-            FROM todos
-           WHERE user_id = $1
-             AND apply_id = ap.id
-           UNION ALL
-           SELECT json_build_object(
-                      'todo',
-                      todo,
-                      'completed',
-                      false
-                  ) AS todo
-             FROM jsonb_array_elements(ap.todos) AS todo
-        ) AS all_todos),
+                    ) AS todo
+                    FROM todos
+                  WHERE user_id = $1
+                    AND apply_id = ap.id) AS student_todos
+             )
+         END,
         'links',
         (SELECT CASE WHEN jsonb_typeof(link) = 'string'
                 THEN jsonb_build_object('title', link, 'url', link)
@@ -103,7 +107,7 @@ function *getHandler() {
     LEFT JOIN applies a ON a.fb_apply_id = ap.id
     LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
         WHERE standardids ?| $3;
-    `, [this.student_id, sparkpointId, standardIds]);
+    `, [this.studentId, sparkpointId, standardIds]);
 
     this.body = applies.json;
 }
