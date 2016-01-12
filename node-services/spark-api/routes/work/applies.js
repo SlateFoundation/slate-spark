@@ -73,11 +73,12 @@ function *getHandler() {
              )
          END,
         'links',
-        (SELECT CASE WHEN jsonb_typeof(link) = 'string'
-                THEN jsonb_build_object('title', link, 'url', link)
-                ELSE link
-                END
-         FROM jsonb_array_elements(ap.links) AS link
+        (SELECT json_agg(
+            CASE WHEN jsonb_typeof(link) = 'string'
+                 THEN jsonb_build_object('title', link, 'url', link)
+                 ELSE link
+            END)
+           FROM jsonb_array_elements(ap.links) AS link
         ),
         'metadata',
         CASE
