@@ -46,6 +46,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             xtype: 'spark-student-navbar',
             hidden: true
         },
+        timerCmp: 'spark-student-navbar #timer',
 
         welcomeCmp: {
             selector: 'spark-student-welcome',
@@ -76,7 +77,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         controller: {
             '#': {
                 beforeredirect: 'onBeforeRedirect',
-                beforeroute: 'onBeforeRoute'
+                beforeroute: 'onBeforeRoute',
+                studentsparkpointload: 'onStudentSparkpointLoad'
                 //<debug>
                 ,unmatchedroute: function(token) {
                     Ext.log.warn('Unmatched token: ' + token);
@@ -181,6 +183,12 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             resume(prefixMatch[4]);
             return false;
         }
+    },
+    
+    onStudentSparkpointLoad: function(studentSparkpoint) {        
+        this.getTimerCmp().setData({
+            duration: studentSparkpoint.get('total_duration')
+        });
     },
 
     onSectionsStoreLoad: function(store) {
