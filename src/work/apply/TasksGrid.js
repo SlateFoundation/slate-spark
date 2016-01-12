@@ -5,7 +5,9 @@ Ext.define('SparkClassroom.work.apply.TasksGrid', {
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
-        'SparkClassroom.store.Tasks'
+        'SparkClassroom.store.Tasks',
+        'SparkClassroom.column.Completed',
+        'SparkClassroom.column.ToDo'
     ],
 
     config: {
@@ -30,17 +32,8 @@ Ext.define('SparkClassroom.work.apply.TasksGrid', {
                 allowToggle: false
             },
             {
-                xtype: 'column',
+                xtype: 'spark-column-todo',
                 flex: 1,
-                text: 'To Dos',
-                dataIndex: 'todo',
-                cell: {
-                    encodeHtml: false
-                },
-                renderer: function(v) {
-                    var fm = Ext.util.Format;
-                    return fm.nl2br(fm.htmlEncode(v));
-                },
                 sortable: false
             },
             {
