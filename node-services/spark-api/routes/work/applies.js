@@ -91,7 +91,11 @@ function *getHandler() {
         'reflection',
         a.reflection,
         'submissions',
-        a.submissions,
+        CASE
+            WHEN a.submissions IS NULL
+            THEN '[]'::JSONB
+            ELSE a.submissions
+        END,
         'comment',
         ar.comment,
         'rating',
