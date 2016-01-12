@@ -223,6 +223,22 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - assessFinishTime;
             }
+        },
+        {
+            name: 'total_duration',
+            persist: false,
+            depends: [
+                'learn_start_time'
+            ],
+            convert: function(v, r) {
+                var learnStartTime = r.get('learn_start_time');
+                
+                if (!learnStartTime) {
+                    return null;
+                }
+                
+                return Date.now() - learnStartTime;
+            }
         }
     ],
 
