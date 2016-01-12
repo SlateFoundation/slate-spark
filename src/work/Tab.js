@@ -14,7 +14,7 @@ Ext.define('SparkClassroom.work.Tab', {
     titleTpl: [
         '{title}',
         '<tpl if="duration">',
-            '<div class="spark-tab-timer">{[Ext.util.Format.fuzzyDuration(values.duration*1000, true)]}</div>',
+            '<div class="spark-tab-timer">{duration:fuzzyDuration(true)}</div>',
         '</tpl>'
     ],
 
