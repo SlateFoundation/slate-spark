@@ -34,32 +34,34 @@ module.exports = function *parseRequest(next) {
         query.sparkpoint_id = yield this.lookup.sparkpoint.codeToId(sparkpoint);
 
         if (!query.sparkpoint_id) {
-            ctx.throw(new Error(`${query.sparkpoint} is an invalid sparkpoint`), 404);
+            return ctx.throw(404, new Error(`${query.sparkpoint} is an invalid sparkpoint`), 404);
         }
 
         delete query.sparkpoint;
         delete query.sparkpoint_code;
     }
 
-    var section = query.section_id || query.section || query.section_code;
+    if (util.isGtZero(query.section_id)) {
+        let section_code = yield this.lookup.section.idToCode(query.section_id);
 
-    if (section) {
-        if (util.isGtZero(section)) {
-            query.section_id = this.lookup.section.cache.codeToId[yield this.lookup.section.idToCode(section)];
-        } else {
-            query.section_id = yield this.lookup.section.codeToId(section);
+        if (!section_code) {
+            return this.throw(404, `section_id ${query.section_id} could not be found`);
+        }
+    } else if (query.section_code || query.section) {
+        let section_id = yield this.lookup.section.codeToId(query.section_code || query.section);
+
+        if (!section_id) {
+            return this.throw(404, `section_code ${query.section_code || query.section} could not be found`);
         }
 
-        if (!query.section_id) {
-            ctx.throw(new Error(`${section} is not a valid section_id or section_code`), 404);
-        }
-
-        delete query.section_code;
-
-        if (typeof query.section === 'string') {
-            delete query.section;
-        }
+        query.section_id = section_id;
     }
+
+    if (typeof query.section === 'string') {
+        delete query.section;
+    }
+
+    delete query.section_code;
 
     this.require = function(params) {
         var query = ctx.query,
