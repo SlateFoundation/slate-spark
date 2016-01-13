@@ -73,6 +73,33 @@ function pgp(options) {
 
         this.sharedPgp = this.app.context.pgp.shared;
 
+        if (!this.app.context.introspection) {
+            this.app.context.introspection = {};
+
+            for (var key in pgpConnections) {
+                let pgp = pgpConnections[key];
+                let introspection = yield* introspectDatabase(pgp);
+
+                this.app.context.introspection[key] = introspection;
+
+                let enums = introspection.enums;
+                let tables = introspection.tables;
+
+                this.app.context.validation || (this.app.context.validation = {});
+                this.app.context.validation[key] = {};
+
+                for (let tableName in tables) {
+                    let table = tables[tableName];
+                    this.app.context.validation[key][tableName] = generateValidationFunction(table, enums);
+                }
+            }
+        }
+
+        if (schema) {
+            this.validation = this.app.context.validation[schema];
+            this.introspection = this.app.context.introspection[schema];
+        }
+
         this.guc = function(query) {
             return `
                 SET spark.user_id = '${this.userId}';
@@ -109,6 +136,196 @@ function knex(options) {
 
         yield next;
     };
+}
+
+function* introspectDatabase(pgp) {
+    let introspection = yield pgp.one(`
+    WITH spark_tables AS (
+      SELECT DISTINCT ON (table_name) table_name,
+                         table_schema
+                    FROM information_schema.tables
+                   WHERE table_schema NOT IN ('information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2')
+                     AND table_name NOT LIKE 'fdw_%'
+    ), spark_enums AS (
+        WITH unique_enums AS (
+            SELECT DISTINCT ON (pg_type.typname)
+                   pg_type.typname,
+                   pg_type.oid
+              FROM pg_type
+              JOIN pg_enum
+                ON pg_enum.enumtypid = pg_type.oid
+          GROUP BY typname, oid
+        ), allowed_values AS (
+            SELECT typname,
+                   json_agg(pg_enum.enumlabel)
+              FROM unique_enums
+              JOIN pg_enum
+                ON pg_enum.enumtypid = unique_enums.oid
+          GROUP BY typname
+        )
+
+        SELECT typname AS type, json_agg AS allowed_values FROM allowed_values
+    ), spark_table_columns AS (
+      SELECT st.table_name,
+             json_object_agg(
+                column_name,
+                json_build_object(
+                  'type',
+                  CASE
+                    WHEN data_type = 'USER-DEFINED'
+                    THEN udt_name
+                    ELSE data_type
+                  END,
+                  'default_value',
+                  column_default,
+                  'is_nullable',
+                  CASE
+                    WHEN is_nullable = 'YES'
+                    THEN TRUE
+                    ELSE FALSE
+                  END,
+                  'maximum_length',
+                  character_maximum_length
+                )
+             ) AS columns
+      FROM information_schema.columns c
+      JOIN spark_tables st
+        ON st.table_name = c.table_name
+       AND st.table_schema = c.table_schema
+      GROUP BY st.table_name
+    )
+
+    SELECT json_build_object(
+        'tables',
+        json_object_agg(
+            table_name,
+            columns
+        ),
+        'enums',
+        (SELECT json_object_agg(type, allowed_values) FROM spark_enums)
+    ) AS json
+    FROM spark_table_columns;
+    `);
+
+    return introspection.json;
+}
+
+var columnValidators = {
+    smallint: function(val) {
+        const MIN = -32768;
+        const MAX = 32767;
+
+        let num = parseInt(val, 10);
+
+        if (isNaN(num)) {
+            return `${val} is not a number`;
+        }
+        if (num < MIN || num > MAX) {
+            return `${val} is out of range for smallint (${MIN} to ${MAX})`;
+        }
+    },
+
+    integer: function(val) {
+        const MIN = -2147483648;
+        const MAX = 2147483647;
+
+        let num = parseInt(val, 10);
+
+        if (isNaN(num)) {
+            return `${JSON.stringify(val)} is not a number`;
+        }
+        if (num < MIN || num > MAX) {
+            return `${val} is out of range for integer (${MIN} to ${MAX})`;
+        }
+    },
+
+    character: function (val, col) {
+        var len = val.length,
+            max = col.maximum_length;
+
+        if (typeof val === 'string' && val.length <= max) {
+            return `${len} exceeds maximum length of ${max}`;
+        }
+    },
+
+    boolean: function (val) {
+        if (typeof val !== 'boolean') {
+            return `${JSON.stringify(val)} is not a boolean`;
+        }
+    },
+
+    text: function(val) {
+        if (typeof val !== 'string') {
+            return `${JSON.stringify(val)} is not a string`;
+        }
+    },
+
+    ARRAY: function (val) {
+        if (Array.isArray(val)) {
+            return `${JSON.stringify(val)} is not an array`;
+        }
+    },
+
+    timestamp: function(val) {
+        let date = new Date(val);
+
+        if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN(date.getTime())) {
+            return `${JSON.stringify(val)} is not a valid date`;
+        }
+    },
+
+    'timestamp without timezone': function(val) {
+        let date = new Date(val);
+
+        if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN(date.getTime())) {
+            return `${JSON.stringify(val)} is not a valid date`;
+        }
+    }
+};
+
+
+function generateValidationFunction(table, enums) {
+    var columns = Object.keys(table);
+
+    return function(row) {
+        let keys = Object.keys(row),
+            errors = keys
+                .filter(key => table[key] === undefined)
+                .map(key => `${key}: unexpected key, allowed keys are: ${columns.join(', ')}`);
+
+        for (var columnName in table) {
+            let column = table[columnName],
+                val = row[columnName];
+
+            if (!column.is_nullable && val === undefined && column.default_value === null) {
+                errors.push(`${columnName} (${column.type}) is required.`);
+            } else if (val !== undefined) {
+                let _enum = enums[column.type];
+
+                if (_enum) {
+                    if (_enum.indexOf(val) === -1) {
+                        errors.push(`${columnName}: Allowed values are: ${_enum.join(',')}; you gave: ${val}`);
+                    }
+                } else {
+                    let validator = columnValidators[column.type];
+
+                    if (validator) {
+                        let error = validator(val, column);
+
+                        if (error) {
+                            errors.push(columnName + ': ' + error);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (errors.length === 0) {
+            return null;
+        } else {
+            return errors;
+        }
+    }
 }
 
 module.exports = {
