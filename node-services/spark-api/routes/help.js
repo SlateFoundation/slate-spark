@@ -87,6 +87,14 @@ function *patchHandler(req, res, next) {
 
     var validationErrors = body.map(function(request) {
         if (request.id === undefined) {
+            // Allow INSERT in PATCH
+            if (ctx.isStudent) {
+                request.student_id = ctx.userId;
+                if (request.section_id === undefined) {
+                    request.section_id = ctx.query.section_id;
+                }
+            }
+
             order.push('i' + inserts.push(request));
             return ctx.validation.help_requests(request);
         } else {
