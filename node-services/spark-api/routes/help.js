@@ -66,7 +66,7 @@ function selectFromRequest(tableName) {
 
     sql += ` LIMIT ${limit} OFFSET ${offset};`;
 
-    return this.pgp.many(sql, vals.vals);
+    return this.pgp.any(sql, vals.vals);
 }
 
 function *getHandler() {
