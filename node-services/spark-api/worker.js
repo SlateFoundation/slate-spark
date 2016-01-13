@@ -100,6 +100,11 @@ app.use(_.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get));
 // OpenEd
 // app.use(_.get('/opened/csv', routes.opened.index.csv.get));
 
+// Help
+app.use(_.get('/help', routes.help.get));
+app.use(_.post('/help', routes.help.post));
+app.use(_.patch('/help', routes.help.patch));
+
 // Test
 app.use(_.get('/test', routes.test.get));
 
