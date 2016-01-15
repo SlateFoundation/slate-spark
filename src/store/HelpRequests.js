@@ -3,5 +3,9 @@ Ext.define('SparkClassroom.store.HelpRequests', {
     extend: 'Ext.data.Store',
 
 
-    model: 'SparkClassroom.model.HelpRequest'
+    model: 'SparkClassroom.model.HelpRequest',
+    
+    config: {
+        autoSync: true
+    }
 });

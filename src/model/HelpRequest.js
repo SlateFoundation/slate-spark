@@ -2,22 +2,28 @@
 Ext.define('SparkClassroom.model.HelpRequest', {
     extend: 'Ext.data.Model',
     requires: [
+        'Ext.data.identifier.Negative',
         'Slate.proxy.API',
         'SparkClassroom.data.field.SparkDate'
     ],
 
+    identifier: 'negative',
+
     fields: [
         {
             name: 'id',
-            type: 'integer'
+            type: 'integer',
+            persist: false
         },
         {
             name: 'student_id',
-            type: 'integer'
+            type: 'integer',
+            persist: false
         },
         {
             name: 'section_id',
-            type: 'integer'
+            type: 'integer',
+            persist: false
         },
         {
             name: 'request_type',
@@ -25,7 +31,8 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         },
         {
             name: 'open_time',
-            type: 'sparkdate'
+            type: 'sparkdate',
+            persist: false
         },
         {
             name: 'close_time',
@@ -33,9 +40,10 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         },
         {
             name: 'closed_by',
-            type: 'integer'
+            type: 'integer',
+            persist: false
         },
-        
+
         // synthetic fields:
         {
             name: 'short_request_type',
@@ -61,10 +69,9 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         {
             name: 'student',
             persist: false,
-            mapping: 'student_id',
             depends: ['student_id'],
             convert: function(v, r) {
-                return Ext.getStore('Students').getById(v);
+                return v && v.isModel ? v : Ext.getStore('Students').getById(r.get('student_id'));
             }
         },
         {
@@ -80,6 +87,10 @@ Ext.define('SparkClassroom.model.HelpRequest', {
 
     proxy: {
         type: 'slate-api',
-        url: '/spark/api/help'
+        url: '/spark/api/help',
+        writer: {
+            type: 'json',
+            allowSingle: true
+        }
     }
 });
