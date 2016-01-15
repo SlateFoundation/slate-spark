@@ -53,8 +53,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
             },
             {
                 text: 'Help',
-                itemId: 'help',
-                disabled: true
+                itemId: 'help'
             }
         ]
     }

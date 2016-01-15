@@ -8,7 +8,11 @@ Ext.define('SparkClassroomStudent.controller.Help', {
 
     stores: [
         'Sections@SparkClassroom.store',
-        'HelpRequests'
+        'HelpRequests@SparkClassroom.store'
+    ],
+    
+    models: [
+        'HelpRequest@SparkClassroom.model'
     ],
 
     //stores: ['Students@SparkClassroom.store'],
@@ -52,29 +56,28 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     onNavHelpTap: function(btn) {
         var helpStore = Ext.getStore('HelpRequests');
 
-        if(!helpStore.isLoaded()) {
-            helpStore.load({
-                url: '/spark/classroom/help'
-            });
+        if (!helpStore.isLoaded()) {
+            helpStore.load();
         }
 
         this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
 
     onSubmitHelpRequestTap: function(btn) {
-        var helpCt = this.getHelpCt(),
+        var me = this,
+            helpCt = me.getHelpCt(),
             radioField = helpCt.down('fieldset radiofield'),
             sectionStore = Ext.getStore('Sections'),
-            sectionID = sectionStore.findRecord('Code', this.getSectionSelect().getValue()).get('ID'),
+            sectionID = sectionStore.findRecord('Code', me.getSectionSelect().getValue()).get('ID'),
             requestType = radioField.getGroupValue(),
             helpRequest;
 
-         helpRequest = Ext.create('SparkClassroom.model.HelpRequest', {
+         helpRequest = me.getHelpRequestModel().create({
             Type: requestType,
             SectionID: sectionID
          });
 
-         if(helpRequest.isValid()) {
+         if (helpRequest.isValid()) {
              helpRequest.save({
                  success: function() {
                      Ext.toast('Save Successful');
