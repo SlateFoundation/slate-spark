@@ -1,7 +1,11 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Help', {
     extend: 'Ext.app.Controller',
-    
+
+    config: {
+        studentSparkpoint: null
+    },
+
     views: [
         'help.Container'
     ],
@@ -10,24 +14,18 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         'Sections@SparkClassroom.store',
         'HelpRequests@SparkClassroom.store'
     ],
-    
-    models: [
-        'HelpRequest@SparkClassroom.model'
-    ],
-
-    //stores: ['Students@SparkClassroom.store'],
 
     refs: {
         navBar: 'spark-student-navbar',
         helpNavButton: 'spark-student-navbar button#help',
-        sectionSelect: 'spark-titlebar #sectionSelect',
 
         helpCt: {
             selector: 'spark-help',
             autoCreate: true,
 
             xtype: 'spark-help'
-        }
+        },
+        firstHelpRadio: 'spark-help radiofield'
         //helpForm: '#helpForm'
     },
 
@@ -45,14 +43,19 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         // }
     },
 
-    // onLaunch: function(){
-    //     var studentsStore = Ext.getStore('Students');
-
-    //     // UNCOMMENT TO BREAK EVERYTHING!
-    //     //studentsStore.load();
-    // },
+    listen: {
+        controller: {
+            '#': {
+                studentsparkpointload: 'onStudentSparkpointLoad',
+            }
+        }
+    },
 
     // event handlers
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
+    },
+
     onNavHelpTap: function(btn) {
         var helpStore = Ext.getStore('HelpRequests');
 
@@ -64,26 +67,20 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     },
 
     onSubmitHelpRequestTap: function(btn) {
-        var me = this,
-            helpCt = me.getHelpCt(),
-            radioField = helpCt.down('fieldset radiofield'),
-            sectionStore = Ext.getStore('Sections'),
-            sectionID = sectionStore.findRecord('Code', me.getSectionSelect().getValue()).get('ID'),
-            requestType = radioField.getGroupValue(),
-            helpRequest;
+        var me = this;
 
-         helpRequest = me.getHelpRequestModel().create({
-            Type: requestType,
-            SectionID: sectionID
+         me.getHelpRequestsStore().add({
+            request_type: me.getFirstHelpRadio().getGroupValue(),
+            student_id: me.getStudentSparkpoint().get('student_id')
          });
 
-         if (helpRequest.isValid()) {
-             helpRequest.save({
-                 success: function() {
-                     Ext.toast('Save Successful');
-                 }
-             });
-         }
+        //  if (helpRequest.isValid()) {
+        //      helpRequest.save({
+        //          success: function() {
+        //              Ext.toast('Save Successful');
+        //          }
+        //      });
+        //  }
     },
 
     // didn't bother programatically added radiofields because the styling is buggy
