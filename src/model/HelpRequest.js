@@ -83,6 +83,12 @@ Ext.define('SparkClassroom.model.HelpRequest', {
                 return student ? student.get('FullName') : '[Unenrolled Student]';
             }
         },
+        {
+            name: 'can_delete',
+            persist: false,
+            type: 'boolean',
+            allowNull: true
+        }
     ],
 
     proxy: {
