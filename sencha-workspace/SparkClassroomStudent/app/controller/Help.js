@@ -48,10 +48,24 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             '#': {
                 studentsparkpointload: 'onStudentSparkpointLoad',
             }
+        },
+        store: {
+            '#HelpRequests': {
+                add: 'onStoreAdd',
+                load: 'onStoreLoad'
+            }
         }
     },
 
     // event handlers
+    onStoreAdd: function() {
+        this.syncHelpRequests();
+    },
+
+    onStoreLoad: function() {
+        this.syncHelpRequests();
+    },
+
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
@@ -88,4 +102,16 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     //     //var helpForm = this.getHelpForm();
     // },
 
+    // controller methods
+    syncHelpRequests: function() {
+        var studentId = this.getStudentSparkpoint().get('student_id'),
+            helpRequests = Ext.getStore('HelpRequests').getRange(),
+            helpRequestsLength = helpRequests.length,
+            i = 0, helpRequest;
+
+        for (; i < helpRequestsLength; i++) {
+            helpRequest = helpRequests[i];
+            helpRequest.set('can_delete', studentId == helpRequest.get('student_id'));
+        }
+    }
 });
