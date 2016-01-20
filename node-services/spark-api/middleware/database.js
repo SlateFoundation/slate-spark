@@ -30,20 +30,28 @@ function initializePgp(config, slateConfig) {
 }
 
 function initializeKnex(config, slateConfig) {
-    if (config.postgresql && config.postgresql.sharedConnection) {
-        knexConnections.shared = Knex({
-            client: 'pg',
-            connection: objToConnectionString(config.postgresql.sharedConnection)
-        });
+    var knexConfig = {};
+
+    if (config.postgresql) {
+        if (config.postgresql.knex) {
+            knexConfig = config.postgresql.knex;
+        }
+
+        if (config.postgresql.sharedConnection) {
+            knexConnections.shared = Knex(Object.assign({
+                client: 'pg',
+                connection: objToConnectionString(config.postgresql.sharedConnection)
+            }, knexConfig));
+        }
     }
 
     (slateConfig.instances || [])
         .filter(instance => instance.postgresql)
         .forEach(function(instance) {
-            let connection = Knex({
+            let connection = Knex(Object.assign({
                 client: 'pg',
                 connection: objToConnectionString(instance.postgresql)
-            });
+            }, knexConfig));
 
             knexConnections[instance.key] = connection;
 
