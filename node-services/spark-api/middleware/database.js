@@ -8,6 +8,8 @@ var promise = require('bluebird'),
     knexConnections = {},
     pgpConnections = {};
 
+const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2'];
+
 monitor.attach(options);
 monitor.setTheme('matrix');
 
@@ -140,69 +142,93 @@ function knex(options) {
 
 function* introspectDatabase(pgp) {
     let introspection = yield pgp.one(`
-    WITH spark_tables AS (
-      SELECT DISTINCT ON (table_name) table_name,
-                         table_schema
-                    FROM information_schema.tables
-                   WHERE table_schema NOT IN ('information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2')
-                     AND table_name NOT LIKE 'fdw_%'
-    ), spark_enums AS (
-        WITH unique_enums AS (
-            SELECT DISTINCT ON (pg_type.typname)
-                   pg_type.typname,
-                   pg_type.oid
-              FROM pg_type
-              JOIN pg_enum
-                ON pg_enum.enumtypid = pg_type.oid
-          GROUP BY typname, oid
-        ), allowed_values AS (
-            SELECT typname,
-                   json_agg(pg_enum.enumlabel)
-              FROM unique_enums
-              JOIN pg_enum
-                ON pg_enum.enumtypid = unique_enums.oid
-          GROUP BY typname
-        )
-
-        SELECT typname AS type, json_agg AS allowed_values FROM allowed_values
-    ), spark_table_columns AS (
-      SELECT st.table_name,
-             json_object_agg(
-                column_name,
-                json_build_object(
-                  'type',
-                  CASE
-                    WHEN data_type = 'USER-DEFINED'
-                    THEN udt_name
-                    ELSE data_type
-                  END,
-                  'default_value',
-                  column_default,
-                  'is_nullable',
-                  CASE
-                    WHEN is_nullable = 'YES'
-                    THEN TRUE
-                    ELSE FALSE
-                  END,
-                  'maximum_length',
-                  character_maximum_length
-                )
-             ) AS columns
-      FROM information_schema.columns c
-      JOIN spark_tables st
-        ON st.table_name = c.table_name
-       AND st.table_schema = c.table_schema
-      GROUP BY st.table_name
+        WITH spark_tables AS (
+          SELECT DISTINCT ON (table_name) table_name,
+                             table_schema
+                        FROM information_schema.tables
+                       WHERE table_schema NOT IN (${EXCLUDED_SCHEMAS.map(s => `'${s}'`).join(', ')})
+                         AND table_name NOT LIKE 'fdw_%'
+        ), spark_enums AS (
+            WITH unique_enums AS (
+                SELECT DISTINCT ON (pg_type.typname)
+                       pg_type.typname,
+                       pg_type.oid
+                  FROM pg_type
+                  JOIN pg_enum
+                    ON pg_enum.enumtypid = pg_type.oid
+              GROUP BY typname, oid
+            ), allowed_values AS (
+                SELECT typname,
+                       json_agg(pg_enum.enumlabel)
+                  FROM unique_enums
+                  JOIN pg_enum
+                    ON pg_enum.enumtypid = unique_enums.oid
+              GROUP BY typname
+            )
+            SELECT typname AS type, json_agg AS allowed_values FROM allowed_values
+        ), spark_table_columns AS (
+          SELECT st.table_name,
+                 json_object_agg(
+                    column_name,
+                    json_build_object(
+                      'type',
+                      CASE
+                        WHEN data_type = 'USER-DEFINED'
+                        THEN udt_name
+                        ELSE data_type
+                      END,
+                      'default_value',
+                      column_default,
+                      'is_nullable',
+                      CASE
+                        WHEN is_nullable = 'YES'
+                        THEN TRUE
+                        ELSE FALSE
+                      END,
+                      'maximum_length',
+                      character_maximum_length
+                    )
+                 ) AS columns
+          FROM information_schema.columns c
+          JOIN spark_tables st
+            ON st.table_name = c.table_name
+           AND st.table_schema = c.table_schema
+          GROUP BY st.table_name
+        ), spark_primary_keys AS (
+          SELECT DISTINCT ON (t.table_name)
+                 t.table_name AS table,
+                 kcu.constraint_name AS constraint,
+                 array_agg(kcu.column_name::TEXT) AS columns
+            FROM INFORMATION_SCHEMA.TABLES t
+       LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+              ON tc.table_catalog = t.table_catalog
+             AND tc.table_schema = t.table_schema
+             AND tc.table_name = t.table_name
+             AND tc.constraint_type = 'PRIMARY KEY'
+       LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu
+              ON kcu.table_catalog = tc.table_catalog
+             AND kcu.table_schema = tc.table_schema
+             AND kcu.table_name = tc.table_name
+             AND kcu.constraint_name = tc.constraint_name
+           WHERE t.table_catalog = 'spark'
+             AND t.table_schema = 'sandbox-school'
+             AND t.table_schema NOT IN (${EXCLUDED_SCHEMAS.map(s => `'${s}'`).join(', ')})
+            AND t.table_name NOT LIKE 'fdw_%'
+            AND kcu.constraint_name IS NOT NULL
+            AND t.table_catalog = 'spark'
+       GROUP BY t.table_catalog,
+                t.table_schema,
+                t.table_name,
+                kcu.constraint_name
     )
 
     SELECT json_build_object(
-        'tables',
-        json_object_agg(
-            table_name,
-            columns
-        ),
-        'enums',
-        (SELECT json_object_agg(type, allowed_values) FROM spark_enums)
+      'tables',
+      json_object_agg(table_name, columns),
+      'enums',
+      (SELECT json_object_agg(type, allowed_values) FROM spark_enums),
+      'primaryKeys',
+      (SELECT json_object_agg("table", json_build_object('columns', columns, 'constraint', "constraint")) FROM spark_primary_keys)
     ) AS json
     FROM spark_table_columns;
     `);
