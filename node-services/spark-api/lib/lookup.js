@@ -346,3 +346,29 @@ module.exports = function* (next) {
 
     yield next;
 };
+
+nc.on('error', function(error) {
+    // TODO: evaluate how we want to handle NATS connection errors in the production API
+   if (process.env.NODE_ENV !== 'production')  {
+       throw error;
+   } else {
+       console.error('NATS: Error ', error);
+   }
+});
+
+nc.on('reconnecting', function() {
+   console.log('NATS: reconnecting...');
+});
+
+nc.on('disconnect', function() {
+   console.log('NATS: disconnected');
+});
+
+nc.on('connect', function() {
+   console.log('NATS: connected');
+});
+
+nc.on('reconnect', function() {
+   console.log('NATS: Reconnected');
+});
+
