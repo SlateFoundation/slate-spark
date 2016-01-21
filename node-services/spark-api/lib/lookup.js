@@ -67,7 +67,7 @@ var nats = require('nats'),
             idColumn: 'ID',
             codeColumn: 'Code',
             onCacheBust: function* () {
-                yield this.pgp.none(`REFRESH MATERIALIZED VIEW "${this.schema}".course_sections`);
+                yield this.pgp.none(`REFRESH MATERIALIZED VIEW CONCURRENTLY "${this.schema}".course_sections`);
             }
         },
 
@@ -91,7 +91,7 @@ var nats = require('nats'),
                 });
             },
             onCacheBust: function* () {
-                yield this.pgp.none(`REFRESH MATERIALIZED VIEW "${this.schema}".people`);
+                yield this.pgp.none(`REFRESH MATERIALIZED VIEW CONCURRENTLY "${this.schema}".people`);
             }
         }
     },
