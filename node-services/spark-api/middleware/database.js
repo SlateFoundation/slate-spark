@@ -82,30 +82,29 @@ function pgp(options) {
         }
 
         this.sharedPgp = this.app.context.pgp.shared;
+        this.app.context.introspection || (this.app.context.introspection = {});
 
-        if (!this.app.context.introspection) {
-            this.app.context.introspection = {};
+        if (schema) {
+            if (this.app.context.introspection[schema] === undefined) {
+                this.app.context.introspection = {};
 
-            for (var key in pgpConnections) {
-                let pgp = pgpConnections[key];
+                let pgp = pgpConnections[schema];
                 let introspection = yield* introspectDatabase(pgp);
 
-                this.app.context.introspection[key] = introspection;
+                this.app.context.introspection[schema] = introspection;
 
                 let enums = introspection.enums;
                 let tables = introspection.tables;
 
                 this.app.context.validation || (this.app.context.validation = {});
-                this.app.context.validation[key] = {};
+                this.app.context.validation[schema] = {};
 
                 for (let tableName in tables) {
                     let table = tables[tableName];
-                    this.app.context.validation[key][tableName] = generateValidationFunction(table, enums);
+                    this.app.context.validation[schema][tableName] = generateValidationFunction(table, enums);
                 }
             }
-        }
 
-        if (schema) {
             this.validation = this.app.context.validation[schema];
             this.introspection = this.app.context.introspection[schema];
         }
