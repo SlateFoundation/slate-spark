@@ -21,7 +21,7 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                 padding: '16 0 0',
                 defaults: {
                     xtype: 'radiofield',
-                    name : 'request',
+                    name: 'request',
                     labelAlign: 'right',
                     labelWidth: 200 // TODO find a way to make the labels "flex"
                 },
@@ -33,8 +33,7 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                     */
                     {
                         value: 'bathroom',
-                        label: 'Bathroom',
-                        checked: true
+                        label: 'Bathroom'
                     },
                     {
                         value: 'nurse',
@@ -64,7 +63,8 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                                 xtype: 'button',
                                 text: 'Submit',
                                 ui: 'action',
-                                action: 'submit-helprequest'
+                                action: 'submit-helprequest',
+                                disabled: true
                             }
                         ]
                     }

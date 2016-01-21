@@ -25,7 +25,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
 
             xtype: 'spark-help'
         },
-        firstHelpRadio: 'spark-help radiofield'
+        firstHelpRadio: 'spark-help radiofield',
+        submitButton: 'spark-help button[action=submit-helprequest]'
         //helpForm: '#helpForm'
     },
 
@@ -33,7 +34,10 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         helpNavButton: {
             tap: 'onNavHelpTap'
         },
-        'button[action=submit-helprequest]': {
+        'spark-help radiofield[name=request]': {
+            change: 'onRequestTypeChange'
+        },
+        submitButton: {
             tap: 'onSubmitHelpRequestTap'
         }
         // called on painted because the get return empty when the component is
@@ -66,6 +70,10 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
 
+    onRequestTypeChange: function(requestTypeField) {
+        this.getSubmitButton().setDisabled(!requestTypeField.getGroupValue());
+    },
+
     onSubmitHelpRequestTap: function(btn) {
         var me = this;
 
@@ -73,6 +81,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             request_type: me.getFirstHelpRadio().getGroupValue(),
             student_id: me.getStudentSparkpoint().get('student_id')
          });
+
+         me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
     }
 
     // didn't bother programatically added radiofields because the styling is buggy
