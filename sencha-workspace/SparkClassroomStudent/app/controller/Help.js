@@ -48,24 +48,10 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             '#': {
                 studentsparkpointload: 'onStudentSparkpointLoad',
             }
-        },
-        store: {
-            '#HelpRequests': {
-                add: 'onStoreAdd',
-                load: 'onStoreLoad'
-            }
         }
     },
 
     // event handlers
-    onStoreAdd: function() {
-        this.syncHelpRequests();
-    },
-
-    onStoreLoad: function() {
-        this.syncHelpRequests();
-    },
-
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
@@ -87,31 +73,10 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             request_type: me.getFirstHelpRadio().getGroupValue(),
             student_id: me.getStudentSparkpoint().get('student_id')
          });
-
-        //  if (helpRequest.isValid()) {
-        //      helpRequest.save({
-        //          success: function() {
-        //              Ext.toast('Save Successful');
-        //          }
-        //      });
-        //  }
-    },
+    }
 
     // didn't bother programatically added radiofields because the styling is buggy
     // onSparkHelpContainerPainted: function(){
     //     //var helpForm = this.getHelpForm();
     // },
-
-    // controller methods
-    syncHelpRequests: function() {
-        var studentId = this.getStudentSparkpoint().get('student_id'),
-            helpRequests = Ext.getStore('HelpRequests').getRange(),
-            helpRequestsLength = helpRequests.length,
-            i = 0, helpRequest;
-
-        for (; i < helpRequestsLength; i++) {
-            helpRequest = helpRequests[i];
-            helpRequest.set('can_delete', studentId == helpRequest.get('student_id'));
-        }
-    }
 });
