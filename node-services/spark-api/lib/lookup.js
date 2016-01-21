@@ -122,9 +122,9 @@ function LookupTable(options) {
     }
 
     if (this.autoBust) {
-        console.log(`Subscribing to: cache.*.${this.schema}.${this.tableName}.*`);
+        console.log(`Subscribing to: cache.*.${this.schema}.${this.tableName}.>`);
 
-        nc.subscribe(`cache.*.${this.schema}.${this.tableName}.*`, function (msg, reply, subject) {
+        nc.subscribe(`cache.*.${this.schema}.${this.tableName}.>`, function (msg, reply, subject) {
 
             var [, action, pk, table, schema] = subject.split('.'),
                 event = {
@@ -219,8 +219,6 @@ LookupTable.prototype.idToCode = function* idToCode(id) {
     if (cachedCode) {
         return cachedCode;
     } else {
-        console.log(this);
-
         let value = yield this.pgp.oneOrNone(
             `SELECT "${codeColumn}" FROM "${this.schema}"."${this.tableName}" WHERE "${idColumn}" = $1 LIMIT 1`,
             [id]
