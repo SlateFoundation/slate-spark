@@ -317,7 +317,7 @@ module.exports = function* (next) {
         shared.vendor = result.json;
     }
 
-    if (!this.healthcheck && !(schema[this.schema] instanceof LookupTable)) {
+    if (!this.healthcheck && !(schema[this.schema] !== undefined)) {
         schema[this.schema] || (schema[this.schema] = {});
 
         for (let entity in perSchool) {
