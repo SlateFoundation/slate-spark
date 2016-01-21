@@ -184,11 +184,18 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             return false;
         }
     },
-    
-    onStudentSparkpointLoad: function(studentSparkpoint) {        
-        this.getTimerCmp().setData({
-            duration: studentSparkpoint.get('total_duration')
-        });
+
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        var timerCmp = this.getTimerCmp();
+
+        if (studentSparkpoint) {
+            timerCmp.setData({
+                duration: studentSparkpoint.get('total_duration')
+            });
+            timerCmp.show();
+        } else {
+            timerCmp.hide();
+        }
     },
 
     onSectionsStoreLoad: function(store) {
