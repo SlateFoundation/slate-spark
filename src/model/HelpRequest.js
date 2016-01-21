@@ -43,6 +43,12 @@ Ext.define('SparkClassroom.model.HelpRequest', {
             type: 'integer',
             persist: false
         },
+        {
+            name: 'can_close',
+            persist: false,
+            type: 'boolean',
+            allowNull: true
+        },
 
         // synthetic fields:
         {
@@ -82,12 +88,6 @@ Ext.define('SparkClassroom.model.HelpRequest', {
                 var student = r.get('student');
                 return student ? student.get('FullName') : '[Unenrolled Student]';
             }
-        },
-        {
-            name: 'can_delete',
-            persist: false,
-            type: 'boolean',
-            allowNull: true
         }
     ],
 
