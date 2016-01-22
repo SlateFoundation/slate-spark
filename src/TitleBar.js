@@ -10,6 +10,8 @@ Ext.define('SparkClassroom.TitleBar', {
         cls: 'spark-titlebar',
         items: [
             {
+                flex: 1,
+
                 xtype: 'selectfield',
                 itemId: 'sectionSelect',
                 cls: 'spark-course-selector',
@@ -21,7 +23,13 @@ Ext.define('SparkClassroom.TitleBar', {
                 store: 'Sections',
                 valueField: 'Code',
                 displayField: 'Title',
-                autoSelect: false
+                autoSelect: false,
+
+                usePicker: false,
+                defaultTabletPickerConfig: {
+                    cls: 'spark-course-picker',
+                    width: null
+                }
             }
         ]
     }
