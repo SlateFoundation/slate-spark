@@ -3,7 +3,6 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-competencies-grid',
     requires: [
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Title',
@@ -12,8 +11,10 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
 
     config: {
         plugins: [
-            'gridflex',
-            'gridheight'
+            {
+                type: 'gridheight',
+                enableVertical: true
+            }
         ],
         titleBar: null,
         store: 'assign.Learn',
@@ -22,7 +23,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
                 xtype: 'spark-sparkpoints-column'
             },
             {
-                flex: 0,
+                flex: null,
                 width: 500,
                 xtype: 'spark-title-column'
             },
