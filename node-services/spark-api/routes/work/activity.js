@@ -85,7 +85,7 @@ function *patchHandler(req, res, next) {
         timeValues = [],
         body = this.request.body,
         allKeys = Object.keys(body || {}),
-        self = this,
+        ctx = this,
         hasMasteryCheckScores = false,
         invalidKeys, activeSql, sparkpointSql, record, values;
 
@@ -104,7 +104,7 @@ function *patchHandler(req, res, next) {
                 val = parseInt(body.conference_group_id, 10);
 
                 if (isNaN(val)) {
-                    self.throw(
+                    ctx.throw(
                         `conference_group_id must be a number or null, you provided: ${body.conference_group_id}`,
                         400
                     );
@@ -125,7 +125,7 @@ function *patchHandler(req, res, next) {
                 timeValues.push(val);
                 updateValues.push(`${key} = ${val}`);
             } else {
-                self.throw(
+                ctx.throw(
                     `${key} must should be the number of seconds since epoch in UTC, you provided: ${body[key]}`,
                     400
                 );
@@ -133,15 +133,15 @@ function *patchHandler(req, res, next) {
         } else if (key.indexOf('mastery_check_score') !== -1) {
             hasMasteryCheckScores = true;
 
-            if (!self.isTeacher) {
-                self.throw(new Error('Only teachers can set mastery check scores.'), 403);
+            if (!ctx.isTeacher) {
+                ctx.throw(new Error('Only teachers can set mastery check scores.'), 403);
             }
 
             if (body[key] !== null) {
                 val = parseInt(body[key], 10);
 
                 if (isNaN(val) || val < 1 || val > 100) {
-                    self.throw(
+                    ctx.throw(
                         `${key} must be a number between 1 and 100 or null, you provided: ${body[key]}`,
                         400
                     );
