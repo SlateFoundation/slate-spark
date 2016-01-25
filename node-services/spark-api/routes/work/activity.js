@@ -5,6 +5,7 @@ function *getHandler() {
     this.require(['section_id']);
 
     var sectionId = this.query.section_id,
+        ctx = this,
         query = `
             SELECT t.last_accessed,
                    t.section_id,
@@ -50,8 +51,7 @@ function *getHandler() {
     records = yield this.pgp.manyOrNone(query, [sectionId]);
 
     records.forEach(function(record) {
-        delete record.section_id;
-        delete record.rn;
+        record.section_code = ctx.lookup.section.cache.idToCode[record.section_id];
     });
 
     this.body = records;
