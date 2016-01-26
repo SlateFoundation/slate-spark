@@ -227,6 +227,15 @@ function* introspectDatabase(pgp) {
                 t.table_schema,
                 t.table_name,
                 kcu.constraint_name
+    ), spark_partitions AS (
+        SELECT p.relname AS parent,
+               json_agg(c.relname) AS children
+          FROM pg_inherits
+          JOIN pg_class AS c
+            ON (inhrelid = c.oid)
+          JOIN pg_class AS p
+            ON (inhparent = p.oid)
+      GROUP BY p.relname
     )
 
     SELECT json_build_object(
@@ -235,9 +244,10 @@ function* introspectDatabase(pgp) {
       'enums',
       (SELECT json_object_agg(type, allowed_values) FROM spark_enums),
       'primaryKeys',
-      (SELECT json_object_agg("table", json_build_object('columns', columns, 'constraint', "constraint")) FROM spark_primary_keys)
-    ) AS json
-    FROM spark_table_columns;
+      (SELECT json_object_agg("table", json_build_object('columns', columns, 'constraint', "constraint")) FROM spark_primary_keys),
+      'partitions',
+      (SELECT json_object_agg(parent, children) FROM spark_partitions)
+    ) AS json FROM spark_table_columns;
     `);
 
     return introspection.json;
@@ -276,7 +286,7 @@ var columnValidators = {
         var len = val.length,
             max = col.maximum_length;
 
-        if (typeof val === 'string' && val.length <= max) {
+        if (typeof val === 'string' && val.length < max) {
             return `${len} exceeds maximum length of ${max}`;
         }
     },
@@ -337,7 +347,7 @@ function generateValidationFunction(table, enums) {
 
                 if (_enum) {
                     if (_enum.indexOf(val) === -1) {
-                        errors.push(`${columnName}: Allowed values are: ${_enum.join(',')}; you gave: ${val}`);
+                        errors.push(`${columnName}: Allowed values are: ${_enum.join(', ')}; you gave: ${val}`);
                     }
                 } else {
                     let validator = columnValidators[column.type];
