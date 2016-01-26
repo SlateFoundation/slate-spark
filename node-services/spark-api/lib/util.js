@@ -645,6 +645,116 @@ function validateNumericKeys(obj) {
     }
 }
 
+function identifyRecord(record, lookup) {
+    // If we use this with map, foreach, etc. the second argument will be passed, so we flip the conditional here
+    // to use lookup when present on the this object
+    lookup = this && this.lookup ? this.lookup : lookup;
+
+    if (record.section_code) {
+        record.section_id = lookup.section.cache.codeToId[('' + record.section_code).toLowerCase()];
+        delete record.section_code;
+    }
+
+    if (record.sparkpoint_code) {
+        record.sparkpoint_id = lookup.sparkpoint.cache.codeToId[('' + record.sparkpoint_code).toLowerCase()];
+        delete record.sparkpoint_code;
+    }
+
+    return record;
+}
+
+function codifyRecord(record, lookup) {
+    // If we use this with map, foreach, etc. the second argument will be passed, so we flip the conditional here
+    // to use lookup when present on the this object
+    lookup = this && this.lookup ? this.lookup : lookup;
+
+    if (record.section_id) {
+        record.section_code = lookup.section.cache.idToCode[record.section_id];
+    }
+
+    if (record.sparkpoint_id) {
+        record.sparkpoint_code = lookup.sparkpoint.cache.idToCode[record.sparkpoint_id];
+    }
+
+    return record;
+}
+
+function Values(vals) {
+    this.vals = vals || [];
+}
+
+Values.prototype.push = function(val) {
+    var idx = this.vals.indexOf(val);
+
+    if (idx === -1) {
+        return '$' + this.vals.push(val);
+    } else {
+        return '$' + (idx + 1);
+    }
+};
+
+function selectFromRequest(tableName) {
+    var allowedKeys = this.introspection.tables[tableName],
+        limit = parseInt(this.query.limit, 10),
+        offset = parseInt(this.query.offset, 10),
+        sql = `SELECT * FROM ${tableName}`,
+        vals = new Values(),
+        where = [],
+        query;
+
+    if (isNaN(limit)) {
+        limit = 'ALL';
+    }
+
+    if (isNaN(offset)) {
+        offset = 0;
+    }
+
+    query = identifyRecord(this.query, this.lookup);
+
+    for (var key in allowedKeys) {
+        let val = query[key];
+
+        if (val !== undefined) {
+
+            // Do not allow student's to query for another student's student id
+            if (this.isStudent && key === 'student_id') {
+                val = this.userId;
+            }
+
+            if (val === 'null' || val === null) {
+                where.push(`${key} IS NULL`);
+            } else {
+                where.push(`${key} = ${vals.push(val)}`);
+            }
+        }
+    }
+
+    if (where.length > 0) {
+        sql += ' WHERE '+  where.join(' AND ');
+    }
+
+    sql += ` LIMIT ${limit} OFFSET ${offset};`;
+
+    return this.pgp.any(sql, vals.vals);
+}
+
+function recordToWhere(record, vals) {
+    var keys = Object.keys(record),
+        values = keys.map(col => vals.push(record[col])),
+        where = keys.map(function(key, i) {
+            let val = values[i];
+
+            if (val === null) {
+                return `${key} IS NULL`;
+            } else {
+                return `${key} = ${val}`;
+            }
+        });
+
+    return 'WHERE ' + where.join(' AND ');
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     excludeObjectKeys: excludeObjectKeys,
@@ -680,6 +790,14 @@ module.exports = {
     generateSet: generateSet,
     QueryBuilder: QueryBuilder,
     groupQueries: groupQueries,
+
+    codifyRecord: codifyRecord,
+    identifyRecord: identifyRecord,
+
+    Values: Values,
+
+    selectFromRequest: selectFromRequest,
+    recordToWhere: recordToWhere,
 
     bind: require('co-bind')
 };
