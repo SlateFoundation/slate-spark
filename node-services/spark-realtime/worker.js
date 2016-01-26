@@ -281,13 +281,18 @@ function initNats() {
             } else {
                 identified = true;
                 sent = true;
-                io.to('section:' + sections[data.section_id]);
+                io.to('section:' + sections[data.section_id]).emit('db', msg);
             }
         }
 
         if (!sent) {
             userIds.forEach(function(userId) {
                 identified = true;
+
+                if (msg.table === 'help_requests') {
+                    msg.can_delete = (userId === msg.student_id);
+                }
+
                 io.to('user:' + userId).emit('db', msg);
             });
         }
