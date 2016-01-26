@@ -12,7 +12,8 @@ module.exports = function *parseRequest(next) {
     this.requestId = this.headers['x-nginx-request-id'];
 
     this.healthcheck = this.request.path === '/healthcheck';
-    
+
+    // TODO: Evaluate how this is used in existing endpoints; it seems like it could cause unexpected behavior
     if (!Array.isArray(body) && typeof body === 'object') {
         for (var prop in body) {
             if (typeof query[prop] === 'undefined') {
@@ -42,6 +43,8 @@ module.exports = function *parseRequest(next) {
     }
 
     if (util.isGtZero(query.section_id)) {
+        query.section_id = parseInt(query.section_id, 10);
+
         let section_code = yield this.lookup.section.idToCode(query.section_id);
 
         if (!section_code) {
