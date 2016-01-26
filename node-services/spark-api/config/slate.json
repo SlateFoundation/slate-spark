@@ -1,44 +1,19 @@
 {
   "instances": [
     {
-      "key": "sandbox-school",
-      "mysql": {
-        "schema": "sandbox-school"
-      },
-      "postgresql": {
-        "database": "spark",
-        "username": "sandbox-school",
-        "host": "10.240.103.217",
-        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
-      },
-      "production": false
-    },
-    {
       "key": "mta-live",
       "mysql": {
         "schema": "mta-live"
       },
       "postgresql": {
         "database": "spark",
+        "host": "10.128.161.19",
         "username": "mta-live",
-        "host": "10.240.103.217",
         "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
       },
       "production": true
     },
-    {
-      "key": "mta-staging",
-      "mysql": {
-        "schema": "mta-staging"
-      },
-      "postgresql": {
-        "database": "spark",
-        "host": "10.240.103.217",
-        "username": "mta-staging",
-        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
-      },
-      "production": false
-    },
+
     {
       "key": "merit-live",
       "mysql": {
@@ -47,11 +22,39 @@
       "postgresql": {
         "database": "spark",
         "username": "merit-live",
-        "host": "10.240.103.217",
+        "host": "10.128.161.19",
         "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
       },
       "production": true
     },
+    {
+      "key": "sandbox-school",
+      "mysql": {
+        "schema": "sandbox-school"
+      },
+      "postgresql": {
+        "database": "spark",
+        "username": "sandbox-school",
+        "host": "10.128.19.211",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": false
+    },
+
+    {
+      "key": "mta-staging",
+      "mysql": {
+        "schema": "mta-staging"
+      },
+      "postgresql": {
+        "database": "spark",
+        "host": "10.128.19.211",
+        "username": "mta-staging",
+        "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
+      },
+      "production": false
+    },
+
     {
       "key": "merit-staging",
       "mysql": {
@@ -60,10 +63,11 @@
       "postgresql": {
         "database": "spark",
         "username": "merit-staging",
-        "host": "10.240.103.217",
+        "host": "10.128.19.211",
         "password": "TpgeVl04Os9Ot7t2H7rySjREhxFiKZ"
       },
       "production": false
     }
+
   ]
 }
