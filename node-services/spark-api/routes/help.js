@@ -32,45 +32,8 @@ Values.prototype.push = function(val) {
     }
 };
 
-function selectFromRequest(tableName) {
-    var allowedKeys = this.introspection.tables[tableName],
-        limit = parseInt(this.query.limit, 10),
-        offset = parseInt(this.query.offset, 10),
-        sql = `SELECT * FROM ${tableName}`,
-        vals = new Values(),
-        where = [];
-
-    if (isNaN(limit)) {
-        limit = 'ALL';
-    }
-
-    if (isNaN(offset)) {
-        offset = 0;
-    }
-
-    for (var key in allowedKeys) {
-        let val = this.query[key];
-
-        if (val !== undefined) {
-            if (val === 'null') {
-                where.push(`${key} IS NULL`);
-            } else {
-                where.push(`${key} = ${vals.push(val)}`);
-            }
-        }
-    }
-
-    if (where.length > 0) {
-        sql += ' WHERE '+  where.join(' AND ');
-    }
-
-    sql += ` LIMIT ${limit} OFFSET ${offset};`;
-
-    return this.pgp.any(sql, vals.vals);
-}
-
 function *getHandler() {
-    this.body = yield selectFromRequest.call(this, 'help_requests');
+    this.body = yield util.selectFromRequest.call(this, 'help_requests');
 }
 
 function *patchHandler(req, res, next) {
