@@ -290,7 +290,7 @@ function initNats() {
                 identified = true;
 
                 if (msg.table === 'help_requests') {
-                    msg.can_delete = (userId === msg.student_id);
+                    msg.item.can_delete = (userId === msg.item.student_id);
                 }
 
                 io.to('user:' + userId).emit('db', msg);
