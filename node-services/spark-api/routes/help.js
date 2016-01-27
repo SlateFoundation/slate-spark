@@ -1,5 +1,7 @@
 'use strict';
 
+var util = require('../lib/util.js');
+
 /*
 CREATE TABLE IF NOT EXISTS help_requests(
     id serial,
@@ -18,22 +20,14 @@ CREATE INDEX IF NOT EXISTS help_requests_section_id_idx ON help_requests (sectio
 CREATE INDEX IF NOT EXISTS help_requests_section_open_time ON help_requests (open_time) WHERE open_time IS NULL;
 */
 
-function Values(vals) {
-    this.vals = vals || [];
-}
-
-Values.prototype.push = function(val) {
-    var idx = this.vals.indexOf(val);
-
-    if (idx === -1) {
-        return '$' + this.vals.push(val);
-    } else {
-        return '$' + (idx + 1);
-    }
-};
-
 function *getHandler() {
-    this.body = yield util.selectFromRequest.call(this, 'help_requests');
+    var helpRequests = yield util.selectFromRequest.call(this, 'help_requests'),
+        ctx = this;
+
+    this.body = helpRequests.map(function(request) {
+        request.can_delete = ctx.isTeacher || request.student_id === ctx.userId;
+        return request;
+    });
 }
 
 function *patchHandler(req, res, next) {
@@ -41,11 +35,11 @@ function *patchHandler(req, res, next) {
         body = this.request.body,
         inserts = [],
         updates = [],
-        vals = new Values(),
+        vals = new util.Values(),
         order = [];
 
     if (!Array.isArray(body)) {
-        return this.throw(400, new Error('Request body must be a JSON encoded array of help request objects'));
+        return this.throw(new Error('Request body must be a JSON encoded array of help request objects'), 400);
     }
 
     var validationErrors = body.map(function(request) {
