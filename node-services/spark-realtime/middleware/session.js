@@ -58,7 +58,7 @@ function ioSession(options) {
 
         socket.session = session || options.defaultSession;
 
-        socket.isStudent = socket.accountLevel === 'Student';
+        socket.isStudent = socket.session.accountLevel === 'Student';
         socket.isTeacher = !socket.isStudent;
 
         console.log(session);

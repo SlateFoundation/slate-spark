@@ -288,11 +288,6 @@ function initNats() {
         if (!sent) {
             userIds.forEach(function(userId) {
                 identified = true;
-
-                if (msg.table === 'help_requests') {
-                    msg.item.can_delete = (userId === msg.item.student_id);
-                }
-
                 io.to('user:' + userId).emit('db', msg);
             });
         }
