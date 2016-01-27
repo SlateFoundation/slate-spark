@@ -693,14 +693,15 @@ Values.prototype.push = function(val) {
     }
 };
 
-function selectFromRequest(tableName) {
+function selectFromRequest(tableName, vals) {
     var allowedKeys = this.introspection.tables[tableName],
         limit = parseInt(this.query.limit, 10),
         offset = parseInt(this.query.offset, 10),
         sql = `SELECT * FROM ${tableName}`,
-        vals = new Values(),
         where = [],
         query;
+
+    vals = vals || new Values();
 
     if (isNaN(limit)) {
         limit = 'ALL';
@@ -737,6 +738,36 @@ function selectFromRequest(tableName) {
     sql += ` LIMIT ${limit} OFFSET ${offset};`;
 
     return this.pgp.any(sql, vals.vals);
+}
+
+function whereFromRequest(tableName, vals) {
+    var allowedKeys = this.introspection.tables[tableName],
+        where = [],
+        query = identifyRecord(this.query, this.lookup)
+
+    for (var key in allowedKeys) {
+        let val = query[key];
+
+        if (val !== undefined) {
+
+            // Do not allow student's to query for another student's student id
+            if (this.isStudent && key === 'student_id') {
+                val = this.userId;
+            }
+
+            if (val === 'null' || val === null) {
+                where.push(`${key} IS NULL`);
+            } else {
+                where.push(`${key} = ${vals.push(val)}`);
+            }
+        }
+    }
+
+    if (where.length > 0) {
+       return ' WHERE '+  where.join(' AND ');
+    }
+
+    return '';
 }
 
 function recordToWhere(record, vals) {
@@ -797,6 +828,7 @@ module.exports = {
     Values: Values,
 
     selectFromRequest: selectFromRequest,
+    whereFromRequest: whereFromRequest,
     recordToWhere: recordToWhere,
 
     bind: require('co-bind')
