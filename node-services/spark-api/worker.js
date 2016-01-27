@@ -112,9 +112,12 @@ app.use(_.get('/test', routes.test.get));
 app.use(_.get('/healthcheck', routes.healthcheck.get));
 
 // Assignments
-app.use(_.get('/assignments/learns', routes.assignments.learns.get));
-app.use(_.patch('/assignments/learns', routes.assignments.learns.patch));
-app.use(_.post('/assignments/learns', routes.assignments.learns.patch));
+app.use(_.get('/assignments/:entity', routes.assignments.entity.get));
+app.use(_.patch('/assignments/:entity', routes.assignments.entity.patch));
+app.use(_.post('/assignments/:entity', routes.assignments.entity.post));
+
+app.use(_.get('/assignments', routes.assignments.index.get));
+app.use(_.patch('/assignments', routes.assignments.index.patch));
 
 if (PRODUCTION) {
     app.on('error', function(error, ctx) {
