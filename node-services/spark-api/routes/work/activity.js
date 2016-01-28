@@ -180,7 +180,6 @@ function *patchHandler(req, res, next) {
     if (!hasMasteryCheckScores) {
         // Do not set the recommended time when a teacher posts a mastery check score
         yield this.pgp.oneOrNone(activeSql, values);
-
     }
 
     if (timeKeys.length === 0) {
@@ -220,7 +219,10 @@ function *patchHandler(req, res, next) {
     }
 
     delete record.id;
-    record.sparkpoint = util.toSparkpointCode(record.sparkpoint_id);
+    record.section_id = this.query.section_id;
+    record = util.codifyRecord(record, this.lookup);
+    // TODO: Deprecate sparkpoint (use sparkpoint_code instead)
+    record.sparkpoint = record.sparkpoint_code;
 
     this.body = record;
 }
