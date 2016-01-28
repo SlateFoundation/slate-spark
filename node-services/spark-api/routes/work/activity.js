@@ -46,7 +46,8 @@ function *getHandler() {
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
                AND ss.student_id = t.student_id
               JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
-             WHERE t.rn = 1;`;
+             WHERE t.rn = 1;`,
+        records;
 
     records = yield this.pgp.manyOrNone(query, [sectionId]);
 
