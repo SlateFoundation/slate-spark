@@ -123,7 +123,8 @@ Ext.define('SparkClassroom.column.Assignments', {
 
     updatePopupCell: function(cell, oldCell) {
         var me = this,
-            popup = this.getPopup();
+            popup = this.getPopup(),
+            assignCellEl, x, y, scrollable;
 
         if (!cell) {
             popup.hide();
@@ -139,6 +140,32 @@ Ext.define('SparkClassroom.column.Assignments', {
             (me.up('grid').up('{getScrollable()}') || Ext.Viewport).add(popup);
         }
 
-        popup.showBy(cell.element.down('.menu-trigger'), 'tr-b?');
+        // initially render popup invisibly so it can be measuerd
+        popup.setVisibility(false);
+        popup.show();
+
+        // start positioning at bottom-left corner of assign cell
+        assignCellEl = cell.element;
+        x = assignCellEl.getLeft();
+        y = assignCellEl.getBottom();
+
+        // shift to accomodate scrollable parent
+        scrollable = popup.up('{getScrollable()}').getScrollable();
+        if (scrollable) {
+            y += scrollable.getPosition().y;
+            y -= scrollable.getElement().getTop();
+        }
+
+        // show and position tip -- doesn't seem to have any styling at all
+        // tipEl.show();
+        // tipEl.addCls('x-anchor-top');
+
+        // shift to desired corners based on size of popup and target
+        x -= popup.getWidth();
+        x += popup.down('spark-column-assignments').getWidth();
+
+        popup.setLeft(x);
+        popup.setTop(y);
+        popup.setVisibility(true);
     }
 });

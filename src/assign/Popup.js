@@ -32,10 +32,6 @@ Ext.define('SparkClassroom.assign.Popup', {
                 ],
                 columns: [
                     {
-                        xtype: 'spark-column-assignments',
-                        showTrigger: false
-                    },
-                    {
                         dataIndex: 'student',
                         text: 'Name',
                         flex: 1,
@@ -45,40 +41,14 @@ Ext.define('SparkClassroom.assign.Popup', {
                         dataIndex: 'sparkpoint',
                         text: 'Current Sparkpoint',
                         flex: 1
+                    },
+                    {
+                        xtype: 'spark-column-assignments',
+                        showTrigger: false
                     }
                 ]
             }
         ]
-    },
-
-    showBy: function(component, alignment) {
-        var me = this,
-            //tipEl = me.tipElement,
-            scrollable = me.up('{getScrollable()}').getScrollable(),
-            targetEl = Ext.get(component),
-            x = targetEl.getLeft(),
-            y = targetEl.getTop();
-
-        me.setVisibility(false);
-        me.show();
-
-        // shift to accomodate scrollable parent
-        if (scrollable) {
-            y += scrollable.getPosition().y;
-            y -= scrollable.getElement().getTop();
-        }
-
-        // show and position tip -- doesn't seem to have any styling at all
-        // tipEl.show();
-        // tipEl.addCls('x-anchor-top');
-
-        // shift to desired corners based on size of popup and target
-        x -= me.getWidth() - targetEl.getWidth();
-        y += targetEl.getHeight();
-
-        me.setLeft(x);
-        me.setTop(y);
-        me.setVisibility(true);
     },
 
     updateFlags: function(flags) {
