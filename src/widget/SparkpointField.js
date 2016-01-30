@@ -112,7 +112,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         store = list.getStore();
         max = store.getCount() - 1;
 
-        if (!max) {
+        if (max <= 0) {
             return;
         }
 
