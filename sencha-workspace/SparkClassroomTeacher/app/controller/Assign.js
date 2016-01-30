@@ -14,6 +14,11 @@
 Ext.define('SparkClassroomTeacher.controller.Assign', {
     extend: 'Ext.app.Controller',
 
+    config: {
+        selectedSection: null,
+        activeStudent: null
+    },
+
     views: [
         'assign.Container',
         'assign.learn.Container',
@@ -44,6 +49,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
             xtype: 'spark-teacher-assign-ct'
         },
+        sparkpointField: 'spark-teacher-assign-ct spark-sparkpointfield',
         assignTabbar: 'spark-teacher-assign-tabbar',
 
         learnCt: {
@@ -87,6 +93,15 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         },
         assignTabbar: {
             activetabchange: 'onAssignTabChange'
+        }
+    },
+
+    listen: {
+        controller: {
+            '#': {
+                sectionselect: 'onSectionSelect',
+                activestudentselect: 'onActiveStudentSelect'
+            }
         }
     },
 
@@ -170,13 +185,35 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
 
+    // config handlers
+    updateSelectedSection: function(section) {
+        // TODO: apply filters to stores
+    },
+
+    updateActiveStudent: function(activeStudent) {
+        this.syncActiveStudent();
+    },
+
+
     // event handlers
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
+    },
+
+    onActiveStudentSelect: function(student) {
+        this.setActiveStudent(student);
+    },
+
     onNavAssignTap: function() {
         this.redirectTo('assign');
     },
 
     onAssignCtActivate: function() {
-        this.getNavBar().setSelectedButton(this.getAssignNavButton());
+        var me = this;
+
+        me.getNavBar().setSelectedButton(me.getAssignNavButton());
+
+        me.syncActiveStudent();
     },
 
     onAssignTabChange: function(tabbar, value, oldValue){
@@ -215,6 +252,24 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         assignTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab);
-    }
+    },
 
+
+    syncActiveStudent: function() {
+        var me = this,
+            activeStudent = me.getActiveStudent(),
+            sparkpointField = me.getSparkpointField(),
+            sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
+
+        if (!activeStudent || !sparkpointField) {
+            return;
+        }
+
+        sparkpointField.setValue(activeStudent.get('sparkpoint'));
+        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', activeStudent.getId());
+
+        if (sparkpointSuggestionsStore.isLoaded()) {
+            sparkpointSuggestionsStore.load();
+        }
+    }
 });
