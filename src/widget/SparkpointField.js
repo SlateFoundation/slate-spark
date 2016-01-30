@@ -19,6 +19,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
         listeners: {
             focus: 'onFieldFocus',
+            blur: 'onFieldBlur',
             change: { fn: 'onFieldChange', buffer: 250 },
             action: 'onFieldAction',
             keyup: 'onFieldKeyUp'
@@ -79,6 +80,12 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         me.setQuery(me.getValue()||'');
 
         suggestionsList.setVisibility(true);
+    },
+
+    onFieldBlur: function(me) {
+        var suggestionsList = this.getSuggestionsList();
+
+        Ext.defer(suggestionsList.hide, 250, suggestionsList);
     },
 
     onFieldChange: function(me, value) {
