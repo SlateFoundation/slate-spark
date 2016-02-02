@@ -67,6 +67,10 @@ function *patchHandler(req, res, next) {
                 ));
             }
         }
+
+        if (Object.keys(request).length <= 1 && request.id) {
+            return ctx.throw(400, new Error('A help object must contain one or more fields and optionally an id.'));
+        }
     }).filter(function(errors) {
         return Array.isArray(errors);
     });
