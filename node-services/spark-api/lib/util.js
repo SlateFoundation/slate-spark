@@ -786,6 +786,89 @@ function recordToWhere(record, vals) {
     return 'WHERE ' + where.join(' AND ');
 }
 
+function recordToInsert(tableName, record, vals) {
+    var allowedKeys = Object.keys(this.introspection.tables[tableName]),
+        primaryKeys = this.introspection.primaryKeys[tableName].columns,
+        conflictColumns = [],
+        conflictPlaceholders = [],
+        valueColumns = [],
+        valuePlaceholders = [],
+        sql = `INSERT INTO ${tableName} `;
+
+    allowedKeys.forEach(function (col) {
+        let val = record[col],
+            placeholder = vals.push(val);
+
+        if (val !== undefined) {
+            if (primaryKeys.indexOf(col) !== -1) {
+                conflictColumns.push(col);
+                conflictPlaceholders.push(placeholder);
+            }
+
+            valuePlaceholders.push(placeholder);
+            valueColumns.push(col);
+        }
+    });
+
+    sql += `(${valueColumns.join(', ')}) VALUES (${valuePlaceholders.join(', ')})`;
+
+    // Generate an upsert
+    if (conflictColumns.length > 0) {
+        sql += ` ON CONFLICT (${conflictColumns.join(', ')}) DO UPDATE SET `;
+        sql += valueColumns.map(function(col, i) {
+            return `${col} = ${valuePlaceholders[i]}`;
+        }).join(', ');
+    }
+
+    return sql;
+}
+
+function recordToUpdate(tableName, record, vals) {
+    var allowedKeys = Object.keys(this.introspection.tables[tableName]),
+        primaryKeys = this.introspection.primaryKeys[tableName].columns,
+        where = [],
+        sets = [];
+
+    allowedKeys.forEach(function (col) {
+        let val = record[col];
+
+        if (primaryKeys.indexOf(col) === -1) {
+            sets.push(`${col} = ${vals.push(val)}`);
+        } else {
+            if (val === undefined) {
+                throw new Error(`An UPDATE for a ${tableName} record is missing a value for the primary key ${col}`);
+            }
+
+            where.push(`${col} = ${vals.push(val)}`);
+        }
+    });
+
+    return `UPDATE ${tableName} SET ${sets.join(', ')} WHERE ${where.join(' AND ')}`;
+}
+
+function queriesToReturningCte(queries) {
+    var cte = [],
+        select = [];
+
+    queries.forEach(function(query, i) {
+        query = query.trim();
+
+        // Strip trailing semi-colon
+        if (query.slice(-1) === ';') {
+            query = query.slice(0, -1);
+        }
+
+       if (query.slice(-11).toLowerCase() !== 'returning *') {
+           query += ' RETURNING *'
+       }
+
+        cte.push(`q${i} AS (${query})`);
+        select.push(`SELECT * FROM q${i}`);
+    });
+
+    return `WITH ${cte.join(',\n')} ${select.join('\nUNION ALL\n')};`;
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     excludeObjectKeys: excludeObjectKeys,
@@ -830,6 +913,9 @@ module.exports = {
     selectFromRequest: selectFromRequest,
     whereFromRequest: whereFromRequest,
     recordToWhere: recordToWhere,
-
+    recordToUpdate: recordToUpdate,
+    recordToInsert: recordToInsert,
+    queriesToReturningCte: queriesToReturningCte,
+    
     bind: require('co-bind')
 };

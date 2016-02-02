@@ -20,202 +20,121 @@ CREATE INDEX IF NOT EXISTS help_requests_section_id_idx ON help_requests (sectio
 CREATE INDEX IF NOT EXISTS help_requests_section_open_time ON help_requests (open_time) WHERE open_time IS NULL;
 */
 
+'use strict';
+
 function *getHandler() {
     var helpRequests = yield util.selectFromRequest.call(this, 'help_requests'),
         ctx = this;
 
-    this.body = helpRequests.map(function(request) {
-        request.can_delete = ctx.isTeacher || request.student_id === ctx.userId;
-        return request;
+    helpRequests.forEach(function(helpRequest) {
+        helpRequest.can_delete = ctx.isTeacher || helpRequest.student_id === ctx.userId;
     });
+
+    this.body = helpRequests;
 }
 
-function *patchHandler(req, res, next) {
-    var ctx = this,
-        body = this.request.body,
-        inserts = [],
-        updates = [],
-        vals = new util.Values(),
-        order = [];
+function sqlGenerator(records, vals) {
+    var tableName = 'help_requests',
+        validator = this.validation[tableName],
+        errors = [],
+        sqlStatements = [],
+        vals = vals || new util.Values(),
+        ctx = this;
 
-    if (!Array.isArray(body)) {
-        return this.throw(new Error('Request body must be a JSON encoded array of help request objects'), 400);
-    }
+    records.forEach(function(record) {
+        record = util.identifyRecord(record, ctx.lookup);
 
-    var validationErrors = body.map(function(request) {
-        if (request.close === true) {
-            request.close_time = new Date().toUTCString();
-            delete request.close;
+        if (record.student_id !== undefined && ctx.isStudent && record.student_id !== ctx.userId) {
+            ctx.throw(403, new Error(
+                'The student_id of a help request cannot be changed by a student to another student.'
+            ));
         }
 
-        if (request.id === undefined) {
-            // Allow INSERT in PATCH
-            if (ctx.isStudent) {
-                request.student_id = ctx.userId;
-                if (request.section_id === undefined) {
-                    request.section_id = ctx.query.section_id;
-                }
+        if (ctx.isStudent) {
+            record.student_id = ctx.userId;
+            if (record.section_id === undefined) {
+                record.section_id = ctx.query.section_id;
             }
+        }
 
-            order.push('i' + inserts.push(request));
-            return ctx.validation.help_requests(request);
+        if (record.open_time === undefined) {
+            record.open_time = new Date().toUTCString();
+        }
+
+        if (record.close) {
+            record.close_time = new Date().toUTCString();
+            delete record.close;
+        }
+
+        if (record.close_time) {
+            record.closed_by = ctx.userId;
+        }
+
+        let validationErrors = validator(record);
+
+        if (validationErrors) {
+            errors.push({ errors: validationErrors, input: record });
+        }
+
+        if (record.id === undefined) {
+            sqlStatements.push(util.recordToInsert.call(ctx, tableName, record, vals));
         } else {
-            order.push('u' + updates.push(request));
-            if (request.student_id !== undefined && ctx.isStudent && request.student_id !== ctx.userId) {
-                ctx.throw(403, new Error(
-                    'The student_id of a help request cannot be changed by a student to another student.'
-                ));
-            }
+            sqlStatements.push(util.recordToUpdate.call(ctx, tableName, record, vals));
         }
-
-        if (Object.keys(request).length <= 1 && request.id) {
-            return ctx.throw(400, new Error('A help object must contain one or more fields and optionally an id.'));
-        }
-    }).filter(function(errors) {
-        return Array.isArray(errors);
     });
 
-    if (validationErrors.length > 0) {
-        return this.throw(400, new Error(validationErrors.join(', ')));
-    } else {
-        body = body.map(function (request) {
-            if (request.section_id === undefined && request.id === undefined && ctx.query.section_id) {
-                request.section_id = ctx.query.section_id;
-            }
-
-            if (request.section_code) {
-                request.section_id = ctx.lookup.section.cache.codeToId[request.section_code.toLowerCase()];
-                delete request.section_code;
-            }
-
-            if (request.close_time) {
-                request.closed_by = ctx.userId;
-            }
-
-            if (ctx.isStudent && !request.id) {
-                request.student_id = ctx.userId;
-            }
-
-            return request;
-        });
-
-        inserts = inserts.map(function(record) {
-            var cols = [], placeholders = [];
-
-            for (var col in record) {
-                var val = record[col];
-                cols.push(col);
-                placeholders.push(vals.push(val));
-            }
-
-            return `INSERT INTO help_requests (${cols.join(', ')}) VALUES (${placeholders.join(', ')}) RETURNING *`;
-        });
-
-        updates = updates.map(function(record) {
-            var sql = 'UPDATE help_requests SET ',
-                sets = [];
-
-            for (var col in record) {
-                if (col !== 'id') {
-                    sets.push(`${col} = ${vals.push(record[col])}`);
-                }
-            }
-
-            sql += sets.join(', ');
-
-            // Students can only PATCH their own help requests
-            let acl = '1=1';
-
-            if (ctx.isStudent) {
-                acl = `student_id = ${vals.push(ctx.userId)}`;
-            }
-
-            return sql + ` WHERE id = ${record.id} AND ${acl} RETURNING *`;
-        });
-
-        var insertLen = inserts.length,
-            updateLen = updates.length;
-
-        var sql = 'WITH ';
-
-        if (insertLen) {
-            sql += inserts.map(function(insert, idx) {
-                var sql = 'i' + (idx + 1) + ' AS (\n\t' + insert + '\n)';
-
-                if (idx < (insertLen - 1) || (idx === (insertLen - 1) && updateLen > 0)) {
-                    sql += ', ';
-                }
-
-                return sql;
-            }).join('');
-        }
-
-        if (updateLen) {
-            if (insertLen === 0) {
-                sql += '\n';
-            }
-
-            sql += updates.map(function(update, idx) {
-                var sql = 'u' + (idx + 1) + ' AS (\n\t' + update + '\n)';
-
-                if (idx < (updateLen - 1)) {
-                    sql += ', ';
-                }
-
-                return sql;
-            }).join('');
-        }
-    }
-
-    sql += '\n\nSELECT * FROM (\n';
-    sql += order.map(table => `SELECT * FROM ${table}\n`).join('UNION ALL\n');
-    sql += '\n) results;';
-
-    this.body = yield this.pgp.any(sql, vals.vals);
+    return {
+        sql: sqlStatements,
+        vals: vals,
+        errors: errors
+    };
 }
 
-function *postHandler (req, res, next) {
-    var body = this.request.body;
+function *postHandler() {
+    var body = this.request.body,
+        query,
+        returnArray = Array.isArray(body),
+        ctx = this;
 
-    if (typeof body !== 'object' || Array.isArray(body)) {
-        return this.throw(400, new Error('The request body must be a single JSON encoded help request object'));
+    if ((returnArray && body.length === 0) || typeof body !== 'object') {
+        return this.throw(
+            new Error(`${this.method} request body must be a single help_request object or an array of help_request objects`),
+            400
+        );
     }
 
-    if (body.id !== undefined) {
-        return this.throw(400, new Error('Existing help requests must be modified using PATCH'));
+    if (!returnArray) {
+        body = [body];
     }
 
-    if (this.query.section_id) {
-        body.section_id = this.query.section_id;
+    query = sqlGenerator.call(this, body);
+
+    if (query.errors.length > 0) {
+        this.status = 400;
+        return this.body = {
+            success: false,
+            error: query.errors
+        };
     }
 
-    if (body.section_code) {
-        body.section_id = ctx.lookup.section.cache.codeToId[body.section_code.toLowerCase()];
-        delete request.section_code;
+    function aclDecorator(record) {
+        if (!ctx.isStudent || ctx.userId === record.student_id) {
+            record.can_delete = true;
+        }
+
+        return record;
     }
 
-    if (this.isStudent) {
-        body.student_id = this.userId;
+    if (!returnArray) {
+        this.body = yield aclDecorator(this.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
     } else {
-        return this.throw(400, new Error('Non-student users must provide student_id explicitly (did you mean to do this?)'));
+        this.body = yield this.pgp.many(util.queriesToReturningCte(query.sql), query.vals.vals).map(aclDecorator);
     }
-
-    var validationErrors = this.validation.help_requests(body);
-
-    if (Array.isArray(validationErrors)) {
-        return this.throw(400, new Error(validationErrors.join(', ')));
-    }
-
-    let columns = Object.keys(body);
-    let values = new Values();
-    let placeholders = columns.map(col => values.push(body[col]));
-    let query = `INSERT INTO help_requests (${columns.join(', ')}) VALUES (${placeholders.join(', ')}) RETURNING * `;
-
-    this.body = yield this.pgp.one(query, values.vals);
 }
 
 module.exports = {
     get: getHandler,
+    patch: postHandler,
     post: postHandler,
-    patch: patchHandler
+    sqlGenerator: sqlGenerator
 };
