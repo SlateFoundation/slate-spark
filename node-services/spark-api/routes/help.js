@@ -126,7 +126,7 @@ function *patchHandler(req, res, next) {
                 acl = `student_id = ${vals.push(ctx.userId)}`;
             }
 
-            return sql + `WHERE id = ${record.id} AND ${acl} RETURNING *`;
+            return sql + ` WHERE id = ${record.id} AND ${acl} RETURNING *`;
         });
 
         var insertLen = inserts.length,
