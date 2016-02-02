@@ -43,6 +43,11 @@ function *patchHandler(req, res, next) {
     }
 
     var validationErrors = body.map(function(request) {
+        if (request.close === true) {
+            request.closed_time = Date.now();
+            delete request.close;
+        }
+
         if (request.id === undefined) {
             // Allow INSERT in PATCH
             if (ctx.isStudent) {
@@ -69,10 +74,10 @@ function *patchHandler(req, res, next) {
     if (validationErrors.length > 0) {
         return this.throw(400, new Error(validationErrors.join(', ')));
     } else {
-        body = body.map(function(request) {
-           if (request.section_id === undefined && request.id === undefined && ctx.query.section_id) {
-               request.section_id = ctx.query.section_id;
-           }
+        body = body.map(function (request) {
+            if (request.section_id === undefined && request.id === undefined && ctx.query.section_id) {
+                request.section_id = ctx.query.section_id;
+            }
 
             if (request.section_code) {
                 request.section_id = ctx.lookup.section.cache.codeToId[request.section_code.toLowerCase()];
