@@ -44,7 +44,7 @@ function *patchHandler(req, res, next) {
 
     var validationErrors = body.map(function(request) {
         if (request.close === true) {
-            request.close_time = Date.now();
+            request.close_time = new Date().toUTCString();
             delete request.close;
         }
 
