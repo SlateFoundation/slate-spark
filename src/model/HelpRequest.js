@@ -36,7 +36,8 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         },
         {
             name: 'close_time',
-            type: 'sparkdate'
+            type: 'sparkdate',
+            persist: false
         },
         {
             name: 'closed_by',
@@ -46,6 +47,11 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         {
             name: 'can_close',
             persist: false,
+            type: 'boolean',
+            allowNull: true
+        },
+        {
+            name: 'close',
             type: 'boolean',
             allowNull: true
         },
@@ -96,7 +102,8 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         url: '/spark/api/help',
         writer: {
             type: 'json',
-            allowSingle: true
+            allowSingle: false,
+            writeAllFields: false
         }
     }
 });
