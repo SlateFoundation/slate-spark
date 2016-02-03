@@ -5,9 +5,9 @@ var util = require('../lib/util.js');
 /*
 CREATE TABLE IF NOT EXISTS help_requests(
     id serial,
-    student_id integer,
-    section_id integer,
-    request_type text,
+    student_id integer NOT NULL,
+    section_id integer NOT NULL,
+    request_type text NOT NULL,
     open_time TIMESTAMP without TIME ZONE,
     close_time TIMESTAMP without TIME ZONE,
     closed_by integer,
@@ -42,6 +42,8 @@ function sqlGenerator(records, vals) {
         ctx = this;
 
     records.forEach(function(record) {
+        var validationErrors;
+
         record = util.identifyRecord(record, ctx.lookup);
 
         if (record.student_id !== undefined && ctx.isStudent && record.student_id !== ctx.userId) {
@@ -71,9 +73,14 @@ function sqlGenerator(records, vals) {
             record.closed_by = ctx.userId;
         }
 
-        let validationErrors = validator(record);
+        validationErrors = validator(record);
 
-        if (validationErrors) {
+        // A PATCH can ignore any missing fields
+        if (record.id !== undefined) {
+            validationErrors = validationErrors.filter(error => error.indexOf('is required') === -1);
+        }
+
+        if (Array.isArray(validationErrors) && validationErrors.length > 0) {
             errors.push({ errors: validationErrors, input: record });
         }
 
