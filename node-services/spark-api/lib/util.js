@@ -833,7 +833,9 @@ function recordToUpdate(tableName, record, vals) {
         let val = record[col];
 
         if (primaryKeys.indexOf(col) === -1) {
-            sets.push(`${col} = ${vals.push(val)}`);
+            if (val !== undefined) {
+                sets.push(`${col} = ${vals.push(val)}`);
+            }
         } else {
             if (val === undefined) {
                 throw new Error(`An UPDATE for a ${tableName} record is missing a value for the primary key ${col}`);
