@@ -26,7 +26,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             xtype: 'spark-help'
         },
         firstHelpRadio: 'spark-help radiofield',
-        submitButton: 'spark-help button[action=submit-helprequest]'
+        submitButton: 'spark-help button[action=submit-helprequest]',
+        waitlist: 'spark-waitlist'
         //helpForm: '#helpForm'
     },
 
@@ -39,6 +40,9 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         },
         submitButton: {
             tap: 'onSubmitHelpRequestTap'
+        },
+        waitlist: {
+            deletetap: 'onDeleteTap',
         }
         // called on painted because the get return empty when the component is
         // autoCreated with hidden set to true
@@ -52,10 +56,27 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             '#': {
                 studentsparkpointload: 'onStudentSparkpointLoad',
             }
+        },
+        store: {
+            '#HelpRequests': {
+                add: 'onStoreAdd',
+                load: 'onStoreLoad'
+            }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
     // event handlers
+    onStoreAdd: function() {
+        this.syncHelpRequests();
+    },
+
+    onStoreLoad: function() {
+        this.syncHelpRequests();
+    },
+
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
     },
@@ -83,10 +104,80 @@ Ext.define('SparkClassroomStudent.controller.Help', {
          });
 
          me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
-    }
+    },
+
+    onDeleteTap: function(list, item) {
+        item.getRecord().set('close', true);
+    },
+
+    onSocketData: function(socket, data) {
+        if (data.table != 'help_requests') {
+            return;
+        }
+
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint(),
+            itemData = data.item,
+            helpStore, doLoadHelpRequest;
+
+        // TODO: restore logic once section_id is set in student sparkpoint
+        if (!studentSparkpoint) {//} || studentSparkpoint.get('section_id') != itemData.section_id) {
+            return;
+        }
+
+        helpStore = Ext.getStore('HelpRequests');
+
+        doLoadHelpRequest = function() {
+            var helpRequest = helpStore.getById(itemData.id);
+
+            if (helpRequest) {
+                helpRequest.set(itemData, { dirty: false });
+            } else {
+                helpStore.add(itemData);
+            }
+        };
+
+        if (helpStore.isSyncing) {
+            helpStore.on('write', doLoadHelpRequest, me, { single: true });
+        } else {
+            doLoadHelpRequest();
+        }
+
+/*
+        updatedLearn = me.getWorkLearnsStore().getById(itemData.resource_id);
+
+        if (updatedLearn) {
+            // TODO: can we find ways to not duplicate this logic between the api and the client?
+            // Can there be an abstraction on the server side so that a higher-level event comes down
+            // with a delta to the object as returned by the API previously so we can just pass the whole
+            // data object to set?
+            updatedLearn.set({
+                launched: itemData.start_status == 'launched',
+                completed: itemData.completed
+            },{
+                dirty: false
+            });
+
+            me.ensureLearnPhaseStarted();
+        }
+        */
+    },
 
     // didn't bother programatically added radiofields because the styling is buggy
     // onSparkHelpContainerPainted: function(){
     //     //var helpForm = this.getHelpForm();
     // },
+
+    // controller methods
+    syncHelpRequests: function() {
+        var studentId = this.getStudentSparkpoint().get('student_id'),
+            helpRequests = Ext.getStore('HelpRequests').getRange(),
+            helpRequestsLength = helpRequests.length,
+            i = 0, helpRequest;
+
+        for (; i < helpRequestsLength; i++) {
+            helpRequest = helpRequests[i];
+            helpRequest.set('can_close', studentId == helpRequest.get('student_id'));
+        }
+    }
 });
