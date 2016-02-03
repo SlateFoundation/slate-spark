@@ -61,10 +61,11 @@ function sqlGenerator(records, vals) {
             record.open_time = new Date().toUTCString();
         }
 
-        if (record.close) {
+        if (record.close === true) {
             record.close_time = new Date().toUTCString();
-            delete record.close;
         }
+
+        delete record.close;
 
         if (record.close_time) {
             record.closed_by = ctx.userId;
