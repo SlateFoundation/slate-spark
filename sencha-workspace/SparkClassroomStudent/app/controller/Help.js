@@ -121,7 +121,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             helpStore, doLoadHelpRequest;
 
         // TODO: restore logic once section_id is set in student sparkpoint
-        if (!studentSparkpoint) {//} || studentSparkpoint.get('section_id') != itemData.section_id) {
+        if (!studentSparkpoint || studentSparkpoint.get('section_id') != itemData.section_id) {
             return;
         }
 
@@ -142,25 +142,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         } else {
             doLoadHelpRequest();
         }
-
-/*
-        updatedLearn = me.getWorkLearnsStore().getById(itemData.resource_id);
-
-        if (updatedLearn) {
-            // TODO: can we find ways to not duplicate this logic between the api and the client?
-            // Can there be an abstraction on the server side so that a higher-level event comes down
-            // with a delta to the object as returned by the API previously so we can just pass the whole
-            // data object to set?
-            updatedLearn.set({
-                launched: itemData.start_status == 'launched',
-                completed: itemData.completed
-            },{
-                dirty: false
-            });
-
-            me.ensureLearnPhaseStarted();
-        }
-        */
     },
 
     // didn't bother programatically added radiofields because the styling is buggy
