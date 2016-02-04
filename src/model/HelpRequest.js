@@ -37,7 +37,8 @@ Ext.define('SparkClassroom.model.HelpRequest', {
         {
             name: 'close_time',
             type: 'sparkdate',
-            persist: false
+            persist: false,
+            allowNull: true
         },
         {
             name: 'closed_by',

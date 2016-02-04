@@ -7,7 +7,7 @@ Ext.define('SparkClassroom.store.HelpRequests', {
 
     filters: [
         function(item) {
-            return item.close_time == null;
+            return item.data.close_time === null;
         }
     ],
 
