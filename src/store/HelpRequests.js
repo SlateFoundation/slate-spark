@@ -4,7 +4,13 @@ Ext.define('SparkClassroom.store.HelpRequests', {
 
 
     model: 'SparkClassroom.model.HelpRequest',
-    
+
+    filters: [
+        function(item) {
+            return item.close_time == null;
+        }
+    ],
+
     config: {
         autoSync: true
     }
