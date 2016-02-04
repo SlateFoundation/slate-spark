@@ -20,8 +20,14 @@ module.exports = function *parseSession(next) {
         this.username = session.username;
 
         this.userId = session.userId;
+        /* TODO: This is bad mmmmmkay? When we use selectFromRequest() this is going to scope all searches to the logged
+                 -in student... which is not desirable in all (most) cases. Before changing this we need to make sure
+                 it wasn't used anywhere.
+         */
         this.studentId = this.isStudent ? session.userId : this.query.student_id;
+        this.hadStudentIdInQuery = this.query.student_id !== undefined;
         this.query.student_id = this.studentId;
+
         this.session = session;
         this.schema = this.header['x-nginx-mysql-schema'];
     }

@@ -23,6 +23,10 @@ CREATE INDEX IF NOT EXISTS help_requests_section_open_time ON help_requests (ope
 'use strict';
 
 function *getHandler() {
+    // HACK: This works around the session middleware injecting the logged in student_id into this.query automatically
+    if (!this.hadStudentIdInQuery) {
+        delete this.query.student_id;
+    }
     var helpRequests = yield util.selectFromRequest.call(this, 'help_requests'),
         ctx = this;
 
