@@ -11,7 +11,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     ],
 
     stores: [
-        'Sections@SparkClassroom.store',
         'HelpRequests@SparkClassroom.store'
     ],
 
@@ -120,7 +119,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             itemData = data.item,
             helpStore, doLoadHelpRequest;
 
-        // TODO: restore logic once section_id is set in student sparkpoint
         if (!studentSparkpoint || studentSparkpoint.get('section_id') != itemData.section_id) {
             return;
         }
