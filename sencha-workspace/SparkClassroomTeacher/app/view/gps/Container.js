@@ -4,7 +4,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     xtype: 'spark-gps',
     cls: 'spark-gps',
     requires: [
-        'SparkClassroomTeacher.view.gps.StudentList'
+        'SparkClassroomTeacher.view.gps.StudentList',
+        'SparkClassroomTeacher.view.gps.Waitlist'
     ],
 
     config: {
@@ -82,10 +83,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                             {
                                 itemId: 'helpList',
 
-                                xtype: 'spark-gps-studentlist',
-                                store: 'gps.Help',
+                                xtype: 'spark-waitlist',
                                 title: 'Help',
-                                showDismissButton: true,
                                 emptyText: 'No students have open help requests',
                                 deferEmptyText: false
                                 //grouped: true
