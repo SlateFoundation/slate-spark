@@ -46,6 +46,12 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             xtype: 'spark-student-navbar',
             hidden: true
         },
+        helpCt: {
+            selector: 'spark-help',
+            autoCreate: true,
+
+            xtype: 'spark-help'
+        },
         timerCmp: 'spark-student-navbar #timer',
 
         welcomeCmp: {
@@ -126,6 +132,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
         // called buffered sync method
         me.syncSelections();
+
+        this.getNavBar().hideSubpanel(this.getHelpCt());
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
