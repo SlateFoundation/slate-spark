@@ -83,9 +83,11 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     onNavHelpTap: function(btn) {
         var helpStore = Ext.getStore('HelpRequests');
 
-        if (!helpStore.isLoaded()) {
-            helpStore.load();
+        if (helpStore.isLoaded()) {
+            helpStore.removeAll();
         }
+
+        helpStore.load();
 
         this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
