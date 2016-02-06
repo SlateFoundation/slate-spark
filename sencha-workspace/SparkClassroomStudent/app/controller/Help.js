@@ -3,7 +3,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     extend: 'Ext.app.Controller',
 
     config: {
-        studentSparkpoint: null
+        studentSparkpoint: null,
+        selectedSection: null
     },
 
     views: [
@@ -27,7 +28,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         firstHelpRadio: 'spark-help radiofield',
         submitButton: 'spark-help button[action=submit-helprequest]',
         waitlist: 'spark-waitlist',
-        sectionSelect: 'spark-titlebar #sectionSelect'
         //helpForm: '#helpForm'
     },
 
@@ -44,9 +44,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         waitlist: {
             deletetap: 'onDeleteTap',
         },
-        sectionSelect: {
-            change: 'onSectionSelectChange'
-        },
         // called on painted because the get return empty when the component is
         // autoCreated with hidden set to true
         // ,sparkHelpCt: {
@@ -58,6 +55,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         controller: {
             '#': {
                 studentsparkpointload: 'onStudentSparkpointLoad',
+                sectionselect: 'onSectionSelect'
             }
         },
         store: {
@@ -148,7 +146,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         }
     },
 
-    onSectionSelectChange: function(select, section, oldSection) {
+    onSectionSelect: function(section) {
         this.getNavBar().hideSubpanel(this.getHelpCt());
     },
 
