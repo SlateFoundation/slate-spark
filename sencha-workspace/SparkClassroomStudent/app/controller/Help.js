@@ -88,10 +88,10 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         var helpStore = Ext.getStore('HelpRequests');
 
         if (helpStore.isLoaded()) {
-            helpStore.removeAll();
+            helpStore.reload();
+        } else {
+            helpStore.load();
         }
-
-        helpStore.load();
 
         this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
