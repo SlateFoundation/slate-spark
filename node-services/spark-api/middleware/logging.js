@@ -58,7 +58,7 @@ module.exports = function *logger(next) {
         } else {
             if (config.json_filename) {
                 jsonHandle = require('fs').createWriteStream(path.join(logDirectory, config.json_filename), {
-                    flags: 'w',
+                    flags: 'a',
                     encoding: 'utf8',
                     mode: '0666'
                 });
@@ -66,7 +66,7 @@ module.exports = function *logger(next) {
 
             if (config.text_filename) {
                 textHandle = require('fs').createWriteStream(path.join(logDirectory, config.text_filename), {
-                    flags: 'w',
+                    flags: 'a',
                     encoding: 'utf8',
                     mode: '0666'
                 });
