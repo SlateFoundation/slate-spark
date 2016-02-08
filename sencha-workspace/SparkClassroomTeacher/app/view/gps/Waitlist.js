@@ -13,12 +13,10 @@ Ext.define('SparkClassroomTeacher.view.gps.Waitlist', {
             '<span class="spark-waitlist-name">{student_name}</span> ',
             '<span class="spark-waitlist-time">{open_time:fuzzyTime(true)}</span> ',
             '<span class="spark-waitlist-x">{short_request_type}</span> ',
-            '<tpl if="can_close">',
-                '<i class="fa fa-times-circle item-delete-btn"></i>',
-            '</tpl>'
+            '<i class="fa fa-times-circle item-delete-btn"></i>'
         ]
     },
-/*
+
     onItemTap: function(ev, t) {
         var me = this;
 
@@ -29,5 +27,4 @@ Ext.define('SparkClassroomTeacher.view.gps.Waitlist', {
 
         me.callParent(arguments);
     }
-*/
 });
