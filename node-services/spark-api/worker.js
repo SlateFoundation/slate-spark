@@ -26,12 +26,29 @@ if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
 }
 
+if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
+    let co = require('co');
+    let git = require('git-promise');
+
+    app.context.git = {};
+
+    co(function*() {
+        if (config.logging.git_branch) {
+            app.context.git.branch = (yield git('rev-parse --abbrev-ref HEAD')).trim();
+        }
+
+        if (config.logging.git_commit) {
+            app.context.git.commit = (yield git('rev-parse --short HEAD')).trim();
+        }
+    }).catch(function(e) { throw e; });
+}
+
 app.context.config = config;
 app.use(middleware.response_time);
 app.use(requestToCurl());
 app.use(error({ template: __dirname + '/config/error.html' }));
 app.use(middleware.process);
-app.use(middleware.logger);
+app.use(middleware.logging);
 app.use(middleware.session);
 app.use(jsonBody({}));
 app.use(middleware.database.knex({
