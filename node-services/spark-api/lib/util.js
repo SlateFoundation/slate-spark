@@ -787,7 +787,9 @@ function recordToWhere(record, vals) {
 }
 
 function recordToInsert(tableName, record, vals) {
+    // allowedKeys must be an array of column names for the table
     var allowedKeys = Object.keys(this.introspection.tables[tableName]),
+        // primary keys must be an array of the column(s) that make up the primary key
         primaryKeys = this.introspection.primaryKeys[tableName].columns,
         conflictColumns = [],
         conflictPlaceholders = [],
