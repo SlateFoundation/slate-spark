@@ -30,11 +30,10 @@ function *getHandler() {
     var helpRequests = yield util.selectFromRequest.call(this, 'help_requests'),
         ctx = this;
 
-    helpRequests.forEach(function(helpRequest) {
+    this.body = helpRequests.map(function(helpRequest) {
         helpRequest.can_delete = ctx.isTeacher || helpRequest.student_id === ctx.userId;
+        return util.codifyRecord(helpRequest, ctx.lookup);
     });
-
-    this.body = helpRequests;
 }
 
 function sqlGenerator(records, vals) {
@@ -134,7 +133,7 @@ function *postHandler() {
             record.can_delete = true;
         }
 
-        return record;
+        return util.codifyRecord(record, ctx.lookup);
     }
 
     if (!returnArray) {
