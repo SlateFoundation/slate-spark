@@ -138,11 +138,11 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         }
 
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
             itemData = data.item,
             helpStore, doLoadHelpRequest;
+        me.getActiveSection();
 
-        if (!studentSparkpoint || studentSparkpoint.get('section_id') != itemData.section_id) {
+        if (me.getActiveSection() != itemData.section_code) {
             return;
         }
 
