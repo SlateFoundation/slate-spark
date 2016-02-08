@@ -163,24 +163,5 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         } else {
             doLoadHelpRequest();
         }
-    },
-
-    // didn't bother programatically added radiofields because the styling is buggy
-    // onSparkHelpContainerPainted: function(){
-    //     //var helpForm = this.getHelpForm();
-    // },
-
-    // controller methods
-    syncHelpRequests: function() {
-        var studentId = this.getStudentSparkpoint().get('student_id'),
-            helpRequests = Ext.getStore('HelpRequests').getRange(),
-            helpRequestsLength = helpRequests.length,
-            i = 0, helpRequest;
-
-        for (; i < helpRequestsLength; i++) {
-            helpRequest = helpRequests[i];
-            helpRequest.set('can_close', studentId == helpRequest.get('student_id'));
-        }
     }
-*/
 });
