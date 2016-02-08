@@ -10,14 +10,16 @@ var promise = require('bluebird'),
 
 const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2'];
 
-monitor.attach(options);
-monitor.setTheme('matrix');
-
 function objToConnectionString(obj) {
     return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}?application_name=spark-api`;
 }
 
-function initializePgp(config, slateConfig) {
+function initializePgp(config, slateConfig, globalConfig) {
+    if (globalConfig.logging && globalConfig.logging.stdout_sql) {
+        monitor.attach(options);
+        monitor.setTheme('matrix');
+    }
+
     if (config.postgresql && config.postgresql.sharedConnection) {
         pgpConnections.shared = Pgp(objToConnectionString(config.postgresql.sharedConnection));
     }
@@ -29,7 +31,7 @@ function initializePgp(config, slateConfig) {
     return pgpConnections;
 }
 
-function initializeKnex(config, slateConfig) {
+function initializeKnex(config, slateConfig, globalConfig) {
     var knexConfig = {};
 
     if (config.postgresql) {
@@ -55,9 +57,11 @@ function initializeKnex(config, slateConfig) {
 
             knexConnections[instance.key] = connection;
 
-            connection.on('query', function(query) {
-                console.log(query.sql);
-            });
+            if (globalConfig.logging && globalConfig.logging.stdout_sql) {
+                connection.on('query', function(query) {
+                    console.log(query.sql);
+                });
+            }
         });
 
     return knexConnections;
@@ -67,7 +71,7 @@ function pgp(options) {
     return function *pgp(next) {
         var schema = this.header['x-nginx-mysql-schema'];
 
-        this.app.context.pgp || (this.app.context.pgp = initializePgp(options.config, options.slateConfig));
+        this.app.context.pgp || (this.app.context.pgp = initializePgp(options.config, options.slateConfig, this.app.context.config));
 
         if (schema) {
             this.pgp = this.app.context.pgp[schema];
@@ -127,7 +131,7 @@ function knex(options) {
     return function *knex(next) {
         var schema = this.header['x-nginx-mysql-schema'];
 
-        this.app.context.knex || (this.app.context.knex = initializeKnex(options.config, options.slateConfig));
+        this.app.context.knex || (this.app.context.knex = initializeKnex(options.config, options.slateConfig, this.app.context.config));
 
         if (schema) {
             this.knex = this.app.context.knex[schema];
@@ -188,9 +192,9 @@ function* introspectDatabase(pgp) {
                       column_default,
                       'is_nullable',
                       CASE
-                        WHEN is_nullable = 'YES'
-                        THEN TRUE
-                        ELSE FALSE
+                        WHEN is_nullable = 'NO'
+                        THEN FALSE
+                        ELSE TRUE
                       END,
                       'maximum_length',
                       character_maximum_length

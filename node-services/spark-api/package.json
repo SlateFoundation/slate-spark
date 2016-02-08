@@ -9,6 +9,7 @@
     "cli-color": "^1.1.0",
     "co": "^4.6.0",
     "co-bind": "^1.0.0",
+    "co-fs": "^1.2.0",
     "forever": "^0.15.1",
     "generic-pool": "^2.2.1",
     "git-promise": "^0.3.0",

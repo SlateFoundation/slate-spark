@@ -34,11 +34,11 @@ if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
 
     co(function*() {
         if (config.logging.git_branch) {
-            app.context.git.branch = (yield git('rev-parse --abbrev-ref HEAD')).trim();
+            app.context.git.branch = (yield git('rev-parse --abbrev-ref HEAD', {cwd: __dirname})).trim();
         }
 
         if (config.logging.git_commit) {
-            app.context.git.commit = (yield git('rev-parse --short HEAD')).trim();
+            app.context.git.commit = (yield git('rev-parse --short HEAD', {cwd: __dirname})).trim();
         }
     }).catch(function(e) { throw e; });
 }

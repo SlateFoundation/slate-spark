@@ -9,6 +9,12 @@ module.exports = function *parseRequest(next) {
         query = this.request.query,
         ctx = this;
 
+    if (this.app.context.config.logging && this.app.context.config.logging.stdout_request_body) {
+        this.original || (this.original = {});
+        this.original.query = JSON.stringify(this.request.query);
+        this.original.body = JSON.stringify(this.request.body);
+    }
+
     this.requestId = this.headers['x-nginx-request-id'];
 
     this.healthcheck = this.request.path === '/healthcheck';
