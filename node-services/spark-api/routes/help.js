@@ -137,7 +137,7 @@ function *postHandler() {
     }
 
     if (!returnArray) {
-        this.body = yield aclDecorator(this.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
+        this.body = aclDecorator(yield this.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
     } else {
         this.body = yield this.pgp.many(util.queriesToReturningCte(query.sql), query.vals.vals).map(aclDecorator);
     }
