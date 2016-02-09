@@ -6,11 +6,7 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         studentSparkpoint: null,
         activeSection: null
     },
-/*
-    views: [
-        'help.Container'
-    ],
-*/
+
     stores: [
         'HelpRequests@SparkClassroom.store'
     ],
@@ -62,7 +58,6 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         var me = this,
             itemData = data.item,
             helpStore, doLoadHelpRequest;
-        me.getActiveSection();
 
         if (me.getActiveSection() != itemData.section_code) {
             return;
