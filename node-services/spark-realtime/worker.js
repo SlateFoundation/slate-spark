@@ -245,43 +245,41 @@ function initNats() {
             return;
         }
 
-        userIds = new Set();
+        // Time to decorate! Let's start with a festive spark point
+        if (msg.item.section_id && msg.item.section_code === undefined) {
+            msg.item.section_code = sections[msg.item.section_id];
+        }
+
+        if (msg.item.sparkpoint_id && msg.item.sparkpoint_code === undefined) {
+            msg.item.sparkpoint_code = sparkpoints[msg.item.sparkpoint_id];
+        }
 
         if (config.broadcast) {
             stats.aggregates.outgoing.broadcast.increment();
             return io.emit('db', msg);
         }
 
-        data = msg.item;
+        userIds = new Set();
 
-        extractUserIds(data, userIds);
-
-        // Time to decorate! Let's start with a festive spark point
-        if (data.section_id && data.section_code === undefined) {
-            data.section_code = sections[data.section_id];
-        }
-
-        if (data.sparkpoint_id && data.sparkpoint_code === undefined) {
-            data.sparkpoint_code = sparkpoints[data.sparkpoint_id];
-        }
+        extractUserIds(msg.item, userIds);
 
         if (msg.table === 'people') {
-            userIds.add(data.ID);
+            userIds.add(msg.item.ID);
         }
 
         // IMPORTANT: Right now, only rows with a section_id column are being broadcast to course section participants this
         // may or may not be "correct" behavior. If we need to expand this, it's likely that we should add an abstraction
         // layer where emitting a student event will relay that to all other course participants (including the teacher)
 
-        if (data.section_id) {
+        if (msg.item.section_id) {
             if (config.section_broadcast) {
-                sectionPeople[data.section_id].forEach(function(userId) {
+                sectionPeople[msg.item.section_id].forEach(function(userId) {
                     userIds.add(userId);
                 });
             } else {
                 identified = true;
                 sent = true;
-                io.to('section:' + sections[data.section_id]).emit('db', msg);
+                io.to('section:' + sections[msg.item.section_id]).emit('db', msg);
             }
         }
 
