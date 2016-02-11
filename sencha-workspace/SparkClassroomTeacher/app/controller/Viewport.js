@@ -35,8 +35,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     stores: [
         'Sections@SparkClassroom.store',
-        'Students@SparkClassroom.store',
-        'SectionStudents@SparkClassroom.store'
+        'Students@SparkClassroom.store'
     ],
 
     refs: {
@@ -136,7 +135,6 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             me.getSparkGPS().show();
             me.getTabsCt().show();
 
-            Ext.getStore('SectionStudents').removeAll();
             studentStore.getProxy().setUrl('/sections/' + section + '/students');
             studentStore.load();
 
