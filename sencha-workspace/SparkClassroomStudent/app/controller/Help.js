@@ -19,6 +19,9 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             }
         },
         store: {
+            '#Students': {
+                load: 'onStudentsLoad'
+            },
             '#HelpRequests': {
                 add: 'onStoreAdd',
                 load: 'onStoreLoad'
@@ -79,6 +82,10 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         this.getNavBar().hideSubpanel(this.getHelpCt());
     },
 
+    onStudentsLoad: function() {
+        Ext.getStore('HelpRequests').load();
+    },
+
     onStoreAdd: function() {
         this.syncHelpRequests();
     },
@@ -121,14 +128,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     },
 
     onNavHelpTap: function(btn) {
-        var helpStore = Ext.getStore('HelpRequests');
-
-        if (helpStore.isLoaded()) {
-            helpStore.reload();
-        } else {
-            helpStore.load();
-        }
-
         this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
 
