@@ -27,8 +27,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         },
         firstHelpRadio: 'spark-help radiofield',
         submitButton: 'spark-help button[action=submit-helprequest]',
-        waitlist: 'spark-waitlist',
-        //helpForm: '#helpForm'
+        waitlist: 'spark-waitlist'
     },
 
     control: {
@@ -43,12 +42,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         },
         waitlist: {
             deletetap: 'onDeleteTap',
-        },
-        // called on painted because the get return empty when the component is
-        // autoCreated with hidden set to true
-        // ,sparkHelpCt: {
-        //     painted: 'onSparkHelpContainerPainted'
-        // }
+        }
     },
 
     listen: {
@@ -150,10 +144,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         this.getNavBar().hideSubpanel(this.getHelpCt());
     },
 
-    // didn't bother programatically added radiofields because the styling is buggy
-    // onSparkHelpContainerPainted: function(){
-    //     //var helpForm = this.getHelpForm();
-    // },
 
     // controller methods
     syncHelpRequests: function() {
