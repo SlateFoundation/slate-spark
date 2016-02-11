@@ -73,6 +73,12 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     },
 
 
+    // config handlers
+    updateStudentSparkpoint: function() {
+        this.syncHelpRequests();
+    },
+
+
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
@@ -153,10 +159,15 @@ Ext.define('SparkClassroomStudent.controller.Help', {
 
     // controller methods
     syncHelpRequests: function() {
-        var studentId = this.getStudentSparkpoint().get('student_id'),
+        var studentSparkpoint = this.getStudentSparkpoint(),
+            studentId = studentSparkpoint && studentSparkpoint.get('student_id'), // studentSparkpoint might not be loaded yet
             helpRequests = Ext.getStore('HelpRequests').getRange(),
             helpRequestsLength = helpRequests.length,
             i = 0, helpRequest;
+
+        if (!studentId) {
+            return;
+        }
 
         for (; i < helpRequestsLength; i++) {
             helpRequest = helpRequests[i];
