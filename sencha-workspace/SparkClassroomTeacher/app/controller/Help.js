@@ -17,6 +17,11 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
                 sectionselect: 'onSectionSelect'
             }
         },
+        store: {
+            '#Students': {
+                load: 'onStudentsLoad'
+            }
+        },
         socket: {
             data: 'onSocketData'
         }
@@ -39,15 +44,13 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
     },
 
 
-    // config handlers
-    updateActiveSection: function() {
-        Ext.getStore('HelpRequests').load();
-    },
-
-
     // event handlers
     onSectionSelect: function(section) {
         this.setActiveSection(section);
+    },
+
+    onStudentsLoad: function() {
+        Ext.getStore('HelpRequests').load();
     },
 
     onSocketData: function(socket, data) {
