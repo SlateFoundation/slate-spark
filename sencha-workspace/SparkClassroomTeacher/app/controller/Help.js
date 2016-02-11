@@ -41,11 +41,7 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
 
     // config handlers
     updateActiveSection: function() {
-        var helpStore = Ext.getStore('HelpRequests');
-
-        if (!helpStore.isLoaded()) {
-            helpStore.load();
-        }
+        Ext.getStore('HelpRequests').load();
     },
 
 
