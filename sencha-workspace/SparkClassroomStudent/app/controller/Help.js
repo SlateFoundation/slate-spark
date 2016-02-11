@@ -2,11 +2,50 @@
 Ext.define('SparkClassroomStudent.controller.Help', {
     extend: 'Ext.app.Controller',
 
+
+    // custom configs
     config: {
         studentSparkpoint: null,
         selectedSection: null
     },
 
+
+    // entry points
+    listen: {
+        controller: {
+            '#': {
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                sectionselect: 'onSectionSelect'
+            }
+        },
+        store: {
+            '#HelpRequests': {
+                add: 'onStoreAdd',
+                load: 'onStoreLoad'
+            }
+        },
+        socket: {
+            data: 'onSocketData'
+        }
+    },
+
+    control: {
+        helpNavButton: {
+            tap: 'onNavHelpTap'
+        },
+        'spark-help radiofield[name=request]': {
+            change: 'onRequestTypeChange'
+        },
+        submitButton: {
+            tap: 'onSubmitHelpRequestTap'
+        },
+        waitlist: {
+            deletetap: 'onDeleteTap',
+        }
+    },
+
+
+    // controller config
     views: [
         'help.Container'
     ],
@@ -30,81 +69,22 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         waitlist: 'spark-waitlist'
     },
 
-    control: {
-        helpNavButton: {
-            tap: 'onNavHelpTap'
-        },
-        'spark-help radiofield[name=request]': {
-            change: 'onRequestTypeChange'
-        },
-        submitButton: {
-            tap: 'onSubmitHelpRequestTap'
-        },
-        waitlist: {
-            deletetap: 'onDeleteTap',
-        }
-    },
-
-    listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                sectionselect: 'onSectionSelect'
-            }
-        },
-        store: {
-            '#HelpRequests': {
-                add: 'onStoreAdd',
-                load: 'onStoreLoad'
-            }
-        },
-        socket: {
-            data: 'onSocketData'
-        }
-    },
 
     // event handlers
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onSectionSelect: function(section) {
+        this.getNavBar().hideSubpanel(this.getHelpCt());
+    },
+
     onStoreAdd: function() {
         this.syncHelpRequests();
     },
 
     onStoreLoad: function() {
         this.syncHelpRequests();
-    },
-
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onNavHelpTap: function(btn) {
-        var helpStore = Ext.getStore('HelpRequests');
-
-        if (helpStore.isLoaded()) {
-            helpStore.reload();
-        } else {
-            helpStore.load();
-        }
-
-        this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
-    },
-
-    onRequestTypeChange: function(requestTypeField) {
-        this.getSubmitButton().setDisabled(!requestTypeField.getGroupValue());
-    },
-
-    onSubmitHelpRequestTap: function(btn) {
-        var me = this;
-
-         me.getHelpRequestsStore().add({
-            request_type: me.getFirstHelpRadio().getGroupValue(),
-            student_id: me.getStudentSparkpoint().get('student_id')
-         });
-
-         me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
-    },
-
-    onDeleteTap: function(list, item) {
-        item.getRecord().set('close', true);
     },
 
     onSocketData: function(socket, data) {
@@ -140,8 +120,35 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         }
     },
 
-    onSectionSelect: function(section) {
-        this.getNavBar().hideSubpanel(this.getHelpCt());
+    onNavHelpTap: function(btn) {
+        var helpStore = Ext.getStore('HelpRequests');
+
+        if (helpStore.isLoaded()) {
+            helpStore.reload();
+        } else {
+            helpStore.load();
+        }
+
+        this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
+    },
+
+    onRequestTypeChange: function(requestTypeField) {
+        this.getSubmitButton().setDisabled(!requestTypeField.getGroupValue());
+    },
+
+    onSubmitHelpRequestTap: function(btn) {
+        var me = this;
+
+         me.getHelpRequestsStore().add({
+            request_type: me.getFirstHelpRadio().getGroupValue(),
+            student_id: me.getStudentSparkpoint().get('student_id')
+         });
+
+         me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
+    },
+
+    onDeleteTap: function(list, item) {
+        item.getRecord().set('close', true);
     },
 
 
