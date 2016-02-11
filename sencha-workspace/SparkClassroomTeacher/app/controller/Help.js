@@ -24,7 +24,7 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
 
     control: {
         waitlist: {
-            deletetap: 'onDeleteTap',
+            deletetap: 'onDeleteTap'
         }
     },
 
@@ -52,10 +52,6 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
     // event handlers
     onSectionSelect: function(section) {
         this.setActiveSection(section);
-    },
-
-    onDeleteTap: function(list, item) {
-        item.getRecord().set('close', true);
     },
 
     onSocketData: function(socket, data) {
@@ -88,5 +84,9 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         } else {
             doLoadHelpRequest();
         }
+    },
+
+    onDeleteTap: function(list, item) {
+        item.getRecord().set('close', true);
     }
 });
