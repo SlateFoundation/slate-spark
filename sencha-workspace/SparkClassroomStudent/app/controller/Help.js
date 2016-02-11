@@ -40,7 +40,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             tap: 'onSubmitHelpRequestTap'
         },
         waitlist: {
-            deletetap: 'onDeleteTap',
+            deletetap: 'onDeleteTap'
         }
     },
 
