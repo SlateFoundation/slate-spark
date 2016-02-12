@@ -11,11 +11,13 @@ Ext.define('SparkClassroomTeacher.view.NavBar', {
             },
             {
                 text: 'Competency Overview',
-                itemId: 'competencies'
+                itemId: 'competencies',
+                disabled: true
             },
             {
                 text: 'Assign Sparkpoints',
-                itemId: 'assign'
+                itemId: 'assign',
+                disabled: true
             },
             {
                 text: 'Activity',
