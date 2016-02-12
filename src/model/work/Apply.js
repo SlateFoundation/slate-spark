@@ -14,7 +14,12 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'sparkpointIds',
         'sparkpointCodes',
         'standardCodes',
-        'todos',
+        {
+            name: 'todos',
+            convert: function (value) {
+                return value || [];
+            }
+        },
         'submissions',
         {
             name: 'links',
