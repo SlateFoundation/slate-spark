@@ -15,14 +15,16 @@ Ext.define('SparkClassroomTeacher.view.gps.Waitlist', {
 
         store: 'HelpRequests',
         itemTpl: [
-            '<header class="waitlist-item-header">',
+            '<header class="item-header">',
                 '<tpl for="student.getData()">',
-                    '<a class="waitlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
+                    '<a class="item-origin" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
                 '</tpl>',
-                '<span class="waitlist-timer">{open_time:fuzzyTime(true)}</span> ',
+                '<span class="item-timestamp">{open_time:fuzzyTime(true)}</span> ',
                 '<i class="fa fa-times item-remove-btn"></i>',
             '</header>',
-            '<div class="waitlist-type">{human_request_type}</div> '
+            '<div class="item-description">',
+                '<span class="waitlist-type">{human_request_type}</span>',
+            '</div>'
         ]
     },
 

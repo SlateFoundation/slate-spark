@@ -17,15 +17,19 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         cls: 'spark-gps-studentlist',
         itemCls: 'studentlist-item',
         itemTpl: [
-            '<header class="studentlist-item-header">',
+            '<header class="item-header">',
                 '<tpl for="student.getData()">',
-                    '<a class="studentlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
+                    '<a class="item-origin" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
                 '</tpl>',
-                '<tpl if="help_request"><span class="studentlist-request">{help_request_abbr}</span></tpl> ',
+
+                // TODO for future use, re-enable this with correct field
+                // '<tpl if="help_request">',
+                //     '<span class="item-flag">{help_request_abbr}</span>',
+                // '</tpl> ',
 
                 '{% values.duration = this.getDuration(values) %}',
                 '<tpl if="duration">',
-                    '<span class="studentlist-timer">',
+                    '<span class="item-timestamp">',
                         '{duration:fuzzyDuration(true)}',
                     '</span>',
                 '</tpl>',
@@ -33,11 +37,11 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                     '<i class="fa fa-times item-remove-btn"></i>',
                 '</tpl>',
             '</header>',
-            '<ul class="studentlist-standards">', // TODO: rename to studentlist-sparkpoints
-                // '<tpl for="Standards">',
-                    '<li class="studentlist-standard">{sparkpoint}</li>',
-                // '</tpl>',
-            '</ul>',
+            '<div class="item-description">',
+                '<ul class="gps-list-sparkpoints">',
+                    '<li class="gps-list-sparkpoint">{sparkpoint}</li>',
+                '</ul>',
+            '</div>',
             {
                 getDuration: function(data) {
                     switch (data.active_phase) {

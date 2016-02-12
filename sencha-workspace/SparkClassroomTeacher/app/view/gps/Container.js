@@ -21,7 +21,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                     {
                         xtype: 'container',
                         flex: 4,
-                        cls: 'spark-gps-studentlist-group',
+                        cls: 'spark-gps-list-group',
                         layout: 'hbox',
                         defaults: {
                             xtype: 'spark-gps-studentlist',
@@ -57,7 +57,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                     },
                     {
                         xtype: 'container',
-                        cls: 'spark-gps-studentlist-group',
+                        cls: 'spark-gps-list-group',
                         flex: 1,
                         items: [
                             {
