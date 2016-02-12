@@ -6,8 +6,8 @@ Ext.define('SparkClassroom.store.HelpRequests', {
     model: 'SparkClassroom.model.HelpRequest',
 
     filters: [
-        function(item) {
-            return !item.data.close_time;
+        function(helpRequest) {
+            return !helpRequest.get('close_time');
         }
     ],
 
