@@ -4,7 +4,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     xtype: 'spark-gps',
     cls: 'spark-gps',
     requires: [
-        'SparkClassroomTeacher.view.gps.StudentList'
+        'SparkClassroomTeacher.view.gps.StudentList',
+        'SparkClassroomTeacher.view.gps.Waitlist'
     ],
 
     config: {
@@ -20,7 +21,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                     {
                         xtype: 'container',
                         flex: 4,
-                        cls: 'spark-gps-studentlist-group',
+                        cls: 'spark-gps-list-group',
                         layout: 'hbox',
                         defaults: {
                             xtype: 'spark-gps-studentlist',
@@ -56,8 +57,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                     },
                     {
                         xtype: 'container',
-                        cls: 'spark-gps-studentlist-group',
-                        flex: 2,
+                        cls: 'spark-gps-list-group',
+                        flex: 1,
                         items: [
                             {
                                 cls: 'spark-gps-studentlist spark-gps-priority-group',
@@ -67,7 +68,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 store: 'gps.Priorities',
                                 title: 'Priorities',
                                 showDismissButton: true,
-                                emptyText: 'Select a student to add to your priorities list',
+                                emptyText: 'Select a student to add to your priorities&nbsp;list.',
                                 deferEmptyText: false
                             },
                             {
@@ -82,11 +83,9 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                             {
                                 itemId: 'helpList',
 
-                                xtype: 'spark-gps-studentlist',
-                                store: 'gps.Help',
+                                xtype: 'spark-waitlist',
                                 title: 'Help',
-                                showDismissButton: true,
-                                emptyText: 'No students have open help requests',
+                                emptyText: 'No open help&nbsp;requests',
                                 deferEmptyText: false
                                 //grouped: true
                             }

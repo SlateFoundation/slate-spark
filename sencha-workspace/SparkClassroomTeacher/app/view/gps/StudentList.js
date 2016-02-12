@@ -2,28 +2,34 @@
 Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     extend: 'Ext.dataview.List',
     xtype: 'spark-gps-studentlist',
+    mixins: [
+        'SparkClassroom.mixin.DockedTitle'
+    ],
     requires: [
         'Jarvus.util.format.FuzzyTime'
     ],
 
 
     config: {
-        title: null,
         showDismissButton: false,
 
         loadingText: null,
         cls: 'spark-gps-studentlist',
         itemCls: 'studentlist-item',
         itemTpl: [
-            '<header class="studentlist-item-header">',
+            '<header class="item-header">',
                 '<tpl for="student.getData()">',
-                    '<a class="studentlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
+                    '<a class="item-origin" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
                 '</tpl>',
-                '<tpl if="help_request"><span class="studentlist-request">{help_request_abbr}</span></tpl> ',
+
+                // TODO for future use, re-enable this with correct field
+                // '<tpl if="help_request">',
+                //     '<span class="item-flag">{help_request_abbr}</span>',
+                // '</tpl> ',
 
                 '{% values.duration = this.getDuration(values) %}',
                 '<tpl if="duration">',
-                    '<span class="studentlist-timer">',
+                    '<span class="item-timestamp">',
                         '{duration:fuzzyDuration(true)}',
                     '</span>',
                 '</tpl>',
@@ -31,11 +37,11 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                     '<i class="fa fa-times item-remove-btn"></i>',
                 '</tpl>',
             '</header>',
-            '<ul class="studentlist-standards">', // TODO: rename to studentlist-sparkpoints
-                // '<tpl for="Standards">',
-                    '<li class="studentlist-standard">{sparkpoint}</li>',
-                // '</tpl>',
-            '</ul>',
+            '<div class="item-description">',
+                '<ul class="gps-list-sparkpoints">',
+                    '<li class="gps-list-sparkpoint">{sparkpoint}</li>',
+                '</ul>',
+            '</div>',
             {
                 getDuration: function(data) {
                     switch (data.active_phase) {
@@ -53,46 +59,6 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 }
             }
         ]
-    },
-
-    applyTitle: function(title, existingTitle) {
-        if (Ext.isString(title)) {
-            title = {
-                title: title
-            };
-        }
-
-        return Ext.factory(title, 'Ext.Title', existingTitle);
-    },
-
-    updateTitle: function(title, oldTitle) {
-        if (title) {
-            title.setDocked('top');
-            this.add(title);
-        }
-
-        if (oldTitle) {
-            this.remove(oldTitle);
-        }
-    },
-
-    doRefresh: function() {
-        var me = this,
-            countStr = me.getStore().getCount().toString(),
-            titleCmp = me.getTitle(),
-            countEl = me.countEl;
-
-        me.callParent(arguments);
-
-        if (countEl) {
-            countEl.setHtml(countStr);
-        } else {
-            me.countEl = titleCmp.getInnerHtmlElement().appendChild({
-                tag: 'span',
-                cls: 'count',
-                html: countStr
-            });
-        }
     },
 
     prepareData: function(data, index, record) {
