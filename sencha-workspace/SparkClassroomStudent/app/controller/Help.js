@@ -14,8 +14,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     listen: {
         controller: {
             '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                sectionselect: 'onSectionSelect'
+                studentsparkpointload: 'onStudentSparkpointLoad'
             }
         },
         store: {
@@ -82,10 +81,6 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
         this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onSectionSelect: function(section) {
-        this.getNavBar().hideSubpanel(this.getHelpCt());
     },
 
     onStudentsLoad: function() {
