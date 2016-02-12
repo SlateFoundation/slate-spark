@@ -52,16 +52,5 @@ Ext.define('SparkClassroom.NavBar', {
         panel.alignTo(showByButton, 'tr-br?');
 
         panel.setVisibility(true);
-    },
-
-    hideSubpanel: function(panel) {
-        var me = this;
-
-        if (panel === me.getActiveSubpanel()) {
-            me.setActiveSubpanel(null);
-            return;
-        }
-
-        panel.setVisibility(false);
     }
 });

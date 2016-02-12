@@ -121,11 +121,6 @@ Ext.define('SparkClassroom.model.HelpRequest', {
 
     proxy: {
         type: 'slate-api',
-        url: '/spark/api/help',
-        writer: {
-            type: 'json',
-            allowSingle: false,
-            writeAllFields: false
-        }
+        url: '/spark/api/help'
     }
 });
