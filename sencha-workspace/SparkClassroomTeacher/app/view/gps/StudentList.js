@@ -2,13 +2,15 @@
 Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     extend: 'Ext.dataview.List',
     xtype: 'spark-gps-studentlist',
+    mixins: [
+        'SparkClassroom.mixin.DockedTitle'
+    ],
     requires: [
         'Jarvus.util.format.FuzzyTime'
     ],
 
 
     config: {
-        title: null,
         showDismissButton: false,
 
         loadingText: null,
@@ -53,27 +55,6 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 }
             }
         ]
-    },
-
-    applyTitle: function(title, existingTitle) {
-        if (Ext.isString(title)) {
-            title = {
-                title: title
-            };
-        }
-
-        return Ext.factory(title, 'Ext.Title', existingTitle);
-    },
-
-    updateTitle: function(title, oldTitle) {
-        if (title) {
-            title.setDocked('top');
-            this.add(title);
-        }
-
-        if (oldTitle) {
-            this.remove(oldTitle);
-        }
     },
 
     doRefresh: function() {
