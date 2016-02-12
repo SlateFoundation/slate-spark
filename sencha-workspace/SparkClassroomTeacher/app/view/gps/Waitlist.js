@@ -8,19 +8,25 @@ Ext.define('SparkClassroomTeacher.view.gps.Waitlist', {
 
 
     config: {
+        cls: 'spark-gps-waitlist',
+
         store: 'HelpRequests',
         itemTpl: [
-            '<span class="spark-waitlist-name">{student_name}</span> ',
-            '<span class="spark-waitlist-time">{open_time:fuzzyTime(true)}</span> ',
-            '<span class="spark-waitlist-x">{short_request_type}</span> ',
-            '<i class="fa fa-times-circle item-delete-btn"></i>'
+            '<header class="waitlist-item-header">',
+                '<tpl for="student.getData()">',
+                    '<a class="waitlist-name" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
+                '</tpl>',
+                '<span class="waitlist-timer">{open_time:fuzzyTime(true)}</span> ',
+                '<i class="fa fa-times item-remove-btn"></i>',
+            '</header>',
+            '<div class="waitlist-type">{human_request_type}</div> '
         ]
     },
 
     onItemTap: function(ev, t) {
         var me = this;
 
-        if (ev.getTarget('.item-delete-btn')) {
+        if (ev.getTarget('.item-remove-btn')) {
             me.fireEvent('deletetap', me, Ext.get(t).component);
             return;
         }

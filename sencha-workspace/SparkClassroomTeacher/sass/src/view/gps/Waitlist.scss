@@ -1,0 +1,19 @@
+.spark-gps-waitlist {
+    @extend .spark-gps-studentlist;
+}
+
+.waitlist-item-header {
+    @extend .studentlist-item-header;
+}
+
+.waitlist-name {
+    @extend .studentlist-name;
+}
+
+.waitlist-timer {
+    @extend .studentlist-timer;
+}
+
+.waitlist-type {
+    font-style: italic;
+}
