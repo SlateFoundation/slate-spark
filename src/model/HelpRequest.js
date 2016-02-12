@@ -80,6 +80,27 @@ Ext.define('SparkClassroom.model.HelpRequest', {
             }
         },
         {
+            name: 'human_request_type',
+            persist: false,
+            depends: ['request_type'],
+            convert: function (v, r) {
+                switch (r.get('request_type')) {
+                    case 'question-general':
+                        return 'Question (General)';
+                    case 'question-academic':
+                        return 'Question (Academic)';
+                    case 'question-technology':
+                        return 'Question (Technology)';
+                    case 'nurse':
+                        return 'Nurse';
+                    case 'bathroom':
+                        return 'Bathroom';
+                    case 'locker':
+                        return 'Locker';
+                }
+            }
+        },
+        {
             name: 'student',
             persist: false,
             depends: ['student_id'],
