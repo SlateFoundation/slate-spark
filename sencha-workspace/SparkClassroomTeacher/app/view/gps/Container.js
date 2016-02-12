@@ -68,7 +68,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 store: 'gps.Priorities',
                                 title: 'Priorities',
                                 showDismissButton: true,
-                                emptyText: 'Select a student to add to your priorities list',
+                                emptyText: 'Select a student to add to your priorities&nbsp;list.',
                                 deferEmptyText: false
                             },
                             {
@@ -85,7 +85,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
 
                                 xtype: 'spark-waitlist',
                                 title: 'Help',
-                                emptyText: 'No students have open help requests',
+                                emptyText: 'No open help&nbsp;requests',
                                 deferEmptyText: false
                                 //grouped: true
                             }
