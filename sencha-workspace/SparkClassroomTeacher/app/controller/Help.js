@@ -2,33 +2,24 @@
 Ext.define('SparkClassroomTeacher.controller.Help', {
     extend: 'Ext.app.Controller',
 
+
+    // custom configs
     config: {
         studentSparkpoint: null,
         activeSection: null
     },
 
-    stores: [
-        'HelpRequests@SparkClassroom.store'
-    ],
 
-    // config handlers
-    updateActiveSection: function() {
-        var helpStore = Ext.getStore('HelpRequests');
-
-        if (!helpStore.isLoaded()) {
-            helpStore.load();
-        }
-    },
-
-    // event handlers
-    onSectionSelect: function(section) {
-        this.setActiveSection(section);
-    },
-
+    // entry points
     listen: {
         controller: {
             '#': {
                 sectionselect: 'onSectionSelect'
+            }
+        },
+        store: {
+            '#Students': {
+                load: 'onStudentsLoad'
             }
         },
         socket: {
@@ -36,18 +27,30 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         }
     },
 
+    control: {
+        waitlist: {
+            deletetap: 'onDeleteTap'
+        }
+    },
+
+
+    // controller config
+    stores: [
+        'HelpRequests@SparkClassroom.store'
+    ],
+
     refs: {
         waitlist: 'spark-waitlist'
     },
 
-    control: {
-        waitlist: {
-            deletetap: 'onDeleteTap',
-        }
+
+    // event handlers
+    onSectionSelect: function(section) {
+        this.setActiveSection(section);
     },
 
-    onDeleteTap: function(list, item) {
-        item.getRecord().set('close', true);
+    onStudentsLoad: function() {
+        Ext.getStore('HelpRequests').load();
     },
 
     onSocketData: function(socket, data) {
@@ -80,5 +83,9 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
         } else {
             doLoadHelpRequest();
         }
+    },
+
+    onDeleteTap: function(list, item) {
+        item.getRecord().set('close', true);
     }
 });
