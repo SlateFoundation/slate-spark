@@ -2,11 +2,52 @@
 Ext.define('SparkClassroomStudent.controller.Help', {
     extend: 'Ext.app.Controller',
 
+
+    // custom configs
     config: {
         studentSparkpoint: null,
         selectedSection: null
     },
 
+
+    // entry points
+    listen: {
+        controller: {
+            '#': {
+                studentsparkpointload: 'onStudentSparkpointLoad'
+            }
+        },
+        store: {
+            '#Students': {
+                load: 'onStudentsLoad'
+            },
+            '#HelpRequests': {
+                add: 'onStoreAdd',
+                load: 'onStoreLoad'
+            }
+        },
+        socket: {
+            data: 'onSocketData'
+        }
+    },
+
+    control: {
+        helpNavButton: {
+            tap: 'onNavHelpTap'
+        },
+        'spark-help radiofield[name=request]': {
+            change: 'onRequestTypeChange'
+        },
+        submitButton: {
+            tap: 'onSubmitHelpRequestTap'
+        },
+        waitlist: {
+            deletetap: 'onDeleteTap'
+        }
+    },
+
+
+    // controller config
     views: [
         'help.Container'
     ],
@@ -27,90 +68,31 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         },
         firstHelpRadio: 'spark-help radiofield',
         submitButton: 'spark-help button[action=submit-helprequest]',
-        waitlist: 'spark-waitlist',
-        //helpForm: '#helpForm'
+        waitlist: 'spark-waitlist'
     },
 
-    control: {
-        helpNavButton: {
-            tap: 'onNavHelpTap'
-        },
-        'spark-help radiofield[name=request]': {
-            change: 'onRequestTypeChange'
-        },
-        submitButton: {
-            tap: 'onSubmitHelpRequestTap'
-        },
-        waitlist: {
-            deletetap: 'onDeleteTap',
-        },
-        // called on painted because the get return empty when the component is
-        // autoCreated with hidden set to true
-        // ,sparkHelpCt: {
-        //     painted: 'onSparkHelpContainerPainted'
-        // }
+
+    // config handlers
+    updateStudentSparkpoint: function() {
+        this.syncHelpRequests();
     },
 
-    listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                sectionselect: 'onSectionSelect'
-            }
-        },
-        store: {
-            '#HelpRequests': {
-                add: 'onStoreAdd',
-                load: 'onStoreLoad'
-            }
-        },
-        socket: {
-            data: 'onSocketData'
-        }
-    },
 
     // event handlers
+    onStudentSparkpointLoad: function(studentSparkpoint) {
+        this.setStudentSparkpoint(studentSparkpoint);
+    },
+
+    onStudentsLoad: function() {
+        Ext.getStore('HelpRequests').load();
+    },
+
     onStoreAdd: function() {
         this.syncHelpRequests();
     },
 
     onStoreLoad: function() {
         this.syncHelpRequests();
-    },
-
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onNavHelpTap: function(btn) {
-        var helpStore = Ext.getStore('HelpRequests');
-
-        if (helpStore.isLoaded()) {
-            helpStore.reload();
-        } else {
-            helpStore.load();
-        }
-
-        this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
-    },
-
-    onRequestTypeChange: function(requestTypeField) {
-        this.getSubmitButton().setDisabled(!requestTypeField.getGroupValue());
-    },
-
-    onSubmitHelpRequestTap: function(btn) {
-        var me = this;
-
-         me.getHelpRequestsStore().add({
-            request_type: me.getFirstHelpRadio().getGroupValue(),
-            student_id: me.getStudentSparkpoint().get('student_id')
-         });
-
-         me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
-    },
-
-    onDeleteTap: function(list, item) {
-        item.getRecord().set('close', true);
     },
 
     onSocketData: function(socket, data) {
@@ -146,21 +128,41 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         }
     },
 
-    onSectionSelect: function(section) {
-        this.getNavBar().hideSubpanel(this.getHelpCt());
+    onNavHelpTap: function(btn) {
+        this.getNavBar().toggleSubpanel(this.getHelpCt(), btn);
     },
 
-    // didn't bother programatically added radiofields because the styling is buggy
-    // onSparkHelpContainerPainted: function(){
-    //     //var helpForm = this.getHelpForm();
-    // },
+    onRequestTypeChange: function(requestTypeField) {
+        this.getSubmitButton().setDisabled(!requestTypeField.getGroupValue());
+    },
+
+    onSubmitHelpRequestTap: function(btn) {
+        var me = this;
+
+         me.getHelpRequestsStore().add({
+            request_type: me.getFirstHelpRadio().getGroupValue(),
+            student_id: me.getStudentSparkpoint().get('student_id')
+         });
+
+         me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
+    },
+
+    onDeleteTap: function(list, item) {
+        item.getRecord().set('close', true);
+    },
+
 
     // controller methods
     syncHelpRequests: function() {
-        var studentId = this.getStudentSparkpoint().get('student_id'),
+        var studentSparkpoint = this.getStudentSparkpoint(),
+            studentId = studentSparkpoint && studentSparkpoint.get('student_id'), // studentSparkpoint might not be loaded yet
             helpRequests = Ext.getStore('HelpRequests').getRange(),
             helpRequestsLength = helpRequests.length,
             i = 0, helpRequest;
+
+        if (!studentId) {
+            return;
+        }
 
         for (; i < helpRequestsLength; i++) {
             helpRequest = helpRequests[i];
