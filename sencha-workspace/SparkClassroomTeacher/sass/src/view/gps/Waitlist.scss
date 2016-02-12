@@ -1,3 +1,5 @@
+// TODO have studentlist and waitlist extend a common ancestor (GPS list?)
+
 .spark-gps-waitlist {
     @extend .spark-gps-studentlist;
 }
