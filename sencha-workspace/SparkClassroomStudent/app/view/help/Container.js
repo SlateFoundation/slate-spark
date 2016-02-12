@@ -71,7 +71,18 @@ Ext.define('SparkClassroomStudent.view.help.Container', {
                 ]
             },
             {
-                xtype: 'spark-waitlist'
+                xtype: 'container',
+                cls: 'spark-waitlist',
+                items: [
+                    {
+                        xtype: 'container',
+                        cls: 'spark-waitlist-title',
+                        html: 'Waitlist',
+                    },
+                    {
+                        xtype: 'spark-waitlist'
+                    }
+                ]
             }
         ]
     }
