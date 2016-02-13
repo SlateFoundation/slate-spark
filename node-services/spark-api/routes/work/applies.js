@@ -109,7 +109,7 @@ function *getHandler() {
         END
     )) AS json
          FROM fusebox_apply_projects ap
-    LEFT JOIN applies a ON a.fb_apply_id = ap.id
+    LEFT JOIN applies a ON a.fb_apply_id = ap.id AND a.student_id = $1
     LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds]);
