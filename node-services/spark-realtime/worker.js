@@ -1,164 +1,168 @@
+'use strict';
+
 var config = JSON.parse(process.env.SPARK_REALTIME),
+    middleware = require('./middleware/index'),
+    http = require('http'),
     nats = require('nats').connect(config.nats),
-    server = require('http').createServer(requestHandler),
-    io = require('socket.io')(server),
-    stats = {
-        connections: {
-            peak: 0,
-            current: 0,
-            last_connection_at: null
-        },
-
-        subscriptions: {
-            peak: 0,
-            current: 0,
-            last_subscription_at: null
-        },
-
-        incoming: {
-            total: 0,
-            last_message_at: null
-        },
-
-        outgoing: {
-            broadcast: 0,
-            total: 0,
-            identified: 0,
-            unidentified: 0,
-            last_message_at: null
-        },
-
-        nats: {
-            total_messages: 0,
-            dropped_mesages: 0,
-            ignored_messages: 0,
-            last_message_at: null
-        },
-
-        users: {
-            online: 0,
-            offline: 0
-        }
-    },
+    server = http.createServer(),
+    pg = require('pg').native,
+    connString,
+    sparkpoints = {},
     sections = {},
-    userConnectionCount = {},
-    userLastSeen = {};
+    sectionPeople = {},
+    personSections = {},
+    io;
 
-function getOnlineUsers() {
-    var online = [];
+// TODO: Add real logging framework
+console._log = console.log;
 
-    for (var user in userConnectionCount) {
-        if (userConnectionCount[user] > 0) {
-            online.push(user);
-        }
+console.log = function() {
+    var args = Array.prototype.slice.call(arguments);
+    args.unshift(`[${config.schema}]`);
+    console._log.apply(this, args);
+};
+
+function initDatabase() {
+    var cfg = config.postgresql;
+
+    if (!cfg) {
+        throw new Error(`${config.schema} is missing a valid postgresql section from its configuration`);
     }
 
-    return online;
-}
+    let missingKeys = ['database', 'username', 'host', 'password'].filter(key => cfg[key] === undefined);
 
-function getOfflineUsers() {
-    var offline = [];
-
-    for (var user in userConnectionCount) {
-        if (userConnectionCount[user] <= 0) {
-            offline.push(user);
-        }
+    if (missingKeys.length > 0) {
+        throw new Error(
+            `${config.schema} is missing the following key(s) from its postgresql config: ${missingKeys.join(',')}`
+        );
     }
 
-    return offline;
-}
+    connString = `postgres://${cfg.username}:${cfg.password}@${cfg.host}/${cfg.database}?application_name=spark-realtime`;
 
-function requestHandler(req, res) {
-    var healthcheck;
+    // Test connection
+    pg.connect(connString, function(err, client, done) {
+        if (err) {
+            console.error(err);
+            throw new Error(`Unable to connect to ${cfg.database} PostgreSQL database on ${cfg.host}`);
+        }
 
-    switch (req.url) {
-        case '/healthcheck':
-            stats.connections.current = io.sockets.sockets.length;
-            stats.memory_usage = process.memoryUsage();
-            stats.outgoing.total = (stats.outgoing.identified + stats.outgoing.broadcast);
-            stats.users.online = getOnlineUsers().length;
-            stats.users.offline = getOfflineUsers().length;
-            res.end(JSON.stringify(stats, null, '\t'));
-            break;
+        console.log(`Connected to ${cfg.database} PostgreSQL database on ${cfg.host}`);
 
-        case '/sections':
-            res.end(JSON.stringify(sections, null, '\t'));
-            break;
+        let sql = `
+            WITH section_people AS (
+                SELECT "CourseSectionID" AS section,
+                       json_agg("PersonID") AS people
+                  FROM course_section_participants
+              GROUP BY "CourseSectionID"
+            ), person_sections AS (
+                SELECT p."ID" AS person,
+                       array_agg("CourseSectionID") AS sections
+                  FROM people p
+                  JOIN course_section_participants csp ON csp."PersonID" = p."ID"
+              GROUP BY p."ID"
+            )
 
-        case '/users/connection_count':
-            res.end(JSON.stringify(userConnectionCount, null, '\t'));
-            break;
+            SELECT json_build_object(
+                'sections', (SELECT json_object_agg("ID", "Code") FROM course_sections),
+                'sparkpoints', (SELECT json_object_agg(id, code) FROM sparkpoints),
+                'section_people', (SELECT json_object_agg(section, people) FROM section_people),
+                'person_sections', (SELECT json_object_agg(person, sections) FROM person_sections),
+                'counts', json_build_object(
+                    'sections', (SELECT count(1) FROM course_sections),
+                    'sparkpoints', (SELECT count(1) FROM sparkpoints),
+                    'section_people', (SELECT  count(1) FROM section_people),
+                    'person_sections', (SELECT count(1) FROM person_sections)
+                )
+            ) AS lookup;
+        `;
 
-        case '/users/last_seen':
-            res.end(JSON.stringify(userLastSeen, null, '\t'));
-            break;
-
-        case '/users/online':
-            res.end(JSON.stringify(getOnlineUsers(), null, '\t'));
-            break;
-
-        case '/users/offline':
-            res.end(JSON.stringify(getOfflineUsers(), null, '\t'));
-            break;
-
-        case '/users':
-            var users = {},
-                connectionCount;
-
-            for (var user in userConnectionCount) {
-                connectionCount = userConnectionCount[user];
-
-                users[user] = {
-                    status: connectionCount  <= 0 ? 'offline' : 'online',
-                    last_seen: userLastSeen[user],
-                    connections: connectionCount
-                };
+        client.query(sql, [], function(err, results) {
+            if (err) {
+                console.log('Error populating lookup tables');
+                throw err;
             }
 
-            res.end(JSON.stringify(users, null, '\t'));
+            let lookup = results.rows[0].lookup;
 
-            break;
-        default:
-            res.httpStatus = 404;
-            res.end('File not found');
-    }
+            sparkpoints = lookup.sparkpoints;
+            sections = lookup.sections;
+            sectionPeople = lookup.section_people;
+            personSections = lookup.person_sections;
+
+            for (let entity in lookup.counts) {
+                console.log(`${lookup.counts[entity].toLocaleString()} entries in ${entity} lookup table`);
+            }
+        });
+
+        initMiddleware();
+    });
 }
 
-io.use(function (socket, next) {
-    var session = socket.request.headers['x-nginx-session'],
-        connectionCount = io.sockets.sockets.length;
+function query(sql, values, cb) {
+    pg.connect(connString, function(err, client, done) {
 
-    stats.connections.last_connection_at = new Date();
+        if (err) {
+            if (client) {
+                done(client);
+            }
 
-    if (connectionCount > stats.connections.peak) {
-        stats.connections.peak = connectionCount;
+            return cb && cb(err, null);
+        }
+
+        client.query(sql, values, function(err, result) {
+
+            if (err) {
+                if (client) {
+                    done(client);
+                }
+
+                return cb && cb(err, null);
+            }
+
+            cb && cb(null, result.rows);
+
+            done(client);
+        });
+    });
+}
+
+function initMiddleware() {
+    config.middleware = config.middleware || {};
+
+    config.middleware.stats = config.middleware.stats || {};
+    config.middleware.stats.httpServer = server;
+
+    // We must initialize the middleware prior to initializing socket.io in order to attach any http request handlers
+    for (var name in middleware) {
+        middleware[name] = middleware[name](config.middleware[name] || {});
     }
 
-    if (session) {
-        session = JSON.parse(session);
+    io = global.io = require('socket.io')(server);
 
-        socket.session = session;
-        socket.section = null;
-        socket.student = session.accountLevel === 'Student';
+    (config.middleware.load_order || Object.keys(middleware)).forEach(function(name) {
+        io.use(middleware[name]);
+    });
 
-        userConnectionCount[socket.session.username] || (userConnectionCount[socket.session.username] = 0);
-        userConnectionCount[socket.session.username]++;
-        userLastSeen[socket.session.username] = new Date();
+    initNats();
+}
+
+function initServer() {
+    io.use(function (socket, next) {
+        var stats = global.stats,
+            sections = stats.sections;
 
         socket.on('subscribe', function subscribe(data) {
             console.log(socket.session.username + ' subscribed to ' + data.section);
 
-            stats.subscriptions.last_subscription_at = new Date();
-            stats.incoming.last_message_at = new Date();
-            stats.incoming.total++;
+            stats.aggregates.subscriptions.increment();
+            stats.aggregates.incoming.increment();
 
-            if (++stats.subscriptions.current > stats.subscriptions.peak) {
-                stats.subscriptions.peak = stats.subscriptions.current;
-            }
+            socket.stats.subscriptions.increment();
 
             socket.join('section:' + data.section);
             socket.section = data.section;
-            sections[data.section] = sections[data.section] || {teachers: [], students: []};
+
+            sections[data.section] || (sections[data.section] = { teachers: [], students: [] });
 
             if (socket.student) {
                 if (sections[data.section].students.indexOf(socket.session.userId) === -1) {
@@ -170,17 +174,19 @@ io.use(function (socket, next) {
         });
 
         socket.on('unsubscribe', function unsubscribe(data) {
-            var idx;
-
-            stats.subscriptions.current--;
-            stats.incoming.total++;
+            var sections = global.stats.sections,
+                idx;
 
             console.log(socket.session.username + ' unsubscribed from ' + data.section);
+
+            stats.aggregates.subscriptions.decrement();
+            stats.aggregates.incoming.increment();
+
             socket.leave('section:' + data.section);
             socket.section = null;
-            sections[data.section] = sections[data.section] || {teachers: [], students: []};
+            sections[data.section] || (sections[data.section] = { teachers: [], students: [] });
 
-            if (socket.student) {
+            if (socket.isStudent) {
                 idx = sections[data.section].students.indexOf(socket.session.userId);
                 sections[data.section].students = sections[data.section].students.slice(idx, 1);
             } else {
@@ -189,62 +195,114 @@ io.use(function (socket, next) {
             }
         });
 
-        function disconnectHandler (socket) {
-            userConnectionCount[session.username]--;
-            userLastSeen[session.username] = new Date();
+        return next();
+    });
+
+    server.listen(config.port);
+
+    console.log(`Listening on ${config.port}`);
+}
+
+initDatabase();
+
+const USER_ID_COLUMNS = [
+    'PersonID',
+    'user_id',
+    'student_id',
+    'teacher_id',
+    'person_id',
+    'recommender_id',
+    'author_id'
+];
+
+function extractUserIds(data, userIds) {
+    USER_ID_COLUMNS.forEach(function(key) {
+        let userId = data[key];
+
+        if (userId && typeof userId === 'number') {
+            userIds.add(userId)
+        }
+    });
+}
+
+function initNats() {
+    nats.subscribe(config.schema + '.>', function (msg) {
+        var stats = global.stats,
+            identified = false,
+            sent = false,
+            userIds,
+            data;
+
+        if (!msg) {
+            stats.aggregates.nats.dropped.increment();
+            return;
         }
 
-        socket.on('disconnect', disconnectHandler);
-        socket.on('error', disconnectHandler);
+        msg = JSON.parse(msg);
 
-        return next();
-    }
+        if (!msg.item || config.ignore.indexOf(msg.table) !== -1) {
+            stats.aggregates.nats.ignored.increment();
+            return;
+        }
 
-    next(new Error('Authentication error'));
-});
+        // Time to decorate! Let's start with a festive spark point
+        if (msg.item.section_id && msg.item.section_code === undefined) {
+            msg.item.section_code = sections[msg.item.section_id];
+        }
 
-server.listen(config.port);
+        if (msg.item.sparkpoint_id && msg.item.sparkpoint_code === undefined) {
+            msg.item.sparkpoint_code = sparkpoints[msg.item.sparkpoint_id];
+        }
 
-nats.subscribe(config.schema + '.>', function (msg) {
-    var data, userId;
+        if (config.broadcast) {
+            stats.aggregates.outgoing.broadcast.increment();
+            return io.emit('db', msg);
+        }
 
-    stats.nats.total_messages++;
-    stats.nats.last_message_at = new Date();
+        userIds = new Set();
 
-    if (!msg) {
-        stats.nats.dropped_mesages++;
-        return;
-    }
+        extractUserIds(msg.item, userIds);
 
-    msg = JSON.parse(msg);
+        if (msg.table === 'people') {
+            userIds.add(msg.item.ID);
+        }
 
-    if (!msg.item || config.ignore.indexOf(msg.table) !== -1) {
-        stats.nats.ignored_messages++;
-        return;
-    }
+        // IMPORTANT: Right now, only rows with a section_id column are being broadcast to course section participants this
+        // may or may not be "correct" behavior. If we need to expand this, it's likely that we should add an abstraction
+        // layer where emitting a student event will relay that to all other course participants (including the teacher)
 
-    if (config.broadcast) {
-        stats.outgoing.last_message_at = new Date();
-        stats.outgoing.broadcast++;
-        return io.emit('db', msg);
-    }
+        if (msg.item.section_id) {
+            if (config.section_broadcast) {
+                sectionPeople[msg.item.section_id].forEach(function(userId) {
+                    userIds.add(userId);
+                });
+            } else {
+                identified = true;
+                sent = true;
+                io.to('section:' + sections[msg.item.section_id]).emit('db', msg);
+            }
+        }
 
-    data = msg.item;
-    userId = data.PersonID || data.user_id || data.student_id || data.teacher_id || data.person_id;
+        if (!sent) {
+            userIds.forEach(function(userId) {
+                identified = true;
+                io.to('user:' + userId).emit('db', msg);
+            });
+        }
 
-    if (msg.table === 'people') {
-        userId = msg.ID;
-    }
+        if (identified) {
+            stats.aggregates.outgoing.identified.increment();
+            console.log(data);
+            console.log('Recipients: ', Array.from(userIds).join(', '));
+        } else {
+            stats.aggregates.outgoing.unidentified.increment();
+            console.log('Unable to associate database event with user:');
+            console.log(msg);
+        }
+    });
 
-    if (userId) {
-        stats.outgoing.identified++;
-        stats.outgoing.last_message_at = new Date();
-        io.to('user:' + userId).emit('db', msg);
-    } else {
-        stats.outgoing.unidentified++;
-        console.log('Unable to associate database event with user: ' + msg);
-    }
-});
+    initServer();
+}
 
 process.on('uncaughtException', function (err) {
     var markdown, request, options;
@@ -264,7 +322,7 @@ process.on('uncaughtException', function (err) {
 
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log('Notification successfully send to Slack.');
+                console.log('Notification successfully sent to Slack.');
             }
             process.exit(1);
         });
