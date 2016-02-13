@@ -222,7 +222,6 @@ function* introspectDatabase(pgp) {
              AND kcu.table_name = tc.table_name
              AND kcu.constraint_name = tc.constraint_name
            WHERE t.table_catalog = 'spark'
-             AND t.table_schema = 'sandbox-school'
              AND t.table_schema NOT IN (${EXCLUDED_SCHEMAS.map(s => `'${s}'`).join(', ')})
             AND t.table_name NOT LIKE 'fdw_%'
             AND kcu.constraint_name IS NOT NULL
