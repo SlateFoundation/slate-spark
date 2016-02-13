@@ -2,21 +2,11 @@
 	
 namespace Slate;
 
-$sparkLinks = [];
 
 if (!empty($_SESSION['User'])) {
-    $courseLinks = [];
     $sparkCourseLinks = [];
 
     foreach ($_SESSION['User']->CurrentCourseSections AS $Section) {
-        $slateCourseLinks[] = [
-            '_id' => $Section->Code,
-        	'_label' => $Section->getTitle(),
-			'_shortLabel' => $Section->Code,
-    		'_icon' => UI\Adapters\Courses::getIcon($Section),
-			'_href' => $Section->getUrl()
-        ];
-        
         $sparkCourseLinks[] = [
             '_id' => $Section->Code,
         	'_label' => $Section->getTitle(),
@@ -29,8 +19,10 @@ if (!empty($_SESSION['User'])) {
     }
 
     DashboardRequestHandler::$sources[] = [
-        'Temporary Workflow Courses' => $slateCourseLinks,
-        'Spark Courses (beta)' => $sparkCourseLinks
+        'My Courses' => [
+            '_icon' => 'courses',
+            '_children' => $sparkCourseLinks
+        ]
     ];
 }
 
