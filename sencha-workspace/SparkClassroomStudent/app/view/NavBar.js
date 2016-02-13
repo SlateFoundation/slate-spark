@@ -5,7 +5,8 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
     requires: [
         'Ext.field.Text',
         'Ext.dataview.List',
-        'SparkClassroom.widget.SparkpointField'
+        'SparkClassroom.widget.SparkpointField',
+        'Jarvus.util.format.FuzzyTime'
     ],
 
     config: {
@@ -22,9 +23,17 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                 }
             },
             {
+                itemId: 'timer',
                 xtype: 'label',
                 cls: 'spark-navbar-timer',
-                html: '5 days'
+                tpl: [
+                    '<tpl if="duration">',
+                        '{duration:fuzzyDuration}',
+                    '<tpl else>',
+                        'Not Started',
+                    '</tpl>'
+                ],
+                hidden: true
             },
             {
                 xtype: 'component',
@@ -51,8 +60,7 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
             },
             {
                 text: 'Help',
-                itemId: 'help',
-                disabled: true
+                itemId: 'help'
             }
         ]
     }

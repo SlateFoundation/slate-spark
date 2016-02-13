@@ -28,7 +28,7 @@ Ext.define('SparkClassroomStudent.Application', {
 
         'Standards',
         'Activity',
-        'Help',
+        'Help'
     ],
 
     config: {
