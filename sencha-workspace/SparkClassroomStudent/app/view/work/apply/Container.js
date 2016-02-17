@@ -249,7 +249,8 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                                                 xtype: 'button',
                                                 ui: 'action',
                                                 iconCls: 'fa fa-paperclip',
-                                                text: 'Attach File'
+                                                text: 'Attach File',
+                                                disabled: true
                                             },
                                             {
                                                 itemId: 'attachLinkBtn',
