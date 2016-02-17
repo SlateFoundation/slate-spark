@@ -114,7 +114,24 @@ function *getHandler() {
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds]);
 
-    this.body = applies.json;
+    applies.json || (applies.json = []);
+
+    // FIXME: HACK: Do not return null where the client is expecting an array
+    this.body = applies.json.map(function(apply) {
+        if (!Array.isArray(apply.todos)) {
+            apply.todos = [];
+        }
+
+        if (!Array.isArray(apply.links)) {
+            apply.links = [];
+        }
+
+        if (!Array.isArray(apply.submissions)) {
+            apply.submissions = [];
+        }
+
+        return apply;
+    });
 }
 
 function *patchHandler() {
