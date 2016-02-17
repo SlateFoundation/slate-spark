@@ -20,12 +20,21 @@ Ext.define('SparkClassroom.model.work.Apply', {
                 return value || [];
             }
         },
-        'submissions',
+        {
+            name: 'submissions',
+            convert: function (value) {
+                return value || [];
+            }
+        },
         {
             name: 'links',
 
             // normalize old array-of-urls format to new array of title/url pair objects
             convert: function (value) {
+                if (!value) {
+                    return [];
+                }
+
                 if (!Ext.isArray(value) || !Ext.isString(value[0])) {
                     return value;
                 }
