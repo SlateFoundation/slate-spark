@@ -78,7 +78,7 @@ Ext.define('SparkClassroom.work.assess.Container', {
             i = 0;
 
         for (; i < gridsLen; i++) {
-            grids[i].setEnableEditing(enableEditing);
+            grids[i].setEnableEditing(false);
         }
 
         this.down('#reflectionField').setHidden(!enableEditing);
