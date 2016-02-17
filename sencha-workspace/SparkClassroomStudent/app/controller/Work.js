@@ -173,7 +173,12 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
     // event handlers
     onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
+        var me = this;
+
+        me.setStudentSparkpoint(studentSparkpoint);
+        if (studentSparkpoint) {
+            me.redirectTo('work/' + studentSparkpoint.get('active_phase'));
+        }
     },
 
     onStudentSparkpointUpdate: function() {
