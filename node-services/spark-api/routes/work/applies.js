@@ -47,7 +47,7 @@ function *getHandler() {
         'standardCodes',
         ap.standards,
         'todos',
-        CASE WHEN a.selected IS NULL
+        COALESCE((CASE WHEN a.selected IS NULL
              THEN (
                 SELECT json_agg(json_build_object(
                        'todo',
@@ -71,15 +71,15 @@ function *getHandler() {
                   WHERE user_id = $1
                     AND apply_id = ap.id) AS student_todos
              )
-         END,
+         END), '[]'::JSON),
         'links',
-        (SELECT json_agg(
+        COALESCE((SELECT json_agg(
             CASE WHEN jsonb_typeof(link) = 'string'
                  THEN jsonb_build_object('title', link, 'url', link)
                  ELSE link
             END)
            FROM jsonb_array_elements(ap.links) AS link
-        ),
+        ), '[]'::JSON),
         'metadata',
         CASE
           WHEN ap.metadata = '""'
@@ -114,24 +114,7 @@ function *getHandler() {
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds]);
 
-    applies.json || (applies.json = []);
-
-    // FIXME: HACK: Do not return null where the client is expecting an array
-    this.body = applies.json.map(function(apply) {
-        if (!Array.isArray(apply.todos)) {
-            apply.todos = [];
-        }
-
-        if (!Array.isArray(apply.links)) {
-            apply.links = [];
-        }
-
-        if (!Array.isArray(apply.submissions)) {
-            apply.submissions = [];
-        }
-
-        return apply;
-    });
+    this.body = applies.json;
 }
 
 function *patchHandler() {
