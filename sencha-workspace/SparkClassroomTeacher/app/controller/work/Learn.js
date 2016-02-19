@@ -104,11 +104,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
         ) {
             scoreField = this.getMasteryCheckScoreField();
-
-            if (scoreField) {
-                scoreField.setValue(activeStudent.get('learn_mastery_check_score'));
-                scoreField.resetOriginalValue();
-            }
+            scoreField.setValue(activeStudent.get('learn_mastery_check_score'));
+            scoreField.resetOriginalValue()
         }
     },
 
