@@ -70,7 +70,8 @@ Ext.define('SparkClassroom.model.work.Apply', {
         },
         {
             name: 'grade',
-            allowNull: true
+            allowNull: true,
+            defaultValue: null
         }
     ],
 
