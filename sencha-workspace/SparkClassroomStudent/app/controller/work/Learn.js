@@ -140,7 +140,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             me.refreshLearnProgress();
         }
 
-        me.redirectTo('work/conference')
+        me.redirectTo('work/conference');
     },
 
 
