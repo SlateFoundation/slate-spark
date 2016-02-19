@@ -96,16 +96,20 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
-        var scoreField;
+        var me = this,
+            scoreField;
 
         if (
             operation == 'edit' &&
-            activeStudent === this.getActiveStudent() &&
+            activeStudent === me.getActiveStudent() &&
             modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
         ) {
-            scoreField = this.getMasteryCheckScoreField();
-            scoreField.setValue(activeStudent.get('learn_mastery_check_score'));
-            scoreField.resetOriginalValue()
+            scoreField = me.getMasteryCheckScoreField();
+
+            if (scoreField) {
+                scoreField.setValue(activeStudent.get('learn_mastery_check_score'));
+                scoreField.resetOriginalValue();
+            }
         }
     },
 
