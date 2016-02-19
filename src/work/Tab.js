@@ -2,7 +2,7 @@
 Ext.define('SparkClassroom.work.Tab', {
     extend: 'Ext.tab.Tab',
     xtype: 'spark-work-tab',
-    require: [
+    requires: [
         'Jarvus.util.format.FuzzyTime'
     ],
 
