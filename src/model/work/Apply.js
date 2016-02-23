@@ -31,11 +31,11 @@ Ext.define('SparkClassroom.model.work.Apply', {
 
             // normalize old array-of-urls format to new array of title/url pair objects
             convert: function (value) {
-                if (!value) {
+                if (!value || !Ext.isArray(value)) {
                     return [];
                 }
 
-                if (!Ext.isArray(value) || !Ext.isString(value[0])) {
+                if (!Ext.isString(value[0])) {
                     return value;
                 }
 
