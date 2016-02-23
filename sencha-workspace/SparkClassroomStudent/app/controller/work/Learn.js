@@ -186,7 +186,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     ensureLearnPhaseStarted: function() {
         var me = this,
-            studentSparkpoint = this.getStudentSparkpoint();
+            studentSparkpoint = me.getStudentSparkpoint();
 
         // mark learn phase as started if any learn has been launched
         if (
