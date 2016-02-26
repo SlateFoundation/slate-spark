@@ -39,7 +39,7 @@ $students = \Emergence\Database\Postgres::selectAll([
     'with' => [
         'section_teachers' => [
             'columns' => [
-                'code' => 'course_sections."Code"',
+                'id' => 'course_sections."ID"',
                 'teachers' => 'string_agg(concat(teacher."FirstName", \' \', teacher."LastName"), \',\')'
             ],
             'from' => 'course_sections',
@@ -48,7 +48,7 @@ $students = \Emergence\Database\Postgres::selectAll([
                 'JOIN people AS teacher ON teacher."ID" = participant."PersonID"'
             ],
             'group' => [
-                'course_sections."Code"'
+                'course_sections."ID"'
             ]
         ],
 
@@ -81,13 +81,13 @@ $students = \Emergence\Database\Postgres::selectAll([
         'Section ID(s)' => 'array_to_string(section_ids, E\'\\n\')',
         'Section Title(s)' => '(
            SELECT string_agg(section."Title", E\'\\n\')
-             FROM unnest(section_ids) AS section_code
-             JOIN course_sections AS section ON section."Code" = section_code
+             FROM unnest(section_ids) AS section_id
+             JOIN course_sections AS section ON section."ID" = section_id
         )',
         'Teacher(s)' => '(
            SELECT string_agg(section_teachers.teachers, E\'\\n\')
-             FROM unnest(section_ids) AS section_code
-             JOIN section_teachers ON section_teachers.code = section_code
+             FROM unnest(section_ids) AS section_id
+             JOIN section_teachers ON section_teachers.id = section_id
         )',
 
         'Sparkpoint' => 'sparkpoint.code',

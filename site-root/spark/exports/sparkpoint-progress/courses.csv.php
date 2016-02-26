@@ -29,7 +29,7 @@ if (!empty($_GET['finish_time_max'])) {
 
 // init spreadsheet writer
 $spreadsheet = new SpreadsheetWriter([
-    'filename' => 'sparkpoint-progress-sections.csv',
+    'filename' => 'sparkpoint-progress-courses.csv',
     'autoHeader' => true
 ]);
 
@@ -74,7 +74,7 @@ $courses = \Emergence\Database\Postgres::selectAll([
             'from' => 'section_student_active_sparkpoint',
             'join' => [
                 'JOIN student_sparkpoint USING (student_id, sparkpoint_id)',
-                'JOIN course_sections ON "Code" = section_id'
+                'JOIN course_sections ON "ID" = section_id'
             ],
             'where' => $where,
             'group' => '"CourseID"'

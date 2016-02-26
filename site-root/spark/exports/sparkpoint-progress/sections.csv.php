@@ -64,7 +64,7 @@ $sections = \Emergence\Database\Postgres::selectAll([
 
         'section_sparkpoints' => [
             'columns' => [
-                'code' => 'section_id',
+                'id' => 'section_id',
                 'sparkpoints_completed' => 'COUNT(*)',
                 'students_with_completed' => 'COUNT(DISTINCT student_id)',
                 'sparkpoint_time' => 'AVG(assess_finish_time - learn_start_time)',
@@ -122,7 +122,7 @@ $sections = \Emergence\Database\Postgres::selectAll([
     'join' => [
         'JOIN section_teachers ON section_teachers.id = "ID"',
         'JOIN section_students ON section_students.id = "ID"',
-        'LEFT JOIN section_sparkpoints ON section_sparkpoints.code = "Code"'
+        'LEFT JOIN section_sparkpoints ON section_sparkpoints.id = "ID"'
     ]
 ]);
 
