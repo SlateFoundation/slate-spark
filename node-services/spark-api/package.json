@@ -14,6 +14,7 @@
     "generic-pool": "^2.2.1",
     "git-promise": "^0.3.0",
     "js-yaml": "^3.4.3",
+    "k-12": "^0.1.1",
     "knex": "^0.8.6",
     "koa": "^1.1.1",
     "koa-cluster": "github:jarvusinnovations/cluster",
