@@ -213,118 +213,124 @@ function* getHandler() {
 }
 
 function* patchHandler() {
-    const requiredKeys = ['student_id', 'resource_id'];
-    const allKeys = ['student_id', 'resource_id', 'comment', 'rating', 'completed'];
-
     var resources = this.request.body,
-        invalidResources = [],
-        validResources = [],
-        _ = new QueryBuilder(),
         ctx = this,
-        recordQueries = [];
+        validationErrors,
+        statements,
+        vals = new util.Values(),
+        recordToUpsert = util.recordToUpsert.bind(ctx),
+        learnActivityRecords = [],
+        learnReviewRecords = [];
 
     if (!Array.isArray(resources) || resources.length === 0) {
         return this.throw('Body should be an array of one or more learns.', 400);
     }
 
+    // Prepare incoming "learn_activity" and "learn_review" record(s) for validation and transactional UPSERT
     resources.forEach(function(resource) {
-        var errors = [],
-            invalidKeys;
-
-        resource.queries = [];
+        var review = null;
 
         if (ctx.isStudent) {
-            resource.student_id = ctx.studentId;
-        }
-
-        if (isNaN(resource.resource_id)) {
-            errors.push('resource_id must be numeric, you passed: ' + resource.resource_id);
-        }
-
-        if (typeof resource.completed !== 'undefined' && typeof resource.completed !== 'boolean') {
-            errors.push('completed must be a boolean, you passed: ' + resource.completed);
-        } else if (typeof resource.completed === 'boolean') {
-            _.push('learn_activity', 'user_id', resource.student_id);
-            _.push('learn_activity', 'resource_id', resource.resource_id);
-            _.push('learn_activity', 'completed', resource.completed);
-        }
-
-        if (resource.rating) {
-            if (isNaN(resource.rating) || resource.rating > 10 || resource.rating < 0) {
-                errors.push('rating must be a number between 1 and 10, you passed: ' + resource.rating);
+            if (typeof resource.user_id !== 'undefined' && ctx.userId != resource.user_id) {
+                return ctx.throw(
+                    new Error(`Tampering Evident: student_id mismatch ${ctx.userId} != ${resource.user_id}`),
+                    403
+                );
             } else {
-                _.push('learn_reviews', 'student_id', resource.student_id);
-                _.push('learn_reviews', 'resource_id', resource.resource_id);
-                _.push('learn_reviews', 'rating', resource.rating);
+                resource.user_id = ctx.userId;
             }
         }
 
-        if (resource.comment) {
-            if (typeof resource.comment !== 'string') {
-                errors.push('comment must be a string, you passed: ' + resource.comment);
-            } else {
-                _.push('learn_reviews', 'student_id', resource.student_id);
-                _.push('learn_reviews', 'resource_id', resource.resource_id);
-                _.push('learn_reviews', 'comment', resource.comment);
-            }
+        if (resource.rating !== undefined) {
+            review || (review = { student_id: resource.user_id, resource_id: resource.resource_id });
+            review.rating = resource.rating;
+            delete resource.rating;
         }
 
-        requiredKeys.forEach(function (key) {
-            if (typeof resource[key] === 'undefined') {
-                errors.push('Missing key: ' + key);
-            }
-        });
-
-        invalidKeys = Object.keys(resource).filter(function (key) {
-            return allKeys.indexOf(key) === -1 && key !== 'queries';
-        });
-
-        if (invalidKeys.length > 0) {
-            errors.push('Unexpected key(s) encountered: ' + invalidKeys.join(', '));
+        if (resource.comment !== undefined) {
+            review || (review = { student_id: resource.user_id, resource_id: resource.resource_id });
+            review.comment = resource.comment;
+            delete resource.comment;
         }
 
-        if (errors.length > 0) {
-            resource.errors = errors;
-            invalidResources.push(resource);
-            return;
+        if (resource.completed === true) {
+            resource.end_status = 'api-patch';
+            resource.end_ts = new Date().toISOString();
+            learnActivityRecords.push(resource);
+        } else if (resource.completed === false) {
+            resource.end_status = null;
+            resource.end_ts = null;
+            learnActivityRecords.push(resource);
         }
 
-        if (_.tables.learn_activity) {
-            let set = _.getSet('learn_activity', ['user_id', 'resource_id']);
-            let values = _.getValues('learn_activity');
-            let where = _.getWhere('learn_activity', ['user_id', 'resource_id']);
-            _.pop('learn_activity', true);
-
-            resource.queries.push(recordQueries.push(`UPDATE learn_activity SET ${set} WHERE ${where} RETURNING *`) - 1);
-        }
-
-        if (_.tables.learn_reviews) {
-            let set = _.getSet('learn_reviews', requiredKeys);
-            let values = _.getValues('learn_reviews');
-            let columns = Object.keys(_.pop('learn_reviews', true).columns).join(', ');
-
-            resource.queries.push(recordQueries.push(`
-                INSERT INTO learn_reviews (${columns})
-                                   VALUES (${values}) ON CONFLICT (student_id, resource_id) DO UPDATE
-                                   SET ${set}
-                                RETURNING *`) - 1);
+        if (review) {
+            learnReviewRecords.push(review);
         }
     });
 
-    if (invalidResources.length > 0) {
-        this.throw(
-            400,
-            `${invalidResources.length} invalid resource(s) and ${validResources.length} valid resource(s) were passed.\n` + JSON.stringify(
-            {
-                invalid: invalidResources,
-                valid: validResources,
-                params: this.query,
-                body: this.body
-            }, null, '  ')
-        );
+    validationErrors = [].concat(
+        learnActivityRecords.map(function(resource) {
+            var errors = ctx.validation.learn_activity(resource);
+
+            if (errors) {
+                resource.errors = errors;
+                return resource;
+            }
+        }),
+        learnReviewRecords.map(function(review) {
+            var errors = ctx.validation.learn_reviews(review);
+
+            if (errors) {
+                review.errors = errors;
+            }
+
+            if (review.rating !== undefined && (review.rating <= 0 || review.rating > 10)) {
+                review.errors || (review.errors = []);
+                review.errors.push(`rating: must be a number between 1-10, you gave: ${review.rating}`)
+            }
+
+            if (review.errors) {
+                return review;
+            }
+        })
+    ).filter(err => err !== undefined);
+
+    if (validationErrors.length > 0) {
+        ctx.status = 400;
+        return ctx.body = {
+            success: false,
+            error: validationErrors
+        };
     }
 
-    this.body = yield *util.groupQueries(recordQueries, _.values, resources, ctx, ['user_id', 'id']);
+    if (learnActivityRecords.length > 0) {
+        statements = learnActivityRecords.map(function(resource) {
+            return recordToUpsert('learn_activity', resource, vals, ['user_id', 'resource_id'])
+        });
+    } else {
+        statements = [];
+    }
+
+    if (learnReviewRecords.length > 0) {
+        statements = statements.concat(learnReviewRecords.map(function(review) {
+            return recordToUpsert('learn_reviews', review, vals, ['student_id', 'resource_id']);
+        }));
+    }
+
+    if (statements.length === 0) {
+        ctx.status = 400;
+        return ctx.body = {
+            success: false,
+            error: 'No records passed to PATCH'
+        };
+    }
+
+    yield this.pgp.task(function*(pgp) {
+        ctx.body = {
+            success: true,
+            records: (yield pgp.any(util.queriesToReturningJsonCte(statements), vals.vals)).map(record => record.json)
+        };
+    });
 }
 
 function* launchHandler(resourceId) {
