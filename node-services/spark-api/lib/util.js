@@ -1,6 +1,9 @@
 'use strict';
 
+var k12 = require('k-12');
+
 /** @module util */
+
 
 /**
  * A helper function to generate random numbers and pick random (un)weighted values from a set of values
@@ -652,6 +655,59 @@ function recordToInsert(tableName, record, vals) {
     return sql;
 }
 
+function recordToUpsert(tableName, record, vals, _conflictColumns) {
+    // allowedKeys must be an array of column names for the table
+    var allowedKeys = Object.keys(this.introspection.tables[tableName]),
+        primaryKeys = this.introspection.primaryKeys[tableName].columns,
+        conflictColumns = [],
+        conflictPlaceholders = [],
+        valueColumns = [],
+        valuePlaceholders = [],
+        sql = `INSERT INTO ${tableName} `;
+
+    allowedKeys.forEach(function (col) {
+        let val = record[col],
+            placeholder = vals.push(val);
+
+        if (val !== undefined) {
+            if (_conflictColumns.indexOf(col) !== -1 || primaryKeys.indexOf(col) !== -1) {
+                conflictColumns.push(col);
+                conflictPlaceholders.push(placeholder);
+            }
+
+            valuePlaceholders.push(placeholder);
+            valueColumns.push(col);
+        }
+    });
+
+    // Make sure that all of the columns specified in conflictColumns exist in the passed record, if not throw
+    if (conflictColumns.length < _conflictColumns.length) {
+        let missingCols = _conflictColumns.filter(col => record[col] === undefined);
+
+        throw new Error(
+            `An UPSERT for a ${tableName} record is missing values for the following ON CONFLICT columns: ${missingCols}`
+        );
+    }
+
+    sql += `(${valueColumns.join(', ')}) VALUES (${valuePlaceholders.join(', ')})`;
+
+    // Generate an upsert
+    if (conflictColumns.length > 0) {
+        sql += ` ON CONFLICT (${conflictColumns.join(', ')}) DO UPDATE SET `;
+
+        // Do not include conflict columns or PKs in the SET values
+        sql += valueColumns.map(function(col, i) {
+            if (conflictColumns.indexOf(col) !== -1) {
+                return null;
+            }
+
+            return `${col} = ${valuePlaceholders[i]}`;
+        }).filter(sql => sql !== null).join(', ');
+    }
+
+    return sql;
+}
+
 function recordToUpdate(tableName, record, vals) {
     var allowedKeys = Object.keys(this.introspection.tables[tableName]),
         primaryKeys = this.introspection.primaryKeys[tableName].columns,
@@ -700,6 +756,29 @@ function queriesToReturningCte(queries) {
     return `WITH ${cte.join(',\n')} ${select.join('\nUNION ALL\n')};`;
 }
 
+function queriesToReturningJsonCte(queries) {
+    var cte = [],
+        select = [];
+
+    queries.forEach(function(query, i) {
+        query = query.trim();
+
+        // Strip trailing semi-colon
+        if (query.slice(-1) === ';') {
+            query = query.slice(0, -1);
+        }
+
+        if (query.slice(-11).toLowerCase() !== 'returning *') {
+            query += ' RETURNING *'
+        }
+
+        cte.push(`q${i} AS (${query})`);
+        select.push(`SELECT row_to_json(q${i}) AS json FROM q${i}`);
+    });
+
+    return `WITH ${cte.join(',\n')} ${select.join('\nUNION ALL\n')};`;
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     excludeObjectKeys: excludeObjectKeys,
@@ -717,9 +796,6 @@ module.exports = {
     getNumericKeys: getNumericKeys,
     getNonNumericKeys: getNonNumericKeys,
     validateNumericKeys: validateNumericKeys,
-
-    arrayToGradeRange: arrayToGradeRange,
-    gradeRangeToArray: gradeRangeToArray,
 
     toSparkpointIds: toSparkpointIds,
     toSparkpointCodes: toSparkpointCodes,
@@ -746,7 +822,12 @@ module.exports = {
     recordToWhere: recordToWhere,
     recordToUpdate: recordToUpdate,
     recordToInsert: recordToInsert,
+    recordToUpsert: recordToUpsert,
     queriesToReturningCte: queriesToReturningCte,
-    
-    bind: require('co-bind')
+    queriesToReturningJsonCte: queriesToReturningJsonCte,
+
+    bind: require('co-bind'),
+
+    arrayToGradeRange: k12.arrayToGradeRange,
+    gradeRangeToArray: k12.gradeRangeToArray
 };
