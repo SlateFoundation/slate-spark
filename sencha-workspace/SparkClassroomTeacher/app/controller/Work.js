@@ -208,7 +208,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     onActiveStudentSelect: function(activeStudent) {
-        this.setActiveStudent(activeStudent);
+        var me = this;
+
+        me.setActiveStudent(activeStudent);
+        me.getWorkTabbar().setActivePhase(activeStudent.get('active_phase'));
     },
 
     onSocketData: function(socket, data) {
@@ -278,8 +281,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * tabbar and the assign tabbar
      */
     doHighlightTabbars: function(section) {
-        var workTabbar = this.getWorkTabbar(),
-            teacherTabbar = this.getTeacherTabbar(),
+        var me = this,
+            workTabbar = me.getWorkTabbar(),
+            teacherTabbar = me.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#work'),
             assignTab = workTabbar.down('#'+ section);
 
