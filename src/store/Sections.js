@@ -14,7 +14,10 @@ Ext.define('SparkClassroom.store.Sections', {
             type: 'slate-records',
             url: '/sections',
             limitParam: false,
-            startParam: false
+            startParam: false,
+            extraParams: {
+                enrolled_user: 'current'
+            }
         }
     }
 });
