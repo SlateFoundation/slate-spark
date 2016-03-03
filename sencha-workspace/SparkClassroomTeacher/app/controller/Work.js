@@ -211,7 +211,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var me = this;
 
         me.setActiveStudent(activeStudent);
-        me.getWorkTabbar().setActivePhase(activeStudent.get('active_phase'));
+        me.redirectTo(['work', activeStudent.get('active_phase')]);
     },
 
     onSocketData: function(socket, data) {
