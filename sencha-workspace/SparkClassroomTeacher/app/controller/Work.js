@@ -171,7 +171,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
-        me.redirectTo(activeStudent ? 'work/' + activeStudent.get('active_phase') : 'gps');
+        me.redirectTo(activeStudent ? ['work', activeStudent.get('active_phase')] : 'gps');
 
         if (activeStudent) {
             studentId = activeStudent.getId();
@@ -204,7 +204,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     onWorkTabChange: function(tabbar, activeTab) {
-        this.redirectTo('work/' + activeTab.getItemId());
+        this.redirectTo(['work', activeTab.getItemId()]);
     },
 
     onActiveStudentSelect: function(activeStudent) {

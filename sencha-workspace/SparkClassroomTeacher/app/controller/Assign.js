@@ -221,7 +221,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             itemId = tabbar.getActiveTab().getItemId();
 
         if(oldValue !== null){
-            me.redirectTo('assign/' + itemId);
+            me.redirectTo(['assign', itemId]);
         }
 
     },
