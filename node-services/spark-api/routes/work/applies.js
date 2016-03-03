@@ -87,15 +87,11 @@ function *getHandler() {
           ELSE ap.metadata::JSONB
         END,
         'selected',
-        CASE WHEN a.selected IS NULL THEN false ELSE true END,
+        COALESCE(a.selected, false),
         'reflection',
         a.reflection,
         'submissions',
-        CASE
-            WHEN a.submissions IS NULL
-            THEN '[]'::JSONB
-            ELSE a.submissions
-        END,
+        COALESCE(a.submissions, '[]'::JSONB),
         'comment',
         ar.comment,
         'rating',
