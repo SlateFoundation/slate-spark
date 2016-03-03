@@ -177,7 +177,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
         me.setStudentSparkpoint(studentSparkpoint);
         if (studentSparkpoint) {
-            me.redirectTo('work/' + studentSparkpoint.get('active_phase'));
+            me.redirectTo(['work', studentSparkpoint.get('active_phase')]);
         }
     },
 
@@ -196,7 +196,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     onWorkTabChange: function(tabbar, activeTab) {
         var me = this;
 
-        me.redirectTo('work/' + activeTab.getItemId());
+        me.redirectTo(['work', activeTab.getItemId()]);
     },
 
     onSocketData: function(socket, data) {
