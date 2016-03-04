@@ -200,9 +200,11 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     onStudentSparkpointUpdate: function(studentSparkpoint, modifiedFieldNames) {
+        /* TODO enable this when local studentsparkpoint changes fire update event
         if (modifiedFieldNames.indexOf('total_duration') == -1) {
             return;
         }
+        */
 
         this.getTimerCmp().setData({
             duration: studentSparkpoint.get('total_duration')
