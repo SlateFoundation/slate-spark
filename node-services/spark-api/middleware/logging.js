@@ -6,7 +6,9 @@ var mkdirp = require('mkdirp-then'),
     logToFile,
     jsonHandle,
     textHandle,
-    path = require('path');
+    blueprintHandle,
+    path = require('path'),
+    bf, aglio;
 
 module.exports = function *logger(next) {
     var start = new Date,
@@ -14,7 +16,8 @@ module.exports = function *logger(next) {
         logDirectory = config.log_directory,
         error,
         textLogString,
-        jsonLogString;
+        jsonLogString,
+        ctx = this;
 
     if (config.stdout_format === 'json' && config.stdout_sql) {
         console.error('stdout_sql cannot be true when the stdout_format is set to JSON; disabling stdout_sql.');
@@ -38,11 +41,11 @@ module.exports = function *logger(next) {
                     yield fs.chown(logDirectory, process.geteuid(), process.getegid());
                     dirCreated = true;
                 } catch (e) {
-                    error = e;''
+                    error = e;
                     dirCreated = false;
                 }
             } else if (err.code === 'EACCE') {
-                // Directory is not writeable
+                // Directory is not writable
                 try {
                     yield fs.chown(logDirectory, process.geteuid(), process.getegid());
                     dirCreated = true;
@@ -72,11 +75,21 @@ module.exports = function *logger(next) {
                 });
             }
 
+            if (config.blueprint_filename) {
+                blueprintHandle = require('fs').createWriteStream(path.join(logDirectory, config.blueprint_filename), {
+                    flags: 'a',
+                    encoding: 'utf8',
+                    mode: '0666'
+                });
+
+                bf = require('api-blueprint-http-formatter');
+            }
+
             logToFile = true;
         }
     }
 
-    this.log = {
+    ctx.log = {
       method: this.method,
       path: this.path,
       ts: start,
@@ -88,49 +101,49 @@ module.exports = function *logger(next) {
     yield next;
 
     if (config.stdout_request_body && config.stdout_format === 'json') {
-        this.log.request_body = {
-            original: JSON.parse(this.original.body),
-            effective: this.request.body
+        ctx.log.request_body = {
+            original: JSON.parse(ctx.original.body),
+            effective: ctx.request.body
         };
     }
 
     var ms = new Date - start;
 
-    this.log.duration = ms;
-    this.log.user = {
-        name: this.username,
-        id: this.userId,
-        schema: this.schema
+    ctx.log.duration = ms;
+    ctx.log.user = {
+        name: ctx.username,
+        id: ctx.userId,
+        schema: ctx.schema
     };
 
-    textLogString = `[${start.toUTCString()}] - ${this.method} ${this.url} - ${ms}ms - ${this.username} - ${this.schema}`;
+    textLogString = `[${start.toUTCString()}] - ${ctx.method} ${ctx.url} - ${ms}ms - ${ctx.username} - ${ctx.schema}`;
 
-    if (this.requestId) {
-        this.set('X-Request-Id', this.requestId);
-        this.log.request_id = this.requestId;
-        textLogString += ` - ${this.requestId}`;
+    if (ctx.requestId) {
+        ctx.set('X-Request-Id', ctx.requestId);
+        ctx.log.request_id = ctx.requestId;
+        textLogString += ` - ${ctx.requestId}`;
     }
 
-    if (this.app.context.git) {
-        let git = this.app.context.git;
+    if (ctx.app.context.git) {
+        let git = ctx.app.context.git;
 
         for (var prop in git) {
-            this.set('X-Git-' + prop.slice(0,1).toUpperCase() + prop.substr(1), git[prop]);
+            ctx.set('X-Git-' + prop.slice(0,1).toUpperCase() + prop.substr(1), git[prop]);
         }
 
-        this.log.git = git;
+        ctx.log.git = git;
 
         textLogString += ` - ${git.branch}@${git.commit}`;
     }
 
     if (logToFile) {
         if (jsonHandle) {
-            jsonLogString = JSON.stringify(this.log);
-            jsonHandle.write("\n" + jsonLogString);
+            jsonLogString = JSON.stringify(ctx.log);
+            jsonHandle.write('\n' + jsonLogString, 'utf-8');
         }
 
         if (textHandle) {
-            textHandle.write("\n" + textLogString);
+            textHandle.write('\n' + textLogString, 'utf-8');
         }
     }
 
@@ -138,8 +151,35 @@ module.exports = function *logger(next) {
         console.log(jsonLogString);
     } else if (config.stdout_format === 'text') {
         console.log(textLogString);
-        if (config.stdout_request_body && this.request.body) {
-            console.log(this.original.body);
+        if (config.stdout_request_body && ctx.request.body) {
+            console.log(ctx.original.body);
         }
+    }
+
+    if (config.blueprint_filename) {
+        blueprintHandle.write('\n' + bf.format({
+            request: {
+                method: ctx.method,
+                uri: ctx.url.split('?')[0] + Object.keys(ctx.original.queryObject).map(param => {
+                    var prefix = '';
+
+                    // Mark non-required parameters as optional (uses ctx.require)
+                    if (ctx.requiredParameters) {
+                        if (ctx.requiredParameters.indexOf(param) === -1) {
+                            prefix = '?';
+                        }
+                    }
+
+                    return '{' + prefix + param + '}';
+                }).join(''),
+                headers: ctx.request.headers,
+                body: typeof ctx.request.body === 'object' ? JSON.stringify(ctx.request.body) : ctx.request.body || ''
+            },
+            response: {
+                headers: ctx.response.headers,
+                statusCode: ctx.status,
+                body: typeof ctx.response.body === 'object' ? JSON.stringify(ctx.response.body) : ctx.response.body || ''
+            }
+        }), 'utf-8');
     }
 };

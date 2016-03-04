@@ -44,11 +44,11 @@ if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
 }
 
 app.context.config = config;
-app.use(middleware.response_time);
 app.use(requestToCurl());
+app.use(middleware.logging);
+app.use(middleware.response_time);
 app.use(error({ template: __dirname + '/config/error.html' }));
 app.use(middleware.process);
-app.use(middleware.logging);
 app.use(middleware.session);
 app.use(jsonBody({}));
 app.use(middleware.database.knex({
