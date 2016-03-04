@@ -4,7 +4,7 @@ $GLOBALS['Session']->requireAccountLevel('Administrator');
 
 
 // comment this out when you're done debugging on the live site
-\Site::$debug = true;
+#\Site::$debug = true;
 
 
 // read inputted filters
