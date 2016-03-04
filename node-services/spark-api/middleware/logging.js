@@ -157,21 +157,25 @@ module.exports = function *logger(next) {
     }
 
     if (config.blueprint_filename) {
+        let path = ctx.url.split('?')[0],
+            queryParams = Object.keys(ctx.original.queryObject);
+
+        if (queryParams.length > 0) {
+            queryParams = '/' + queryParams.map(param => {
+                var prefix = '';
+
+                // TODO: handle optional/required here if possible
+
+                return '{' + prefix + param + '}';
+            }).join('');
+        } else {
+            queryParams = '';
+        }
+
         blueprintHandle.write('\n' + bf.format({
             request: {
                 method: ctx.method,
-                uri: ctx.url.split('?')[0] + Object.keys(ctx.original.queryObject).map(param => {
-                    var prefix = '';
-
-                    // Mark non-required parameters as optional (uses ctx.require)
-                    if (ctx.requiredParameters) {
-                        if (ctx.requiredParameters.indexOf(param) === -1) {
-                            prefix = '?';
-                        }
-                    }
-
-                    return '{' + prefix + param + '}';
-                }).join(''),
+                uri: path + queryParams,
                 headers: ctx.request.headers,
                 body: typeof ctx.request.body === 'object' ? JSON.stringify(ctx.request.body) : ctx.request.body || ''
             },
