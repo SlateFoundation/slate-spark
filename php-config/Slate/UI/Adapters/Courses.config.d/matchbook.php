@@ -54,11 +54,11 @@
 \Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'ELA7';
 \Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'ELA8';
 
-\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EL06';
-\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EL07';
-\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EL08';
-\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EL09';
-\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'ELAGC';
+\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EN06';
+\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EN07';
+\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EN08';
+\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'EN09';
+\Slate\UI\Adapters\Courses::$courseIcons['books']['courseCodes'][] = 'ENAGC';
 
 
 // Social Studies
