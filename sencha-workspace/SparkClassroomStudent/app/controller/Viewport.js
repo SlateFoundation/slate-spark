@@ -78,7 +78,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             '#': {
                 beforeredirect: 'onBeforeRedirect',
                 beforeroute: 'onBeforeRoute',
-                studentsparkpointload: 'onStudentSparkpointLoad'
+                studentsparkpointload: 'onStudentSparkpointLoad',
+                studentsparkpointupdate: 'onStudentSparkpointUpdate'
                 //<debug>
                 ,unmatchedroute: function(token) {
                     Ext.log.warn('Unmatched token: ' + token);
@@ -196,6 +197,16 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         } else {
             timerCmp.hide();
         }
+    },
+
+    onStudentSparkpointUpdate: function(studentSparkpoint, modifiedFieldNames) {
+        if (modifiedFieldNames.indexOf('total_duration') == -1) {
+            return;
+        }
+
+        this.getTimerCmp().setData({
+            duration: studentSparkpoint.get('total_duration')
+        });
     },
 
     onSectionsStoreLoad: function(store) {

@@ -17,8 +17,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid',
-        readyBtn: 'spark-student-work-learn #readyForConferenceBtn',
-        timerCmp: 'spark-student-navbar #timer'
+        readyBtn: 'spark-student-work-learn #readyForConferenceBtn'
     },
 
     control: {
@@ -185,21 +184,16 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     ensureLearnPhaseStarted: function() {
-        var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+        var studentSparkpoint = this.getStudentSparkpoint();
 
         // mark learn phase as started if any learn has been launched
         if (
             studentSparkpoint &&
             !studentSparkpoint.get('learn_start_time') &&
-            me.getWorkLearnsStore().findExact('launched', true) != -1
+            this.getWorkLearnsStore().findExact('launched', true) != -1
         ) {
             studentSparkpoint.set('learn_start_time', new Date());
             studentSparkpoint.save();
-
-            me.getTimerCmp().setData({
-                duration: 1000
-            });
         }
     }
 });
