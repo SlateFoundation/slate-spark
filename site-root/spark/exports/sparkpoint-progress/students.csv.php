@@ -15,22 +15,7 @@ if (!empty($_GET['finish_time_min'])) {
         return RequestHandler::throwInvalidRequestError('Unable to parse timestamp from finish_time_min');
     }
 
-    $whereQuery = sprintf('assess_finish_time >= to_timestamp(%u)', $time);
-    
-    if ($_GET['dates'] == "all") {
-        $whereQuery .= sprintf(' OR learn_start_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR learn_finish_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR conference_start_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR conference_join_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR conference_finish_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR apply_start_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR apply_ready_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR apply_finish_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR assess_ready_time >= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR assess_start_time >= to_timestamp(%u)', $time);
-    }
-    
-    $where[] = $whereQuery;
+    $where[] = sprintf('assess_finish_time >= to_timestamp(%u)', $time);
 }
 
 if (!empty($_GET['finish_time_max'])) {
@@ -38,22 +23,42 @@ if (!empty($_GET['finish_time_max'])) {
         return RequestHandler::throwInvalidRequestError('Unable to parse timestamp from finish_time_max');
     }
     
-    $whereQuery = sprintf('assess_finish_time <= to_timestamp(%u)', $time);
-    
-    if ($_GET['dates'] == "all") {
-        $whereQuery .= sprintf(' OR learn_start_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR learn_finish_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR conference_start_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR conference_join_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR conference_finish_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR apply_start_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR apply_ready_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR apply_finish_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR assess_ready_time <= to_timestamp(%u)', $time);
-        $whereQuery .= sprintf(' OR assess_start_time <= to_timestamp(%u)', $time);
+    $where[] = sprintf('assess_finish_time <= to_timestamp(%u)', $time);
+}
+
+
+$timeFields = [
+    'learn_start_time',
+    'learn_finish_time',
+    'conference_start_time',
+    'conference_join_time',
+    'conference_finish_time',
+    'apply_start_time',
+    'apply_ready_time',
+    'apply_finish_time',
+    'assess_ready_time',
+    'assess_start_time',
+    'assess_finish_time'
+];
+
+if (!empty($_GET['time_min'])) {
+    if (!$time = strtotime($_GET['time_min'])) {
+        return RequestHandler::throwInvalidRequestError('Unable to parse timestamp from time_min');
     }
-    
-    $where[] = $whereQuery;
+
+    $where[] = implode(' OR ', array_map(function($timeField) use ($time) {
+        return sprintf('assess_finish_time >= to_timestamp(%u)', $time);
+    }, $timeFields));
+}
+
+if (!empty($_GET['time_max'])) {
+    if (!$time = strtotime($_GET['time_max'])) {
+        return RequestHandler::throwInvalidRequestError('Unable to parse timestamp from time_max');
+    }
+
+    $where[] = implode(' OR ', array_map(function($timeField) use ($time) {
+        return sprintf('assess_finish_time <= to_timestamp(%u)', $time);
+    }, $timeFields));
 }
 
 
