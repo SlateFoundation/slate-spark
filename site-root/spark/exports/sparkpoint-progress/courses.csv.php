@@ -4,11 +4,12 @@ $GLOBALS['Session']->requireAccountLevel('Administrator');
 
 
 // comment this out when you're done debugging on the live site
-\Site::$debug = true;
+#\Site::$debug = true;
 
 
 // read inputted filters
 $where = [];
+
 
 if (!empty($_GET['finish_time_min'])) {
     if (!$time = strtotime($_GET['finish_time_min'])) {
@@ -27,9 +28,44 @@ if (!empty($_GET['finish_time_max'])) {
 }
 
 
+$timeFields = [
+    'learn_start_time',
+    'learn_finish_time',
+    'conference_start_time',
+    'conference_join_time',
+    'conference_finish_time',
+    'apply_start_time',
+    'apply_ready_time',
+    'apply_finish_time',
+    'assess_ready_time',
+    'assess_start_time',
+    'assess_finish_time'
+];
+
+if (!empty($_GET['time_min'])) {
+    if (!$time = strtotime($_GET['time_min'])) {
+        return RequestHandler::throwInvalidRequestError('Unable to parse timestamp from time_min');
+    }
+
+    $where[] = implode(' OR ', array_map(function($timeField) use ($time) {
+        return sprintf('assess_finish_time >= to_timestamp(%u)', $time);
+    }, $timeFields));
+}
+
+if (!empty($_GET['time_max'])) {
+    if (!$time = strtotime($_GET['time_max'])) {
+        return RequestHandler::throwInvalidRequestError('Unable to parse timestamp from time_max');
+    }
+
+    $where[] = implode(' OR ', array_map(function($timeField) use ($time) {
+        return sprintf('assess_finish_time <= to_timestamp(%u)', $time);
+    }, $timeFields));
+}
+
+
 // init spreadsheet writer
 $spreadsheet = new SpreadsheetWriter([
-    'filename' => 'sparkpoint-progress-courses.csv',
+    'filename' => 'sparkpoint-progress-courses',
     'autoHeader' => true
 ]);
 
