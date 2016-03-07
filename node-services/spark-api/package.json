@@ -42,6 +42,7 @@
     "newrelic": "^1.24.0",
     "node-uuid": "^1.4.3",
     "numeral": "^1.5.3",
+    "object-recursive-iterator": "^1.0.2",
     "packet-reader": "^0.2.0",
     "pg": "^4.4.3",
     "pg-connection-string": "^0.1.3",
