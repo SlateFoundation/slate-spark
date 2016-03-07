@@ -1,8 +1,8 @@
 'use strict';
 
-var util = require('../../lib/util'),
+var util = require('../../../lib/util'),
     QueryBuilder = util.QueryBuilder,
-    AsnStandard = require('../../lib/asn-standard');
+    AsnStandard = require('../../../lib/asn-standard');
 
 function *getHandler() {
     this.require(['sparkpoint_id', 'student_id']);
@@ -295,66 +295,7 @@ function *patchHandler() {
     this.body = apply;
 }
 
-function *submissionsPostHandler() {
-    this.require(['sparkpoint_id', 'id']);
-
-    var sparkpointId = this.query.sparkpoint_id,
-        id = parseInt(this.query.id, 10),
-        submission = this.request.body;
-
-    if (isNaN(id)) {
-        return this.throw('id must be an integer, you passed: ' + this.query.id, 400);
-    }
-
-    if (typeof submission.url !== 'string') {
-        return this.throw('url must be a string, you passed: ' + submission.url);
-    }
-
-    delete submission.id;
-
-    this.body = yield this.pgp.one(`
-            INSERT INTO applies (sparkpoint_id, student_id, fb_apply_id, submissions)
-                         VALUES ($1, $2, $3, jsonb_build_array($4::JSONB)) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET
-                                submissions = jsonb_array_push_unique($4::JSONB, applies.submissions)
-                       RETURNING *;`,
-        [sparkpointId, this.studentId, id, submission]
-    );
-}
-
-function *submissionsDeleteHandler() {
-    this.require(['sparkpoint_id', 'id', 'url']);
-
-    var sparkpointId = this.query.sparkpoint_id,
-        id = parseInt(this.query.id, 10),
-        submission = {
-            sparkpoint: util.toSparkpointCode(sparkpointId),
-            url: this.query.url
-        };
-
-    if (isNaN(id)) {
-        return this.throw('id must be an integer, you passed: ' + this.query.id, 400);
-    }
-
-    if (typeof submission.url !== 'string') {
-        return this.throw('url must be a string, you passed: ' + submission.url);
-    }
-
-    this.body = yield this.pgp.one(`
-            UPDATE applies
-               SET submissions = jsonb_remove_array_element($4::JSONB, submissions)
-             WHERE sparkpoint_id = $1
-               AND student_id = $2
-               AND fb_apply_id = $3
-         RETURNING *;`,
-        [sparkpointId, this.studentId, id, submission]
-    );
-}
-
 module.exports = {
     get: getHandler,
-    patch: patchHandler,
-    submissions: {
-        post: submissionsPostHandler,
-        delete: submissionsDeleteHandler
-    }
+    patch: patchHandler
 };

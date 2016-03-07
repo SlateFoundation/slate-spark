@@ -10,7 +10,6 @@ var fs = require('fs'),
     Fusebox = require('../../lib/fusebox'),
     db = require('../../middleware/database'),
     slack = require('../../lib/slack'),
-    QueryBuilder = util.QueryBuilder,
     AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {

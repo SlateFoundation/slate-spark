@@ -11,15 +11,21 @@ if (PRODUCTION) {
 
 var koa = require('koa'),
     app = global.app = module.exports = koa(),
-    config = require('./config/index'),
-    middleware = require('./middleware/index'),
+
+    requireDirectory = require('require-directory'),
+
+    config = requireDirectory(module, './config'),
+    middleware = requireDirectory(module, './middleware'),
+    routes = requireDirectory(module, './routes'),
+
     jsonBody = require('koa-json-body'),
     _ = require('koa-route'),
-    routes = require('./routes/index'),
     error = require('koa-error'),
     json = require('koa-json'),
     cluster = require('cluster'),
     lookup = require('./lib/lookup'),
+    methods = require('methods'),
+    iterator = require('object-recursive-iterator'),
     requestToCurl = require('koa-request-to-curl');
 
 if (PRODUCTION) {
@@ -63,78 +69,30 @@ app.use(lookup);
 app.use(middleware.request);
 app.use(json());
 
-// Standards
+iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
+    var urlPath;
+
+    // If the route module exports autoRoute: false, we won't setup auto routes to it
+    if (typeof obj === 'object' && obj.autoRoute !== false) {
+        urlPath = '/' + path.filter(key => key !== 'index').join('/');
+    }
+
+    // If the route module an HTTP method, we'll route to it
+    if (urlPath && methods.indexOf(key) !== -1) {
+        app.use(_[key](urlPath, obj[key]));
+    }
+});
+
+// Custom routes
 app.use(_.get('/standards/:id', routes.standards.get));
-app.use(_.get('/standards', routes.standards.list));
-
-// Activity
-app.use(_.get('/work/activity', routes.work.activity.get));
-app.use(_.patch('/work/activity', routes.work.activity.patch));
-
-// Assessments
-app.use(_.get('/work/assessments', routes.work.assessments));
-
-// Assess
-app.use(_.get('/work/assess', routes.work.assess.get))
-app.use(_.patch('/work/assess', routes.work.assess.patch));
-
-// Learns
-app.use(_.get('/work/learns', routes.work.learns.get));
 app.use(_.get('/work/learns/launch/:resourceId', routes.work.learns.launch));
-app.use(_.patch('/work/learns', routes.work.learns.patch));
-
-// Applies
-app.use(_.get('/work/applies', routes.work.applies.get))
-app.use(_.patch('/work/applies', routes.work.applies.patch))
-app.use(_.post('/work/applies/submissions', routes.work.applies.submissions.post));
-app.use(_.delete('/work/applies/submissions', routes.work.applies.submissions.delete));
-
-// Conferences
-app.use(_.get('/work/conferences', routes.work.conferences.get));
-app.use(_.post('/work/conferences/questions', routes.work.conferences.questions.post));
-app.use(_.patch('/work/conferences/worksheet', routes.work.conferences.worksheet.patch));
-
-// Conference groups
-app.use(_.patch('/work/conference-groups', routes.work['conference-groups'].patch));
-app.use(_.post('/work/conference-groups', routes.work['conference-groups'].patch));
-app.use(_.get('/work/conference-groups', routes.work['conference-groups'].get));
-
-// Todos
-app.use(_.get('/todos', routes.todos.get));
-app.use(_.patch('/todos', routes.todos.patch));
-app.use(_.post('/todos', routes.todos.patch));
-
-// Feedback
-app.use(_.get('/work/feedback', routes.work.feedback.get));
-app.use(_.patch('/work/feedback', routes.work.feedback.patch));
-app.use(_.post('/work/feedback', routes.work.feedback.post));
-
-// Sparkpoints
 app.use(_.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get));
-
-// OpenEd
-// app.use(_.get('/opened/csv', routes.opened.index.csv.get));
-
-// Help
-app.use(_.get('/help', routes.help.get));
-app.use(_.post('/help', routes.help.post));
-app.use(_.patch('/help', routes.help.patch));
-
-// Test
-app.use(_.get('/test', routes.test.get));
-
-// Healthcheck
-app.use(_.get('/healthcheck', routes.healthcheck.get));
-
-// Assignments
+app.use(_.get('/test/error/:code', require(__dirname + '/routes/test/error').get));
 app.use(_.get('/assignments/:entity', routes.assignments.entity.get));
 app.use(_.patch('/assignments/:entity', routes.assignments.entity.patch));
 app.use(_.post('/assignments/:entity', routes.assignments.entity.post));
-
-app.use(_.get('/assignments', routes.assignments.index.get));
-app.use(_.patch('/assignments', routes.assignments.index.patch));
 
 if (PRODUCTION) {
     app.on('error', function(error, ctx) {

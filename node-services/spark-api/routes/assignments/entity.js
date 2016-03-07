@@ -188,5 +188,6 @@ module.exports = {
     patch: patchHandler,
     post: postHandler,
     sqlGenerator: sqlGenerator,
-    recordToSelect: recordToSelect
+    recordToSelect: recordToSelect,
+    autoRoute: false
 };
