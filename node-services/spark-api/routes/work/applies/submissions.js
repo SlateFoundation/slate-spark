@@ -52,3 +52,8 @@ function *deleteHandler() {
         [sparkpointId, this.studentId, id, submission]
     );
 }
+
+module.exports = {
+    delete: deleteHandler,
+    post: postHandler
+};
