@@ -1,6 +1,7 @@
 'use strict';
 
 var filterObjectKeys = require('./util').filterObjectKeys,
+    k12 = require('k-12'),
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
     Promise = require('bluebird'),
@@ -138,10 +139,15 @@ var filterObjectKeys = require('./util').filterObjectKeys,
         },
         json: true,
         timeout: 2000
-    };
+    },
+    configPath = path.resolve(__dirname, '../config/opened.json'),
+    configError;
+
+require('request-to-curl');
 
 try {
-    configFile = fs.readFileSync(path.resolve(__dirname, '../config/opened.json'), 'utf8');
+    configFile = fs.readFileSync(configPath, 'utf8');
+
     try {
         configFile = JSON.parse(configFile);
 
@@ -149,20 +155,18 @@ try {
         openEdClientSecret = configFile.opened_client_secret;
 
     } catch (err) {
-        console.error('OPENED: Error parsing ' + path.resolve(__dirname, '../config.json'));
-        process.exit(1);
+        configError = 'Error parsing JSON';
     }
 } catch (err) {
-    if (openEdClientSecret === '' || openEdClientId === '') {
-        console.error('OPENED: Please provide a valid config.json in ' + path.resolve(__dirname, '../config.json') + ' or edit the content-proxy file directly.');
-        console.error(err);
-        process.exit(1);
-    }
+    configError = 'Unable to read';
 }
 
-if (openEdClientSecret === '' || openEdClientId === '') {
-    console.error('OPENED: Please provide a valid config.json in ' + path.resolve(__dirname, '../config.json') + ' or edit the content-proxy file directly.');
-    process.exit(1);
+if (!(openEdClientSecret && openEdClientId)) {
+    configError = 'opened_client_id and opened_client_secret are required';
+}
+
+if (configError) {
+    throw new Error(`OpenEd: ${configPath}: ${configError}`);
 }
 
 function* getAccessToken() {
@@ -192,6 +196,18 @@ function* getAccessToken() {
     clientOptions.method = 'POST';
 
     token = yield request(clientOptions);
+
+    if (token.statusCode >= 400 || // HTTP error
+        typeof token.body !== 'object' || // empty body
+        typeof token.body.access_token !== 'string' || // missing access_token
+        typeof token.body.access_token !== 'string' // missing refresh_token
+    ) {
+        console.error('OPENED: HTTP ' + token.statusCode + ' is not what we expected: ');
+        console.error(token.body);
+        console.error(token.request.req.toCurl());
+
+        return token;
+    }
 
     delete clientOptions.body;
     delete clientOptions.uri;
@@ -376,14 +392,15 @@ function* getResources(params) {
 
     resources = yield request(clientOptions);
 
-    if (resources.statusCode !== 200 || // HTTP error
+    if (resources.statusCode >= 400 || // HTTP error
         typeof resources.body !== 'object' || // empty body
         !Array.isArray(resources.body.resources) || // missing resource property
         resources.body.resources.length === 0 // coverage gap
     ) {
         console.error('OPENED: HTTP ' + resources.statusCode + ' is not what we expected: ');
-        console.log(clientOptions);
         console.error(resources.body);
+        console.error(resources.request.req.toCurl());
+
         return resources;
     }
 

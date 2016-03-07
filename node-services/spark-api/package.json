@@ -52,6 +52,7 @@
     "pgpass": "0.0.3",
     "pluralize": "^1.2.1",
     "postgres-date": "^1.0.1",
+    "request-to-curl": "^0.1.1",
     "require-directory": "^2.1.1",
     "yaml-config": "^0.3.0"
   },
