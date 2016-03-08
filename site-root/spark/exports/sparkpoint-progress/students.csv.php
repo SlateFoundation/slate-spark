@@ -47,7 +47,7 @@ if (!empty($_GET['time_min'])) {
     }
 
     $where[] = implode(' OR ', array_map(function($timeField) use ($time) {
-        return sprintf('assess_finish_time >= to_timestamp(%u)', $time);
+        return sprintf('%s >= to_timestamp(%u)', $timeField, $time);
     }, $timeFields));
 }
 
@@ -57,7 +57,7 @@ if (!empty($_GET['time_max'])) {
     }
 
     $where[] = implode(' OR ', array_map(function($timeField) use ($time) {
-        return sprintf('assess_finish_time <= to_timestamp(%u)', $time);
+        return sprintf('%s <= to_timestamp(%u)', $timeField, $time);
     }, $timeFields));
 }
 
