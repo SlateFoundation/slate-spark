@@ -63,20 +63,24 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     refs: {
         gpsCt: 'spark-gps',
-        priorityList: 'list#priorityList',
-        addPriorityButton: 'spark-gps button#addPriorityBtn'
+        //priorityList: 'list#priorityList',
+        //addPriorityButton: 'spark-gps button#addPriorityBtn'
     },
 
     control: {
         'spark-gps-studentlist': {
             select: 'onListSelect'
         },
+        /*
         addPriorityButton: {
             tap: 'onAddPriorityButtonTap'
         },
+        */
+        /*
         'spark-gps-studentlist#priorityList': {
             itemdismisstap: 'onPriorityDismissTap'
         }
+        */
     },
 
 
@@ -146,12 +150,12 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     onListSelect: function(list, student) {
         this.setSelectedActiveStudent(student);
     },
-
+/*
     onAddPriorityButtonTap: function(button) {
         this.getSelectedActiveStudent().set('priority_group', 2);
         this.syncSelectedActiveStudent();
     },
-
+*/
     onPriorityDismissTap: function(list, item) {
         item.getRecord().set('priority_group', null);
         this.syncSelectedActiveStudent();
@@ -194,8 +198,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         var me = this,
             activeStudent = me.getSelectedActiveStudent(),
             lists = me.getGpsCt().query('#phasesCt list'),
-            listCount = lists.length, i = 0, list,
-            addPriorityButton = me.getAddPriorityButton();
+            listCount = lists.length, i = 0, list;
+            //addPriorityButton = me.getAddPriorityButton();
 
         // sync list selection
         for (; i < listCount; i++) {
@@ -207,7 +211,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 list.deselectAll();
             }
         }
-
+/*
         // sync add-to-priorities button
         if (activeStudent && activeStudent.get('priority_group') === null) {
             addPriorityButton.setData(activeStudent.getData());
@@ -215,6 +219,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         } else {
             addPriorityButton.hide();
         }
+*/
     },
 
     refreshGps: Ext.Function.createBuffered(function() {

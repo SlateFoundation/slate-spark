@@ -5,7 +5,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     cls: 'spark-gps',
     requires: [
         'SparkClassroomTeacher.view.gps.StudentList',
-        'SparkClassroomTeacher.view.gps.Waitlist'
+        'SparkClassroomTeacher.view.gps.Waitlist',
+        'SparkClassroomTeacher.view.gps.Priorities'
     ],
 
     config: {
@@ -62,16 +63,15 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         flex: 1,
                         items: [
                             {
-                                cls: 'spark-gps-studentlist spark-gps-priority-group',
                                 itemId: 'priorityList',
 
-                                xtype: 'spark-gps-studentlist',
-                                store: 'gps.Priorities',
+                                xtype: 'spark-priorities',
                                 title: 'Priorities',
-                                showDismissButton: true,
-                                emptyText: 'Select a student to add to your priorities&nbsp;list.',
+                                emptyText: 'No priorities',
                                 deferEmptyText: false
+                                //grouped: true
                             },
+                            /*
                             {
                                 itemId: 'addPriorityBtn',
 
@@ -81,6 +81,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 tpl: 'Add {[values.student.get("FullName")]}',
                                 hidden: true
                             },
+                            */
                             {
                                 itemId: 'helpList',
 
