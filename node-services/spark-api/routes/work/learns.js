@@ -13,29 +13,30 @@ var fs = require('fs'),
     AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
-    this.require(['sparkpoint_id', 'student_id', 'section_id']);
-
-    var sparkpointId = this.query.sparkpoint_id,
-        studentId = this.query.student_id,
-        sectionId = this.query.section_id,
+    var ctx = this,
+        sparkpointId = ctx.query.sparkpoint_id,
+        studentId = ctx.query.student_id,
+        sectionId = ctx.query.section_id,
         standardIds = [],
         openedIds = [],
-        ctx = this,
-        playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews;
+        playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews, assignments;
 
-    (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+    ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
+    ctx.assert(sectionId, 'a section must be passed in the query string', 400);
+    ctx.assert(ctx.isStudent ? studentId : true, 'only teachers can query for section-level playlists', 403);
+
+    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
         standardIds = standardIds.concat(standard.asnIds);
         openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
     });
 
-    if (standardIds.length === 0) {
-        return this.throw('No academic standards are associated with sparkpoint id: ' + sparkpointId, 404);
-    }
+    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
 
+    // TODO: Deprecate cached playlist for non-student users
     // Non-student users get a cached view of the playlist
-    if (!this.isStudent) {
-        playlist = yield this.pgp.oneOrNone(`
+    /*if (!ctx.isStudent) {
+        playlist = yield ctx.pgp.oneOrNone(`
             SELECT playlist
               FROM learn_playlist_cache
              WHERE student_id = $1
@@ -44,7 +45,7 @@ function* getHandler() {
             [studentId, sectionId, sparkpointId]);
 
         if (!playlist) {
-            return this.body = [];
+            return ctx.body = [];
         } else {
             playlist = playlist.playlist.map(function(item) {
                 item.launch_url = item.url;
@@ -54,7 +55,7 @@ function* getHandler() {
             resourceIds = playlist.map(item => item.resource_id);
         }
 
-        activities = yield this.pgp.manyOrNone(`
+        activities = yield ctx.pgp.manyOrNone(`
             SELECT resource_id,
                    completed,
                    start_status = 'launched' AS launched
@@ -72,7 +73,7 @@ function* getHandler() {
             }
         });
 
-        reviews = yield this.pgp.manyOrNone(`
+        reviews = yield ctx.pgp.manyOrNone(`
             SELECT rating,
                    comment
               FROM learn_reviews
@@ -89,34 +90,75 @@ function* getHandler() {
             }
         });
 
-        return this.body = playlist;
-    }
+        assignments = yield ctx.pgp.oneOrNone(`
+            SELECT json_object_agg(
+                      resource_id,
+                      assignment
+                   ) AS json
+              FROM (
+                   SELECT resource_id,
+                          json_object_agg(
+                             CASE WHEN student_id IS NULL
+                                  THEN 'section'
+                                  ELSE 'student'
+                             END,
+                             assignment
+                          ) AS assignment
+                     FROM (
+                           SELECT resource_id,
+                                  assignment,
+                                  student_id
+                            FROM learn_assignments
+                           WHERE sparkpoint_id = $1
+                             AND section_id = $2
+                             AND (
+                                       student_id = $3
+                                    OR student_id IS NULL
+                                 )
+                           ) t GROUP BY resource_id
+              ) t;
+        `, [sparkpointId, sectionId, studentId]);
+
+        if (typeof assignments.json === 'object') {
+            assignments = assignments.json;
+
+            playlist = playlist.map(function(resource) {
+                if (assignments[resource.resource_id]) {
+                    resource.assignment = assignments[resource.resource_id];
+                }
+
+                return resource;
+            });
+        }
+
+        return ctx.body = playlist;
+    }*/
 
     params = {
         limit: 50,
         standard: openedIds,
     };
 
-    if (this.isStudent) {
+    if (ctx.isStudent) {
         params.resource_types = ['video'/*, 'homework', 'exercise', 'game', 'question', 'other'*/];
     }
 
     if (openedIds.length === 0) {
         let error = new Error('OPENED: Unable to lookup vendor ids for specified standards: ' + standardIds.join(', '));
         console.error(error);
-        // yield slack.postErrorToSlack(error, this, { standardIds: standardIds }, true);
+        // yield slack.postErrorToSlack(error, ctx, { standardIds: standardIds }, true);
         opened = [];
     } else {
         try {
             opened = yield OpenEd.getResources(params);
         } catch (e) {
             console.error('OPENED: ', e);
-            yield slack.postErrorToSlack(e, this, null, true);
+            yield slack.postErrorToSlack(e, ctx, null, true);
             opened = [];
         }
 
         if (!Array.isArray(opened.resources)) {
-            yield slack.postErrorToSlack('OpenEd failed to return resources!', this, opened, false);
+            yield slack.postErrorToSlack('OpenEd failed to return resources!', ctx, opened, false);
         }
 
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
@@ -139,7 +181,7 @@ function* getHandler() {
         url,
         len,
         x,
-        y = 3,
+        y = 4,
         resourceIdentifiers,
         cacheSql;
 
@@ -161,41 +203,91 @@ function* getHandler() {
             VALUES ${urlPlaceHolders}
             ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
             RETURNING url, id, views
+        ), assignments AS (
+           SELECT resource_id,
+                  json_object_agg(
+                     CASE WHEN student_id IS NULL
+                          THEN 'section'
+                          ELSE 'student'
+                     END,
+                     assignment
+                  ) AS assignment
+             FROM (
+                   SELECT resource_id,
+                          assignment,
+                          student_id
+                    FROM learn_assignments
+                   WHERE sparkpoint_id = $2
+                     AND section_id = $3
+                     AND (
+                               student_id = $1
+                            OR student_id IS NULL
+                         )
+               ) t GROUP BY resource_id
+       ),
+       reviews AS (
+          SELECT *
+            FROM learn_reviews
+           WHERE resource_id = ANY (SELECT id FROM new_learn_resources)
+        GROUP BY resource_id, student_id, rating, comment, id
+        ),
+        reviews_json AS (
+          SELECT resource_id,
+                 json_object_agg(student_id, json_build_object('rating', rating, 'comment', comment)) AS reviews
+            FROM reviews
+        GROUP BY resource_id
+        ),
+        ratings AS (
+            SELECT resource_id,
+                   round(avg(rating), 1) AS rating
+              FROM reviews
+          GROUP BY resource_id
         )
     `;
 
         if (studentId) {
             sql += `
-            SELECT lr.*,
-                   la.completed,
-                   la.start_status = 'launched' AS launched,
-                   learn_reviews.comment as comment,
-                   learn_reviews.rating as rating
-              FROM new_learn_resources lr
-         LEFT JOIN learn_activity la
-                ON la.resource_id = lr.id
-               AND la.user_id = $1
-         LEFT JOIN learn_reviews
-                ON learn_reviews.resource_id = lr.id
-               AND learn_reviews.student_id = $1;`;
-        } else {
-            sql += 'SELECT * FROM new_learn_resources;';
+                 SELECT lr.*,
+                         la.completed,
+                         la.start_status = 'launched' AS launched,
+                         learn_reviews.comment as comment,
+                         learn_reviews.rating as rating,
+                         COALESCE(assignments.assignment, '{}'::JSON) AS assignment,
+                         COALESCE(reviews_json.reviews, '{}'::JSON) AS reviews,
+                         COALESCE(ratings.rating, null) AS average_rating
+                    FROM new_learn_resources lr
+               LEFT JOIN learn_activity la
+                      ON la.resource_id = lr.id
+                     AND la.user_id = 7
+               LEFT JOIN learn_reviews
+                      ON learn_reviews.resource_id = lr.id
+                     AND learn_reviews.student_id = 7
+               LEFT JOIN assignments
+                      ON assignments.resource_id = lr.id
+               LEFT JOIN reviews_json
+                      ON reviews_json.resource_id = lr.id
+               LEFT JOIN ratings
+                      ON ratings.resource_id = lr.id`;
         }
 
-        resourceIdentifiers = yield ctx.pgp.manyOrNone(sql, [studentId, sparkpointId].concat(Object.keys(urlResourceMap)));
+        resourceIdentifiers = yield ctx.pgp.manyOrNone(
+            sql,
+            [studentId, sparkpointId, sectionId].concat(Object.keys(urlResourceMap)));
 
         resourceIdentifiers.forEach(function (resourceId) {
             var resource = urlResourceMap[resourceId.url];
 
             resource.rating = resource.rating || {};
             resource.rating.user = resourceId.rating || null;
-
+            resource.rating.student = parseFloat(resourceId.average_rating)|| null;
+            resource.assignment = resourceId.assignment || { student: null, section: null };
             resource.resource_id = resourceId.id;
             resource.views = resourceId.views;
             resource.launch_url = '/spark/api/work/learns/launch/' + resource.resource_id;
             resource.completed = resourceId.completed || false;
             resource.launched = resourceId.launched || false;
             resource.comment = resourceId.comment || null;
+            resource.reviews = resourceId.reviews || {};
         });
 
         cacheSql = `
@@ -208,7 +300,7 @@ function* getHandler() {
         yield ctx.pgp.none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]);
     }
 
-    this.body = resources;
+    ctx.body = resources;
 }
 
 function* patchHandler() {
