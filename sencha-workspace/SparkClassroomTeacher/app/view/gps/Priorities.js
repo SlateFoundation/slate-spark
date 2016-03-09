@@ -20,7 +20,6 @@ Ext.define('SparkClassroomTeacher.view.gps.Priorities', {
                     '<a class="item-origin" target="_blank" onclick="return false;">asd</a> ',
                 '</tpl>',
                 '<span class="item-timestamp">asd</span> ',
-                '<i class="fa fa-times item-remove-btn"></i>',
             '</header>',
             '<div class="item-description">',
                 'asd',
