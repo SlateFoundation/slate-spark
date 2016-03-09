@@ -19,6 +19,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                 },
                 items: [
                     {
+                        itemId: 'phasesCt',
                         xtype: 'container',
                         flex: 4,
                         cls: 'spark-gps-list-group',

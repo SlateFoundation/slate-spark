@@ -193,7 +193,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     syncSelectedActiveStudent: function() {
         var me = this,
             activeStudent = me.getSelectedActiveStudent(),
-            lists = me.getGpsCt().query('list'),
+            lists = me.getGpsCt().query('#phasesCt list'),
             listCount = lists.length, i = 0, list,
             addPriorityButton = me.getAddPriorityButton();
 
