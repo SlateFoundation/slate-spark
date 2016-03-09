@@ -12,12 +12,51 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
             url: '/spark/api/work/blocked'
         },
 
-        // // filter out activity that didn't match a student in the active roster
+        // filter out activity that didn't match a student in the active roster
         // filters: [{
         //     filterFn: function(r) {
         //         return r.get('student');
         //     }
-        // }]
+        // }],
+
+        grouper: {
+            groupFn: function(r) {
+                if (r.get('conference_start_time') && !r.get('conference_join_time')) {
+                    return 'Conference Join';
+                } else if (r.get('conference_join_time') && !r.get('conference_finish_time')) {
+                    return 'Conference Finish';
+                } else if (r.get('apply_ready_time') && !r.get('apply_finish_time')) {
+                    return 'Apply Grade';
+                } else if (r.get('assess_ready_time') && !r.get('assess_finish_time')) {
+                    return 'Assess Grade';
+                }
+
+                return 'Blocked';
+            },
+            sorterFn: function(r1, r2) {
+                var conferenceStart = r1.get('conference_start_time'),
+                    conferenceJoin = r2.get('conference_join_time'),
+                    conferenceFinish = r2.get('conference_finish_time'),
+                    applyReady = r2.get('apply_ready_time'),
+                    applyFinish = r2.get('apply_finish_time'),
+                    assessReady = r2.get('assess_ready_time'),
+                    assessFinish = r2.get('assess_finish_time');
+
+                // conference not joined first
+                if (conferenceStart && !conferenceJoin) {
+                    return 4;
+                } else if (conferenceJoin && !conferenceFinish) {
+                    return 3;
+                } else if (applyReady && !applyFinish) {
+                    return 2;
+                } else if (assessReady && !assessFinish) {
+                    return 1;
+                }
+
+                // default
+                return 0;
+            }
+        },
     },
 /*
     loadUpdates: function() {

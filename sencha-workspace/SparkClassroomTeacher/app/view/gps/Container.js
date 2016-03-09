@@ -68,8 +68,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 xtype: 'spark-priorities',
                                 title: 'Priorities',
                                 emptyText: 'No priorities',
-                                deferEmptyText: false
-                                //grouped: true
+                                deferEmptyText: false,
+                                grouped: true
                             },
                             {
                                 itemId: 'helpList',
@@ -78,7 +78,6 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 title: 'Help',
                                 emptyText: 'No open help&nbsp;requests',
                                 deferEmptyText: false
-                                //grouped: true
                             }
                         ]
                     }
