@@ -226,14 +226,29 @@ function* getHandler() {
                ) t GROUP BY resource_id
        ),
        reviews AS (
-          SELECT *
-            FROM learn_reviews
+          SELECT lr.*,
+                 p."FirstName" AS first_name,
+                 p."LastName" AS last_name
+            FROM learn_reviews lr
+            JOIN people p ON p."ID" = lr.student_id
            WHERE resource_id = ANY (SELECT id FROM new_learn_resources)
-        GROUP BY resource_id, student_id, rating, comment, id
+        GROUP BY resource_id, student_id, rating, comment, id, first_name, last_name
         ),
         reviews_json AS (
           SELECT resource_id,
-                 json_object_agg(student_id, json_build_object('rating', rating, 'comment', comment)) AS reviews
+                 json_object_agg(
+                    student_id,
+                    json_build_object(
+                       'rating',
+                       rating,
+                       'comment',
+                       comment,
+                       'first_name',
+                       first_name,
+                       'last_name',
+                       last_name
+                    )
+                 ) AS reviews
             FROM reviews
         GROUP BY resource_id
         ),
