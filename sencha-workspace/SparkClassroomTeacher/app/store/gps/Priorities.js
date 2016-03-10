@@ -23,17 +23,14 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
 
         grouper: {
             groupFn: function(r) {
-                if (r.get('conference_start_time') && !r.get('conference_join_time')) {
-                    return 'Conference Join';
-                } else if (r.get('conference_join_time') && !r.get('conference_finish_time')) {
-                    return 'Conference Finish';
-                } else if (r.get('apply_ready_time') && !r.get('apply_finish_time')) {
-                    return 'Apply Grade';
-                } else if (r.get('assess_ready_time') && !r.get('assess_finish_time')) {
-                    return 'Assess Grade';
-                }
+                var priorityNeed = r.get('priority_need');
 
-                return 'Blocked';
+                return priorityNeed && {
+                    'conference-group': 'Needs Conference Group',
+                    'conference-finish': 'Needs Conference Finished',
+                    'apply-grade': 'Needs Apply Graded',
+                    'assess-grade': 'Needs Assess Graded'
+                }[priorityNeed] || 'Other Issue';
             },
             sorterFn: function(r1, r2) {
                 var need1 = r1.get('priority_need'),
