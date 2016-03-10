@@ -36,9 +36,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         'gps.Learn',
         'gps.Conference',
         'gps.Apply',
-        'gps.Assess',
-
-        'gps.Priorities'
+        'gps.Assess'
     ],
 
     listen: {
