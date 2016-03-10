@@ -17,9 +17,6 @@
 Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
 
-    config: {
-        activeStudent: null
-    },
 
     views: [
         'work.Container',
@@ -38,6 +35,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     ],
 
     refs: {
+        appCt: 'spark-teacher-appct',
         navBar: 'spark-navbar',
         workNavButton: 'spark-navbar button#work',
 
@@ -79,6 +77,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
         workNavButton: {
             tap: 'onNavWorkTap'
         },
@@ -91,11 +92,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                activestudentselect: 'onActiveStudentSelect'
-            }
-        },
         socket: {
             data: 'onSocketData'
         }
@@ -165,36 +161,34 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
 
-    // config handlers
-    updateActiveStudent: function(activeStudent) {
+    // event handlers
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
-        me.redirectTo(activeStudent ? ['work', activeStudent.get('active_phase')] : 'gps');
+        me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
 
-        if (activeStudent) {
-            studentId = activeStudent.getId();
+        if (selectedStudentSparkpoint) {
+            studentId = selectedStudentSparkpoint.getId();
 
             feedbackStore.setFilters([{
                 property: 'student_id',
                 value: studentId
             },{
                 property: 'sparkpoint_id',
-                value: activeStudent.get('sparkpoint_id')
+                value: selectedStudentSparkpoint.get('sparkpoint_id')
             }]);
 
             feedbackStore.getProxy().setExtraParams({
                 student_id: studentId,
-                sparkpoint: activeStudent.get('sparkpoint')
+                sparkpoint: selectedStudentSparkpoint.get('sparkpoint')
             });
 
             feedbackStore.load();
         }
     },
 
-
-    // event handlers
     onNavWorkTap: function() {
         this.redirectTo('work');
     },
@@ -208,12 +202,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     onActiveStudentSelect: function(activeStudent) {
-        var me = this;
-
-        me.setActiveStudent(activeStudent);
-
         if (activeStudent) {
-            me.redirectTo(['work', activeStudent.get('active_phase')]);
+            this.redirectTo(['work', activeStudent.get('active_phase')]);
         }
     },
 
@@ -221,13 +211,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var me = this,
             tableName = data.table,
             itemData = data.item,
-            activeStudent, workFeedbackStore, doLoadFeedback;
+            selectedStudentSparkpoint, workFeedbackStore, doLoadFeedback;
 
         if (tableName == 'teacher_feedback') {
             if (
-                (activeStudent = me.getActiveStudent()) &&
-                activeStudent.getId() == itemData.student_id &&
-                activeStudent.get('sparkpoint_id') == itemData.sparkpoint_id
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint()) &&
+                selectedStudentSparkpoint.getId() == itemData.student_id &&
+                selectedStudentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
             ) {
                 workFeedbackStore = me.getWorkFeedbackStore();
 
