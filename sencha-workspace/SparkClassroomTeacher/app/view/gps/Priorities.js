@@ -1,30 +1,12 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.gps.Priorities', {
-    extend: 'Ext.dataview.List',
+    extend: 'SparkClassroomTeacher.view.gps.StudentList',
     xtype: 'spark-priorities',
-    mixins: [
-        'SparkClassroom.mixin.DockedTitle'
-    ],
-    requires: [
-        'Jarvus.util.format.FuzzyTime'
-    ],
 
 
     config: {
         cls: 'spark-gps-priorities',
 
-        store: 'gps.Priorities',
-        itemTpl: [
-            '<header class="item-header">',
-                '<tpl for="student.getData()">',
-                    '<a class="item-origin" target="_blank" onclick="return false;">asd</a> ',
-                '</tpl>',
-                '<span class="item-timestamp">asd</span> ',
-            '</header>',
-            '<div class="item-description">',
-                'asd',
-                '<span class="waitlist-type">asd</span>',
-            '</div>'
-        ]
+        store: 'gps.Priorities'
     }
 });
