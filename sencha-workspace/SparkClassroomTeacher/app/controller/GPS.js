@@ -139,11 +139,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.setSelectedActiveStudent(student);
     },
 
-    onPriorityDismissTap: function(list, item) {
-        item.getRecord().set('priority_group', null);
-        this.syncSelectedActiveStudent();
-    },
-
     onSocketData: function(socket, data) {
         var me = this,
             table = data.table,
