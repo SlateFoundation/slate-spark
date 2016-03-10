@@ -9,8 +9,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
     config: {
-        selectedSection: null,
-        activeStudent: null
+        selectedSection: null
     },
 
     stores: [
@@ -24,6 +23,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     ],
 
     refs: {
+        appCt: 'spark-teacher-appct',
         conferenceCt: 'spark-teacher-work-conference',
         sparkpointCt: 'spark-teacher-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
@@ -45,6 +45,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
         conferenceCt: {
             activate: 'onConferenceCtActivate'
         },
@@ -81,8 +84,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     listen: {
         controller: {
             '#': {
-                sectionselect: 'onSectionSelect',
-                activestudentselect: 'onActiveStudentSelect'
+                sectionselect: 'onSectionSelect'
             }
         },
         store: {
@@ -104,24 +106,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
 
     // config handlers
-    updateSelectedSection: function(section) {
-        var groupsStore = this.getWorkConferenceGroupsStore();
-
-        if (section && groupsStore.isLoaded()) {
-            groupsStore.load();
-        }
-    },
-
-    updateActiveStudent: function(activeStudent) {
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             store = me.getWorkConferenceQuestionsStore(),
             proxy = store.getProxy(),
             conferencingStudentsGrid = me.getConferencingStudentsGrid();
 
-        if (activeStudent) {
+        if (selectedStudentSparkpoint) {
             // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', activeStudent.get('student_id'));
-            proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
+            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
 
             // TODO: reload store if sparkpoints param dirty
             if (store.isLoaded()) {
@@ -129,12 +123,20 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             }
         }
 
-        me.syncActiveStudent();
+        me.syncSelectedStudentSparkpoint();
 
         me.syncConferenceGroup();
 
         if (conferencingStudentsGrid) {
-            conferencingStudentsGrid.setSelection(activeStudent);
+            conferencingStudentsGrid.setSelection(selectedStudentSparkpoint);
+        }
+    },
+
+    updateSelectedSection: function(section) {
+        var groupsStore = this.getWorkConferenceGroupsStore();
+
+        if (section && groupsStore.isLoaded()) {
+            groupsStore.load();
         }
     },
 
@@ -144,15 +146,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         this.setSelectedSection(section);
     },
 
-    onActiveStudentSelect: function(student) {
-        this.setActiveStudent(student);
-    },
-
     onConferenceCtActivate: function() {
         var me = this,
             groupsStore = me.getWorkConferenceGroupsStore();
 
-        me.syncActiveStudent();
+        me.syncSelectedStudentSparkpoint();
         me.syncConferenceGroup();
 
         if (!groupsStore.isLoaded()) {
@@ -187,7 +185,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         }
 
         if (
-            activeStudent === me.getActiveStudent() &&
+            activeStudent === me.getAppCt().getSelectedStudentSparkpoint() &&
             (
                 modifiedFieldNames.indexOf('conference_start_time') != -1 ||
                 modifiedFieldNames.indexOf('conference_group_id') != -1
@@ -207,14 +205,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onQuestionSubmit: function() {
         var me = this,
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/work/conferences/questions',
             jsonData: {
-                student_id: student.getId(),
-                sparkpoint: student.get('sparkpoint'),
+                student_id: selectedStudentSparkpoint.getId(),
+                sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
                 source: 'teacher',
                 question: me.getQuestionInputEl().getValue()
             },
@@ -227,7 +225,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onStartConferenceButtonTap: function() {
         var me = this,
-            activeStudent = me.getActiveStudent(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             group = me.getWorkConferenceGroupModel().create({
                 section_code: me.getSelectedSection(),
                 timer_time: new Date()
@@ -237,7 +235,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             callback: function(group, operation, success) {
                 if (success) {
                     me.getWorkConferenceGroupsStore().add(group);
-                    activeStudent.saveConferenceGroup(group.getId());
+                    selectedStudentSparkpoint.saveConferenceGroup(group.getId());
                     me.syncConferenceGroup();
                 } else {
                     Ext.Logger.warn('Failed to create conference group');
@@ -247,10 +245,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onJoinConferenceViewItemTap: function(dataview, index, target, group, e) {
-        var activeStudent = this.getActiveStudent();
+        var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint();
 
         if (e.getTarget('.spark-conference-join-btn')) {
-            activeStudent.saveConferenceGroup(group.getId());
+            selectedStudentSparkpoint.saveConferenceGroup(group.getId());
             this.syncConferenceGroup();
         }
     },
@@ -295,7 +293,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
         activeStudent.saveConferenceGroup(null);
 
-        if (activeStudent === this.getActiveStudent()) {
+        if (activeStudent === this.getAppCt().getSelectedStudentSparkpoint()) {
             this.syncConferenceGroup();
         }
     },
@@ -321,7 +319,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     onAddStudentSelectFieldChange: function(selectField, student) {
         if (student) {
-            student.saveConferenceGroup(this.getActiveStudent().get('conference_group_id'));
+            student.saveConferenceGroup(this.getAppCt().getSelectedStudentSparkpoint().get('conference_group_id'));
             selectField.setValue(null);
         }
     },
@@ -392,18 +390,18 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             item = data.item,
             questionsStore,
             questionInputEl, questionInputValue, questionInputFocused,
-            student, worksheetData, worksheetCmp,
+            selectedStudentSparkpoint, worksheetData, worksheetCmp,
             groupsStore, group;
 
         if (table == 'conference_questions') {
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
             questionsStore = me.getWorkConferenceQuestionsStore();
 
             if (
-                student &&
+                selectedStudentSparkpoint &&
                 questionsStore.isLoaded() &&
-                item.student_id == student.getId() &&
-                item.sparkpoint_id == student.get('sparkpoint_id')
+                item.student_id == selectedStudentSparkpoint.getId() &&
+                item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')
             ) {
                 // capture question input
                 if (questionInputEl = me.getQuestionInputEl()) {
@@ -426,9 +424,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 }
             }
         } else if (table == 'conference_worksheets') {
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
-            if (student && item.student_id == student.getId() && item.sparkpoint_id == student.get('sparkpoint_id')) {
+            if (selectedStudentSparkpoint && item.student_id == selectedStudentSparkpoint.getId() && item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')) {
                 worksheetData = Ext.decode(item.worksheet, true);
                 worksheetCmp = me.getWorksheetCmp();
 
@@ -451,19 +449,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
 
     // controller methods
-    syncActiveStudent: function() {
+    syncSelectedStudentSparkpoint: function() {
         var me = this,
             conferenceCt = me.getConferenceCt(),
             conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
         if (!conferenceCt) {
             return;
         }
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (student) {
-            me.getSparkpointCt().setTitle(student.get('sparkpoint'));
+        if (selectedStudentSparkpoint) {
+            me.getSparkpointCt().setTitle(selectedStudentSparkpoint.get('sparkpoint'));
             conferenceCt.show();
 
             if (!conferenceQuestionsStore.isLoaded()) {
@@ -476,20 +474,20 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     syncConferenceGroup: function() {
         var me = this,
-            activeStudent = me.getActiveStudent(),
-            conferenceGroup = activeStudent && activeStudent.get('conference_group_id'),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            conferenceGroup = selectedStudentSparkpoint && selectedStudentSparkpoint.get('conference_group_id'),
             conferencingStudentsGrid = me.getConferencingStudentsGrid(),
             conferencingStudentsStore = conferencingStudentsGrid && conferencingStudentsGrid.getStore();
 
-        if (activeStudent && me.getConferenceCt()) {
+        if (selectedStudentSparkpoint && me.getConferenceCt()) {
             conferencingStudentsStore.clearFilter(true);
             conferencingStudentsStore.filter('conference_group_id', conferenceGroup);
 
             if (!conferencingStudentsGrid.getSelections().length) {
-                conferencingStudentsGrid.setSelection(activeStudent);
+                conferencingStudentsGrid.setSelection(selectedStudentSparkpoint);
             }
 
-            me.getWaitingCt().setHidden(!activeStudent.get('conference_start_time') || conferenceGroup);
+            me.getWaitingCt().setHidden(!selectedStudentSparkpoint.get('conference_start_time') || conferenceGroup);
             me.getJoinConferenceCt().setHidden(!me.getJoinConeferenceDataview().getStore().getCount());
             me.getConferencingCt().setHidden(!conferenceGroup);
             me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
