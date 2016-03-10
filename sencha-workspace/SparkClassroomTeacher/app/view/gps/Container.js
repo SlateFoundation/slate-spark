@@ -65,7 +65,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                             {
                                 itemId: 'priorityList',
 
-                                xtype: 'spark-priorities',
+                                xtype: 'spark-teacher-priorities',
                                 title: 'Priorities',
                                 emptyText: 'No priorities',
                                 deferEmptyText: false,
