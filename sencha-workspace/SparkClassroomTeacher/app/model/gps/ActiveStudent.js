@@ -28,6 +28,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
         {
             name: 'priority_need',
+            persist: false,
             depends: [
                 'conference_start_time',
                 'conference_join_time',
