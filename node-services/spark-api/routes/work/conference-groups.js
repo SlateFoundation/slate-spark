@@ -1,59 +1,6 @@
 'use strict';
 
-var util = require('../../lib/util'),
-    allowNull = util.allowNull,
-    isString = util.isString,
-    fieldValidators = {
-        id: allowNull(util.isGtZero),
-        section_id: allowNull(util.isGteZero),
-        section_code: allowNull(isString),
-        opened_time: allowNull(util.isDate),
-        timer_time: allowNull(util.isDate),
-        closed_time: allowNull(util.isDate),
-        accrued_seconds: allowNull(util.isGteZero)
-    };
-
-/*
- set search_path = "sandbox-school", "spark", "public";
-
- CREATE TABLE IF NOT EXISTS conference_groups (
- id serial PRIMARY KEY,
- section_id text NOT NULL,
- opened_time timestamp DEFAULT current_timestamp NOT NULL,
- timer_time timestamp DEFAULT current_timestamp,
- closed_time timestamp,
- accrued_seconds integer NOT NULL
- );
-
- CREATE INDEX IF NOT EXISTS conference_groups_section_id_idx ON conference_groups(section_id);
-
- ALTER TABLE conference_groups OWNER TO "sandbox-school";
- */
-
-
-function validateConferenceGroup(group, errors) {
-    var errorList = errors || [];
-
-    for (var prop in group) {
-        let validator = fieldValidators[prop];
-
-        if (!validator) {
-            errorList.push('Unexpected key: ' + prop);
-        } else if (!validator(group[prop])) {
-            errorList.push(`Invalid value for ${prop}: ${group[prop]}`);
-        }
-    }
-
-    if (!group.id && !group.section_id) {
-        errorList.push('You must pass either a (group) id, section_id or section_code to identify the group.');
-    }
-
-    if (errorList.length > 0 && errors === undefined) {
-        group.errors = errorList;
-    }
-
-    return group;
-}
+var util = require('../../lib/util');
 
 function *getHandler() {
     var id = util.isGteZero(this.query.id) ? this.query.id : null,
@@ -70,7 +17,8 @@ function *getHandler() {
 
         this.body = yield this.pgp.any(query, id);
     } else {
-        query = `SELECT *
+        query = `
+             SELECT *
                FROM conference_groups
               WHERE section_id = $1
                 AND closed_time IS NULL OR id = ANY(SELECT conference_group_id FROM (
@@ -101,29 +49,25 @@ function *getHandler() {
 }
 
 function *patchHandler() {
-    var conferenceGroups = this.request.body,
-        _ = new util.QueryBuilder(),
-        recordQueries = [],
-        ctx = this,
-        errors = [];
+    var ctx = this,
+        conferenceGroups = ctx.request.body,
+        recordToInsert = util.recordToInsert.bind(ctx),
+        vals = new util.Values(),
+        sql,
+        results;
 
-    if (!Array.isArray(conferenceGroups)) {
-        this.throw(new Error('The request body should be a JSON array of conference group objects'), 400);
-    }
+    ctx.assert(Array.isArray(conferenceGroups), 'The request body should be a JSON array of conference group objects', 400);
+    ctx.assert(ctx.isTeacher, 'This is a teacher only endpoint.', 403);
 
-    if (!this.isTeacher) {
-        this.throw(new Error('This is a teacher only endpoint.'), 403);
-        return;
-    }
+    sql = util.queriesToReturningCte(conferenceGroups.map(function (group) {
+        let errors;
 
-    conferenceGroups.forEach(function (group) {
-
-        if (group.section_code) {
-            group.section_id = ctx.lookup.section.cache.codeToId[group.section_code.toLowerCase()];
-            delete group.section_code;
+        // TODO: hack until the client stops sending invalid section_ids
+        if (group.section_id === 0) {
+            delete group.section_id;
         }
 
-        validateConferenceGroup(group, errors);
+        group = util.identifyRecord(group, ctx.lookup);
 
         // Accept numeric times
         for (let prop in group) {
@@ -135,13 +79,11 @@ function *patchHandler() {
                 } else {
                     val = parseInt(val, 10);
 
-                    if (!isNaN(val)) {
-                        group[prop] = new Date(val * 1000).toUTCString();
-                    } else {
-                        ctx.throw(new Error(
-                            `${prop} must be null or the number of seconds since epoch; you provided: ${group[prop]}`
-                        ), 400);
-                    }
+                    ctx.assert(!isNaN(val), 400,
+                        `${prop} must be null or the number of seconds since epoch; you provided: ${group[prop]}`
+                    );
+
+                    group[prop] = new Date(val * 1000).toUTCString();
                 }
             }
         }
@@ -152,24 +94,18 @@ function *patchHandler() {
             group.section_id = ctx.query.section_id;
         }
 
-        for (let prop in group) {
-            _.push('conference_groups', prop, group[prop]);
+        errors = ctx.validation['conference_groups'](group);
+
+        if (errors) {
+            ctx.throw(400, new Error(errors.join('\n')));
         }
 
-        group.queries = [recordQueries.push(_.getUpsert('conference_groups', ['id'], true)) - 1];
-    });
+        return recordToInsert('conference_groups', group, vals);
+    }));
 
-    if (errors.length > 0) {
-        this.throw(new Error(errors.join(', ')), 400);
-        return;
-    }
+    results = yield ctx.pgp.any(sql, vals.vals);
 
-    let results = yield* util.groupQueries(recordQueries, _.values, conferenceGroups, this);
-
-    this.body = results.map(function (group) {
-        group.section_code = ctx.lookup.section.cache.idToCode[group.section_id];
-        return group;
-    });
+    ctx.body = results.map(group => util.codifyRecord(group, ctx.lookup));
 }
 
 module.exports = {
