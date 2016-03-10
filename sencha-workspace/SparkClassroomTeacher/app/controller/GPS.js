@@ -36,9 +36,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         'gps.Learn',
         'gps.Conference',
         'gps.Apply',
-        'gps.Assess',
-
-        'gps.Priorities'
+        'gps.Assess'
     ],
 
     listen: {
@@ -62,20 +60,12 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     refs: {
-        gpsCt: 'spark-gps',
-        priorityList: 'list#priorityList',
-        addPriorityButton: 'spark-gps button#addPriorityBtn'
+        gpsCt: 'spark-gps'
     },
 
     control: {
         'spark-gps-studentlist': {
             select: 'onListSelect'
-        },
-        addPriorityButton: {
-            tap: 'onAddPriorityButtonTap'
-        },
-        'spark-gps-studentlist#priorityList': {
-            itemdismisstap: 'onPriorityDismissTap'
         }
     },
 
@@ -147,16 +137,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.setSelectedActiveStudent(student);
     },
 
-    onAddPriorityButtonTap: function(button) {
-        this.getSelectedActiveStudent().set('priority_group', 2);
-        this.syncSelectedActiveStudent();
-    },
-
-    onPriorityDismissTap: function(list, item) {
-        item.getRecord().set('priority_group', null);
-        this.syncSelectedActiveStudent();
-    },
-
     onSocketData: function(socket, data) {
         var me = this,
             table = data.table,
@@ -193,9 +173,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     syncSelectedActiveStudent: function() {
         var me = this,
             activeStudent = me.getSelectedActiveStudent(),
-            lists = me.getGpsCt().query('list'),
-            listCount = lists.length, i = 0, list,
-            addPriorityButton = me.getAddPriorityButton();
+            lists = me.getGpsCt().query('#phasesCt list'),
+            listCount = lists.length, i = 0, list;
 
         // sync list selection
         for (; i < listCount; i++) {
@@ -206,14 +185,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             } else {
                 list.deselectAll();
             }
-        }
-
-        // sync add-to-priorities button
-        if (activeStudent && activeStudent.get('priority_group') === null) {
-            addPriorityButton.setData(activeStudent.getData());
-            addPriorityButton.show();
-        } else {
-            addPriorityButton.hide();
         }
     },
 

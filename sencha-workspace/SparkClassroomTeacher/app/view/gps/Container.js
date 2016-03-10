@@ -5,7 +5,8 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     cls: 'spark-gps',
     requires: [
         'SparkClassroomTeacher.view.gps.StudentList',
-        'SparkClassroomTeacher.view.gps.Waitlist'
+        'SparkClassroomTeacher.view.gps.Waitlist',
+        'SparkClassroomTeacher.view.gps.Priorities'
     ],
 
     config: {
@@ -19,6 +20,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                 },
                 items: [
                     {
+                        itemId: 'phasesCt',
                         xtype: 'container',
                         flex: 4,
                         cls: 'spark-gps-list-group',
@@ -61,24 +63,13 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                         flex: 1,
                         items: [
                             {
-                                cls: 'spark-gps-studentlist spark-gps-priority-group',
                                 itemId: 'priorityList',
 
-                                xtype: 'spark-gps-studentlist',
-                                store: 'gps.Priorities',
+                                xtype: 'spark-priorities',
                                 title: 'Priorities',
-                                showDismissButton: true,
-                                emptyText: 'Select a student to add to your priorities&nbsp;list.',
-                                deferEmptyText: false
-                            },
-                            {
-                                itemId: 'addPriorityBtn',
-
-                                xtype: 'button',
-                                cls: 'studentlist-add-btn',
-                                iconCls: 'fa fa-plus-circle text-active',
-                                tpl: 'Add {[values.student.get("FullName")]}',
-                                hidden: true
+                                emptyText: 'No priorities',
+                                deferEmptyText: false,
+                                grouped: true
                             },
                             {
                                 itemId: 'helpList',
@@ -87,7 +78,6 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                                 title: 'Help',
                                 emptyText: 'No open help&nbsp;requests',
                                 deferEmptyText: false
-                                //grouped: true
                             }
                         ]
                     }

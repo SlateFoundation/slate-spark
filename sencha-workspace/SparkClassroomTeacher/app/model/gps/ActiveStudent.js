@@ -27,70 +27,39 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         },
 
         {
-            name: 'priority_group',
-            type: 'int',
-            allowNull: true,
-
-            // TODO: remove this when backend is implemented
-            persist: false,
+            name: 'priority_need',
+            depends: [
+                'conference_start_time',
+                'conference_join_time',
+                'conference_finish_time',
+                'apply_ready_time',
+                'apply_finish_time',
+                'assess_ready_time',
+                'assess_finish_time'
+            ],
             convert: function(v, r) {
-                var priorityGroups = r.self.priorityGroups = r.self.priorityGroups || {},
-                    userId = r.get('student_id');
+                var conferenceJoinTime = r.get('conference_join_time');
 
-                // temporarily persist value in model instance until backend is implemented
-                if (v === undefined) {
-                    v = priorityGroups[userId];
-                } else {
-                    priorityGroups[userId] = v;
+                if (r.get('conference_start_time') && !conferenceJoinTime) {
+                    return 'conference-group';
                 }
 
-                return v || null;
-            }
-        },
-        {
-            name: 'help_request',
-            allowNull: true,
-
-            // TODO: remove this when backend is implemented
-            persist: false,
-            convert: function(v, r) {
-                var types = ['question-general','question-academic','question-technology','bathroom','locker','nurse'],
-                    helpRequests = r.self.helpRequests = r.self.helpRequests || {},
-                    userId = r.get('student_id');
-
-                // temporarily persist value in model instance until backend is implemented
-                if (userId in helpRequests) {
-                    if (v === undefined) {
-                        v = helpRequests[userId];
-                    } else {
-                        helpRequests[userId] = v;
-                    }
-                } else {
-                    //helpRequests[userId] = v = Math.random() < 0.8 ? null : types[Math.floor(Math.random()*types.length)];
+                if (conferenceJoinTime && !r.get('conference_finish_time')) {
+                    return 'conference-finish';
                 }
 
-                return v || null;
-            }
-        },
-        {
-            name: 'help_request_abbr',
-            convert: function (v, r) {
-                switch(r.get('help_request')) {
-                    case 'question-general':
-                        return 'G?';
-                    case 'question-academic':
-                        return 'A?';
-                    case 'question-technology':
-                        return 'T?';
-                    case 'nurse':
-                        return 'N';
-                    case 'bathroom':
-                        return 'B';
-                    case 'locker':
-                        return 'L';
+                if (r.get('apply_ready_time') && !r.get('apply_finish_time')) {
+                    return 'apply-grade';
                 }
+
+                if (r.get('assess_ready_time') && !r.get('assess_finish_time')) {
+                    return 'assess-grade';
+                }
+
+                return null;
             }
         },
+
         {
             name: 'conference_feedback',
             persist: false,
