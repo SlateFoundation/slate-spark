@@ -40,17 +40,13 @@ function *getHandler() {
                    section_id,
                    last_accessed,
                    recommender_id,
-                   recommended_time,
-                   ROW_NUMBER() OVER (
-                     PARTITION BY ssas.student_id, ssas.section_id
-                         ORDER BY ssas.last_accessed DESC) AS rn
+                   recommended_time
               FROM section_student_active_sparkpoint ssas
-             WHERE section_id = $1 AND last_accessed IS NOT NULL
+             WHERE section_id = 3 AND last_accessed IS NOT NULL
           ) t
-     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
+        LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
            AND ss.student_id = t.student_id
           JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
-         WHERE t.rn = 1
            AND (conference_start_time IS NOT NULL AND conference_join_time IS NULL)
             OR (conference_join_time IS NOT NULL AND conference_finish_time IS NULL)
             OR (apply_ready_time IS NOT NULL AND apply_finish_time IS NULL)
