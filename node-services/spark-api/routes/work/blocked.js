@@ -42,7 +42,7 @@ function *getHandler() {
                    recommender_id,
                    recommended_time
               FROM section_student_active_sparkpoint ssas
-             WHERE section_id = 3 AND last_accessed IS NOT NULL
+             WHERE section_id = $1 AND last_accessed IS NOT NULL
           ) t
         LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
            AND ss.student_id = t.student_id
