@@ -27,6 +27,40 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         },
 
         {
+            name: 'priority_need',
+            depends: [
+                'conference_start_time',
+                'conference_join_time',
+                'conference_finish_time',
+                'apply_ready_time',
+                'apply_finish_time',
+                'assess_ready_time',
+                'assess_finish_time'
+            ],
+            convert: function(v, r) {
+                var conferenceJoinTime = r.get('conference_join_time');
+
+                if (r.get('conference_start_time') && !conferenceJoinTime) {
+                    return 'conference-group';
+                }
+
+                if (conferenceJoinTime && !r.get('conference_finish_time')) {
+                    return 'conference-finish';
+                }
+
+                if (r.get('apply_ready_time') && !r.get('apply_finish_time')) {
+                    return 'apply-grade';
+                }
+
+                if (r.get('assess_ready_time') && !r.get('assess_finish_time')) {
+                    return 'assess-grade';
+                }
+
+                return null;
+            }
+        },
+
+        {
             name: 'priority_group',
             type: 'int',
             allowNull: true,
