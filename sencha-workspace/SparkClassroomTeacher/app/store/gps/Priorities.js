@@ -36,26 +36,43 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
                 return 'Blocked';
             },
             sorterFn: function(r1, r2) {
-                var conferenceStart = r1.get('conference_start_time'),
-                    conferenceJoin = r2.get('conference_join_time'),
-                    conferenceFinish = r2.get('conference_finish_time'),
-                    applyReady = r2.get('apply_ready_time'),
-                    applyFinish = r2.get('apply_finish_time'),
-                    assessReady = r2.get('assess_ready_time'),
-                    assessFinish = r2.get('assess_finish_time');
+                var need1 = r1.get('priority_need'),
+                    need2 = r2.get('priority_need');
 
-                // conference not joined first
-                if (conferenceStart && !conferenceJoin) {
-                    return 4;
-                } else if (conferenceJoin && !conferenceFinish) {
-                    return 3;
-                } else if (applyReady && !applyFinish) {
-                    return 2;
-                } else if (assessReady && !assessFinish) {
+                // items have same sort position
+                if (need1 == need2) {
+                    return 0;
+                }
+
+                // if either is conference-group, that comes first
+                if (need1 == 'conference-group') {
+                    return -1;
+                } else if (need2 == 'conference-group') {
                     return 1;
                 }
 
-                // default
+                // if either is conference-finish, that comes next
+                if (need1 == 'conference-finish') {
+                    return -1;
+                } else if (need2 == 'conference-finish') {
+                    return 1;
+                }
+
+                // if either is apply-grade, that comes next
+                if (need1 == 'apply-grade') {
+                    return -1;
+                } else if (need2 == 'apply-grade') {
+                    return 1;
+                }
+
+                // if either is assess-grade, that comes next
+                if (need1 == 'assess-grade') {
+                    return -1;
+                } else if (need2 == 'assess-grade') {
+                    return 1;
+                }
+
+                // items aren't different by any criteria that influences sorting, so they have same sort position
                 return 0;
             }
         },
