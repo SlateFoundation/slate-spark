@@ -11,12 +11,12 @@ function *getHandler() {
     ctx.assert(sectionId, 'You must provide a section, section_code or section_id as a query parameter', 400);
 
     records = yield ctx.pgp.manyOrNone(`
-        SELECT t.last_accessed,
-               t.section_id,
-               t.student_id,
-               t.sparkpoint_id,
-               t.recommender_id,
-               t.recommended_time,
+        SELECT ssas.last_accessed,
+               ssas.section_id,
+               ssas.student_id,
+               ssas.sparkpoint_id,
+               ssas.recommender_id,
+               ssas.recommended_time,
                learn_start_time,
                learn_finish_time,
                conference_start_time,
@@ -34,23 +34,18 @@ function *getHandler() {
                learn_mastery_check_score,
                conference_mastery_check_score,
                code AS sparkpoint
-          FROM (
-            SELECT student_id,
-                   sparkpoint_id,
-                   section_id,
-                   last_accessed,
-                   recommender_id,
-                   recommended_time
-              FROM section_student_active_sparkpoint ssas
-             WHERE section_id = $1 AND last_accessed IS NOT NULL
-          ) t
-        LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
-           AND ss.student_id = t.student_id
-          JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
-           AND (conference_start_time IS NOT NULL AND conference_join_time IS NULL)
-            OR (conference_join_time IS NOT NULL AND conference_finish_time IS NULL)
-            OR (apply_ready_time IS NOT NULL AND apply_finish_time IS NULL)
-            OR (assess_ready_time IS NOT NULL AND assess_finish_time IS NULL)`,
+          FROM section_student_active_sparkpoint ssas
+          JOIN student_sparkpoint ss ON ss.student_id = ssas.student_id
+           AND ss.sparkpoint_id = ssas.sparkpoint_id
+          JOIN sparkpoints s ON s.id = ssas.sparkpoint_id
+         WHERE section_id = $1
+           AND ssas.last_accessed IS NOT NULL
+           AND (
+                 (conference_start_time IS NOT NULL AND conference_join_time IS NULL)
+                 OR (conference_join_time IS NOT NULL AND conference_finish_time IS NULL)
+                 OR (apply_ready_time IS NOT NULL AND apply_finish_time IS NULL)
+                 OR (assess_ready_time IS NOT NULL AND assess_finish_time IS NULL)
+           )`,
         [sectionId]
     );
 
