@@ -39,7 +39,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     ],
 
     refs: {
-        appCt: 'viewport > #appCt',
+        appCt: 'spark-teacher-appct',
 
         sparkTitleBar: {
             selector: 'spark-titlebar',

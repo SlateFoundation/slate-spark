@@ -56,6 +56,10 @@ Ext.define('SparkClassroomTeacher.Application', {
         'Priorities'
     ],
 
+    views: [
+        'AppContainer'
+    ],
+
     config: {
         /**
          * @private
@@ -70,11 +74,7 @@ Ext.define('SparkClassroomTeacher.Application', {
          */
         viewport: {
             items: {
-                itemId: 'appCt',
-
-                xtype: 'container',
-                layout: 'auto',
-                scrollable: 'vertical'
+                xtype: 'spark-teacher-appct'
             }
         }
     },
