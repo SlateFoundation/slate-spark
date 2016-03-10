@@ -174,5 +174,6 @@ function *patchHandler() {
 
 module.exports = {
     get: getHandler,
-    patch: patchHandler
+    patch: patchHandler,
+    post: patchHandler
 };
