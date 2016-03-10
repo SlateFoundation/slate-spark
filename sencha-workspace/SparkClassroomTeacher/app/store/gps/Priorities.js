@@ -6,6 +6,8 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
     ],
 
 
+    model: 'SparkClassroomTeacher.model.gps.ActiveStudent',
+
     config: {
         proxy: {
             type: 'slate-api',
