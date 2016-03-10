@@ -26,13 +26,6 @@ Ext.define('SparkClassroomTeacher.Application', {
      * @param {String/null} oldSection The code for the previously selected section if any
      */
 
-    /**
-     * @event activestudentselect
-     * Fires when the user selects a course section.
-     * @param {SparkClassroomTeacher.model.gps.ActiveStudent} activeStudent The code for the newly selected section
-     * @param {SparkClassroomTeacher.model.gps.ActiveStudent/null} oldActiveStudent The code for the previously selected section if any
-     */
-
 
     name: 'SparkClassroomTeacher',
 
