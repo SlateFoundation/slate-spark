@@ -18,12 +18,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     config: {
         /**
          * @private
-         * Tracks the currently selected {@link SparkClassroomTeacher.model.gps.ActiveStudent}
-         */
-        selectedActiveStudent: null,
-
-        /**
-         * @private
          * Tracks section last selected via {@link #event-sectionselect}
          */
         activeSection: null
@@ -60,10 +54,14 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     refs: {
+        appCt: 'spark-teacher-appct',
         gpsCt: 'spark-gps'
     },
 
     control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
         'spark-gps-studentlist': {
             select: 'onListSelect'
         }
@@ -82,16 +80,15 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     // config handlers
     updateActiveSection: function() {
-        this.setSelectedActiveStudent(null);
-    },
-
-    updateSelectedActiveStudent: function(activeStudent, oldActiveStudent) {
-        this.syncSelectedActiveStudent();
-        this.getApplication().fireEvent('activestudentselect', activeStudent, oldActiveStudent);
+        this.getAppCt().setSelectedStudentSparkpoint(null);
     },
 
 
     // event handlers
+    onSelectedStudentSparkpointChange: function() {
+        this.syncSelectedStudentSparkpoint();
+    },
+
     onSectionSelect: function(section) {
         this.setActiveSection(section);
     },
@@ -106,7 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         me.getGpsActiveStudentsStore().load();
     },
 
-    onActiveStudentStoreUpdate: function(store, activeStudent, operation, modifiedFieldNames) {
+    onActiveStudentStoreUpdate: function(store, selectedStudentSparkpoint, operation, modifiedFieldNames) {
         var me = this,
             workaroundRefreshQueue = me.workaroundRefreshQueue,
             listId;
@@ -114,15 +111,17 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         // reselect active student if sparkpoint has changed
         if (
             operation == 'edit' &&
-            me.getSelectedActiveStudent() === activeStudent &&
+            me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint &&
             modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {
-            me.setSelectedActiveStudent(null);
-            me.setSelectedActiveStudent(activeStudent);
+            // TODO: redo this after switching sparkpoint generates a new studentSparkpoint rather than updating existing one
+            debugger;
+            //me.getAppCt().setSelectedStudentSparkpoint(null);
+            //me.getAppCt().setSelectedStudentSparkpoint(selectedStudentSparkpoint);
         }
 
         // populate workaround queue
-        listId = activeStudent.get('active_phase') + 'List';
+        listId = selectedStudentSparkpoint.get('active_phase') + 'List';
         if (workaroundRefreshQueue.indexOf(listId) == -1) {
             workaroundRefreshQueue.push(listId);
             me.workaroundRefreshListsTask.delay(500);
@@ -130,11 +129,11 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     onActiveStudentsStoreEndUpdate: function() {
-        this.syncSelectedActiveStudent();
+        this.syncSelectedStudentSparkpoint();
     },
 
     onListSelect: function(list, student) {
-        this.setSelectedActiveStudent(student);
+        this.getAppCt().setSelectedStudentSparkpoint(student);
     },
 
     onSocketData: function(socket, data) {
@@ -170,9 +169,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     // controller methods
-    syncSelectedActiveStudent: function() {
+    syncSelectedStudentSparkpoint: function() {
         var me = this,
-            activeStudent = me.getSelectedActiveStudent(),
+            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
             lists = me.getGpsCt().query('#phasesCt list'),
             listCount = lists.length, i = 0, list;
 
