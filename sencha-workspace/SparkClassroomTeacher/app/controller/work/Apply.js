@@ -115,7 +115,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         }
 
         Ext.getStore('work.Feedback').add({
-            student_id: selectedStudentSparkpoint.getId(),
+            student_id: selectedStudentSparkpoint.get('student_id'),
             sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
             phase: 'apply',
             message: message
@@ -155,7 +155,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             if (
                 selectedStudentSparkpoint &&
-                item.user_id == selectedStudentSparkpoint.getId() &&
+                item.user_id == selectedStudentSparkpoint.get('student_id') &&
                 (task = me.getWorkApplyTasksStore().getById(item.id))
             ) {
                 task.set(item, { dirty: false });
@@ -166,7 +166,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             if (
                 selectedStudentSparkpoint &&
-                item.student_id == selectedStudentSparkpoint.getId() &&
+                item.student_id == selectedStudentSparkpoint.get('student_id') &&
                 item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
                 (apply = appliesStore.getById(item.fb_apply_id))
             ) {

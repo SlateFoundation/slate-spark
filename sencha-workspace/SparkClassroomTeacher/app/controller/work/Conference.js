@@ -211,7 +211,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             method: 'POST',
             url: '/spark/api/work/conferences/questions',
             jsonData: {
-                student_id: selectedStudentSparkpoint.getId(),
+                student_id: selectedStudentSparkpoint.get('student_id'),
                 sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
                 source: 'teacher',
                 question: me.getQuestionInputEl().getValue()
@@ -400,7 +400,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             if (
                 selectedStudentSparkpoint &&
                 questionsStore.isLoaded() &&
-                item.student_id == selectedStudentSparkpoint.getId() &&
+                item.student_id == selectedStudentSparkpoint.get('student_id') &&
                 item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')
             ) {
                 // capture question input
@@ -426,7 +426,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         } else if (table == 'conference_worksheets') {
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
-            if (selectedStudentSparkpoint && item.student_id == selectedStudentSparkpoint.getId() && item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')) {
+            if (selectedStudentSparkpoint && item.student_id == selectedStudentSparkpoint.get('student_id') && item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')) {
                 worksheetData = Ext.decode(item.worksheet, true);
                 worksheetCmp = me.getWorksheetCmp();
 

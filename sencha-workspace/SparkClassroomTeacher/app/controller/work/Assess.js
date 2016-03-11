@@ -130,7 +130,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
                 sparkpoint: recommendedSparkpoint.getId()
             });
 
-            studentSparkpoint.set('student_id', student.getId());
+            studentSparkpoint.set('student_id', student.get('student_id'));
 
             studentSparkpoint.save({
                 callback: function(studentSparkpoint, operation, success) {
@@ -154,7 +154,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
         if (
             selectedStudentSparkpoint &&
-            itemData.student_id == selectedStudentSparkpoint.getId() &&
+            itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
             itemData.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
             (reflectionCt = this.getReflectionCt())
         ) {
@@ -193,7 +193,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             //     appliesStore.load();
             // }
 
-            sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.getId());
+            sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
 
             if (sparkpointSuggestionsStore.isLoaded()) {
                 sparkpointSuggestionsStore.load();

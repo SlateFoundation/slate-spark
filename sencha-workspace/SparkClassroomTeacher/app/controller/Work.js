@@ -170,7 +170,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
 
         if (selectedStudentSparkpoint) {
-            studentId = selectedStudentSparkpoint.getId();
+            studentId = selectedStudentSparkpoint.get('student_id');
 
             feedbackStore.setFilters([{
                 property: 'student_id',
@@ -216,7 +216,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         if (tableName == 'teacher_feedback') {
             if (
                 (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint()) &&
-                selectedStudentSparkpoint.getId() == itemData.student_id &&
+                selectedStudentSparkpoint.get('student_id') == itemData.student_id &&
                 selectedStudentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
             ) {
                 workFeedbackStore = me.getWorkFeedbackStore();

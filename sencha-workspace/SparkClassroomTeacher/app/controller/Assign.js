@@ -263,7 +263,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         }
 
         sparkpointField.setValue(selectedStudentSparkpoint.get('sparkpoint'));
-        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.getId());
+        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
 
         if (sparkpointSuggestionsStore.isLoaded()) {
             sparkpointSuggestionsStore.load();

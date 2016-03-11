@@ -136,21 +136,23 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.getAppCt().setSelectedStudentSparkpoint(student);
     },
 
+    // TODO: duplicate process into blocked controller
     onSocketData: function(socket, data) {
         var me = this,
             table = data.table,
             itemData = data.item,
-            activeStudent,
+            studentSparkpointId,
+            studentSparkpoint,
             updatedFields;
 
         if (table == 'section_student_active_sparkpoint') {
             if (
                 itemData.section_code == me.getActiveSection() &&
                 (
-                    !(activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id)) ||
+                    !(studentSparkpoint = me.getGpsActiveStudentsStore().findRecord('student_id', itemData.student_id)) ||
                     (
-                        activeStudent.get('sparkpoint_id') != itemData.sparkpoint_id &&
-                        activeStudent.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
+                        studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id &&
+                        studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
                     )
                 )
             ) {
@@ -158,11 +160,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 me.refreshGps();
             }
         } else if (table == 'student_sparkpoint') {
-            if (
-                (activeStudent = me.getGpsActiveStudentsStore().getById(itemData.student_id)) &&
-                activeStudent.get('sparkpoint_id') == itemData.sparkpoint_id
-            ) {
-                updatedFields = activeStudent.set(itemData, { dirty: false });
+            studentSparkpointId = itemData.student_id + '-' + itemData.sparkpoint_id;
+
+            if ((studentSparkpoint = me.getGpsActiveStudentsStore().getById(studentSparkpointId))) {
+                updatedFields = studentSparkpoint.set(itemData, { dirty: false });
             }
         }
     },

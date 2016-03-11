@@ -83,19 +83,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         this.syncSelectedStudentSparkpoint();
     },
 
-    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+    onActiveStudentUpdate: function(activeStudentsStore, studentSparkpoint, operation, modifiedFieldNames) {
         var me = this,
             scoreField;
 
         if (
             operation == 'edit' &&
-            selectedStudentSparkpoint === me.getAppCt().getSelectedStudentSparkpoint() &&
+            studentSparkpoint === me.getAppCt().getSelectedStudentSparkpoint() &&
             modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
         ) {
             scoreField = me.getMasteryCheckScoreField();
 
             if (scoreField) {
-                scoreField.setValue(selectedStudentSparkpoint.get('learn_mastery_check_score'));
+                scoreField.setValue(studentSparkpoint.get('learn_mastery_check_score'));
                 scoreField.resetOriginalValue();
             }
         }
@@ -124,7 +124,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
 
         Ext.getStore('work.Feedback').add({
-            student_id: selectedStudentSparkpoint.getId(),
+            student_id: selectedStudentSparkpoint.get('student_id'),
             sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
             phase: 'learn',
             message: message
@@ -143,7 +143,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             itemData = data.item,
             updatedLearn;
 
-        if (!selectedStudentSparkpoint || selectedStudentSparkpoint.getId() != itemData.user_id) {
+        if (!selectedStudentSparkpoint || selectedStudentSparkpoint.get('student_id') != itemData.user_id) {
             return;
         }
 
