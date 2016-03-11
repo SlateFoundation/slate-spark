@@ -11,7 +11,8 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
     fields: [
         {
             name: 'sparkpoint',
-            type: 'string'
+            type: 'string',
+            critical: true
         },
         {
             name: 'section',
@@ -20,7 +21,8 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         {
             name: 'student_id',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            critical: true
         },
         {
             name: 'sparkpoint_id',
@@ -232,11 +234,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             ],
             convert: function(v, r) {
                 var learnStartTime = r.get('learn_start_time');
-                
+
                 if (!learnStartTime) {
                     return null;
                 }
-                
+
                 return Date.now() - learnStartTime;
             }
         }
