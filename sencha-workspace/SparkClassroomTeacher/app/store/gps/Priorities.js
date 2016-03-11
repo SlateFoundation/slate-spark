@@ -2,7 +2,7 @@
 Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
     extend: 'Ext.data.Store',
     requires: [
-        'Slate.proxy.API'
+        'SparkClassroom.data.field.SparkDate'
     ],
 
 
@@ -10,7 +10,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
 
     config: {
         proxy: {
-            type: 'slate-api',
+            type: 'spark-studentsparkpoints',
             url: '/spark/api/work/blocked'
         },
 
