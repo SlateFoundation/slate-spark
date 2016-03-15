@@ -1,7 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
-* Learning Model
+* [Learning Model](learning_model/README.md)
    * [Sparkpoints](learning_model/sparkpoints.md)
 * Students' Guide
 * Teachers' Guide
