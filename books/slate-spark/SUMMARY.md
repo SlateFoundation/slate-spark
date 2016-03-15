@@ -6,4 +6,5 @@
 * Developers' Guide
 * Administrators' Guide
 * Teachers' Guide
+* Students' Guide
 
