@@ -2,7 +2,7 @@
 
 * [Introduction](README.md)
 * Learning Model
-   * Sparkpoints
+   * [Sparkpoints](learning_model/sparkpoints.md)
 * Students' Guide
 * Teachers' Guide
 * Administrators' Guide
