@@ -4,4 +4,5 @@
 * Learning Model
 * System Architecture
 * Developers' Guide
+* Administrators' Guide
 
