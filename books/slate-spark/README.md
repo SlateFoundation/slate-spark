@@ -1,3 +1,4 @@
-# My Awesome Book
+# Spark
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+Spark is an in-classroom realtime learning system build on top of Slate as an add-on package
+and collection of supplementary services.
