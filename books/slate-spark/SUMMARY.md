@@ -5,4 +5,5 @@
 * System Architecture
 * Developers' Guide
 * Administrators' Guide
+* Teachers' Guide
 
