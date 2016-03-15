@@ -8,7 +8,7 @@ in Canvas in what was known as Spark 1.0, "Spark 2.0" reperesents the initial co
 digitization of this project by Jarvus Innovations.
 
 In each classroom, students work with the teachers' oversight and collaboration two advance through
-the 4 phases of Spark's learning cycle for each [Sparkpoint](sparkpoints).
+the 4 phases of Spark's learning cycle for each [Sparkpoint](sparkpoints.md).
 
 - **Learn**: The student selects and studies from a provided bank of learning content.
 - **Conference**: The student discusses what they've learn with peers, completes a worksheet, and consults with a teacher before advancing.
