@@ -6,6 +6,6 @@
 * [Students' Guide](students/README.md)
 * [Teachers' Guide](teachers/README.md)
 * [Administrators' Guide](administrators/README.md)
-* Developers' Guide
+* [Developers' Guide](developers/README.md)
 * System Architecture
 
