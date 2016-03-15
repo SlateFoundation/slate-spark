@@ -4,7 +4,7 @@
 * Learning Model
 * Students' Guide
 * Teachers' Guide
+* Administrators' Guide
 * System Architecture
 * Developers' Guide
-* Administrators' Guide
 
