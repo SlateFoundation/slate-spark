@@ -8,5 +8,6 @@
 * [Teachers' Guide](teachers/README.md)
 * [Administrators' Guide](administrators/README.md)
 * [Developers' Guide](developers/README.md)
+   * Testing Classroom Locally
 * [System Architecture](system_architecture/README.md)
 
