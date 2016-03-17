@@ -435,8 +435,6 @@ function normalize(item) {
         dok: null,
         type: item.resource_type,
         rating: {
-            teacher: item.rating,
-            student:  item.rating,
             vendor: item.rating
         },
         score: null,

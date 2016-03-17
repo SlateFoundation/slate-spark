@@ -65,6 +65,7 @@ getDefaultThumbnail.baseUrl = 'https://storage.googleapis.com/spark-fusebox/vend
 
 function normalizeAssessment(item) {
     return {
+        resource_id: item.id,
         completed: false,
         title: item.title,
         url: item.url,
