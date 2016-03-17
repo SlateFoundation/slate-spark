@@ -352,7 +352,7 @@ function generateValidationFunction(table, enums) {
                     if (_enum.indexOf(val) === -1) {
                         errors.push(`${columnName}: Allowed values are: ${_enum.join(', ')}; you gave: ${val}`);
                     }
-                } else if (val !== null && column.is_nullable) {
+                } else if (!(column.is_nullable && column === null)) {
                     let validator = columnValidators[column.type];
 
                     if (validator) {
