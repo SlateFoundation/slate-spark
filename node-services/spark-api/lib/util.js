@@ -1,6 +1,7 @@
 'use strict';
 
-var k12 = require('k-12');
+var k12 = require('k-12'),
+    assert = require('assert');
 
 /** @module util */
 
@@ -600,6 +601,37 @@ function codifyRecord(record, lookup) {
     return record;
 }
 
+function namifyRecord(record, lookup) {
+    // If we use this with map, foreach, etc. the second argument will be passed, so we flip the conditional here
+    // to use lookup when present on the this object
+    lookup = this && this.lookup ? this.lookup : lookup;
+
+    [ 'author_id',
+      'teacher_id',
+      'recommender_id',
+      'user_id',
+      'closed_by',
+      'student_id'
+    ].forEach(function(col) {
+        var val = record[col];
+
+        if (typeof val === 'number') {
+            let propName = col.replace('_id', '_name'),
+                userName = lookup.person.idToDisplayName[val];
+
+            if (propName.indexOf('_name') === -1) {
+                propName = propName + '_name';
+            }
+
+            if (userName) {
+                record[propName] = userName;
+            }
+        }
+    });
+
+    return record;
+}
+
 function Values(vals) {
     this.vals = vals || [];
 }
@@ -870,6 +902,51 @@ function queriesToReturningJsonCte(queries) {
     return `WITH ${cte.join(',\n')} ${select.join('\nUNION ALL\n')};`;
 }
 
+function validateRecordSet(ctx, tableName, records, customRecordFn, customRecordSetFn) {
+    var schemaValidator = ctx.validation[tableName],
+        validationErrors = [];
+
+    assert(customRecordFn === undefined || typeof customRecordFn === 'function');
+    assert(customRecordSetFn === undefined || typeof customRecordSetFn === 'function');
+
+    records = records.map(function (originalRecord) {
+        var errors,
+            identifiedRecord = identifyRecord(originalRecord, ctx.lookup, {});
+
+        if (customRecordFn) {
+            customRecordFn(identifiedRecord, errors, originalRecord);
+        }
+
+        errors = schemaValidator(identifiedRecord) || [];
+
+        if (errors.length > 0) {
+            validationErrors.push({
+                input: originalRecord,
+                effective: identifiedRecord,
+                errors: errors
+            });
+        }
+
+        return identifiedRecord;
+    });
+
+    if (customRecordSetFn) {
+        customRecordSetFn(records, validationErrors);
+    }
+
+    // Let's bail: on validation errors with a helpful JSON error message
+    if (validationErrors.length > 0) {
+        ctx.status = 400;
+
+        return ctx.body = {
+            success: false,
+            error: validationErrors
+        };
+    }
+
+    return records;
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     excludeObjectKeys: excludeObjectKeys,
@@ -905,6 +982,7 @@ module.exports = {
 
     codifyRecord: codifyRecord,
     identifyRecord: identifyRecord,
+    namifyRecord: namifyRecord,
 
     Values: Values,
 
@@ -916,6 +994,8 @@ module.exports = {
     recordToUpsert: recordToUpsert,
     queriesToReturningCte: queriesToReturningCte,
     queriesToReturningJsonCte: queriesToReturningJsonCte,
+
+    validateRecordSet: validateRecordSet,
 
     bind: require('co-bind'),
 
