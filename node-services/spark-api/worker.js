@@ -57,10 +57,6 @@ app.use(error({ template: __dirname + '/config/error.html' }));
 app.use(middleware.process);
 app.use(middleware.session);
 app.use(jsonBody({}));
-app.use(middleware.database.knex({
-    config: config.database,
-    slateConfig: config.slate
-}));
 app.use(middleware.database.pgp({
     config: config.database,
     slateConfig: config.slate

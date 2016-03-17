@@ -2,10 +2,8 @@
 
 var promise = require('bluebird'),
     monitor = require('pg-monitor'),
-    Knex = require('knex'),
     options = { promiseLib: promise},
     Pgp = require('pg-promise')(options),
-    knexConnections = {},
     pgpConnections = {};
 
 const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2'];
@@ -29,42 +27,6 @@ function initializePgp(config, slateConfig, globalConfig) {
         .forEach(instance => pgpConnections[instance.key] = Pgp(objToConnectionString(instance.postgresql)));
 
     return pgpConnections;
-}
-
-function initializeKnex(config, slateConfig, globalConfig) {
-    var knexConfig = {};
-
-    if (config.postgresql) {
-        if (config.postgresql.knex) {
-            knexConfig = config.postgresql.knex;
-        }
-
-        if (config.postgresql.sharedConnection) {
-            knexConnections.shared = Knex(Object.assign({
-                client: 'pg',
-                connection: objToConnectionString(config.postgresql.sharedConnection)
-            }, knexConfig));
-        }
-    }
-
-    (slateConfig.instances || [])
-        .filter(instance => instance.postgresql)
-        .forEach(function(instance) {
-            let connection = Knex(Object.assign({
-                client: 'pg',
-                connection: objToConnectionString(instance.postgresql)
-            }, knexConfig));
-
-            knexConnections[instance.key] = connection;
-
-            if (globalConfig.logging && globalConfig.logging.stdout_sql) {
-                connection.on('query', function(query) {
-                    console.log(query.sql);
-                });
-            }
-        });
-
-    return knexConnections;
 }
 
 function pgp(options) {
@@ -122,30 +84,6 @@ function pgp(options) {
                 ${query}
             `;
         };
-
-        yield next;
-    };
-}
-
-function knex(options) {
-    return function *knex(next) {
-        var schema = this.header['x-nginx-mysql-schema'];
-
-        this.app.context.knex || (this.app.context.knex = initializeKnex(options.config, options.slateConfig, this.app.context.config));
-
-        if (schema) {
-            this.knex = this.app.context.knex[schema];
-        } else if (this.request.path === '/healthcheck') {
-            this.knex = this.app.context.knex.shared;
-        } else {
-            this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
-        }
-
-        if (!this.knex) {
-            this.throw(new Error(`Unable to initialize knex... (Check if ${this.schema} is a valid Slate instance)`));
-        }
-
-        this.sharedKnex = this.app.context.knex.shared;
 
         yield next;
     };
@@ -375,8 +313,6 @@ function generateValidationFunction(table, enums) {
 }
 
 module.exports = {
-    knex: knex,
     pgp: pgp,
-    knexConnections: knexConnections,
     pgpConnections: pgpConnections
 };
