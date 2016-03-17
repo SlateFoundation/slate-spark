@@ -56,8 +56,6 @@ function *patchHandler() {
 
     records = util.validateRecordSet(ctx, 'teacher_feedback', teacherFeedback);
 
-    console.log(records);
-
     if (records.success === false) {
         return;
     }
