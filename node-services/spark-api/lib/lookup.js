@@ -76,7 +76,7 @@ var nats = require('nats'),
             tableName: 'people',
             idColumn: 'ID',
             codeColumn: 'Username',
-            additionColumns: ['FirstName', 'LastName'],
+            additionalColumns: ['FirstName', 'LastName'],
             customFunction: function(results) {
                 var self = this;
                 
