@@ -476,21 +476,112 @@ function validateNumericKeys(obj) {
 }
 
 function identifyRecord(record, lookup) {
+    var sectionLookup, sectionCodeLookup, sectionIdLookup, sparkpointLookup, sparkpointCodeLookup, sparkpointIdLookup,
+        result = JSON.parse((JSON.stringify(record)));
+
+    // If sparkpoint, sparkpoint_id and sparkpoint_code are all passed in and resolve to the same sparkpoint_id then
+    // an error should not be thrown
+
+    // If any permutation of identifying properties are passed in resolve to different entities we should throw
+    // an exception
+
     // If we use this with map, foreach, etc. the second argument will be passed, so we flip the conditional here
     // to use lookup when present on the this object
     lookup = this && this.lookup ? this.lookup : lookup;
 
-    if (record.section_code) {
-        record.section_id = lookup.section.cache.codeToId[('' + record.section_code).toLowerCase()];
-        delete record.section_code;
+    // Section
+    if (result.section) {
+        sectionLookup = parseInt(result.section, 10);
+
+        if (!isNaN(sectionLookup)) {
+            sectionLookup = lookup.section.cache.codeToId[('' + result.section).toLowerCase()];
+        }
+
+        delete result.section;
     }
 
-    if (record.sparkpoint_code) {
-        record.sparkpoint_id = lookup.sparkpoint.cache.codeToId[('' + record.sparkpoint_code).toLowerCase()];
-        delete record.sparkpoint_code;
+    if (result.section_code) {
+        sectionCodeLookup = parseInt(result.section_code, 10);
+
+        if (!isNaN(sectionCodeLookup)) {
+            sectionLookup = lookup.section.cache.codeToId[('' + result.section).toLowerCase()];
+        }
+
+        delete result.section_code;
     }
 
-    return record;
+    if (result.section_id) {
+        sectionIdLookup = lookup.section.cache.idToCode[result.section_id];
+
+        if (!sectionIdLookup) {
+            // Delete invalid section_id
+            delete result.section_id;
+
+            console.warn(`[POSSIBLE BUG]: section_id ${result.section_id} is invalid!`);
+        }
+    }
+
+    if (result.section_id) {
+        if (sectionCodeLookup && result.section_id !== sectionCodeLookup) {
+            console.warn(`[POSSIBLE BUG]: section_code ${sectionCodeLookup} conflicts with section_id ${result.section_id}`);
+        }
+
+        if (sectionLookup && result.section_id !== sectionLookup) {
+            console.warn(`[POSSIBLE BUG]: section ${sectionLookup} conflicts with section_id ${result.section_id}`);
+        }
+    } else if (sectionLookup) {
+        result.section_id = sectionLookup;
+    } else if (sectionCodeLookup) {
+        result.section_id = sectionCodeLookup;
+    }
+
+    // Sparkpoint
+    if (result.sparkpoint) {
+        if (isMatchbookId(result.sparkpoint)) {
+            sparkpointLookup = lookup.sparkpoint.cache.idToCode[result.sparkpoint];
+        } else {
+            sparkpointLookup = lookup.sparkpoint.cache.codeToId[('' + result.sparkpoint).toLowerCase()];
+        }
+
+        delete result.sparkpoint;
+    }
+
+    if (result.sparkpoint_code) {
+        if (isMatchbookId(result.sparkpoint_code)) {
+            sparkpointLookup = lookup.sparkpoint.cache.idToCode[result.sparkpoint_code];
+        } else {
+            sparkpointLookup = lookup.sparkpoint.cache.codeToId[('' + result.sparkpoint_code).toLowerCase()];
+        }
+
+        delete result.sparkpoint_code;
+    }
+
+    if (result.sparkpoint_id) {
+        sparkpointIdLookup = lookup.sparkpoint.cache.idToCode[result.sparkpoint_id];
+
+        if (!sparkpointIdLookup) {
+            // Delete invalid sparkpoint_id
+            delete result.sparkpoint_id;
+
+            console.warn(`[POSSIBLE BUG]: sparkpoint_id ${result.sparkpoint_id} is invalid!`);
+        }
+    }
+
+    if (result.sparkpoint_id) {
+        if (sparkpointCodeLookup && result.sparkpoint_id !== sparkpointCodeLookup) {
+            console.warn(`[POSSIBLE BUG]: sparkpoint_code ${sparkpointCodeLookup} conflicts with sparkpoint_id ${result.sparkpoint_id}`);
+        }
+
+        if (sparkpointLookup && result.sparkpoint_id !== sparkpointLookup) {
+            console.warn(`[POSSIBLE BUG]: sparkpoint ${sparkpointLookup} conflicts with sparkpoint_id ${result.sparkpoint_id}`);
+        }
+    } else if (sparkpointLookup) {
+        result.sparkpoint_id = sparkpointLookup;
+    } else if (sparkpointCodeLookup) {
+        result.sparkpoint_id = sparkpointCodeLookup;
+    }
+
+    return result;
 }
 
 function codifyRecord(record, lookup) {
