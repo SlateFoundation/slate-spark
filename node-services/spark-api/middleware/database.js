@@ -74,8 +74,9 @@ function pgp(options) {
             ctx._pgp = appContext.pgp[schema];
             ctx.pgp = new PgpWrapper(ctx._pgp, ctx);
         } else if (ctx.healthcheck) {
+            // Do not set GUC for health checks
             ctx._pgp = appContext.pgp.shared;
-            ctx.pgp = new PgpWrapper(ctx._pgp, ctx);
+            ctx.pgp = appContext.pgp.shared;
         } else {
             ctx.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
@@ -85,6 +86,7 @@ function pgp(options) {
         }
 
         ctx.sharedPgp = appContext.pgp.shared;
+
         appContext.introspection || (appContext.introspection = {});
 
         if (schema) {
