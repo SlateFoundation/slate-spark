@@ -611,7 +611,8 @@ function namifyRecord(record, lookup) {
       'recommender_id',
       'user_id',
       'closed_by',
-      'student_id'
+      'student_id',
+      'graded_by'
     ].forEach(function(col) {
         var val = record[col];
 
