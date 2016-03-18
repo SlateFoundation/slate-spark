@@ -21,8 +21,8 @@ function PgpWrapper(pgp, ctx) {
     this.ctx = ctx;
 }
 
-PgpWrapper.prototype.oneOrNone = function(query, values) {
-    return this.pgp.oneOrNone.call(this.pgp, this.ctx.guc() + query, values);
+PgpWrapper.prototype.one = function(query, values) {
+    return this.pgp.one.call(this.pgp, this.ctx.guc() + query, values);
 };
 
 PgpWrapper.prototype.many = function(query, values) {
