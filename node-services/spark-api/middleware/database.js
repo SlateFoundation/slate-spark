@@ -2,7 +2,11 @@
 
 var promise = require('bluebird'),
     monitor = require('pg-monitor'),
-    options = { promiseLib: promise},
+    options = {
+        promiseLib: promise,
+        noLocking: true,
+        capTX: true
+    },
     Pgp = require('pg-promise')(options),
     pgpConnections = {};
 
@@ -11,6 +15,35 @@ const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1'
 function objToConnectionString(obj) {
     return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}?application_name=spark-api`;
 }
+
+function PgpWrapper(pgp, ctx) {
+    this.pgp = pgp;
+    this.ctx = ctx;
+}
+
+PgpWrapper.prototype.oneOrNone = function(query, values) {
+    return this.pgp.oneOrNone.call(this.pgp, this.ctx.guc() + query, values);
+};
+
+PgpWrapper.prototype.many = function(query, values) {
+    return this.pgp.many.call(this.pgp, this.ctx.guc() + query, values);
+};
+
+PgpWrapper.prototype.oneOrNone = function(query, values) {
+    return this.pgp.oneOrNone.call(this.pgp, this.ctx.guc() + query, values);
+};
+
+PgpWrapper.prototype.manyOrNone = function(query, values) {
+    return this.pgp.manyOrNone.call(this.pgp, this.ctx.guc() + query, values);
+};
+
+PgpWrapper.prototype.any = function(query, values) {
+    return this.pgp.any.call(this.pgp, this.ctx.guc() + query, values);
+};
+
+PgpWrapper.prototype.result = function(query, values) {
+    return this.pgp.result.call(this.pgp, this.ctx.guc() + query, values);
+};
 
 function initializePgp(config, slateConfig, globalConfig) {
     if (globalConfig.logging && globalConfig.logging.stdout_sql) {
@@ -31,56 +64,62 @@ function initializePgp(config, slateConfig, globalConfig) {
 
 function pgp(options) {
     return function *pgp(next) {
-        var schema = this.header['x-nginx-mysql-schema'];
+        var ctx = this,
+            appContext = ctx.app.context,
+            schema = ctx.header['x-nginx-mysql-schema'];
 
-        this.app.context.pgp || (this.app.context.pgp = initializePgp(options.config, options.slateConfig, this.app.context.config));
+        appContext.pgp || (appContext.pgp = initializePgp(options.config, options.slateConfig, appContext.config));
 
         if (schema) {
-            this.pgp = this.app.context.pgp[schema];
-        } else if (this.healthcheck) {
-            this.pgp = this.app.context.pgp.shared;
+            ctx._pgp = appContext.pgp[schema];
+            ctx.pgp = new PgpWrapper(ctx._pgp, ctx);
+        } else if (ctx.healthcheck) {
+            ctx._pgp = appContext.pgp.shared;
+            ctx.pgp = new PgpWrapper(ctx._pgp, ctx);
         } else {
-            this.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
+            ctx.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
         }
 
-        if (!this.pgp) {
-            this.throw(new Error(`Unable to initialize pgp.. (Check if ${this.schema} is a valid Slate instance)`));
+        if (!ctx.pgp) {
+            ctx.throw(new Error(`Unable to initialize pgp.. (Check if ${ctx.schema} is a valid Slate instance)`));
         }
 
-        this.sharedPgp = this.app.context.pgp.shared;
-        this.app.context.introspection || (this.app.context.introspection = {});
+        ctx.sharedPgp = appContext.pgp.shared;
+        appContext.introspection || (appContext.introspection = {});
 
         if (schema) {
-            if (this.app.context.introspection[schema] === undefined) {
-                this.app.context.introspection = {};
+            if (appContext.introspection[schema] === undefined) {
+                appContext.introspection = {};
 
                 let pgp = pgpConnections[schema];
                 let introspection = yield* introspectDatabase(pgp);
 
-                this.app.context.introspection[schema] = introspection;
+                appContext.introspection[schema] = introspection;
 
                 let enums = introspection.enums;
                 let tables = introspection.tables;
 
-                this.app.context.validation || (this.app.context.validation = {});
-                this.app.context.validation[schema] = {};
+                appContext.validation || (appContext.validation = {});
+                appContext.validation[schema] = {};
 
                 for (let tableName in tables) {
                     let table = tables[tableName];
-                    this.app.context.validation[schema][tableName] = generateValidationFunction(table, enums);
+                    appContext.validation[schema][tableName] = generateValidationFunction(table, enums);
                 }
             }
 
-            this.validation = this.app.context.validation[schema];
-            this.introspection = this.app.context.introspection[schema];
+            ctx.validation = appContext.validation[schema];
+            ctx.introspection = appContext.introspection[schema];
         }
 
-        this.guc = function(query) {
+        ctx.guc = function(query) {
+            query || (query = '');
+
             return `
-                SET spark.user_id = '${this.userId}';
-                SET spark.role = '${this.role}';
-                SET spark.request_id = '${this.requestId}';
-                SET application_name = 'spark-api_${this.username}_${this.requestId}';
+                SET spark.user_id = '${ctx.userId}';
+                SET spark.role = '${ctx.role}';
+                SET spark.request_id = '${ctx.requestId}';
+                SET application_name = 'spark-api_${ctx.username}_${ctx.requestId}';
                 ${query}
             `;
         };
