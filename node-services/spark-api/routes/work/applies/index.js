@@ -116,7 +116,8 @@ function *getHandler() {
 function *patchHandler() {
     this.require(['sparkpoint_id', 'student_id', 'id']);
 
-    var sparkpointId = this.query.sparkpoint_id,
+    var ctx = this,
+        sparkpointId = this.query.sparkpoint_id,
         studentId = this.studentId,
         selected = this.query.selected,
         id = parseInt(this.query.id, 10),
@@ -188,6 +189,7 @@ function *patchHandler() {
         );
     }
 
+    // TODO: [BEGIN] Convert this to database trigger
     // Deselect other applies for student/sparkpoint and update the student_sparkpoint table
     if (selected !== undefined) {
         if (selected) {
@@ -222,6 +224,7 @@ function *patchHandler() {
             );
         }
     }
+    // TODO: [END] Convert this to database trigger
 
     if (_.tables.apply_reviews) {
         _.push('apply_reviews', 'apply_id', apply.fb_apply_id);
@@ -284,13 +287,7 @@ function *patchHandler() {
     apply.todos = todos;
     apply.id = apply.fb_apply_id;
 
-    if (typeof apply.graded_by === 'number') {
-        let graded_by = yield this.pgp.one(
-            'SELECT "FirstName" || \' \' || "LastName" AS graded_by FROM people WHERE "ID" = $1 LIMIT 1',
-            [apply.graded_by]);
-
-        apply.graded_by =  graded_by.graded_by;
-    }
+    apply = util.namifyRecord(apply, ctx.lookup);
 
     this.body = apply;
 }
