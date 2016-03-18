@@ -20,29 +20,31 @@ CREATE INDEX IF NOT EXISTS help_requests_section_id_idx ON help_requests (sectio
 CREATE INDEX IF NOT EXISTS help_requests_section_open_time ON help_requests (open_time) WHERE open_time IS NULL;
 */
 
-'use strict';
 
 function *getHandler() {
-    // HACK: This works around the session middleware injecting the logged in student_id into this.query automatically
-    if (!this.hadStudentIdInQuery) {
-        delete this.query.student_id;
-    }
-    var helpRequests = yield util.selectFromRequest.call(this, 'help_requests'),
-        ctx = this;
+    var ctx = this,
+        helpRequests;
 
-    this.body = helpRequests.map(function(helpRequest) {
+    // HACK: This works around the session middleware injecting the logged in student_id into this.query automatically
+    if (!ctx.hadStudentIdInQuery) {
+        delete ctx.query.student_id;
+    }
+
+    helpRequests = yield util.selectFromRequest.call(ctx, 'help_requests');
+
+   ctx.body = helpRequests.map(function(helpRequest) {
         helpRequest.can_delete = ctx.isTeacher || helpRequest.student_id === ctx.userId;
         return util.codifyRecord(helpRequest, ctx.lookup);
     });
 }
 
 function sqlGenerator(records, vals) {
-    var tableName = 'help_requests',
-        validator = this.validation[tableName],
+    var ctx = this,
+        tableName = 'help_requests',
+        validator = ctx.validation[tableName],
         errors = [],
         sqlStatements = [],
-        vals = vals || new util.Values(),
-        ctx = this;
+        vals = vals || new util.Values();
 
     records.forEach(function(record) {
         var validationErrors;
@@ -102,14 +104,14 @@ function sqlGenerator(records, vals) {
 }
 
 function *postHandler() {
-    var body = this.request.body,
+    var ctx = this,
+        body = ctx.request.body,
         query,
-        returnArray = Array.isArray(body),
-        ctx = this;
+        returnArray = Array.isArray(body);
 
     if ((returnArray && body.length === 0) || typeof body !== 'object') {
-        return this.throw(
-            new Error(`${this.method} request body must be a single help_request object or an array of help_request objects`),
+        return ctx.throw(
+            new Error(`${ctx.method} request body must be a single help_request object or an array of help_request objects`),
             400
         );
     }
@@ -118,11 +120,11 @@ function *postHandler() {
         body = [body];
     }
 
-    query = sqlGenerator.call(this, body);
+    query = sqlGenerator.call(ctx, body);
 
     if (query.errors.length > 0) {
-        this.status = 400;
-        return this.body = {
+        ctx.status = 400;
+        return ctx.body = {
             success: false,
             error: query.errors
         };
@@ -137,9 +139,9 @@ function *postHandler() {
     }
 
     if (!returnArray) {
-        this.body = aclDecorator(yield this.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
+        ctx.body = aclDecorator(yield ctx.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
     } else {
-        this.body = yield this.pgp.many(util.queriesToReturningCte(query.sql), query.vals.vals).map(aclDecorator);
+        ctx.body = yield ctx.pgp.many(util.queriesToReturningCte(query.sql), query.vals.vals).map(aclDecorator);
     }
 }
 
