@@ -5,6 +5,10 @@ function PgpWrapper(pgp, ctx) {
     this.ctx = ctx;
 }
 
+PgpWrapper.prototype.none = function(query, values) {
+    return this.pgp.none.call(this.pgp, this.ctx.guc() + query, values);
+};
+
 PgpWrapper.prototype.one = function(query, values) {
     return this.pgp.one.call(this.pgp, this.ctx.guc() + query, values);
 };
