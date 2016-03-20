@@ -51,7 +51,7 @@ function pgp(options) {
                 'spark.user_id': ctx.userId,
                 'spark.role': ctx.role,
                 'spark.request_id': ctx.requestId,
-                application_name: `sark-api_${ctx.username}_${ctx.requestId}`
+                application_name: `sark-api_${ctx.username}_${ctx.headers['x-nginx-request-id']}`
             };
         } else if (ctx.healthcheck) {
             // Do not set GUC for health checks
