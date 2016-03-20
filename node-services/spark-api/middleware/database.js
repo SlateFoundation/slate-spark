@@ -8,42 +8,14 @@ var promise = require('bluebird'),
         capTX: true
     },
     Pgp = require('pg-promise')(options),
-    pgpConnections = {};
+    pgpConnections = {},
+    PgpWrapper = require('./../lib/pgp-wrapper.js');
 
 const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2'];
 
 function objToConnectionString(obj) {
     return `postgres://${obj.username}:${obj.password}@${obj.host}:5432/${obj.database}?application_name=spark-api`;
 }
-
-function PgpWrapper(pgp, ctx) {
-    this.pgp = pgp;
-    this.ctx = ctx;
-}
-
-PgpWrapper.prototype.one = function(query, values) {
-    return this.pgp.one.call(this.pgp, this.ctx.guc() + query, values);
-};
-
-PgpWrapper.prototype.many = function(query, values) {
-    return this.pgp.many.call(this.pgp, this.ctx.guc() + query, values);
-};
-
-PgpWrapper.prototype.oneOrNone = function(query, values) {
-    return this.pgp.oneOrNone.call(this.pgp, this.ctx.guc() + query, values);
-};
-
-PgpWrapper.prototype.manyOrNone = function(query, values) {
-    return this.pgp.manyOrNone.call(this.pgp, this.ctx.guc() + query, values);
-};
-
-PgpWrapper.prototype.any = function(query, values) {
-    return this.pgp.any.call(this.pgp, this.ctx.guc() + query, values);
-};
-
-PgpWrapper.prototype.result = function(query, values) {
-    return this.pgp.result.call(this.pgp, this.ctx.guc() + query, values);
-};
 
 function initializePgp(config, slateConfig, globalConfig) {
     if (globalConfig.logging && globalConfig.logging.stdout_sql) {
@@ -66,13 +38,21 @@ function pgp(options) {
     return function *pgp(next) {
         var ctx = this,
             appContext = ctx.app.context,
-            schema = ctx.header['x-nginx-mysql-schema'];
+            schema = ctx.header['x-nginx-mysql-schema'],
+            guc;
 
         appContext.pgp || (appContext.pgp = initializePgp(options.config, options.slateConfig, appContext.config));
 
         if (schema) {
             ctx._pgp = appContext.pgp[schema];
             ctx.pgp = new PgpWrapper(ctx._pgp, ctx);
+
+            guc = {
+                'spark.user_id': ctx.userId,
+                'spark.role': ctx.role,
+                'spark.request_id': ctx.requestId,
+                application_name: `sark-api_${ctx.username}_${ctx.requestId}`
+            };
         } else if (ctx.healthcheck) {
             // Do not set GUC for health checks
             ctx._pgp = appContext.pgp.shared;
@@ -114,16 +94,14 @@ function pgp(options) {
             ctx.introspection = appContext.introspection[schema];
         }
 
-        ctx.guc = function(query) {
-            query || (query = '');
+        ctx.guc = function(obj) {
+            if (typeof obj === 'object') {
+                Object.assign(guc, obj);
+            }
 
-            return `
-                SET spark.user_id = '${ctx.userId}';
-                SET spark.role = '${ctx.role}';
-                SET spark.request_id = '${ctx.requestId}';
-                SET application_name = 'spark-api_${ctx.username}_${ctx.requestId}';
-                ${query}
-            `;
+            return Object.keys(guc).map(function(key) {
+                return `SET ${key} = '${guc[key]}';\n`;
+            }).join('');
         };
 
         yield next;
