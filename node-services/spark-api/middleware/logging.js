@@ -64,6 +64,11 @@ module.exports = function *logger(next) {
                     encoding: 'utf8',
                     mode: '0666'
                 });
+
+                process.on('exit', function () {
+                    // Flush logs to disk
+                    jsonHandle.end();
+                });
             }
 
             if (config.text_filename) {
@@ -71,6 +76,11 @@ module.exports = function *logger(next) {
                     flags: 'a',
                     encoding: 'utf8',
                     mode: '0666'
+                });
+
+                process.on('exit', function () {
+                    // Flush logs to disk
+                    textHandle.end();
                 });
             }
 
@@ -112,10 +122,7 @@ module.exports = function *logger(next) {
     ctx.log = {
       method: this.method,
       path: this.path,
-      ts: start,
-      sql: [],
-      warnings: [],
-      errors: [],
+      ts: start
     };
 
     yield next;
@@ -158,12 +165,31 @@ module.exports = function *logger(next) {
 
     if (logToFile) {
         if (jsonHandle) {
+            ctx.log.query = ctx.original ? ctx.original.queryObject : ctx.query;
+            ctx.log.request = ctx.request;
+            ctx.log.response = ctx.response;
+
             jsonLogString = JSON.stringify(ctx.log);
-            jsonHandle.write('\n' + jsonLogString, 'utf-8');
+
+            if (config.json_log_body) {
+                jsonLogString = JSON.parse(jsonLogString);
+
+                if (ctx.orginal) {
+                    jsonLogString.request.body = ctx.original ? ctx.original.body : ctx.request.body;
+                    if (ctx.request.is('json')) {
+                        jsonLogString.request.body = JSON.parse(jsonLogString.request.body);
+                    }
+                }
+
+                jsonLogString.response.body = ctx.response.is('json') ? JSON.parse(ctx.body) : ctx.body;
+                jsonLogString = JSON.stringify(jsonLogString);
+            }
+
+            jsonHandle.write(jsonLogString + '\n', 'utf-8');
         }
 
         if (textHandle) {
-            textHandle.write('\n' + textLogString, 'utf-8');
+            textHandle.write(textLogString + '\n', 'utf-8');
         }
     }
 
