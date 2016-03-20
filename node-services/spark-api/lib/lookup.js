@@ -2,10 +2,14 @@
 
 var nats = require('nats'),
     co = require('co'),
+    // TODO: These should fail gracefully if the configuration file(s) do not exist
     natsCfg = require('../config/nats.json'),
+    cachingEnabled = require('../config/caching.json').lookup,
     nc = nats.connect(natsCfg),
     bustSuggestionCache = require('../routes/sparkpoints').bustSuggestionCache,
     util = require('util'),
+    cachePath = require('path').dirname(require.main.filename) + '/cache/lookup.json',
+    LookupTable = require('./LookupTable'),
     shared = {
         standard: {
             entity: 'standard',
@@ -95,180 +99,25 @@ var nats = require('nats'),
             }
         }
     },
-    schema =  {},
-    initialized = false;
+    schema = {},
+    initialized = false,
+    lookupCache;
 
-function LookupTable(options) {
-    var self = this;
+try {
+    lookupCache = require(cachePath);
+    lookupCache.schema || (lookupCache.schema = {});
+    console.log('Lookup cache hit');
+} catch(e) {
+    lookupCache = {
+        shared: {},
+        schema: {}
+    };
 
-    Object.assign(this, {
-        idColumn: 'id',
-        codeColumn: 'code',
-        populated: false,
-        additionalColumns: [],
-        autoPopulate: false,
-        populating: false,
-        schema: 'public',
-        autoBust: true,
-        onCacheBust: false,
-        timeout: null,
-        cache: {}
-    }, options);
-
-    this.tableName = this.tableName || this.entity + 's';
-
-    if (!this.entity) {
-        throw new Error('entity is a required');
-    }
-
-    if (this.autoBust) {
-        console.log(`Subscribing to: cache.*.${this.schema}.${this.tableName}.>`);
-
-        nc.subscribe(`cache.*.${this.schema}.${this.tableName}.>`, function (msg, reply, subject) {
-
-            var [, action, pk, table, schema] = subject.split('.'),
-                event = {
-                    type: 'cache',
-                    action: action,
-                    entity: table,
-                    pk: pk,
-                    schema: schema
-                };
-
-            if (self.timeout) {
-                console.log(`Waiting 1s for changes to stop before re-populating ${self.schema}.${self.tableName}...`);
-                return;
-            }
-
-            self.timeout = setTimeout(function () {
-                console.log(`Busting ${self.schema}.${self.tableName} lookup table...`);
-
-                co(function*() {
-                    if (self.onCacheBust) {
-                        if (self.onCacheBust.constructor.name === 'GeneratorFunction') {
-                            yield self.onCacheBust.apply(self, [event]);
-                        } else {
-                            self.onCacheBust.apply(self, [event]);
-                        }
-                    }
-
-                    yield self.populate();
-                    self.timeout = null;
-                });
-            });
-        });
-    }
-
-    if (this.autoPopulate) {
-        co(function*() {
-            if (!self.populating) {
-                yield self.populate();
-            }
-        });
-    }
+    console.log('Lookup cache miss');
 }
 
-LookupTable.prototype.populate = function* populate (pgp) {
-    var {entity, tableName, idColumn, codeColumn, additionalColumns, customFunction, customGenerator, schema, cache} = this,
-        columns = [idColumn, codeColumn].concat(additionalColumns),
-        columnsQuoted = columns
-            .map(column => `"${column}"`)
-            .join(','),
-        results = yield this.pgp.any(`
-            SELECT ${columnsQuoted}
-              FROM "${schema}"."${tableName}"
-              WHERE "${codeColumn}" IS NOT NULL
-        `),
-        self = this;
-
-    console.log(`Populating ${schema}.${tableName} lookup table...`);
-
-    // Blow out / initialize lookup tables
-    cache.idToCode = {};
-    cache.codeToId = {};
-
-    results.forEach(function(result) {
-        var id = result[idColumn],
-            code = '' + result[codeColumn];
-
-        if (id && code) {
-            cache.idToCode[id] = code;
-            cache.codeToId[code.toLowerCase()] = id;
-        }
-    });
-
-    if (customFunction) {
-        customFunction.apply(this, [results, columns]);
-    }
-
-    if (customGenerator) {
-        yield customGenerator.apply(this, [results, columns]);
-    }
-
-    console.log(`${schema}.${tableName} populated with ${results.length.toLocaleString()} ${entity}(s).`);
-};
-
-LookupTable.prototype.idToCode = function* idToCode(id) {
-    var {codeColumn, idColumn, cache} = this,
-        cachedCode;
-
-    if (cache.idToCode) {
-        cachedCode = cache.idToCode[id];
-    }
-
-    if (cachedCode) {
-        return cachedCode;
-    } else {
-        let value = yield this.pgp.oneOrNone(
-            `SELECT "${codeColumn}" FROM "${this.schema}"."${this.tableName}" WHERE "${idColumn}" = $1 LIMIT 1`,
-            [id]
-        );
-
-        if (value) {
-            let code = '' + value[codeColumn];
-
-            cache.idToCode[id] = code;
-            cache.codeToId[code.toLowerCase()] = id;
-
-            return code;
-        } else {
-            return null;
-        }
-    }
-};
-
-LookupTable.prototype.codeToId = function* codeToId(code) {
-    var {codeColumn, idColumn, cache} = this,
-        codeKey = ('' + code).toLowerCase(),
-        cachedCode;
-
-    if (cache.codeToId) {
-        cachedCode = cache.codeToId[codeKey];
-    }
-
-    if (cachedCode) {
-        return cachedCode;
-    } else {
-        let value = yield this.pgp.oneOrNone(
-            `SELECT "${idColumn}" FROM "${this.schema}"."${this.tableName}" WHERE "${codeColumn}" = $1 LIMIT 1`,
-            [code]
-        );
-
-        if (value) {
-            let id = value[idColumn];
-
-            cache.codeToId[codeKey] = id;
-            cache.idToCode[id] = code;
-
-            return id;
-        } else {
-            return null;
-        }
-    }
-};
-
 module.exports = function* (next) {
-    // TODO: When lookup references this.app does it leak memory by keeping a reference to this (request context)?
+    var ctx = this;
 
     // Initialize global/shared lookup tables
     if (!initialized) {
@@ -277,57 +126,102 @@ module.exports = function* (next) {
         for (var entity in shared) {
             if (!(shared[entity] instanceof LookupTable) && shared[entity].entity) {
                 shared[entity] = new LookupTable(
-                    Object.assign({ pgp: this.app.context.pgp.shared }, shared[entity])
+                    Object.assign({ pgp: this.app.context.pgp.shared, natsClient: nc }, shared[entity])
                 );
 
-                yield shared[entity].populate();
+                if (cachingEnabled &&
+                    lookupCache.shared[entity] &&
+                    typeof lookupCache.shared[entity].cache === 'object' &&
+                    Object.keys(lookupCache.shared[entity].cache).length > 0) {
+                    console.log(`Shared ${entity} cache hit`);
+                    shared[entity].cache = lookupCache.shared[entity].cache;
+                } else {
+                    console.log(`Shared ${entity} cache miss`);
+                    yield shared[entity].populate();
+                }
             }
         }
 
-        let result = yield this.app.context.pgp.shared.one(`
-            SELECT json_build_object(
-                'idToName',
-                (SELECT json_object_agg(id, name) FROM vendors),
+        // TODO: HACK: Populating the vendor lookup table here doesn't make sense from a structural standpoint
+        if (!cachingEnabled || typeof lookupCache.shared.vendor !== 'object') {
+            let result = yield this.app.context.pgp.shared.one(`
+                SELECT json_build_object(
+                    'idToName',
+                    (SELECT json_object_agg(id, name) FROM vendors),
+    
+                    'nameToId',
+                    (SELECT json_object_agg(lower(name), id) FROM vendors),
+    
+                    'asnIdToVendorIdentifier',
+                    (SELECT json_object_agg(id,
+                        (SELECT json_object_agg(asn_id, vendor_identifier)
+                           FROM vendor_standards_crosswalk
+                          WHERE asn_id IS NOT NULL
+                            AND vendor_id = vendors.id
+                        )
+                    ) FROM vendors),
+    
+                    'asnIdToVendorCode',
+                    (SELECT json_object_agg(id,
+                        (SELECT json_object_agg(asn_id, lower(vendor_code))
+                           FROM vendor_standards_crosswalk
+                          WHERE asn_id IS NOT NULL
+                            AND vendor_id = vendors.id
+                        )
+                    ) FROM vendors)
+                ) AS json;
+            `);
 
-                'nameToId',
-                (SELECT json_object_agg(lower(name), id) FROM vendors),
+            shared.vendor = result.json;
 
-                'asnIdToVendorIdentifier',
-                (SELECT json_object_agg(id,
-                    (SELECT json_object_agg(asn_id, vendor_identifier)
-                       FROM vendor_standards_crosswalk
-                      WHERE asn_id IS NOT NULL
-                        AND vendor_id = vendors.id
-                    )
-                ) FROM vendors),
-
-                'asnIdToVendorCode',
-                (SELECT json_object_agg(id,
-                    (SELECT json_object_agg(asn_id, lower(vendor_code))
-                       FROM vendor_standards_crosswalk
-                      WHERE asn_id IS NOT NULL
-                        AND vendor_id = vendors.id
-                    )
-                ) FROM vendors)
-            ) AS json;
-        `);
-
-        shared.vendor = result.json;
+            if (cachingEnabled) {
+                require('fs').writeFile(cachePath, JSON.stringify({ shared: shared }, null, '\t'), (err) => {
+                    if (err) {
+                        console.warn('Shared lookup cache could not be written to disk: ' + err);
+                    } else {
+                        console.log('Shared lookup cache written to disk');
+                    }
+                });
+            }
+        }
     }
 
-    if (!this.healthcheck && !(schema[this.schema] !== undefined)) {
+    if (!this.healthcheck && schema[this.schema] === undefined) {
+        let bustJsonCache = false;
+
         schema[this.schema] || (schema[this.schema] = {});
 
         for (let entity in perSchool) {
             schema[this.schema][entity] = new LookupTable(
                 Object.assign(
-                    { pgp: this.app.context.pgp[this.schema] },
+                    { pgp: this.app.context.pgp[this.schema], natsClient: nc },
                     perSchool[entity],
                     { schema: this.schema }
                 )
             );
 
-            yield schema[this.schema][entity].populate();
+            if (cachingEnabled &&
+                lookupCache.schema &&
+                lookupCache.schema[this.schema] &&
+                lookupCache.schema[this.schema][entity] &&
+                typeof lookupCache.schema[this.schema][entity].cache === 'object') {
+                schema[this.schema][entity].cache = lookupCache.schema[this.schema][entity].cache;
+                console.log(`${this.schema} ${entity} cache hit`);
+            } else {
+                console.log(`${this.schema} ${entity} cache miss`);
+                bustJsonCache = true;
+                yield schema[this.schema][entity].populate();
+            }
+        }
+
+        if (cachingEnabled && bustJsonCache) {
+            require('fs').writeFile(cachePath, JSON.stringify({ shared: shared, schema: schema }, null, '\t'), (err) => {
+                if (err) {
+                    console.warn(`${this.schema} lookup cache could not be written to disk: ${err}`);
+                } else {
+                    console.log(`${this.schema} lookup cache written to disk`);
+                }
+            });
         }
     }
 

@@ -32,6 +32,8 @@ if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
 }
 
+app.context.config = config;
+
 if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
     let co = require('co');
     let git = require('git-promise');
