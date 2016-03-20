@@ -39,6 +39,7 @@ function pgp(options) {
         var ctx = this,
             appContext = ctx.app.context,
             schema = ctx.header['x-nginx-mysql-schema'],
+            requestId = ctx.headers['x-nginx-request-id'],
             guc;
 
         appContext.pgp || (appContext.pgp = initializePgp(options.config, options.slateConfig, appContext.config));
@@ -50,8 +51,8 @@ function pgp(options) {
             guc = {
                 'spark.user_id': ctx.userId,
                 'spark.role': ctx.role,
-                'spark.request_id': ctx.requestId,
-                application_name: `sark-api_${ctx.username}_${ctx.headers['x-nginx-request-id']}`
+                'spark.request_id': requestId
+                application_name: `sark-api_${ctx.username}_${requestId}`
             };
         } else if (ctx.healthcheck) {
             // Do not set GUC for health checks
