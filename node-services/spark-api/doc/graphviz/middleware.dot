@@ -1,0 +1,25 @@
+digraph G {
+    label="Middleware Execution Flow";
+    NewRelic -> request_to_curl;
+    request_to_curl -> logging;
+    logging -> error;
+    error -> process;
+    process -> session;
+    session -> jsonBody;
+    jsonBody -> database;
+    database -> lookup;
+    lookup -> request;
+    request -> json;
+    json -> routes;
+    routes -> json;
+    json -> request;
+    request -> lookup;
+    lookup -> database;
+    database -> jsonBody;
+    jsonBody -> session;
+    session -> process;
+    process -> error;
+    error -> logging;
+    logging -> request_to_curl;
+    request_to_curl -> NewRelic;
+}
