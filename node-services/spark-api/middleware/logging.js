@@ -197,7 +197,7 @@ module.exports = function *logger(next) {
         console.log(jsonLogString);
     } else if (config.stdout_format === 'text') {
         console.log(textLogString);
-        if (config.stdout_request_body && ctx.request.body) {
+        if (config.stdout_request_body && ctx.request.body && ctx.original) {
             console.log(ctx.original.body);
         }
     }
