@@ -125,6 +125,8 @@ LookupTable.prototype.idToCode = function* idToCode(id) {
     var {codeColumn, idColumn, cache} = this,
         cachedCode;
 
+    cache || (cache = {});
+
     if (cache.idToCode) {
         cachedCode = cache.idToCode[id];
     }
@@ -155,11 +157,13 @@ LookupTable.prototype.codeToId = function* codeToId(code) {
         codeKey = ('' + code).toLowerCase(),
         cachedCode;
 
+    cache || (cache = {codeToId: {}, idToCode: {}});
+
     if (cache.codeToId) {
         cachedCode = cache.codeToId[codeKey];
     }
 
-    if (cachedCode) {
+    if (cachedCode !== undefined) {
         return cachedCode;
     } else {
         let value = yield this.pgp.oneOrNone(

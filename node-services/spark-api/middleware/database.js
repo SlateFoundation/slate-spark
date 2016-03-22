@@ -116,7 +116,7 @@ function* introspectDatabase(pgp) {
         cachingEnabled = ctx.app.context.config.caching && ctx.app.context.config.caching.introspection;
 
     if (cachingEnabled) {
-        introspectionPath = require('path').dirname(require.main.filename) + '/cache/introspection.json';
+        introspectionPath = require('path').join(__dirname, '..', '/cache/introspection.json');
 
         try {
             introspection.json = require(introspectionPath);

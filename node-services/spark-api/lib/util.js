@@ -476,110 +476,95 @@ function validateNumericKeys(obj) {
     }
 }
 
-function identifyRecord(record, lookup) {
-    var sectionLookup, sectionCodeLookup, sectionIdLookup, sparkpointLookup, sparkpointCodeLookup, sparkpointIdLookup,
-        result = JSON.parse((JSON.stringify(record)));
+function* identifyRecord(record, lookup) {
+    var result = JSON.parse(JSON.stringify(record)),
+        sparkpointId, sectionId;
 
-    // If sparkpoint, sparkpoint_id and sparkpoint_code are all passed in and resolve to the same sparkpoint_id then
-    // an error should not be thrown
 
-    // If any permutation of identifying properties are passed in resolve to different entities we should throw
-    // an exception
-
-    // If we use this with map, foreach, etc. the second argument will be passed, so we flip the conditional here
-    // to use lookup when present on the this object
-    lookup = this && this.lookup ? this.lookup : lookup;
-
-    // Section
-    if (result.section) {
-        sectionLookup = parseInt(result.section, 10);
-
-        if (!isNaN(sectionLookup)) {
-            sectionLookup = lookup.section.cache.codeToId[('' + result.section).toLowerCase()];
-        }
-
-        delete result.section;
+    if (sparkpointId = yield identifyRecordEntity(result, 'sparkpoint', lookup)) {
+        result.sparkpoint_id = sparkpointId;
     }
 
-    if (result.section_code) {
-        sectionCodeLookup = parseInt(result.section_code, 10);
-
-        if (!isNaN(sectionCodeLookup)) {
-            sectionLookup = lookup.section.cache.codeToId[('' + result.section).toLowerCase()];
-        }
-
-        delete result.section_code;
+    if (sectionId = yield identifyRecordEntity(result, 'section', lookup)) {
+        result.section_id = sectionId;
     }
 
-    if (result.section_id) {
-        sectionIdLookup = lookup.section.cache.idToCode[result.section_id];
+    return result;
+}
 
-        if (!sectionIdLookup) {
-            // Delete invalid section_id
-            delete result.section_id;
+function* identifyRecordEntity(record, entity, lookup) {
+    var keys = [entity, entity + '_code', entity + '_id'],
+        key, passedValue, returnVal;
 
-            console.warn(`[POSSIBLE BUG]: section_id ${result.section_id} is invalid!`);
+    lookup = lookup[entity];
+
+    keys.forEach(function(k) {
+        if (record[k]) {
+            if (key) {
+                throw new Error(`${key} and ${k} conflict as the ${entity} identifier`);
+            }
+
+            key = k;
+            passedValue = record[k];
         }
+        delete record[k];
+    });
+
+    if (!(key && passedValue)) {
+        return null;
     }
 
-    if (result.section_id) {
-        if (sectionCodeLookup && result.section_id !== sectionCodeLookup) {
-            console.warn(`[POSSIBLE BUG]: section_code ${sectionCodeLookup} conflicts with section_id ${result.section_id}`);
-        }
+    if (key === entity + '_id') {
+        var x = yield lookup.idToCode(passedValue);
+        return x;
+    } else {
+        var y = yield lookup.codeToId(passedValue);
+        return y;
+    }
+}
 
-        if (sectionLookup && result.section_id !== sectionLookup) {
-            console.warn(`[POSSIBLE BUG]: section ${sectionLookup} conflicts with section_id ${result.section_id}`);
-        }
-    } else if (sectionLookup) {
-        result.section_id = sectionLookup;
-    } else if (sectionCodeLookup) {
-        result.section_id = sectionCodeLookup;
+function identifyRecordEntitySync(record, entity, lookup) {
+    var lookupCache = lookup[entity] ? lookup[entity].cache : null,
+        key, passedValue;
+
+    if (lookupCache === null) {
+        throw new Error('Could not find lookup cache for: ${entity}');
     }
 
-    // Sparkpoint
-    if (result.sparkpoint) {
-        if (isMatchbookId(result.sparkpoint)) {
-            sparkpointLookup = lookup.sparkpoint.cache.idToCode[result.sparkpoint];
-        } else {
-            sparkpointLookup = lookup.sparkpoint.cache.codeToId[('' + result.sparkpoint).toLowerCase()];
-        }
+    keys.forEach(function(k) {
+        if (passedValue = record[k]) {
+            delete record[k];
 
-        delete result.sparkpoint;
+            if (key) {
+                throw new Error(`${key} and ${k} conflict as the ${entity} identifier`);
+            }
+
+            key = k;
+        }
+    });
+
+    if (!(key && passedValue)) {
+        return null;
     }
 
-    if (result.sparkpoint_code) {
-        if (isMatchbookId(result.sparkpoint_code)) {
-            sparkpointLookup = lookup.sparkpoint.cache.idToCode[result.sparkpoint_code];
-        } else {
-            sparkpointLookup = lookup.sparkpoint.cache.codeToId[('' + result.sparkpoint_code).toLowerCase()];
-        }
+    if (key === entity + '_id') {
+        return lookupCache.idToCode.cache[passedValue];
+    } else {
+        return lookupCache.codeToId.cache[passedValue.toLowerCase()];
+    }
+}
 
-        delete result.sparkpoint_code;
+function identifyRecordSync(record, lookup) {
+    var sparkpointId, sectionId;
+
+    result = JSON.parse(JSON.stringify(record));
+
+    if (sparkpointId = dentifyRecordEntitySync(result, 'sparkpoint', lookup)) {
+        result.sparkpoint_id = sparkpointId;
     }
 
-    if (result.sparkpoint_id) {
-        sparkpointIdLookup = lookup.sparkpoint.cache.idToCode[result.sparkpoint_id];
-
-        if (!sparkpointIdLookup) {
-            // Delete invalid sparkpoint_id
-            delete result.sparkpoint_id;
-
-            console.warn(`[POSSIBLE BUG]: sparkpoint_id ${result.sparkpoint_id} is invalid!`);
-        }
-    }
-
-    if (result.sparkpoint_id) {
-        if (sparkpointCodeLookup && result.sparkpoint_id !== sparkpointCodeLookup) {
-            console.warn(`[POSSIBLE BUG]: sparkpoint_code ${sparkpointCodeLookup} conflicts with sparkpoint_id ${result.sparkpoint_id}`);
-        }
-
-        if (sparkpointLookup && result.sparkpoint_id !== sparkpointLookup) {
-            console.warn(`[POSSIBLE BUG]: sparkpoint ${sparkpointLookup} conflicts with sparkpoint_id ${result.sparkpoint_id}`);
-        }
-    } else if (sparkpointLookup) {
-        result.sparkpoint_id = sparkpointLookup;
-    } else if (sparkpointCodeLookup) {
-        result.sparkpoint_id = sparkpointCodeLookup;
+    if (sectionId = identifyRecordEntitySync(result, 'section', lookup)) {
+        result.section_id = sectionId;
     }
 
     return result;
@@ -665,7 +650,7 @@ function selectFromRequest(tableName, vals) {
         offset = 0;
     }
 
-    query = identifyRecord(this.query, this.lookup);
+    query = identifyRecordSync(this.query, this.lookup);
 
     for (var key in allowedKeys) {
         let val = query[key];
@@ -697,7 +682,7 @@ function selectFromRequest(tableName, vals) {
 function whereFromRequest(tableName, vals) {
     var allowedKeys = this.introspection.tables[tableName],
         where = [],
-        query = identifyRecord(this.query, this.lookup)
+        query = identifyRecordSync(this.query, this.lookup)
 
     for (var key in allowedKeys) {
         let val = query[key];
@@ -912,7 +897,7 @@ function validateRecordSet(ctx, tableName, records, customRecordFn, customRecord
 
     records = records.map(function (originalRecord) {
         var errors,
-            identifiedRecord = identifyRecord(originalRecord, ctx.lookup, {});
+            identifiedRecord = identifyRecordSync(originalRecord, ctx.lookup, {});
 
         if (customRecordFn) {
             customRecordFn(identifiedRecord, errors, originalRecord);
@@ -982,6 +967,7 @@ module.exports = {
     groupQueries: groupQueries,
 
     codifyRecord: codifyRecord,
+    identifyRecordSync: identifyRecordSync,
     identifyRecord: identifyRecord,
     namifyRecord: namifyRecord,
 

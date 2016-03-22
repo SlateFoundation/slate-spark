@@ -8,7 +8,7 @@ var nats = require('nats'),
     nc = nats.connect(natsCfg),
     bustSuggestionCache = require('../routes/sparkpoints').bustSuggestionCache,
     util = require('util'),
-    cachePath = require('path').dirname(require.main.filename) + '/cache/lookup.json',
+    cachePath = require('path').join(__dirname, '..', '/cache/lookup.json'),
     LookupTable = require('./LookupTable'),
     shared = {
         standard: {
