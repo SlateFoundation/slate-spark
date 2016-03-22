@@ -148,7 +148,7 @@ function *patchHandler(entity) {
     }
 
     if (!Array.isArray(body)) {
-        return this.throw(new Error(`PATCH request body must be an array of ${entity} assignments.`), 400);
+        return this.throw(new Error(`${ctx.method} request body must be an array of ${entity} assignments.`), 400);
     }
 
     query = yield sqlGenerator.call(this, entity, body);
