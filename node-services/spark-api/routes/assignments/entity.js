@@ -136,26 +136,19 @@ function *postHandler(entity) {
 }
 
 function *patchHandler(entity) {
-    var body = this.request.body,
+    var ctx = this,
+        body = ctx.request.body,
         query,
         error;
 
-    if (!this.isTeacher) {
-        this.throw(
-            new Error(`Only teachers can assign ${entity}; you are logged in as a: ${this.session.accountLevel}`),
-            403
-        );
-    }
+    ctx.assert(this.isTeacher, 403, `Only teachers can assign ${entity}; you are logged in as a: ${this.session.accountLevel}`)
+    ctx.assert(Array.isArray(body), 400, `${ctx.method} request body must be an array of ${entity} assignments.`);
 
-    if (!Array.isArray(body)) {
-        return this.throw(new Error(`${ctx.method} request body must be an array of ${entity} assignments.`), 400);
-    }
-
-    query = yield sqlGenerator.call(this, entity, body);
+    query = yield sqlGenerator.call(ctx, entity, body);
 
     if (query.errors.length > 0) {
-        this.status = 400;
-        return this.body = {
+        ctx.status = 400;
+        return ctx.body = {
             success: false,
             error: query.errors
         };
@@ -164,21 +157,21 @@ function *patchHandler(entity) {
     query.sql.unshift('BEGIN');
     query.sql.push('COMMIT');
 
-    yield this.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
+    yield ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
         .catch(function(e) {
             error = { message: e.toString() };
             Object.assign(error, e);
         });
 
     if (error) {
-        this.status = 500;
-        return this.body = {
+        ctx.status = 500;
+        return ctx.body = {
             error: [error],
             success: false
         };
     }
 
-    this.body = {
+    ctx.body = {
         success: true
     };
 }
