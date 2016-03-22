@@ -497,6 +497,7 @@ function* identifyRecordEntity(record, entity, lookup) {
             key = k;
             passedValue = record[k];
         }
+
         delete record[k];
     });
 
@@ -505,7 +506,9 @@ function* identifyRecordEntity(record, entity, lookup) {
     }
 
     if (key === entity + '_id') {
-        yield lookup.idToCode(passedValue);
+        if (yield lookup.idToCode(passedValue)) {
+            record[targetKey] = passedValue;
+        }
     } else {
         record[targetKey] = yield lookup.codeToId(passedValue);
     }

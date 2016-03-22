@@ -43,8 +43,6 @@ function *sqlGenerator(entity, records, vals) {
             ctx.throw(400, e);
         }
 
-        console.log(record);
-
         if (record.teacher_id === undefined) {
             record.teacher_id = ctx.userId;
         }
