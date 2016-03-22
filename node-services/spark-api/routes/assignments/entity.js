@@ -72,48 +72,43 @@ function sqlGenerator(entity, records, vals) {
 }
 
 function *postHandler(entity) {
-    var body = this.request.body,
+    var ctx = this,
+        body = ctx.request.body,
         error,
         tableName,
         vals,
         result,
         query;
 
-    if (!this.isTeacher) {
-        this.throw(
-            new Error(`Only teachers can assign ${entity}; you are logged in as a: ${this.session.accountLevel}`),
-            403
-        );
-    }
+    ctx.assert(ctx.isTeacher, 403,
+        `${ctx.session.accountLevel} cannot assign ${pluralize.singular(entity)} only teachers can assign.`
+    );
 
-    if (typeof body !== 'object' || Array.isArray(body)) {
-        return this.throw(
-            new Error(`POST request body must be a single ${pluralize.singular(entity)} assignment object.`),
-            400
-        );
-    }
+    ctx.assert(typeof body === 'object' || Array.isArray(body), 400,
+        `POST request body must be a single ${pluralize.singular(entity)} assignment object.`
+    );
 
     body = [body];
 
     query = sqlGenerator.call(this, entity, body);
 
     if (query.errors.length > 0) {
-        this.status = 400;
-        return this.body = {
+        ctx.status = 400;
+        return ctx.body = {
             success: false,
             error: query.errors
         };
     }
 
-    yield this.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
+    yield ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
         .catch(function(e) {
             error = { message: e.toString() };
             Object.assign(error, e);
         });
 
     if (error) {
-        this.status = 500;
-        return this.body = {
+        ctx.status = 500;
+        return ctx.body = {
             error: [error],
             success: false
         };
@@ -121,14 +116,14 @@ function *postHandler(entity) {
 
     tableName = `${pluralize.singular(entity)}_assignments`;
     vals = new Values();
-    result = yield this.pgp.oneOrNone(recordToSelect(body[0], tableName, vals), vals.vals);
+    result = yield ctx.pgp.oneOrNone(recordToSelect(body[0], tableName, vals), vals.vals);
 
     if (result) {
-        this.status = 201;
-        return this.body = result;
+        ctx.status = 201;
+        return ctx.body = result;
     } else {
-        this.status = 202;
-        return this.body = {
+        ctx.status = 202;
+        return ctx.body = {
             success: true,
             warning: 'No-op: record was dropped because it duplicates an identical assignment at a higher scope'
         };
