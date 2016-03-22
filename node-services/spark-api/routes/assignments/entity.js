@@ -186,7 +186,7 @@ function *patchHandler(entity) {
 module.exports = {
     get: getHandler,
     patch: patchHandler,
-    post: postHandler,
+    post: patchHandler,
     sqlGenerator: sqlGenerator,
     recordToSelect: recordToSelect,
     autoRoute: false
