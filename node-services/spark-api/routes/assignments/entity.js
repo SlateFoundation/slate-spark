@@ -76,73 +76,23 @@ function *sqlGenerator(entity, records, vals) {
     };
 }
 
-function *postHandler(entity) {
-    var ctx = this,
-        body = ctx.request.body,
-        error,
-        tableName,
-        vals,
-        result,
-        query;
-
-    ctx.assert(ctx.isTeacher, 403,
-        `${ctx.session.accountLevel} cannot assign ${pluralize.singular(entity)} only teachers can assign.`
-    );
-
-    ctx.assert(typeof body === 'object' || Array.isArray(body), 400,
-        `POST request body must be a single ${pluralize.singular(entity)} assignment object.`
-    );
-
-    body = [body];
-
-    query = yield sqlGenerator.call(ctx, entity, body);
-
-    if (query.errors.length > 0) {
-        ctx.status = 400;
-        return ctx.body = {
-            success: false,
-            error: query.errors
-        };
-    }
-
-    yield ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
-        .catch(function(e) {
-            error = { message: e.toString() };
-            Object.assign(error, e);
-        });
-
-    if (error) {
-        ctx.status = 500;
-        return ctx.body = {
-            error: [error],
-            success: false
-        };
-    }
-
-    tableName = `${pluralize.singular(entity)}_assignments`;
-    vals = new Values();
-    result = yield ctx.pgp.oneOrNone(recordToSelect(body[0], tableName, vals), vals.vals);
-
-    if (result) {
-        ctx.status = 201;
-        return ctx.body = result;
-    } else {
-        ctx.status = 202;
-        return ctx.body = {
-            success: true,
-            warning: 'No-op: record was dropped because it duplicates an identical assignment at a higher scope'
-        };
-    }
-}
-
 function *patchHandler(entity) {
     var ctx = this,
         body = ctx.request.body,
         query,
         error;
 
-    ctx.assert(this.isTeacher, 403, `Only teachers can assign ${entity}; you are logged in as a: ${this.session.accountLevel}`)
-    ctx.assert(Array.isArray(body), 400, `${ctx.method} request body must be an array of ${entity} assignments.`);
+    if (typeof body === 'object' && !Array.isArray(body)) {
+        body = [body];
+    }
+
+    ctx.assert(this.isTeacher, 403,
+        `Only teachers can assign ${entity}; you are logged in as a: ${this.session.accountLevel}`
+    );
+
+    ctx.assert(Array.isArray(body) && body.length > 0, 400,
+        `${ctx.method} request body must be a non-empty array of ${entity} assignments.`
+    );
 
     query = yield sqlGenerator.call(ctx, entity, body);
 
