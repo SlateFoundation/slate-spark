@@ -26,21 +26,26 @@ var util = require('./../lib/util'),
             idToName: {}
         },
     },
-    fs = require('fs');
+    fs = require('fs'),
+    cachePath = require('path').dirname(require.main.filename) + '/cache/lookup.json';
 
-Promise.all([
-    db.many(`
+try {
+    let cachedLookup = require(cachePath);
+    lookup = cachedLookup;
+} catch (e) {
+    Promise.all([
+        db.many(`
     SELECT id,
            code,
            array_prepend(metadata->>'asn_id', get_descendant_asn_ids(metadata->>'asn_id')::text[]) AS asn_ids
       FROM sparkpoints`),
-    db.many(`
+        db.many(`
     SELECT asn_id,
            children_ids,
            code
       FROM standards;
     `),
-    db.many(`
+        db.many(`
     SELECT asn_id,
            code
       FROM standards
@@ -51,10 +56,10 @@ Promise.all([
              HAVING (COUNT(code) = 1)
      );
     `),
-    db.many(`
+        db.many(`
     SELECT * FROM vendor_standards_crosswalk;
     `),
-    db.many(`
+        db.many(`
         SELECT id,
            name
       FROM vendors
@@ -64,11 +69,11 @@ Promise.all([
      );
     `)]).then(function (result) {
 
-    var sparkpoints = result[0],
-        standards = result[1],
-        uniqueStandardCodes = result[2],
-        vendorCrosswalk = result[3],
-        vendors = result[4];
+        var sparkpoints = result[0],
+            standards = result[1],
+            uniqueStandardCodes = result[2],
+            vendorCrosswalk = result[3],
+            vendors = result[4];
 
         sparkpoints.forEach(function (sparkpoint) {
             if (typeof sparkpoint.code === 'string') {
@@ -112,10 +117,12 @@ Promise.all([
             lookup.vendor.idToName[vendor.id] = vendor.name;
         });
 
-    // fs.writeFileSync('./lookup.json', JSON.stringify(lookup));
+        fs.writeFileSync(cachePath, JSON.stringify(lookup, null, '\t'));
+        console.log(cachePath);
 
     }, function(error) {
         throw error;
     });
+}
 
 module.exports = lookup;

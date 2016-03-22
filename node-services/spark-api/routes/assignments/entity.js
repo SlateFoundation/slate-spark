@@ -15,7 +15,7 @@ function recordToSelect(record, tableName, vals) {
     return `SELECT * FROM ${tableName} ${util.recordToWhere(record, vals)}`;
 }
 
-function sqlGenerator(entity, records, vals) {
+function *sqlGenerator(entity, records, vals) {
     var tableName = `${pluralize.singular(entity)}_assignments`,
         validator = this.validation[tableName],
         errors = [],
@@ -34,9 +34,16 @@ function sqlGenerator(entity, records, vals) {
         return `DELETE FROM ${tableName} ${util.recordToWhere(record, vals)}`;
     }
 
-    records.forEach(function(record) {
+    for (let x = 0, len = records.length; x < len; x++) {
+        let record = records[x];
 
-        record = util.identifyRecord(record, ctx.lookup);
+        try {
+            yield util.identifyRecord(record, ctx.lookup);
+        } catch (e) {
+            ctx.throw(400, e);
+        }
+
+        console.log(record);
 
         if (record.teacher_id === undefined) {
             record.teacher_id = ctx.userId;
@@ -62,7 +69,7 @@ function sqlGenerator(entity, records, vals) {
         } else {
             sqlStatements.push(recordToInsert(record, vals));
         }
-    });
+    }
 
     return {
         sql: sqlStatements,
@@ -90,7 +97,7 @@ function *postHandler(entity) {
 
     body = [body];
 
-    query = sqlGenerator.call(this, entity, body);
+    query = yield sqlGenerator.call(ctx, entity, body);
 
     if (query.errors.length > 0) {
         ctx.status = 400;
@@ -146,7 +153,7 @@ function *patchHandler(entity) {
         return this.throw(new Error(`PATCH request body must be an array of ${entity} assignments.`), 400);
     }
 
-    query = sqlGenerator.call(this, entity, body);
+    query = yield sqlGenerator.call(this, entity, body);
 
     if (query.errors.length > 0) {
         this.status = 400;

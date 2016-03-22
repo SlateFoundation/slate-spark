@@ -49,7 +49,7 @@ function sqlGenerator(records, vals) {
     records.forEach(function(record) {
         var validationErrors;
 
-        record = util.identifyRecord(record, ctx.lookup);
+        record = util.identifyRecordSync(record, ctx.lookup);
 
         if (record.student_id !== undefined && ctx.isStudent && record.student_id !== ctx.userId) {
             ctx.throw(403, new Error(

@@ -477,24 +477,14 @@ function validateNumericKeys(obj) {
 }
 
 function* identifyRecord(record, lookup) {
-    var result = JSON.parse(JSON.stringify(record)),
-        sparkpointId, sectionId;
-
-
-    if (sparkpointId = yield identifyRecordEntity(result, 'sparkpoint', lookup)) {
-        result.sparkpoint_id = sparkpointId;
-    }
-
-    if (sectionId = yield identifyRecordEntity(result, 'section', lookup)) {
-        result.section_id = sectionId;
-    }
-
-    return result;
+    yield identifyRecordEntity(record, 'sparkpoint', lookup);
+    yield identifyRecordEntity(record, 'section', lookup);
 }
 
 function* identifyRecordEntity(record, entity, lookup) {
-    var keys = [entity, entity + '_code', entity + '_id'],
-        key, passedValue, returnVal;
+    var targetKey = entity + '_id',
+        keys = [entity, entity + '_code', targetKey],
+        key, passedValue;
 
     lookup = lookup[entity];
 
@@ -515,32 +505,34 @@ function* identifyRecordEntity(record, entity, lookup) {
     }
 
     if (key === entity + '_id') {
-        var x = yield lookup.idToCode(passedValue);
-        return x;
+        yield lookup.idToCode(passedValue);
     } else {
-        var y = yield lookup.codeToId(passedValue);
-        return y;
+        record[targetKey] = yield lookup.codeToId(passedValue);
     }
+
+    return record;
 }
 
 function identifyRecordEntitySync(record, entity, lookup) {
-    var lookupCache = lookup[entity] ? lookup[entity].cache : null,
+    var keys = [entity, entity + '_code', entity + '_id'],
         key, passedValue;
 
-    if (lookupCache === null) {
-        throw new Error('Could not find lookup cache for: ${entity}');
+    lookup = lookup[entity];
+
+    if (!lookup || !lookup.cache) {
+        throw new Error(`Lookup cache for ${entity} does not exist or is not initialized`);
     }
 
     keys.forEach(function(k) {
-        if (passedValue = record[k]) {
-            delete record[k];
-
+        if (record[k]) {
             if (key) {
                 throw new Error(`${key} and ${k} conflict as the ${entity} identifier`);
             }
 
             key = k;
+            passedValue = record[k];
         }
+        delete record[k];
     });
 
     if (!(key && passedValue)) {
@@ -548,26 +540,24 @@ function identifyRecordEntitySync(record, entity, lookup) {
     }
 
     if (key === entity + '_id') {
-        return lookupCache.idToCode.cache[passedValue];
+        return lookup.cache.idToCode[passedValue];
     } else {
-        return lookupCache.codeToId.cache[passedValue.toLowerCase()];
+        return lookup.cache.codeToId[('' + passedValue).toLowerCase()];
     }
 }
 
 function identifyRecordSync(record, lookup) {
     var sparkpointId, sectionId;
 
-    result = JSON.parse(JSON.stringify(record));
-
-    if (sparkpointId = dentifyRecordEntitySync(result, 'sparkpoint', lookup)) {
-        result.sparkpoint_id = sparkpointId;
+    if (sparkpointId = identifyRecordEntitySync(record, 'sparkpoint', lookup)) {
+        record.sparkpoint_id = sparkpointId;
     }
 
-    if (sectionId = identifyRecordEntitySync(result, 'section', lookup)) {
-        result.section_id = sectionId;
+    if (sectionId = identifyRecordEntitySync(record, 'section', lookup)) {
+        record.section_id = sectionId;
     }
 
-    return result;
+    return record;
 }
 
 function codifyRecord(record, lookup) {

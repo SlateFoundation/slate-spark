@@ -67,7 +67,7 @@ function *patchHandler() {
             delete group.section_id;
         }
 
-        group = util.identifyRecord(group, ctx.lookup);
+        group = util.identifyRecordSync(group, ctx.lookup);
 
         // Accept numeric times
         for (let prop in group) {
