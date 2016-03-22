@@ -266,10 +266,16 @@ var columnValidators = {
     },
 
     character: function (val, col) {
-        var len = val.length,
-            max = col.maximum_length;
+        var len, max;
 
-        if (typeof val === 'string' && val.length < max) {
+        if (typeof val !== 'string') {
+            return `${JSON.stringify(val)} is not a string`;
+        }
+
+        len = val.length;
+        max = col.maximum_length;
+
+        if (val.length < max) {
             return `${len} exceeds maximum length of ${max}`;
         }
     },
