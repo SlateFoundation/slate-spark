@@ -325,40 +325,27 @@ function generateValidationFunction(table, enums) {
                 .filter(key => table[key] === undefined)
                 .map(key => `${key}: unexpected key, allowed keys are: ${columns.join(', ')}`);
 
-        checkingColumns: for (var columnName in table) {
+        for (var columnName in table) {
             let column = table[columnName],
                 val = row[columnName],
                 enumValues,
-                validator;
+                validator,
+                error;
 
             if (val === null || val === undefined) {
                 // A column can be omitted if it is nullable or a default value is provided
-                if (column.is_nullable || column.default_value !== null) {
-                    // We do not need to type check null/empty values
-                    continue checkingColumns;
+                if (column.is_nullable === false && column.default_value === null) {
+                    errors.push(`${columnName} (${column.type}) is required.`);
                 }
-
-                errors.push(`${columnName} (${column.type}) is required.`);
-            }
-
-
-            if (enumValues = enums[column.type]) {
+            } else if (enumValues = enums[column.type]) {
                 // The column is an enum type
                 if (enumValues.indexOf(val) === -1) {
                     errors.push(`${columnName}: Allowed values are: ${enumValues.join(', ')}; you gave: ${val}`);
                 }
-
-                continue checkingColumns;
-            }
-
-            if (validator = columnValidators[column.type]) {
-                let error = validator(val, column);
-
-                if (error) {
+            } else if (validator = columnValidators[column.type]) {
+                if (error = validator(val, column)) {
                     errors.push(columnName + ': ' + error);
                 }
-
-                continue checkingColumns;
             }
         }
 
