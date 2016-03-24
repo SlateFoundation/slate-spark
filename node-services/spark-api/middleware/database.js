@@ -325,7 +325,7 @@ function generateValidationFunction(table, enums) {
                 .filter(key => table[key] === undefined)
                 .map(key => `${key}: unexpected key, allowed keys are: ${columns.join(', ')}`);
 
-        for (var columnName in table) {
+        checkingColumns: for (var columnName in table) {
             let column = table[columnName],
                 val = row[columnName],
                 enumValues,
@@ -335,7 +335,7 @@ function generateValidationFunction(table, enums) {
                 // A column can be omitted if it is nullable or a default value is provided
                 if (column.is_nullable || column.default_value !== null) {
                     // We do not need to type check null/empty values
-                    continue;
+                    continue checkingColumns;
                 }
 
                 errors.push(`${columnName} (${column.type}) is required.`);
@@ -345,10 +345,10 @@ function generateValidationFunction(table, enums) {
             if (enumValues = enums[column.type]) {
                 // The column is an enum type
                 if (enumValues.indexOf(val) === -1) {
-                    errors.push(`${columnName}: Allowed values are: ${_enum.join(', ')}; you gave: ${val}`);
+                    errors.push(`${columnName}: Allowed values are: ${enumValues.join(', ')}; you gave: ${val}`);
                 }
 
-                continue;
+                continue checkingColumns;
             }
 
             if (validator = columnValidators[column.type]) {
@@ -357,6 +357,8 @@ function generateValidationFunction(table, enums) {
                 if (error) {
                     errors.push(columnName + ': ' + error);
                 }
+
+                continue checkingColumns;
             }
         }
 
