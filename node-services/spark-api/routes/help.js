@@ -109,12 +109,10 @@ function *postHandler() {
         query,
         returnArray = Array.isArray(body);
 
-    if ((returnArray && body.length === 0) || typeof body !== 'object') {
-        return ctx.throw(
-            new Error(`${ctx.method} request body must be a single help_request object or an array of help_request objects`),
-            400
-        );
-    }
+    ctx.assert((returnArray && body.length > 0) || typeof body === 'object', 400,
+        `${ctx.method} request body must be a single help_request object or an array of help_request objects`
+    );
+
 
     if (!returnArray) {
         body = [body];

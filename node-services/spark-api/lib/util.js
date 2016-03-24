@@ -543,7 +543,9 @@ function identifyRecordEntitySync(record, entity, lookup) {
     }
 
     if (key === entity + '_id') {
-        return lookup.cache.idToCode[passedValue];
+        if (lookup.cache.idToCode[passedValue]) {
+            return passedValue;
+        }
     } else {
         return lookup.cache.codeToId[('' + passedValue).toLowerCase()];
     }
