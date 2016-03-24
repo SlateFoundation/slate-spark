@@ -489,7 +489,7 @@ function* identifyRecordEntity(record, entity, lookup) {
     lookup = lookup[entity];
 
     keys.forEach(function(k) {
-        if (record[k] !== undefined)  {
+        if (record[k] !== undefined) {
             if (key) {
                 throw new Error(`${key} and ${k} conflict as the ${entity} identifier`);
             }
@@ -527,7 +527,7 @@ function identifyRecordEntitySync(record, entity, lookup) {
     }
 
     keys.forEach(function(k) {
-        if (record[k]) {
+        if (record[k] !== undefined) {
             if (key) {
                 throw new Error(`${key} and ${k} conflict as the ${entity} identifier`);
             }
