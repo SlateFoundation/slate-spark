@@ -20,10 +20,44 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
         'gps.Priorities'
     ],
 
+    refs: {
+        appCt: 'spark-teacher-appct'
+    },
+
+    control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
+    },
+
 
     // event handlers
     onStudentsLoad: function() {
         Ext.getStore('gps.Priorities').load();
+    },
+
+    onSelectedStudentSparkpointChange: function() {
+        this.syncSelectedStudentSparkpoint();
+    },
+
+    // controller methods
+    syncSelectedStudentSparkpoint: function() {
+        // TODO: share code with similar function in GPS controller
+        var me = this,
+            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
+            lists = me.getAppCt().query('#priorityList'),
+            listCount = lists.length, i = 0, list;
+
+        // sync list selection
+        for (; i < listCount; i++) {
+            list = lists[i];
+
+            if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
+                list.select(activeStudent);
+            } else {
+                list.deselectAll();
+            }
+        }
     },
 
     onSocketData: function(socket, data) {
