@@ -327,27 +327,35 @@ function generateValidationFunction(table, enums) {
 
         for (var columnName in table) {
             let column = table[columnName],
-                val = row[columnName];
+                val = row[columnName],
+                enumValues,
+                validator;
 
-            if (!column.is_nullable && val === undefined && column.default_value === null) {
+            if (val === null || val === undefined) {
+                // A column can be omitted if it is nullable or a default value is provided
+                if (column.is_nullable || column.default_value !== null) {
+                    // We do not need to type check null/empty values
+                    continue;
+                }
+
                 errors.push(`${columnName} (${column.type}) is required.`);
-            } else if (val !== undefined) {
-                let _enum = enums[column.type];
+            }
 
-                if (_enum) {
-                    if (_enum.indexOf(val) === -1) {
-                        errors.push(`${columnName}: Allowed values are: ${_enum.join(', ')}; you gave: ${val}`);
-                    }
-                } else if (!(column.is_nullable && column === null)) {
-                    let validator = columnValidators[column.type];
 
-                    if (validator) {
-                        let error = validator(val, column);
+            if (enumValues = enums[column.type]) {
+                // The column is an enum type
+                if (enumValues.indexOf(val) === -1) {
+                    errors.push(`${columnName}: Allowed values are: ${_enum.join(', ')}; you gave: ${val}`);
+                }
 
-                        if (error) {
-                            errors.push(columnName + ': ' + error);
-                        }
-                    }
+                continue;
+            }
+
+            if (validator = columnValidators[column.type]) {
+                let error = validator(val, column);
+
+                if (error) {
+                    errors.push(columnName + ': ' + error);
                 }
             }
         }
