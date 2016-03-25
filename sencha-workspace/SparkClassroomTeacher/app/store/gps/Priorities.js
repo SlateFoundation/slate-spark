@@ -21,6 +21,16 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
         //     }
         // }],
 
+        filters: [
+            {
+                filterFn: function(r) {
+                    return (
+                        r.get('priority_need') !== null
+                    );
+                }
+            }
+        ],
+
         grouper: {
             groupFn: function(r) {
                 var priorityNeed = r.get('priority_need');
