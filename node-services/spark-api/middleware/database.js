@@ -38,6 +38,8 @@ function pgp(options) {
     return function *pgp(next) {
         var ctx = this,
             appContext = ctx.app.context,
+            // TODO: We should pass the schema and request id so that we're able to work locally without a load
+            // balancer and/or change header names
             schema = ctx.header['x-nginx-mysql-schema'],
             requestId = ctx.headers['x-nginx-request-id'],
             guc;
@@ -110,6 +112,8 @@ function pgp(options) {
 }
 
 function* introspectDatabase(pgp) {
+    // TODO: In order to allow "overriding" tables at a school-level we need to make sure that introspection uses
+    // the same search_order as postgresql.
     var ctx = this,
         introspectionPath,
         introspection = {},
@@ -132,7 +136,8 @@ function* introspectDatabase(pgp) {
               SELECT DISTINCT ON (table_name) table_name,
                                  table_schema
                             FROM information_schema.tables
-                           WHERE table_schema NOT IN (${EXCLUDED_SCHEMAS.map(s => `'${s}'`).join(', ')})
+                           WHERE table_schema = ANY(current_schemas(false))
+                             AND table_schema NOT IN (${EXCLUDED_SCHEMAS.map(s => `'${s}'`).join(', ')})
                              AND table_name NOT LIKE 'fdw_%'
             ), spark_enums AS (
                 WITH unique_enums AS (
