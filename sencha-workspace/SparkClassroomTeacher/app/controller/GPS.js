@@ -115,9 +115,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {
             // TODO: redo this after switching sparkpoint generates a new studentSparkpoint rather than updating existing one
-            debugger;
-            //me.getAppCt().setSelectedStudentSparkpoint(null);
-            //me.getAppCt().setSelectedStudentSparkpoint(selectedStudentSparkpoint);
+            me.getAppCt().setSelectedStudentSparkpoint(null);
+            me.getAppCt().setSelectedStudentSparkpoint(selectedStudentSparkpoint);
         }
 
         // populate workaround queue
