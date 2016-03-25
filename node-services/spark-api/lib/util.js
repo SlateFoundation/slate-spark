@@ -495,7 +495,10 @@ function* identifyRecordEntity(record, entity, lookup) {
             }
 
             key = k;
-            passedValue = record[k];
+
+            if (record[k] !== undefined) {
+                passedValue = record[k];
+            }
         }
 
         delete record[k];
@@ -527,13 +530,16 @@ function identifyRecordEntitySync(record, entity, lookup) {
     }
 
     keys.forEach(function(k) {
-        if (record[k] !== undefined) {
+        if (record[k]) {
             if (key) {
                 throw new Error(`${key} and ${k} conflict as the ${entity} identifier`);
             }
 
             key = k;
-            passedValue = record[k];
+
+            if (record[k] !== undefined) {
+                passedValue = record[k];
+            }
         }
         delete record[k];
     });
