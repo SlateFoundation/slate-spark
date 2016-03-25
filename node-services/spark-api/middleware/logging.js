@@ -181,7 +181,12 @@ module.exports = function *logger(next) {
                     }
                 }
 
-                jsonLogString.response.body = ctx.response.is('json') ? JSON.parse(ctx.body) : ctx.body;
+                try {
+                    jsonLogString.response.body = ctx.response.is('json') ? JSON.parse(ctx.body) : ctx.body;
+                } catch (e) {
+                    jsonLogString.response.body = ctx.body;
+                }
+                
                 jsonLogString = JSON.stringify(jsonLogString);
             }
 
