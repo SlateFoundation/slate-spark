@@ -92,7 +92,11 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             tap: 'onNavAssignTap'
         },
         assignCt: {
-            activate: 'onAssignCtActivate'
+            activate: 'onAssignCtActivate',
+            selectedsparkpointchange: 'onSelectedSparkpointChange'
+        },
+        sparkpointField: {
+            sparkpointselect: 'onSparkpointFieldSparkpointSelect'
         },
         assignTabbar: {
             activetabchange: 'onAssignTabChange'
@@ -214,6 +218,15 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         me.syncSelectedStudentSparkpoint();
     },
 
+    onSelectedSparkpointChange: function(assignCt, selectedSparkpoint) {
+        this.getSparkpointField().setValue(selectedSparkpoint);
+    },
+
+    onSparkpointFieldSparkpointSelect: function(sparkpointField, sparkpoint) {
+        // don't do anything else here, use onSelectedSparkpointChange instead
+        this.getAssignCt().setSelectedSparkpoint(sparkpoint.getId());
+    },
+
     onAssignTabChange: function(tabbar, value, oldValue){
         var me = this,
             itemId = tabbar.getActiveTab().getItemId();
@@ -255,18 +268,24 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     syncSelectedStudentSparkpoint: function() {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            assignCt = me.getAssignCt(),
             sparkpointField = me.getSparkpointField(),
             sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
 
-        if (!selectedStudentSparkpoint || !sparkpointField) {
+        if (!selectedStudentSparkpoint) {
             return;
         }
 
-        sparkpointField.setValue(selectedStudentSparkpoint.get('sparkpoint'));
-        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+        if (assignCt) {
+            assignCt.setSelectedSparkpoint(selectedStudentSparkpoint.get('sparkpoint'));
+        }
 
-        if (sparkpointSuggestionsStore.isLoaded()) {
-            sparkpointSuggestionsStore.load();
+        if (sparkpointSuggestionsStore) {
+            sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+
+            if (sparkpointSuggestionsStore.isLoaded()) {
+                sparkpointSuggestionsStore.load();
+            }
         }
     }
 });
