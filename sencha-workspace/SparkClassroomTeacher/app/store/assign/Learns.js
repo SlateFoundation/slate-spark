@@ -14,7 +14,12 @@ Ext.define('SparkClassroomTeacher.store.assign.Learns', {
 
         proxy: {
             type: 'slate-api',
-            url: '/spark/api/assign/learns'
+            url: '/spark/api/assign/learns',
+            reader: {
+                type: 'json',
+                keepRawData: true,
+                messageProperty: 'error'
+            }
         }
     }
 });

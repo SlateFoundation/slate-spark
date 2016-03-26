@@ -9,6 +9,9 @@
  */
 Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Ext.MessageBox'
+    ],
 
 
     stores: [
@@ -30,15 +33,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     listen: {
-        // store: {
-        //     '#gps.ActiveStudents': {
-        //         update: 'onActiveStudentUpdate'
-        //     },
-        //     '#work.Learns': {
-        //         load: 'onLearnsStoreLoad',
-        //         update: 'onLearnsStoreUpdate'
-        //     }
-        // },
+        store: {
+            '#assign.Learns': {
+                load: 'onLearnsStoreLoad'
+            }
+        },
         socket: {
             data: 'onSocketData'
         }
@@ -64,6 +63,16 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         // load store if it's not loaded already and a sparkpoint is selected
         if (!learnsStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
             learnsStore.load();
+        }
+    },
+
+    onLearnsStoreLoad: function(store, records, success, operation) {
+        var responseData;
+
+        if (!success) {
+            responseData = Ext.decode(operation.getError().response.responseText, true) || {};
+            store.removeAll();
+            Ext.Msg.alert('Learns not loaded', responseData.error || 'Failed to fetch learns from server');
         }
     },
 
