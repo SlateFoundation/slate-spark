@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     views: [
         'assign.Container',
-        'assign.learn.Container',
+        'assign.learns.Container',
         'assign.questions.Container',
         'assign.resources.Container',
         'assign.apply.Container',
@@ -28,7 +28,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     ],
 
     stores: [
-        'assign.Learn',
         'assign.Questions',
         'assign.Resources',
         'assign.Apply',
@@ -53,10 +52,10 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         assignTabbar: 'spark-teacher-assign-tabbar',
 
         learnCt: {
-            selector: 'spark-assign-learn',
+            selector: 'spark-teacher-assign-learns',
             autoCreate: true,
 
-            xtype: 'spark-assign-learn'
+            xtype: 'spark-teacher-assign-learns'
         },
         questionsCt: {
             selector: 'spark-assign-questions',
