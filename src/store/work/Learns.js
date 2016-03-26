@@ -15,18 +15,18 @@ Ext.define('SparkClassroom.store.work.Learns', {
         //     direction: 'DESC'
         // },
 
-        sorters: [
-            {
-                sorterFn: function(standard1) {
-                    switch (standard1) {
-                        case 'Required':
-                            return -1;
-                        case 'AdditionOptions':
-                            return 1;
-                    }
-                }
-            }
-        ],
+        // sorters: [
+        //     {
+        //         sorterFn: function(standard1) {
+        //             switch (standard1) {
+        //                 case 'Required':
+        //                     return -1;
+        //                 case 'AdditionOptions':
+        //                     return 1;
+        //             }
+        //         }
+        //     }
+        // ],
 
         proxy: {
             type: 'slate-api',
