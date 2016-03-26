@@ -114,7 +114,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             workTabId = 'learn';
 
         if (workTabBar) {
-            workTabId = workTabBar.getActiveTab().getItemId();
+            workTabId = workTabBar.getActiveItem().getItemId();
         }
 
         return 'work/' + workTabId;

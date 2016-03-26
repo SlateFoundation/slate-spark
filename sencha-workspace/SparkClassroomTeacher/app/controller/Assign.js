@@ -125,7 +125,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             assignTabId = 'learn';
 
         if (assignTabBar) {
-            assignTabId = assignTabBar.getActiveTab().getItemId();
+            assignTabId = assignTabBar.getActiveItem().getItemId();
         }
 
         return 'assign/' + assignTabId;
