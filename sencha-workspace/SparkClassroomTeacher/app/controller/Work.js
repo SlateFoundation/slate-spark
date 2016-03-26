@@ -201,12 +201,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         this.redirectTo(['work', activeTab.getItemId()]);
     },
 
-    onActiveStudentSelect: function(activeStudent) {
-        if (activeStudent) {
-            this.redirectTo(['work', activeStudent.get('active_phase')]);
-        }
-    },
-
     onSocketData: function(socket, data) {
         var me = this,
             tableName = data.table,
