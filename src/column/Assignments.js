@@ -6,6 +6,20 @@ Ext.define('SparkClassroom.column.Assignments', {
         'SparkClassroom.assign.Popup'
     ],
 
+
+     /**
+     * @event beforetriggertap
+     * Fires before assignment students popup is shown and allows it to be canceled
+     * @param {Ext.grid.cell.Cell} assignmentsCell The cell the trigger was clicked in
+     */
+
+     /**
+     * @event triggertap
+     * Fires after an assignment students popup is shown
+     * @param {Ext.grid.cell.Cell} assignmentsCell The cell the trigger was clicked in
+     */
+
+
     config: {
         showTrigger: true,
         flags: [
