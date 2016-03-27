@@ -140,7 +140,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         var me = this,
             popup = this.getPopup(),
             assignCellEl, x, y, scrollable,
-            studentColumn, finishShow;
+            headerCt, finishShow;
 
         if (!cell) {
             popup.hide();
@@ -176,22 +176,30 @@ Ext.define('SparkClassroom.column.Assignments', {
         // tipEl.show();
         // tipEl.addCls('x-anchor-top');
 
-        // shift popup left by width of name and sparkpoint columns, waiting for them to be painted if needed
-        studentColumn = popup.down('column[dataIndex=student]');
+        // shift popup left by width of each column until the assignments column
+        headerCt = popup.down('headercontainer');
 
         finishShow = function() {
-            x -= studentColumn.getWidth();
-            x -= popup.down('column[dataIndex=sparkpoint]').getWidth();
+            var assignmentsColumnOffset = 0;
 
-            popup.setLeft(x);
+            headerCt.items.each(function(column) {
+                if (column.isXType('spark-column-assignments')) {
+                    return false;
+                }
+
+                assignmentsColumnOffset += column.getWidth();
+            });
+
+            popup.setLeft(x - assignmentsColumnOffset);
             popup.setTop(y);
             popup.setVisibility(true);
         };
 
-        if (studentColumn.isPainted()) {
+        // ensure grid's header container is painted before measuring column to align and finish showing
+        if (headerCt.isPainted()) {
             finishShow();
         } else {
-            studentColumn.on('painted', finishShow, null, { single: true });
+            headerCt.on('painted', finishShow, null, { single: true });
         }
     }
 });
