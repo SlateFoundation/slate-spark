@@ -10,7 +10,8 @@
 Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+        'Slate.API'
     ],
 
 
@@ -29,6 +30,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         },
         learnsCt: {
             activate: 'onLearnsCtActivate'
+        },
+        'spark-teacher-assign-learns-grid gridcell': {
+            flagtap: 'onFlagTap'
         }
     },
 
@@ -64,6 +68,34 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         if (!learnsStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
             learnsStore.load();
         }
+    },
+
+    onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/assignments/learns',
+            jsonData: {
+                sparkpoint: this.getAssignCt().getSelectedSparkpoint(),
+                section: 'Geometry', // TODO: replace with dynamic value after merging appcontainer branch
+                student_id: parentRecord ? record.get('student_id') : null,
+                resource_id: parentRecord ? parentRecord.getId() : record.getId(),
+                assignment: flagId
+            },
+            success: function(response) {
+                // do nothing cause realtime will handle it
+            },
+            failure: function(response) {
+                var error = response.data.error;
+
+                // this structure is a mess to access safely..
+                error = error && error[0];
+                error = error && error.errors;
+                error = error && error.join('</li><li>');
+                error = error || 'Unknown problem';
+
+                Ext.Msg.alert('Assignment not saved', 'This assignment could not be saved:<ul><li>'+error+'</li></ul>');
+            }
+        });
     },
 
     onLearnsStoreLoad: function(store, records, success, operation) {
