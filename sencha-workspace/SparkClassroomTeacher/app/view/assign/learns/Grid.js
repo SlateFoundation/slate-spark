@@ -71,8 +71,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
                         icon: 'thumbs-up'
                     },
                     {
-                        id: 'hide',
-                        text: 'Hide',
+                        id: 'hidden',
+                        text: 'Hidden',
                         icon: 'times-circle'
                     }
                 ],
