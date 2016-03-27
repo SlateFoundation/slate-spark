@@ -139,7 +139,8 @@ Ext.define('SparkClassroom.column.Assignments', {
     updatePopupCell: function(cell, oldCell) {
         var me = this,
             popup = this.getPopup(),
-            assignCellEl, x, y, scrollable;
+            assignCellEl, x, y, scrollable,
+            studentColumn, finishShow;
 
         if (!cell) {
             popup.hide();
@@ -155,7 +156,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             (me.up('grid').up('{getScrollable()}') || Ext.Viewport).add(popup);
         }
 
-        // initially render popup invisibly so it can be measuerd
+        // initially render popup invisibly so it can be measured
         popup.setVisibility(false);
         popup.show();
 
@@ -175,12 +176,22 @@ Ext.define('SparkClassroom.column.Assignments', {
         // tipEl.show();
         // tipEl.addCls('x-anchor-top');
 
-        // shift to desired corners based on size of popup and target
-        x -= popup.getWidth();
-        x += popup.down('spark-column-assignments').getWidth();
+        // shift popup left by width of name and sparkpoint columns, waiting for them to be painted if needed
+        studentColumn = popup.down('column[dataIndex=student]');
 
-        popup.setLeft(x);
-        popup.setTop(y);
-        popup.setVisibility(true);
+        finishShow = function() {
+            x -= studentColumn.getWidth();
+            x -= popup.down('column[dataIndex=sparkpoint]').getWidth();
+
+            popup.setLeft(x);
+            popup.setTop(y);
+            popup.setVisibility(true);
+        };
+
+        if (studentColumn.isPainted()) {
+            finishShow();
+        } else {
+            studentColumn.on('painted', finishShow, null, { single: true });
+        }
     }
 });
