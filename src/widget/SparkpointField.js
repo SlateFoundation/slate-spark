@@ -10,7 +10,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
      /**
      * @event sparkpointselect
      * Fires when the user selects a sparkpoint
-     * @parem {SparkClassroom.widget.SparkpointField} sparkpointField
+     * @param {SparkClassroom.widget.SparkpointField} sparkpointField
      * @param {SparkClassroom.model.Sparkpoint} selectedSparkpoint The newly selected sparkpoint record
      * @param {SparkClassroom.model.Sparkpoint/null} oldSelectedSparkpoint The previously selected sparkpoint record
      */
