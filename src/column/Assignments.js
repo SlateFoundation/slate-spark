@@ -153,6 +153,7 @@ Ext.define('SparkClassroom.column.Assignments', {
     updatePopupCell: function(cell, oldCell) {
         var me = this,
             popup = this.getPopup(),
+            containingScrollable = me.containingScrollable,
             assignCellEl, x, y, scrollable,
             headerCt, finishShow;
 
@@ -161,13 +162,21 @@ Ext.define('SparkClassroom.column.Assignments', {
             return;
         }
 
+        if (!containingScrollable) {
+            containingScrollable = me.containingScrollable = me.up('grid').up('{getScrollable()}') || Ext.Viewport;
+        }
+
         if (!popup) {
             me.setPopup(popup = Ext.create('SparkClassroom.assign.Popup', {
                 hidden: true,
                 flags: me.getFlags()
             }));
 
-            (me.up('grid').up('{getScrollable()}') || Ext.Viewport).add(popup);
+            // use this column as the parent of the popup for the component hierarchy
+            popup.setParent(me);
+
+            // render popup to the containing scroll surface
+            popup.renderTo(containingScrollable.innerElement);
         }
 
         // initially render popup invisibly so it can be measured
@@ -180,7 +189,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         y = assignCellEl.getBottom();
 
         // shift to accomodate scrollable parent
-        scrollable = popup.up('{getScrollable()}').getScrollable();
+        scrollable = containingScrollable.getScrollable();
         if (scrollable) {
             y += scrollable.getPosition().y;
             y -= scrollable.getElement().getTop();
