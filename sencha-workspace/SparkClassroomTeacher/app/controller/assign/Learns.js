@@ -109,11 +109,30 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     onSocketData: function(socket, data) {
-        // if (data.table != 'xxxx') {
-        //     return;
-        // }
+        if (data.table != 'learn_assignments_section') {
+            return;
+        }
 
-        // var me = this;
+        var learnsStore = this.getAssignLearnsStore(),
+            itemData = data.item,
+            studentId = itemData.student_id,
+            assignment = itemData.assignment,
+            learn = learnsStore.getById(itemData.resource_id),
+            assignments = {};
+
+        // TODO: use actual current section
+        if (!learn || itemData.section_code != 'Geometry') {
+            return;
+        }
+
+        if (studentId) {
+            assignments[studentId] = assignment;
+        } else {
+            assignments.section = assignment;
+        }
+
+        // copy old values into new assignments object and set
+        learn.set('assignments', Ext.applyIf(assignments, learn.get('assignments')));
     },
 
 
