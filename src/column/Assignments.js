@@ -56,6 +56,8 @@ Ext.define('SparkClassroom.column.Assignments', {
                 i = 0, flag, cls, assignmentKey,
                 out = [];
 
+            assignments = assignments || {};
+
             out.push('<ul class="assign-control-list">');
 
             for (; i < flagsLength; i++) {
