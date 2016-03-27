@@ -11,7 +11,7 @@ Ext.define('SparkClassroomTeacher.view.assign.Container', {
      /**
      * @event selectedsparkpointchange
      * Fires when the user selects a sparkpoint
-     * @parem {SparkClassroomTeacher.view.assign.learns.Container} learnsCt
+     * @param {SparkClassroomTeacher.view.assign.learns.Container} learnsCt
      * @param {String} selectedSparkpoint The newly selected sparkpoint code
      * @param {String/null} oldSelectedSparkpoint The previously selected sparkpoint code
      */
