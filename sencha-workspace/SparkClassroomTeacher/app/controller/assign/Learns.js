@@ -120,8 +120,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             learn = learnsStore.getById(itemData.resource_id),
             assignments = {};
 
-        // TODO: use actual current section
-        if (!learn || itemData.section_code != 'Geometry') {
+        if (
+            !learn
+            || itemData.section_code != 'Geometry' // TODO: use actual current section
+            || itemData.sparkpoint_code != this.getAssignCt().getSelectedSparkpoint()
+        ) {
             return;
         }
 
