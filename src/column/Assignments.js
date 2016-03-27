@@ -19,6 +19,22 @@ Ext.define('SparkClassroom.column.Assignments', {
      * @param {Ext.grid.cell.Cell} assignmentsCell The cell the trigger was clicked in
      */
 
+     /**
+     * @event beforeflagtap
+     * Fires before the flagtap event gets fired and allows it to be canceled
+     * @param {Ext.grid.cell.Cell} assignmentsCell The cell the flag was clicked in
+     * @param {String} flagId The id of the flag that was clicked
+     * @param {Ext.dom.Element} flagEl The element for the flag thath was clicked
+     */
+
+     /**
+     * @event flagtap
+     * Fires when a flag within an assignments cell has been clicked
+     * @param {Ext.grid.cell.Cell} assignmentsCell The cell the flag was clicked in
+     * @param {String} flagId The id of the flag that was clicked
+     * @param {Ext.dom.Element} flagEl The element for the flag thath was clicked
+     */
+
 
     config: {
         showTrigger: true,
@@ -40,7 +56,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         cls: 'spark-column-assignments',
         cell: {
             encodeHtml: false,
-            listeners: {
+            listeners: [{
                 element: 'element',
                 delegate: '.menu-trigger',
                 tap: function(ev, t) {
@@ -60,7 +76,25 @@ Ext.define('SparkClassroom.column.Assignments', {
 
                     me.fireEvent('triggertap', me);
                 }
-            }
+            },{
+                element: 'element',
+                delegate: 'li[data-flag]',
+                tap: function(ev, t) {
+                    var me = this,
+                        column = me.getColumn(),
+                        record = me.getRecord(),
+                        flagEl = ev.getTarget('li', null, true),
+                        flagId = flagEl.getAttribute('data-flag'),
+                        parentColumn = column.up('spark-column-assignments'),
+                        parentRecord = parentColumn && parentColumn.getPopupCell().getRecord();
+
+                    if (false === me.fireEvent('beforeflagtap', me, flagId, record, parentRecord, flagEl)) {
+                        return;
+                    }
+
+                    me.fireEvent('flagtap', me, flagId, record, parentRecord, flagEl);
+                }
+            }]
         },
         renderer: function(assignments, r) {
             var me = this,
@@ -92,7 +126,7 @@ Ext.define('SparkClassroom.column.Assignments', {
 
                 out.push(
                      // Supported states: is-full, is-empty, is-partial
-                    '<li class="assign-control-item '+cls+'" title="'+htmlEncode(flag.text)+'">',
+                    '<li class="assign-control-item '+cls+'" title="'+htmlEncode(flag.text)+'" data-flag="'+flag.id+'">',
                         '<div class="assign-control-frame">',
                             '<div class="assign-control-indicator"></div>',
                         '</div>',
