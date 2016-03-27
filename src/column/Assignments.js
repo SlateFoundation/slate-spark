@@ -22,7 +22,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         text: null,
         width: null,
 
-        dataIndex: 'assign',
+        dataIndex: 'assignments',
         cls: 'spark-column-assignments',
         cell: {
             encodeHtml: false,
@@ -48,12 +48,12 @@ Ext.define('SparkClassroom.column.Assignments', {
                 }
             }
         },
-        renderer: function(v, r) {
+        renderer: function(assignments, r) {
             var me = this,
                 htmlEncode = Ext.util.Format.htmlEncode,
                 flags = me.getFlags(),
                 flagsLength = flags.length,
-                i = 0, flag,
+                i = 0, flag, cls, assignmentKey,
                 out = [];
 
             out.push('<ul class="assign-control-list">');
@@ -61,9 +61,22 @@ Ext.define('SparkClassroom.column.Assignments', {
             for (; i < flagsLength; i++) {
                 flag = flags[i];
 
+                if (assignments.section == flag.id) {
+                    cls = 'is-full';
+                } else {
+                    cls = 'is-empty';
+
+                    for (assignmentKey in assignments) {
+                        if (assignments[assignmentKey] == flag.id) {
+                            cls = 'is-partial';
+                            break;
+                        }
+                    }
+                }
+
                 out.push(
                      // Supported states: is-full, is-empty, is-partial
-                    '<li class="assign-control-item is-full" title="'+htmlEncode(flag.text)+'">',
+                    '<li class="assign-control-item '+cls+'" title="'+htmlEncode(flag.text)+'">',
                         '<div class="assign-control-frame">',
                             '<div class="assign-control-indicator"></div>',
                         '</div>',

@@ -47,6 +47,11 @@ Ext.define('SparkClassroom.model.work.Learn', {
         {
             name: 'teacher_rating',
             mapping: 'rating.teacher'
+        },
+
+        // for teacher assign UI
+        {
+            name: 'assignments'
         }
     ]
 });
