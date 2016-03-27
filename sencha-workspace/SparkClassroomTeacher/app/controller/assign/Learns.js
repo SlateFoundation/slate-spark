@@ -133,8 +133,5 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
         // copy old values into new assignments object and set
         learn.set('assignments', Ext.applyIf(assignments, learn.get('assignments')));
-    },
-
-
-    // controller methods
+    }
 });
