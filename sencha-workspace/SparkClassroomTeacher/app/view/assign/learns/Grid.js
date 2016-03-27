@@ -56,7 +56,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
                 xtype: 'spark-column-assignments',
                 flags: [
                     {
-                        id: 'start-here',
+                        id: 'required-first',
                         text: 'Start Here',
                         icon: 'star'
                     },
