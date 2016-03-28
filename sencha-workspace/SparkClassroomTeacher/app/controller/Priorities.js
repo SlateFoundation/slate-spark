@@ -35,7 +35,8 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
     ],
 
     refs: {
-        appCt: 'spark-teacher-appct'
+        appCt: 'spark-teacher-appct',
+        priorityList: 'spark-teacher-priorities'
     },
 
     control: {
@@ -63,18 +64,12 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
         // TODO: share code with similar function in GPS controller
         var me = this,
             activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
-            lists = me.getAppCt().query('#priorityList'),
-            listCount = lists.length, i = 0, list;
+            list = me.getPriorityList();
 
-        // sync list selection
-        for (; i < listCount; i++) {
-            list = lists[i];
-
-            if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
-                list.select(activeStudent);
-            } else {
-                list.deselectAll();
-            }
+        if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
+            list.select(activeStudent);
+        } else {
+            list.deselectAll();
         }
     },
 
