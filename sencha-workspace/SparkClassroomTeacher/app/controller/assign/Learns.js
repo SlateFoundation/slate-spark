@@ -15,6 +15,10 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     ],
 
 
+    config: {
+        selectedSection: null
+    },
+
     stores: [
         'assign.Learns'
     ],
@@ -37,6 +41,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     listen: {
+        controller: {
+            '#': {
+                sectionselect: 'onSectionSelect'
+            }
+        },
         store: {
             '#assign.Learns': {
                 load: 'onLearnsStoreLoad'
@@ -76,7 +85,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             url: '/spark/api/assignments/learns',
             jsonData: {
                 sparkpoint: this.getAssignCt().getSelectedSparkpoint(),
-                section: 'Geometry', // TODO: replace with dynamic value after merging appcontainer branch
+                section: this.getSelectedSection(),
                 student_id: parentRecord ? record.get('student_id') : null,
                 resource_id: parentRecord ? parentRecord.getId() : record.getId(),
                 assignment: flagId
@@ -98,6 +107,10 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         });
     },
 
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
+    },
+
     onLearnsStoreLoad: function(store, records, success, operation) {
         var responseData;
 
@@ -113,7 +126,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             return;
         }
 
-        var learnsStore = this.getAssignLearnsStore(),
+        var me = this,
+            learnsStore = me.getAssignLearnsStore(),
             itemData = data.item,
             studentId = itemData.student_id,
             assignment = itemData.assignment,
@@ -122,8 +136,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
         if (
             !learn
-            || itemData.section_code != 'Geometry' // TODO: use actual current section
-            || itemData.sparkpoint_code != this.getAssignCt().getSelectedSparkpoint()
+            || itemData.section_code != me.getSelectedSection()
+            || itemData.sparkpoint_code != me.getAssignCt().getSelectedSparkpoint()
         ) {
             return;
         }
