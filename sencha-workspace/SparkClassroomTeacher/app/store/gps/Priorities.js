@@ -1,16 +1,14 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
-    extend: 'Ext.data.Store',
+    extend: 'SparkClassroom.store.StudentSparkpoints',
     requires: [
-        'Slate.proxy.API'
+        'SparkClassroom.data.field.SparkDate'
     ],
 
 
-    model: 'SparkClassroomTeacher.model.gps.ActiveStudent',
-
     config: {
         proxy: {
-            type: 'slate-api',
+            type: 'spark-studentsparkpoints',
             url: '/spark/api/work/blocked'
         },
 
@@ -20,6 +18,16 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
         //         return r.get('student');
         //     }
         // }],
+
+        filters: [
+            {
+                filterFn: function(r) {
+                    return (
+                        r.get('priority_need') !== null
+                    );
+                }
+            }
+        ],
 
         grouper: {
             groupFn: function(r) {

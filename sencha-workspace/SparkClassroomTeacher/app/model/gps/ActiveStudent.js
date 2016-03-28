@@ -2,10 +2,18 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
     extend: 'SparkClassroom.model.StudentSparkpoint',
+    requires: [
+        'SparkClassroom.proxy.StudentSparkpoints'
+    ],
 
-
-    idProperty: 'student_id',
+    // TODO: move this id property up to parent class
+    idProperty: 'student_sparkpoint',
     fields: [
+        {
+            name: 'student_sparkpoint',
+            persist: false
+        },
+
         {
             name: 'student',
             persist: false,
@@ -77,6 +85,11 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
             }
         }
     ],
+
+    proxy: {
+        type: 'spark-studentsparkpoints',
+        url: '/spark/api/work/activity'
+    },
 
     saveConferenceGroup: function(groupId) {
         var me = this;

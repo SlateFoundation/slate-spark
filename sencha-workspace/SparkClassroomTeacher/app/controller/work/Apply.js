@@ -4,7 +4,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
 
     config: {
-        activeStudent: null,
         activeApply: null
     },
 
@@ -14,6 +13,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     ],
 
     refs: {
+        appCt: 'spark-teacher-appct',
         applyCt: 'spark-teacher-work-apply',
         applyPickerCt: 'spark-teacher-work-apply #applyPickerCt',
         selectedApplyCt: 'spark-teacher-work-apply #selectedApplyCt',
@@ -30,6 +30,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     },
 
     control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
         applyCt: {
             activate: 'onApplyCtActivate'
         },
@@ -45,11 +48,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                activestudentselect: 'onActiveStudentSelect'
-            }
-        },
         store: {
             '#gps.ActiveStudents': {
                 update: 'onActiveStudentUpdate'
@@ -65,15 +63,21 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
 
     // config handlers
-    updateActiveStudent: function(activeStudent) {
+    updateActiveApply: function(apply) {
+        this.syncActiveApply();
+    },
+
+
+    // event handlers
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             store = me.getWorkAppliesStore(),
             proxy = store.getProxy();
 
-        if (activeStudent) {
+        if (selectedStudentSparkpoint) {
             // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', activeStudent.get('student_id'));
-            proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
+            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
             store.load();
         }
 
@@ -82,20 +86,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         me.syncReadyState();
     },
 
-    updateActiveApply: function(apply) {
-        this.syncActiveApply();
-    },
-
-
-    // event handlers
-    onActiveStudentSelect: function(student) {
-        this.setActiveStudent(student);
-    },
-
     onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
         if (
             operation == 'edit' &&
-            activeStudent === this.getActiveStudent()
+            activeStudent === this.getAppCt().getSelectedStudentSparkpoint()
         ) {
             this.syncReadyState();
         }
@@ -111,7 +105,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     },
 
     onFeedbackSendTap: function() {
-        var activeStudent = this.getActiveStudent(),
+        var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
             feedbackMessageField = this.getFeedbackMessageField(),
             message = (feedbackMessageField.getValue() || '').trim();
 
@@ -121,8 +115,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         }
 
         Ext.getStore('work.Feedback').add({
-            student_id: activeStudent.getId(),
-            sparkpoint: activeStudent.get('sparkpoint'),
+            student_id: selectedStudentSparkpoint.get('student_id'),
+            sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
             phase: 'apply',
             message: message
         });
@@ -140,11 +134,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     },
 
     onReadyBtnTap: function() {
-        var student = this.getActiveStudent();
+        var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint();
 
-        if (!student.get('apply_finish_time')) {
-            student.set('apply_finish_time', new Date());
-            student.save();
+        if (!selectedStudentSparkpoint.get('apply_finish_time')) {
+            selectedStudentSparkpoint.set('apply_finish_time', new Date());
+            selectedStudentSparkpoint.save();
             this.syncReadyState();
         }
     },
@@ -154,26 +148,26 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             table = data.table,
             item = data.item,
             task, apply, activeApply,
-            student, appliesStore, modifiedFieldNames;
+            selectedStudentSparkpoint, appliesStore, modifiedFieldNames;
 
         if (table == 'todos') {
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
             if (
-                student &&
-                item.user_id == student.getId() &&
+                selectedStudentSparkpoint &&
+                item.user_id == selectedStudentSparkpoint.get('student_id') &&
                 (task = me.getWorkApplyTasksStore().getById(item.id))
             ) {
                 task.set(item, { dirty: false });
             }
         } else if (table == 'applies') {
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
             appliesStore = me.getWorkAppliesStore();
 
             if (
-                student &&
-                item.student_id == student.getId() &&
-                item.sparkpoint_id == student.get('sparkpoint_id') &&
+                selectedStudentSparkpoint &&
+                item.student_id == selectedStudentSparkpoint.get('student_id') &&
+                item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
                 (apply = appliesStore.getById(item.fb_apply_id))
             ) {
                 modifiedFieldNames = apply.set({
@@ -199,8 +193,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             applyCt = me.getApplyCt(),
             apply = me.getActiveApply(),
             applyData = apply && apply.getData(),
-            student = me.getActiveStudent(),
-            startTime = student && student.get('apply_start_time');
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            startTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_start_time');
 
         if (!applyCt) {
             return;
@@ -211,7 +205,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             me.getTimelineCmp().setData({
                 start: startTime,
-                finish: student && student.get('apply_finish_time'),
+                finish: selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_finish_time'),
                 estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
             });
 
@@ -228,7 +222,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             me.getSubmissionsView().getStore().loadData(apply.get('submissions'));
 
-            me.getReadyHintCmp().setData(student.getData());
+            me.getReadyHintCmp().setData(selectedStudentSparkpoint.getData());
 
             me.getGradePanel().setGrade(apply.get('grade'));
         }
@@ -241,11 +235,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         var me = this,
             gradePanel = me.getGradePanel(),
             readyBtn = me.getReadyBtn(),
-            student = me.getActiveStudent(),
-            applyReadyTime = student && student.get('apply_ready_time'),
-            applyFinishTime = student && student.get('apply_finish_time');
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            applyReadyTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_ready_time'),
+            applyFinishTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_finish_time');
 
-        if (!gradePanel || !readyBtn || !student) {
+        if (!gradePanel || !readyBtn || !selectedStudentSparkpoint) {
             return;
         }
 

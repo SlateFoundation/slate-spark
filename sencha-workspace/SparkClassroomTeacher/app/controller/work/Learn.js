@@ -7,16 +7,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     ],
 
 
-    config: {
-        activeStudent: null
-    },
-
-
     stores: [
         'work.Learns@SparkClassroom.store'
     ],
 
     refs: {
+        appCt: 'spark-teacher-appct',
         learnCt: 'spark-teacher-work-learn',
         sparkpointCt: 'spark-teacher-work-learn #sparkpointCt',
         progressBanner: 'spark-teacher-work-learn-sidebar spark-work-learn-progressbanner',
@@ -26,6 +22,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
         learnCt: {
             activate: 'onLearnCtActivate'
         },
@@ -38,11 +37,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                activestudentselect: 'onActiveStudentSelect'
-            }
-        },
         store: {
             '#gps.ActiveStudents': {
                 update: 'onActiveStudentUpdate'
@@ -66,48 +60,42 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
 
-    // config handlers
-    updateActiveStudent: function(activeStudent, oldActiveStudent) {
+    // event handlers
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy();
 
-        if (activeStudent) {
+        if (selectedStudentSparkpoint) {
             // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', activeStudent.get('student_id'));
-            proxy.setExtraParam('sparkpoint', activeStudent.get('sparkpoint'));
+            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
 
             if (store.isLoaded()) {
                 store.load();
             }
         }
 
-        me.syncActiveStudent();
-    },
-
-
-    // event handlers
-    onActiveStudentSelect: function(student) {
-        this.setActiveStudent(student);
+        me.syncSelectedStudentSparkpoint();
     },
 
     onLearnCtActivate: function() {
-        this.syncActiveStudent();
+        this.syncSelectedStudentSparkpoint();
     },
 
-    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+    onActiveStudentUpdate: function(activeStudentsStore, studentSparkpoint, operation, modifiedFieldNames) {
         var me = this,
             scoreField;
 
         if (
             operation == 'edit' &&
-            activeStudent === me.getActiveStudent() &&
+            studentSparkpoint === me.getAppCt().getSelectedStudentSparkpoint() &&
             modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
         ) {
             scoreField = me.getMasteryCheckScoreField();
 
             if (scoreField) {
-                scoreField.setValue(activeStudent.get('learn_mastery_check_score'));
+                scoreField.setValue(studentSparkpoint.get('learn_mastery_check_score'));
                 scoreField.resetOriginalValue();
             }
         }
@@ -126,7 +114,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onFeedbackSendTap: function() {
-        var activeStudent = this.getActiveStudent(),
+        var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
             feedbackMessageField = this.getFeedbackMessageField(),
             message = (feedbackMessageField.getValue() || '').trim();
 
@@ -136,8 +124,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
 
         Ext.getStore('work.Feedback').add({
-            student_id: activeStudent.getId(),
-            sparkpoint: activeStudent.get('sparkpoint'),
+            student_id: selectedStudentSparkpoint.get('student_id'),
+            sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
             phase: 'learn',
             message: message
         });
@@ -151,11 +139,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
 
         var me = this,
-            activeStudent = me.getActiveStudent(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             itemData = data.item,
             updatedLearn;
 
-        if (!activeStudent || activeStudent.getId() != itemData.user_id) {
+        if (!selectedStudentSparkpoint || selectedStudentSparkpoint.get('student_id') != itemData.user_id) {
             return;
         }
 
@@ -177,22 +165,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
 
     // controller methods
-    syncActiveStudent: function() {
+    syncSelectedStudentSparkpoint: function() {
         var me = this,
             learnCt = me.getLearnCt(),
             scoreField = me.getMasteryCheckScoreField(),
             store = me.getWorkLearnsStore(),
-            student = me.getActiveStudent();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
         if (!learnCt || !learnCt.hasParent()) {
             return;
         }
 
         // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (student) {
-            me.getSparkpointCt().setTitle(student.get('sparkpoint'));
+        if (selectedStudentSparkpoint) {
+            me.getSparkpointCt().setTitle(selectedStudentSparkpoint.get('sparkpoint'));
 
-            scoreField.setValue(student.get('learn_mastery_check_score'));
+            scoreField.setValue(selectedStudentSparkpoint.get('learn_mastery_check_score'));
             scoreField.resetOriginalValue();
 
             learnCt.show();
@@ -227,7 +215,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
         progressBanner.setData({
             completedLearns: completed,
-            name: me.getActiveStudent().get('student_name'),
+            name: me.getAppCt().getSelectedStudentSparkpoint().get('student_name'),
             requiredLearns: required
         });
 
@@ -236,11 +224,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     writeMasteryCheckScore: function() {
         var me = this,
-            activeStudent = me.getActiveStudent(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             scoreField = me.getMasteryCheckScoreField(),
             score = scoreField && scoreField.getValue();
 
-        if (!scoreField || !activeStudent) {
+        if (!scoreField || !selectedStudentSparkpoint) {
             return;
         }
 
@@ -249,10 +237,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             return;
         }
 
-        activeStudent.set('learn_mastery_check_score', score);
+        selectedStudentSparkpoint.set('learn_mastery_check_score', score);
 
-        if (activeStudent.dirty) {
-            activeStudent.save();
+        if (selectedStudentSparkpoint.dirty) {
+            selectedStudentSparkpoint.save();
         }
     }
 });

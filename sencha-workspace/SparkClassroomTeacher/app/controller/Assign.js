@@ -15,8 +15,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     extend: 'Ext.app.Controller',
 
     config: {
-        selectedSection: null,
-        activeStudent: null
+        selectedSection: null
     },
 
     views: [
@@ -37,6 +36,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     ],
 
     refs:{
+        appCt: 'spark-teacher-appct',
         navBar: 'spark-navbar',
         assignNavButton: 'spark-navbar button#assign',
 
@@ -85,6 +85,9 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
     control: {
+        appCt: {
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+        },
         assignNavButton: {
             tap: 'onNavAssignTap'
         },
@@ -99,8 +102,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     listen: {
         controller: {
             '#': {
-                sectionselect: 'onSectionSelect',
-                activestudentselect: 'onActiveStudentSelect'
+                sectionselect: 'onSectionSelect'
             }
         }
     },
@@ -190,18 +192,14 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         // TODO: apply filters to stores
     },
 
-    updateActiveStudent: function(activeStudent) {
-        this.syncActiveStudent();
-    },
-
 
     // event handlers
-    onSectionSelect: function(section) {
-        this.setSelectedSection(section);
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+        this.syncSelectedStudentSparkpoint();
     },
 
-    onActiveStudentSelect: function(student) {
-        this.setActiveStudent(student);
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
     },
 
     onNavAssignTap: function() {
@@ -213,7 +211,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         me.getNavBar().setSelectedButton(me.getAssignNavButton());
 
-        me.syncActiveStudent();
+        me.syncSelectedStudentSparkpoint();
     },
 
     onAssignTabChange: function(tabbar, value, oldValue){
@@ -223,7 +221,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         if(oldValue !== null){
             me.redirectTo(['assign', itemId]);
         }
-
     },
 
 
@@ -255,18 +252,18 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
 
-    syncActiveStudent: function() {
+    syncSelectedStudentSparkpoint: function() {
         var me = this,
-            activeStudent = me.getActiveStudent(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             sparkpointField = me.getSparkpointField(),
             sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
 
-        if (!activeStudent || !sparkpointField) {
+        if (!selectedStudentSparkpoint || !sparkpointField) {
             return;
         }
 
-        sparkpointField.setValue(activeStudent.get('sparkpoint'));
-        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', activeStudent.getId());
+        sparkpointField.setValue(selectedStudentSparkpoint.get('sparkpoint'));
+        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
 
         if (sparkpointSuggestionsStore.isLoaded()) {
             sparkpointSuggestionsStore.load();
