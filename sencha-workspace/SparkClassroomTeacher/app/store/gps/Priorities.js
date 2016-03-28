@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
-    extend: 'SparkClassroom.store.StudentSparkpoints',
+    extend: 'SparkClassroomTeacher.store.StudentSparkpoints',
     requires: [
         'SparkClassroom.data.field.SparkDate'
     ],
