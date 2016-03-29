@@ -25,7 +25,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
     refs: {
         assignCt: 'spark-teacher-assign-ct',
-        learnsCt: 'spark-teacher-assign-learns'
+        learnsCt: 'spark-teacher-assign-learns',
+        popupHostColumn: 'spark-teacher-assign-learns-grid spark-assign-popup ^ spark-column-assignments'
     },
 
     control: {
@@ -127,7 +128,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'learn_assignments_section') {
+        if (data.table != 'learn_assignments_section' && data.table != 'learn_assignments_student') {
             return;
         }
 
@@ -137,7 +138,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             studentId = itemData.student_id,
             assignment = itemData.assignment,
             learn = learnsStore.getById(itemData.resource_id),
-            assignments = {};
+            assignments = {},
+            popupHostColumn, popup, popupStudent;
 
         if (
             !learn
@@ -149,6 +151,15 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
         if (studentId) {
             assignments[studentId] = assignment;
+
+            // update student-level assignments store if open
+            if (
+                (popupHostColumn = me.getPopupHostColumn()) &&
+                (popup = popupHostColumn.getPopup()) &&
+                (popupStudent = popup.getGrid().getStore().getById(studentId))
+            ) {
+                popupStudent.set('assignments', Ext.applyIf({student: assignment}, popupStudent.get('assignments')));
+            }
         } else {
             assignments.section = assignment;
         }
