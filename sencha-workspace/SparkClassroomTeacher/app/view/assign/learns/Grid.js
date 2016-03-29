@@ -1,11 +1,10 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
+Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
     extend: 'Ext.grid.Grid',
-    xtype: 'spark-assign-learn-grid',
+    xtype: 'spark-teacher-assign-learns-grid',
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
-        // 'Ext.grid.plugin.PagingToolbar',
         // 'SparkClassroom.widget.GridColumnFilter',
         // 'SparkClassroom.column.Sparkpoints',
         // 'SparkClassroom.column.Grade',
@@ -22,10 +21,9 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
         plugins: [
             'gridflex',
             'gridheight'
-            // 'gridpagingtoolbar'
         ],
         titleBar: null,
-        store: 'assign.Learn',
+        store: 'assign.Learns',
         columns:[
             // {
             //     xtype: 'spark-sparkpoints-column'
@@ -58,6 +56,11 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                 xtype: 'spark-column-assignments',
                 flags: [
                     {
+                        id: 'required-first',
+                        text: 'Start Here',
+                        icon: 'star'
+                    },
+                    {
                         id: 'required',
                         text: 'Required',
                         icon: 'exclamation-triangle'
@@ -68,8 +71,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learn.Grid', {
                         icon: 'thumbs-up'
                     },
                     {
-                        id: 'hide',
-                        text: 'Hide',
+                        id: 'hidden',
+                        text: 'Hidden',
                         icon: 'times-circle'
                     }
                 ],

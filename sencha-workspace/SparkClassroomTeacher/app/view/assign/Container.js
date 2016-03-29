@@ -7,7 +7,19 @@ Ext.define('SparkClassroomTeacher.view.assign.Container', {
         'SparkClassroom.widget.SparkpointField'
     ],
 
+
+     /**
+     * @event selectedsparkpointchange
+     * Fires when the user selects a sparkpoint
+     * @param {SparkClassroomTeacher.view.assign.learns.Container} learnsCt
+     * @param {String} selectedSparkpoint The newly selected sparkpoint code
+     * @param {String/null} oldSelectedSparkpoint The previously selected sparkpoint code
+     */
+
+
     config: {
+        selectedSparkpoint: null,
+
         autoDestroy: false,
         items: [
             {
@@ -30,5 +42,9 @@ Ext.define('SparkClassroomTeacher.view.assign.Container', {
                 xtype: 'spark-teacher-assign-tabbar'
             }
         ]
+    },
+
+    updateSelectedSparkpoint: function(selectedSparkpoint, oldSelectedSparkpoint) {
+        this.fireEvent('selectedsparkpointchange', this, selectedSparkpoint, oldSelectedSparkpoint);
     }
 });

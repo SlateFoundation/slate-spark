@@ -441,7 +441,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
             if (group = groupsStore.getById(item.id)) {
                 group.set(item, { dirty: false });
-            } else if(item.section_code == me.getSelectedSection()) {
+            } else if (item.section_code == me.getSelectedSection()) {
                 groupsStore.add(item);
             }
         }

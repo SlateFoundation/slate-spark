@@ -114,7 +114,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             workTabId = 'learn';
 
         if (workTabBar) {
-            workTabId = workTabBar.getActiveTab().getItemId();
+            workTabId = workTabBar.getActiveItem().getItemId();
         }
 
         return 'work/' + workTabId;
@@ -201,12 +201,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         this.redirectTo(['work', activeTab.getItemId()]);
     },
 
-    onActiveStudentSelect: function(activeStudent) {
-        if (activeStudent) {
-            this.redirectTo(['work', activeStudent.get('active_phase')]);
-        }
-    },
-
     onSocketData: function(socket, data) {
         var me = this,
             tableName = data.table,
@@ -262,10 +256,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * Called by each subsection route handler to ensure container is activated
      */
     doShowContainer: function() {
-        var tabsCt = this.getTabsCt();
+        var tabsCt = this.getTabsCt(),
+            workCt = this.getWorkCt();
 
-        tabsCt.removeAll();
-        tabsCt.add(this.getWorkCt());
+        if (!workCt.isPainted()) {
+            tabsCt.removeAll();
+            tabsCt.add(workCt);
+        }
     },
 
     /**

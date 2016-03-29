@@ -45,7 +45,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
     // route handlers
-    showCompetencies: function(){
+    showCompetencies: function() {
         var tabsCt = this.getTabsCt();
 
         this.doHighlightTabbars();
@@ -70,7 +70,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
      * @private
      * highlights proper section in the spark teacher tabbar
      */
-    doHighlightTabbars: function(section){
+    doHighlightTabbars: function(section) {
         var teacherTabbar = this.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#competencies');
 

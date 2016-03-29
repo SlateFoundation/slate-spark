@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     views: [
         'assign.Container',
-        'assign.learn.Container',
+        'assign.learns.Container',
         'assign.questions.Container',
         'assign.resources.Container',
         'assign.apply.Container',
@@ -28,7 +28,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     ],
 
     stores: [
-        'assign.Learn',
         'assign.Questions',
         'assign.Resources',
         'assign.Apply',
@@ -53,10 +52,10 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         assignTabbar: 'spark-teacher-assign-tabbar',
 
         learnCt: {
-            selector: 'spark-assign-learn',
+            selector: 'spark-teacher-assign-learns',
             autoCreate: true,
 
-            xtype: 'spark-assign-learn'
+            xtype: 'spark-teacher-assign-learns'
         },
         questionsCt: {
             selector: 'spark-assign-questions',
@@ -92,7 +91,12 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             tap: 'onNavAssignTap'
         },
         assignCt: {
-            activate: 'onAssignCtActivate'
+            activate: 'onAssignCtActivate',
+            selectedsparkpointchange: 'onSelectedSparkpointChange',
+            deactivate: 'onAssignCtDeactivate'
+        },
+        sparkpointField: {
+            sparkpointselect: 'onSparkpointFieldSparkpointSelect'
         },
         assignTabbar: {
             activetabchange: 'onAssignTabChange'
@@ -125,7 +129,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             assignTabId = 'learn';
 
         if (assignTabBar) {
-            assignTabId = assignTabBar.getActiveTab().getItemId();
+            assignTabId = assignTabBar.getActiveItem().getItemId();
         }
 
         return 'assign/' + assignTabId;
@@ -195,6 +199,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     // event handlers
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+        this.hideOverlays();
         this.syncSelectedStudentSparkpoint();
     },
 
@@ -214,11 +219,26 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         me.syncSelectedStudentSparkpoint();
     },
 
-    onAssignTabChange: function(tabbar, value, oldValue){
+    onSelectedSparkpointChange: function(assignCt, selectedSparkpoint) {
+        this.getSparkpointField().setValue(selectedSparkpoint);
+    },
+
+    onAssignCtDeactivate: function() {
+        this.hideOverlays();
+    },
+
+    onSparkpointFieldSparkpointSelect: function(sparkpointField, sparkpoint) {
+        // don't do anything else here, use onSelectedSparkpointChange instead
+        this.getAssignCt().setSelectedSparkpoint(sparkpoint.getId());
+    },
+
+    onAssignTabChange: function(tabbar, value, oldValue) {
         var me = this,
             itemId = tabbar.getActiveTab().getItemId();
 
-        if(oldValue !== null){
+        me.hideOverlays();
+
+        if (oldValue !== null) {
             me.redirectTo(['assign', itemId]);
         }
     },
@@ -230,10 +250,13 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
      * Called by each subsection route handler to ensure container is activated
      */
     doShowContainer: function() {
-        var tabsCt = this.getTabsCt();
+        var tabsCt = this.getTabsCt(),
+            assignCt = this.getAssignCt();
 
-        tabsCt.removeAll();
-        tabsCt.add(this.getAssignCt());
+        if (!assignCt.isPainted()) {
+            tabsCt.removeAll();
+            tabsCt.add(assignCt);
+        }
     },
 
     /**
@@ -241,7 +264,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(section){
+    doHighlightTabbars: function(section) {
         var assignTabbar = this.getAssignTabbar(),
             teacherTabbar = this.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#assign'),
@@ -251,22 +274,38 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         teacherTabbar.setActiveTab(teacherTab);
     },
 
-
     syncSelectedStudentSparkpoint: function() {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            assignCt = me.getAssignCt(),
             sparkpointField = me.getSparkpointField(),
             sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
 
-        if (!selectedStudentSparkpoint || !sparkpointField) {
-            return;
+        if (assignCt) {
+            assignCt.setSelectedSparkpoint(selectedStudentSparkpoint ? selectedStudentSparkpoint.get('sparkpoint') : null);
         }
 
-        sparkpointField.setValue(selectedStudentSparkpoint.get('sparkpoint'));
-        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+        if (selectedStudentSparkpoint && sparkpointSuggestionsStore) {
+            sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
 
-        if (sparkpointSuggestionsStore.isLoaded()) {
-            sparkpointSuggestionsStore.load();
+            if (sparkpointSuggestionsStore.isLoaded()) {
+                sparkpointSuggestionsStore.load();
+            }
+        }
+    },
+
+    /**
+     * @private
+     * Kind of hacky, called belligerently whenever something happens that should "wipe" the assignCt
+     * clear of any overlaid elements
+     */
+    hideOverlays: function() {
+        var columns = this.getAssignCt().query('spark-column-assignments'),
+            columnsLength = columns.length,
+            i = 0;
+
+        for (; i < columnsLength; i++) {
+            columns[i].setPopupCell(null);
         }
     }
 });
