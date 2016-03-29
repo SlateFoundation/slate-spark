@@ -148,6 +148,8 @@ Ext.define('SparkClassroom.column.Assignments', {
         }
     },
 
+
+    // config handlers
     updateFlags: function(flags)  {
         var me = this,
             htmlEncode = Ext.util.Format.htmlEncode,
@@ -210,7 +212,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             popup.setParent(me);
 
             // render popup to the containing scroll surface
-            popup.renderTo(containingScrollable.innerElement);
+            popup.setRenderTo(containingScrollable.innerElement);
         }
 
         // initially render popup invisibly so it can be measured
