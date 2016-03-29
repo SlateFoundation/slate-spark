@@ -7,6 +7,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     ],
 
 
+    config: {
+        selectedSection: null
+    },
+
     stores: [
         'work.Learns@SparkClassroom.store'
     ],
@@ -37,6 +41,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     listen: {
+        controller: {
+            '#': {
+                sectionselect: 'onSectionSelect'
+            }
+        },
         store: {
             '#gps.ActiveStudents': {
                 update: 'onActiveStudentUpdate'
@@ -81,6 +90,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onLearnCtActivate: function() {
         this.syncSelectedStudentSparkpoint();
+    },
+
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
     },
 
     onActiveStudentUpdate: function(activeStudentsStore, studentSparkpoint, operation, modifiedFieldNames) {
@@ -134,32 +147,44 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'learn_activity') {
-            return;
-        }
-
         var me = this,
+            table = data.table,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             itemData = data.item,
-            updatedLearn;
+            learn;
 
-        if (!selectedStudentSparkpoint || selectedStudentSparkpoint.get('student_id') != itemData.user_id) {
+        if (!selectedStudentSparkpoint) {
             return;
         }
 
-        updatedLearn = me.getWorkLearnsStore().getById(itemData.resource_id);
+        if (table == 'learn_activity') {
+            if (
+                selectedStudentSparkpoint.get('student_id') == itemData.user_id
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+            ) {
 
-        if (updatedLearn) {
-            // TODO: can we find ways to not duplicate this logic between the api and the client?
-            // Can there be an abstraction on the server side so that a higher-level event comes down
-            // with a delta to the object as returned by the API previously so we can just pass the whole
-            // data object to set?
-            updatedLearn.set({
-                launched: itemData.start_status == 'launched',
-                completed: itemData.completed
-            },{
-                dirty: false
-            });
+                // TODO: can we find ways to not duplicate this logic between the api and the client?
+                // Can there be an abstraction on the server side so that a higher-level event comes down
+                // with a delta to the object as returned by the API previously so we can just pass the whole
+                // data object to set?
+                learn.set({
+                    launched: itemData.start_status == 'launched',
+                    completed: itemData.completed
+                },{
+                    dirty: false
+                });
+            }
+        } else if (table == 'learn_assignments_section') {
+            if (
+                itemData.section_code == me.getSelectedSection()
+                && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+            ) {
+                learn.set('assignments', Ext.applyIf({section: itemData.assignment}, learn.get('assignments')));
+
+                // TODO: remove this #hack when underlying #framework-bug gets fixed
+                me.getLearnGrid().refresh();
+            }
         }
     },
 
