@@ -92,7 +92,8 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         },
         assignCt: {
             activate: 'onAssignCtActivate',
-            selectedsparkpointchange: 'onSelectedSparkpointChange'
+            selectedsparkpointchange: 'onSelectedSparkpointChange',
+            deactivate: 'onAssignCtDeactivate'
         },
         sparkpointField: {
             sparkpointselect: 'onSparkpointFieldSparkpointSelect'
@@ -198,6 +199,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     // event handlers
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+        this.hideOverlays();
         this.syncSelectedStudentSparkpoint();
     },
 
@@ -221,6 +223,10 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         this.getSparkpointField().setValue(selectedSparkpoint);
     },
 
+    onAssignCtDeactivate: function() {
+        this.hideOverlays();
+    },
+
     onSparkpointFieldSparkpointSelect: function(sparkpointField, sparkpoint) {
         // don't do anything else here, use onSelectedSparkpointChange instead
         this.getAssignCt().setSelectedSparkpoint(sparkpoint.getId());
@@ -229,6 +235,8 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     onAssignTabChange: function(tabbar, value, oldValue){
         var me = this,
             itemId = tabbar.getActiveTab().getItemId();
+
+        me.hideOverlays();
 
         if(oldValue !== null){
             me.redirectTo(['assign', itemId]);
@@ -266,7 +274,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         teacherTabbar.setActiveTab(teacherTab);
     },
 
-
     syncSelectedStudentSparkpoint: function() {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
@@ -284,6 +291,16 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             if (sparkpointSuggestionsStore.isLoaded()) {
                 sparkpointSuggestionsStore.load();
             }
+        }
+    },
+
+    hideOverlays: function() {
+        var columns = this.getAssignCt().query('spark-column-assignments'),
+            columnsLength = columns.length,
+            i = 0;
+
+        for (; i < columnsLength; i++) {
+            columns[i].setPopupCell(null);
         }
     }
 });
