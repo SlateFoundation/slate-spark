@@ -138,6 +138,15 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             }
         }
 
+        // treat click on already-set student-level flag as unset
+        if (
+            parentRecord
+            && (assignments = record.get('assignments'))
+            && assignments.student == flagId
+        ) {
+            flagId = 'exempt';
+        }
+
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/assignments/learns',
