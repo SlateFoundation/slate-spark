@@ -112,7 +112,7 @@ Ext.define('SparkClassroom.column.Assignments', {
                 flagsLength = flags.length,
                 i = 0, flag, flagId,
                 fillCls, sourceCls,
-                matchingStudents, notMatchingStudents, assignmentKey,
+                matchingStudents, notMatchingStudents, assignmentKey, assignment,
 
                 out = [];
 
@@ -150,9 +150,11 @@ Ext.define('SparkClassroom.column.Assignments', {
                             continue;
                         }
 
-                        if (assignments[assignmentKey] == flagId) {
+                        assignment = assignments[assignmentKey];
+
+                        if (assignment == flagId) {
                             matchingStudents++;
-                        } else {
+                        } else if (assignment != 'exempt') {
                             notMatchingStudents++;
                         }
                     }
