@@ -10,23 +10,50 @@ Ext.define('SparkClassroom.store.work.Learns', {
     config: {
         autoSync: true,
         trackRemoved: false,
-        // grouper: {
-        //     property: 'Group',
-        //     direction: 'DESC'
-        // },
+        grouper: {
+            groupFn: function(r) {
+                var assignments = r.get('assignments');
 
-        // sorters: [
-        //     {
-        //         sorterFn: function(standard1) {
-        //             switch (standard1) {
-        //                 case 'Required':
-        //                     return -1;
-        //                 case 'AdditionOptions':
-        //                     return 1;
-        //             }
-        //         }
-        //     }
-        // ],
+                switch (assignments.student || assignments.section) {
+                    case 'required-first':
+                        return 'Start Here';
+                    case 'required':
+                        return 'Required';
+                    case 'recommended':
+                        return 'Recommended';
+                    default:
+                        return 'More Learns';
+                }
+            },
+            sorterFn: function(r1, r2) {
+                var assignments1 = r1.get('assignments'),
+                    assignments2 = r2.get('assignments'),
+                    effective1 = assignments1.student || assignments1.section,
+                    effective2 = assignments2.student || assignments2.section;
+
+                if (effective1 == effective2) {
+                    return 0;
+                }
+
+                if (effective1 == 'required-first') {
+                    return -1;
+                } else if (effective2 == 'required-first') {
+                    return 1;
+                }
+
+                if (effective1 == 'required') {
+                    return -1;
+                } else if (effective2 == 'required') {
+                    return 1;
+                }
+
+                if (effective1 == 'recommended') {
+                    return -1;
+                } else if (effective2 == 'recommended') {
+                    return 1;
+                }
+            }
+        },
 
         proxy: {
             type: 'slate-api',

@@ -52,7 +52,12 @@ Ext.define('SparkClassroom.model.work.Learn', {
         // for teacher assign UI
         {
             name: 'assignments',
-            persist: false
+            persist: false,
+
+            // TODO: remove default to assignment when assignment gets changes to assignments in work/learns API response
+            convert: function(v, r) {
+                return v || r.get('assignment') || {};
+            }
         }
     ]
 });
