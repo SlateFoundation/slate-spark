@@ -102,46 +102,77 @@ Ext.define('SparkClassroom.column.Assignments', {
             var me = this,
                 htmlEncode = Ext.util.Format.htmlEncode,
                 student = record.get('student'),
+                studentIdStrings = me.studentIdStrings || [],
+                studentsCount = studentIdStrings.length,
+
                 flags = me.getFlags(),
                 flagsLength = flags.length,
-                i = 0, flag, flagId, cls, assignmentKey,
+                i = 0, flag, flagId,
+                fillCls, sourceCls,
+                matchingStudents, notMatchingStudents, assignmentKey,
+
                 out = [];
 
+            // grab things we need quick access to inside the loop
             assignments = assignments || {};
 
+            // render list of flags based on assignments
             out.push('<ul class="assign-control-list">');
 
             for (; i < flagsLength; i++) {
                 flag = flags[i];
                 flagId = flag.id;
+                fillCls = 'is-empty';
+                sourceCls = '';
 
                 // determine cls for student or section
                 if (student) {
                     if (assignments.student == flagId) {
-                        cls = 'is-full';
+                        fillCls = 'is-full';
+                        sourceCls = 'is-direct';
                     } else if (assignments.section == flagId) {
-                        cls = 'is-full is-indirect';
-                    } else {
-                        cls = '';
+                        fillCls = 'is-full';
+                        sourceCls = 'is-indirect';
                     }
                 } else {
-                    if (assignments.section == flagId) {
-                        cls = 'is-full';
-                    } else {
-                        cls = 'is-empty';
+                    matchingStudents = 0;
+                    notMatchingStudents = 0;
 
-                        for (assignmentKey in assignments) {
-                            if (assignments[assignmentKey] == flagId) {
-                                cls = 'is-partial';
-                                break;
-                            }
+                    for (assignmentKey in assignments) {
+                        // skip section assignment or students not in current roster
+                        if (assignmentKey == 'section' || studentIdStrings.indexOf(assignmentKey) == -1) {
+                            continue;
                         }
+
+                        if (assignments[assignmentKey] == flagId) {
+                            matchingStudents++;
+                        } else {
+                            notMatchingStudents++;
+                        }
+                    }
+
+                    if (
+                        matchingStudents == studentsCount
+                        || (
+                            assignments.section == flagId
+                            && notMatchingStudents == 0
+                        )
+                    ) {
+                        fillCls = 'is-full';
+                    } else if (matchingStudents) {
+                        fillCls = 'is-partial';
+                    }
+
+                    if (assignments.section == flagId) {
+                        sourceCls = 'is-direct';
+                    } else if (matchingStudents) {
+                        sourceCls = 'is-indirect';
                     }
                 }
 
                 out.push(
                      // Supported states: is-full, is-empty, is-partial
-                    '<li class="assign-control-item '+cls+'" title="'+htmlEncode(flag.text)+'" data-flag="'+flag.id+'">',
+                    '<li class="assign-control-item '+fillCls+' '+sourceCls+'" title="'+htmlEncode(flag.text)+'" data-flag="'+flag.id+'">',
                         '<div class="assign-control-frame">',
                             '<div class="assign-control-indicator"></div>',
                         '</div>',
@@ -167,6 +198,16 @@ Ext.define('SparkClassroom.column.Assignments', {
     // config handlers
     applyStudentsStore: function(store) {
         return Ext.StoreMgr.lookup(store);
+    },
+
+    updateStudentsStore: function(store, oldStore) {
+        if (oldStore) {
+            oldStore.un('load', 'onStudentsStoreLoad', this);
+        }
+
+        if (store) {
+            store.on('load', 'onStudentsStoreLoad', this);
+        }
     },
 
     applyActiveStudentsStore: function(store) {
@@ -323,5 +364,19 @@ Ext.define('SparkClassroom.column.Assignments', {
         } else {
             headerCt.on('painted', finishShow, null, { single: true });
         }
+    },
+
+
+    // event handlers
+    onStudentsStoreLoad: function(store, students) {
+        var studentIdStrings = [],
+            studentsLength = students.length,
+            i = 0;
+
+        for (; i < studentsLength; i++) {
+            studentIdStrings.push(students[i].getId().toString());
+        }
+
+        this.studentIdStrings = studentIdStrings;
     }
 });
