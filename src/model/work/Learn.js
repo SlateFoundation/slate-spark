@@ -51,7 +51,8 @@ Ext.define('SparkClassroom.model.work.Learn', {
 
         // for teacher assign UI
         {
-            name: 'assignments'
+            name: 'assignments',
+            persist: false
         }
     ]
 });
