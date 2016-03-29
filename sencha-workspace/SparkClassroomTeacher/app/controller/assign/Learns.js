@@ -62,6 +62,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         var learnsStore = this.getAssignLearnsStore(),
             learnsCt = this.getLearnsCt();
 
+        if (!sparkpoint) {
+            learnsStore.removeAll();
+            return;
+        }
+
         learnsStore.getProxy().setExtraParam('sparkpoint', sparkpoint);
 
         // load store if it's loaded already or the grid is visible
