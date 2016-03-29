@@ -294,6 +294,11 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         }
     },
 
+    /**
+     * @private
+     * Kind of hacky, called belligerently whenever something happens that should "wipe" the assignCt
+     * clear of any overlaid elements
+     */
     hideOverlays: function() {
         var columns = this.getAssignCt().query('spark-column-assignments'),
             columnsLength = columns.length,
