@@ -21,5 +21,29 @@ Ext.define('SparkClassroom.store.Students', {
             property: 'FirstName',
             direction: 'ASC'
         }]
+    },
+
+    onProxyLoad: function() {
+        this.callParent(arguments);
+        this.studentIdStrings = null;
+    },
+
+    getStudentIdStrings: function() {
+        var me = this,
+            studentIdStrings = me.studentIdStrings,
+            studentsLength, i = 0;
+
+        if (!studentIdStrings) {
+            studentIdStrings = [];
+            studentsLength = me.getCount();
+
+            for (; i < studentsLength; i++) {
+                studentIdStrings.push(me.getAt(i).getId().toString());
+            }
+
+            me.studentIdStrings = studentIdStrings;
+        }
+
+        return studentIdStrings;
     }
 });

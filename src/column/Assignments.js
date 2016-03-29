@@ -383,15 +383,7 @@ Ext.define('SparkClassroom.column.Assignments', {
 
 
     // event handlers
-    onStudentsStoreLoad: function(store, students) {
-        var studentIdStrings = [],
-            studentsLength = students.length,
-            i = 0;
-
-        for (; i < studentsLength; i++) {
-            studentIdStrings.push(students[i].getId().toString());
-        }
-
-        this.studentIdStrings = studentIdStrings;
+    onStudentsStoreLoad: function(store) {
+        this.studentIdStrings = store.getStudentIdStrings();
     }
 });
