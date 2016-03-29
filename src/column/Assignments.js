@@ -6,6 +6,9 @@ Ext.define('SparkClassroom.column.Assignments', {
         'SparkClassroom.assign.Popup'
     ],
 
+    mixins: [
+        'Ext.mixin.Queryable'
+    ],
 
      /**
      * @event beforetriggertap
@@ -192,6 +195,17 @@ Ext.define('SparkClassroom.column.Assignments', {
 
             return out.join('');
         }
+    },
+
+
+    // method overrides
+    /**
+     * Implements required Ext.mixin.Queryable method so that the popup
+     * container can be discovered as a child component
+     */
+    getRefItems: function() {
+        var popup = this.getPopup();
+        return popup ? [popup] : [];
     },
 
 
