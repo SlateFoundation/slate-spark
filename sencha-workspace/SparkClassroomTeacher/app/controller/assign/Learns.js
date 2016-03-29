@@ -139,7 +139,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             assignment = itemData.assignment,
             learn = learnsStore.getById(itemData.resource_id),
             assignments = {},
-            popupHostColumn, popup, popupStudent;
+            popupHostColumn, popup, popupStudent,
+            popupStore, popupStudentsCount, i = 0;
 
         if (
             !learn
@@ -152,7 +153,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         if (studentId) {
             assignments[studentId] = assignment;
 
-            // update student-level assignments store if open
+            // update `student` assignments in student-level store if open
             if (
                 (popupHostColumn = me.getPopupHostColumn()) &&
                 (popup = popupHostColumn.getPopup()) &&
@@ -162,6 +163,20 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             }
         } else {
             assignments.section = assignment;
+
+            // update `seciton` assignment student-level store if open
+            if (
+                (popupHostColumn = me.getPopupHostColumn()) &&
+                (popup = popupHostColumn.getPopup())
+            ) {
+                popupStore = popup.getGrid().getStore();
+                popupStudentsCount = popupStore.getCount();
+
+                for (; i < popupStudentsCount; i++) {
+                    popupStudent = popupStore.getAt(i);
+                    popupStudent.set('assignments', Ext.applyIf({section: assignment}, popupStudent.get('assignments')));
+                }
+            }
         }
 
         // copy old values into new assignments object and set
