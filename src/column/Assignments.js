@@ -220,12 +220,15 @@ Ext.define('SparkClassroom.column.Assignments', {
     },
 
     updateStudentsStore: function(store, oldStore) {
+        var me = this;
+
         if (oldStore) {
-            oldStore.un('load', 'onStudentsStoreLoad', this);
+            oldStore.un('load', 'onStudentsStoreLoad', me);
         }
 
         if (store) {
-            store.on('load', 'onStudentsStoreLoad', this);
+            me.studentIdStrings = store.getStudentIdStrings();
+            store.on('load', 'onStudentsStoreLoad', me);
         }
     },
 

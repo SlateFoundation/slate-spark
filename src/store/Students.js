@@ -24,8 +24,8 @@ Ext.define('SparkClassroom.store.Students', {
     },
 
     onProxyLoad: function() {
-        this.callParent(arguments);
         this.studentIdStrings = null;
+        this.callParent(arguments);
     },
 
     getStudentIdStrings: function() {
