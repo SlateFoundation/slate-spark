@@ -242,10 +242,13 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
      * Called by each subsection route handler to ensure container is activated
      */
     doShowContainer: function() {
-        var tabsCt = this.getTabsCt();
+        var tabsCt = this.getTabsCt(),
+            assignCt = this.getAssignCt();
 
-        tabsCt.removeAll();
-        tabsCt.add(this.getAssignCt());
+        if (!assignCt.isPainted()) {
+            tabsCt.removeAll();
+            tabsCt.add(assignCt);
+        }
     },
 
     /**
