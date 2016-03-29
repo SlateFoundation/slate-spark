@@ -88,7 +88,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
         var me = this,
             popupHostColumn = me.getPopupHostColumn(),
-            popupCell;
+            section = me.getSelectedSection(),
+            sparkpoint = me.getAssignCt().getSelectedSparkpoint(),
+            resourceId = parentRecord ? parentRecord.getId() : record.getId(),
+            popupCell, assignments, studentIdStrings, assignmentKey,
+            studentExempts = [];
 
         // close popup if clicking section-level flag on a different resource
         if (
@@ -101,20 +105,52 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         }
 
         // treat click on already-set section-level assignment as unset
-        if (!parentRecord && record.get('assignments').section == flagId) {
-            flagId = 'exempt';
+        if (
+            !parentRecord
+            && (assignments = record.get('assignments'))
+            && assignments.section == flagId
+        ) {
+            // erase all student-level prefs instead if there are any
+            studentIdStrings = Ext.getStore('Students').getStudentIdStrings();
+
+            for (assignmentKey in assignments) {
+                // skip section assignment or students not in current roster
+                if (
+                    assignmentKey == 'section'
+                    || studentIdStrings.indexOf(assignmentKey) == -1
+                    || assignments[assignmentKey] == 'exempt'
+                ) {
+                    continue;
+                }
+
+                studentExempts.push({
+                    sparkpoint: sparkpoint,
+                    section: section,
+                    student_id: assignmentKey,
+                    resource_id: resourceId,
+                    assignment: 'exempt'
+                });
+            }
+
+            // if there are no student-level exempts to be saved, exempt the section
+            if (studentExempts.length == 0) {
+                flagId = 'exempt';
+            }
         }
 
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/assignments/learns',
-            jsonData: {
-                sparkpoint: me.getAssignCt().getSelectedSparkpoint(),
-                section: me.getSelectedSection(),
-                student_id: parentRecord ? record.get('student').getId() : null,
-                resource_id: parentRecord ? parentRecord.getId() : record.getId(),
-                assignment: flagId
-            },
+            jsonData:
+                studentExempts.length
+                ? studentExempts
+                : {
+                    sparkpoint: sparkpoint,
+                    section: section,
+                    student_id: parentRecord ? record.get('student').getId() : null,
+                    resource_id: resourceId,
+                    assignment: flagId
+                },
             success: function(response) {
                 // do nothing cause realtime will handle it
             },
