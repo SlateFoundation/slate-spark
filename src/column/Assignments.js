@@ -326,6 +326,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             studentId = student.getId();
 
             popupStore.add({
+                id: studentId,
                 student: student,
                 studentSparkpoint: activeStudentsStore.findRecord('student_id', studentId),
                 assignments: {
