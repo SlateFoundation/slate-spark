@@ -10,6 +10,7 @@ Ext.define('SparkClassroom.store.work.Learns', {
     config: {
         autoSync: true,
         trackRemoved: false,
+
         grouper: {
             groupFn: function(r) {
                 var assignments = r.get('assignments');
@@ -54,6 +55,13 @@ Ext.define('SparkClassroom.store.work.Learns', {
                 }
             }
         },
+
+        filters: [{
+            filterFn: function(r) {
+                var assignments = r.get('assignments');
+                return (assignments.student || assignments.section) != 'hidden';
+            }
+        }],
 
         proxy: {
             type: 'slate-api',
