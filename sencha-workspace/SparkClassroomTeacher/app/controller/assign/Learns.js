@@ -86,12 +86,26 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
+        var me = this,
+            popupHostColumn = me.getPopupHostColumn(),
+            popupCell;
+
+        // close popup if clicking section-level flag on a different resource
+        if (
+            !parentRecord
+            && popupHostColumn
+            && (popupCell = popupHostColumn.getPopupCell())
+            && popupCell.getRecord() !== record
+        ) {
+            popupHostColumn.setPopupCell(null);
+        }
+
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/assignments/learns',
             jsonData: {
-                sparkpoint: this.getAssignCt().getSelectedSparkpoint(),
-                section: this.getSelectedSection(),
+                sparkpoint: me.getAssignCt().getSelectedSparkpoint(),
+                section: me.getSelectedSection(),
                 student_id: parentRecord ? record.get('student').getId() : null,
                 resource_id: parentRecord ? parentRecord.getId() : record.getId(),
                 assignment: flagId
