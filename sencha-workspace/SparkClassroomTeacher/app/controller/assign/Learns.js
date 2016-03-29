@@ -100,6 +100,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             popupHostColumn.setPopupCell(null);
         }
 
+        // treat click on already-set section-level assignment as unset
+        if (!parentRecord && record.get('assignments').section == flagId) {
+            flagId = 'exempt';
+        }
+
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/assignments/learns',
