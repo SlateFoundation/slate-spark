@@ -238,7 +238,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         me.hideOverlays();
 
-        if(oldValue !== null) {
+        if (oldValue !== null) {
             me.redirectTo(['assign', itemId]);
         }
     },
