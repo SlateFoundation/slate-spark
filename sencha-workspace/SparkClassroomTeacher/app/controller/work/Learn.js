@@ -176,11 +176,23 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             }
         } else if (table == 'learn_assignments_section') {
             if (
-                itemData.section_code == me.getSelectedSection()
-                && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
+                itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
+                && itemData.section_code == me.getSelectedSection()
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
                 learn.set('assignments', Ext.applyIf({section: itemData.assignment}, learn.get('assignments')));
+
+                // TODO: remove this #hack when underlying #framework-bug gets fixed
+                me.getLearnGrid().refresh();
+            }
+        } else if (table == 'learn_assignments_student') {
+            if (
+                itemData.student_id == selectedStudentSparkpoint.get('student_id')
+                && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
+                && itemData.section_code == me.getSelectedSection()
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+            ) {
+                learn.set('assignments', Ext.applyIf({student: itemData.assignment}, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
