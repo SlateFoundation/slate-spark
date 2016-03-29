@@ -91,7 +91,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             jsonData: {
                 sparkpoint: this.getAssignCt().getSelectedSparkpoint(),
                 section: this.getSelectedSection(),
-                student_id: parentRecord ? record.get('student_id') : null,
+                student_id: parentRecord ? record.get('student').getId() : null,
                 resource_id: parentRecord ? parentRecord.getId() : record.getId(),
                 assignment: flagId
             },
