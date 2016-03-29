@@ -294,7 +294,7 @@ Ext.define('SparkClassroom.column.Assignments', {
 
         // find container that provides scrolling
         if (!containingScrollable) {
-            containingScrollable = me.containingScrollable = me.up('grid').up('{getScrollable()}') || Ext.Viewport;
+            containingScrollable = me.containingScrollable = me.up('grid').up(':scrollable') || Ext.Viewport;
         }
 
         // create and render popup the first time it's needed
