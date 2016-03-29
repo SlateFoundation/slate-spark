@@ -58,6 +58,10 @@
         background-image: -webkit-linear-gradient(to bottom right, darken($active-color, 5) 50%, transparent 50%);
         background-image: linear-gradient(to bottom right, darken($active-color, 5) 50%, transparent 50%);
     }
+
+    .is-indirect & {
+        opacity: 0.25;
+    }
 }
 
 .assign-control-frame.single-control {

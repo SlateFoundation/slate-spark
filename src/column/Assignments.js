@@ -38,6 +38,8 @@ Ext.define('SparkClassroom.column.Assignments', {
 
     config: {
         showTrigger: true,
+        studentsStore: 'Students',
+        activeStudentsStore: 'gps.ActiveStudents',
         flags: [
             {
                 id: 'required',
@@ -45,10 +47,10 @@ Ext.define('SparkClassroom.column.Assignments', {
                 icon: 'exclamation-triangle'
             }
         ],
-
         popup: null,
         popupCell: null,
 
+        sortable: false, // TODO: properly configure sorting
         text: null,
         width: null,
 
@@ -96,12 +98,13 @@ Ext.define('SparkClassroom.column.Assignments', {
                 }
             }]
         },
-        renderer: function(assignments, r) {
+        renderer: function(assignments, record) {
             var me = this,
                 htmlEncode = Ext.util.Format.htmlEncode,
+                student = record.get('student'),
                 flags = me.getFlags(),
                 flagsLength = flags.length,
-                i = 0, flag, cls, assignmentKey,
+                i = 0, flag, flagId, cls, assignmentKey,
                 out = [];
 
             assignments = assignments || {};
@@ -110,16 +113,28 @@ Ext.define('SparkClassroom.column.Assignments', {
 
             for (; i < flagsLength; i++) {
                 flag = flags[i];
+                flagId = flag.id;
 
-                if (assignments.section == flag.id) {
-                    cls = 'is-full';
+                // determine cls for student or section
+                if (student) {
+                    if (assignments.student == flagId) {
+                        cls = 'is-full';
+                    } else if (assignments.section == flagId) {
+                        cls = 'is-full is-indirect';
+                    } else {
+                        cls = '';
+                    }
                 } else {
-                    cls = 'is-empty';
+                    if (assignments.section == flagId) {
+                        cls = 'is-full';
+                    } else {
+                        cls = 'is-empty';
 
-                    for (assignmentKey in assignments) {
-                        if (assignments[assignmentKey] == flag.id) {
-                            cls = 'is-partial';
-                            break;
+                        for (assignmentKey in assignments) {
+                            if (assignments[assignmentKey] == flagId) {
+                                cls = 'is-partial';
+                                break;
+                            }
                         }
                     }
                 }
@@ -150,6 +165,14 @@ Ext.define('SparkClassroom.column.Assignments', {
 
 
     // config handlers
+    applyStudentsStore: function(store) {
+        return Ext.StoreMgr.lookup(store);
+    },
+
+    applyActiveStudentsStore: function(store) {
+        return Ext.StoreMgr.lookup(store);
+    },
+
     updateFlags: function(flags)  {
         var me = this,
             htmlEncode = Ext.util.Format.htmlEncode,
@@ -188,9 +211,16 @@ Ext.define('SparkClassroom.column.Assignments', {
 
     updatePopupCell: function(cell, oldCell) {
         var me = this,
-            popup = this.getPopup(),
+            popup = me.getPopup(),
             containingScrollable = me.containingScrollable,
-            assignCellEl, x, y, scrollable,
+            activeStudentsStore = me.getActiveStudentsStore(),
+
+            studentsStore = me.getStudentsStore(),
+            studentsCount = studentsStore.getCount(),
+            i = 0, student, studentId,
+
+            record, assignments,
+            popupStore, assignCellEl, x, y, scrollable,
             headerCt, finishShow;
 
         if (!cell) {
@@ -198,10 +228,21 @@ Ext.define('SparkClassroom.column.Assignments', {
             return;
         }
 
+        // read record and assignments for cell
+        record = cell.getRecord();
+        assignments = record.get('assignments') || {};
+
+        if (record instanceof SparkClassroom.model.StudentSparkpoint) {
+            Ext.Logger.warn('Cannot set popupCell to one bound to a student');
+            return;
+        }
+
+        // find container that provides scrolling
         if (!containingScrollable) {
             containingScrollable = me.containingScrollable = me.up('grid').up('{getScrollable()}') || Ext.Viewport;
         }
 
+        // create and render popup the first time it's needed
         if (!popup) {
             me.setPopup(popup = Ext.create('SparkClassroom.assign.Popup', {
                 hidden: true,
@@ -215,9 +256,31 @@ Ext.define('SparkClassroom.column.Assignments', {
             popup.setRenderTo(containingScrollable.innerElement);
         }
 
-        // initially render popup invisibly so it can be measured
+        // initially display popup invisibly so it can be measured
         popup.setVisibility(false);
         popup.show();
+
+        // populate grid data
+        popupStore = popup.getGrid().getStore();
+        popupStore.beginUpdate();
+
+        popupStore.removeAll(true);
+
+        for (; i < studentsCount; i++) {
+            student = studentsStore.getAt(i);
+            studentId = student.getId();
+
+            popupStore.add({
+                student: student,
+                studentSparkpoint: activeStudentsStore.findRecord('student_id', studentId),
+                assignments: {
+                    section: assignments.section,
+                    student: assignments[studentId]
+                }
+            });
+        }
+
+        popupStore.endUpdate();
 
         // start positioning at bottom-left corner of assign cell
         assignCellEl = cell.element;

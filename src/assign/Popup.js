@@ -26,7 +26,14 @@ Ext.define('SparkClassroom.assign.Popup', {
                 titleBar: null,
                 loadingText: null,
                 margin: 0,
-                store: 'gps.ActiveStudents',
+                store: {
+                    fields: [
+                        'student',
+                        'studentSparkpoint',
+                        'assignments'
+                    ],
+                    trackRemoved: false
+                },
                 plugins: [
                     'gridflex'
                 ],
@@ -35,12 +42,21 @@ Ext.define('SparkClassroom.assign.Popup', {
                         dataIndex: 'student',
                         text: 'Name',
                         flex: 1,
+                        sortable: false, // TODO: properly configure sorting
                         tpl: ['<tpl for="student.getData()">{FullName}</tpl>']
                     },
                     {
-                        dataIndex: 'sparkpoint',
+                        dataIndex: 'studentSparkpoint',
                         text: 'Current Sparkpoint',
-                        flex: 1
+                        flex: 1,
+                        sortable: false, // TODO: properly configure sorting
+                        tpl: [
+                            '<tpl if="studentSparkpoint">',
+                                '<tpl for="studentSparkpoint.getData()">',
+                                    '{sparkpoint}',
+                                '</tpl>',
+                            '</tpl>'
+                        ]
                     },
                     {
                         xtype: 'spark-column-assignments',
@@ -53,5 +69,10 @@ Ext.define('SparkClassroom.assign.Popup', {
 
     updateFlags: function(flags) {
         this.down('spark-column-assignments').setFlags(flags);
+    },
+
+    getGrid: function() {
+        var me = this;
+        return me.grid || (me.grid = me.down('grid'));
     }
 });
