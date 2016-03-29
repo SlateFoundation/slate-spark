@@ -232,13 +232,13 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         this.getAssignCt().setSelectedSparkpoint(sparkpoint.getId());
     },
 
-    onAssignTabChange: function(tabbar, value, oldValue){
+    onAssignTabChange: function(tabbar, value, oldValue) {
         var me = this,
             itemId = tabbar.getActiveTab().getItemId();
 
         me.hideOverlays();
 
-        if(oldValue !== null){
+        if(oldValue !== null) {
             me.redirectTo(['assign', itemId]);
         }
     },
@@ -264,7 +264,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(section){
+    doHighlightTabbars: function(section) {
         var assignTabbar = this.getAssignTabbar(),
             teacherTabbar = this.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#assign'),
