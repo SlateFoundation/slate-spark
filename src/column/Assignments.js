@@ -133,7 +133,7 @@ Ext.define('SparkClassroom.column.Assignments', {
                     if (assignments.student == flagId) {
                         fillCls = 'is-full';
                         sourceCls = 'is-direct';
-                    } else if (assignments.section == flagId) {
+                    } else if (!assignments.student && assignments.section == flagId) {
                         fillCls = 'is-full';
                         sourceCls = 'is-indirect';
                     }
