@@ -111,13 +111,18 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     // route handlers
     rewriteShowWork: function(token, args, route) {
         var workTabBar = this.getWorkTabbar(),
-            workTabId = 'learn';
+            workTabId, activeWorkTab, selectedStudentSparkpoint;
 
-        if (workTabBar) {
-            workTabId = workTabBar.getActiveItem().getItemId();
+        if (
+            workTabBar
+            && (activeWorkTab = workTabBar.getActiveTab())
+        ) {
+            workTabId = activeWorkTab.getItemId();
+        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {
+            workTabId = selectedStudentSparkpoint.get('active_phase');
         }
 
-        return 'work/' + workTabId;
+        return 'work/' + (workTabId || 'learn');
     },
 
     showLearn: function() {
@@ -164,10 +169,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     // event handlers
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
+            activeTeacherTab = me.getTeacherTabbar().getActiveTab(),
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
-        me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
+        if (!activeTeacherTab || activeTeacherTab.getItemId() == 'work') {
+            me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
+        }
 
         if (selectedStudentSparkpoint) {
             studentId = selectedStudentSparkpoint.get('student_id');

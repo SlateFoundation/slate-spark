@@ -126,13 +126,22 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     // route handlers
     rewriteShowContainer: function(token, args, route) {
         var assignTabBar = this.getAssignTabbar(),
-            assignTabId = 'learn';
+            assignTabId, activeAssignTab, selectedStudentSparkpoint;
 
-        if (assignTabBar) {
-            assignTabId = assignTabBar.getActiveItem().getItemId();
+        if (
+            assignTabBar
+            && (activeAssignTab = assignTabBar.getActiveTab())
+        ) {
+            assignTabId = activeAssignTab.getItemId();
+        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {
+            assignTabId = selectedStudentSparkpoint.get('active_phase');
+
+            if (assignTabId == 'conference') {
+                assignTabId = 'conference-questions';
+            }
         }
 
-        return 'assign/' + assignTabId;
+        return 'assign/' + (assignTabId || 'learn');
     },
 
     beforeShowContainer: function(action) {
