@@ -7,10 +7,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     ],
 
 
-    config: {
-        selectedSection: null
-    },
-
     stores: [
         'work.Learns@SparkClassroom.store'
     ],
@@ -41,11 +37,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         store: {
             '#gps.ActiveStudents': {
                 update: 'onActiveStudentUpdate'
@@ -90,10 +81,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     onLearnCtActivate: function() {
         this.syncSelectedStudentSparkpoint();
-    },
-
-    onSectionSelect: function(section) {
-        this.setSelectedSection(section);
     },
 
     onActiveStudentUpdate: function(activeStudentsStore, studentSparkpoint, operation, modifiedFieldNames) {
@@ -174,7 +161,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             if (
                 (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
                 && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
-                && itemData.section_code == me.getSelectedSection()
+                && itemData.section_code == selectedStudentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
                 learn.set('assignments', Ext.applyIf({section: itemData.assignment || null}, learn.get('assignments')));
@@ -187,7 +174,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
                 && itemData.student_id == selectedStudentSparkpoint.get('student_id')
                 && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
-                && itemData.section_code == me.getSelectedSection()
+                && itemData.section_code == selectedStudentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
                 learn.set('assignments', Ext.applyIf({student: itemData.assignment || null}, learn.get('assignments')));
