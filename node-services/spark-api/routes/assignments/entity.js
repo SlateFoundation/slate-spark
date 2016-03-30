@@ -31,14 +31,6 @@ function *sqlGenerator(entity, records, vals) {
     }
 
     function recordToDelete(record, vals) {
-        for (var key in record) {
-            let val = record[key];
-
-            if (val === null && key !== 'assignment') {
-                delete record[key];
-            }
-        }
-
         return `DELETE FROM ${tableName} ${util.recordToWhere(record, vals)}`;
     }
 
@@ -63,8 +55,15 @@ function *sqlGenerator(entity, records, vals) {
             if (validationErrors.length === 1 && record.assignment === null) {
                 // Assignment is null which is an implied delete, we can ignore this validation error, provided that it
                 // is the only validation error
-                delete record.assignment;
                 delete record.teacher_id;
+
+                for (var key in record) {
+                    let val = record[key];
+
+                    if (val === null) {
+                        delete record[key];
+                    }
+                }
 
                 sqlStatements.push(recordToDelete(record, vals));
             } else {
