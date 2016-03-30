@@ -31,6 +31,14 @@ function *sqlGenerator(entity, records, vals) {
     }
 
     function recordToDelete(record, vals) {
+        for (var key in record) {
+            let val = record[key];
+
+            if (val === null && key !== 'assignment') {
+                delete record[key];
+            }
+        }
+
         return `DELETE FROM ${tableName} ${util.recordToWhere(record, vals)}`;
     }
 
