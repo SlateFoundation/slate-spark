@@ -250,10 +250,13 @@ Ext.define('SparkClassroomStudent.controller.Work', {
      * Called by each subsection route handler to ensure container is activated
      */
     doShowContainer: function() {
-        var tabsCt = this.getTabsCt();
+        var tabsCt = this.getTabsCt(),
+            workCt = this.getWorkCt();
 
-        tabsCt.removeAll();
-        tabsCt.add(this.getWorkCt());
+        if (!workCt.isPainted()) {
+            tabsCt.removeAll();
+            tabsCt.add(workCt);
+        }
     },
 
     /**
