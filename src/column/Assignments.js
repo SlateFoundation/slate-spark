@@ -154,7 +154,7 @@ Ext.define('SparkClassroom.column.Assignments', {
 
                         if (assignment == flagId) {
                             matchingStudents++;
-                        } else if (assignment != 'exempt') {
+                        } else if (assignment) {
                             notMatchingStudents++;
                         }
                     }
