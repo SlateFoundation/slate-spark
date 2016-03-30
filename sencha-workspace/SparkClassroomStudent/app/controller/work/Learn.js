@@ -98,34 +98,56 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'learn_activity') {
-            return;
-        }
-
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
+            table = data.table,
             itemData = data.item,
-            updatedLearn;
+            studentSparkpoint, learn;
 
-        if (!studentSparkpoint || studentSparkpoint.get('student_id') != itemData.user_id) {
-            return;
-        }
+        if (table == 'learn_activity') {
+            if (
+                (studentSparkpoint = me.getStudentSparkpoint())
+                && studentSparkpoint.get('student_id') == itemData.user_id
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+            ) {
 
-        updatedLearn = me.getWorkLearnsStore().getById(itemData.resource_id);
+                // TODO: can we find ways to not duplicate this logic between the api and the client?
+                // Can there be an abstraction on the server side so that a higher-level event comes down
+                // with a delta to the object as returned by the API previously so we can just pass the whole
+                // data object to set?
+                learn.set({
+                    launched: itemData.start_status == 'launched',
+                    completed: itemData.completed
+                },{
+                    dirty: false
+                });
 
-        if (updatedLearn) {
-            // TODO: can we find ways to not duplicate this logic between the api and the client?
-            // Can there be an abstraction on the server side so that a higher-level event comes down
-            // with a delta to the object as returned by the API previously so we can just pass the whole
-            // data object to set?
-            updatedLearn.set({
-                launched: itemData.start_status == 'launched',
-                completed: itemData.completed
-            },{
-                dirty: false
-            });
+                me.ensureLearnPhaseStarted();
+            }
+        } else if (table == 'learn_assignments_section') {
+            if (
+                (studentSparkpoint = me.getStudentSparkpoint())
+                && itemData.sparkpoint_code == studentSparkpoint.get('sparkpoint')
+                && itemData.section_code == studentSparkpoint.get('section_code')
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+            ) {
+                learn.set('assignments', Ext.applyIf({section: itemData.assignment || null}, learn.get('assignments')));
 
-            me.ensureLearnPhaseStarted();
+                // TODO: remove this #hack when underlying #framework-bug gets fixed
+                me.getLearnGrid().refresh();
+            }
+        } else if (table == 'learn_assignments_student') {
+            if (
+                (studentSparkpoint = me.getStudentSparkpoint())
+                && itemData.student_id == studentSparkpoint.get('student_id')
+                && itemData.sparkpoint_code == studentSparkpoint.get('sparkpoint')
+                && itemData.section_code == studentSparkpoint.get('section_code')
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+            ) {
+                learn.set('assignments', Ext.applyIf({student: itemData.assignment || null}, learn.get('assignments')));
+
+                // TODO: remove this #hack when underlying #framework-bug gets fixed
+                me.getLearnGrid().refresh();
+            }
         }
     },
 
