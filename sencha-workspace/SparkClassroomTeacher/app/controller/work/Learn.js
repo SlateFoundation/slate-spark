@@ -180,7 +180,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 && itemData.section_code == me.getSelectedSection()
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
-                learn.set('assignments', Ext.applyIf({section: itemData.assignment}, learn.get('assignments')));
+                learn.set('assignments', Ext.applyIf({section: itemData.assignment || null}, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
@@ -192,7 +192,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 && itemData.section_code == me.getSelectedSection()
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
-                learn.set('assignments', Ext.applyIf({student: itemData.assignment}, learn.get('assignments')));
+                learn.set('assignments', Ext.applyIf({student: itemData.assignment || null}, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();

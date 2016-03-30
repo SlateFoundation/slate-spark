@@ -92,7 +92,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             sparkpoint = me.getAssignCt().getSelectedSparkpoint(),
             resourceId = parentRecord ? parentRecord.getId() : record.getId(),
             popupCell, assignments, studentIdStrings, assignmentKey,
-            studentExempts = [];
+            studentDeletes = [];
 
         // close popup if clicking section-level flag on a different resource
         if (
@@ -118,23 +118,23 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
                 if (
                     assignmentKey == 'section'
                     || studentIdStrings.indexOf(assignmentKey) == -1
-                    || assignments[assignmentKey] == 'exempt'
+                    || !assignments[assignmentKey]
                 ) {
                     continue;
                 }
 
-                studentExempts.push({
+                studentDeletes.push({
                     sparkpoint: sparkpoint,
                     section: section,
                     student_id: assignmentKey,
                     resource_id: resourceId,
-                    assignment: 'exempt'
+                    assignment: null
                 });
             }
 
             // if there are no student-level exempts to be saved, exempt the section
-            if (studentExempts.length == 0) {
-                flagId = 'exempt';
+            if (studentDeletes.length == 0) {
+                flagId = null;
             }
         }
 
@@ -144,15 +144,15 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             && (assignments = record.get('assignments'))
             && assignments.student == flagId
         ) {
-            flagId = 'exempt';
+            flagId = null;
         }
 
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/assignments/learns',
             jsonData:
-                studentExempts.length
-                ? studentExempts
+                studentDeletes.length
+                ? studentDeletes
                 : {
                     sparkpoint: sparkpoint,
                     section: section,
@@ -200,7 +200,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             learnsStore = me.getAssignLearnsStore(),
             itemData = data.item,
             studentId = itemData.student_id,
-            assignment = itemData.assignment,
+            assignment = itemData.assignment || null,
             learn = learnsStore.getById(itemData.resource_id),
             assignments = {},
             popupHostColumn, popup, popupStudent,
