@@ -15,10 +15,18 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
         /**
          * Tracks the currently selected {@link SparkClassroomTeacher.model.gps.ActiveStudent}
          */
+        selectedSection: null,
         selectedStudentSparkpoint: null,
 
         layout: 'auto',
         scrollable: 'vertical'
+    },
+
+    updateSelectedSection: function(selectedSection, oldSelectedSection) {
+        var me = this;
+
+        me.setSelectedStudentSparkpoint(null);
+        me.fireEvent('selectedsectionchange', me, selectedSection, oldSelectedSection);
     },
 
     updateSelectedStudentSparkpoint: function(selectedStudentSparkpoint, oldSelectedStudentSparkpoint) {

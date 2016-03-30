@@ -15,15 +15,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     ],
 
 
-    config: {
-        /**
-         * @private
-         * Tracks section last selected via {@link #event-sectionselect}
-         */
-        activeSection: null
-    },
-
-
     stores: [
         'gps.ActiveStudents',
 
@@ -34,11 +25,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     ],
 
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         store: {
             '#Students': {
                 load: 'onStudentsStoreLoad'
@@ -78,19 +64,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
 
-    // config handlers
-    updateActiveSection: function() {
-        this.getAppCt().setSelectedStudentSparkpoint(null);
-    },
-
-
     // event handlers
     onSelectedStudentSparkpointChange: function() {
         this.syncSelectedStudentSparkpoint();
-    },
-
-    onSectionSelect: function(section) {
-        this.setActiveSection(section);
     },
 
     onStudentsStoreLoad: function(studentsStore, students, success) {
@@ -146,7 +122,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         if (table == 'section_student_active_sparkpoint') {
             if (
-                itemData.section_code == me.getActiveSection() &&
+                itemData.section_code == me.getAppCt().getSelectedSection() &&
                 (
                     !(studentSparkpoint = me.getGpsActiveStudentsStore().findRecord('student_id', itemData.student_id)) ||
                     (

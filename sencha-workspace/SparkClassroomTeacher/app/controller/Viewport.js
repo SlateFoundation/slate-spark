@@ -18,14 +18,6 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     tokenSectionRe: /^([^:]+):(.*)$/,
 
-    config: {
-        /**
-         * @private
-         * Tracks section last selected via {@link #event-sectionselect}
-         */
-        selectedSection: null
-    },
-
     views: [
         'TitleBar@SparkClassroom',
         'NavBar',
@@ -95,6 +87,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     control: {
+        appCt: {
+            selectedsectionchange: 'onSelectedSectionChange'
+        },
         sectionSelect: {
             change: 'onSectionSelectChange'
         },
@@ -120,35 +115,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
 
-    // config handlers
-    updateSelectedSection: function(section, oldSection) {
-        var me = this,
-            token = Ext.util.History.getToken(),
-            sectionMatch = token && me.tokenSectionRe.exec(token),
-            studentStore = Ext.getStore('Students');
-
-        if (section) {
-            me.getSectionSelect().setValue(section);
-
-            //show section dependant components
-            me.getNavBar().show();
-            me.getSparkGPS().show();
-            me.getTabsCt().show();
-
-            studentStore.getProxy().setUrl('/sections/' + section + '/students');
-            studentStore.load();
-
-            // redirect with the current un-prefixed route or an empty string to write the new section into the route
-            me.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
-        }
-
-        me.getApplication().fireEvent('sectionselect', section, oldSection);
-    },
-
-
     // event handlers
     onBeforeRedirect: function(token, resume) {
-        var sectionCode = this.getSelectedSection();
+        var sectionCode = this.getAppCt().getSelectedSection();
 
         if (sectionCode) {
             resume(sectionCode + ':' + token);
@@ -162,18 +131,42 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             sectionCode = sectionMatch && sectionMatch[1];
 
         if (sectionCode) {
-            me.setSelectedSection(sectionCode);
+            me.getAppCt().setSelectedSection(sectionCode);
             resume(sectionMatch[2]);
             return false;
         }
     },
 
+    onSelectedSectionChange: function(appCt, selectedSection, oldSelectedSection) {
+        var me = this,
+            token = Ext.util.History.getToken(),
+            sectionMatch = token && me.tokenSectionRe.exec(token),
+            studentStore = Ext.getStore('Students');
+
+        if (selectedSection) {
+            me.getSectionSelect().setValue(selectedSection);
+
+            //show section dependant components
+            me.getNavBar().show();
+            me.getSparkGPS().show();
+            me.getTabsCt().show();
+
+            studentStore.getProxy().setUrl('/sections/' + selectedSection + '/students');
+            studentStore.load();
+
+            // redirect with the current un-prefixed route or an empty string to write the new section into the route
+            me.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
+        }
+
+        debugger;
+    },
+
     onSectionsStoreLoad: function(store) {
-        this.getSectionSelect().setValue(this.getSelectedSection());
+        this.getSectionSelect().setValue(this.getAppCt().getSelectedSection());
     },
 
     onSectionSelectChange: function(selectField, section, oldSection) {
-        this.setSelectedSection(section.get('Code'));
+        this.getAppCt().setSelectedSection(section.get('Code'));
     },
 
     onTeacherTabChange: function(tabBar, value, oldValue) {

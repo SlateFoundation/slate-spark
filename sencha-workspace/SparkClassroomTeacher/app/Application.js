@@ -60,7 +60,7 @@ Ext.define('SparkClassroomTeacher.Application', {
          * @private
          * Tracks section last selected via {@link #event-sectionselect}
          */
-        activeSection: null,
+        selectedSection: null,
 
         /**
          * @inheritdoc
@@ -74,12 +74,11 @@ Ext.define('SparkClassroomTeacher.Application', {
         }
     },
 
+    refs: {
+        appCt: 'spark-teacher-appct'
+    },
+
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         socket: {
             reconnect: 'onSocketReconnect'
 
@@ -103,6 +102,12 @@ Ext.define('SparkClassroomTeacher.Application', {
         }
     },
 
+    control: {
+        appCt: {
+            selectedsectionchange: 'onSelectedSectionChange'
+        },
+    },
+
 
     // template methods
     onAppUpdate: function () {
@@ -116,39 +121,35 @@ Ext.define('SparkClassroomTeacher.Application', {
     },
 
 
-    // config handlers
-    updateActiveSection: function(section, oldSection) {
+    // event handers
+    onSelectedSectionChange: function(appCt, selectedSection, oldSelectedSection) {
         var apiHost = Slate.API.getHost();
 
+        this.setSelectedSection(selectedSection);
+
         Slate.API.setExtraParams({
-            section: section
+            section: selectedSection
         });
 
-        if (oldSection) {
+        if (oldSelectedSection) {
             SparkClassroom.Socket.emit('unsubscribe', {
-                section: oldSection,
+                section: oldSelectedSection,
                 host: apiHost
             });
         }
 
         SparkClassroom.Socket.emit('subscribe', {
-            section: section,
+            section: selectedSection,
             host: apiHost
         });
     },
 
-
-    // event handers
-    onSectionSelect: function(section, oldSection) {
-        this.setActiveSection(section);
-    },
-
     onSocketReconnect: function() {
-        var section = this.getActiveSection();
+        var selectedSection = this.getSelectedSection();
 
-        if (section) {
+        if (selectedSection) {
             SparkClassroom.Socket.emit('subscribe', {
-                section: section,
+                section: selectedSection,
                 host: Slate.API.getHost()
             });
         }
