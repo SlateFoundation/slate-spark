@@ -149,17 +149,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     onSocketData: function(socket, data) {
         var me = this,
             table = data.table,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             itemData = data.item,
-            learn;
-
-        if (!selectedStudentSparkpoint) {
-            return;
-        }
+            selectedStudentSparkpoint, learn;
 
         if (table == 'learn_activity') {
             if (
-                selectedStudentSparkpoint.get('student_id') == itemData.user_id
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+                && selectedStudentSparkpoint.get('student_id') == itemData.user_id
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
 
@@ -176,7 +172,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             }
         } else if (table == 'learn_assignments_section') {
             if (
-                itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+                && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
                 && itemData.section_code == me.getSelectedSection()
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
@@ -187,7 +184,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             }
         } else if (table == 'learn_assignments_student') {
             if (
-                itemData.student_id == selectedStudentSparkpoint.get('student_id')
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+                && itemData.student_id == selectedStudentSparkpoint.get('student_id')
                 && itemData.sparkpoint_code == selectedStudentSparkpoint.get('sparkpoint')
                 && itemData.section_code == me.getSelectedSection()
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
