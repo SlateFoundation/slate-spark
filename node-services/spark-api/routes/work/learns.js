@@ -369,8 +369,9 @@ function* launchHandler(resourceId) {
 
     if (learnResource.url) {
         try {
-            yield (inlinerThunk(learnResource.url));
+            ctx.body = yield (inlinerThunk(learnResource.url));
         } catch (e) {
+            ctx.throw(new Error(e));
             ctx.redirect(learnResource.url);
         }
     } else {
