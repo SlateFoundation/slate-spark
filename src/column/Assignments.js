@@ -107,6 +107,7 @@ Ext.define('SparkClassroom.column.Assignments', {
                 student = record.get('student'),
                 studentIdStrings = me.studentIdStrings || [],
                 studentsCount = studentIdStrings.length,
+                sectionAssignment,
 
                 flags = me.getFlags(),
                 flagsLength = flags.length,
@@ -118,6 +119,7 @@ Ext.define('SparkClassroom.column.Assignments', {
 
             // grab things we need quick access to inside the loop
             assignments = assignments || {};
+            sectionAssignment = assignments.section;
 
             // render list of flags based on assignments
             out.push('<ul class="assign-control-list">');
@@ -135,7 +137,7 @@ Ext.define('SparkClassroom.column.Assignments', {
                         sourceCls = 'is-direct';
                     } else if (
                         (!assignments.student || assignments.student == 'exempt')
-                        && assignments.section == flagId
+                        && sectionAssignment == flagId
                     ) {
                         fillCls = 'is-full';
                         sourceCls = 'is-indirect';
@@ -162,12 +164,18 @@ Ext.define('SparkClassroom.column.Assignments', {
                     if (
                         matchingStudents == studentsCount
                         || (
-                            assignments.section == flagId
+                            sectionAssignment == flagId
                             && notMatchingStudents == 0
                         )
                     ) {
                         fillCls = 'is-full';
-                    } else if (matchingStudents) {
+                    } else if (
+                        matchingStudents
+                        || (
+                            sectionAssignment == flagId
+                            && notMatchingStudents != studentsCount
+                        )
+                    ) {
                         fillCls = 'is-partial';
                     }
 
