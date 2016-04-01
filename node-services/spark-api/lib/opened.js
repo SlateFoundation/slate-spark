@@ -130,7 +130,7 @@ var filterObjectKeys = require('./util').filterObjectKeys,
     openEdTokenExpiration = new Date().getTime(),
     openEdClientSecret = '',
     openEdClientId = '',
-    openEdClientBaseUrl = 'https://api.opened.io',
+    openEdClientBaseUrl = 'http://api-staging.opened.com',
     configFile,
     openEdClient,
     clientOptions = {
@@ -403,6 +403,8 @@ function* getResources(params) {
 
         return resources;
     }
+
+    console.log(resources.request.req.toCurl());
 
     return resources.body;
 }
