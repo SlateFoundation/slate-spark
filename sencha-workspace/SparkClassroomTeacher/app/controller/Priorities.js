@@ -3,22 +3,8 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
     extend: 'Ext.app.Controller',
 
 
-    config: {
-        /**
-         * @private
-         * Tracks section last selected via {@link #event-sectionselect}
-         */
-        activeSection: null
-    },
-
-
     // entry points
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         store: {
             '#Students': {
                 load: 'onStudentsLoad'
@@ -53,10 +39,6 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
 
     onSelectedStudentSparkpointChange: function() {
         this.syncSelectedStudentSparkpoint();
-    },
-
-    onSectionSelect: function(section) {
-        this.setActiveSection(section);
     },
 
     // controller methods
@@ -94,7 +76,7 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
 
         if (table == 'section_student_active_sparkpoint') {
             if (
-                itemData.section_code == me.getActiveSection() &&
+                itemData.section_code == me.getAppCt().getSelectedSection() &&
                 (
                     !(studentSparkpoint = me.getGpsPrioritiesStore().findRecord('student_id', itemData.student_id)) ||
                     (
