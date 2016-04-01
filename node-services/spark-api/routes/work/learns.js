@@ -7,7 +7,8 @@ var fs = require('fs'),
     util = require('../../lib/util'),
     Fusebox = require('../../lib/fusebox'),
     slack = require('../../lib/slack'),
-    AsnStandard = require('../../lib/asn-standard');
+    AsnStandard = require('../../lib/asn-standard'),
+    Inliner = require('inliner');
 
 function* getHandler() {
     var ctx = this,
@@ -332,7 +333,15 @@ function* patchHandler() {
     });
 }
 
+function inlinerThunk(url) {
+    return function(done) {
+        new Inliner(url, done);
+    };
+}
+
 function* launchHandler(resourceId) {
+    var ctx = this;
+
     this.require(['student_id']);
 
     var origResourceId = resourceId || this.query.resource_id,
@@ -353,7 +362,11 @@ function* launchHandler(resourceId) {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
-        this.response.redirect(learnResource.url);
+        try {
+            ctx.body = yield inlinerThunk(learnResource.url);
+        } catch (e) {
+            ctx.redirect(learnResource.url);
+        }
     } else {
         // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
         this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
