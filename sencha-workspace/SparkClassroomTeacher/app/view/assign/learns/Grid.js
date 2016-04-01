@@ -58,12 +58,12 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
                     {
                         id: 'required-first',
                         text: 'Start Here',
-                        icon: 'star'
+                        icon: 'flag-checkered'
                     },
                     {
                         id: 'required',
                         text: 'Required',
-                        icon: 'exclamation-triangle'
+                        icon: 'asterisk'
                     },
                     {
                         id: 'recommended',
@@ -73,7 +73,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
                     {
                         id: 'hidden',
                         text: 'Hidden',
-                        icon: 'times-circle'
+                        icon: 'eye-slash'
                     }
                 ],
             },
