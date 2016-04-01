@@ -5,8 +5,12 @@
     margin: .5em 0 2em;
     padding: 0;
 
-    .x-tabbar-inner > .x-tab {
-        margin: 0;
+    .x-tabbar-inner {
+        @include st-box-align(end);
+
+        > .x-tab {
+            margin: 0;
+        }
     }
 
     .x-tab {
@@ -14,6 +18,7 @@
         border: none;
         color: $color;
         cursor: pointer;
+        @include st-box-flex(1);
         font-size: large;
         padding: .8em;
         position: relative;
