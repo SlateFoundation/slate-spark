@@ -27,10 +27,9 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 //     '<span class="item-flag">{help_request_abbr}</span>',
                 // '</tpl> ',
 
-                '{% values.duration = this.getDuration(values) %}',
-                '<tpl if="duration">',
+                '<tpl if="subphase_duration">',
                     '<span class="item-timestamp">',
-                        '{duration:fuzzyDuration(true)}',
+                        '{subphase_duration:fuzzyDuration(true)}',
                     '</span>',
                 '</tpl>',
                 '<tpl if="showDismissButton">',
@@ -41,23 +40,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 '<ul class="gps-list-sparkpoints">',
                     '<li class="gps-list-sparkpoint">{sparkpoint}</li>',
                 '</ul>',
-            '</div>',
-            {
-                getDuration: function(data) {
-                    switch (data.active_phase) {
-                        case 'learn':
-                            return data.learn_subphase_duration;
-                        case 'conference':
-                            return data.conference_subphase_duration;
-                        case 'apply':
-                            return data.apply_subphase_duration;
-                        case 'assess':
-                            return data.assess_subphase_duration;
-                        default:
-                            return null;
-                    }
-                }
-            }
+            '</div>'
         ]
     },
 

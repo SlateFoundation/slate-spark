@@ -70,40 +70,28 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         },
 
         {
-            name: 'priority_date',
-            persist: false,
+            name: 'subphase_duration',
+            persists: false,
             depends: [
-                'conference_start_time',
-                'conference_join_time',
-                'conference_finish_time',
-                'apply_ready_time',
-                'apply_finish_time',
-                'assess_ready_time',
-                'assess_finish_time'
+                'active_phase',
+                'learn_subphase_duration',
+                'conference_subphase_duration',
+                'apply_subphase_duration',
+                'assess_subphase_duration'
             ],
             convert: function(v, r) {
-                var conferenceStartTime = r.get('conference_start_time'),
-                    conferenceJoinTime = r.get('conference_join_time'),
-                    applyReadyTime = r.get('apply_ready_time'),
-                    assessReadyTime = r.get('assess_ready_time');
-
-                if (conferenceStartTime && !conferenceJoinTime) {
-                    return conferenceStartTime;
+                switch (r.get('active_phase')) {
+                    case 'learn':
+                        return r.get('learn_subphase_duration');
+                    case 'conference':
+                        return r.get('conference_subphase_duration');
+                    case 'apply':
+                        return r.get('apply_subphase_duration');
+                    case 'assess':
+                        return r.get('assess_subphase_duration');
+                    default:
+                        return null;
                 }
-
-                if (conferenceJoinTime && !r.get('conference_finish_time')) {
-                    return conferenceJoinTime;
-                }
-
-                if (applyReadyTime && !r.get('apply_finish_time')) {
-                    return applyReadyTime;
-                }
-
-                if (assessReadyTime && !r.get('assess_finish_time')) {
-                    return assessReadyTime;
-                }
-
-                return null;
             }
         },
 

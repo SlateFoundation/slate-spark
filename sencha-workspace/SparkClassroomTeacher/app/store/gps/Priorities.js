@@ -82,7 +82,8 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
             }
         },
         sorters: [{
-            property: 'priority_date'
+            property: 'subphase_duration',
+            direction: 'DESC'
         }]
     }
 });
