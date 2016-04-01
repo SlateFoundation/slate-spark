@@ -57,12 +57,6 @@ Ext.define('SparkClassroomTeacher.Application', {
 
     config: {
         /**
-         * @private
-         * Tracks section last selected via {@link #event-sectionselect}
-         */
-        selectedSection: null,
-
-        /**
          * @inheritdoc
          * @private
          * Preconfigure the viewport to start with a top-level scrollable container for the main UI components
@@ -125,8 +119,6 @@ Ext.define('SparkClassroomTeacher.Application', {
     onSelectedSectionChange: function(appCt, selectedSection, oldSelectedSection) {
         var apiHost = Slate.API.getHost();
 
-        this.setSelectedSection(selectedSection);
-
         Slate.API.setExtraParams({
             section: selectedSection
         });
@@ -145,7 +137,7 @@ Ext.define('SparkClassroomTeacher.Application', {
     },
 
     onSocketReconnect: function() {
-        var selectedSection = this.getSelectedSection();
+        var selectedSection = this.getAppCt().getSelectedSection();
 
         if (selectedSection) {
             SparkClassroom.Socket.emit('subscribe', {
