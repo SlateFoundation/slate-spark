@@ -6,7 +6,6 @@
 
 .assign-control-item {
     flex: 1;
-    text-align: center;
 
     .menu-trigger {
         cursor: pointer;
@@ -23,10 +22,15 @@
 }
 
 .assign-control-frame {
-    border: 2px solid lighten($color, 10);
+    $control-border-color: lighten($color, 10);
+    $full-color: darken($active-color, 5);
+    $indirect-color: rgba($full-color, .25);
+
+    border: 2px solid $control-border-color;
     border-radius: 1em;
     cursor: pointer;
     height: 1.25em;
+    margin: auto;
     width: 1.25em;
 
     &:hover,
@@ -55,12 +59,21 @@
     }
 
     .is-partial & {
-        background-image: -webkit-linear-gradient(to bottom right, darken($active-color, 5) 50%, transparent 50%);
-        background-image: linear-gradient(to bottom right, darken($active-color, 5) 50%, transparent 50%);
+        background-image: -webkit-linear-gradient(to bottom right, $full-color 50%, transparent 50%);
+        background-image: linear-gradient(to bottom right, $full-color 50%, transparent 50%);
     }
 
     .is-indirect & {
-        opacity: 0.25;
+        border-color: mix($control-border-color, white, 40%);
+    }
+
+    .is-indirect.is-full & {
+        background-color: $indirect-color;
+    }
+
+    .is-indirect.is-partial & {
+        background-image: -webkit-linear-gradient(to bottom right, $indirect-color 50%, transparent 50%);
+        background-image: linear-gradient(to bottom right, $indirect-color 50%, transparent 50%);
     }
 
     .is-empty.is-direct & {

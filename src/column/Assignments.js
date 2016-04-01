@@ -47,7 +47,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             {
                 id: 'required',
                 text: 'Required',
-                icon: 'exclamation-triangle'
+                icon: 'asterisk'
             }
         ],
         popup: null,
@@ -251,7 +251,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             flag = flags[i];
 
             textOut.push(
-                '<div class="flex-1">',
+                '<div class="flex-1 text-center">',
                     '<i class="fa fa-lg fa-'+flag.icon+'" title="'+htmlEncode(flag.text)+'"></i>',
                 '</div>'
             );
