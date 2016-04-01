@@ -2,28 +2,25 @@
 
 var fs = require('fs'),
     path = require('path'),
-    server,
     async = require('async'),
     OpenEd = require('../../lib/opened'),
     util = require('../../lib/util'),
-    JsonApiError = require('../../lib/error').JsonApiError,
     Fusebox = require('../../lib/fusebox'),
-    db = require('../../middleware/database'),
     slack = require('../../lib/slack'),
     AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
-        studentId = ctx.query.student_id,
+        studentId = ctx.isStudent ? ctx.userId : parseInt(ctx.query.student_id, 10),
         sectionId = ctx.query.section_id,
         standardIds = [],
         openedIds = [],
-        playlist, playlistLen, x, resourceIds, activities, opened, params, fusebox, reviews, assignments;
+        playlist, opened, params, fusebox, reviews, assignments;
 
     ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
-    ctx.assert(ctx.isStudent ? studentId : true, 'only teachers can query for section-level playlists', 403);
+    ctx.assert(studentId > 0, 'non-student users must pass a student_id in the query string', 400);
 
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
@@ -32,107 +29,6 @@ function* getHandler() {
     });
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
-
-    // TODO: Deprecate cached playlist for non-student users
-    // Non-student users get a cached view of the playlist
-    /*if (!ctx.isStudent) {
-        playlist = yield ctx.pgp.oneOrNone(`
-            SELECT playlist
-              FROM learn_playlist_cache
-             WHERE student_id = $1
-               AND section_id = $2
-               AND sparkpoint_id = $3`,
-            [studentId, sectionId, sparkpointId]);
-
-        if (!playlist) {
-            return ctx.body = [];
-        } else {
-            playlist = playlist.playlist.map(function(item) {
-                item.launch_url = item.url;
-                return item;
-            });
-            playlistLen = playlist.length;
-            resourceIds = playlist.map(item => item.resource_id);
-        }
-
-        activities = yield ctx.pgp.manyOrNone(`
-            SELECT resource_id,
-                   completed,
-                   start_status = 'launched' AS launched
-              FROM learn_activity
-             WHERE resource_id = ANY($1)
-               AND user_id = $2`, [resourceIds, studentId]);
-
-        activities.forEach(function (activity) {
-            for (x = 0; x < playlistLen; x++) {
-                if (activity.resource_id === playlist[x].resource_id) {
-                    playlist[x].completed = activity.completed;
-                    playlist[x].launched = activity.launched;
-                    break;
-                }
-            }
-        });
-
-        reviews = yield ctx.pgp.manyOrNone(`
-            SELECT rating,
-                   comment
-              FROM learn_reviews
-             WHERE resource_id = ANY($1)
-               AND student_id = $2`, [resourceIds, studentId]);
-
-        reviews.forEach(function (review) {
-            for (x = 0; x < playlistLen; x++) {
-                if (review.resource_id === playlist[x].resource_id) {
-                    playlist[x].rating = review.rating;
-                    playlist[x].comment = review.comment;
-                    break;
-                }
-            }
-        });
-
-        assignments = yield ctx.pgp.oneOrNone(`
-            SELECT json_object_agg(
-                      resource_id,
-                      assignment
-                   ) AS json
-              FROM (
-                   SELECT resource_id,
-                          json_object_agg(
-                             CASE WHEN student_id IS NULL
-                                  THEN 'section'
-                                  ELSE 'student'
-                             END,
-                             assignment
-                          ) AS assignment
-                     FROM (
-                           SELECT resource_id,
-                                  assignment,
-                                  student_id
-                            FROM learn_assignments
-                           WHERE sparkpoint_id = $1
-                             AND section_id = $2
-                             AND (
-                                       student_id = $3
-                                    OR student_id IS NULL
-                                 )
-                           ) t GROUP BY resource_id
-              ) t;
-        `, [sparkpointId, sectionId, studentId]);
-
-        if (typeof assignments.json === 'object') {
-            assignments = assignments.json;
-
-            playlist = playlist.map(function(resource) {
-                if (assignments[resource.resource_id]) {
-                    resource.assignment = assignments[resource.resource_id];
-                }
-
-                return resource;
-            });
-        }
-
-        return ctx.body = playlist;
-    }*/
 
     params = {
         limit: 50,
@@ -145,20 +41,18 @@ function* getHandler() {
 
     if (openedIds.length === 0) {
         let error = new Error('OPENED: Unable to lookup vendor ids for specified standards: ' + standardIds.join(', '));
-        console.error(error);
-        // yield slack.postErrorToSlack(error, ctx, { standardIds: standardIds }, true);
+        console.warn(error);
         opened = [];
     } else {
         try {
             opened = yield OpenEd.getResources(params);
         } catch (e) {
             console.error('OPENED: ', e);
-            yield slack.postErrorToSlack(e, ctx, null, true);
             opened = [];
         }
 
         if (!Array.isArray(opened.resources)) {
-            yield slack.postErrorToSlack('OpenEd failed to return resources!', ctx, opened, false);
+            console.error('OPENED: OpenEd failed to return resources!');
         }
 
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
@@ -260,7 +154,6 @@ function* getHandler() {
         )
     `;
 
-        if (studentId) {
             sql += `
                  SELECT lr.*,
                          la.completed,
@@ -273,17 +166,16 @@ function* getHandler() {
                     FROM new_learn_resources lr
                LEFT JOIN learn_activity la
                       ON la.resource_id = lr.id
-                     AND la.user_id = 7
+                     AND la.user_id = $1
                LEFT JOIN learn_reviews
                       ON learn_reviews.resource_id = lr.id
-                     AND learn_reviews.student_id = 7
+                     AND learn_reviews.student_id = $1
                LEFT JOIN assignments
                       ON assignments.resource_id = lr.id
                LEFT JOIN reviews_json
                       ON reviews_json.resource_id = lr.id
                LEFT JOIN ratings
                       ON ratings.resource_id = lr.id`;
-        }
 
         resourceIdentifiers = yield ctx.pgp.manyOrNone(
             sql,
