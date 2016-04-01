@@ -87,9 +87,9 @@ function* getFuseboxResources(asnIds) {
            standards,
            standardids,
            v.name AS vendor
-      FROM slate1.fusebox_learn_links
+      FROM slate1.fusebox_learn_links ll
       JOIN slate1.fusebox_vendors v
-        ON v.id = slate1.fusebox_learn_links.vendorid`,
+        ON v.id = ll.vendorid`,
         params = [],
         where = [],
         resources;
@@ -106,7 +106,10 @@ function* getFuseboxResources(asnIds) {
         query += ' WHERE ' + where.join(' AND ');
     }
 
-    query += ';';
+    // Fusebox content is ordered by the date it was created and whether or not it was bulk loaded (creatorid = 3)
+    query += `ORDER BY url,
+                       ll.created DESC,
+                       ll.creatorid != 3 DESC;`;
 
     resources = yield db.manyOrNone(query, params);
 
