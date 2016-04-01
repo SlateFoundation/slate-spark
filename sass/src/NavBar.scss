@@ -45,7 +45,7 @@
     box-shadow: 0 .25em 1em rgba(black, .25);
 
     .sparkpoint-recommended {
-        &:before {
+        &::before {
             color: mix($color, $active-color, 20%);
             content: 'Recommended';
             font-size: small;

@@ -32,6 +32,6 @@ Ext.define('SparkClassroom.widget.SparkpointSuggestions', {
                 '</tpl>',
             '</div>' // close flex or description
         ],
-        emptyText: 'No suggestions available, type a code or part of the title to find sparkpoints'
+        emptyText: '<p>No suggestions available.</p><p>Type a code or part of the title to find Sparkpoints.</p>'
     }
 });
