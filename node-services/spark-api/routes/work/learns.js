@@ -335,13 +335,13 @@ function* patchHandler() {
 
 function inlinerThunk(url) {
     return function(done) {
-        new Inliner(url, function(err, html) {
+        new Inliner(url, function (err, html) {
             if (err) {
-                return done(err);
+                return done && done(err);
             }
 
-            done(null, html);
-        })
+            done && done(null, html);
+        });
     };
 }
 
@@ -369,7 +369,7 @@ function* launchHandler(resourceId) {
 
     if (learnResource.url) {
         try {
-            ctx.body = yield inlinerThunk(learnResource.url);
+            ctx.body = yield (inlinerThunk(learnResource.url));
         } catch (e) {
             ctx.redirect(learnResource.url);
         }
