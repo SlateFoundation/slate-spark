@@ -334,8 +334,10 @@ function* patchHandler() {
 }
 
 function inlinerThunk(url) {
+    console.log(url);
     return function(done) {
-        new Inliner(url, done);
+        console.log(done);
+        return new Inliner(url, done);
     };
 }
 
@@ -362,6 +364,7 @@ function* launchHandler(resourceId) {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
+
         try {
             ctx.body = yield inlinerThunk(learnResource.url);
         } catch (e) {
