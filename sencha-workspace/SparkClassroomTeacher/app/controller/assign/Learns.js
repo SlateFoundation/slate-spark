@@ -15,15 +15,12 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     ],
 
 
-    config: {
-        selectedSection: null
-    },
-
     stores: [
         'assign.Learns'
     ],
 
     refs: {
+        appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
         learnsCt: 'spark-teacher-assign-learns',
         popupHostColumn: 'spark-teacher-assign-learns-grid spark-assign-popup ^ spark-column-assignments'
@@ -42,11 +39,6 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         store: {
             '#assign.Learns': {
                 load: 'onLearnsStoreLoad'
@@ -88,7 +80,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
         var me = this,
             popupHostColumn = me.getPopupHostColumn(),
-            section = me.getSelectedSection(),
+            section = me.getAppCt().getSelectedSection(),
             sparkpoint = me.getAssignCt().getSelectedSparkpoint(),
             resourceId = parentRecord ? parentRecord.getId() : record.getId(),
             popupCell, assignments, studentIdStrings, assignmentKey,
@@ -177,10 +169,6 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         });
     },
 
-    onSectionSelect: function(section) {
-        this.setSelectedSection(section);
-    },
-
     onLearnsStoreLoad: function(store, records, success, operation) {
         var responseData;
 
@@ -208,7 +196,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
         if (
             !learn
-            || itemData.section_code != me.getSelectedSection()
+            || itemData.section_code != me.getAppCt().getSelectedSection()
             || itemData.sparkpoint_code != me.getAssignCt().getSelectedSparkpoint()
         ) {
             return;
