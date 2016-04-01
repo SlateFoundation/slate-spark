@@ -76,10 +76,11 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
                         icon: 'eye-slash'
                     }
                 ],
-            },
-            {
-                xtype: 'spark-flag-column'
             }
+            // TODO: implement flagging
+            // {
+            //     xtype: 'spark-flag-column'
+            // }
         ]
     }
 
