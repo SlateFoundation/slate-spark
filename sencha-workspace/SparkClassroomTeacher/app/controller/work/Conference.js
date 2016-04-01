@@ -8,9 +8,6 @@
 Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
-    config: {
-        selectedSection: null
-    },
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
@@ -46,6 +43,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     control: {
         appCt: {
+            selectedsectionchange: 'onSelectedSectionChange',
             selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
         },
         conferenceCt: {
@@ -82,11 +80,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         store: {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
@@ -132,20 +125,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         }
     },
 
-    updateSelectedSection: function(section) {
+    onSelectedSectionChange: function(appCt, selectedSection) {
         var groupsStore = this.getWorkConferenceGroupsStore();
 
-        if (section && groupsStore.isLoaded()) {
+        if (selectedSection && groupsStore.isLoaded()) {
             groupsStore.load();
         }
     },
 
 
     // event handlers
-    onSectionSelect: function(section) {
-        this.setSelectedSection(section);
-    },
-
     onConferenceCtActivate: function() {
         var me = this,
             groupsStore = me.getWorkConferenceGroupsStore();
@@ -227,7 +216,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             group = me.getWorkConferenceGroupModel().create({
-                section_code: me.getSelectedSection(),
+                section_code: me.getAppCt().getSelectedSection(),
                 timer_time: new Date()
             });
 
@@ -441,7 +430,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
             if (group = groupsStore.getById(item.id)) {
                 group.set(item, { dirty: false });
-            } else if (item.section_code == me.getSelectedSection()) {
+            } else if (item.section_code == me.getAppCt().getSelectedSection()) {
                 groupsStore.add(item);
             }
         }
