@@ -326,7 +326,8 @@ function* patchHandler() {
     yield this.pgp.task(function*(pgp) {
         ctx.body = {
             success: true,
-            records: (yield pgp.any(util.queriesToReturningJsonCte(statements), vals.vals)).map(record => record.json)
+            // TODO: HACK: || [] ... not sure why we need this, investigate
+            records: ((yield pgp.any(util.queriesToReturningJsonCte(statements), vals.vals)) || []).map(record => record.json)
         };
     });
 }
