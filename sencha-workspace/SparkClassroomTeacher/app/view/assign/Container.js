@@ -25,15 +25,19 @@ Ext.define('SparkClassroomTeacher.view.assign.Container', {
             {
                 docked: 'top',
                 xtype: 'container',
-                cls: 'content-card-inline',
-                margin: 0,
+                cls: 'spark-assign-sparkpoint-ct',
+                layout: {
+                    type: 'hbox',
+                    pack: 'end'
+                },
                 items: [
                     {
                         xtype: 'spark-sparkpointfield',
                         label: 'Assign for Sparkpoint',
                         labelAlign: 'left',
-                        labelWidth: 175,
-                        labelCls: null
+                        labelWidth: 152,
+                        labelCls: null,
+                        width: 440
                     }
                 ]
             },

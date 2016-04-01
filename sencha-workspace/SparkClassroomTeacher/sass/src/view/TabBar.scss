@@ -2,6 +2,9 @@
     box-shadow: 0 2px 4px rgba(black, .2);
     margin: 1.5em 0;
     padding: 0;
+    position: relative;
+    z-index: 1;
+
 
     .x-tabbar-inner {
         > .x-tab { // override vendor specificity
@@ -30,5 +33,6 @@
     small {
         display: block;
         margin-top: -.25em;
+        opacity: .5;
     }
 }
