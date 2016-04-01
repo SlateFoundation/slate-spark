@@ -70,6 +70,44 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
         },
 
         {
+            name: 'priority_date',
+            persist: false,
+            depends: [
+                'conference_start_time',
+                'conference_join_time',
+                'conference_finish_time',
+                'apply_ready_time',
+                'apply_finish_time',
+                'assess_ready_time',
+                'assess_finish_time'
+            ],
+            convert: function(v, r) {
+                var conferenceStartTime = r.get('conference_start_time'),
+                    conferenceJoinTime = r.get('conference_join_time'),
+                    applyReadyTime = r.get('apply_ready_time'),
+                    assessReadyTime = r.get('assess_ready_time');
+
+                if (conferenceStartTime && !conferenceJoinTime) {
+                    return conferenceStartTime;
+                }
+
+                if (conferenceJoinTime && !r.get('conference_finish_time')) {
+                    return conferenceJoinTime;
+                }
+
+                if (applyReadyTime && !r.get('apply_finish_time')) {
+                    return applyReadyTime;
+                }
+
+                if (assessReadyTime && !r.get('assess_finish_time')) {
+                    return assessReadyTime;
+                }
+
+                return null;
+            }
+        },
+
+        {
             name: 'conference_feedback',
             persist: false,
             convert: function(v) {
