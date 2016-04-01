@@ -5,18 +5,12 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
 
     // custom configs
     config: {
-        studentSparkpoint: null,
-        activeSection: null
+        studentSparkpoint: null
     },
 
 
     // entry points
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         store: {
             '#Students': {
                 load: 'onStudentsLoad'
@@ -40,15 +34,12 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
     ],
 
     refs: {
+        appCt: 'spark-teacher-appct',
         waitlist: 'spark-waitlist'
     },
 
 
     // event handlers
-    onSectionSelect: function(section) {
-        this.setActiveSection(section);
-    },
-
     onStudentsLoad: function() {
         Ext.getStore('HelpRequests').load();
     },
@@ -62,7 +53,7 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
             itemData = data.item,
             helpStore, doLoadHelpRequest;
 
-        if (me.getActiveSection() != itemData.section_code) {
+        if (me.getAppCt().getSelectedSection() != itemData.section_code) {
             return;
         }
 
