@@ -96,13 +96,13 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             popupHostColumn.setPopupCell(null);
         }
 
-        // treat click on already-set section-level assignment as unset
+        // did the user click on a section-level flag that is already saved?
         if (
             !parentRecord
             && (assignments = record.get('assignments'))
             && assignments.section == flagId
         ) {
-            // erase all student-level prefs instead if there are any
+            // compile a list of any student-level assignments that could be erased
             studentIdStrings = Ext.getStore('Students').getStudentIdStrings();
 
             for (assignmentKey in assignments) {
@@ -124,10 +124,23 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
                 });
             }
 
-            // if there are no student-level exempts to be saved, exempt the section
-            if (studentDeletes.length == 0) {
-                flagId = null;
+            // if there are any student-level assignments, offer to erase them so there are no exceptions to this flag
+            if (studentDeletes.length) {
+                return Ext.Msg.confirm(
+                    'Erase student-level assignments',
+                    'Do you want to erase all student-level assignments for this resource so that the section-level assignment is effective for all students?',
+                    function(buttonId) {
+                        if (buttonId != 'yes') {
+                            return;
+                        }
+
+                        me.writeAssignments(studentDeletes);
+                    }
+                );
             }
+
+            // otherwise, erase the section-level assignment
+            flagId = null;
         }
 
         // treat click on already-set student-level flag as unset
@@ -139,33 +152,12 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             flagId = null;
         }
 
-        Slate.API.request({
-            method: 'POST',
-            url: '/spark/api/assignments/learns',
-            jsonData:
-                studentDeletes.length
-                ? studentDeletes
-                : {
-                    sparkpoint: sparkpoint,
-                    section: section,
-                    student_id: parentRecord ? record.get('student').getId() : null,
-                    resource_id: resourceId,
-                    assignment: flagId
-                },
-            success: function(response) {
-                // do nothing cause realtime will handle it
-            },
-            failure: function(response) {
-                var error = response.data.error;
-
-                // this structure is a mess to access safely..
-                error = error && error[0];
-                error = error && error.errors;
-                error = error && error.join('</li><li>');
-                error = error || 'Unknown problem';
-
-                Ext.Msg.alert('Assignment not saved', 'This assignment could not be saved:<ul><li>'+error+'</li></ul>');
-            }
+        me.writeAssignments({
+            sparkpoint: sparkpoint,
+            section: section,
+            student_id: parentRecord ? record.get('student').getId() : null,
+            resource_id: resourceId,
+            assignment: flagId
         });
     },
 
@@ -233,5 +225,29 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
         // copy old values into new assignments object and set
         learn.set('assignments', Ext.applyIf(assignments, learn.get('assignments')));
+    },
+
+
+    // controller methods
+    writeAssignments: function(assignmentsData) {
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/assignments/learns',
+            jsonData: assignmentsData,
+            success: function(response) {
+                // do nothing cause realtime will handle it
+            },
+            failure: function(response) {
+                var error = response.data.error;
+
+                // this structure is a mess to access safely..
+                error = error && error[0];
+                error = error && error.errors;
+                error = error && error.join('</li><li>');
+                error = error || 'Unknown problem';
+
+                Ext.Msg.alert('Assignment not saved', 'This assignment could not be saved:<ul><li>'+error+'</li></ul>');
+            }
+        });
     }
 });
