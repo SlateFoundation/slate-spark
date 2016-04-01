@@ -14,9 +14,6 @@
 Ext.define('SparkClassroomTeacher.controller.Assign', {
     extend: 'Ext.app.Controller',
 
-    config: {
-        selectedSection: null
-    },
 
     views: [
         'assign.Container',
@@ -85,6 +82,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     control: {
         appCt: {
+            selectedsectionchange: 'onSelectedSectionChange',
             selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
         },
         assignNavButton: {
@@ -100,14 +98,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         },
         assignTabbar: {
             activetabchange: 'onAssignTabChange'
-        }
-    },
-
-    listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
         }
     },
 
@@ -200,20 +190,14 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
     },
 
 
-    // config handlers
-    updateSelectedSection: function(section) {
+    // event handlers
+    onSelectedSectionChange: function(appCt, selectedSection, oldSelectedSection) {
         // TODO: apply filters to stores
     },
 
-
-    // event handlers
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         this.hideOverlays();
         this.syncSelectedStudentSparkpoint();
-    },
-
-    onSectionSelect: function(section) {
-        this.setSelectedSection(section);
     },
 
     onNavAssignTap: function() {
