@@ -337,7 +337,7 @@ function inlinerThunk(url) {
     return function(done) {
         new Inliner(url, function (err, html) {
             if (err) {
-                return done && done(err);
+                done(err);
             }
 
             done && done(null, html);
@@ -369,7 +369,7 @@ function* launchHandler(resourceId) {
 
     if (learnResource.url) {
         try {
-            ctx.body = yield inlinerThunk(learnResource.url);
+            yield (inlinerThunk(learnResource.url));
         } catch (e) {
             ctx.redirect(learnResource.url);
         }
