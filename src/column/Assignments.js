@@ -295,7 +295,10 @@ Ext.define('SparkClassroom.column.Assignments', {
             headerCt, finishShow;
 
         if (!cell) {
-            popup.hide();
+            if (popup) {
+                popup.hide();
+            }
+
             return;
         }
 
