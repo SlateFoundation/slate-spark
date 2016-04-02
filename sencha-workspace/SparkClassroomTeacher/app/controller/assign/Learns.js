@@ -23,7 +23,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
         learnsCt: 'spark-teacher-assign-learns',
-        popupHostColumn: 'spark-teacher-assign-learns-grid spark-assign-popup ^ spark-column-assignments'
+        popupHostColumn: 'spark-teacher-assign-learns-grid spark-studentassignmentspanel ^ spark-column-assignments'
     },
 
     control: {
