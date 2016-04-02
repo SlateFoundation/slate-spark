@@ -4,8 +4,9 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Container', {
     xtype: 'spark-teacher-assign-learns',
     requires: [
         'Ext.field.Number',
+        'SparkClassroom.widget.DiscussionList',
         'SparkClassroomTeacher.view.assign.learns.Grid',
-        'SparkClassroom.widget.DiscussionList'
+        'SparkClassroomTeacher.view.assign.learns.LearnsRequiredField'
     ],
 
 
@@ -19,16 +20,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Container', {
             {
                 docked: 'top',
 
-                xtype: 'numberfield',
-                cls: 'content-card compact',
-                labelAlign: 'left',
-                labelWidth: 350,
-                width: 500,
-                label: 'Number of Learns required for CCSS.ELA.3.CC.4.A',
-                minValue: 1,
-                maxValue: 15,
-                stepValue: 1,
-                placeHolder: 5
+                xtype: 'spark-teacher-assign-learns-learnsrequiredfield',
+                cls: 'content-card compact'
             },
             {
                 docked: 'right',
