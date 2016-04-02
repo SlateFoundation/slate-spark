@@ -3,7 +3,7 @@ Ext.define('SparkClassroom.column.Assignments', {
     xtype: 'spark-column-assignments',
     requires: [
         'Ext.util.Format',
-        'SparkClassroom.assign.Popup'
+        'SparkClassroom.panel.StudentAssignments'
     ],
 
     mixins: [
@@ -315,7 +315,7 @@ Ext.define('SparkClassroom.column.Assignments', {
 
         // create and render popup the first time it's needed
         if (!popup) {
-            me.setPopup(popup = Ext.create('SparkClassroom.assign.Popup', {
+            me.setPopup(popup = Ext.create('SparkClassroom.panel.StudentAssignments', {
                 hidden: true,
                 flags: me.getFlags()
             }));

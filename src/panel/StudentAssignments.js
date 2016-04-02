@@ -1,6 +1,6 @@
-Ext.define('SparkClassroom.assign.Popup', {
+Ext.define('SparkClassroom.panel.StudentAssignments', {
     extend: 'Ext.Panel',
-    xtype: 'spark-assign-popup',
+    xtype: 'spark-studentassignmentspanel',
     requires: [
         'Ext.grid.Grid',
         'Jarvus.plugin.GridFlex'
