@@ -18,7 +18,8 @@ Ext.define('SparkClassroomTeacher.store.assign.Learns', {
             reader: {
                 type: 'json',
                 keepRawData: true,
-                messageProperty: 'error'
+                messageProperty: 'error',
+                rootProperty: 'resources'
             }
         }
     }
