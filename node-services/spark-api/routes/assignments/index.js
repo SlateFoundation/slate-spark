@@ -11,6 +11,7 @@ function *getHandler() {
         jsonObject = [],
         results,
         codifyRecord = util.codifyRecord.bind(this),
+        // HACK: Since all assignment tables have the same structure, we use learn_assignments here:
         where = util.whereFromRequest.call(this, 'learn_assignments', vals);
 
         entities.forEach(function(entity) {

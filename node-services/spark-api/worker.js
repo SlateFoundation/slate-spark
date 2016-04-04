@@ -84,13 +84,21 @@ iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
 // Custom routes
 app.use(_.get('/standards/:id', routes.standards.get));
 app.use(_.get('/work/learns/launch/:resourceId', routes.work.learns.launch));
+
 app.use(_.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get));
 app.use(_.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get));
+
 app.use(_.get('/test/error/:code', require(__dirname + '/routes/test/error').get));
+
 app.use(_.get('/assignments/:entity', routes.assignments.entity.get));
 app.use(_.patch('/assignments/:entity', routes.assignments.entity.patch));
 app.use(_.post('/assignments/:entity', routes.assignments.entity.post));
+app.use(_.get('/assign/:entity', routes.assign.entity.get));
+
+app.use(_.get('/preferences/learns', routes.preferences.entity.get));
+app.use(_.patch('/preferences/learns', routes.preferences.entity.patch));
+app.use(_.post('/preferences/learns', routes.preferences.entity.post));
 
 if (PRODUCTION) {
     app.on('error', function(error, ctx) {
