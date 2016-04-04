@@ -64,6 +64,8 @@ function *getHandler() {
 
     result.learns_required.site = 5;
 
+    delete result.assignments;
+
     ctx.body = result;
 }
 
