@@ -229,9 +229,7 @@ function* getHandler() {
 
     ctx.body = {
         resources: resources,
-        preferences: {
-            required: learnsRequired
-        }
+        learns_required: learnsRequired
     };
 }
 
