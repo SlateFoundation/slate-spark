@@ -3,6 +3,7 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
     xtype: 'spark-studentlearnsrequiredpanel',
     requires: [
         'Ext.grid.Grid',
+        'Ext.app.ViewModel',
         'Jarvus.plugin.GridFlex'
     ],
 
