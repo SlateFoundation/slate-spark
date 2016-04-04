@@ -65,7 +65,12 @@ Ext.define('SparkClassroom.store.work.Learns', {
 
         proxy: {
             type: 'slate-api',
-            url: '/spark/api/work/learns'
+            url: '/spark/api/work/learns',
+            reader: {
+                type: 'json',
+                rootProperty: 'resources',
+                keepRawData: true
+            }
         }
     }
 });
