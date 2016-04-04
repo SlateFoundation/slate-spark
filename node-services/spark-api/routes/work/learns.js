@@ -42,8 +42,10 @@ function* getHandler() {
      )
 
      SELECT json_build_object(
+               'site',
+               5,
                'section',
-               (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id IS NULL), 3)),
+               (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id IS NULL), null)),
                'student',
                (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id = $3), null))
      ) AS json;`, [sparkpointId, sectionId, studentId])).json;
@@ -225,17 +227,12 @@ function* getHandler() {
         yield ctx.pgp.none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]);
     }
 
-    // TODO: remove this
-    if (ctx.query.include_required == 1) {
-        ctx.body = {
-            resources: resources,
-            preferences: {
-                required: learnsRequired
-            }
-        };
-    } else {
-        ctx.body = resources;
-    }
+    ctx.body = {
+        resources: resources,
+        preferences: {
+            required: learnsRequired
+        }
+    };
 }
 
 function* patchHandler() {

@@ -95,9 +95,9 @@ app.use(_.get('/assignments/:entity', routes.assignments.entity.get));
 app.use(_.patch('/assignments/:entity', routes.assignments.entity.patch));
 app.use(_.post('/assignments/:entity', routes.assignments.entity.post));
 
-app.use(_.get('/preferences/learns', routes.preferences.entity.get));
-app.use(_.patch('/preferences/learns', routes.preferences.entity.patch));
-app.use(_.post('/preferences/learns', routes.preferences.entity.post));
+app.use(_.get('/preferences/learns', routes.preferences.stopgap.get));
+app.use(_.patch('/preferences/learns', routes.preferences.stopgap.patch));
+app.use(_.post('/preferences/learns', routes.preferences.stopgap.post));
 
 if (PRODUCTION) {
     app.on('error', function(error, ctx) {
