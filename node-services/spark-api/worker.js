@@ -94,7 +94,6 @@ app.use(_.get('/test/error/:code', require(__dirname + '/routes/test/error').get
 app.use(_.get('/assignments/:entity', routes.assignments.entity.get));
 app.use(_.patch('/assignments/:entity', routes.assignments.entity.patch));
 app.use(_.post('/assignments/:entity', routes.assignments.entity.post));
-app.use(_.get('/assign/:entity', routes.assign.entity.get));
 
 app.use(_.get('/preferences/learns', routes.preferences.entity.get));
 app.use(_.patch('/preferences/learns', routes.preferences.entity.patch));
