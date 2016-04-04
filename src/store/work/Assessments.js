@@ -15,7 +15,7 @@ Ext.define('SparkClassroom.store.work.Assessments', {
             reader: {
                 type: 'json',
                 keepRawData: true,
-                rootProperty: 'assessments',
+                rootProperty: 'assessments'
             }
         }
     }

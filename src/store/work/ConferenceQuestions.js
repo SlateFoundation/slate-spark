@@ -15,7 +15,7 @@ Ext.define('SparkClassroom.store.work.ConferenceQuestions', {
             reader: {
                 type: 'json',
                 keepRawData: true,
-                rootProperty: 'questions',
+                rootProperty: 'questions'
             }
         }
     }
