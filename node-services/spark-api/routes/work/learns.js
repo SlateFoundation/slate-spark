@@ -7,8 +7,7 @@ var fs = require('fs'),
     util = require('../../lib/util'),
     Fusebox = require('../../lib/fusebox'),
     slack = require('../../lib/slack'),
-    AsnStandard = require('../../lib/asn-standard'),
-    Inliner = require('inliner');
+    AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
     var ctx = this,
@@ -17,7 +16,7 @@ function* getHandler() {
         sectionId = ctx.query.section_id,
         standardIds = [],
         openedIds = [],
-        playlist, opened, params, fusebox, reviews, assignments;
+        playlist, opened, params, fusebox, reviews, assignments, learnsRequired;
 
     ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
@@ -30,6 +29,24 @@ function* getHandler() {
     });
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
+
+    learnsRequired = (yield ctx.pgp.one(`
+    
+    WITH learns_required AS (
+        SELECT required,
+               student_id
+          FROM learns_required
+         WHERE sparkpoint_id = $1
+           AND section_id = $2
+           AND (student_id = $3 OR student_id IS NULL)
+     )
+
+     SELECT json_build_object(
+               'section',
+               (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id IS NULL), 3)),
+               'student',
+               (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id = $3), null))
+     ) AS json;`, [sparkpointId, sectionId, studentId])).json;
 
     params = {
         limit: 50,
@@ -208,7 +225,17 @@ function* getHandler() {
         yield ctx.pgp.none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]);
     }
 
-    ctx.body = resources;
+    // TODO: remove this
+    if (ctx.query.include_required == 1) {
+        ctx.body = {
+            resources: resources,
+            preferences: {
+                required: learnsRequired
+            }
+        };
+    } else {
+        ctx.body = resources;
+    }
 }
 
 function* patchHandler() {
