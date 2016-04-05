@@ -355,18 +355,6 @@ function* patchHandler() {
     });
 }
 
-function inlinerThunk(url) {
-    return function(done) {
-        new Inliner(url, function (err, html) {
-            if (err) {
-                done(err);
-            }
-
-            done && done(null, html);
-        });
-    };
-}
-
 function* launchHandler(resourceId) {
     var ctx = this;
 
@@ -390,12 +378,7 @@ function* launchHandler(resourceId) {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
-        try {
-            ctx.body = yield (inlinerThunk(learnResource.url));
-        } catch (e) {
-            ctx.throw(new Error(e));
-            ctx.redirect(learnResource.url);
-        }
+        ctx.redirect(learnResource.url);
     } else {
         // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
         this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +

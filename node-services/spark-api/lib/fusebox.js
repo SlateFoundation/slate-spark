@@ -6,7 +6,7 @@ function normalizeFusebox(item) {
         title: item.title,
         url: item.url,
         thumbnail: getDefaultThumbnail(item.vendorid),
-        dok: item.dok,
+        dok: item.dok || null,
         type: null,
         rating: {
             teacher: null,
