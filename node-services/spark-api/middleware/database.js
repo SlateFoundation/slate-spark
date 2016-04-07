@@ -54,14 +54,14 @@ function pgp(options) {
                 'spark.user_id': ctx.userId,
                 'spark.role': ctx.role,
                 'spark.request_id': requestId,
-                application_name: `sark-api_${ctx.username}_${requestId}`
+                application_name: `spark-api_${ctx.username}_${requestId}`
             };
         } else if (ctx.healthcheck) {
             // Do not set GUC for health checks
             ctx._pgp = appContext.pgp.shared;
             ctx.pgp = appContext.pgp.shared;
         } else {
-            ctx.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 400);
+            ctx.throw(new Error('If you are not behind a load balancer; you must pretend to be. See README.md.'), 401);
         }
 
         if (!ctx.pgp) {
