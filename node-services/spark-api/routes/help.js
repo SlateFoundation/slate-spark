@@ -24,12 +24,7 @@ CREATE INDEX IF NOT EXISTS help_requests_section_open_time ON help_requests (ope
 function *getHandler() {
     var ctx = this,
         helpRequests;
-
-    // HACK: This works around the session middleware injecting the logged in student_id into this.query automatically
-    if (!ctx.hadStudentIdInQuery) {
-        delete ctx.query.student_id;
-    }
-
+    
     helpRequests = yield util.selectFromRequest.call(ctx, 'help_requests');
 
    ctx.body = helpRequests.map(function(helpRequest) {
@@ -51,6 +46,7 @@ function sqlGenerator(records, vals) {
 
         record = util.identifyRecordSync(record, ctx.lookup);
 
+        // TODO: Enforce this using row-level security
         if (record.student_id !== undefined && ctx.isStudent && record.student_id !== ctx.userId) {
             ctx.throw(403, new Error(
                 'The student_id of a help request cannot be changed by a student to another student.'

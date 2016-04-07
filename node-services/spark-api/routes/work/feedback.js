@@ -27,12 +27,7 @@ var util = require('../../lib/util');
 function *getHandler() {
     var ctx = this,
         teacherFeedback = yield util.selectFromRequest.call(ctx, 'teacher_feedback');
-
-    // HACK: This works around the session middleware injecting the logged in student_id into this.query automatically
-    if (!ctx.hadStudentIdInQuery) {
-        delete ctx.query.student_id;
-    }
-
+    
     ctx.body = teacherFeedback.map(function (teacherFeedback) {
         return util.namifyRecord(util.codifyRecord(teacherFeedback, ctx.lookup), ctx.lookup);
     });
