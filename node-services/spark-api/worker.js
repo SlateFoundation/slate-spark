@@ -10,8 +10,7 @@ if (PRODUCTION) {
 }
 
 var koa = require('koa'),
-    app = global.app = module.exports = koa(),
-
+    app = koa(),
     requireDirectory = require('require-directory'),
 
     config = requireDirectory(module, './config'),
@@ -19,7 +18,7 @@ var koa = require('koa'),
     routes = requireDirectory(module, './routes'),
 
     jsonBody = require('koa-json-body'),
-    _ = require('koa-route'),
+    router = require('koa-router')(),
     error = require('koa-error'),
     json = require('koa-json'),
     cluster = require('cluster'),
@@ -34,38 +33,21 @@ if (PRODUCTION) {
 
 app.context.config = config;
 
-if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
-    let co = require('co');
-    let git = require('git-promise');
-
-    app.context.git = {};
-
-    co(function*() {
-        if (config.logging.git_branch) {
-            app.context.git.branch = (yield git('rev-parse --abbrev-ref HEAD', {cwd: __dirname})).trim();
-        }
-
-        if (config.logging.git_commit) {
-            app.context.git.commit = (yield git('rev-parse --short HEAD', {cwd: __dirname})).trim();
-        }
-    }).catch(function(e) { throw e; });
-}
-
-app.context.config = config;
-app.use(requestToCurl());
-app.use(middleware.logging);
-app.use(middleware.response_time);
-app.use(error({ template: __dirname + '/config/error.html' }));
-app.use(middleware.process);
-app.use(middleware.session);
-app.use(jsonBody({}));
-app.use(middleware.database.pgp({
-    config: config.database,
-    slateConfig: config.slate
-}));
-app.use(lookup);
-app.use(middleware.request);
-app.use(json());
+app
+    .use(requestToCurl())
+    .use(middleware.logging)
+    .use(middleware.response_time)
+    .use(error({ template: __dirname + '/config/error.html' }))
+    .use(middleware.process)
+    .use(middleware.session)
+    .use(jsonBody({}))
+    .use(middleware.database.pgp({
+        config: config.database,
+        slateConfig: config.slate
+    }))
+    .use(lookup)
+     .use(middleware.request)
+    .use(json());
 
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;
@@ -75,29 +57,55 @@ iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
         urlPath = '/' + path.filter(key => key !== 'index').join('/');
     }
 
-    // If the route module an HTTP method, we'll route to it
+    // If the route module exports an HTTP method, we'll route to it
     if (urlPath && methods.indexOf(key) !== -1) {
-        app.use(_[key](urlPath, obj[key]));
+        router[key](urlPath, obj[key]);
     }
 });
 
 // Custom routes
-app.use(_.get('/standards/:id', routes.standards.get));
-app.use(_.get('/work/learns/launch/:resourceId', routes.work.learns.launch));
+router.get('/standards/:id', routes.standards.get);
+router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
 
-app.use(_.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get));
-app.use(_.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get));
-app.use(_.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get));
+router.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get);
+router.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get);
+router.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get);
 
-app.use(_.get('/test/error/:code', require(__dirname + '/routes/test/error').get));
+router.get('/test/error/:code', require(__dirname + '/routes/test/error').get);
 
-app.use(_.get('/assignments/:entity', routes.assignments.entity.get));
-app.use(_.patch('/assignments/:entity', routes.assignments.entity.patch));
-app.use(_.post('/assignments/:entity', routes.assignments.entity.post));
+router.get('/assignments/:entity', routes.assignments.entity.get);
+router.patch('/assignments/:entity', routes.assignments.entity.patch);
+router.post('/assignments/:entity', routes.assignments.entity.post);
 
-app.use(_.get('/preferences/learns', routes.preferences.stopgap.get));
-app.use(_.patch('/preferences/learns', routes.preferences.stopgap.patch));
-app.use(_.post('/preferences/learns', routes.preferences.stopgap.post));
+router.get('/preferences/learns', routes.preferences.stopgap.get);
+router.patch('/preferences/learns', routes.preferences.stopgap.patch);
+router.post('/preferences/learns', routes.preferences.stopgap.post);
+
+app
+    .use(router.routes())
+    .use(router.allowedMethods());
+
+if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
+    let co = require('co');
+    let git = require('git-promise');
+
+    app.context.git = {
+        branch: 'unknown',
+        commit: 'unknown'
+    };
+
+    co(function*() {
+        if (config.logging.git_branch) {
+            app.context.git.branch = (yield git('rev-parse --abbrev-ref HEAD', {cwd: __dirname})).trim();
+        }
+
+        if (config.logging.git_commit) {
+            app.context.git.commit = (yield git('rev-parse --short HEAD', {cwd: __dirname})).trim();
+        }
+    }).catch(function(e) {
+        console.warn('Unable to determine git_branch/git_commit, using defaults...');
+    });
+}
 
 if (PRODUCTION) {
     app.on('error', function(error, ctx) {
@@ -116,6 +124,7 @@ if (PRODUCTION) {
 
 app.port = 9090;
 
+// Setup koa-cluster
 if (cluster.isMaster) {
     app.listen(app.port);
 } else {
