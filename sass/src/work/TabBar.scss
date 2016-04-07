@@ -70,6 +70,12 @@
             }
         }
 
+        &.x-item-disabled {
+            background-color: darken($neutral-color, 3);
+            color: darken($neutral-color, 15);
+            opacity: 1;
+        }
+
         &.spark-phase-complete, &.spark-phase-active {
             .spark-tab-timer {
                 display: block;
