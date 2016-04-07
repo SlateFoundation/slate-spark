@@ -20,8 +20,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
         activeStudentsStore: 'gps.ActiveStudents',
 
         labelAlign: 'left',
-        labelWidth: 350,
-        width: 500,
+        labelWidth: 320,
+        width: 480,
         label: 'Number of Learns required for this sparkpoint',
         minValue: 1,
         maxValue: 15,
