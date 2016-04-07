@@ -20,8 +20,17 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Container', {
             {
                 docked: 'top',
 
-                xtype: 'spark-teacher-assign-learns-learnsrequiredfield',
-                cls: 'content-card compact'
+                xtype: 'container',
+                layout: {
+                    type: 'hbox',
+                    pack: 'center'
+                },
+                items: [
+                    {
+                        xtype: 'spark-teacher-assign-learns-learnsrequiredfield',
+                        cls: 'content-card compact'
+                    }
+                ]
             },
             {
                 docked: 'right',
