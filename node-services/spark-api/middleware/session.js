@@ -1,42 +1,40 @@
 'use strict';
 
-// This should be loaded BEFORE request
+/*******************************************************************************
+ * IMPORTANT: The session middleware MUST be run BEFORE the request middleware *
+ *******************************************************************************/
 
 module.exports = function *parseSession(next) {
-    var headers = this.headers,
+    var ctx = this,
+        headers = ctx.headers,
         session;
 
     if (headers['x-nginx-session']) {
         try {
             session = JSON.parse(headers['x-nginx-session']);
         } catch (e) {
-            throw new Error('Invalid JSON in x-nginx-session: ' + e.message);
+            ctx.throw(new Error('Invalid JSON in x-nginx-session: ' + e.message), 400);
         }
 
-        this.isDeveloper = session.accountLevel === 'Developer';
-        this.isTeacher   = this.isDeveloper || session.accountLevel === 'Administrator' || session.accountLevel === 'Teacher';
-        this.isStudent   = session.accountLevel === 'Student';
-        this.role = session.accountLevel.toLowerCase();
-        this.username = session.username;
+        ctx.role = session.accountLevel.toLowerCase();
+        ctx.username = session.username;
+        ctx.session = session;
+        ctx.schema = ctx.header['x-nginx-mysql-schema'];
 
-        this.userId = session.userId;
-        /* TODO: This is bad mmmmmkay? When we use selectFromRequest() this is going to scope all searches to the logged
-                 -in student... which is not desirable in all (most) cases. Before changing this we need to make sure
-                 it wasn't used anywhere.
-         */
-        this.studentId = this.isStudent ? session.userId : this.query.student_id;
-        this.hadStudentIdInQuery = this.query.student_id !== undefined;
-        this.query.student_id = this.studentId;
+        // TODO: isRole is an anti-pattern, hasRole is better (a developer is NOT a teacher; but has the rights of one)
+        ctx.isDeveloper = ctx.role === 'developer';
+        ctx.isTeacher   = ctx.isDeveloper || ctx.role === 'administrator' || ctx.role === 'teacher';
+        ctx.isStudent   = ctx.role === 'student';
 
-        this.session = session;
-        this.schema = this.header['x-nginx-mysql-schema'];
+        ctx.userId = session.userId;
+        ctx.studentId = ctx.isStudent ? session.userId : ctx.query.student_id;
     }
 
-    if (!this.userId && this.request.path !== '/healthcheck') {
-        this.throw('Authentication required', 403);
+    if (!ctx.userId && ctx.request.path !== '/healthcheck') {
+        ctx.throw('Authentication required', 403);
     }
 
-    this.set('X-Session', JSON.stringify(this.session));
+    ctx.set('X-Session', JSON.stringify(ctx.session));
 
     yield next;
 };
