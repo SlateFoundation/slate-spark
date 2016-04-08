@@ -91,10 +91,15 @@ function* suggestedGetHandler() {
         currentLimit = parseInt(ctx.query.current, 10) || 5,
         queuedLimit = parseInt(ctx.query.queued, 10) || 5,
         pastLimit = parseInt(ctx.query.past, 10) || 5,
-        studentId = ctx.studentId,
-        sectionId = ctx.query.section_id,
-        results = yield ctx.pgp.one(`
-   WITH past AS (
+        studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
+        sectionId = ~~ctx.query.section_id,
+        results;
+
+    ctx.assert(sectionId > 0, 'section_id is required', 400);
+    ctx.assert(studentId > 0, 'Non-student users must provide a student_id', 400);
+
+    yield ctx.pgp.one(`
+    WITH past AS (
             SELECT sp.code,
                    ss.sparkpoint_id AS id,
                    ss.student_id,

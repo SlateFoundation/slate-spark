@@ -26,8 +26,15 @@ var util = require('../../lib/util');
 
 function *getHandler() {
     var ctx = this,
-        teacherFeedback = yield util.selectFromRequest.call(ctx, 'teacher_feedback');
-    
+        teacherFeedback;
+
+    // TODO: use RLS for this
+    if (ctx.isStudent) {
+        ctx.query.student_id = ctx.studentId;
+    }
+
+    teacherFeedback = yield util.selectFromRequest.call(ctx, 'teacher_feedback');
+
     ctx.body = teacherFeedback.map(function (teacherFeedback) {
         return util.namifyRecord(util.codifyRecord(teacherFeedback, ctx.lookup), ctx.lookup);
     });

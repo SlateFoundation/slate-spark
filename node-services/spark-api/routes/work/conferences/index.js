@@ -8,7 +8,7 @@ function* getHandler() {
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
-        userId = ctx.studentId,
+        studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         sectionId = ctx.query.section_id,
         result,
         questions;
@@ -17,6 +17,7 @@ function* getHandler() {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
+    ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
 
     result = yield this.pgp.one(
@@ -136,7 +137,7 @@ function* getHandler() {
                    AND sparkpoint_id = $3
            )
         ) AS json;
-    `, [standardIds, userId, sparkpointId, sectionId]);
+    `, [standardIds, studentId, sparkpointId, sectionId]);
 
     ctx.body = result.json;
 }

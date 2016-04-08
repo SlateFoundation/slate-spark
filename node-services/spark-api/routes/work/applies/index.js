@@ -5,19 +5,20 @@ var util = require('../../../lib/util'),
     AsnStandard = require('../../../lib/asn-standard');
 
 function *getHandler() {
-    this.require(['sparkpoint_id', 'student_id']);
+    this.require(['sparkpoint_id']);
 
-    var sparkpointId = this.query.sparkpoint_id,
+    var ctx = this,
+        sparkpointId = this.query.sparkpoint_id,
         standardIds = [],
+        studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         applies;
 
-    (this.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
-    if (standardIds.length === 0) {
-        return this.throw(new Error('No academic standards are associated with spark point id: ' + sparkpointId), 404);
-    }
+    ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
+    ctx.assert(standardIds > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 400);
 
     applies = yield this.pgp.one(/*language=SQL*/
     `
@@ -110,21 +111,21 @@ function *getHandler() {
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds]);
 
-    this.body = applies.json;
+    ctx.body = applies.json;
 }
 
 function *patchHandler() {
-    this.require(['sparkpoint_id', 'student_id', 'id']);
+    this.require(['sparkpoint_id', 'id']);
 
     var ctx = this,
-        sparkpointId = this.query.sparkpoint_id,
-        studentId = this.studentId,
-        selected = this.query.selected,
-        id = parseInt(this.query.id, 10),
-        reflection = this.query.reflection,
-        grade = this.query.grade,
-        rating = this.query.rating,
-        comment = this.query.comment,
+        sparkpointId = ctx.query.sparkpoint_id,
+        studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
+        selected = ctx.query.selected,
+        id = parseInt(ctx.query.id, 10),
+        reflection = ctx.query.reflection,
+        grade = ctx.query.grade,
+        rating = ctx.query.rating,
+        comment = ctx.query.comment,
         apply,
         review,
         values = [],
@@ -132,14 +133,13 @@ function *patchHandler() {
         todos,
         _ = new QueryBuilder();
 
-    if (isNaN(id)) {
-        this.throw(new Error('id must be an integer, you passed: ' + this.query.id), 400);
-    }
+    ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
+    ctx.assert(!isNaN(id), `id must be an integer, you passed: ${ctx.query.id}`, 400);
 
     apply = {
         fb_apply_id: id,
         student_id: studentId,
-        sparkpoint_id: sparkpointId,
+        sparkpoint_id: sparkpointId
     };
 
     if (typeof selected === 'boolean') {
@@ -154,14 +154,14 @@ function *patchHandler() {
 
     if (typeof grade === 'number') {
         if (grade < 0 && grade > 4) {
-            this.throw(new Error('Grades should be between 0-4'));
-        } else if (!this.isTeacher) {
-            this.throw(new Error('Only teachers can grade applies'), 403);
+            ctx.throw(new Error('Grades should be between 0-4'));
+        } else if (!ctx.isTeacher) {
+            ctx.throw(new Error('Only teachers can grade applies'), 403);
         } else {
             _.push('applies', 'grade', grade);
-            _.push('applies', 'graded_by', this.userId);
+            _.push('applies', 'graded_by', ctx.userId);
             apply.grade = grade;
-            apply.graded_by = this.userId;
+            apply.graded_by = ctx.userId;
         }
     }
 
@@ -182,7 +182,7 @@ function *patchHandler() {
         let values = _.getValues('applies');
         let columns = Object.keys(_.pop('applies').columns);
 
-        apply = yield this.pgp.one(`
+        apply = yield ctx.pgp.one(`
             INSERT INTO applies (${columns})
                          VALUES (${values}) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET ${set}
             RETURNING *;`, _.values
@@ -193,7 +193,7 @@ function *patchHandler() {
     // Deselect other applies for student/sparkpoint and update the student_sparkpoint table
     if (selected !== undefined) {
         if (selected) {
-            yield this.pgp.none(`
+            yield ctx.pgp.none(`
             UPDATE applies
                SET selected = false
              WHERE selected = true
@@ -203,7 +203,7 @@ function *patchHandler() {
                 [id, sparkpointId, studentId]
             );
 
-            yield this.pgp.none(`
+            yield ctx.pgp.none(`
             UPDATE student_sparkpoint
                SET selected_apply_id = $1,
                    selected_fb_apply_id = $2
@@ -213,7 +213,7 @@ function *patchHandler() {
                 [apply.id, apply.fb_apply_id, studentId, sparkpointId]
             );
         } else {
-            yield this.pgp.none(`
+            yield ctx.pgp.none(`
             UPDATE student_sparkpoint
                SET selected_apply_id = NULL,
                    selected_fb_apply_id = NULL
@@ -234,7 +234,7 @@ function *patchHandler() {
         let values = _.getValues('apply_reviews');
         let columns = Object.keys(_.pop('apply_reviews').columns);
 
-        apply = yield this.pgp.one(`
+        apply = yield ctx.pgp.one(`
             INSERT INTO apply_reviews (${columns})
                          VALUES (${values}) ON CONFLICT (apply_id, student_id) DO UPDATE SET ${set}
             RETURNING *;`, _.values
@@ -242,7 +242,7 @@ function *patchHandler() {
     }
 
     // Selects todos from todos table, if they don't exist populate them from the fusebox and return them
-    todos = yield this.pgp.manyOrNone(`
+    todos = yield ctx.pgp.manyOrNone(`
         WITH existing_user_todos AS (
           SELECT id,
                  todo,
@@ -289,7 +289,7 @@ function *patchHandler() {
 
     apply = util.namifyRecord(apply, ctx.lookup);
 
-    this.body = apply;
+    ctx.body = apply;
 }
 
 module.exports = {

@@ -1,11 +1,10 @@
 'use strict';
 
 function* patchHandler(req, res, next) {
-    this.require(['sparkpoint_id', 'student_id']);
-
-    var sparkpointId = this.query.sparkpoint_id,
-        studentId = this.studentId,
-        body = this.request.body,
+    var ctx = this,
+        sparkpointId = ctx.query.sparkpoint_id,
+        studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
+        body = ctx.request.body,
         keys = Object.keys(body || {}),
         allowedKeys = [
             'sparkpoint',
@@ -21,8 +20,12 @@ function* patchHandler(req, res, next) {
         worksheet = {},
         record;
 
+    ctx.require(['sparkpoint_id']);
+
+    ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
+
     if (invalidKeys.length > 0) {
-        return this.throw(`The following invalid key(s) were passed: ${invalidKeys.join(',')}. Valid keys are: ${allowedKeys.join(', ')}`, 400);
+        return ctx.throw(`The following invalid key(s) were passed: ${invalidKeys.join(',')}. Valid keys are: ${allowedKeys.join(', ')}`, 400);
     }
 
     allowedKeys.forEach(function(key) {
@@ -33,7 +36,7 @@ function* patchHandler(req, res, next) {
         }
     });
 
-    record = yield this.pgp.one(`
+    record = yield ctx.pgp.one(`
         INSERT INTO conference_worksheets
                     (student_id, sparkpoint_id, worksheet)
              VALUES ($1, $2, $3) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET worksheet = $3
@@ -48,9 +51,9 @@ function* patchHandler(req, res, next) {
 
     record = record.worksheet;
     record.student_id = studentId;
-    record.sparkpoint = yield this.lookup.sparkpoint.idToCode(sparkpointId);
+    record.sparkpoint = yield ctx.lookup.sparkpoint.idToCode(sparkpointId);
 
-    this.body = record;
+    ctx.body = record;
 }
 
 module.exports = {
