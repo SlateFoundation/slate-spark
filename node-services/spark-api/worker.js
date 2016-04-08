@@ -31,8 +31,8 @@ if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
 }
 
-// TODO: This is used by asn-standard, let's remove it
-global.app = app;
+// TODO: global.app is used by asn-standard, let's remove it (module.exports is required by koa-cluster!)
+module.exports = global.app = app;
 
 app.context.config = config;
 
