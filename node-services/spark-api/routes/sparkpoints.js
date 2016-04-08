@@ -3,15 +3,15 @@
 var suggestionCache = {};
 
 function* autocompleteGetHandler(input) {
-    var result,
+    var ctx = this,
+        result,
         patternSafeInput;
 
-    input = (typeof input === 'string') ? input : this.query.q;
+    input = (typeof input === 'string') ? input : ctx.query.q;
 
     if (typeof input !== 'string') {
-        return this.body = [];
+        return ctx.body = [];
     }
-
 
     patternSafeInput = input
         .replace(/[\[|\]|\|\^|\$|\%|\(|\)|\?|\+|\{|\}|\=|\\]/g, '')
@@ -24,7 +24,7 @@ function* autocompleteGetHandler(input) {
     result = suggestionCache[input];
 
     if (!result) {
-        result = suggestionCache[input] = yield this.pgp.manyOrNone(`
+        result = suggestionCache[input] = yield ctx.pgp.manyOrNone(`
         WITH standards_fts AS (
             SELECT sparkpoints.id,
                    sparkpoints.code,
@@ -81,7 +81,7 @@ function* autocompleteGetHandler(input) {
         );
     }
 
-    this.body = result;
+    ctx.body = result;
 }
 
 function* suggestedGetHandler() {
