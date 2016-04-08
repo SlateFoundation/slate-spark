@@ -18,7 +18,7 @@ function *getHandler() {
     });
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
-    ctx.assert(standardIds > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 400);
+    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 400);
 
     applies = yield this.pgp.one(/*language=SQL*/
     `
