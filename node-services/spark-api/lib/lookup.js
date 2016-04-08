@@ -62,8 +62,6 @@ var nats = require('nats'),
             },
             onCacheBust: bustSuggestionCache
         },
-
-        vendor: require('../legacy/vendor.json')
     },
     perSchool = {
         section: {
@@ -122,6 +120,58 @@ module.exports = function* (next) {
     // Initialize global/shared lookup tables
     if (!initialized) {
         initialized = true;
+
+        // TODO: figure out which of these to use
+        shared.vendor = (yield ctx.pgp.one(`
+            WITH asn_id_to_vendor_identifier AS (
+                SELECT
+                  vendor_id,
+                  json_object_agg(
+                      asn_id,
+                      vendor_identifier
+                  ) AS json
+                FROM vendor_standards_crosswalk
+                GROUP BY vendor_id
+            ), asn_id_to_vendor_code AS (
+                SELECT
+                  vendor_id,
+                  json_object_agg(
+                      asn_id,
+                      vendor_code
+                  ) AS json
+                FROM vendor_standards_crosswalk
+                GROUP BY vendor_id
+            ), vendor_code_to_asn_id AS (
+                SELECT
+                  vendor_id,
+                  json_object_agg(
+                      lower(vendor_code),
+                      asn_id
+                  )
+                    AS json
+                FROM vendor_standards_crosswalk
+                GROUP BY vendor_id
+            )
+            
+            SELECT json_build_object(
+                       'asnIdToVendorIdentifier',
+                       (SELECT json_object_agg(vendor_id, json)
+                        FROM asn_id_to_vendor_identifier),
+                       'asnIdToVendorCode',
+                       (SELECT json_object_agg(vendor_id, json)
+                        FROM asn_id_to_vendor_code),
+                       'vendorCodeToAsnId',
+                       (SELECT json_object_agg(vendor_id, json)
+                        FROM vendor_code_to_asn_id),
+                       'nameToId',
+                       (SELECT json_object_agg(name, id)
+                        FROM vendors),
+                       'idToName',
+                       (SELECT json_object_agg(id, name)
+                        FROM vendors)
+                   ) AS json;
+        `)).json;
+
 
         for (var entity in shared) {
             if (!(shared[entity] instanceof LookupTable) && shared[entity].entity) {
