@@ -135,6 +135,7 @@ function* getHandler() {
                   FROM conference_worksheets
                  WHERE student_id = $2
                    AND sparkpoint_id = $3
+                   AND section_id = $4
            )
         ) AS json;
     `, [standardIds, studentId, sparkpointId, sectionId]);
