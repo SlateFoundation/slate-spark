@@ -4,11 +4,13 @@ var util = require('../../lib/util'),
     pluralize = require('pluralize'),
     Values = util.Values;
 
-function *getHandler(entity) {
-    var tableName = `${pluralize.singular(entity)}_assignments`,
-        results = yield util.selectFromRequest.call(this, tableName);
+function *getHandler() {
+    var ctx = this,
+        entity = ctx.params.entity,
+        tableName = `${pluralize.singular(entity)}_assignments`,
+        results = yield util.selectFromRequest.call(ctx, tableName);
 
-    this.body = results.map(util.codifyRecord.bind(this));
+    ctx.body = results.map(util.codifyRecord.bind(ctx));
 }
 
 function recordToSelect(record, tableName, vals) {
@@ -83,8 +85,9 @@ function *sqlGenerator(entity, records, vals) {
     };
 }
 
-function *patchHandler(entity) {
+function *patchHandler() {
     var ctx = this,
+        entity = ctx.params.entity,
         body = ctx.request.body,
         query,
         error;

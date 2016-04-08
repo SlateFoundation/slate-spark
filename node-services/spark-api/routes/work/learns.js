@@ -355,8 +355,9 @@ function* patchHandler() {
     });
 }
 
-function* launchHandler(resourceId) {
-    var ctx = this;
+function* launchHandler() {
+    var ctx = this,
+        resourceId = ctx.params.resourceId;
 
     this.require(['student_id']);
 

@@ -2,8 +2,9 @@
 
 var suggestionCache = {};
 
-function* autocompleteGetHandler(input) {
+function* autocompleteGetHandler() {
     var ctx = this,
+        input = ctx.params.input,
         result,
         patternSafeInput;
 
