@@ -31,6 +31,9 @@ if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
 }
 
+// TODO: This is used by asn-standard, let's remove it
+global.app = app;
+
 app.context.config = config;
 
 app
