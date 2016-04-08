@@ -8,7 +8,7 @@ function* getHandler() {
         standardIds = [],
         sectionId = ctx.query.section_id,
         result,
-        questions;
+        resources;
 
     ctx.require(['sparkpoint_id', 'section_id']);
 
@@ -17,22 +17,23 @@ function* getHandler() {
     });
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
-    ctx.assert(ctx.isTeacher, 'Only teachers can assign guiding questions', 403);
+    ctx.assert(ctx.isTeacher, 'Only teachers can assign conference resources', 403);
 
     result = yield this.pgp.one(
         //language=SQL
         `
-        WITH questions AS (
+        WITH resources AS (
             SELECT id AS resource_id,
                    '' AS creator,
                    created,
-                   question,
+                   title,
+                   url,
                    gradelevel AS "gradeLevel"
-              FROM fusebox_guiding_questions
+              FROM fusebox_conference_resources
              WHERE standardids ?| $1
         ),
         
-        question_assignments AS (
+        resource_assignments AS (
             SELECT resource_id,
                 json_object_agg(
                    CASE WHEN student_id IS NULL
@@ -45,22 +46,22 @@ function* getHandler() {
                  SELECT resource_id,
                         assignment,
                         student_id
-                  FROM guiding_question_assignments
+                  FROM conference_resource_assignments
                  WHERE sparkpoint_id = $2
                    AND section_id = $3
-                   AND resource_id = ANY(SELECT resource_id FROM questions)
+                   AND resource_id = ANY(SELECT resource_id FROM resources)
              ) t GROUP BY resource_id
         )
           
         SELECT json_build_object(
-            'guiding_questions',
+            'conference_resources',
             (
               SELECT json_agg(row_to_json(t)) FROM (
                 SELECT
-                  questions.*,
-                  COALESCE(question_assignments.assignment, '{}'::JSON) AS assignment
-                FROM questions
-                  JOIN question_assignments ON question_assignments.resource_id = questions.resource_id
+                  resources.*,
+                  COALESCE(resource_assignments.assignment, '{}'::JSON) AS assignment
+                FROM resources
+                  JOIN resource_assignments ON resource_assignments.resource_id = resources.resource_id
               ) t
             )
         ) AS json;
