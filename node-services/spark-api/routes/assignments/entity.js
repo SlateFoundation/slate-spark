@@ -2,13 +2,18 @@
 
 var util = require('../../lib/util'),
     pluralize = require('pluralize'),
-    Values = util.Values;
+    Values = util.Values,
+    entityTypes = ['learns', 'conference_resources', 'guiding_questions', 'applies', 'assessments'];
 
 function *getHandler() {
     var ctx = this,
         entity = ctx.params.entity,
         tableName = `${pluralize.singular(entity)}_assignments`,
-        results = yield util.selectFromRequest.call(ctx, tableName);
+        results;
+
+    ctx.assert(entityTypes.indexOf(entity) !== -1, 404, `You can only assign: ${entityTypes.join(', ')} not ${entity}`);
+
+    results = yield util.selectFromRequest.call(ctx, tableName);
 
     ctx.body = results.map(util.codifyRecord.bind(ctx));
 }
@@ -91,6 +96,8 @@ function *patchHandler() {
         body = ctx.request.body,
         query,
         error;
+
+    ctx.assert(entityTypes.indexOf(entity) !== -1, 404, `You can only assign: ${entityTypes.join(', ')} not ${entity}`);
 
     if (typeof body === 'object' && !Array.isArray(body)) {
         body = [body];
