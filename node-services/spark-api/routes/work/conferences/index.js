@@ -3,8 +3,6 @@
 var AsnStandard = require('../../../lib/asn-standard');
 
 function* getHandler() {
-    this.require(['sparkpoint_id', 'student_id', 'section_id']);
-
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
@@ -12,6 +10,8 @@ function* getHandler() {
         sectionId = ctx.query.section_id,
         result,
         questions;
+
+    ctx.require(['sparkpoint_id', 'section_id']);
 
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);

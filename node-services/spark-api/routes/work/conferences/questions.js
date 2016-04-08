@@ -1,7 +1,8 @@
 'use strict';
 
 function* postHandler() {
-    var sparkpointId = ctx.query.sparkpoint_id,
+    var ctx = this,
+        sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         question = ctx.query.question,
         record;
