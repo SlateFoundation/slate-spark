@@ -67,7 +67,6 @@ iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
 });
 
 // Custom routes
-router.get('/standards/:id', routes.standards.get);
 router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
 
 router.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get);
