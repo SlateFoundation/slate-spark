@@ -1,5 +1,4 @@
-var util = require('../../lib/util'),
-    lookup = require('../../lib/lookup');
+var util = require('../../lib/util');
 
 function *getHandler() {
     this.require(['section_id']);
