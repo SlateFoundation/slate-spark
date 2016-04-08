@@ -99,7 +99,7 @@ function* suggestedGetHandler() {
     ctx.assert(sectionId > 0, 'section_id is required', 400);
     ctx.assert(studentId > 0, 'Non-student users must provide a student_id', 400);
 
-    yield ctx.pgp.one(`
+    results = yield ctx.pgp.one(`
     WITH past AS (
             SELECT sp.code,
                    ss.sparkpoint_id AS id,
