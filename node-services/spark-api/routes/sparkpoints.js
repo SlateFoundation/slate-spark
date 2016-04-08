@@ -85,14 +85,15 @@ function* autocompleteGetHandler(input) {
 }
 
 function* suggestedGetHandler() {
-   this.require(['student_id', 'section_id']);
+    this.require(['section_id']);
 
-    var currentLimit = parseInt(this.query.current, 10) || 5,
-        queuedLimit = parseInt(this.query.queued, 10) || 5,
-        pastLimit = parseInt(this.query.past, 10) || 5,
-        studentId = this.query.student_id,
-        sectionId = this.query.section_id,
-        results = yield this.pgp.one(`
+    var ctx = this,
+        currentLimit = parseInt(ctx.query.current, 10) || 5,
+        queuedLimit = parseInt(ctx.query.queued, 10) || 5,
+        pastLimit = parseInt(ctx.query.past, 10) || 5,
+        studentId = ctx.studentId,
+        sectionId = ctx.query.section_id,
+        results = yield ctx.pgp.one(`
    WITH past AS (
             SELECT sp.code,
                    ss.sparkpoint_id AS id,
@@ -203,7 +204,7 @@ function* suggestedGetHandler() {
             SELECT row_to_json(queued) j FROM queued
         ) t;`, [ studentId, sectionId, pastLimit, currentLimit, queuedLimit ]);
 
-    this.body = results.sparkpoints;
+    ctx.body = results.sparkpoints;
 }
 
 function bustSuggestionCache() {
