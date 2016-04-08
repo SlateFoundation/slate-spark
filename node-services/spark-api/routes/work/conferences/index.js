@@ -69,7 +69,7 @@ function* getHandler() {
                                  student_id = $2
                               OR student_id IS NULL
                            )
-                       AND resource_id IN (SELECT id FROM questions WHERE source = 'fusebox')
+                       AND resource_id = ANY(SELECT id FROM questions WHERE source = 'fusebox')
                  ) t GROUP BY resource_id
           ),
         
@@ -102,7 +102,7 @@ function* getHandler() {
                                  student_id = $2
                               OR student_id IS NULL
                            )
-                       AND resource_id IN (SELECT id FROM resources)
+                       AND resource_id = ANY (SELECT id FROM resources)
                  ) t GROUP BY resource_id
         )
         
