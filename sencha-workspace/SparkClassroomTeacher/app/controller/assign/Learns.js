@@ -35,6 +35,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         },
         'spark-teacher-assign-learns-grid gridcell': {
             flagtap: 'onFlagTap'
+        },
+        'spark-teacher-assign-learns-learnsrequiredfield': {
+            change: { fn: 'onFieldChange', buffer: 500 }
         }
     },
 
@@ -161,6 +164,22 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         });
     },
 
+    onFieldChange: function(field, value) {
+        //me.setQuery(value);
+        //debugger;
+
+        var me = this,
+            section = me.getAppCt().getSelectedSection(),
+            sparkpoint = me.getAssignCt().getSelectedSparkpoint();
+
+        me.writeRequiredLearns({
+            student_id: null,//parentRecord ? record.get('student').getId() : null,
+            required: (value ? value : 1),
+            section: section,
+            sparkpoint: sparkpoint
+        });
+    },
+
     onLearnsStoreLoad: function(store, records, success, operation) {
         var responseData;
 
@@ -234,6 +253,29 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             method: 'POST',
             url: '/spark/api/assignments/learns',
             jsonData: assignmentsData,
+            success: function(response) {
+                // do nothing cause realtime will handle it
+            },
+            failure: function(response) {
+                var error = response.data.error;
+
+                // this structure is a mess to access safely..
+                error = error && error[0];
+                error = error && error.errors;
+                error = error && error.join('</li><li>');
+                error = error || 'Unknown problem';
+
+                Ext.Msg.alert('Assignment not saved', 'This assignment could not be saved:<ul><li>'+error+'</li></ul>');
+            }
+        });
+    },
+
+    writeRequiredLearns: function(learnData) {
+        //debugger;
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/preferences/learns',
+            jsonData: learnData,
             success: function(response) {
                 // do nothing cause realtime will handle it
             },
