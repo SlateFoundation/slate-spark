@@ -1,9 +1,5 @@
 'use strict';
 
-var util = require('../../lib/util'),
-    pluralize = require('pluralize'),
-    Values = util.Values;
-
 function *getHandler() {
     var ctx = this,
         sectionId = ctx.query.section_id,

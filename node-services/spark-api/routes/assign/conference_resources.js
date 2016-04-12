@@ -61,7 +61,7 @@ function* getHandler() {
                   resources.*,
                   COALESCE(resource_assignments.assignment, '{}'::JSON) AS assignment
                 FROM resources
-                  JOIN resource_assignments ON resource_assignments.resource_id = resources.resource_id
+                  LEFT JOIN resource_assignments ON resource_assignments.resource_id = resources.resource_id
               ) t
             )
         ) AS json;
