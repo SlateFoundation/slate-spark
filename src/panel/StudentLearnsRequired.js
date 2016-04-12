@@ -68,6 +68,15 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
                                 xtype: 'numberfield',
                                 bind: {
                                     placeHolder: '{record.learnsRequired.section}'
+                                },
+                                listeners: {
+                                    buffer: 500,
+                                    change: function(field, value) {
+                                        var me = this,
+                                            record = me.getParent().getParent().getRecord();
+
+                                        me.fireEvent('minimumchange', me, value, record);
+                                    }
                                 }
                             }
                         }
