@@ -39,7 +39,7 @@ function* getHandler() {
                 json_object_agg(
                    CASE WHEN student_id IS NULL
                         THEN 'section'
-                        ELSE 'student'
+                        ELSE student_id::TEXT
                    END,
                    assignment
                 ) AS assignment
