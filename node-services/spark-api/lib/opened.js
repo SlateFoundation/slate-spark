@@ -35,7 +35,8 @@ var filterObjectKeys = require('./util').filterObjectKeys,
 
     sparkParameters = [
         'role',
-        'resource_types'
+        'resource_type',
+        'standard_ids'
     ],
 
     validParameters = openEdParameters.concat(sparkParameters),
@@ -125,14 +126,14 @@ var filterObjectKeys = require('./util').filterObjectKeys,
         'Literacy'
     ],
 
+    openEdUsername,
     openEdAccessToken = null,
     openEdRefreshToken = null,
     openEdTokenExpiration = new Date().getTime(),
     openEdClientSecret = '',
     openEdClientId = '',
-    openEdClientBaseUrl = 'http://api-staging.opened.com',
+    openEdClientBaseUrl = 'https://partner.opened.com/1',
     configFile,
-    openEdClient,
     clientOptions = {
         headers: {
             accept: 'application/json'
@@ -151,9 +152,11 @@ try {
     try {
         configFile = JSON.parse(configFile);
 
+        // TODO: rework
         openEdClientId = configFile.opened_client_id;
         openEdClientSecret = configFile.opened_client_secret;
-
+        openEdClientBaseUrl = configFile.base_url || openEdClientBaseUrl;
+        openEdUsername = configFile.username || 'jeff@slate.is';
     } catch (err) {
         configError = 'Error parsing JSON';
     }
@@ -161,8 +164,8 @@ try {
     configError = 'Unable to read';
 }
 
-if (!(openEdClientSecret && openEdClientId)) {
-    configError = 'opened_client_id and opened_client_secret are required';
+if (!(openEdClientSecret && openEdClientId && openEdUsername)) {
+    configError = 'opened_client_id, opened_client_secret, and username are required';
 }
 
 if (configError) {
@@ -171,15 +174,16 @@ if (configError) {
 
 function* getAccessToken() {
     if (new Date().getTime() < openEdTokenExpiration) {
-        return;
+        return openEdAccessToken;
     } else {
         console.log(`OPENED: ${openEdAccessToken} access token expired, renewing...`);
     }
 
     var params = {
         client_id: openEdClientId,
-        client_secret: openEdClientSecret,
-        grant_type: 'client_credentials'
+        secret: openEdClientSecret,
+        grant_type: 'client_credentials',
+        username: openEdUsername
     },
     token;
 
@@ -191,7 +195,7 @@ function* getAccessToken() {
     // clear existing token
     delete clientOptions.headers.authorization;
 
-    clientOptions.uri = openEdClientBaseUrl + '/oauth/token';
+    clientOptions.uri = openEdClientBaseUrl + '/oauth/get_token';
     clientOptions.body = params;
     clientOptions.method = 'POST';
 
@@ -235,8 +239,6 @@ function validateParam(param, val) {
                 return param + ' accepts a string as input, you passed: "' + val + '"';
             }
 
-            break;
-
         case 'grade_group_string':
             if (!re.isGradeGroup(val)) {
                 return 'grade_group_string can be Elementary, Middle School, or High School. You passed: ' + val;
@@ -251,14 +253,14 @@ function validateParam(param, val) {
 
             break;
 
-        case 'resource_types':
+        case 'resource_type':
             var resourceTypes = val.toString().toLowerCase().split(','),
                 invalidResourceTypes = resourceTypes.filter(function (resourceType) {
                     return validResourceTypes.indexOf(resourceType) === -1;
                 });
 
             if (invalidResourceTypes.length > 0 && re.isString.test(val)) {
-                return 'resource_types expects one or more of the following separated by commas: ' +
+                return 'resource_type expects one or more of the following separated by commas: ' +
                     validResourceTypes.join(', ') + '. The following value(s) are invalid: ' +
                     invalidResourceTypes.join(', ');
             }
@@ -356,7 +358,7 @@ function transformParam(param, val) {
             return grade;
 
         case 'role':
-        case 'resource_types':
+        case 'resource_type':
             return val.toLowerCase();
 
         default:
@@ -372,13 +374,20 @@ function generateErrorString(err) {
 
 function* getResources(params) {
     var url = '/resources.json',
-        resourceTypes = params.resource_types ? Array.isArray(params.resource_types) ? params.resource_types : params.resource_types.split(',') : [],
+        resourceTypes = params.resource_type ? Array.isArray(params.resource_type) ? params.resource_type : params.resource_type.split(',') : [],
+        standardIds = params.standard_ids ? Array.isArray(params.standard_ids) ? params.standard_ids : params.standard_ids.split(',') : [],
         queryString = qs.stringify(filterObjectKeys(openEdParameters, params)),
         resources;
 
     if (resourceTypes.length > 0) {
         queryString += (queryString !== '' ? '&' : '') + resourceTypes.map(function (resourceType) {
-                return 'resource_types[]=' + resourceType;
+                return 'resource_type[]=' + resourceType;
+            }).join('&');
+    }
+
+    if (standardIds.length > 0) {
+        queryString += (queryString !== '' ? '&' : '') + standardIds.map(function (standardId) {
+                return 'standard_ids[]=' + standardId;
             }).join('&');
     }
 

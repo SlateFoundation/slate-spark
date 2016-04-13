@@ -52,11 +52,11 @@ function* getHandler() {
 
     params = {
         limit: 50,
-        standard: openedIds,
+        standard_ids: openedIds,
     };
 
     if (ctx.isStudent) {
-        params.resource_types = ['video'/*, 'homework', 'exercise', 'game', 'question', 'other'*/];
+        //params.resource_types = ['video'/*, 'homework', 'exercise', 'game', 'question', 'other'*/];
     }
 
     if (openedIds.length === 0) {
@@ -379,7 +379,8 @@ function* launchHandler() {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
-        ctx.redirect(learnResource.url);
+        let accessToken = yield OpenEd.getAccessToken();
+        ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
     } else {
         // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
         this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
