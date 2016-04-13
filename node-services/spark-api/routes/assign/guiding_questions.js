@@ -27,7 +27,8 @@ function* getHandler() {
                    '' AS creator,
                    created,
                    question,
-                   gradelevel AS "gradeLevel"
+                   gradelevel AS "gradeLevel",
+                   'fusebox' AS source
               FROM fusebox_guiding_questions
              WHERE standardids ?| $1
         ),
