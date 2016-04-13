@@ -60,7 +60,7 @@ function* getHandler() {
                 'created',
                 ap.created,
                 'creator',
-                '', // TODO: Add this to view
+                '',
                 'title',
                 ap.title,
                 'instructions',
