@@ -359,11 +359,9 @@ function* launchHandler() {
     var ctx = this,
         resourceId = ctx.params.resourceId;
 
-    this.require(['student_id']);
-
     var origResourceId = resourceId || this.query.resource_id,
         resourceId = parseInt(origResourceId, 10),
-        studentId = this.studentId,
+        studentId = ctx.isStudent ? ctx.studentId : (ctx.query.student_id || ctx.userId),
         learnResource;
 
     if (isNaN(resourceId)) {
