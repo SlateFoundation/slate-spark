@@ -1,8 +1,30 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.assign.Apply', {
     extend: 'Ext.data.Store',
+    requires: [
+        'Slate.proxy.API'
+    ],
 
 
+    model: 'SparkClassroom.model.work.Apply',
+
+    config: {
+        autoSync: true,
+        trackRemoved: false,
+
+        proxy: {
+            type: 'slate-api',
+            url: '/spark/api/assign/applies',
+            reader: {
+                type: 'json',
+                keepRawData: true,
+                messageProperty: 'error',
+                rootProperty: 'applies'
+            }
+        }
+    }
+
+/*
     config: {
         fields: [
             'sparkpoints',
@@ -26,4 +48,5 @@ Ext.define('SparkClassroomTeacher.store.assign.Apply', {
             {sparkpoints: ['9-12.LS.1.5'], title: 'House of cards', dok: 1, created_by: 'Kelly Gump', grade: 9, assign: true}
         ]
     }
+*/
 });
