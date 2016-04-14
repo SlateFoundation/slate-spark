@@ -6,8 +6,12 @@ Ext.define('SparkClassroom.model.work.Apply', {
     ],
 
 
+    idProperty: 'resource_id',
     fields: [
-        'id',
+        {
+            name: 'resource_id',
+            type: 'int'
+        },
         'title',
         'instructions',
         'dok',
@@ -72,6 +76,17 @@ Ext.define('SparkClassroom.model.work.Apply', {
             name: 'grade',
             allowNull: true,
             defaultValue: null
+        },
+
+        // for teacher assign UI
+        {
+            name: 'assignments',
+            persist: false,
+
+            // TODO: remove default to assignment when assignment gets changes to assignments in work/learns API response
+            convert: function(v, r) {
+                return v || r.get('assignment') || {};
+            }
         }
     ],
 
