@@ -1,6 +1,6 @@
 'use strict';
 
-function *getHandler() {
+function *getHandler(next) {
     var ctx = this,
         sectionId = ctx.query.section_id,
         sparkpointId = ctx.query.sparkpoint_id,
@@ -8,6 +8,12 @@ function *getHandler() {
 
     ctx.assert(sectionId, 400, 'section_id, section_code, or section must be passed as a query parameter');
     ctx.assert(sparkpointId, 400, 'sparkpoint_id, sparkpoint_code, or sparkpoint must be passed as a query parameter');
+
+    // HACK: call /work/learns to make sure that the playlist is cached/up to date
+    ctx.query.student_id = ctx.userId;
+    yield require('../work/learns').get.call(ctx, next);
+    delete ctx.query.student_id;
+    ctx.body;
 
     result = (yield ctx.pgp.one(`
         WITH playlist_cache AS (
@@ -33,12 +39,12 @@ function *getHandler() {
                       required
                    ) AS learns_required
               FROM learns_required
-             WHERE sparkpoint_id = 'M10001CD'
-               AND section_id = 3
+             WHERE sparkpoint_id = $1
+               AND section_id = $2
         )
         
         SELECT json_build_object(
-            'resources',
+            'learns',
             (SELECT playlist FROM playlist_cache),
             'assignments',
             coalesce((SELECT json_object_agg(resource_id, assignments) FROM assignments), '{}'::JSON),
@@ -48,12 +54,12 @@ function *getHandler() {
     `, [sparkpointId, sectionId])).json;
 
     ctx.assert(
-        Array.isArray(result.resources),
+        Array.isArray(result.learns),
         404,
         `No playlist cache found for section_id: ${sectionId} sparkpoint_id: ${sparkpointId}`
     );
 
-    result.resources.forEach(function(resource) {
+    result.learns.forEach(function(resource) {
         resource.assignments = result.assignments[resource.resource_id] || {};
         delete resource.assignment;
     });
