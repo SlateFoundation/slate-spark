@@ -1,8 +1,30 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.assign.Resources', {
     extend: 'Ext.data.Store',
+    requires: [
+        'Slate.proxy.API'
+    ],
 
 
+    model: 'SparkClassroom.model.work.ConferenceResource',
+
+    config: {
+        autoSync: true,
+        trackRemoved: false,
+
+        proxy: {
+            type: 'slate-api',
+            url: '/spark/api/assign/conference_resources',
+            reader: {
+                type: 'json',
+                keepRawData: true,
+                messageProperty: 'error',
+                rootProperty: 'conference_resources'
+            }
+        }
+    }
+
+/*
     config: {
         fields: [
             'sparkpoints',
@@ -27,4 +49,5 @@ Ext.define('SparkClassroomTeacher.store.assign.Resources', {
             {sparkpoints: ['9.IF.C.7'], url: 'http://asn.org', title: 'ASN Resource Page for: 9.IF.C.7', created: '5/16/15', created_by: 'Diania Henderson', grade: 9, assign: true}
         ]
     }
+*/
 });
