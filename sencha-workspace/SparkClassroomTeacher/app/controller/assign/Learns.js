@@ -271,7 +271,6 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     writeRequiredLearns: function(learnData) {
-        //debugger;
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/preferences/learns',
