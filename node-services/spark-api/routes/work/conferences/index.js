@@ -114,7 +114,7 @@ function* getHandler() {
                   questions.*,
                   COALESCE(question_assignments.assignment, '{}'::JSON) AS assignment
                 FROM questions
-                  JOIN question_assignments ON question_assignments.resource_id = questions.id
+           LEFT JOIN question_assignments ON question_assignments.resource_id = questions.id
               ) t
             ),
         
@@ -125,7 +125,7 @@ function* getHandler() {
                   resources.*,
                   COALESCE(resource_assignments.assignment, '{}'::JSON) AS assignment
                 FROM resources
-                  JOIN resource_assignments ON resource_assignments.resource_id = resources.id
+           LEFT JOIN resource_assignments ON resource_assignments.resource_id = resources.id
               ) t
             ),
         
