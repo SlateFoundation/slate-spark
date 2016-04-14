@@ -44,6 +44,6 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
             {
                 xtype: 'spark-column-assignments'
             }
-        ],
+        ]
     }
 });

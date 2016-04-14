@@ -1,6 +1,6 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
- * Manages the conference quetions tab of the assign feature
+ * Manages the conference questions tab of the assign feature
  *
  * ## Responsibilities
  * - Activate conference questions container on /assign/conference route
@@ -178,7 +178,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
         if (data.table != 'guiding_question_assignments_section' && data.table != 'guiding_question_assignments_student') {
             return;
         }
-debugger;
+
         var me = this,
             questionsStore = me.getAssignQuestionsStore(),
             itemData = data.item,
