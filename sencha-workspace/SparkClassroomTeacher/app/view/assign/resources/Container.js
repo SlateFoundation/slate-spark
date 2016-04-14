@@ -1,7 +1,7 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
-    xtype: 'spark-assign-resources',
     extend: 'Ext.grid.Grid',
+    xtype: 'spark-assign-resources',
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
@@ -23,6 +23,7 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
         ],
         grouped: true,
         titleBar: null,
+        store: 'assign.Resources',
         columns:[
             // {
             //     xtype: 'spark-sparkpoints-column'
@@ -45,8 +46,6 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
             {
                 xtype: 'spark-column-assignments'
             }
-        ],
-
-        store: 'assign.Resources'
+        ]
     }
 });
