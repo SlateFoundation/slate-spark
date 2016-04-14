@@ -22,6 +22,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
             // 'gridpagingtoolbar'
         ],
         titleBar: null,
+        store: 'assign.Questions',
         columns:[
             // {
             //     xtype: 'spark-sparkpoints-column'
@@ -44,7 +45,5 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
                 xtype: 'spark-column-assignments'
             }
         ],
-
-        store: 'assign.Questions'
     }
 });
