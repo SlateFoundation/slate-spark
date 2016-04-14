@@ -44,6 +44,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         'Assign',
         'assign.Learns',
+        'assign.Conference',
 
         'Competencies',
         'Activity',
