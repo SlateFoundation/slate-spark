@@ -23,7 +23,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
         resourcesCt: 'spark-teacher-assign-resources',
-        popupHostColumn: 'spark-teacher-assign-resources-grid spark-studentassignmentspanel ^ spark-column-assignments'
+        popupHostColumn: 'spark-assign-resources spark-studentassignmentspanel ^ spark-column-assignments'
     },
 
     control: {

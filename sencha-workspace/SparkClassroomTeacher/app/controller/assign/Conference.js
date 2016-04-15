@@ -23,7 +23,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
         questionsCt: 'spark-teacher-assign-questions',
-        popupHostColumn: 'spark-teacher-assign-questions-grid spark-studentassignmentspanel ^ spark-column-assignments'
+        popupHostColumn: 'spark-assign-questions spark-studentassignmentspanel ^ spark-column-assignments'
     },
 
     control: {
