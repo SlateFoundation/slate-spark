@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
- * Manages the applies tab of the assign feature
+ * Manages the conference resources tab of the assign feature
  *
  * ## Responsibilities
- * - Activate applies container on /assign/conference route
+ * - Activate conference resources container on /assign/conference route
  * - Load data into grid based on selected sparkpoint
  * - Handle realtime events indicating changes to assignments
  */
-Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
+Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
@@ -16,32 +16,32 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
 
 
     stores: [
-        'assign.Applies'
+        'assign.ConferenceResources'
     ],
 
     refs: {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
-        appliesCt: 'spark-teacher-assign-apply',
-        popupHostColumn: 'spark-assign-apply spark-studentassignmentspanel ^ spark-column-assignments'
+        resourcesCt: 'spark-teacher-assign-resources',
+        popupHostColumn: 'spark-assign-resources spark-studentassignmentspanel ^ spark-column-assignments'
     },
 
     control: {
         assignCt: {
             selectedsparkpointchange: 'onSelectedSparkpointChange'
         },
-        appliesCt: {
-            activate: 'onAppliesCtActivate'
+        resourcesCt: {
+            activate: 'onResourcesCtActivate'
         },
-        'spark-assign-apply gridcell': {
+        'spark-assign-resources gridcell': {
             flagtap: 'onFlagTap'
         }
     },
 
     listen: {
         store: {
-            '#assign.Applies': {
-                load: 'onAppliesStoreLoad'
+            '#assign.ConferenceResources': {
+                load: 'onConferenceResourcesStoreLoad'
             }
         },
         socket: {
@@ -52,31 +52,31 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var appliesStore = this.getAssignAppliesStore(),
-            appliesCt = this.getAppliesCt();
+        var resourcesStore = this.getAssignConferenceResourcesStore(),
+            resourcesCt = this.getResourcesCt();
 
         if (!sparkpoint) {
-            appliesStore.removeAll();
+            resourcesStore.removeAll();
             return;
         }
 
-        appliesStore.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        resourcesStore.getProxy().setExtraParam('sparkpoint', sparkpoint);
 
         // load store if it's loaded already or the grid is visible
-        if (appliesStore.isLoaded() || (appliesCt && appliesCt.hasParent())) {
+        if (resourcesStore.isLoaded() || (resourcesCt && resourcesCt.hasParent())) {
 
             //debugger;
         }
 
-        appliesStore.load();
+        resourcesStore.load();
     },
 
-    onAppliesCtActivate: function() {
-        var appliesStore = this.getAssignAppliesStore();
+    onResourcesCtActivate: function() {
+        var resourcesStore = this.getAssignConferenceResourcesStore();
 
         // load store if it's not loaded already and a sparkpoint is selected
-        if (!appliesStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
-            appliesStore.load();
+        if (!resourcesStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
+            resourcesStore.load();
         }
     },
 
@@ -164,33 +164,33 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
         });
     },
 
-    onAppliesStoreLoad: function(store, records, success, operation) {
+    onConferenceResourcesStoreLoad: function(store, records, success, operation) {
         var responseData;
 
         if (!success) {
             responseData = Ext.decode(operation.getError().response.responseText, true) || {};
             store.removeAll();
-            Ext.Msg.alert('Applies not loaded', responseData.error || 'Failed to fetch applies from server');
+            Ext.Msg.alert('Resources not loaded', responseData.error || 'Failed to fetch conference resources from server');
         }
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'apply_assignments_section' && data.table != 'apply_assignments_student') {
+        if (data.table != 'conference_resource_assignments_section' && data.table != 'conference_resource_assignments_student') {
             return;
         }
 
         var me = this,
-            appliesStore = me.getAssignAppliesStore(),
+            resourcesStore = me.getAssignConferenceResourcesStore(),
             itemData = data.item,
             studentId = itemData.student_id,
             assignment = itemData.assignment || null,
-            apply = appliesStore.getById(itemData.resource_id),
+            resource = resourcesStore.getById(itemData.resource_id),
             assignments = {},
             popupHostColumn, popup, popupStudent,
             popupStore, popupStudentsCount, i = 0;
 
         if (
-            !apply
+            !resource
             || itemData.section_code != me.getAppCt().getSelectedSection()
             || itemData.sparkpoint_code != me.getAssignCt().getSelectedSparkpoint()
         ) {
@@ -227,7 +227,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
         }
 
         // copy old values into new assignments object and set
-        apply.set('assignments', Ext.applyIf(assignments, apply.get('assignments')));
+        resource.set('assignments', Ext.applyIf(assignments, resource.get('assignments')));
     },
 
 
@@ -235,7 +235,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
     writeAssignments: function(assignmentsData) {
         Slate.API.request({
             method: 'POST',
-            url: '/spark/api/assignments/applies',
+            url: '/spark/api/assignments/conference_resources',
             jsonData: assignmentsData,
             success: function(response) {
                 // do nothing cause realtime will handle it

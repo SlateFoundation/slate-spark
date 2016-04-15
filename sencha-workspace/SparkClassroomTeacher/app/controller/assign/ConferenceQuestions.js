@@ -1,13 +1,13 @@
 /*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
- * Manages the conference resources tab of the assign feature
+ * Manages the conference questions tab of the assign feature
  *
  * ## Responsibilities
- * - Activate conference resources container on /assign/conference route
+ * - Activate conference questions container on /assign/conference route
  * - Load data into grid based on selected sparkpoint
  * - Handle realtime events indicating changes to assignments
  */
-Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
+Ext.define('SparkClassroomTeacher.controller.assign.ConferenceQuestions', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
@@ -16,32 +16,32 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
 
 
     stores: [
-        'assign.ConferenceResources'
+        'assign.ConferenceQuestions'
     ],
 
     refs: {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
-        resourcesCt: 'spark-teacher-assign-resources',
-        popupHostColumn: 'spark-assign-resources spark-studentassignmentspanel ^ spark-column-assignments'
+        questionsCt: 'spark-teacher-assign-questions',
+        popupHostColumn: 'spark-assign-questions spark-studentassignmentspanel ^ spark-column-assignments'
     },
 
     control: {
         assignCt: {
             selectedsparkpointchange: 'onSelectedSparkpointChange'
         },
-        resourcesCt: {
-            activate: 'onResourcesCtActivate'
+        questionsCt: {
+            activate: 'onQuestionsCtActivate'
         },
-        'spark-assign-resources gridcell': {
+        'spark-assign-questions gridcell': {
             flagtap: 'onFlagTap'
         }
     },
 
     listen: {
         store: {
-            '#assign.ConferenceResources': {
-                load: 'onConferenceResourcesStoreLoad'
+            '#assign.ConferenceQuestions': {
+                load: 'onConferenceQuestionsStoreLoad'
             }
         },
         socket: {
@@ -52,31 +52,31 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var resourcesStore = this.getAssignConferenceResourcesStore(),
-            resourcesCt = this.getResourcesCt();
+        var questionsStore = this.getAssignConferenceQuestionsStore(),
+            questionsCt = this.getQuestionsCt();
 
         if (!sparkpoint) {
-            resourcesStore.removeAll();
+            questionsStore.removeAll();
             return;
         }
 
-        resourcesStore.getProxy().setExtraParam('sparkpoint', sparkpoint);
+        questionsStore.getProxy().setExtraParam('sparkpoint', sparkpoint);
 
         // load store if it's loaded already or the grid is visible
-        if (resourcesStore.isLoaded() || (resourcesCt && resourcesCt.hasParent())) {
+        if (questionsStore.isLoaded() || (questionsCt && questionsCt.hasParent())) {
 
             //debugger;
         }
 
-        resourcesStore.load();
+        questionsStore.load();
     },
 
-    onResourcesCtActivate: function() {
-        var resourcesStore = this.getAssignConferenceResourcesStore();
+    onQuestionsCtActivate: function() {
+        var questionsStore = this.getAssignConferenceQuestionsStore();
 
         // load store if it's not loaded already and a sparkpoint is selected
-        if (!resourcesStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
-            resourcesStore.load();
+        if (!questionsStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
+            questionsStore.load();
         }
     },
 
@@ -164,33 +164,33 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
         });
     },
 
-    onConferenceResourcesStoreLoad: function(store, records, success, operation) {
+    onConferenceQuestionsStoreLoad: function(store, records, success, operation) {
         var responseData;
 
         if (!success) {
             responseData = Ext.decode(operation.getError().response.responseText, true) || {};
             store.removeAll();
-            Ext.Msg.alert('Resources not loaded', responseData.error || 'Failed to fetch conference resources from server');
+            Ext.Msg.alert('Questions not loaded', responseData.error || 'Failed to fetch conference questions from server');
         }
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'conference_resource_assignments_section' && data.table != 'conference_resource_assignments_student') {
+        if (data.table != 'guiding_question_assignments_section' && data.table != 'guiding_question_assignments_student') {
             return;
         }
 
         var me = this,
-            resourcesStore = me.getAssignConferenceResourcesStore(),
+            questionsStore = me.getAssignConferenceQuestionsStore(),
             itemData = data.item,
             studentId = itemData.student_id,
             assignment = itemData.assignment || null,
-            resource = resourcesStore.getById(itemData.resource_id),
+            question = questionsStore.getById(itemData.resource_id),
             assignments = {},
             popupHostColumn, popup, popupStudent,
             popupStore, popupStudentsCount, i = 0;
 
         if (
-            !resource
+            !question
             || itemData.section_code != me.getAppCt().getSelectedSection()
             || itemData.sparkpoint_code != me.getAssignCt().getSelectedSparkpoint()
         ) {
@@ -227,7 +227,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
         }
 
         // copy old values into new assignments object and set
-        resource.set('assignments', Ext.applyIf(assignments, resource.get('assignments')));
+        question.set('assignments', Ext.applyIf(assignments, question.get('assignments')));
     },
 
 
@@ -235,7 +235,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
     writeAssignments: function(assignmentsData) {
         Slate.API.request({
             method: 'POST',
-            url: '/spark/api/assignments/conference_resources',
+            url: '/spark/api/assignments/guiding_questions',
             jsonData: assignmentsData,
             success: function(response) {
                 // do nothing cause realtime will handle it
