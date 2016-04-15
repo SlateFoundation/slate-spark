@@ -29,6 +29,17 @@ var koa = require('koa'),
 
 if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
+} else {
+    // Strip /spark/api from paths while in development mode
+    app.use(function*(next) {
+        var ctx = this;
+
+        if (ctx.path.substr(0, 10) === '/spark/api') {
+            ctx.path = ctx.path.substr(10);
+        }
+
+        yield next;
+    });
 }
 
 // TODO: global.app is used by asn-standard, let's remove it (module.exports is required by koa-cluster!)
@@ -49,9 +60,10 @@ app
         slateConfig: config.slate
     }))
     .use(lookup)
-     .use(middleware.request)
+    .use(middleware.request)
     .use(json());
 
+// TODO: I hate to have rolled my own auto-router...
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;
 
