@@ -72,6 +72,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         if (learnsStore.isLoaded() || (learnsCt && learnsCt.hasParent())) {
             learnsStore.load();
         }
+
+        this.syncSelectedSparkpoint();
     },
 
     onLearnsCtActivate: function() {
@@ -81,6 +83,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         if (!learnsStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
             learnsStore.load();
         }
+
+        this.syncSelectedSparkpoint();
     },
 
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
@@ -248,6 +252,23 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
 
     // controller methods
+    syncSelectedSparkpoint: function() {
+        var me = this,
+            learnsCt = me.getLearnsCt(),
+            sparkpoint = me.getAssignCt().getSelectedSparkpoint();
+
+        if (!learnsCt || !learnsCt.hasParent()) {
+            return;
+        }
+
+        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
+        if (sparkpoint) {
+            learnsCt.show();
+        } else {
+            learnsCt.hide();
+        }
+    },
+
     writeAssignments: function(assignmentsData) {
         Slate.API.request({
             method: 'POST',

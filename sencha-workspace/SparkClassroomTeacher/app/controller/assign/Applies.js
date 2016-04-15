@@ -22,7 +22,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
     refs: {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
-        appliesCt: 'spark-teacher-assign-apply',
+        appliesCt: 'spark-assign-apply',
         popupHostColumn: 'spark-assign-apply spark-studentassignmentspanel ^ spark-column-assignments'
     },
 
@@ -64,11 +64,12 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
 
         // load store if it's loaded already or the grid is visible
         if (appliesStore.isLoaded() || (appliesCt && appliesCt.hasParent())) {
-
-            //debugger;
+            // TODO: put load in here?
         }
 
         appliesStore.load();
+
+        this.syncSelectedSparkpoint();
     },
 
     onAppliesCtActivate: function() {
@@ -78,6 +79,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
         if (!appliesStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
             appliesStore.load();
         }
+
+        this.syncSelectedSparkpoint();
     },
 
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
@@ -232,6 +235,23 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
 
 
     // controller methods
+    syncSelectedSparkpoint: function() {
+        var me = this,
+            appliesCt = me.getAppliesCt(),
+            sparkpoint = me.getAssignCt().getSelectedSparkpoint();
+
+        if (!appliesCt || !appliesCt.hasParent()) {
+            return;
+        }
+
+        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
+        if (sparkpoint) {
+            appliesCt.show();
+        } else {
+            appliesCt.hide();
+        }
+    },
+
     writeAssignments: function(assignmentsData) {
         Slate.API.request({
             method: 'POST',
