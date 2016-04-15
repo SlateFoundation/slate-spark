@@ -73,7 +73,7 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
                                     buffer: 500,
                                     change: function(field, value) {
                                         var me = this,
-                                            record = me.getParent().getParent().getRecord();
+                                            record = me.up('gridrow').getRecord();
 
                                         me.fireEvent('minimumchange', me, value, record);
                                     }
