@@ -440,7 +440,7 @@ function validateParams(params) {
 function normalize(item) {
     return {
         completed: false,
-        title: item.title,
+        title: (!!item.is_premium ? '$$$ ' : '') + (item.resource_type !== 'video' ? '*** ' : '') + item.title + (item.resource_type !== 'video' ? ` (${item.resource_type})` : ''),
         url: item.share_url,
         thumbnail: item.thumb,
         dok: null,

@@ -83,9 +83,9 @@ function* getHandler() {
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
 
         // TODO: HACK: filter out premium content and non-video content until we start using SSO
-        opened = opened.filter(function (resource) {
+        /*opened = opened.filter(function (resource) {
             return resource.type === 'video' && !resource.premium;
-        });
+        });*/
     }
 
     if (standardIds.length === 0) {
