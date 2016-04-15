@@ -52,7 +52,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var appliesStore = this.getAssignApplyStore(),
+        var appliesStore = this.getAssignAppliesStore(),
             appliesCt = this.getAppliesCt();
 
         if (!sparkpoint) {
@@ -72,7 +72,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
     },
 
     onAppliesCtActivate: function() {
-        var appliesStore = this.getAssignApplyStore();
+        var appliesStore = this.getAssignAppliesStore();
 
         // load store if it's not loaded already and a sparkpoint is selected
         if (!appliesStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
@@ -180,7 +180,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
         }
 
         var me = this,
-            appliesStore = me.getAssignApplyStore(),
+            appliesStore = me.getAssignAppliesStore(),
             itemData = data.item,
             studentId = itemData.student_id,
             assignment = itemData.assignment || null,
