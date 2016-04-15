@@ -16,7 +16,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Apply', {
 
 
     stores: [
-        'assign.Apply'
+        'assign.Applies'
     ],
 
     refs: {

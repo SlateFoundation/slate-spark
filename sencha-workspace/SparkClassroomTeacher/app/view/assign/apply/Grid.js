@@ -22,7 +22,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
         ],
         grouped: true,
         titleBar: null,
-        store: 'assign.Apply',
+        store: 'assign.Applies',
         columns:[
             // {
             //     xtype: 'spark-sparkpoints-column'
