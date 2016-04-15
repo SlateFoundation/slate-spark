@@ -26,7 +26,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     stores: [
         'assign.ConferenceQuestions',
-        'assign.Resources',
+        'assign.ConferenceResources',
         'assign.Applies',
         'assign.Assessments'
     ],

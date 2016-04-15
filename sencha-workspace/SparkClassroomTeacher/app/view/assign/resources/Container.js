@@ -23,7 +23,7 @@ Ext.define('SparkClassroomTeacher.view.assign.resources.Container', {
         ],
         grouped: true,
         titleBar: null,
-        store: 'assign.Resources',
+        store: 'assign.ConferenceResources',
         columns:[
             // {
             //     xtype: 'spark-sparkpoints-column'

@@ -16,7 +16,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
 
 
     stores: [
-        'assign.Resources'
+        'assign.ConferenceResources'
     ],
 
     refs: {
@@ -40,8 +40,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
 
     listen: {
         store: {
-            '#assign.Resources': {
-                load: 'onResourcesStoreLoad'
+            '#assign.ConferenceResources': {
+                load: 'onConferenceResourcesStoreLoad'
             }
         },
         socket: {
@@ -52,7 +52,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var resourcesStore = this.getAssignResourcesStore(),
+        var resourcesStore = this.getAssignConferenceResourcesStore(),
             resourcesCt = this.getResourcesCt();
 
         if (!sparkpoint) {
@@ -72,7 +72,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
     },
 
     onResourcesCtActivate: function() {
-        var resourcesStore = this.getAssignResourcesStore();
+        var resourcesStore = this.getAssignConferenceResourcesStore();
 
         // load store if it's not loaded already and a sparkpoint is selected
         if (!resourcesStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
@@ -164,7 +164,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
         });
     },
 
-    onResourcesStoreLoad: function(store, records, success, operation) {
+    onConferenceResourcesStoreLoad: function(store, records, success, operation) {
         var responseData;
 
         if (!success) {
@@ -180,7 +180,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Resource', {
         }
 
         var me = this,
-            resourcesStore = me.getAssignResourcesStore(),
+            resourcesStore = me.getAssignConferenceResourcesStore(),
             itemData = data.item,
             studentId = itemData.student_id,
             assignment = itemData.assignment || null,

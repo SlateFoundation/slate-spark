@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.store.assign.Resources', {
+Ext.define('SparkClassroomTeacher.store.assign.ConferenceResources', {
     extend: 'Ext.data.Store',
     requires: [
         'Slate.proxy.API'
