@@ -48,7 +48,12 @@ function* getHandler() {
                (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id IS NULL), null)),
                'student',
                (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id = $3), null))
-     ) AS json;`, [sparkpointId, sectionId, studentId])).json;
+     ) AS json;`, [sparkpointId, sectionId, studentId]));
+
+    // TODO: learnsRequired was coming back as undefined when we called this route from within /assign/learns
+    if (learnsRequired && learnsRequired.json) {
+        learnsRequired = learnsRequired.json;
+    }
 
     params = {
         limit: 50,
