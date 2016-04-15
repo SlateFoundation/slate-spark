@@ -22,7 +22,7 @@ Ext.define('SparkClassroomTeacher.view.assign.questions.Container', {
             // 'gridpagingtoolbar'
         ],
         titleBar: null,
-        store: 'assign.Questions',
+        store: 'assign.ConferenceQuestions',
         columns:[
             // {
             //     xtype: 'spark-sparkpoints-column'

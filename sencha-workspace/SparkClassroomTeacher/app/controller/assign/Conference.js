@@ -16,7 +16,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
 
 
     stores: [
-        'assign.Questions'
+        'assign.ConferenceQuestions'
     ],
 
     refs: {
@@ -40,8 +40,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
 
     listen: {
         store: {
-            '#assign.Questions': {
-                load: 'onQuestionsStoreLoad'
+            '#assign.ConferenceQuestions': {
+                load: 'onConferenceQuestionsStoreLoad'
             }
         },
         socket: {
@@ -52,7 +52,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var questionsStore = this.getAssignQuestionsStore(),
+        var questionsStore = this.getAssignConferenceQuestionsStore(),
             questionsCt = this.getQuestionsCt();
 
         if (!sparkpoint) {
@@ -72,7 +72,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
     },
 
     onQuestionsCtActivate: function() {
-        var questionsStore = this.getAssignQuestionsStore();
+        var questionsStore = this.getAssignConferenceQuestionsStore();
 
         // load store if it's not loaded already and a sparkpoint is selected
         if (!questionsStore.isLoaded() && this.getAssignCt().getSelectedSparkpoint()) {
@@ -164,7 +164,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
         });
     },
 
-    onQuestionsStoreLoad: function(store, records, success, operation) {
+    onConferenceQuestionsStoreLoad: function(store, records, success, operation) {
         var responseData;
 
         if (!success) {
@@ -180,7 +180,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Conference', {
         }
 
         var me = this,
-            questionsStore = me.getAssignQuestionsStore(),
+            questionsStore = me.getAssignConferenceQuestionsStore(),
             itemData = data.item,
             studentId = itemData.student_id,
             assignment = itemData.assignment || null,
