@@ -49,6 +49,6 @@ Ext.define('SparkClassroomTeacher.view.assign.assess.Container', {
             }
         ],
 
-        store: 'assign.Assess'
+        store: 'assign.Assessments'
     }
 });

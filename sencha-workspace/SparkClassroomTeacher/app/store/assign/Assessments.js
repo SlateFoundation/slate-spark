@@ -1,5 +1,5 @@
 /*jslint browser: true, undef: true *//*global Ext*/
-Ext.define('SparkClassroomTeacher.store.assign.Assess', {
+Ext.define('SparkClassroomTeacher.store.assign.Assessments', {
     extend: 'Ext.data.Store',
 
 
