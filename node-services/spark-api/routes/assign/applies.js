@@ -56,7 +56,7 @@ function* getHandler() {
                 'id',
                 ap.id,
                 'resource_id',
-                ap.id,
+                ap.id, 
                 'created',
                 ap.created,
                 'creator',
@@ -119,7 +119,12 @@ function* getHandler() {
                 'grade',
                 null,
                 'graded_by',
-                null
+                null,
+                'assignments',
+                COALESCE(
+                    (SELECT assignment FROM apply_assignments WHERE resource_id = ap.id),
+                    '{}':: JSON
+                )
             )) FROM applies ap
             ), '[]'::JSON)
         ) AS json;
