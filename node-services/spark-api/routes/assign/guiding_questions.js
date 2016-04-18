@@ -59,7 +59,7 @@ function* getHandler() {
               SELECT json_agg(row_to_json(t)) FROM (
                 SELECT
                   questions.*,
-                  COALESCE(question_assignments.assignment, '{}'::JSON) AS assignment
+                  COALESCE(question_assignments.assignment, '{}'::JSON) AS assignments
                 FROM questions
                   LEFT JOIN question_assignments ON question_assignments.resource_id = questions.resource_id
               ) t
