@@ -140,6 +140,14 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
                             return;
                         }
 
+                        studentDeletes.push({
+                            sparkpoint: sparkpoint,
+                            section: section,
+                            student_id: null,
+                            resource_id: resourceId,
+                            assignment: null
+                        });
+
                         me.writeAssignments(studentDeletes);
                     }
                 );
