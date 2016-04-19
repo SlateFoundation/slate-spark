@@ -36,12 +36,12 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         'spark-teacher-assign-learns-grid gridcell': {
             flagtap: 'onFlagTap'
         },
-        'spark-teacher-assign-learns-learnsrequiredfield': {
-            change: { fn: 'onMinimumChange', buffer: 500 }
+        'spark-teacher-assign-learns spark-teacher-assign-learns-learnsrequiredfield': {
+            change: { fn: 'onMinimumChangeSection', buffer: 500 }
         },
         'spark-studentlearnsrequiredpanel numberfield': {
             minimumchange: 'onMinimumChange'
-        }
+        },
     },
 
     listen: {
@@ -179,6 +179,10 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         });
     },
 
+    onMinimumChangeSection: function(field, value) {
+        this.onMinimumChange(field, value);
+    },
+
     onMinimumChange: function(field, value, record) {
         var me = this,
             section = me.getAppCt().getSelectedSection(),
@@ -186,7 +190,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
         me.writeRequiredLearns({
             student_id: (record ? record.get('student').getId() : null),
-            required: (value ? value : 1),
+            required: (value === '' ? null : value),
             section: section,
             sparkpoint: sparkpoint
         });
