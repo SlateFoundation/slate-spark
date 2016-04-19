@@ -27,9 +27,8 @@ Ext.define('SparkClassroomTeacher.view.TabBar', {
                 disabled: !location.search.match(/\WenableAlpha(\W|$)/)
             },
             {
-                title: 'Assign <small>Coming Soon</small>',
-                itemId: 'assign',
-                disabled: !location.search.match(/\WenableAlpha(\W|$)/)
+                title: 'Assign',
+                itemId: 'assign'
             }
         ]
     }
