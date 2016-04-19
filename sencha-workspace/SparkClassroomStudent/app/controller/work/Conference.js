@@ -249,7 +249,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             items.push({
                 text: question.get('question'),
-                source: question.get('source')
+                source: question.get('source'),
+                assignment: question.get('assignment')
             });
         }
 
@@ -276,7 +277,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             items.push({
                 text: resource.get('title'),
                 linkTitle: resource.get('url'),
-                linkUrl: resource.get('url')
+                linkUrl: resource.get('url'),
+                assignment: resource.get('assignment')
             });
         }
 
