@@ -77,15 +77,25 @@ Ext.define('SparkClassroom.model.work.Apply', {
             allowNull: true,
             defaultValue: null
         },
-
-        // for teacher assign UI
         {
             name: 'assignments',
             persist: false,
+            depends: [],
 
             // TODO: remove default to assignment when assignment gets changes to assignments in work/learns API response
             convert: function(v, r) {
                 return v || r.get('assignment') || {};
+            }
+        },
+        {
+            name: 'effective_assignment',
+            persist: false,
+            depends: ['assignments'],
+
+            convert: function(v, r) {
+                var assignments = r.get('assignments');
+
+                return assignments.student || assignments.section || null;
             }
         }
     ],
