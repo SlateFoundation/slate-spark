@@ -1,4 +1,4 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
+/*jslint browser:true, undef:true, unused:true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
     extend: 'Ext.field.Number',
     xtype: 'spark-teacher-assign-learns-learnsrequiredfield',
@@ -18,6 +18,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
         popup: null,
         studentsStore: 'Students',
         activeStudentsStore: 'gps.ActiveStudents',
+        assignLearnsStore: 'assign.Learns',
 
         labelAlign: 'left',
         labelWidth: 320,
@@ -67,18 +68,28 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
         return Ext.StoreMgr.lookup(store);
     },
 
+    applyAssignLearnsStore: function(store) {
+        return Ext.StoreMgr.lookup(store);
+    },
+
+    updateAssignLearnsStore: function(store, oldStore) {
+        var me = this;
+
+        if (oldStore) {
+            oldStore.un('load', 'onAssignLearnsStoreLoad', me);
+        }
+
+        if (store) {
+            store.on('load', 'onAssignLearnsStoreLoad', me);
+        }
+    },
+
     updatePopupVisible: function(visible) {
         var me = this,
-            sectionLearnsRequired = me.getValue(),
-            popup = this.getPopup(),
+            popup = me.getPopup(),
             containingScrollable = me.containingScrollable,
-            activeStudentsStore = me.getActiveStudentsStore(),
 
-            studentsStore = me.getStudentsStore(),
-            studentsCount = studentsStore.getCount(),
-            i = 0, student, studentId,
-
-            popupStore, fieldEl, x, y, scrollable;
+            fieldEl, x, y, scrollable;
 
         if (!visible) {
             if (popup) {
@@ -93,45 +104,9 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
             containingScrollable = me.containingScrollable = me.up(':scrollable') || Ext.Viewport;
         }
 
-        // create and render popup the first time it's needed
-        if (!popup) {
-            me.setPopup(popup = Ext.create('SparkClassroom.panel.StudentLearnsRequired', {
-                hidden: true
-            }));
-
-            // use this field as the parent of the popup for the component hierarchy
-            popup.setParent(me);
-
-            // render popup to the containing scroll surface
-            popup.setRenderTo(containingScrollable.innerElement);
-        }
-
         // initially display popup invisibly so it can be measured
         popup.setVisibility(false);
         popup.show();
-
-        // populate grid data
-        popupStore = popup.getGrid().getStore();
-        popupStore.beginUpdate();
-
-        popupStore.removeAll(true);
-
-        for (; i < studentsCount; i++) {
-            student = studentsStore.getAt(i);
-            studentId = student.getId();
-
-            popupStore.add({
-                id: studentId,
-                student: student,
-                studentSparkpoint: activeStudentsStore.findRecord('student_id', studentId),
-                learnsRequired: {
-                    section: sectionLearnsRequired,
-                    student: null
-                }
-            });
-        }
-
-        popupStore.endUpdate();
 
         // start positioning at bottom-left corner of assign cell
         fieldEl = this.element;
@@ -159,5 +134,73 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
 
     onStudentsStoreLoad: function(store) {
         this.studentIdStrings = store.getStudentIdStrings();
+    },
+
+    onAssignLearnsStoreLoad: function(store) {
+        var me = this,
+            studentsStore = me.getStudentsStore(),
+            rawData = store.getProxy().getReader().rawData;
+
+        me.setValue(rawData && rawData.learns_required && rawData.learns_required.section || null);
+
+        if (studentsStore.isLoaded()) {
+            me.syncStore();
+        } else {
+            studentsStore.on('load', 'syncStore', me, {single:true});
+        }
+    },
+
+    // view methods
+    syncStore: function() {
+        var me = this,
+            rawData = me.getAssignLearnsStore().getProxy().getReader().rawData,
+            learnsRequired = rawData && rawData.learns_required,
+            popup = me.getPopup(),
+            containingScrollable = me.containingScrollable,
+            i = 0,
+            studentsStore = me.getStudentsStore(),
+            studentsCount = studentsStore.getCount(),
+            learnsRequiredDefault = me.getValue() || learnsRequired.site,
+            activeStudentsStore = me.getActiveStudentsStore(),
+            popupStore, student, studentId;
+
+        // find container that provides scrolling
+        if (!containingScrollable) {
+            containingScrollable = me.containingScrollable = me.up(':scrollable') || Ext.Viewport;
+        }
+
+        // create and render popup the first time it's needed
+        if (!popup) {
+            me.setPopup(popup = Ext.create('SparkClassroom.panel.StudentLearnsRequired', {
+                hidden: true
+            }));
+
+            // use this field as the parent of the popup for the component hierarchy
+            popup.setParent(me);
+
+            // render popup to the containing scroll surface
+            popup.setRenderTo(containingScrollable.innerElement);
+        }
+
+        // populate grid data
+        popupStore = popup.getGrid().getStore();
+        popupStore.beginUpdate();
+
+        popupStore.removeAll(true);
+
+        for (; i < studentsCount; i++) {
+            student = studentsStore.getAt(i);
+            studentId = student.getId();
+
+            popupStore.add({
+                id: studentId,
+                student: student,
+                studentSparkpoint: activeStudentsStore.findRecord('student_id', studentId),
+                learnsRequired: learnsRequired[studentId],
+                learnsRequiredDefault: learnsRequiredDefault
+            });
+        }
+
+        popupStore.endUpdate();
     }
 });
