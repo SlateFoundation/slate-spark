@@ -26,7 +26,8 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
                     fields: [
                         'student',
                         'studentSparkpoint',
-                        'assignments'
+                        'learnsRequired',
+                        'learnsRequiredDefault'
                     ],
                     trackRemoved: false
                 },
@@ -67,8 +68,10 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
                             widget: {
                                 xtype: 'numberfield',
                                 bind: {
-                                    placeHolder: '{record.learnsRequired.section}'
+                                    placeHolder: '{record.learnsRequiredDefault}',
+                                    value: '{record.learnsRequired}'
                                 },
+                                clearIcon: false,
                                 listeners: {
                                     buffer: 500,
                                     change: function(field, value) {
