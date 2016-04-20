@@ -124,6 +124,14 @@ function *getHandler() {
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds, sectionId]);
 
+    if (ctx.isStudent) {
+        let requiredApplies = applies.json.filter(function(apply) {
+            return apply.assignment.student === 'required' || apply.assignment.section === 'required';
+        });
+
+        ctx.body = requiredApplies || applies.json;
+    }
+
     ctx.body = applies.json;
 }
 
