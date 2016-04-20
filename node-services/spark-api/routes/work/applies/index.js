@@ -5,12 +5,13 @@ var util = require('../../../lib/util'),
     AsnStandard = require('../../../lib/asn-standard');
 
 function *getHandler() {
-    this.require(['sparkpoint_id']);
+    this.require(['sparkpoint_id', 'section_id']);
 
     var ctx = this,
         sparkpointId = this.query.sparkpoint_id,
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
+        sectionId = ~~this.query.section_id,
         applies;
 
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
@@ -21,7 +22,7 @@ function *getHandler() {
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 400);
 
     applies = yield this.pgp.one(/*language=SQL*/
-    `
+    `        
     SELECT json_agg(json_build_object(
         'id',
         ap.id,
@@ -103,13 +104,25 @@ function *getHandler() {
         CASE WHEN a.graded_by IS NOT NULL
              THEN (SELECT "FirstName" || ' ' || "LastName" FROM people WHERE "ID" = a.graded_by)
              ELSE null
-        END
+        END,
+        'assignment',
+        COALESCE((
+          SELECT json_object_agg(
+            (CASE WHEN aa.student_id IS NULL THEN 'section' ELSE 'student' END),
+            assignment
+          )
+            FROM apply_assignments aa
+           WHERE aa.resource_id = ap.id
+             AND (aa.student_id = $1 OR aa.student_id IS NULL)
+             AND aa.section_id = $4
+          ), '{}':: JSON
+        )
     )) AS json
          FROM fusebox_apply_projects ap
     LEFT JOIN applies a ON a.fb_apply_id = ap.id AND a.student_id = $1
     LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
         WHERE standardids ?| $3;
-    `, [this.studentId, sparkpointId, standardIds]);
+    `, [this.studentId, sparkpointId, standardIds, sectionId]);
 
     ctx.body = applies.json;
 }
