@@ -161,6 +161,15 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onAppliesStoreLoad: function(appliesStore) {
+        var filters = [];
+
+        if (appliesStore.query('effective_assignment', 'required').getCount()) {
+            filters.push({property: 'effective_assignment', value: 'required'});
+        }
+
+        appliesStore.clearFilter(true);
+        appliesStore.filter(filters);
+
         this.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
 
