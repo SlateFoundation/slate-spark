@@ -12,7 +12,8 @@ function *getHandler() {
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         sectionId = ~~this.query.section_id,
-        applies;
+        applies,
+        requiredApplies;
 
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
@@ -124,15 +125,15 @@ function *getHandler() {
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds, sectionId]);
 
+    applies.json = applies.json || [];
+
     if (ctx.isStudent) {
-        let requiredApplies = applies.json.filter(function(apply) {
+        requiredApplies = applies.json.filter(function(apply) {
             return apply.assignment.student === 'required' || apply.assignment.section === 'required';
         });
-
-        ctx.body = requiredApplies || applies.json;
     }
 
-    ctx.body = applies.json;
+    ctx.body = requiredApplies || applies.json;
 }
 
 function *patchHandler() {
