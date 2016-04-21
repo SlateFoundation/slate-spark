@@ -44,6 +44,9 @@ function *sqlGenerator(entity, records, vals) {
     for (let x = 0, len = records.length; x < len; x++) {
         let record = records[x];
 
+        record.student_id = record.student_id || null;
+        record.section_id = record.section_id || null;
+
         try {
             yield util.identifyRecord(record, ctx.lookup);
         } catch (e) {
