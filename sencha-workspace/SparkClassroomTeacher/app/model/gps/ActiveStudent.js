@@ -69,7 +69,7 @@ Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
 
         {
             name: 'subphase_duration',
-            persists: false,
+            persist: false,
             depends: [
                 'active_phase',
                 'learn_subphase_duration',
