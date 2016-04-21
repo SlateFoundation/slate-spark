@@ -139,7 +139,11 @@ var filterObjectKeys = require('./util').filterObjectKeys,
             accept: 'application/json'
         },
         json: true,
-        timeout: 2000
+        timeout: 2000,
+        forever: true,
+        pool: {
+            maxSockets: 50
+        }
     },
     configPath = path.resolve(__dirname, '../config/opened.json'),
     configError;
