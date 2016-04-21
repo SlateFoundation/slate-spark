@@ -50,9 +50,6 @@ function *sqlGenerator(entity, records, vals) {
             ctx.throw(400, e);
         }
 
-        record.student_id = record.student_id || null;
-        record.section_id = record.section_id || null;
-
         if (record.teacher_id === undefined) {
             record.teacher_id = ctx.userId;
         }
@@ -65,15 +62,9 @@ function *sqlGenerator(entity, records, vals) {
             if (validationErrors.length === 1 && record.assignment === null) {
                 // Assignment is null which is an implied delete, we can ignore this validation error, provided that it
                 // is the only validation error
+
+                // The assigning teacher should not get pushed into the where clause
                 delete record.teacher_id;
-
-                for (var key in record) {
-                    let val = record[key];
-
-                    if (val === null) {
-                        delete record[key];
-                    }
-                }
 
                 sqlStatements.push(recordToDelete(record, vals));
             } else {
