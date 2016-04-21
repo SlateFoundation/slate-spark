@@ -17,7 +17,7 @@ var nats = require('nats'),
             customGenerator: function* () {
                 // This unrolls non-leaf standards providing a way to get all of the ASN Ids for a standard and its
                 // children. This is primarily used for vendor cross walking.
-                var idToAsnIds = yield this.pgp.one(`
+                var idToAsnIds = yield this.pgp.one(/*language=SQL*/ `
                     WITH asn_ids AS (
                       SELECT asn_id,
                              ARRAY[asn_id] AS children_ids
@@ -122,7 +122,7 @@ module.exports = function* (next) {
         initialized = true;
 
         // TODO: figure out which of these to use
-        shared.vendor = (yield ctx.pgp.one(`
+        shared.vendor = (yield ctx.pgp.one(/*language=SQL*/ `
             WITH asn_id_to_vendor_identifier AS (
                 SELECT
                   vendor_id,
@@ -180,6 +180,8 @@ module.exports = function* (next) {
                 );
 
                 if (cachingEnabled &&
+                    entity !== 'sparkpoint' &&
+                    entity !== 'standard' &&
                     lookupCache.shared[entity] &&
                     typeof lookupCache.shared[entity].cache === 'object' &&
                     Object.keys(lookupCache.shared[entity].cache).length > 0) {
@@ -194,7 +196,7 @@ module.exports = function* (next) {
 
         // TODO: HACK: Populating the vendor lookup table here doesn't make sense from a structural standpoint
         if (!cachingEnabled || typeof lookupCache.shared.vendor !== 'object') {
-            let result = yield this.app.context.pgp.shared.one(`
+            let result = yield this.app.context.pgp.shared.one(/*language=SQL*/ `
                 SELECT json_build_object(
                     'idToName',
                     (SELECT json_object_agg(id, name) FROM vendors),
@@ -251,6 +253,7 @@ module.exports = function* (next) {
             );
 
             if (cachingEnabled &&
+                entity !== 'sparkpoint' &&
                 lookupCache.schema &&
                 lookupCache.schema[this.schema] &&
                 lookupCache.schema[this.schema][entity] &&
@@ -279,6 +282,7 @@ module.exports = function* (next) {
         this.lookup = shared;
     } else {
         this.lookup = Object.assign(shared, schema[this.schema]);
+        console.log(Object.keys(this.lookup));
     }
 
     this.app.context.lookup || (this.app.context.lookup = {

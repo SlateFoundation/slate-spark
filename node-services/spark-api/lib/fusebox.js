@@ -78,7 +78,7 @@ function normalizeAssessment(item) {
 }
 
 function* getFuseboxResources(asnIds) {
-    var query = `
+    var query = /*language=SQL*/ `
     SELECT DISTINCT ON (url)
            url,
            title,

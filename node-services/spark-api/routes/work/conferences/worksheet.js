@@ -36,7 +36,7 @@ function* patchHandler(req, res, next) {
         }
     });
 
-    record = yield ctx.pgp.one(`
+    record = yield ctx.pgp.one(/*language=SQL*/ `
         INSERT INTO conference_worksheets
                     (student_id, sparkpoint_id, worksheet)
              VALUES ($1, $2, $3) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET worksheet = $3

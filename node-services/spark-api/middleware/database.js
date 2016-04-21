@@ -131,7 +131,7 @@ function* introspectDatabase(pgp) {
     }
 
     if (!introspection.json) {
-        introspection = yield pgp.one(`
+        introspection = yield pgp.one(/*language=SQL*/ `
             WITH spark_tables AS (
               SELECT DISTINCT ON (table_name) table_name,
                                  table_schema
