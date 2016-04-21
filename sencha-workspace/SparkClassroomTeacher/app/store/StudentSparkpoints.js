@@ -19,7 +19,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
 
         me.createOperation('read', {
             callback: function(incomingRecords) {
-                var existingIds = me.collect('student_id'),
+                var existingIds = me.collect('student_sparkpoint'),
                     i, len,
                     id, existingRecord, incomingRecord,
                     newRecords = [];
@@ -55,7 +55,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
 
                 // remove missing skills from same demonstration
                 for (i = 0, len = existingIds.length; i < len; i++) {
-                    me.remove(existingIds[i]);
+                    me.remove(me.getById(existingIds[i]));
                 }
 
 
