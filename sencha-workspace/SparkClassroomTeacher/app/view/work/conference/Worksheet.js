@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.conference.Worksheet', {
     extend: 'Ext.Component',
     xtype: 'spark-teacher-work-conference-worksheet',

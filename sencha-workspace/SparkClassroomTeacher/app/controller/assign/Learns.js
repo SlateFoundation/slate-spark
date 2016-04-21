@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * Manages the learns tab of the assign feature
  *

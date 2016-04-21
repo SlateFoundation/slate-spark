@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * The Competencies controller handles activating the top-level
  * "Competency Overview" tab and manages all UI within it

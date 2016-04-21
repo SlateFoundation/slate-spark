@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * Manages the conference questions tab of the assign feature
  *

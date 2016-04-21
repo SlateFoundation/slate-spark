@@ -1,5 +1,3 @@
-/* global SparkClassroom */
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.model.gps.ActiveStudent', {
     extend: 'SparkClassroom.model.StudentSparkpoint',
     requires: [

@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
     extend: 'Ext.form.Panel',
     xtype: 'spark-assign-apply-form',

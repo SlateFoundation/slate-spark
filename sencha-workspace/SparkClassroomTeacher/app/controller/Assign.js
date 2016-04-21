@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * The Assign controller handles activating the top-level
  * "Assign" tab and manages navigation between its immediate

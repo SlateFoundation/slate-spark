@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.learn.Sidebar', {
     extend: 'Ext.Container',
     xtype: 'spark-teacher-work-learn-sidebar',

@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.gps.ActiveStudents', {
     extend: 'SparkClassroomTeacher.store.StudentSparkpoints',
     requires: [

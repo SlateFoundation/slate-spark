@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * The GPS controller manages the GPS section of the teacher interface that shows what phase
  * every student in the selected section is in and provides for selection of students.

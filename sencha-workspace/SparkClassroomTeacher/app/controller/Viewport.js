@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * The Viewport controller is the first controller loaded in the application. It manages
  * the top-level framing and navigation.

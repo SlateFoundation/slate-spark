@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.TabBar', {
     extend: 'Ext.tab.Bar',
     xtype: 'spark-teacher-tabbar',

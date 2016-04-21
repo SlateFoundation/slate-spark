@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.work.assess.Container', {
     extend: 'SparkClassroom.work.assess.Container',
     xtype: 'spark-teacher-work-assess',

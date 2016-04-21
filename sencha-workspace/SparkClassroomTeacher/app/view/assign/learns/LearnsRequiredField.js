@@ -1,4 +1,3 @@
-/*jslint browser:true, undef:true, unused:true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
     extend: 'Ext.field.Number',
     xtype: 'spark-teacher-assign-learns-learnsrequiredfield',

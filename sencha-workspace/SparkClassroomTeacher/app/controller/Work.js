@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 /**
  * The Work controller handles activating the top-level
  * "Work" tab and manages navigation between its immediate

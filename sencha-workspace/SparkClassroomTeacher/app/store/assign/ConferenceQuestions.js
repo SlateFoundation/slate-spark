@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.store.assign.ConferenceQuestions', {
     extend: 'Ext.data.Store',
     requires: [

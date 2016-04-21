@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomTeacher.view.FeedbackForm', {
     extend: 'Ext.form.Panel',
     xtype: 'spark-teacher-feedbackform',
