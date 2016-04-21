@@ -533,7 +533,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             items = [];
 
         if (!questionsList) {
-            cehuct;
+            return;
         }
 
         for (; i < count; i++) {
