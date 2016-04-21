@@ -62,9 +62,15 @@ function *sqlGenerator(entity, records, vals) {
             if (validationErrors.length === 1 && record.assignment === null) {
                 // Assignment is null which is an implied delete, we can ignore this validation error, provided that it
                 // is the only validation error
-
-                // The assigning teacher should not get pushed into the where clause
                 delete record.teacher_id;
+
+                for (var key in record) {
+                    let val = record[key];
+
+                    if (val === null && key !== 'student_id') {
+                        delete record[key];
+                    }
+                }
 
                 sqlStatements.push(recordToDelete(record, vals));
             } else {
