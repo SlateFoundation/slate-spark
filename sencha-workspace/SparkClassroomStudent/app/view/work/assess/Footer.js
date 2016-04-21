@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.view.work.assess.Footer', {
     extend: 'Ext.Container',
     xtype: 'spark-student-work-assess-footer',

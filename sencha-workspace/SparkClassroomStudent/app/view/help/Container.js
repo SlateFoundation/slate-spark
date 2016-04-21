@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.view.help.Container', {
     extend: 'SparkClassroom.NavSubpanel',
     xtype: 'spark-help',

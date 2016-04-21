@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true, unused: true *//*global Ext*/
 Ext.define('SparkClassroomStudent.controller.Standards', {
     extend: 'Ext.app.Controller',
 

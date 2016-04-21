@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext,Slate*/
 /**
  * TODO:
  * - Embed a store in each list that it internally binds to

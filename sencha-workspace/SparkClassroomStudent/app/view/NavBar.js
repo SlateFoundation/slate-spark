@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroomStudent.view.NavBar', {
     extend: 'SparkClassroom.NavBar',
     xtype: 'spark-student-navbar',

@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroomStudent.model.ConferenceWorksheet', {
     extend: 'Ext.data.Model',
     requires: [
