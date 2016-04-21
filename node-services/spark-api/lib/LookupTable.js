@@ -1,5 +1,7 @@
 'use strict';
 
+var co = require('co');
+
 function LookupTable(options) {
     var self = this;
 
