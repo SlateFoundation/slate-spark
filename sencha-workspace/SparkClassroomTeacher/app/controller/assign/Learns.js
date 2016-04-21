@@ -116,21 +116,18 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
             for (assignmentKey in assignments) {
                 // skip section assignment or students not in current roster
-                if (
-                    assignmentKey == 'section'
-                    || studentIdStrings.indexOf(assignmentKey) == -1
-                    || !assignments[assignmentKey]
+                if (assignments[assignmentKey] &&
+                    assignments[assignmentKey] === flagId &&
+                    studentIdStrings.indexOf(assignmentKey) != -1
                 ) {
-                    continue;
+                    studentDeletes.push({
+                        sparkpoint: sparkpoint,
+                        section: section,
+                        student_id: assignmentKey,
+                        resource_id: resourceId,
+                        assignment: null
+                    });
                 }
-
-                studentDeletes.push({
-                    sparkpoint: sparkpoint,
-                    section: section,
-                    student_id: assignmentKey,
-                    resource_id: resourceId,
-                    assignment: null
-                });
             }
 
             // if there are any student-level assignments, offer to erase them so there are no exceptions to this flag
