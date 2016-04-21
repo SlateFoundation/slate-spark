@@ -716,7 +716,7 @@ function recordToWhere(record, vals) {
         where = keys.map(function(key, i) {
             let val = values[i];
 
-            if (val === null) {
+            if (record[key] === null) {
                 return `${key} IS NULL`;
             } else {
                 return `${key} = ${val}`;
