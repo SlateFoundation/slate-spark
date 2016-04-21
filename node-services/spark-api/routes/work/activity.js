@@ -93,7 +93,7 @@ function *patchHandler(req, res, next) {
         if (key === 'student_id') {
             return;
         }
-
+        
         if (key === 'conference_group_id') {
             // Allow null values and values that cast to a number, silently ignore invalid values
 
@@ -122,6 +122,7 @@ function *patchHandler(req, res, next) {
                 timeValues.push(val);
                 updateValues.push(`${key} = ${val}`);
             } else {
+                // TODO: breakout date/time parsing
                 ctx.throw(
                     `${key} must should be the number of seconds since epoch in UTC, you provided: ${body[key]}`,
                     400
@@ -130,6 +131,7 @@ function *patchHandler(req, res, next) {
         } else if (key.indexOf('mastery_check_score') !== -1) {
             hasMasteryCheckScores = true;
 
+            // TODO: implement in RLS
             if (!ctx.isTeacher) {
                 ctx.throw(new Error('Only teachers can set mastery check scores.'), 403);
             }
@@ -137,6 +139,7 @@ function *patchHandler(req, res, next) {
             if (body[key] !== null) {
                 val = parseInt(body[key], 10);
 
+                // TODO: this should be a database check constraint
                 if (isNaN(val) || val < 1 || val > 100) {
                     ctx.throw(
                         `${key} must be a number between 1 and 100 or null, you provided: ${body[key]}`,

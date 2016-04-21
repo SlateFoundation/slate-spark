@@ -18,7 +18,7 @@ function *assessmentsHandler() {
         this.throw('No academic standards are associated with sparkpoint id: ' + sparkpointId, 404);
     }
 
-    assessments = yield this.pgp.any(`
+    assessments = yield this.pgp.any(/*language=SQL*/ `
         WITH assessments AS (
             SELECT fusebox_assessments.id AS id,
                    title,

@@ -15,7 +15,7 @@ function *getHandler(next) {
     delete ctx.query.student_id;
     ctx.body;
 
-    result = (yield ctx.pgp.one(`
+    result = (yield ctx.pgp.one(/*language=SQL*/ `
         WITH playlist_cache AS (
             SELECT playlist
               FROM learn_playlist_cache

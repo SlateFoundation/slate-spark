@@ -42,7 +42,7 @@ function *deleteHandler() {
         id: id
     };
 
-    ctx.body = yield this.pgp.one(`
+    ctx.body = yield this.pgp.one(/*language=SQL*/ `
             UPDATE applies
                SET submissions = jsonb_remove_array_element($4::JSONB, submissions)
              WHERE sparkpoint_id = $1

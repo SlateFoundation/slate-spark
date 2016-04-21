@@ -30,7 +30,7 @@ function* getHandler() {
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
 
-    learnsRequired = (yield ctx.pgp.one(`
+    learnsRequired = (yield ctx.pgp.one(/*language=SQL*/ `
     
     WITH learns_required AS (
         SELECT required,
@@ -116,7 +116,7 @@ function* getHandler() {
         // TODO: what kind of treatment/normalization should we do on URLs
         urlPlaceHolders.join(',\n');
 
-        var sql = `
+        var sql = /*language=SQL*/ `
         WITH new_learn_resources AS (
             INSERT INTO learn_resources AS lr (sparkpoint_id, url)
             VALUES ${urlPlaceHolders}
@@ -179,7 +179,7 @@ function* getHandler() {
         )
     `;
 
-            sql += `
+            sql += /*language=SQL*/ `
                  SELECT lr.*,
                          la.completed,
                          la.start_status = 'launched' AS launched,
@@ -222,7 +222,7 @@ function* getHandler() {
             resource.reviews = resourceId.reviews || {};
         });
 
-        cacheSql = `
+        cacheSql = /*language=SQL*/ `
             INSERT INTO learn_playlist_cache
                         (student_id, section_id, sparkpoint_id, playlist, last_updated)
                  VALUES ($1, $2, $3, $4, current_timestamp) ON CONFLICT (sparkpoint_id, student_id, section_id) DO UPDATE
@@ -374,7 +374,7 @@ function* launchHandler() {
         return next();
     }
 
-    yield this.pgp.none(`
+    yield this.pgp.none(/*language=SQL*/ `
         INSERT INTO learn_activity (user_id, resource_id, start_status)
              VALUES ($1, $2, $3)
         ON CONFLICT (resource_id, user_id) DO NOTHING;`, [studentId, resourceId, 'launched']);

@@ -10,7 +10,7 @@ function *getHandler() {
     ctx.assert(ctx.isTeacher, 'You must be a teacher to use this endpoint', 403);
     ctx.assert(sectionId, 'You must provide a section, section_code or section_id as a query parameter', 400);
 
-    records = yield ctx.pgp.manyOrNone(`
+    records = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT ssas.last_accessed,
                ssas.section_id,
                ssas.student_id,

@@ -206,7 +206,7 @@ function *patchHandler() {
     // Deselect other applies for student/sparkpoint and update the student_sparkpoint table
     if (selected !== undefined) {
         if (selected) {
-            yield ctx.pgp.none(`
+            yield ctx.pgp.none(/*language=SQL*/ `
             UPDATE applies
                SET selected = false
              WHERE selected = true
@@ -216,7 +216,7 @@ function *patchHandler() {
                 [id, sparkpointId, studentId]
             );
 
-            yield ctx.pgp.none(`
+            yield ctx.pgp.none(/*language=SQL*/ `
             UPDATE student_sparkpoint
                SET selected_apply_id = $1,
                    selected_fb_apply_id = $2
@@ -226,7 +226,7 @@ function *patchHandler() {
                 [apply.id, apply.fb_apply_id, studentId, sparkpointId]
             );
         } else {
-            yield ctx.pgp.none(`
+            yield ctx.pgp.none(/*language=SQL*/ `
             UPDATE student_sparkpoint
                SET selected_apply_id = NULL,
                    selected_fb_apply_id = NULL
@@ -255,7 +255,7 @@ function *patchHandler() {
     }
 
     // Selects todos from todos table, if they don't exist populate them from the fusebox and return them
-    todos = yield ctx.pgp.manyOrNone(`
+    todos = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         WITH existing_user_todos AS (
           SELECT id,
                  todo,

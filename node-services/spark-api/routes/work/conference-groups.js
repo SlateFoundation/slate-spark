@@ -17,7 +17,7 @@ function *getHandler() {
 
         this.body = yield this.pgp.any(query, id);
     } else {
-        query = `
+        query = /*language=SQL*/ `
              SELECT *
                FROM conference_groups
               WHERE section_id = $1

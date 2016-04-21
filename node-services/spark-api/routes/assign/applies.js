@@ -21,8 +21,7 @@ function* getHandler() {
 
 
 
-    result = yield this.pgp.one(//language=SQL
-        `
+    result = yield this.pgp.one(/*language=SQL*/ `
         WITH applies AS (
             SELECT *
               FROM fusebox_apply_projects

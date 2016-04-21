@@ -19,9 +19,7 @@ function* getHandler() {
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
     ctx.assert(ctx.isTeacher, 'Only teachers can assign conference resources', 403);
 
-    result = yield this.pgp.one(
-        //language=SQL
-        `
+    result = yield this.pgp.one(/*language=SQL*/ `
         WITH resources AS (
             SELECT id AS resource_id,
                    '' AS creator,
