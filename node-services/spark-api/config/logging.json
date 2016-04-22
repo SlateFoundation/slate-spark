@@ -7,5 +7,7 @@
   "stdout_sql": true,
   "stdout_request_body": true,
   "git_branch": true,
-  "git_commit": true
+  "git_commit": true,
+  "curl_trace_filename": "curl.trace",
+  "error_log_filename": "errors.json"
 }

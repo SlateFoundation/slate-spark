@@ -7,6 +7,7 @@ var mkdirp = require('mkdirp-then'),
     jsonHandle,
     textHandle,
     blueprintHandle,
+    errorHandle,
     path = require('path');
 
 module.exports = function *logger(next) {
@@ -81,6 +82,23 @@ module.exports = function *logger(next) {
                 process.on('exit', function () {
                     // Flush logs to disk
                     textHandle.end();
+                });
+            }
+
+            if (config.error_log_filename && !jsonHandle) {
+                throw new Error('error_log_filename requires a json_filename');
+            }
+
+            if (config.error_log_filename) {
+                errorHandle = require('fs').createWriteStream(path.join(logDirectory, config.error_log_filename), {
+                    flags: 'a',
+                    encoding: 'utf8',
+                    mode: '0666'
+                });
+
+                process.on('exit', function () {
+                    // Flush logs to disk
+                    errorHandle.end();
                 });
             }
 
@@ -186,8 +204,16 @@ module.exports = function *logger(next) {
                 } catch (e) {
                     jsonLogString.response.body = ctx.body;
                 }
+
+                if (ctx.res.statusCode >= 400) {
+                    jsonLogString.curl = ctx.toCurl();
+                }
                 
                 jsonLogString = JSON.stringify(jsonLogString);
+            }
+
+            if (errorHandle) {
+                errorHandle.write(jsonLogString + '\n', 'utf-8');
             }
 
             jsonHandle.write(jsonLogString + '\n', 'utf-8');
