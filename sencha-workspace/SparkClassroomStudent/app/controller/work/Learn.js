@@ -59,6 +59,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         store.removeAll();
 
+        me.learnsCompleted = 0;
+        me.learnsRequiredSection = null;
+        me.learnsRequiredStudent = null;
+
         if (!studentSparkpoint) {
             return;
         }
@@ -136,7 +140,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
-                me.syncLearnsRequired();
             }
         } else if (table == 'learn_assignments_student') {
             if (
@@ -150,7 +153,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
-                me.syncLearnsRequired();
             }
         } else if (table == 'learns_required_section') {
             me.learnsRequiredSection = itemData.required || null;
@@ -192,8 +194,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
 
         if (rawData && rawData.learns_required) {
-            me.learnsRequiredSection = rawData.learns_required.section;
-            me.learnsRequiredStudent = rawData.learns_required.student;
+            if (me.learnsRequiredSection === null) {
+                me.learnsRequiredSection = rawData.learns_required.section;
+            }
+            if (me.learnsRequiredStudent === null) {
+                me.learnsRequiredStudent = rawData.learns_required.student;
+            }
         }
 
         if (count) {
