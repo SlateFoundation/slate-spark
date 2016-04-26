@@ -136,6 +136,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
+                me.syncLearnsRequired();
             }
         } else if (table == 'learn_assignments_student') {
             if (
@@ -149,6 +150,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
+                me.syncLearnsRequired();
             }
         } else if (table == 'learns_required_section') {
             me.learnsRequiredSection = itemData.required || null;
@@ -217,12 +219,28 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             readyBtn = me.getReadyBtn(),
             studentSparkpoint = me.getStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_finish_time'),
-            required = 5;
+            learns = me.getWorkLearnsStore().getRange(),
+            count = learns.length,
+            i = 0,
+            learnsRequiredDisabled = false,
+            required = 5,
+            learn, learnAssignments;
 
         if (me.learnsRequiredStudent !== null) {
             required = me.learnsRequiredStudent;
         } else if (me.learnsRequiredSection !== null) {
             required = me.learnsRequiredSection;
+        }
+
+        for (; i < count; i++) {
+            learn = learns[i];
+            learnAssignments = learn.get('assignments');
+            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+                if (!learn.get('completed')) {
+                    learnsRequiredDisabled = true;
+                }
+            }
         }
 
         progressBanner.setData({
@@ -231,7 +249,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             requiredLearns: required
         });
 
-        readyBtn.setDisabled(learnFinishTime || me.learnsCompleted < required);
+        if (!learnsRequiredDisabled) {
+            learnsRequiredDisabled = me.learnsCompleted < required;
+        }
+
+        readyBtn.setDisabled(learnFinishTime || learnsRequiredDisabled);
         readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
     },
 
