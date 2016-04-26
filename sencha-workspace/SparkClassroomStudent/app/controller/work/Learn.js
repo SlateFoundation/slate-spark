@@ -178,12 +178,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         var me = this,
             progressBanner = me.getProgressBanner(),
             readyBtn = me.getReadyBtn(),
-            studentSparkpoint = me.getStudentSparkpoint(),
-            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_finish_time'),
             learns = me.getWorkLearnsStore().getRange(),
             count = learns.length,
             completed = 0,
-            required = 5,
             i = 0,
             rawData = me.getWorkLearnsStore().getProxy().getReader().rawData;
 
@@ -212,14 +209,14 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         } else {
             progressBanner.hide();
         }
-
-        readyBtn.setDisabled(learnFinishTime || completed < required);
-        readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
     },
 
     syncLearnsRequired: function() {
         var me = this,
             progressBanner = me.getProgressBanner(),
+            readyBtn = me.getReadyBtn(),
+            studentSparkpoint = me.getStudentSparkpoint(),
+            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_finish_time'),
             required = 5;
 
         if (me.learnsRequiredStudent !== null) {
@@ -233,6 +230,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             name: null,
             requiredLearns: required
         });
+
+        readyBtn.setDisabled(learnFinishTime || me.learnsCompleted < required);
+        readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
     },
 
     ensureLearnPhaseStarted: function() {
