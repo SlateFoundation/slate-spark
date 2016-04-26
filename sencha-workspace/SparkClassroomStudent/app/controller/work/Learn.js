@@ -46,6 +46,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
+    learnsCompleted: 0,
+    learnsRequiredSection: null,
+    learnsRequiredStudent: null,
 
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
@@ -147,6 +150,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
             }
+        } else if (table == 'learns_required_section') {
+            me.learnsRequiredSection = itemData.required || null;
+            me.syncLearnsRequired();
+        } else if (table == 'learns_required_student') {
+            me.learnsRequiredStudent = itemData.required || null;
+            me.syncLearnsRequired();
         }
     },
 
@@ -174,12 +183,18 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learns = me.getWorkLearnsStore().getRange(),
             count = learns.length,
             completed = 0,
-            required = Math.min(count, 5),
-            i = 0;
+            required = 5,
+            i = 0,
+            rawData = me.getWorkLearnsStore().getProxy().getReader().rawData;
 
         if (!progressBanner || !readyBtn) {
             // learns tab hasn't been activated yet
             return;
+        }
+
+        if (rawData && rawData.learns_required) {
+            me.learnsRequiredSection = rawData.learns_required.section;
+            me.learnsRequiredStudent = rawData.learns_required.student;
         }
 
         if (count) {
@@ -189,11 +204,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 }
             }
 
-            progressBanner.setData({
-                completedLearns: completed,
-                name: null,
-                requiredLearns: required
-            });
+            me.learnsCompleted = completed;
+
+            me.syncLearnsRequired();
 
             progressBanner.show();
         } else {
@@ -202,6 +215,24 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         readyBtn.setDisabled(learnFinishTime || completed < required);
         readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
+    },
+
+    syncLearnsRequired: function() {
+        var me = this,
+            progressBanner = me.getProgressBanner(),
+            required = 5;
+
+        if (me.learnsRequiredStudent !== null) {
+            required = me.learnsRequiredStudent;
+        } else if (me.learnsRequiredSection !== null) {
+            required = me.learnsRequiredSection;
+        }
+
+        progressBanner.setData({
+            completedLearns: me.learnsCompleted,
+            name: null,
+            requiredLearns: required
+        });
     },
 
     ensureLearnPhaseStarted: function() {
