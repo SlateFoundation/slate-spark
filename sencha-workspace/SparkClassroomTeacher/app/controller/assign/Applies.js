@@ -22,7 +22,13 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
         appliesCt: 'spark-assign-apply',
-        popupHostColumn: 'spark-assign-apply spark-studentassignmentspanel ^ spark-column-assignments'
+        popupHostColumn: 'spark-assign-apply spark-studentassignmentspanel ^ spark-column-assignments',
+        applyForm: 'spark-assign-apply spark-panel',
+        applyFormInstructions: 'spark-assign-apply-form textareafield#instructions',
+        applyFormHours: 'spark-assign-apply-form textfield#hours',
+        applyFormMinutes: 'spark-assign-apply-form textfield#minutes',
+        applyFormTodos: 'spark-assign-apply-form fieldset#todos',
+        applyFormLinks: 'spark-assign-apply-form fieldset#links'
     },
 
     control: {
@@ -34,6 +40,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
         },
         'spark-assign-apply gridcell': {
             flagtap: 'onFlagTap'
+        },
+        'spark-assign-apply-grid': {
+            applytap: 'onApplyTap'
         }
     },
 
@@ -51,7 +60,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var appliesStore = this.getAssignAppliesStore(),
+        var me = this,
+            appliesStore = this.getAssignAppliesStore(),
             appliesCt = this.getAppliesCt();
 
         if (!sparkpoint) {
@@ -68,7 +78,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
 
         appliesStore.load();
 
-        this.syncSelectedSparkpoint();
+        me.getApplyForm().setHidden(true);
+
+        me.syncSelectedSparkpoint();
     },
 
     onAppliesCtActivate: function() {
@@ -80,6 +92,42 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
         }
 
         this.syncSelectedSparkpoint();
+    },
+
+    onApplyTap: function(grid, item) {
+        var me = this,
+            applyData = item.getRecord().getData(),
+            applyForm = me.getApplyForm(),
+            applyFormTodos = me.getApplyFormTodos(),
+            applyFormLinks = me.getApplyFormLinks(),
+            todosLength = applyData.todos.length,
+            linksLength = applyData.links.length,
+            i = 0;
+
+            applyForm.setTitle(applyData.title);
+            me.getApplyFormInstructions().setValue(applyData.instructions);
+            me.getApplyFormHours().setValue(Math.floor(applyData.timeEstimate / 60));
+            me.getApplyFormMinutes().setValue(applyData.timeEstimate % 60);
+
+            applyFormTodos.removeAll();
+            for (; i < todosLength; i++) {
+                applyFormTodos.add(Ext.create('Ext.field.Text', {
+                    value: applyData.todos[i].todo,
+                    readOnly: true,
+                    clearIcon: false
+                }));
+            }
+
+            applyFormLinks.removeAll();
+            for (i = 0; i < linksLength; i++) {
+                applyFormLinks.add(Ext.create('Ext.field.Text', {
+                    value: applyData.links[i].url,
+                    readOnly: true,
+                    clearIcon: false
+                }));
+            }
+
+            applyForm.setHidden(false);
     },
 
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {

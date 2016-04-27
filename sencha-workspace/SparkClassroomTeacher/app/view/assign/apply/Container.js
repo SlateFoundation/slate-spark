@@ -25,7 +25,8 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Container', {
                     {
                         xtype: 'spark-assign-apply-form'
                     }
-                ]
+                ],
+                hidden: true
             }
         ]
     }

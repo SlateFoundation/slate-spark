@@ -6,8 +6,11 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
         items: [
             {
                 xtype: 'textareafield',
+                itemId: 'instructions',
                 labelAlign: 'top',
-                label: 'Instructions'
+                label: 'Instructions',
+                readOnly: true,
+                clearIcon: false,
             },
             {
                 xtype: 'fieldset',
@@ -17,8 +20,11 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
                 items: [
                     {
                         xtype: 'textfield',
+                        itemId: 'hours',
                         placeHolder: 'H',
-                        width: 64
+                        width: 64,
+                        readOnly: true,
+                        clearIcon: false,
                     },
                     {
                         xtype: 'component',
@@ -31,8 +37,11 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
                     },
                     {
                         xtype: 'textfield',
+                        itemId: 'minutes',
                         placeHolder: 'MM',
-                        width: 64
+                        width: 64,
+                        readOnly: true,
+                        clearIcon: false,
                     },
                     {
                         flex: 1
@@ -41,13 +50,10 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
             },
             {
                 xtype: 'fieldset',
+                itemId: 'todos',
                 title: 'To-Dos',
                 cls: 'composite-field',
                 items: [
-                    {
-                        xtype: 'textfield'
-                    },
-                    // TODO start with two fields and add a blank one every the last one has text entered
                     {
                         xtype: 'textfield'
                     }
@@ -55,16 +61,13 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Form', {
             },
             {
                 xtype: 'fieldset',
+                itemId: 'links',
                 title: 'Links',
                 cls: 'composite-field',
                 items: [
                     {
                         xtype: 'textfield',
                         placeHolder: 'http://example.com/video/908'
-                    },
-                    // TODO same as above; always have a fresh blank field at the bottom of this list
-                    {
-                        xtype: 'textfield'
                     }
                 ]
             }

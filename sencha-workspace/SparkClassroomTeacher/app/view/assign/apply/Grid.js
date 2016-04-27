@@ -42,5 +42,12 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
                 xtype: 'spark-column-assignments'
             }
         ]
+    },
+
+    onItemTap: function(ev, t) {
+        var me = this;
+
+        me.fireEvent('applytap', me, Ext.get(t).component);
+        return;
     }
 });
