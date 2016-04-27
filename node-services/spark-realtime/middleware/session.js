@@ -1,7 +1,7 @@
 'use strict';
 
 function ioSession(options) {
-    options = Object.assign({
+    options = Object.assign({}, {
         sessionHeaderName: 'session',
         requiredKeys: null,
         validationFn: null,
