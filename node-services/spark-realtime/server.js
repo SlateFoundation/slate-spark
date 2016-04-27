@@ -28,5 +28,6 @@ function spawnWorker(config) {
 workers = config.workers.map(function(worker) {
     console.log(`[${worker.schema}] Spawning worker on ${worker.port}`);
     worker.slack = config.slack;
+    worker.middleware = config.middleware;
     return spawnWorker(worker);
 });
