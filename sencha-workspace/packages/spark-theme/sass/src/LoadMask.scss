@@ -26,8 +26,8 @@
     }
 
     .fa {
-        -webkit-animation: load-pulse .5s infinite cubic-bezier(0.785, 0.135, 0.150, 0.860);
-                animation: load-pulse .5s infinite cubic-bezier(0.785, 0.135, 0.150, 0.860);
+        -webkit-animation: load-pulse .5s cubic-bezier(0.785, 0.135, 0.150, 0.860) -.25s infinite;
+                animation: load-pulse .5s cubic-bezier(0.785, 0.135, 0.150, 0.860) -.25s infinite;
         color: $base-color;
         font-size: 2.5em;
     }
