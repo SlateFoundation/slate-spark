@@ -38,6 +38,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Container', {
                 cls: 'dark narrow',
                 title: 'Discussion',
                 width: 288,
+                hidden: true,
                 items: [
                     {
                         xtype: 'spark-discussion-list',
