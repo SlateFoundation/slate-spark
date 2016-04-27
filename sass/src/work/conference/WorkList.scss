@@ -24,10 +24,12 @@
         list-style: decimal;
     }
 
-    &.is-student-submitted {
-        .fa {
-            color: mix($color, $active-color, 30%);
-            margin-left: .5em;
+    .fa {
+        color: mix($color, $active-color, 30%);
+        margin-left: .5em;
+
+        &.fa-asterisk { // .is-required
+            color: mix($color, $alert-color, 30%);
         }
     }
 }
