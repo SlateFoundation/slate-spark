@@ -5,7 +5,10 @@ var filterObjectKeys = require('./util').filterObjectKeys,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
     Promise = require('bluebird'),
+    util = require('util'),
+    EventEmitter = require('events').EventEmitter,
     request = require('koa-request'),
+    spex = require('spex')(Promise),
     path = require('path'),
     fs = require('fs'),
 
@@ -30,7 +33,8 @@ var filterObjectKeys = require('./util').filterObjectKeys,
         'subject',
         'grade',
         'grade_group_string',
-        'contribution_name'
+        'contribution_name',
+        'license'
     ],
 
     sparkParameters = [
@@ -376,12 +380,12 @@ function generateErrorString(err) {
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
 }
 
-function* getResources(params) {
+function* getResources(params, resources) {
     var url = '/resources.json',
         resourceTypes = params.resource_type ? Array.isArray(params.resource_type) ? params.resource_type : params.resource_type.split(',') : [],
         standardIds = params.standard_ids ? Array.isArray(params.standard_ids) ? params.standard_ids : params.standard_ids.split(',') : [],
         queryString = qs.stringify(filterObjectKeys(openEdParameters, params)),
-        resources;
+        response;
 
     if (resourceTypes.length > 0) {
         queryString += (queryString !== '' ? '&' : '') + resourceTypes.map(function (resourceType) {
@@ -403,23 +407,36 @@ function* getResources(params) {
 
     clientOptions.uri = openEdClientBaseUrl + url;
 
-    resources = yield request(clientOptions);
+    response = yield request(clientOptions);
 
-    if (resources.statusCode >= 400 || // HTTP error
-        typeof resources.body !== 'object' || // empty body
-        !Array.isArray(resources.body.resources) || // missing resource property
-        resources.body.resources.length === 0 // coverage gap
+    if (response.statusCode >= 400 || // HTTP error
+        typeof response.body !== 'object' || // empty body
+        !Array.isArray(response.body.resources) || // missing resource property
+        response.body.resources.length === 0 // coverage gap
     ) {
-        console.error('OPENED: HTTP ' + resources.statusCode + ' is not what we expected: ');
-        console.error(resources.body);
-        console.error(resources.request.req.toCurl());
+        console.error('OPENED: HTTP ' + response.statusCode + ' is not what we expected: ');
+        console.error(response.body);
+        console.error(response.request.req.toCurl());
 
-        return resources;
+        return response;
     }
 
-    console.log(resources.request.req.toCurl());
+    resources = resources ? resources.concat(response.body.resources) : response.body.resources;
 
-    return resources.body;
+    if (response.body.meta && response.body.meta.pagination) {
+        let {limit, offset, entries, total_entries} = response.body.meta.pagination;
+
+        console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
+
+        if ((entries + offset) < total_entries) {
+            params.offset = (entries + offset);
+            yield getResources(params, resources);
+        }
+    }
+
+    return {
+        resources: resources
+    };
 }
 
 function validateParams(params) {

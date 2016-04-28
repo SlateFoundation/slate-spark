@@ -13,7 +13,6 @@ function *getHandler(next) {
     ctx.query.student_id = ctx.userId;
     yield require('../work/learns').get.call(ctx, next);
     delete ctx.query.student_id;
-    ctx.body;
 
     result = (yield ctx.pgp.one(/*language=SQL*/ `
         WITH playlist_cache AS (
