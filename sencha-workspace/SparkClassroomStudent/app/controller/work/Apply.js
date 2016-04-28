@@ -70,8 +70,12 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         },
         store: {
             '#work.Applies': {
-                load: 'onAppliesStoreLoad'
+                load: 'onAppliesStoreLoad',
+                update: 'onAppliesStoreUpdate'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -159,16 +163,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onAppliesStoreLoad: function(appliesStore) {
-        var filters = [];
+        this.filterApplies();
+    },
 
-        if (appliesStore.query('effective_assignment', 'required').getCount()) {
-            filters.push({property: 'effective_assignment', value: 'required'});
-        }
-
-        appliesStore.clearFilter(true);
-        appliesStore.filter(filters);
-
-        this.setActiveApply(appliesStore.query('selected', true).first() || null);
+    onAppliesStoreUpdate: function(appliesStore) {
+        this.filterApplies();
     },
 
     onAppliesGridSelectionChange: function() {
@@ -256,6 +255,39 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         }
     },
 
+    onSocketData: function(socket, data) {
+        var me = this,
+            table = data.table,
+            itemData = data.item,
+            apply, applyData;
+
+        if (table == 'apply_assignments_student') {
+            apply = me.getWorkAppliesStore().getById(itemData.resource_id);
+
+            if (itemData.assignment) {
+                apply.set('assignments', { section: (apply.data.assignments.section || null), student: 'required' });
+            } else {
+                apply.set('assignments', { section: (apply.data.assignments.section || null), student: null });
+            }
+
+            //apply.set('assignments', Ext.applyIf({student: itemData.assignment || null}, apply.get('assignments')));
+
+            apply.save();
+        } else if (table == 'apply_assignments_section') {
+            apply = me.getWorkAppliesStore().getById(itemData.resource_id);
+
+            if (itemData.assignment) {
+                apply.set('assignments', { section: 'required', student: (apply.data.assignments.student || null) });
+            } else {
+                apply.set('assignments', { section: null, student: (apply.data.assignments.student || null) });
+            }
+
+            //apply.set('assignments', Ext.applyIf({section: itemData.assignment || null}, apply.get('assignments')));
+
+            apply.save();
+        }
+    },
+
 
     // controller methods
     refreshChooseSelectedApplyBtn: function() {
@@ -293,6 +325,21 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
         submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('conference_finish_time') || !studentSparkpoint.get('apply_start_time'));
         submitBtn.setText(applyReadyTime ? 'Submitted to Teacher' : submitBtn.config.text);
+    },
+
+    filterApplies: function() {
+        var me = this,
+            filters = [],
+            appliesStore = me.getWorkAppliesStore();
+
+        if (appliesStore.query('effective_assignment', 'required').getCount()) {
+            filters.push({property: 'effective_assignment', value: 'required'});
+        }
+
+        appliesStore.clearFilter(true);
+        appliesStore.filter(filters);
+
+        me.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
 
     writeReflection: Ext.Function.createBuffered(function() {
