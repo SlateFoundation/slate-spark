@@ -6,7 +6,6 @@ var fs = require('fs'),
     OpenEd = require('../../lib/opened'),
     util = require('../../lib/util'),
     Fusebox = require('../../lib/fusebox'),
-    slack = require('../../lib/slack'),
     AsnStandard = require('../../lib/asn-standard');
 
 function* getHandler() {
@@ -58,11 +57,8 @@ function* getHandler() {
     params = {
         limit: 50,
         standard_ids: openedIds,
+        license: 'all'
     };
-
-    if (ctx.isStudent) {
-        //params.resource_types = ['video'/*, 'homework', 'exercise', 'game', 'question', 'other'*/];
-    }
 
     if (openedIds.length === 0) {
         let error = new Error('OPENED: Unable to lookup vendor ids for specified standards: ' + standardIds.join(', '));
@@ -80,12 +76,8 @@ function* getHandler() {
             console.error('OPENED: OpenEd failed to return resources!');
         }
 
+        console.log(opened);
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
-
-        // TODO: HACK: filter out premium content and non-video content until we start using SSO
-        /*opened = opened.filter(function (resource) {
-            return resource.type === 'video' && !resource.premium;
-        });*/
     }
 
     if (standardIds.length === 0) {
@@ -118,7 +110,7 @@ function* getHandler() {
 
         var sql = /*language=SQL*/ `
         WITH new_learn_resources AS (
-            INSERT INTO learn_resources AS lr (sparkpoint_id, url)
+            INSERT INTO learn_resources AS lr (sparkpoint_id, url, metadata)
             VALUES ${urlPlaceHolders}
             ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
             RETURNING url, id, views
