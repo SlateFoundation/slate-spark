@@ -110,7 +110,7 @@ function* getHandler() {
 
         var sql = /*language=SQL*/ `
         WITH new_learn_resources AS (
-            INSERT INTO learn_resources AS lr (sparkpoint_id, url, metadata)
+            INSERT INTO learn_resources AS lr (sparkpoint_id, url)
             VALUES ${urlPlaceHolders}
             ON CONFLICT (url, sparkpoint_id) DO UPDATE SET views = lr.views + 1
             RETURNING url, id, views
