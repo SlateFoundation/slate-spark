@@ -27,7 +27,7 @@ function *getHandler() {
                assess_finish_time,
                conference_group_id,
                selected_apply_id,
-               selected_fb_apply_id,
+               selected_apply_resource_id,
                learn_mastery_check_score,
                conference_mastery_check_score,
                code AS sparkpoint
