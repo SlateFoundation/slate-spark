@@ -26,6 +26,8 @@ function *getHandler() {
     SELECT json_agg(json_build_object(
         'id',
         ap.id,
+        'resource_id',
+        ap.id,
         'title',
         ap.title,
         'instructions',
