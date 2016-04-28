@@ -119,7 +119,7 @@ function *getHandler() {
         )
     )) AS json
          FROM fusebox_apply_projects ap
-    LEFT JOIN applies a ON a.fb_apply_id = ap.id AND a.student_id = $1
+    LEFT JOIN applies a ON a.resource_id = ap.id AND a.student_id = $1
     LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds, sectionId]);
@@ -142,7 +142,7 @@ function *patchHandler() {
         apply,
         review,
         values = [],
-        constraintKeys = ['sparkpoint_id', 'student_id', 'fb_apply_id'],
+        constraintKeys = ['sparkpoint_id', 'student_id', 'resource_id'],
         todos,
         _ = new QueryBuilder();
 
@@ -150,7 +150,7 @@ function *patchHandler() {
     ctx.assert(!isNaN(id), `id must be an integer, you passed: ${ctx.query.id}`, 400);
 
     apply = {
-        fb_apply_id: id,
+        resource_id: id,
         student_id: studentId,
         sparkpoint_id: sparkpointId
     };
@@ -187,7 +187,7 @@ function *patchHandler() {
     }
 
     if (_.tables.applies) {
-        _.push('applies', 'fb_apply_id', apply.fb_apply_id);
+        _.push('applies', 'resource_id', apply.resource_id);
         _.push('applies', 'student_id', apply.student_id);
         _.push('applies', 'sparkpoint_id', apply.sparkpoint_id);
 
@@ -197,7 +197,7 @@ function *patchHandler() {
 
         apply = yield ctx.pgp.one(`
             INSERT INTO applies (${columns})
-                         VALUES (${values}) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET ${set}
+                         VALUES (${values}) ON CONFLICT (resource_id, student_id, sparkpoint_id) DO UPDATE SET ${set}
             RETURNING *;`, _.values
         );
     }
@@ -210,7 +210,7 @@ function *patchHandler() {
             UPDATE applies
                SET selected = false
              WHERE selected = true
-               AND fb_apply_id != $1
+               AND resource_id != $1
                AND sparkpoint_id = $2
                AND student_id = $3;`,
                 [id, sparkpointId, studentId]
@@ -219,28 +219,28 @@ function *patchHandler() {
             yield ctx.pgp.none(/*language=SQL*/ `
             UPDATE student_sparkpoint
                SET selected_apply_id = $1,
-                   selected_fb_apply_id = $2
+                   selected_apply_resource_id = $2
              WHERE student_id = $3
                AND sparkpoint_id = $4
-               AND (selected_fb_apply_id != $2 OR selected_fb_apply_id IS NULL)`,
-                [apply.id, apply.fb_apply_id, studentId, sparkpointId]
+               AND (selected_apply_resource_id != $2 OR selected_apply_resource_id IS NULL)`,
+                [apply.id, apply.resource_id, studentId, sparkpointId]
             );
         } else {
             yield ctx.pgp.none(/*language=SQL*/ `
             UPDATE student_sparkpoint
                SET selected_apply_id = NULL,
-                   selected_fb_apply_id = NULL
+                   selected_apply_resource_id = NULL
              WHERE student_id = $1
                AND sparkpoint_id = $2
-               AND selected_fb_apply_id = $3;`,
-                [studentId, sparkpointId, apply.fb_apply_id || apply.id]
+               AND selected_apply_resource_id = $3;`,
+                [studentId, sparkpointId, apply.resource_id || apply.id]
             );
         }
     }
     // TODO: [END] Convert this to database trigger
 
     if (_.tables.apply_reviews) {
-        _.push('apply_reviews', 'apply_id', apply.fb_apply_id);
+        _.push('apply_reviews', 'apply_id', apply.resource_id);
         _.push('apply_reviews', 'student_id', apply.student_id);
 
         let set = _.getSet('apply_reviews', ['apply_id', 'student_id']);
@@ -298,7 +298,7 @@ function *patchHandler() {
     }
 
     apply.todos = todos;
-    apply.id = apply.fb_apply_id;
+    apply.id = apply.resource_id;
 
     apply = util.namifyRecord(apply, ctx.lookup);
 
