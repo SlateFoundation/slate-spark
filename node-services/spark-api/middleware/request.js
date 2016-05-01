@@ -10,12 +10,11 @@ module.exports = function *parseRequest(next) {
         query = ctx.request.query,
         loggingConf = this.app.context.config.logging || {};
 
-    if (loggingConf.stdout_request_body || loggingConf.blueprint_filename) {
-        ctx.original || (ctx.original = {});
-        ctx.original.queryObject = ctx.request.query ? Object.assign({}, ctx.request.query) : {};
-        ctx.original.query = JSON.stringify(ctx.request.query);
-        ctx.original.body = JSON.stringify(ctx.request.body);
-    }
+    // TODO: why can't we do this in the logging middleware?
+    ctx.original || (ctx.original = {});
+    ctx.original.queryObject = ctx.request.query ? Object.assign({}, ctx.request.query) : {};
+    ctx.original.query = JSON.stringify(ctx.request.query);
+    ctx.original.body = JSON.stringify(ctx.request.body);
 
     ctx.requestId = ctx.headers['x-nginx-request-id'];
 
