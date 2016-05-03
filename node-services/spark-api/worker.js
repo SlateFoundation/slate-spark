@@ -54,6 +54,7 @@ app
     .use(error({ template: __dirname + '/config/error.html' }))
     .use(middleware.process)
     .use(middleware.session)
+    .use(middleware.acl)
     .use(jsonBody({}))
     .use(middleware.database.pgp({
         config: config.database,
@@ -61,8 +62,9 @@ app
     }))
     .use(lookup)
     .use(middleware.request)
-    .use(json());
-
+    .use(middleware.debugging)
+    .use(json())
+    .use(middleware.preferences());
 // TODO: I hate to have rolled my own auto-router...
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;

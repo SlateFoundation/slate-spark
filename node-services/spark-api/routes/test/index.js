@@ -14,7 +14,8 @@ function *getHandler() {
                    current_setting('spark.role') AS role,
                    current_setting('application_name') AS application_name
         `),
-        intospection: ctx.introspection
+        intospection: ctx.introspection,
+        state: ctx.state
     };
 }
 

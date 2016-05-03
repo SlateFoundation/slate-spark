@@ -1,6 +1,13 @@
+'use strict';
+
 module.exports = function *responseTime(next) {
-    var start = new Date;
+    var ctx = this,
+        start = new Date,
+        ms;
+
     yield next;
-    var ms = new Date - start;
-    this.set('X-Response-Time', ms + 'ms');
+
+    ms = new Date - start;
+
+    ctx.set('X-Response-Time', ms + 'ms');
 };

@@ -2,7 +2,10 @@
 
 module.exports = function (newrelic) {
     return function *(next) {
-        newrelic.setControllerName(this.url.split(/[?#]/)[0], this.method);
+        var ctx = this;
+
+        newrelic.setControllerName(ctx.url.split(/[?#]/)[0], ctx.method);
+        
         yield next;
     };
 };
