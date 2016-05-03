@@ -62,7 +62,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
         var me = this,
             appliesStore = this.getAssignAppliesStore(),
-            appliesCt = this.getAppliesCt();
+            appliesCt = this.getAppliesCt(),
+            applyForm = me.getApplyForm();
 
         if (!sparkpoint) {
             appliesStore.removeAll();
@@ -78,7 +79,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Applies', {
 
         appliesStore.load();
 
-        me.getApplyForm().setHidden(true);
+        if (applyForm) {
+            applyForm.setHidden(true);
+        }
 
         me.syncSelectedSparkpoint();
     },
