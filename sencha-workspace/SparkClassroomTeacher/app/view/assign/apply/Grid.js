@@ -48,6 +48,7 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
         var me = this;
 
         me.fireEvent('applytap', me, Ext.get(t).component);
-        return;
+
+        me.callParent(arguments);
     }
 });
