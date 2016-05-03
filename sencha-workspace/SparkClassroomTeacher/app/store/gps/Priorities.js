@@ -14,9 +14,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
         filters: [
             {
                 filterFn: function(r) {
-                    return (
-                        r.get('priority_need') && r.get('student')
-                    );
+                    return r.get('priority_need') && r.get('student');
                 }
             }
         ],
