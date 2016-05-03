@@ -1,56 +1,57 @@
-SET SEARCH_PATH = 'sandbox-school';
+-- !!! CHANGE THIS TO THE CORRECT SCHOOL/SCHEMA !!!
+SET search_path = 'sandbox-school';
 
-DROP TABLE IF EXISTS learns_required CASCADE;
-DROP TABLE IF EXISTS learns_required_section CASCADE;
-DROP TABLE IF EXISTS learns_required_student CASCADE;
-DROP TRIGGER IF EXISTS learns_required_insert_trigger ON learns_required;
+-- Clean up all tables for a fresh start
+DROP TABLE IF EXISTS preferences CASCADE;
 
-/*
- _                                                  _              _
-| | ___  __ _ _ __ _ __  ___   _ __ ___  __ _ _   _(_)_ __ ___  __| |
-| |/ _ \/ _` | '__| '_ \/ __| | '__/ _ \/ _` | | | | | '__/ _ \/ _` |
-| |  __/ (_| | |  | | | \__ \ | | |  __/ (_| | |_| | | | |  __/ (_| |
-|_|\___|\__,_|_|  |_| |_|___/ |_|  \___|\__, |\__,_|_|_|  \___|\__,_|
-                                           |_|
- */
+-- This shallowly merges an array of objects starting from the end of the array
+CREATE OR REPLACE FUNCTION json_object_reverse_array_merge(obj json) RETURNS json AS
+$$
+    var len = obj.length,
+    merged = {};
 
--- Teachers can set a required number of learns" to either a class section or individual students
-CREATE TABLE IF NOT EXISTS "sandbox-school".learns_required (
-  section_id integer NOT NULL,
-  sparkpoint_id char(8) NOT NULL,
-  student_id integer DEFAULT NULL,
-  teacher_id integer NOT NULL,
-  required smallint NOT NULL,
-  requirement_date timestamp NOT NULL DEFAULT current_timestamp
+    while (len--) {
+       var item = obj[len];
+
+       for (var key in item) {
+          merged[key] = item[key];
+       }
+    }
+
+    return merged;
+$$
+LANGUAGE plv8 IMMUTABLE STRICT;
+
+CREATE TABLE IF NOT EXISTS preferences (
+  section_id integer NOT NULL DEFAULT 0,
+  sparkpoint_id char(8) NOT NULL DEFAULT 0, -- This is 7 digit hexidecimal number prefixed with an M, so there's some
+  user_id integer NOT NULL DEFAULT 0,       -- hackery and casts to make this act like the other columns until we
+  preferences jsonb,                        -- transition to a surrogate key
+  sticky boolean NOT NULL DEFAULT FALSE,
+  last_updated TIMESTAMP DEFAULT now(),
+
+  -- We must enforce uniqueness on the scope of preferences to prevent conflicting rules with an identical scope
+  -- within the jsonb blob
+  PRIMARY KEY(section_id, sparkpoint_id, user_id, sticky)
 );
 
--- This partition contains learn requirements for individual students
-CREATE TABLE IF NOT EXISTS "sandbox-school".learns_required_student (
-  CHECK (student_id IS NOT NULL),
-  PRIMARY KEY (section_id, sparkpoint_id, student_id)
-) INHERITS ("sandbox-school".learns_required);
+-- section-level specified
+CREATE INDEX IF NOT EXISTS preferences_section_id_idx ON preferences (section_id) WHERE section_id != 0;
+-- section-level wildcard
+CREATE INDEX IF NOT EXISTS preferences_section_id_zero_idx ON preferences (section_id) WHERE section_id = 0;
 
--- This partition contains learn requirements for class sections
-CREATE TABLE IF NOT EXISTS "sandbox-school".learns_required_section (
-  CHECK (student_id IS NULL),
-  PRIMARY KEY (section_id, sparkpoint_id)
-) INHERITS ("sandbox-school".learns_required);
+-- sparkpoint specified
+CREATE INDEX IF NOT EXISTS preferences_sparkpoint_id_idx ON preferences (sparkpoint_id) WHERE sparkpoint_id != '0';
+-- sparkpoint wildcard
+CREATE INDEX IF NOT EXISTS preferences_sparkpoint_id_zero_idx ON preferences (sparkpoint_id) WHERE sparkpoint_id = '0';
+CREATE INDEX IF NOT EXISTS preferences_sparkpoint_id_zero_wildcard_idx ON preferences ((substr(sparkpoint_id, 1, 1) != 'M'));
 
-CREATE OR REPLACE FUNCTION "sandbox-school".learns_required_insert_trigger()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF (NEW.student_id IS NULL) THEN
-        INSERT INTO "sandbox-school".learns_required_section VALUES (NEW.*) ON CONFLICT (section_id, sparkpoint_id)
-        DO UPDATE SET requirement_date = current_timestamp, required = NEW.required, teacher_id = NEW.teacher_id;
-    ELSE
-      INSERT INTO "sandbox-school".learns_required_student VALUES (NEW.*) ON CONFLICT (section_id, sparkpoint_id, student_id)
-      DO UPDATE SET requirement_date = current_timestamp, required = NEW.required, teacher_id = NEW.teacher_id;
-    END IF;
+-- user-id specified
+CREATE INDEX IF NOT EXISTS preferences_user_id_idx ON preferences (user_id) WHERE user_id != 0;
+-- user-id wildcard
+CREATE INDEX IF NOT EXISTS preferences_user_id_zero_idx ON preferences (user_id) WHERE user_id = 0;
 
-    RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER learns_required_insert_trigger
-    BEFORE INSERT ON "sandbox-school".learns_required
-    FOR EACH ROW EXECUTE PROCEDURE "sandbox-school".learns_required_insert_trigger();
+-- sticky set
+CREATE INDEX IF NOT EXISTS preferences_sticky_set_idx ON preferences (sticky) WHERE sticky = true;
+-- global wildcard (system-level settings)
+CREATE INDEX IF NOT EXISTS preferences_global_idx ON preferences ((sparkpoint_id::INTEGER = section_id AND section_id = user_id)) WHERE (substr(sparkpoint_id, 1, 1) != 'M');
