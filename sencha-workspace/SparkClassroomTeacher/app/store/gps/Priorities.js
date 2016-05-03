@@ -11,18 +11,11 @@ Ext.define('SparkClassroomTeacher.store.gps.Priorities', {
             url: '/spark/api/work/blocked'
         },
 
-        // filter out activity that didn't match a student in the active roster
-        // filters: [{
-        //     filterFn: function(r) {
-        //         return r.get('student');
-        //     }
-        // }],
-
         filters: [
             {
                 filterFn: function(r) {
                     return (
-                        r.get('priority_need') !== null
+                        r.get('priority_need') && r.get('student')
                     );
                 }
             }
