@@ -167,7 +167,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
                 selectedStudentSparkpoint &&
                 item.student_id == selectedStudentSparkpoint.get('student_id') &&
                 item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
-                (apply = appliesStore.getById(item.fb_apply_id))
+                (apply = appliesStore.getById(item.resource_id))
             ) {
                 modifiedFieldNames = apply.set({
                     reflection: item.reflection,
