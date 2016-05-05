@@ -130,13 +130,13 @@ function *getHandler() {
 }
 
 function *patchHandler() {
-    this.require(['sparkpoint_id', 'id']);
+    this.require(['sparkpoint_id', 'resource_id']);
 
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         selected = ctx.query.selected,
-        id = parseInt(ctx.query.id, 10),
+        id = parseInt(ctx.query.resource_id, 10),
         reflection = ctx.query.reflection,
         grade = ctx.query.grade,
         rating = ctx.query.rating,
@@ -149,7 +149,7 @@ function *patchHandler() {
         _ = new QueryBuilder();
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
-    ctx.assert(!isNaN(id), `id must be an integer, you passed: ${ctx.query.id}`, 400);
+    ctx.assert(!isNaN(id), `resource_id must be an integer, you passed: ${ctx.query.resource_id}`, 400);
 
     apply = {
         resource_id: id,
