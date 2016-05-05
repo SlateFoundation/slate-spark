@@ -130,7 +130,7 @@ function *getHandler() {
 }
 
 function *patchHandler() {
-    this.require(['sparkpoint_id', 'resource_id']);
+    this.require(['sparkpoint_id']);
 
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
@@ -156,6 +156,7 @@ function *patchHandler() {
         student_id: studentId,
         sparkpoint_id: sparkpointId
     };
+
 
     if (typeof selected === 'boolean') {
         apply.selected = selected;
