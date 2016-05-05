@@ -57,7 +57,8 @@ function* getHandler() {
     params = {
         limit: 50,
         standard_ids: openedIds,
-        license: 'all'
+        license: 'all',
+        resource_type: OpenEd.studentResourceTypes
     };
 
     if (openedIds.length === 0) {

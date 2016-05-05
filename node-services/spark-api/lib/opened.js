@@ -62,7 +62,8 @@ var filterObjectKeys = require('./util').filterObjectKeys,
         'homework',
         'exercise',
         'game',
-        'question'
+        'question',
+        'other'
     ],
 
     openEdSubjects = [
