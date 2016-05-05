@@ -25,7 +25,7 @@
 .assign-control-frame {
     $control-border-color: lighten($color, 10);
     $full-color: darken($active-color, 5);
-    $indirect-color: rgba($full-color, .25);
+    $indirect-color: rgba($full-color, .4);
 
     border: 2px solid $control-border-color;
     border-radius: 1em;
@@ -65,7 +65,7 @@
     }
 
     .is-indirect & {
-        border-color: mix($control-border-color, white, 40%);
+        border-color: mix($control-border-color, white, 50%);
     }
 
     .is-indirect.is-full & {
