@@ -306,7 +306,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         chooseSelectedApplyBtn.setText(
             applyStartTime ?
             (
-                gridSelection && gridSelection.getId() === studentSparkpoint.get('selected_fb_apply_id') ?
+                gridSelection && gridSelection.getId() === studentSparkpoint.get('selected_apply_resource_id') ?
                 'Return to Selected Apply &rarr;' :
                 'Switch to Selected Apply &rarr;'
             ) :
