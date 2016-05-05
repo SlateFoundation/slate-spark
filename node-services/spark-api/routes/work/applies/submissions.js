@@ -8,16 +8,19 @@ function *postHandler() {
 
     ctx.require(['sparkpoint_id', 'id']);
 
+    console.log(submission);
+    console.log(typeof submission);
+
     ctx.assert(util.isGtZero(id), 400, `id must be an integer, you passed: ${ctx.query.id}`);
-    ctx.assert(typeof submission !== 'object', 400, `the request body should a single JSON encoded submission`);
+    ctx.assert(typeof submission === 'object', 400, `the request body should a single JSON encoded submission`);
     ctx.assert(util.isString(submission.url), 400, `url must be a string, you passed: ${submission.url}`);
 
     // TODO: submissions are a candidate for time sortable UUIDs
     delete submission.id;
 
     ctx.body = yield ctx.pgp.one(`
-            INSERT INTO applies (sparkpoint_id, student_id, fb_apply_id, submissions)
-                         VALUES ($1, $2, $3, jsonb_build_array($4::JSONB)) ON CONFLICT (fb_apply_id, student_id, sparkpoint_id) DO UPDATE SET
+            INSERT INTO applies (sparkpoint_id, student_id, resource_id, submissions)
+                         VALUES ($1, $2, $3, jsonb_build_array($4::JSONB)) ON CONFLICT (resource_id, student_id, sparkpoint_id) DO UPDATE SET
                                 submissions = jsonb_array_push_unique($4::JSONB, applies.submissions)
                       RETURNING *;`,
         [sparkpointId, ctx.studentId, id, submission]
