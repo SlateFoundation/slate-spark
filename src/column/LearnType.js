@@ -26,7 +26,8 @@ Ext.define('SparkClassroom.column.LearnType', {
         width: 64,
         text: 'Type',
         cell: {
-            encodeHtml: false
+            encodeHtml: false,
+            cls: 'spark-tooltip-cell'
         },
         renderer: function(learnType, r) {
             if (!learnType) {
@@ -37,7 +38,10 @@ Ext.define('SparkClassroom.column.LearnType', {
                 icon = icons[learnType];
 
             if (icon) {
-                return '<div class="text-center" title="' + learnType + '"><i class="fa fa-lg fa-' + icon + '"></i></div>';
+                return '<div class="text-center spark-tooltip-cell">'
+                    + '<div class="spark-tooltip-cell-text">' + learnType + '</div> '
+                    + '<i class="fa fa-lg fa-' + icon + '"></i>'
+                + '</div>';
             }
 
             return '<span title="' + learnType + '">' + learnType +  '</span>';
