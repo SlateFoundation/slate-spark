@@ -462,7 +462,7 @@ function validateParams(params) {
 function normalize(item) {
     return {
         completed: false,
-        title: (!!item.is_premium ? '$$$ ' : '') + (item.resource_type !== 'video' ? '*** ' : '') + item.title + (item.resource_type !== 'video' ? ` (${item.resource_type})` : ''),
+        title: (!!item.is_premium ? '[PAID] ' : '') + (item.resource_type !== 'video' ? ' [NEW] ' : '') + item.title + (item.resource_type !== 'video' ? ` (${item.resource_type})` : ''),
         url: item.share_url,
         thumbnail: item.thumb,
         dok: null,
