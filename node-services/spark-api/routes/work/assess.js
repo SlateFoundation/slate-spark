@@ -4,13 +4,14 @@ var fusebox = require('../../lib/fusebox'),
     AsnStandard = require('../../lib/asn-standard');
 
 function *getHandler() {
-    this.require(['sparkpoint_id', 'student_id']);
-
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         assessments,
         reflection;
+
+    ctx.assert(ctx.studentId, 'You must be logged in as a student, or pass a student_id to perform this action.', 400);
+    ctx.assert(sparkPointId, 'sparkpoint, sparkpoint_id, or sparkpoint_code are required.', 400);
 
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
