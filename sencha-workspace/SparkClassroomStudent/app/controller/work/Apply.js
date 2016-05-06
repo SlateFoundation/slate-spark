@@ -328,7 +328,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     filterApplies: function() {
         var me = this,
             filters = [],
-            appliesStore = me.getWorkAppliesStore();
+            appliesStore = me.getWorkAppliesStore(),
+            appliesGrid = me.getAppliesGrid();
 
         if (appliesStore.query('effective_assignment', 'required').getCount()) {
             filters.push({property: 'effective_assignment', value: 'required'});
@@ -338,7 +339,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         appliesStore.filter(filters);
 
         // TODO: remove this #hack when underlying #framework-bug gets fixed
-        me.getAppliesGrid().refresh();
+        if (appliesGrid) {
+            appliesGrid.refresh();
+        }
 
         me.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
