@@ -49,11 +49,12 @@ function *getHandler() {
 }
 
 function *patchHandler() {
-    this.require(['sparkpoint_id', 'student_id', 'reflection']);
-
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         reflection = ctx.query.reflection;
+
+    ctx.assert(ctx.studentId, 'You must be logged in as a student, or pass a student_id to perform this action.', 400);
+    ctx.require(['sparkpoint_id', 'reflection']);
 
     ctx.body = yield ctx.pgp.one(/*language=SQL*/ `
             INSERT INTO assesses
