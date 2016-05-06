@@ -135,6 +135,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         var me = this,
             table = data.table,
             itemData = data.item,
+            learnGrid = me.getLearnGrid(),
             selectedStudentSparkpoint, learn;
 
         if (table == 'learn_activity') {
@@ -165,7 +166,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 learn.set('assignments', Ext.applyIf({section: itemData.assignment || null}, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
-                me.getLearnGrid().refresh();
+                if (learnGrid) {
+                    learnGrid.refresh();
+                }
             }
         } else if (table == 'learn_assignments_student') {
             if (
@@ -178,7 +181,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 learn.set('assignments', Ext.applyIf({student: itemData.assignment || null}, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
-                me.getLearnGrid().refresh();
+                if (learnGrid) {
+                    learnGrid.refresh();
+                }
             }
         }
     },
