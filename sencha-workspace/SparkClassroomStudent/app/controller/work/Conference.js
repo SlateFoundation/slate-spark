@@ -167,7 +167,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 question: me.getQuestionInputEl().getValue()
             },
             success: function(response) {
-                me.getWorkConferenceQuestionsStore().loadRawData([response.data], true);
                 me.refreshQuestions();
             }
         });
