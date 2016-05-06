@@ -259,30 +259,28 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         var me = this,
             table = data.table,
             itemData = data.item,
-            apply, applyData;
+            apply;
 
         if (table == 'apply_assignments_student') {
             apply = me.getWorkAppliesStore().getById(itemData.resource_id);
 
+            // we're only getting data back for student level assignments so much preserve previous section data
             if (itemData.assignment) {
                 apply.set('assignments', { section: (apply.data.assignments.section || null), student: 'required' });
             } else {
-                apply.set('assignments', { section: (apply.data.assignments.section || null), student: null });
+                apply.set('assignments', { section: (apply.data.assignments.section || null) });
             }
-
-            //apply.set('assignments', Ext.applyIf({student: itemData.assignment || null}, apply.get('assignments')));
 
             apply.save();
         } else if (table == 'apply_assignments_section') {
             apply = me.getWorkAppliesStore().getById(itemData.resource_id);
 
+            // we're only getting data back for section level assignments so much preserve previous student data
             if (itemData.assignment) {
                 apply.set('assignments', { section: 'required', student: (apply.data.assignments.student || null) });
             } else {
-                apply.set('assignments', { section: null, student: (apply.data.assignments.student || null) });
+                apply.set('assignments', { student: (apply.data.assignments.student || null) });
             }
-
-            //apply.set('assignments', Ext.applyIf({section: itemData.assignment || null}, apply.get('assignments')));
 
             apply.save();
         }
@@ -338,6 +336,9 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
         appliesStore.clearFilter(true);
         appliesStore.filter(filters);
+
+        // TODO: remove this #hack when underlying #framework-bug gets fixed
+        me.getAppliesGrid().refresh();
 
         me.setActiveApply(appliesStore.query('selected', true).first() || null);
     },
