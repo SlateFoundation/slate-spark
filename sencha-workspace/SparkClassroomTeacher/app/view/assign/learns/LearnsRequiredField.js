@@ -23,6 +23,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
         labelWidth: 320,
         width: 480,
         label: 'Number of Learns required for this sparkpoint',
+        clearIcon: false,
         minValue: 1,
         maxValue: 15,
         stepValue: 1,
