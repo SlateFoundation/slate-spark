@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS applies___upgrade;
 
 CREATE TABLE applies___upgrade
 (
-    id INTEGER PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY,
     student_id INTEGER NOT NULL,
     resource_id INTEGER NOT NULL,
     sparkpoint_id CHAR(8) NOT NULL,
