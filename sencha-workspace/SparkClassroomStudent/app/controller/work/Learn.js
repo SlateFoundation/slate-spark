@@ -249,6 +249,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             }
         }
 
+        if (!progressBanner || !readyBtn) {
+            // learns tab hasn't been activated yet
+            return;
+        }
+
         progressBanner.setData({
             completedLearns: me.learnsCompleted,
             name: null,
