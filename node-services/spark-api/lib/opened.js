@@ -1,14 +1,11 @@
 'use strict';
 
 var filterObjectKeys = require('./util').filterObjectKeys,
-    k12 = require('k-12'),
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
     Promise = require('bluebird'),
     util = require('util'),
-    EventEmitter = require('events').EventEmitter,
     request = require('koa-request'),
-    spex = require('spex')(Promise),
     path = require('path'),
     fs = require('fs'),
 
@@ -375,7 +372,6 @@ function transformParam(param, val) {
     }
 }
 
-
 function generateErrorString(err) {
     var errMsg = err.message ? err.message.toString().trim() : 'No error message provided by OpenEd';
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
@@ -462,7 +458,7 @@ function validateParams(params) {
 function normalize(item) {
     return {
         completed: false,
-        title: (!!item.is_premium ? '[PAID] ' : '') + (item.resource_type !== 'video' ? ' [NEW] ' : '') + item.title + (item.resource_type !== 'video' ? ` (${item.resource_type})` : ''),
+        title: item.title,
         url: item.share_url,
         thumbnail: item.thumb,
         dok: null,
@@ -473,7 +469,8 @@ function normalize(item) {
         score: null,
         attachments: [],
         vendor: item.contribution_name,
-        premium: !!item.is_premium
+        premium: !!item.is_premium,
+        effectiveness: item.effectiveness || null
     };
 }
 
