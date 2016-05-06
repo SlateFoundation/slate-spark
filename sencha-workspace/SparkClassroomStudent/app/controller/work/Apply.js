@@ -264,25 +264,29 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         if (table == 'apply_assignments_student') {
             apply = me.getWorkAppliesStore().getById(itemData.resource_id);
 
-            // we're only getting data back for student level assignments so much preserve previous section data
-            if (itemData.assignment) {
-                apply.set('assignments', { section: (apply.data.assignments.section || null), student: 'required' });
-            } else {
-                apply.set('assignments', { section: (apply.data.assignments.section || null) });
-            }
+            if (apply) {
+                // we're only getting data back for student level assignments so much preserve previous section data
+                if (itemData.assignment) {
+                    apply.set('assignments', { section: (apply.data.assignments.section || null), student: 'required' });
+                } else {
+                    apply.set('assignments', { section: (apply.data.assignments.section || null) });
+                }
 
-            apply.save();
+                apply.save();
+            }
         } else if (table == 'apply_assignments_section') {
             apply = me.getWorkAppliesStore().getById(itemData.resource_id);
 
-            // we're only getting data back for section level assignments so much preserve previous student data
-            if (itemData.assignment) {
-                apply.set('assignments', { section: 'required', student: (apply.data.assignments.student || null) });
-            } else {
-                apply.set('assignments', { student: (apply.data.assignments.student || null) });
-            }
+            if (apply) {
+                // we're only getting data back for section level assignments so much preserve previous student data
+                if (itemData.assignment) {
+                    apply.set('assignments', { section: 'required', student: (apply.data.assignments.student || null) });
+                } else {
+                    apply.set('assignments', { student: (apply.data.assignments.student || null) });
+                }
 
-            apply.save();
+                apply.save();
+            }
         }
     },
 
