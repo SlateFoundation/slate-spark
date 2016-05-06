@@ -4,6 +4,7 @@ function* patchHandler(req, res, next) {
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
+        sectionId = ctx.query.section_id,
         body = ctx.request.body,
         keys = Object.keys(body || {}),
         allowedKeys = [
@@ -20,7 +21,7 @@ function* patchHandler(req, res, next) {
         worksheet = {},
         record;
 
-    ctx.require(['sparkpoint_id']);
+    ctx.require(['sparkpoint_id', 'section_id']);
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
 
@@ -38,13 +39,14 @@ function* patchHandler(req, res, next) {
 
     record = yield ctx.pgp.one(/*language=SQL*/ `
         INSERT INTO conference_worksheets
-                    (student_id, sparkpoint_id, worksheet)
-             VALUES ($1, $2, $3) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE SET worksheet = $3
+                    (student_id, sparkpoint_id, section_id, worksheet)
+             VALUES ($1, $2, $3, $4) ON CONFLICT (student_id, sparkpoint_id, section_id) DO UPDATE SET worksheet = $3
           RETURNING *;
           `,
         [
             studentId,
             sparkpointId,
+            sectionId,
             worksheet
         ]);
 
