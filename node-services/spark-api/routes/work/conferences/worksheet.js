@@ -40,7 +40,7 @@ function* patchHandler(req, res, next) {
     record = yield ctx.pgp.one(/*language=SQL*/ `
         INSERT INTO conference_worksheets
                     (student_id, sparkpoint_id, section_id, worksheet)
-             VALUES ($1, $2, $3, $4) ON CONFLICT (student_id, sparkpoint_id, section_id) DO UPDATE SET worksheet = $3
+             VALUES ($1, $2, $3, $4) ON CONFLICT (student_id, sparkpoint_id, section_id) DO UPDATE SET worksheet = $4
           RETURNING *;
           `,
         [
