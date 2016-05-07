@@ -1,6 +1,7 @@
 'use strict';
 
-var filterObjectKeys = require('./util').filterObjectKeys,
+var generateRandomPassword = require('./password').generateRandomPassword,
+    filterObjectKeys = require('./util').filterObjectKeys,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
     Promise = require('bluebird'),
@@ -148,6 +149,11 @@ var filterObjectKeys = require('./util').filterObjectKeys,
         }
     },
     configPath = path.resolve(__dirname, '../config/opened.json'),
+    updateableUserProperties = {
+        first_name: true,
+        last_name: true,
+        school_nces_id: true
+    },
     configError;
 
 require('request-to-curl');
@@ -424,6 +430,7 @@ function* getResources(params, resources) {
         let {limit, offset, entries, total_entries} = response.body.meta.pagination;
 
         console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
+        console.log(params);
 
         if ((entries + offset) < total_entries) {
             params.offset = (entries + offset);
@@ -434,6 +441,153 @@ function* getResources(params, resources) {
     return {
         resources: resources
     };
+}
+
+// Merit Prep: 340076003235
+// Michigan Technical Academy Elementary: 260012801506
+// Michigan Technical Academy Middle: 26001280143
+
+/*
+ OPENED: HTTP 422 is not what we expected:
+ { error:
+ { email: [ 'has already been taken' ],
+ username: [ 'has already been taken' ] } }
+ */
+function* createUser(user, ctx) {
+    var url = '/users',
+        params = {
+            "email": "slate+test_teacher_merit@matchbooklearning.com",
+            "first_name": "Slate",
+            "last_name": "Development",
+            "password": "7*cRq&tCKz",
+            "role": "student",
+            "username": "slate_test_teacher_merit",
+            "school_nces_id": "340076003235",
+            "client_id": openEdClientId
+        },
+        response;
+
+    yield getAccessToken();
+
+    user.client_id = openEdClientId;
+
+    if (!user.password) {
+        user.password = (yield generateRandomPassword());
+    }
+
+    clientOptions.uri = openEdClientBaseUrl + url;
+    clientOptions.body = params;
+    clientOptions.method = 'POST';
+
+    response = yield request(clientOptions);
+
+    delete clientOptions.uri;
+    delete clientOptions.body;
+    delete clientOptions.method;
+
+    if (response.statusCode >= 400 || // HTTP error
+        typeof response.body !== 'object' || // empty body
+        typeof response.body.user !== 'object' // missing user property
+    ) {
+        console.error('OPENED: HTTP ' + response.statusCode + ' is not what we expected: ');
+        console.error(response.body);
+        console.error(response.request.req.toCurl());
+
+        throw new Error(`Unable to create user ${params.username}: HTTP ${response.statusCode}`);
+    }
+
+    if (ctx.setPreferences) {
+        ctx.setPreferences({
+            opened_user: response.body.user
+        });
+    }
+
+    return response.body.user;
+}
+
+function* findUser(emailOrUsername) {
+    var url = '/users/search',
+        response;
+
+    yield getAccessToken();
+
+    // TODO: use request qs option once clientOptions isn't shared
+    clientOptions.uri = openEdClientBaseUrl + url + '?' + qs.stringify({username: emailOrUsername});
+
+    response = yield request(clientOptions);
+
+    delete clientOptions.uri;
+    delete clientOptions.body;
+    delete clientOptions.method;
+
+    if (response.statusCode >= 400 || // HTTP error
+        typeof response.body !== 'object' || // empty body
+        typeof response.body.user !== 'object' // missing user property
+    ) {
+        if (response.statusCode != 404) {
+            console.error('OPENED: HTTP ' + response.statusCode + ' is not what we expected: ');
+            console.error(response.body);
+            console.error(response.request.req.toCurl());
+        }
+
+        return null;
+    }
+
+    return response.body.user;
+}
+
+function* updateUser(userId, user = {}, ctx) {
+    var updatedProperties = {},
+        url = `/users/${userId}`,
+        response;
+
+    userId = parseInt(userId, 10);
+
+    if (isNaN(userId)) {
+        throw new Error('userId is required');
+    }
+
+    // TODO: maybe throw a warning here if there are static properties in development mode
+    for (var key in updateableUserProperties) {
+        let val = user[key];
+
+        if (val) {
+            updatedProperties[key] = val;
+        }
+    }
+
+    yield getAccessToken();
+
+    clientOptions.uri = openEdClientBaseUrl + url;
+    clientOptions.body = updatedProperties;
+    clientOptions.method = 'PUT';
+
+    response = yield request(clientOptions);
+
+    delete clientOptions.uri;
+    delete clientOptions.body;
+    delete clientOptions.method;
+
+    if (response.statusCode >= 400 || // HTTP error
+        typeof response.body !== 'object' || // empty body
+        typeof response.body.user !== 'object' // missing user property
+    ) {
+        if (response.statusCode != 404) {
+            console.error('OPENED: HTTP ' + response.statusCode + ' is not what we expected: ');
+            console.error(response.body);
+            console.error(response.request.req.toCurl());
+        }
+
+        return null;
+    }
+
+    if (ctx.setPreferences) {
+        ctx.setPreferences({
+            opened_user: response.body.user
+        });
+    }
+
+    return response.body.user;
 }
 
 function validateParams(params) {
@@ -460,7 +614,7 @@ function normalize(item) {
         completed: false,
         title: item.title,
         url: item.share_url,
-        thumbnail: item.thumb,
+        thumbnail: 'https://storage.googleapis.com/spark-fusebox/vendor-logos/opened-120.png',
         dok: null,
         type: item.resource_type,
         rating: {
@@ -478,5 +632,8 @@ module.exports = {
     normalize: normalize,
     getResources: getResources,
     getAccessToken: getAccessToken,
+    findUser: findUser,
+    createUser: createUser,
+    updateUser: updateUser,
     studentResourceTypes: studentResourceTypes
 };
