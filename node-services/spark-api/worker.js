@@ -60,6 +60,7 @@ app
         config: config.database,
         slateConfig: config.slate
     }))
+    .use(middleware.opened(config))
     .use(lookup)
     .use(middleware.request)
     .use(middleware.debugging)

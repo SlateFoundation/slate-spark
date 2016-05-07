@@ -85,7 +85,6 @@ function* getHandler() {
             console.error('OPENED: OpenEd failed to return resources!');
         }
 
-        console.log(opened);
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
     }
 

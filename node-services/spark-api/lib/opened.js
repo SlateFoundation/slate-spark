@@ -1,10 +1,11 @@
 'use strict';
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
 var generateRandomPassword = require('./password').generateRandomPassword,
     filterObjectKeys = require('./util').filterObjectKeys,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
-    Promise = require('bluebird'),
     util = require('util'),
     request = require('koa-request'),
     path = require('path'),
@@ -162,11 +163,11 @@ try {
     configFile = fs.readFileSync(configPath, 'utf8');
 
     try {
-        configFile = JSON.parse(configFile);
+        configFile = JSON.parse(configFile)[PRODUCTION ? 'production' : 'staging'];
 
         // TODO: rework
-        openEdClientId = configFile.opened_client_id;
-        openEdClientSecret = configFile.opened_client_secret;
+        openEdClientId = configFile.client_id;
+        openEdClientSecret = configFile.client_secret;
         openEdClientBaseUrl = configFile.base_url || openEdClientBaseUrl;
         openEdUsername = configFile.username || 'jeff@slate.is';
     } catch (err) {
@@ -430,7 +431,6 @@ function* getResources(params, resources) {
         let {limit, offset, entries, total_entries} = response.body.meta.pagination;
 
         console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
-        console.log(params);
 
         if ((entries + offset) < total_entries) {
             params.offset = (entries + offset);
@@ -628,6 +628,17 @@ function normalize(item) {
     };
 }
 
+function generateLaunchUrl(options = {}) {
+    /*
+    share_url: This url is formated for teachers and optimized for an iframe.
+    student_url: This url is formated for students and optimized for an iframe.  Additional parameters can be appened to these urls in order to customize the users experience. Below is a list of parameters you can use.
+    Parameter	Values	Description
+    `simplifiedView`	true | false	This parameter removes header/footer on OpenEd page and optimizes for iframe.
+                                                                                                                  `student_view`	true | false	This parameter removes teacher messaging and actions on OpenEd page.
+    `oauth_access_token`	{ACCESS_TOKEN}	This is the access token returned from the `get_token` API call. You will need to login each student by passing their username in the `get_token` API call. By then adding their ACCESS_TOKEN to the resource url, they will be automatically logged into OpenEd and resource usage data can be tracked. This is extremely valuable to track your students usage of resources for future recommendations.
+    hideRelatedResources	true | false	This will hide the related resource list on the right side of the resource details pages.*/
+}
+
 module.exports = {
     normalize: normalize,
     getResources: getResources,
@@ -635,5 +646,6 @@ module.exports = {
     findUser: findUser,
     createUser: createUser,
     updateUser: updateUser,
-    studentResourceTypes: studentResourceTypes
+    studentResourceTypes: studentResourceTypes,
+    generateLaunchUrl: generateLaunchUrl
 };

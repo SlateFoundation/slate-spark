@@ -7,7 +7,7 @@ function normalizeFusebox(item) {
         url: item.url,
         thumbnail: getDefaultThumbnail(item.vendorid),
         dok: item.dok || null,
-        type: null,
+        type: item.type,
         rating: {
             teacher: null,
             student: null,
@@ -57,6 +57,7 @@ getDefaultThumbnail.vendors = [
     'Illuminate Education',
     'Google Drive',
     'Testing sync script',
+    
     'flocabulary.com',
     'matchbook.learnzillion.com'
 ];
@@ -110,7 +111,8 @@ function* getFuseboxResources(asnIds) {
     // Fusebox content is ordered by the date it was created and whether or not it was bulk loaded (creatorid = 3)
     query += `ORDER BY url,
                        ll.created DESC,
-                       ll.creatorid != 3 DESC;`;
+                       ll.creatorid != 3 DESC,
+                       ll.title ILIKE '%learning target%';`;
 
     resources = yield db.manyOrNone(query, params);
 
