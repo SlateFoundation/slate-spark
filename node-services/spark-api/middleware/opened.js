@@ -1,6 +1,6 @@
 'use strict';
 
-const OpenEd = require('../lib/OpenEd');
+const OpenEd = require('../lib/opened');
 const async = require('async');
 
 function initializeOpenEd(config) {
