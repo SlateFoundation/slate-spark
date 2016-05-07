@@ -64,7 +64,9 @@ app
     .use(middleware.request)
     .use(middleware.debugging)
     .use(json())
-    .use(middleware.preferences());
+    .use(middleware.preferences())
+    .use(json());
+
 // TODO: I hate to have rolled my own auto-router...
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;

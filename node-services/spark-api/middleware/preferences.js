@@ -65,13 +65,38 @@ module.exports = function preferenceMiddlewareInit(options) {
                 section_id: ctx.query.section_id || 0,
                 sparkpoint_id: ctx.query.sparkpoint_id || '0'
             };
-
         try {
             ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
         } catch (e) {
             console.warn('Error getting effective preferences for scope: ', scope, e);
-            ctx.preferences = {};
+            ctx.state.preferences = {};
         }
+
+        // TODO: Optimize (use prototype)
+
+        ctx.setPreferences = function* setPreferences(preferences = {}, scope = ctx.state.scope, sticky = false) {
+            yield ctx.pgp.one(/*language=SQL*/ `
+                INSERT INTO preferences VALUES
+                (\${section_id}, \${sparkpoint_id}, \${user_id}, \${preferences}::JSONB, \${sticky})
+                  ON CONFLICT (section_id, sparkpoint_id, user_id, sticky)
+                DO UPDATE SET last_updated = now(),
+                              preferences = preferences.preferences || EXCLUDED.preferences
+                    RETURNING *;
+            `, {
+                section_id: scope.section_id,
+                sparkpoint_id: scope.sparkpoint_id,
+                user_id: scope.user_id,
+                preferences: preferences,
+                sticky: sticky
+            });
+
+            try {
+                let preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+                ctx.state.preferences = preferences;
+            } catch (e) {
+                console.warn('Set preferences failed to reload effective preferences for scope: ', scope, e);
+            }
+        };
 
         yield next;
     };
