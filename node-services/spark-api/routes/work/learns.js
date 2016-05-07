@@ -208,6 +208,16 @@ function* getHandler() {
             resource.rating.user = resourceId.rating || null;
             resource.rating.student = parseFloat(resourceId.average_rating)|| null;
             resource.assignment = resourceId.assignment || { student: null, section: null };
+
+            // HACK: Learning targets should appear as "required-first" unless they are set to something else
+            if (resource.title.toLowerCase().indexOf('learning target') !== -1 &&
+                !(resource.assignment.student && resource.assignment.section)) {
+                resource.assignment = {
+                    section: 'required-first',
+                    student: null
+                };
+            }
+
             resource.resource_id = resourceId.id;
             resource.views = resourceId.views;
             resource.launch_url = '/spark/api/work/learns/launch/' + resource.resource_id;
