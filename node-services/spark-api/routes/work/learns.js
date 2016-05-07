@@ -388,7 +388,22 @@ function* launchHandler() {
     if (learnResource.url) {
         // let accessToken = yield OpenEd.getUserAccessToken();
         //ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
-        ctx.redirect(learnResource.url);
+
+        let url = learnResource.url;
+
+        if (url.indexOf('opened.com') !== -1) {
+            if(url.indexOf('student_view=true') === -1) {
+                if (ctx.isStudent) {
+                    url += '&student_view=true';
+                }
+            }
+
+            if (url.indexOf('hideRelatedResources=true') === -1) {
+                url += '&hideRelatedResources=true';
+            }
+        }
+        
+        ctx.redirect(url);
     } else {
         // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
         this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
