@@ -29,6 +29,8 @@ function* getHandler() {
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
 
+    // TODO: 5 magic number should come from preferences
+
     learnsRequired = (yield ctx.pgp.one(/*language=SQL*/ `
     
     WITH learns_required AS (
@@ -52,6 +54,12 @@ function* getHandler() {
     // TODO: learnsRequired was coming back as undefined when we called this route from within /assign/learns
     if (learnsRequired && learnsRequired.json) {
         learnsRequired = learnsRequired.json;
+    }
+
+    if (standardIds.length === 0) {
+        fusebox = [];
+    } else {
+        fusebox = yield Fusebox.getResources(standardIds);
     }
 
     params = {
@@ -81,19 +89,13 @@ function* getHandler() {
         opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
     }
 
-    if (standardIds.length === 0) {
-        fusebox = [];
-    } else {
-        fusebox = yield Fusebox.getResources(standardIds);
-    }
-
-    var resources = opened.concat(fusebox),
+    var resources = fusebox.concat(opened),
         urlResourceMap = {},
         urlPlaceHolders = [],
         url,
         len,
         x,
-        y = 4,
+        y = 4, // TODO: Magic number?
         resourceIdentifiers,
         cacheSql;
 

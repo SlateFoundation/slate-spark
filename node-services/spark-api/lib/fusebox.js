@@ -86,7 +86,8 @@ function* getFuseboxResources(asnIds) {
            gradelevel,
            standards,
            standardids,
-           v.name AS vendor
+           v.name AS vendor,
+           (ll.creatorid = 3) AS bulk_loaded
       FROM slate1.fusebox_learn_links ll
       JOIN slate1.fusebox_vendors v
         ON v.id = ll.vendorid`,
