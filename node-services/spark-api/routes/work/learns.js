@@ -65,7 +65,7 @@ function* getHandler() {
     params = {
         limit: 50,
         standard_ids: openedIds,
-        license: 'all',
+        // DISABLE PREMIUM CONTENT FOR DEPLOY: license: 'all',
         resource_type: OpenEd.studentResourceTypes
     };
 
@@ -386,8 +386,9 @@ function* launchHandler() {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
-        let accessToken = yield OpenEd.getAccessToken();
-        ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
+        // let accessToken = yield OpenEd.getUserAccessToken();
+        //ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
+        ctx.redirect(learnResource.url);
     } else {
         // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
         this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +

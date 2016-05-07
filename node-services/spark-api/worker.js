@@ -60,12 +60,12 @@ app
         config: config.database,
         slateConfig: config.slate
     }))
-    .use(middleware.opened(config))
     .use(lookup)
     .use(middleware.request)
     .use(middleware.debugging)
     .use(json())
     .use(middleware.preferences())
+    // .use(middleware.opened(config))
     .use(json());
 
 // TODO: I hate to have rolled my own auto-router...
