@@ -86,6 +86,11 @@ function *patchHandler(req, res, next) {
         hasMasteryCheckScores = false,
         invalidKeys, activeSql, sparkpointSql, record, values;
 
+    // HACK: spark-classroom-student is sending student_id: null
+    if (ctx.isStudent) {
+        body.student_id = ctx.studentId;
+    }
+
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function (key) {
         var val;
