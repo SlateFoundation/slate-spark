@@ -12,14 +12,15 @@ Ext.define('SparkClassroom.column.LearnLink', {
             encodeHtml: false
         },
         tpl: [
-            '<div class="spark-grid-row-image" style="background-image:url(',
+            '<div',
+                ' class="spark-grid-row-image"',
+                ' title="{vendor:htmlEncode}"',
                 '<tpl if="thumbnail">',
-                    '{thumbnail:htmlEncode}',
-                '<tpl else>',
-                    '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png', // TODO some other default?
+                    ' style="background-image:url({thumbnail:htmlEncode})"',
                 '</tpl>',
-            ')" title="{vendor:htmlEncode}">{vendor:htmlEncode}</div>',
-
+            '>',
+                '{vendor:htmlEncode}',
+            '</div>',
             '<div class="spark-grid-row-title">',
                 '<a href="{launch_url:htmlEncode}" title="{title:htmlEncode}" target="_blank">',
                     '{title:htmlEncode}',

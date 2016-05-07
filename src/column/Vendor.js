@@ -11,14 +11,13 @@ Ext.define('SparkClassroom.column.Vendor', {
             encodeHtml: false
         },
         tpl: [
-            // TODO fix/replace default vendor image and url
-            '<div class="spark-grid-row-image small" style="background-image:url(',
+            '<div',
+                ' class="spark-grid-row-image small"',
                 '<tpl if="vendor_logo">',
-                    '{vendor_logo}',
-                '<tpl else>',
-                    '/spark-classroom-student/sencha-workspace/build/production/SparkClassroomStudent/resources/images/64x64.png',
+                    ' style="background-image:url({vendor_logo})"',
                 '</tpl>',
-            ')"></div>',
+            '>',
+            '</div>',
             '{vendor}'
         ]
     }
