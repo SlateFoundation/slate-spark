@@ -86,10 +86,7 @@ function *patchHandler(req, res, next) {
         hasMasteryCheckScores = false,
         invalidKeys, activeSql, sparkpointSql, record, values;
 
-    // HACK: spark-classroom-student is sending student_id: null
-    if (ctx.isStudent) {
-        body.student_id = ctx.studentId;
-    }
+    assert(studentId, `student_id is requried for non-student users. you are logged in as a: ${ctx.accountLevel}`, 400);
 
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function (key) {
