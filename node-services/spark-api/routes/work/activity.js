@@ -86,7 +86,7 @@ function *patchHandler(req, res, next) {
         hasMasteryCheckScores = false,
         invalidKeys, activeSql, sparkpointSql, record, values;
 
-    assert(studentId, `student_id is requried for non-student users. you are logged in as a: ${ctx.accountLevel}`, 400);
+    ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.accountLevel}`, 400);
 
     // This filter also sets timeKeys and timeValues
     invalidKeys = allKeys.filter(function (key) {
