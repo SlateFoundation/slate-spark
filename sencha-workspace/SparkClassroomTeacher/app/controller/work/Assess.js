@@ -129,7 +129,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
                 sparkpoint: recommendedSparkpoint.getId()
             });
 
-            studentSparkpoint.set('student_id', student.get('student_id'));
+            studentSparkpoint.set('student_id', selectedStudentSparkpoint.get('student_id'));
 
             studentSparkpoint.save({
                 callback: function(studentSparkpoint, operation, success) {
