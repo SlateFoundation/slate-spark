@@ -1,8 +1,10 @@
 'use strict';
 
 function ioSession(options) {
+
+    // TODO: refactor this, sessionHeaderName doesn't seem to be set correctly
     options = Object.assign({}, {
-        sessionHeaderName: 'session',
+        sessionHeaderName: 'x-nginx-session',
         requiredKeys: null,
         validationFn: null,
         requireSession: true,
