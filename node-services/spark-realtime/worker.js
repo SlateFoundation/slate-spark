@@ -12,6 +12,7 @@ var config = JSON.parse(process.env.SPARK_REALTIME),
     sectionPeople = {},
     personSections = {},
     refreshInterval = null,
+    async = require('async'),
     io;
 
 // TODO: Add real logging framework
@@ -95,9 +96,8 @@ function initDatabase(cb) {
             }
 
             done();
+            cb && cb(null);
         });
-
-        cb && cb();
     });
 }
 
@@ -129,7 +129,7 @@ function query(sql, values, cb) {
     });
 }
 
-function initMiddleware() {
+function initMiddleware(cb) {
     config.middleware = config.middleware || {};
 
     config.middleware.stats = config.middleware.stats || {};
@@ -146,10 +146,10 @@ function initMiddleware() {
         io.use(middleware[name]);
     });
 
-    initNats();
+    cb && cb(null);
 }
 
-function initServer() {
+function initServer(cb) {
     io.use(function (socket, next) {
         var stats = global.stats,
             sections = stats.sections;
@@ -204,9 +204,9 @@ function initServer() {
     server.listen(config.port);
 
     console.log(`Listening on ${config.port}`);
-}
 
-initDatabase(initMiddleware(initServer));
+    cb && cb(null);
+}
 
 const USER_ID_COLUMNS = [
     'PersonID',
@@ -354,8 +354,15 @@ function initNats(cb) {
         })
     }, config.refreshInterval || (5/*min*/ * 60 /*sec*/ * 1000 /*msec*/));
 
-    cb && cb();
+    cb && cb(null);
 }
+
+async.series([
+    initDatabase,
+    initMiddleware,
+    initNats,
+    initServer
+]);
 
 process.on('uncaughtException', function (err) {
     var markdown, request, options;

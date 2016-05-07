@@ -3,6 +3,7 @@
   "description": "realtime event streaming",
   "version": "0.0.1",
   "dependencies": {
+    "async": "^2.0.0-rc.4",
     "nats": "^0.6.2",
     "pg": "^4.5.5",
     "pg-native": "^1.10.0",
