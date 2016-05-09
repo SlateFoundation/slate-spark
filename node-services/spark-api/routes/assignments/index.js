@@ -99,7 +99,7 @@ function* getReportHandler() {
 
     ctx.assert(ctx.isTeacher, 'Only teachers, administrators, staff and developers can access reports', 403);
 
-    ctx.body = (yield ctx.sharedPgp.one(sql)).json;
+    ctx.body = (yield ctx.pgp.one(sql)).json;
 }
 
 module.exports = {
