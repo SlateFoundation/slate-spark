@@ -212,7 +212,7 @@ module.exports = function *logger(next) {
                 jsonLogString = JSON.stringify(jsonLogString);
             }
 
-            if (errorHandle) {
+            if (errorHandle && ctx.res.statusCode >= 400) {
                 errorHandle.write(jsonLogString + '\n', 'utf-8');
             }
 
