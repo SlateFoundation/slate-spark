@@ -4,7 +4,8 @@ var util = require('../../lib/util'),
     Values = util.Values,
     entities = ['learns', 'applies', 'assessments', 'conference_resources', 'guiding_questions'],
     pluralize = require('pluralize'),
-    sqlGenerator = require('./entity.js').sqlGenerator;
+    sqlGenerator = require('./entity.js').sqlGenerator,
+    fs = require('co-fs');
 
 function *getHandler() {
     var vals = new Values(),
@@ -92,7 +93,17 @@ function *patchHandler() {
     };
 }
 
+function* getReportHandler() {
+    var ctx = this,
+        sql = (yield fs.readFile(__dirname + '/usage_report.sql', 'utf-8'));
+
+    ctx.body = (yield ctx.sharedPgp.one(sql)).json;
+}
+
 module.exports = {
     get: getHandler,
-    patch: patchHandler
+    patch: patchHandler,
+    report: {
+        get: getReportHandler
+    }
 };
