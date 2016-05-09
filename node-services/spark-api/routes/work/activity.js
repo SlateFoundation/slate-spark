@@ -55,8 +55,6 @@ function *getHandler() {
 }
 
 function *patchHandler(req, res, next) {
-    this.require(['student_id', 'section_id', 'sparkpoint_id']);
-
     var ctx = this,
         sectionId = ctx.query.section_id,
         studentId = ctx.studentId,
@@ -85,6 +83,8 @@ function *patchHandler(req, res, next) {
         allKeys = Object.keys(body || {}),
         hasMasteryCheckScores = false,
         invalidKeys, activeSql, sparkpointSql, record, values;
+
+    ctx.require(['section_id', 'sparkpoint_id']);
 
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
 
