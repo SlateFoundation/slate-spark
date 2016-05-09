@@ -96,6 +96,8 @@ router.get('/assignments/:entity', routes.assignments.entity.get);
 router.patch('/assignments/:entity', routes.assignments.entity.patch);
 router.post('/assignments/:entity', routes.assignments.entity.post);
 
+router.get('/assignments/reports/usage', routes.assignments.index.report.get);
+
 router.get('/preferences/learns', routes.preferences.stopgap.get);
 router.patch('/preferences/learns', routes.preferences.stopgap.patch);
 router.post('/preferences/learns', routes.preferences.stopgap.post);
