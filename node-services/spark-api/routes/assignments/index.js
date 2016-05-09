@@ -97,6 +97,8 @@ function* getReportHandler() {
     var ctx = this,
         sql = (yield fs.readFile(__dirname + '/usage_report.sql', 'utf-8'));
 
+    ctx.assert(ctx.isTeacher, 'Only teachers, administrators, staff and developers can access reports', 403);
+
     ctx.body = (yield ctx.sharedPgp.one(sql)).json;
 }
 
