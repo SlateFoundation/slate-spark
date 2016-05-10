@@ -69,7 +69,7 @@ function ioSession(options) {
             if (app && app !== accountLevel) {
 
                 return next(
-                    new Error(`You are currently logged in as a ${accountLevel}. Please login as a ${oppositeLevel} to use the ${oppositeLevel} app.`);
+                    new Error(`You are currently logged in as a ${accountLevel}. Please login as a ${oppositeLevel} to use the ${oppositeLevel} app.`)
                 );
 
                 socket.disconnect(true);
