@@ -72,7 +72,10 @@ function ioSession(options) {
                     new Error(`You are currently logged in as a ${accountLevel}. Please login as a ${oppositeLevel} to use the ${oppositeLevel} app.`)
                 );
 
-                socket.disconnect(true);
+                setTimeout(function() {
+                    socket.flush();
+                    socket.disconnect(true);
+                }, 1000);
             }
         }
 
