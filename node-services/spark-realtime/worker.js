@@ -81,7 +81,7 @@ function initDatabase(cb) {
         client.query(sql, [], function(err, results) {
             if (err) {
                 console.log('Error populating lookup tables');
-                throw err;
+                return cb && cb(err);
             }
 
             let lookup = results.rows[0].lookup;
@@ -139,6 +139,8 @@ function initMiddleware(cb) {
     for (var name in middleware) {
         middleware[name] = middleware[name](config.middleware[name] || {});
     }
+
+    server.transports = ['websocket'];
 
     io = global.io = require('socket.io')(server);
 
