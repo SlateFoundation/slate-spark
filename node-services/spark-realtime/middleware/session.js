@@ -67,15 +67,9 @@ function ioSession(options) {
                 oppositeLevel = accountLevel !== 'student' ? 'student' : 'teacher';
 
             if (app && app !== accountLevel) {
-
                 return next(
                     new Error(`You are currently logged in as a ${accountLevel}. Please login as a ${oppositeLevel} to use the ${oppositeLevel} app.`)
                 );
-
-                setTimeout(function() {
-                    socket.flush();
-                    socket.disconnect(true);
-                }, 1000);
             }
         }
 
@@ -94,6 +88,8 @@ function ioSession(options) {
         socket.isTeacher = !socket.isStudent;
 
         console.log(session);
+        console.log(socket.request.headers);
+        console.log(socket.request.connection);
 
         socket.join('user:' + session.userId);
 
