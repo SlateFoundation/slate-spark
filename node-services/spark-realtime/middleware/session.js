@@ -11,6 +11,8 @@ function ioSession(options) {
         defaultSession: null
     }, options);
 
+
+
     if (options.validationFn !== null && typeof options.validationFn !== 'function') {
         throw new Error('validationFn must be a function');
     }
@@ -26,7 +28,11 @@ function ioSession(options) {
     return function handleSession(socket, next) {
         var sessionHeaderName = options.sessionHeaderName,
             requiredKeys = options.requiredKeys,
-            session = socket.request.headers[sessionHeaderName];
+            session = socket.request.headers[sessionHeaderName],
+            referer = socket.request.headers.referer,
+            app = referer.match(/\/spark\/classroom\/(student|teacher)/i);
+
+        app ? app[1] : 'unknown';
 
         if (options.requireSession) {
             if (session === undefined) {
@@ -46,6 +52,17 @@ function ioSession(options) {
                 if (missingKeys.length > 0) {
                     return next(new Error(`Session is missing required key(s): ${missingKeys.join(', ')}`));
                 }
+            }
+
+            let accountLevel = session.accountLevel.toLowerCase();
+
+            if (app && acountLevel !== 'developer' && app !== accountLevel) {
+
+                return next(
+                    new Error(`${accountLevel} users should use the ${accountLevel} app; you're using the ${app} app.`)
+                );
+
+                socket.disconnect(true);
             }
         }
 
