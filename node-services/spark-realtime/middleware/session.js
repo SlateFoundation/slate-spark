@@ -89,7 +89,7 @@ function ioSession(options) {
 
         console.log(session);
         console.log(socket.request.headers);
-        console.log(socket.request.connection);
+        console.log(socket.request.remoteAddress);
 
         socket.join('user:' + session.userId);
 
