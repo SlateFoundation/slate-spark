@@ -54,7 +54,7 @@ function ioSession(options) {
                 }
             }
 
-            let accountLevel = session.accountLevel.toLowerCase();
+            var accountLevel = session.accountLevel.toLowerCase();
 
             if (app && acountLevel !== 'developer' && app !== accountLevel) {
 
