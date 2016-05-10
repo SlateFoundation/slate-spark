@@ -34,6 +34,8 @@ function ioSession(options) {
 
         app ? app[1] : 'unknown';
 
+        console.log('app:', app, 'ref:', referer);
+
         if (options.requireSession) {
             if (session === undefined) {
                 return next(new Error(`Session header (${sessionHeaderName}) is missing from the request.`));
