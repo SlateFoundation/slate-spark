@@ -63,12 +63,13 @@ function ioSession(options) {
                 }
             }
 
-            let accountLevel = session.accountLevel.toLowerCase();
+            let accountLevel = session.accountLevel.toLowerCase(),
+                oppositeLevel = accountLevel !== 'student' ? 'student' : 'teacher';
 
             if (app && app !== accountLevel) {
 
                 return next(
-                    new Error(`${accountLevel} users should use the ${accountLevel} app; you're using the ${app} app.`)
+                    new Error(`You are currently logged in as a ${accountLevel}. Please login as a ${oppositeLevel} to use the ${oppositeLevel} app.`);
                 );
 
                 socket.disconnect(true);
