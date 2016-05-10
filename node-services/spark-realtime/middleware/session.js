@@ -54,9 +54,9 @@ function ioSession(options) {
                 }
             }
 
-            var accountLevel = session.accountLevel.toLowerCase();
+            let accountLevel = session.accountLevel.toLowerCase();
 
-            if (app && acountLevel !== 'developer' && app !== accountLevel) {
+            if (app && accountLevel !== 'developer' && app !== accountLevel) {
 
                 return next(
                     new Error(`${accountLevel} users should use the ${accountLevel} app; you're using the ${app} app.`)
