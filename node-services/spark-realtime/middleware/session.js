@@ -45,7 +45,7 @@ function ioSession(options) {
 
         if (options.requireSession) {
             if (session === undefined) {
-                return next(new Error(`Session header (${sessionHeaderName}) is missing from the request.`));
+                return next(new Error(`You must be logged in to use Spark.`));
             }
 
             try {
