@@ -34,7 +34,14 @@ function ioSession(options) {
 
         app ? app[1] : 'unknown';
 
-        console.log('app:', app, 'ref:', referer);
+        // For developers working locally
+        if (app) {
+            app = app[1];
+        } else if (referer.indexOf('SparkClassroomStudent') !== -1) {
+            app = 'student';
+        } else if (referer.indexOf('SparkClassroomTeacher') !== -1) {
+            app = 'student';
+        }
 
         if (options.requireSession) {
             if (session === undefined) {
