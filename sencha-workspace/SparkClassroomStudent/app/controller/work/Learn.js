@@ -239,9 +239,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
 
         if (me.learnsRequiredStudent !== null) {
-            required = me.learnsRequiredStudent;
+            required = Math.min(count, me.learnsRequiredStudent);
         } else if (me.learnsRequiredSection !== null) {
-            required = me.learnsRequiredSection;
+            required = Math.min(count, me.learnsRequiredSection);
         }
 
         for (; i < count; i++) {
