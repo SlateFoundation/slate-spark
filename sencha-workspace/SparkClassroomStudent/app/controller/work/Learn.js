@@ -225,12 +225,18 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             readyBtn = me.getReadyBtn(),
             studentSparkpoint = me.getStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_finish_time'),
-            learns = me.getWorkLearnsStore().getRange(),
+            learnsStore = me.getWorkLearnsStore(),
+            learns = learnsStore.getRange(),
+            rawData = learnsStore.getProxy().getReader().rawData,
             count = learns.length,
             i = 0,
             learnsRequiredDisabled = false,
-            required = 5,
+            required = Math.min(count, 5),
             learn, learnAssignments;
+
+        if (rawData && rawData.learns_required && rawData.learns_required.site) {
+            required = Math.min(count, rawData.learns_required.site);
+        }
 
         if (me.learnsRequiredStudent !== null) {
             required = me.learnsRequiredStudent;
