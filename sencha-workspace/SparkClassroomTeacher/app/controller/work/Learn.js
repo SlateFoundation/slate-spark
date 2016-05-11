@@ -221,11 +221,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     refreshLearnProgress: function() {
         var me = this,
             progressBanner = me.getProgressBanner(),
-            learns = me.getWorkLearnsStore().getRange(),
+            learnsStore = me.getWorkLearnsStore(),
+            learns = learnsStore.getRange(),
+            rawData = learnsStore.getProxy().getReader().rawData,
             count = learns.length,
             completed = 0,
             required = Math.min(count, 5),
             i = 0;
+
+        if (rawData && rawData.learns_required && rawData.learns_required.site) {
+            required = Math.min(count, rawData.learns_required.site);
+        }
 
         if (!progressBanner) {
             // learns tab hasn't been activated yet
