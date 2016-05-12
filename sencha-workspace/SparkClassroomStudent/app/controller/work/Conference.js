@@ -226,9 +226,29 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 }
             }
         } else if (data.table == 'conference_resource_assignments_student') {
+            resource = me.getWorkConferenceResourcesStore().getById(itemData.resource_id);
 
+            if (resource) {
+                if (itemData.assignment) {
+                    resource.set('assignments', { section: (resource.data.assignments.section || null), student: 'required' });
+                } else {
+                    resource.set('assignments', { section: (resource.data.assignments.section || null) });
+                }
+
+                me.refreshResources();
+            }
         } else if (data.table == 'conference_resource_assignments_section') {
+            resource = me.getWorkConferenceResourcesStore().getById(itemData.resource_id);
 
+            if (resource) {
+                if (itemData.assignment) {
+                    resource.set('assignments', { section: 'required', student: (resource.data.assignments.student || null) });
+                } else {
+                    resource.set('assignments', { student: (resource.data.assignments.student || null) });
+                }
+
+                me.refreshResources();
+            }
         } else if (data.table == 'guiding_question_assignments_student') {
             question = me.getWorkConferenceQuestionsStore().getById(itemData.resource_id);
 
@@ -238,9 +258,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 } else {
                     question.set('assignments', { section: (question.data.assignments.section || null) });
                 }
-// BLOCKED: on save, store is trying to post to SparkClassroom.model.work.ConferenceQuestion
-                question.save();
-                //me.refreshQuestions();
+
+                me.refreshQuestions();
             }
         } else if (data.table == 'guiding_question_assignments_section') {
             question = me.getWorkConferenceQuestionsStore().getById(itemData.resource_id);
@@ -251,9 +270,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 } else {
                     question.set('assignments', { student: (question.data.assignments.student || null) });
                 }
-// BLOCKED: on save, store is trying to post to SparkClassroom.model.work.ConferenceQuestion
-                question.save();
-                //me.refreshQuestions();
+
+                me.refreshQuestions();
             }
         }
     },
@@ -264,7 +282,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         var me = this,
             questionsList = me.getQuestionsList(),
             questionsStore = me.getWorkConferenceQuestionsStore(),
-            count = questionsStore.getCount(), i = 0, question,
+            count = questionsStore.getCount(), i = 0, question, questionAssignments,
             items = [];
 
         if (!questionsList) {
@@ -273,11 +291,12 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         for (; i < count; i++) {
             question = questionsStore.getAt(i);
+            questionAssignments = question.get('assignments');
 
             items.push({
                 text: question.get('question'),
                 source: question.get('source'),
-                assignment: question.get('assignment')
+                assignment: questionAssignments.student || questionAssignments.section || null
             });
         }
 
@@ -295,17 +314,18 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     refreshResources: function() {
         var me = this,
             resourcesStore = me.getWorkConferenceResourcesStore(),
-            count = resourcesStore.getCount(), i = 0, resource,
+            count = resourcesStore.getCount(), i = 0, resource, resourceAssignments,
             items = [];
 
         for (; i < count; i++) {
             resource = resourcesStore.getAt(i);
+            resourceAssignments = resource.get('assignments');
 
             items.push({
                 text: resource.get('title'),
                 linkTitle: resource.get('url'),
                 linkUrl: resource.get('url'),
-                assignment: resource.get('assignment')
+                assignment: resourceAssignments.student || resourceAssignments.section || null
             });
         }
 
