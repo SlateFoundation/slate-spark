@@ -112,6 +112,7 @@ function* getHandler() {
               SELECT json_agg(row_to_json(t)) FROM (
                 SELECT
                   questions.*,
+                  (CASE WHEN questions.source = 'fusebox' THEN questions.id ELSE null END) AS resource_id,
                   COALESCE(question_assignments.assignment, '{}'::JSON) AS assignment
                 FROM questions
            LEFT JOIN question_assignments ON question_assignments.resource_id = questions.id
@@ -123,6 +124,7 @@ function* getHandler() {
               SELECT json_agg(row_to_json(t)) FROM (
                 SELECT
                   resources.*,
+                  resources.id AS resource_id,
                   COALESCE(resource_assignments.assignment, '{}'::JSON) AS assignment
                 FROM resources
            LEFT JOIN resource_assignments ON resource_assignments.resource_id = resources.id
