@@ -5,9 +5,10 @@ Ext.define('SparkClassroom.store.work.ConferenceQuestions', {
         'Slate.proxy.API'
     ],
 
-    model: 'SparkClassroom.model.work.ConferenceResource',
+    model: 'SparkClassroom.model.work.ConferenceQuestion',
 
     config: {
+        autoSync: false,
         trackRemoved: false,
         proxy: {
             type: 'slate-api',
