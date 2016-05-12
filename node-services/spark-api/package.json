@@ -46,7 +46,7 @@
     "native-or-bluebird": "^1.2.0",
     "nats": "^0.6.2",
     "newrelic": "^1.24.0",
-    "node-uuid": "^1.4.3",
+    "node-uuid": "^1.4.7",
     "numeral": "^1.5.3",
     "object-recursive-iterator": "^1.0.2",
     "packet-reader": "^0.2.0",
