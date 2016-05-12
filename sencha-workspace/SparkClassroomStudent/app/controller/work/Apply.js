@@ -271,8 +271,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 } else {
                     apply.set('assignments', { section: (apply.data.assignments.section || null) });
                 }
-
-                apply.save();
             }
         } else if (table == 'apply_assignments_section') {
             apply = me.getWorkAppliesStore().getById(itemData.resource_id);
@@ -284,8 +282,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
                 } else {
                     apply.set('assignments', { student: (apply.data.assignments.student || null) });
                 }
-
-                apply.save();
             }
         }
     },
