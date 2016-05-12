@@ -191,40 +191,69 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             itemData = data.item,
             questionsStore,
             studentSparkpoint,
-            questionInputEl, questionInputValue, questionInputFocused;
+            questionInputEl, questionInputValue, questionInputFocused,
+            question, resource;
 
-        if (data.table != 'conference_questions') {
-            return;
-        }
+        if (data.table == 'conference_questions') {
+            questionsStore = me.getWorkConferenceQuestionsStore();
+            studentSparkpoint = me.getStudentSparkpoint();
 
-        questionsStore = me.getWorkConferenceQuestionsStore();
-        studentSparkpoint = me.getStudentSparkpoint();
+            if (
+                studentSparkpoint &&
+                questionsStore.isLoaded() &&
+                studentSparkpoint.get('student_id') == itemData.student_id &&
+                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
+            ) {
+                // capture question input
+                if (questionInputEl = me.getQuestionInputEl()) {
+                    questionInputValue = questionInputEl.getValue();
+                    questionInputFocused = questionInputEl.dom === document.activeElement;
+                }
 
-        if (
-            studentSparkpoint &&
-            questionsStore.isLoaded() &&
-            studentSparkpoint.get('student_id') == itemData.student_id &&
-            studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
-        ) {
-            // capture question input
-            if (questionInputEl = me.getQuestionInputEl()) {
-                questionInputValue = questionInputEl.getValue();
-                questionInputFocused = questionInputEl.dom === document.activeElement;
+                questionsStore.loadRawData([itemData], true);
+                me.refreshQuestions();
+
+                // restore question input
+                if (questionInputEl = me.getQuestionInputEl()) {
+                    if (questionInputValue) {
+                        questionInputEl.dom.value = questionInputValue;
+                    }
+
+                    if (questionInputFocused) {
+                        console.log('restoring focus');
+                        questionInputEl.focus();
+                    }
+                }
             }
+        } else if (data.table == 'conference_resource_assignments_student') {
 
-            questionsStore.loadRawData([itemData], true);
-            me.refreshQuestions();
+        } else if (data.table == 'conference_resource_assignments_section') {
 
-            // restore question input
-            if (questionInputEl = me.getQuestionInputEl()) {
-                if (questionInputValue) {
-                    questionInputEl.dom.value = questionInputValue;
+        } else if (data.table == 'guiding_question_assignments_student') {
+            question = me.getWorkConferenceQuestionsStore().getById(itemData.resource_id);
+
+            if (question) {
+                if (itemData.assignment) {
+                    question.set('assignments', { section: (question.data.assignments.section || null), student: 'required' });
+                } else {
+                    question.set('assignments', { section: (question.data.assignments.section || null) });
                 }
+// BLOCKED: on save, store is trying to post to SparkClassroom.model.work.ConferenceQuestion
+                question.save();
+                //me.refreshQuestions();
+            }
+        } else if (data.table == 'guiding_question_assignments_section') {
+            question = me.getWorkConferenceQuestionsStore().getById(itemData.resource_id);
 
-                if (questionInputFocused) {
-                    console.log('restoring focus');
-                    questionInputEl.focus();
+            if (question) {
+                if (itemData.assignment) {
+                    question.set('assignments', { section: 'required', student: (question.data.assignments.student || null) });
+                } else {
+                    question.set('assignments', { student: (question.data.assignments.student || null) });
                 }
+// BLOCKED: on save, store is trying to post to SparkClassroom.model.work.ConferenceQuestion
+                question.save();
+                //me.refreshQuestions();
             }
         }
     },
