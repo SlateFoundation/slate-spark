@@ -22,7 +22,7 @@ Ext.define('SparkClassroom.work.conference.WorkList', {
                             '<tpl if="values.source == \'student\'">',
                                 '<i class="fa fa-graduation-cap" title="Student-Submitted"></i>',
                             '</tpl>',
-                            '<tpl if="(values.assignment.section || values.assignment.student)">',
+                            '<tpl if="assignment">',
                                 '<i class="fa fa-asterisk" title="Required"></i>',
                             '</tpl>',
                         '</li>',
