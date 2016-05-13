@@ -22,7 +22,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         appCt: 'spark-teacher-appct',
         assignCt: 'spark-teacher-assign-ct',
         learnsCt: 'spark-teacher-assign-learns',
-        popupHostColumn: 'spark-teacher-assign-learns-grid spark-studentassignmentspanel ^ spark-column-assignments'
+        popupHostColumn: 'spark-teacher-assign-learns-grid spark-studentassignmentspanel ^ spark-column-assignments',
+        popupRequiredLearns: 'spark-teacher-assign-learns spark-teacher-assign-learns-learnsrequiredfield'
     },
 
     control: {
@@ -57,8 +58,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
 
     // event handlers
     onSelectedSparkpointChange: function(assignCt, sparkpoint) {
-        var learnsStore = this.getAssignLearnsStore(),
-            learnsCt = this.getLearnsCt();
+        var me = this,
+            learnsStore = me.getAssignLearnsStore(),
+            learnsCt = me.getLearnsCt();
 
         if (!sparkpoint) {
             learnsStore.removeAll();
@@ -72,7 +74,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             learnsStore.load();
         }
 
-        this.syncSelectedSparkpoint();
+        me.syncSelectedSparkpoint();
+        me.getPopupRequiredLearns().setPopupVisible(false);
     },
 
     onLearnsCtActivate: function() {
