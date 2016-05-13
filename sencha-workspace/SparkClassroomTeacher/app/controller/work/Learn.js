@@ -49,6 +49,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
     },
 
+    learnsRequiredSection: null,
+    learnsRequiredStudent: null,
+
 
     // controller template methods
     init: function() {
@@ -100,6 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onLearnsStoreLoad: function() {
+        this.setLearnsRequired();
         this.refreshLearnProgress();
     },
 
@@ -185,6 +189,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                     learnGrid.refresh();
                 }
             }
+        } else if (table == 'learns_required_section') {
+            me.learnsRequiredSection = itemData.required || null;
+            me.refreshLearnProgress();
+        } else if (table == 'learns_required_student') {
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+            if (selectedStudentSparkpoint && selectedStudentSparkpoint.get('student_id') == itemData.student_id) {
+                me.learnsRequiredStudent = itemData.required || null;
+                me.refreshLearnProgress();
+            }
         }
     },
 
@@ -218,6 +231,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
     },
 
+    setLearnsRequired: function() {
+        var me = this,
+            rawData = me.getWorkLearnsStore().getProxy().getReader().rawData;
+
+        if (rawData && rawData.learns_required) {
+            me.learnsRequiredSection = rawData.learns_required.section;
+            me.learnsRequiredStudent = rawData.learns_required.student;
+        }
+    },
+
     refreshLearnProgress: function() {
         var me = this,
             progressBanner = me.getProgressBanner(),
@@ -231,6 +254,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
             required = Math.min(count, rawData.learns_required.site);
+        }
+
+        if (me.learnsRequiredStudent !== null) {
+            required = Math.min(count, me.learnsRequiredStudent);
+        } else if (me.learnsRequiredSection !== null) {
+            required = Math.min(count, me.learnsRequiredSection);
         }
 
         if (!progressBanner) {
