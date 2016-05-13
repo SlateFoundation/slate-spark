@@ -96,6 +96,11 @@ router.get('/assignments/:entity', routes.assignments.entity.get);
 router.patch('/assignments/:entity', routes.assignments.entity.patch);
 router.post('/assignments/:entity', routes.assignments.entity.post);
 
+router.get('/assign/learns/:resourceId/discussions', routes.assign.learn_discussions.get);
+router.patch('/assign/learns/:resourceId/discussions', routes.assign.learn_discussions.patch);
+router.post('/assign/learns/:resourceId/discussions', routes.assign.learn_discussions.post);
+router.delete('/assign/learns/:resourceId/discussions', routes.assign.learn_discussions.delete);
+
 router.get('/assignments/reports/usage', routes.assignments.index.report.get);
 
 router.get('/preferences/learns', routes.preferences.stopgap.get);

@@ -1,5 +1,7 @@
 'use strict';
 
+var util = require('../../lib/util');
+
 function *getHandler(next) {
     var ctx = this,
         sectionId = ctx.query.section_id,
@@ -40,15 +42,31 @@ function *getHandler(next) {
               FROM learns_required
              WHERE sparkpoint_id = $1
                AND section_id = $2
+        ), learn_discussions AS (
+          SELECT id,
+                 body,
+                 ts,
+                 author_id
+            FROM learn_discussions
+           WHERE resource_id = ANY(
+             SELECT (resource->>'resource_id')::INTEGER
+               FROM (
+                  SELECT jsonb_array_elements(playlist) AS resource
+                    FROM playlist_cache
+               ) unrolled_playlist
+           )
+           ORDER BY id
         )
-        
+
         SELECT json_build_object(
             'learns',
             (SELECT playlist FROM playlist_cache),
             'assignments',
             coalesce((SELECT json_object_agg(resource_id, assignments) FROM assignments), '{}'::JSON),
             'learns_required',
-            coalesce((SELECT learns_required FROM learns_required), '{}'::JSON)
+            coalesce((SELECT learns_required FROM learns_required), '{}'::JSON),
+            'discussions',
+            coalesce((SELECT json_agg(learn_discussions) FROM learn_discussions), '{}'::JSON)
         ) AS json;
     `, [sparkpointId, sectionId])).json;
 
@@ -62,6 +80,11 @@ function *getHandler(next) {
         resource.assignments = result.assignments[resource.resource_id] || {};
         delete resource.assignment;
     });
+
+    for (let resourceId in result.discussions) {
+        let discussion = result.discussions[resourceId];
+        util.namifyRecord(discussion, ctx.lookup);
+    }
 
     result.learns_required.site = 5;
 
