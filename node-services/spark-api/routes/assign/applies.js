@@ -19,8 +19,6 @@ function* getHandler() {
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
     ctx.assert(ctx.isTeacher, 'Only teachers can assign applies', 403);
 
-
-
     result = yield this.pgp.one(/*language=SQL*/ `
         WITH applies AS (
             SELECT *

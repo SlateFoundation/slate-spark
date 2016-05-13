@@ -189,7 +189,7 @@ module.exports = function* (next) {
                     shared[entity].cache = lookupCache.shared[entity].cache;
                 } else {
                     console.log(`Shared ${entity} cache miss`);
-                    yield shared[entity].populate();
+                    yield shared[entity].populate(this.app.context.pgp.shared);
                 }
             }
         }
@@ -238,7 +238,11 @@ module.exports = function* (next) {
         }
     }
 
-    if (!this.healthcheck && schema[this.schema] === undefined) {
+    if (!this.healthcheck &&
+        ctx.request.path.indexOf('/develop') === -1 &&
+        ctx.schema !== undefined &&
+        schema[ctx.schema] === undefined
+    ) {
         let bustJsonCache = false;
 
         schema[this.schema] || (schema[this.schema] = {});
@@ -263,7 +267,7 @@ module.exports = function* (next) {
             } else {
                 console.log(`${this.schema} ${entity} cache miss`);
                 bustJsonCache = true;
-                yield schema[this.schema][entity].populate();
+                yield schema[this.schema][entity].populate(ctx.pgp);
             }
         }
 
@@ -282,7 +286,6 @@ module.exports = function* (next) {
         this.lookup = shared;
     } else {
         this.lookup = Object.assign(shared, schema[this.schema]);
-        console.log(Object.keys(this.lookup));
     }
 
     this.app.context.lookup || (this.app.context.lookup = {

@@ -592,6 +592,10 @@ function namifyRecord(record, lookup) {
     // to use lookup when present on the this object
     lookup = this && this.lookup ? this.lookup : lookup;
 
+    assert(lookup, 'lookup not initialized');
+    assert(lookup.person, 'person lookup is missing');
+    assert(lookup.person.idToDisplayName, 'person lookup table is not populated');
+
     [ 'author_id',
       'teacher_id',
       'recommender_id',
