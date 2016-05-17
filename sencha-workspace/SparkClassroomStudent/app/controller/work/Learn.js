@@ -231,17 +231,19 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             count = learns.length,
             i = 0,
             learnsRequiredDisabled = false,
-            required = Math.min(count, 5),
+            minimumRequired = Math.min(count, 5),
+            requiredLearns = 0,
+            completedRequiredLearns = 0,
             learn, learnAssignments;
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
-            required = Math.min(count, rawData.learns_required.site);
+            minimumRequired = Math.min(count, rawData.learns_required.site);
         }
 
         if (me.learnsRequiredStudent !== null) {
-            required = Math.min(count, me.learnsRequiredStudent);
+            minimumRequired = Math.min(count, me.learnsRequiredStudent);
         } else if (me.learnsRequiredSection !== null) {
-            required = Math.min(count, me.learnsRequiredSection);
+            minimumRequired = Math.min(count, me.learnsRequiredSection);
         }
 
         for (; i < count; i++) {
@@ -249,9 +251,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnAssignments = learn.get('assignments');
             if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
                 || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
-                if (!learn.get('completed')) {
+                if (learn.get('completed')) {
+                    completedRequiredLearns++;
+                } {
                     learnsRequiredDisabled = true;
                 }
+                requiredLearns++;
             }
         }
 
@@ -262,12 +267,14 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         progressBanner.setData({
             completedLearns: me.learnsCompleted,
-            name: null,
-            requiredLearns: required
+            minimumLearns: minimumRequired,
+            completedRequiredLearns: completedRequiredLearns,
+            requiredLearns: requiredLearns,
+            name: null
         });
 
         if (!learnsRequiredDisabled) {
-            learnsRequiredDisabled = me.learnsCompleted < required;
+            learnsRequiredDisabled = me.learnsCompleted < minimumRequired;
         }
 
         readyBtn.setDisabled(learnFinishTime || learnsRequiredDisabled);
