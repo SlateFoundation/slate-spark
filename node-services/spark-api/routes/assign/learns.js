@@ -78,17 +78,13 @@ function *getHandler(next) {
 
     result.learns.forEach(function(resource) {
         resource.assignments = result.assignments[resource.resource_id] || {};
+        delete resource.assignment;
 
         // HACK: Learning targets should appear as "required-first" unless they are set to something else
         if (resource.title.toLowerCase().indexOf('learning target') !== -1 &&
-            !(resource.assignment.student && resource.assignment.section)) {
-            resource.assignment = {
-                section: 'required-first',
-                student: null
-            };
+            !resource.assignments.section) {
+            resource.assignments.section = 'required-first';
         }
-
-        delete resource.assignment;
     });
 
     for (let resourceId in result.discussions) {
