@@ -2,13 +2,13 @@
 Ext.define('SparkClassroom.store.Sections', {
     extend: 'Ext.data.Store',
     requires: [
-        'Slate.model.Section',
+        'Slate.model.CourseSection',
     	'Slate.proxy.Records'
     ],
 
 
     config: {
-        model: 'Slate.model.Section',
+        model: 'Slate.model.CourseSection',
 
         proxy: {
             type: 'slate-records',
