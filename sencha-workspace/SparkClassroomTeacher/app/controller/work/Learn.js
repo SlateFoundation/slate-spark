@@ -249,17 +249,20 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             rawData = learnsStore.getProxy().getReader().rawData,
             count = learns.length,
             completed = 0,
-            required = Math.min(count, 5),
-            i = 0;
+            minimumRequired = Math.min(count, 5),
+            requiredLearns = 0,
+            completedRequiredLearns = 0,
+            i = 0,
+            learn, learnAssignments;
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
-            required = Math.min(count, rawData.learns_required.site);
+            minimumRequired = Math.min(count, rawData.learns_required.site);
         }
 
         if (me.learnsRequiredStudent !== null) {
-            required = Math.min(count, me.learnsRequiredStudent);
+            minimumRequired = Math.min(count, me.learnsRequiredStudent);
         } else if (me.learnsRequiredSection !== null) {
-            required = Math.min(count, me.learnsRequiredSection);
+            minimumRequired = Math.min(count, me.learnsRequiredSection);
         }
 
         if (!progressBanner) {
@@ -268,15 +271,28 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
 
         for (; i < count; i++) {
-            if (learns[i].get('completed')) {
+            learn = learns[i];
+            learnAssignments = learn.get('assignments');
+
+            if (learn.get('completed')) {
                 completed++;
+            }
+
+            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+                if (learn.get('completed')) {
+                    completedRequiredLearns++;
+                }
+                requiredLearns++;
             }
         }
 
         progressBanner.setData({
             completedLearns: completed,
-            name: me.getAppCt().getSelectedStudentSparkpoint().get('student_name'),
-            requiredLearns: required
+            minimumLearns: minimumRequired,
+            completedRequiredLearns: completedRequiredLearns,
+            requiredLearns: requiredLearns,
+            name: me.getAppCt().getSelectedStudentSparkpoint().get('student_name')
         });
 
         progressBanner.show();
