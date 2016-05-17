@@ -253,7 +253,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
-                } {
+                } else {
                     learnsRequiredDisabled = true;
                 }
                 requiredLearns++;
