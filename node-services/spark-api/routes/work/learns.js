@@ -209,12 +209,8 @@ function* getHandler() {
             resource.assignment = resourceId.assignment || { student: null, section: null };
 
             // HACK: Learning targets should appear as "required-first" unless they are set to something else
-            if (resource.title.toLowerCase().indexOf('learning target') !== -1 &&
-                !(resource.assignment.student && resource.assignment.section)) {
-                resource.assignment = {
-                    section: 'required-first',
-                    student: null
-                };
+            if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
+                resource.assignment.section = resource.assignment.section || 'required-first';
             }
 
             resource.resource_id = resourceId.id;

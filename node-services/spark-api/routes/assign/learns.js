@@ -81,9 +81,8 @@ function *getHandler(next) {
         delete resource.assignment;
 
         // HACK: Learning targets should appear as "required-first" unless they are set to something else
-        if (resource.title.toLowerCase().indexOf('learning target') !== -1 &&
-            !resource.assignments.section) {
-            resource.assignments.section = 'required-first';
+        if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
+            resource.assignments.section = resource.assignments.section || 'required-first';
         }
     });
 
