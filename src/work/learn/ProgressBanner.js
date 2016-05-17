@@ -11,8 +11,8 @@ Ext.define('SparkClassroom.work.learn.ProgressBanner', {
                     '<li class="progressbanner-pip {.}"></li>',
                 '</tpl>',
             '</ul>',
-            '{[ this.getNameAndAuxVerb(values.name)]} completed <strong>{completedLearns}/{requiredLearns}</strong> of the required Learns.',
-
+            '{[ this.getNameAndAuxVerb(values.name)]} completed <strong>{completedLearns}/{minimumLearns}</strong> Learns.',
+            '<br /><strong>{completedRequiredLearns}/{requiredLearns}</strong> required Learns remaining.',
             {
                 pips: function(complete, required) {
                     var pips = [],
