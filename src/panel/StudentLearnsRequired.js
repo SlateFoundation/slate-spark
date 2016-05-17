@@ -60,7 +60,7 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
                     },
                     {
                         dataIndex: 'learnsRequired',
-                        text: 'Learns Required',
+                        text: 'Number of Learns',
                         width: 100,
                         sortable: false, // TODO: properly configure sorting
                         cell: {
