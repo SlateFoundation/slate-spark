@@ -17,7 +17,7 @@ Ext.define('SparkClassroom.store.work.Learns', {
 
                 switch (assignments.student || assignments.section) {
                     case 'required-first':
-                        return 'Start Here';
+                        return 'Start Here (Required)';
                     case 'required':
                         return 'Required';
                     case 'recommended':
