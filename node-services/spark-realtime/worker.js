@@ -280,8 +280,7 @@ function initNats(cb) {
         var stats = global.stats,
             identified = false,
             sent = false,
-            userIds,
-            data;
+            userIds;
 
         if (!msg) {
             stats.aggregates.nats.dropped.increment();
@@ -309,7 +308,7 @@ function initNats(cb) {
         extractUserIds(msg.item, userIds);
 
         // user ids were found; we should decorate these fields with corresponding display names
-        if (userIds.size > 0) {
+        if (userIds.size > 0 && msg.table === 'learn_discussions') {
             Object.keys(msg.item)
                 .filter(k => USER_ID_COLUMNS.indexOf(k) !== -1)
                 .forEach(column => {
