@@ -46,7 +46,8 @@ function *getHandler(next) {
           SELECT id,
                  body,
                  ts,
-                 author_id
+                 author_id,
+                 resource_id
             FROM learn_discussions
            WHERE resource_id = ANY(
              SELECT (resource->>'resource_id')::INTEGER
