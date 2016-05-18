@@ -420,3 +420,11 @@ process.on('uncaughtException', function (err) {
         process.exit(1);
     }
 });
+
+nats.on('error', function(e) {
+    console.error('[NATS] Error [' + nats.options.url + ']: ' + e);
+    process.exit(1);
+});
+
+nats.on('connect', () => { console.log('[NATS] Connected') });
+nats.on('reconnect', () => { console.log('[NATS] Reconnected') });
