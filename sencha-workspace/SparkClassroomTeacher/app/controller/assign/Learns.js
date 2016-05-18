@@ -226,9 +226,14 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     },
 
     onLearnsStoreLoad: function(store, records, success, operation) {
-        var responseData;
+        var responseData,
+            discussions = this.getAssignLearnsStore().getProxy().getReader().rawData.discussions;
 
-        this.learnDiscussions = this.getAssignLearnsStore().getProxy().getReader().rawData.discussions
+        if (discussions && discussions.length > 0) {
+            this.learnDiscussions = discussions;
+        } else {
+            this.discussions = [];
+        }
 
         if (!success) {
             responseData = Ext.decode(operation.getError().response.responseText, true) || {};
