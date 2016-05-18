@@ -11,6 +11,7 @@ var config = JSON.parse(process.env.SPARK_REALTIME),
     sections = {},
     sectionPeople = {},
     personSections = {},
+    people = {},
     refreshInterval = null,
     async = require('async'),
     io;
@@ -62,14 +63,20 @@ function initDatabase(cb) {
                   FROM people p
                   JOIN course_section_participants csp ON csp."PersonID" = p."ID"
               GROUP BY p."ID"
+            ), display_names AS (/* not to clobber the people table */
+                SELECT "ID" AS id,
+                       "FirstName" || ' ' || "LastName" AS name
+                  FROM people
             )
 
             SELECT json_build_object(
+                'people', (SELECT json_object_agg(id, name) FROM display_names),
                 'sections', (SELECT json_object_agg("ID", "Code") FROM course_sections),
                 'sparkpoints', (SELECT json_object_agg(id, code) FROM sparkpoints),
-                'section_people', (SELECT json_object_agg(section, people) FROM section_people),
+                'section_people', (SELECT json_object_agg(section,people) FROM section_people),
                 'person_sections', (SELECT json_object_agg(person, sections) FROM person_sections),
                 'counts', json_build_object(
+                    'people', (SELECT count(1) FROM display_names),
                     'sections', (SELECT count(1) FROM course_sections),
                     'sparkpoints', (SELECT count(1) FROM sparkpoints),
                     'section_people', (SELECT  count(1) FROM section_people),
@@ -80,7 +87,7 @@ function initDatabase(cb) {
 
         client.query(sql, [], function(err, results) {
             if (err) {
-                console.log('Error populating lookup tables');
+                console.error('Error populating lookup tables:', err);
                 return cb && cb(err);
             }
 
@@ -90,6 +97,7 @@ function initDatabase(cb) {
             sections = lookup.sections;
             sectionPeople = lookup.section_people;
             personSections = lookup.person_sections;
+            people = lookup.people;
 
             for (let entity in lookup.counts) {
                 console.log(`${lookup.counts[entity].toLocaleString()} entries in ${entity} lookup table`);
@@ -139,8 +147,6 @@ function initMiddleware(cb) {
     for (var name in middleware) {
         middleware[name] = middleware[name](config.middleware[name] || {});
     }
-
-    server.transports = ['websocket'];
 
     io = global.io = require('socket.io')(server);
 
@@ -225,7 +231,7 @@ function extractUserIds(data, userIds) {
         let userId = data[key];
 
         if (userId && typeof userId === 'number') {
-            userIds.add(userId)
+            userIds.add(userId);
         }
     });
 }
@@ -298,17 +304,39 @@ function initNats(cb) {
             msg.item.sparkpoint_code = sparkpoints[msg.item.sparkpoint_id];
         }
 
-        if (config.broadcast) {
-            stats.aggregates.outgoing.broadcast.increment();
-            return io.emit('db', msg);
-        }
-
         userIds = new Set();
 
         extractUserIds(msg.item, userIds);
 
+        // user ids were found; we should decorate these fields with corresponding display names
+        if (userIds.size > 0) {
+            Object.keys(msg.item)
+                .filter(k => USER_ID_COLUMNS.indexOf(k) !== -1)
+                .forEach(column => {
+                    let person;
+
+                    if (person = people[msg.item[column]]) {
+                        let displayNameKey = column
+                            .replace(/Id$/, 'Name')
+                            .replace(/_id$/, '_name');
+                        
+                        msg.item[displayNameKey] || (msg.item[displayNameKey] = person);
+                    }
+                });
+        }
+
+        // Entries from the people table are unsuitable for display_name mapping
         if (msg.table === 'people') {
             userIds.add(msg.item.ID);
+
+            if (people[msg.item.ID]) {
+                msg.item.name || (msg.item.name = people[msg.item.ID]);
+            }
+        }
+
+        if (config.broadcast) {
+            stats.aggregates.outgoing.broadcast.increment();
+            return io.emit('db', msg);
         }
 
         // IMPORTANT: Right now, only rows with a section_id column are being broadcast to course section participants this
