@@ -345,13 +345,14 @@ function initNats(cb) {
 
         if (msg.item.section_id) {
             if (config.section_broadcast) {
+                identified = true;
+                sent = true;
+                console.log(`Broadcast to section: ${sections[msg.item.section_id]}`);
+                io.to('section:' + sections[msg.item.section_id]).emit('db', msg);
+            } else {
                 sectionPeople[msg.item.section_id].forEach(function(userId) {
                     userIds.add(userId);
                 });
-            } else {
-                identified = true;
-                sent = true;
-                io.to('section:' + sections[msg.item.section_id]).emit('db', msg);
             }
         }
 
@@ -364,8 +365,8 @@ function initNats(cb) {
 
         if (identified) {
             stats.aggregates.outgoing.identified.increment();
-            console.log(data);
-            console.log('Recipients: ', Array.from(userIds).join(', '));
+            console.log(msg.item);
+            console.log('Recipients: ', Array.from(userIds).map(id => people[id] || id).join(', '));
         } else {
             stats.aggregates.outgoing.unidentified.increment();
             console.log('Unable to associate database event with user:');
@@ -376,7 +377,6 @@ function initNats(cb) {
     if (refreshInterval) {
         clearInterval(refreshInterval);
     }
-
 
     refreshInterval = setInterval(function() {
         initDatabase(function() {

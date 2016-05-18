@@ -89,10 +89,6 @@ function ioSession(options) {
         socket.isStudent = socket.session.accountLevel === 'Student';
         socket.isTeacher = !socket.isStudent;
 
-        console.log(session);
-        console.log(socket.request.headers);
-        console.log(socket.request.remoteAddress);
-
         socket.join('user:' + session.userId);
 
         // TODO: Remove this once the session id is sent by all load balancers
