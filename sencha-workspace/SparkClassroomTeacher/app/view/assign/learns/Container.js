@@ -35,23 +35,33 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Container', {
                 docked: 'right',
 
                 xtype: 'spark-panel',
+                itemId: 'learnDiscussion',
                 cls: 'dark narrow',
                 title: 'Discussion',
                 width: 288,
-                hidden: !location.search.match(/\WenableAlpha(\W|$)/),
+                hidden: true,
                 items: [
                     {
-                        xtype: 'spark-discussion-list',
+                        xtype: 'spark-discussion-list'
+                        /*
                         data: [
                             { authorName: 'Al Motley', authorUrl: '#', timestamp: '12/05/15 5:47pm', text: 'This is a teacher’s comment. Lorem ipsum' },
                             { authorName: 'Ali Wiest', authorUrl: '#', timestamp: '12/05/15 5:47pm', text: 'This is a teacher’s comment.' }
                         ]
+                        */
                     },
                     {
                         xtype: 'textareafield',
-                        label: 'Bill',
+                        //label: 'Bill',
                         placeHolder: 'Leave a comment…',
-                        margin: '16 0 0'
+                        margin: '16 0 0',
+                        clearIcon: false
+                    },
+                    {
+                        flex: 1,
+                        xtype: 'button',
+                        ui: 'action',
+                        text: 'Submit Comment'
                     }
                 ]
             }

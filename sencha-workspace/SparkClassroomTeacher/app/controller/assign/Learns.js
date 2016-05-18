@@ -23,7 +23,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         assignCt: 'spark-teacher-assign-ct',
         learnsCt: 'spark-teacher-assign-learns',
         popupHostColumn: 'spark-teacher-assign-learns-grid spark-studentassignmentspanel ^ spark-column-assignments',
-        popupRequiredLearns: 'spark-teacher-assign-learns spark-teacher-assign-learns-learnsrequiredfield'
+        popupRequiredLearns: 'spark-teacher-assign-learns spark-teacher-assign-learns-learnsrequiredfield',
+        learnDiscussion: '#learnDiscussion',
+        learnDiscussionList: '#learnDiscussion spark-discussion-list',
+        learnDiscussionText: '#learnDiscussion textareafield',
+        learnDiscussionBtn: '#learnDiscussion button'
     },
 
     control: {
@@ -42,6 +46,12 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         'spark-studentlearnsrequiredpanel numberfield': {
             minimumchange: 'onMinimumChange'
         },
+        'spark-teacher-assign-learns-grid': {
+            learntap: 'onLearnTap'
+        },
+        learnDiscussionBtn: {
+            tap: 'onLearnDiscussionBtnTap'
+        },
     },
 
     listen: {
@@ -54,6 +64,9 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             data: 'onSocketData'
         }
     },
+
+    learnData: null,
+    learnDiscussions: [],
 
 
     // event handlers
@@ -74,6 +87,11 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
             learnsStore.load();
         }
 
+        me.learnData = null;
+        if (me.getLearnDiscussion()) {
+            me.getLearnDiscussion().setHidden(true);
+        }
+
         me.syncSelectedSparkpoint();
         if (me.getPopupRequiredLearns()) {
             me.getPopupRequiredLearns().setPopupVisible(false);
@@ -89,6 +107,16 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         }
 
         this.syncSelectedSparkpoint();
+    },
+
+    onLearnTap: function(grid, item) {
+        var me = this;
+
+        me.learnData = item.getRecord().getData();
+
+        me.loadLearnDiscussions();
+
+        me.getLearnDiscussion().setHidden(false);
     },
 
     onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
@@ -200,6 +228,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     onLearnsStoreLoad: function(store, records, success, operation) {
         var responseData;
 
+        this.learnDiscussions = this.getAssignLearnsStore().getProxy().getReader().rawData.discussions
+
         if (!success) {
             responseData = Ext.decode(operation.getError().response.responseText, true) || {};
             store.removeAll();
@@ -207,60 +237,81 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         }
     },
 
-    onSocketData: function(socket, data) {
-        if (data.table != 'learn_assignments_section' && data.table != 'learn_assignments_student') {
-            return;
-        }
-
+    onLearnDiscussionBtnTap: function() {
         var me = this,
-            learnsStore = me.getAssignLearnsStore(),
+            section = me.getAppCt().getSelectedSection(),
+            sparkpoint = me.getAssignCt().getSelectedSparkpoint(),
+            learnData = me.learnData,
+            learnDiscussionText = me.getLearnDiscussionText(),
+            learnDiscussionTextValue = Ext.util.Format.trim(learnDiscussionText.getValue());
+
+        if (learnData && learnDiscussionTextValue !== '') {
+            me.writeLearnDiscussion(section, sparkpoint, {
+                resource_id: learnData.resource_id,
+                body: learnDiscussionTextValue
+            });
+
+            learnDiscussionText.setValue('');
+        }
+    },
+
+    onSocketData: function(socket, data) {
+        var me = this,
             itemData = data.item,
-            studentId = itemData.student_id,
-            assignment = itemData.assignment || null,
-            learn = learnsStore.getById(itemData.resource_id),
             assignments = {},
+            learnsStore, studentId, assignment, learn,
             popupHostColumn, popup, popupStudent,
             popupStore, popupStudentsCount, i = 0;
 
-        if (
-            !learn
-            || itemData.section_code != me.getAppCt().getSelectedSection()
-            || itemData.sparkpoint_code != me.getAssignCt().getSelectedSparkpoint()
-        ) {
-            return;
-        }
+        if (data.table == 'learn_assignments_section' || data.table == 'learn_assignments_student') {
+            learnsStore = me.getAssignLearnsStore();
+            studentId = itemData.student_id;
+            assignment = itemData.assignment || null;
+            learn = learnsStore.getById(itemData.resource_id);
 
-        if (studentId) {
-            assignments[studentId] = assignment;
-
-            // update `student` assignments in student-level store if open
             if (
-                (popupHostColumn = me.getPopupHostColumn()) &&
-                (popup = popupHostColumn.getPopup()) &&
-                (popupStudent = popup.getGrid().getStore().getById(studentId))
+                !learn
+                || itemData.section_code != me.getAppCt().getSelectedSection()
+                || itemData.sparkpoint_code != me.getAssignCt().getSelectedSparkpoint()
             ) {
-                popupStudent.set('assignments', Ext.applyIf({student: assignment}, popupStudent.get('assignments')));
+                return;
             }
-        } else {
-            assignments.section = assignment;
 
-            // update `seciton` assignment student-level store if open
-            if (
-                (popupHostColumn = me.getPopupHostColumn()) &&
-                (popup = popupHostColumn.getPopup())
-            ) {
-                popupStore = popup.getGrid().getStore();
-                popupStudentsCount = popupStore.getCount();
+            if (studentId) {
+                assignments[studentId] = assignment;
 
-                for (; i < popupStudentsCount; i++) {
-                    popupStudent = popupStore.getAt(i);
-                    popupStudent.set('assignments', Ext.applyIf({section: assignment}, popupStudent.get('assignments')));
+                // update `student` assignments in student-level store if open
+                if (
+                    (popupHostColumn = me.getPopupHostColumn()) &&
+                    (popup = popupHostColumn.getPopup()) &&
+                    (popupStudent = popup.getGrid().getStore().getById(studentId))
+                ) {
+                    popupStudent.set('assignments', Ext.applyIf({student: assignment}, popupStudent.get('assignments')));
+                }
+            } else {
+                assignments.section = assignment;
+
+                // update `seciton` assignment student-level store if open
+                if (
+                    (popupHostColumn = me.getPopupHostColumn()) &&
+                    (popup = popupHostColumn.getPopup())
+                ) {
+                    popupStore = popup.getGrid().getStore();
+                    popupStudentsCount = popupStore.getCount();
+
+                    for (; i < popupStudentsCount; i++) {
+                        popupStudent = popupStore.getAt(i);
+                        popupStudent.set('assignments', Ext.applyIf({section: assignment}, popupStudent.get('assignments')));
+                    }
                 }
             }
-        }
 
-        // copy old values into new assignments object and set
-        learn.set('assignments', Ext.applyIf(assignments, learn.get('assignments')));
+            // copy old values into new assignments object and set
+            learn.set('assignments', Ext.applyIf(assignments, learn.get('assignments')));
+        } else if (data.table == 'learn_discussions') {
+            this.learnDiscussions.push(itemData);
+            this.loadLearnDiscussions();
+        }
     },
 
 
@@ -280,6 +331,29 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         } else {
             learnsCt.hide();
         }
+    },
+
+    loadLearnDiscussions: function() {
+        var me = this,
+            learnDiscussions = me.learnDiscussions,
+            i = 0,
+            discussion,
+            discussionData = [ ];
+
+        for(; i<learnDiscussions.length; i++) {
+            discussion = learnDiscussions[i];
+
+            if (discussion.resource_id == me.learnData.resource_id) {
+                discussionData.push({
+                    authorName: discussion.author_name,
+                    authorUrl: '#',
+                    timestamp: Ext.Date.format(new Date(discussion.ts), 'n/j/y g:ia'),
+                    text: discussion.body
+                });
+            }
+        }
+
+        me.getLearnDiscussionList().setData(discussionData);
     },
 
     writeAssignments: function(assignmentsData) {
@@ -322,6 +396,28 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
                 error = error || 'Unknown problem';
 
                 Ext.Msg.alert('Assignment not saved', 'This assignment could not be saved:<ul><li>'+error+'</li></ul>');
+            }
+        });
+    },
+
+    writeLearnDiscussion: function(section, sparkpoint, learnData) {
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/assign/learns/' + learnData.resource_id + '/discussions?sparkpoint=' + sparkpoint,
+            jsonData: learnData,
+            success: function(response) {
+                // do nothing cause realtime will handle it
+            },
+            failure: function(response) {
+                var error = response.data.error;
+
+                // this structure is a mess to access safely..
+                error = error && error[0];
+                error = error && error.errors;
+                error = error && error.join('</li><li>');
+                error = error || 'Unknown problem';
+
+                Ext.Msg.alert('Learn discussion not saved', 'This learn discussion could not be saved:<ul><li>'+error+'</li></ul>');
             }
         });
     }
