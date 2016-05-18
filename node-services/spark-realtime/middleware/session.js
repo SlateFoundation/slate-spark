@@ -1,5 +1,7 @@
 'use strict';
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
 function ioSession(options) {
 
     // TODO: refactor this, sessionHeaderName doesn't seem to be set correctly
@@ -10,9 +12,7 @@ function ioSession(options) {
         requireSession: true,
         defaultSession: null
     }, options);
-
-
-
+    
     if (options.validationFn !== null && typeof options.validationFn !== 'function') {
         throw new Error('validationFn must be a function');
     }
@@ -45,7 +45,18 @@ function ioSession(options) {
 
         if (options.requireSession) {
             if (session === undefined) {
-                return next(new Error(`You must be logged in to use Spark.`));
+                let cookies = socket.request.headers.cookie;
+
+                if (!PRODUCTION && cookies.indexOf('spoof_headers=') !== -1) {
+                    // HACK: Use a cookie parser
+                    try {
+                        session = JSON.parse(cookies.split('spoof_headers=')[1])[options.sessionHeaderName];
+                    } catch (e) {
+                        return next(e);
+                    }
+                } else {
+                    return next(new Error(`You must be logged in to use Spark.`));
+                }
             }
 
             try {
@@ -66,10 +77,13 @@ function ioSession(options) {
             let accountLevel = session.accountLevel.toLowerCase(),
                 oppositeLevel = accountLevel !== 'student' ? 'student' : 'teacher';
 
-            if (app && app !== accountLevel) {
-                return next(
-                    new Error(`You are currently logged in as a ${accountLevel}. Please login as a ${oppositeLevel} to use the ${oppositeLevel} app.`)
-                );
+            if (app &&
+                app !== accountLevel &&
+                !(app === 'teacher' && accountLevel === 'developer') // developers can use the teacher app
+            ) {
+                return next(new Error(
+                    `${accountLevel}s must login as a ${oppositeLevel} to use the ${oppositeLevel} app.`
+                ));
             }
         }
 
