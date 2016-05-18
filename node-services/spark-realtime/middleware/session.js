@@ -73,18 +73,6 @@ function ioSession(options) {
                     return next(new Error(`Session is missing required key(s): ${missingKeys.join(', ')}`));
                 }
             }
-
-            let accountLevel = session.accountLevel.toLowerCase(),
-                oppositeLevel = accountLevel !== 'student' ? 'student' : 'teacher';
-
-            if (app &&
-                app !== accountLevel &&
-                !(app === 'teacher' && accountLevel === 'developer') // developers can use the teacher app
-            ) {
-                return next(new Error(
-                    `${accountLevel}s must login as a ${oppositeLevel} to use the ${oppositeLevel} app.`
-                ));
-            }
         }
 
         // Perform custom validation
