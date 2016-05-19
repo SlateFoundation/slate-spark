@@ -10,16 +10,34 @@ Ext.define('SparkClassroom.column.StudentComment', {
         text: 'Comments',
         flex: 1,
         cell: {
-            encodeHtml: false
-        },
-        renderer: function(v, r) {
-            v = v ? Ext.util.Format.htmlEncode(v) : '';
 
-            if (this.getEnableEditing()) {
-                return '<input class="field-control" style="width: 100%" value="'+v+'">';
+            xtype: 'widgetcell',
+            widget: {
+                xtype: 'textareafield',
+                inputCls: 'input-student-comment',
+                clearIcon: false,
+                placeHolder: 'Add your comments here. (Optional)',
+                style: { textAlign: 'center' },
+                listeners: {
+                    buffer: 500,
+                    initialize: function() {
+                        var widgetcell = this.getParent(),
+                            enableEditing = widgetcell.getColumn().getEnableEditing();
+
+                        this.setReadOnly(!enableEditing);
+                    },
+                    change: function(field, cmnt) {
+                        var widgetcell = this.getParent(),
+                            record = widgetcell.getRecord(),
+                            column = widgetcell.getColumn(),
+                            dataIndex = column.getDataIndex();
+
+                        if (column.getEnableEditing()) {
+                            record.set(dataIndex, cmnt);
+                        }
+                    }
+                }
             }
-
-            return v;
         }
     }
 });
