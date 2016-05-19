@@ -20,7 +20,8 @@ Ext.define('SparkClassroomTeacher.view.NavBar', {
             },
             {
                 text: 'Activity',
-                itemId: 'activity'
+                itemId: 'activity',
+                disabled: !location.search.match(/\WenableAlpha(\W|$)/)
             }
         ]
     }
