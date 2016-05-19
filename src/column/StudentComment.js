@@ -22,8 +22,7 @@ Ext.define('SparkClassroom.column.StudentComment', {
                     buffer: 500,
                     initialize: function() {
                         var widgetcell = this.getParent(),
-                            column = widgetcell.getColumn(),
-                            enableEditing = column.getEnableEditing();
+                            enableEditing = widgetcell.getColumn().getEnableEditing();
 
                         this.setReadOnly(!enableEditing);
                     },
@@ -33,7 +32,7 @@ Ext.define('SparkClassroom.column.StudentComment', {
                             column = widgetcell.getColumn(),
                             dataIndex = column.getDataIndex();
 
-                        if (cmnt) {
+                        if (column.getEnableEditing()) {
                             record.set(dataIndex, cmnt);
                         }
                     }
