@@ -93,9 +93,6 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         }
 
         me.syncSelectedSparkpoint();
-        if (me.getPopupRequiredLearns()) {
-            me.getPopupRequiredLearns().setPopupVisible(false);
-        }
     },
 
     onLearnsCtActivate: function() {
