@@ -1,5 +1,7 @@
 'use strict';
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
 function ioSession(options) {
 
     // TODO: refactor this, sessionHeaderName doesn't seem to be set correctly
@@ -10,7 +12,7 @@ function ioSession(options) {
         requireSession: true,
         defaultSession: null
     }, options);
-
+    
     if (options.validationFn !== null && typeof options.validationFn !== 'function') {
         throw new Error('validationFn must be a function');
     }
@@ -26,11 +28,35 @@ function ioSession(options) {
     return function handleSession(socket, next) {
         var sessionHeaderName = options.sessionHeaderName,
             requiredKeys = options.requiredKeys,
-            session = socket.request.headers[sessionHeaderName];
+            session = socket.request.headers[sessionHeaderName],
+            referer = socket.request.headers.referer,
+            app = referer.match(/\/spark\/classroom\/(student|teacher)/i);
+
+        app ? app[1] : 'unknown';
+
+        // For developers working locally
+        if (app) {
+            app = app[1];
+        } else if (referer.indexOf('SparkClassroomStudent') !== -1) {
+            app = 'student';
+        } else if (referer.indexOf('SparkClassroomTeacher') !== -1) {
+            app = 'student';
+        }
 
         if (options.requireSession) {
             if (session === undefined) {
-                return next(new Error(`Session header (${sessionHeaderName}) is missing from the request.`));
+                let cookies = socket.request.headers.cookie;
+
+                if (!PRODUCTION && cookies.indexOf('spoof_headers=') !== -1) {
+                    // HACK: Use a cookie parser
+                    try {
+                        session = JSON.parse(cookies.split('spoof_headers=')[1])[options.sessionHeaderName];
+                    } catch (e) {
+                        return next(e);
+                    }
+                } else {
+                    return next(new Error(`You must be logged in to use Spark.`));
+                }
             }
 
             try {
@@ -62,8 +88,6 @@ function ioSession(options) {
 
         socket.isStudent = socket.session.accountLevel === 'Student';
         socket.isTeacher = !socket.isStudent;
-
-        console.log(session);
 
         socket.join('user:' + session.userId);
 
