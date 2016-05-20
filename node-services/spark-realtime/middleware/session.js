@@ -1,13 +1,15 @@
 'use strict';
 
 function ioSession(options) {
+
+    // TODO: refactor this, sessionHeaderName doesn't seem to be set correctly
     options = Object.assign({}, {
-        sessionHeaderName: 'session',
+        sessionHeaderName: 'x-nginx-session',
         requiredKeys: null,
         validationFn: null,
         requireSession: true,
         defaultSession: null
-    }, options || {});
+    }, options);
 
     if (options.validationFn !== null && typeof options.validationFn !== 'function') {
         throw new Error('validationFn must be a function');
@@ -64,6 +66,11 @@ function ioSession(options) {
         console.log(session);
 
         socket.join('user:' + session.userId);
+
+        // TODO: Remove this once the session id is sent by all load balancers
+        if (session.id) {
+            socket.join('session:' + session.id);
+        }
 
         return next();
     };

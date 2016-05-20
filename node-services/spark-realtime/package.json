@@ -3,10 +3,18 @@
   "description": "realtime event streaming",
   "version": "0.0.1",
   "dependencies": {
+    "async": "^2.0.0-rc.4",
     "nats": "^0.6.2",
-    "pg": "github:ignitenet-martynas/node-postgres",
+    "pg": "^4.5.5",
     "pg-native": "^1.10.0",
     "request": "^2.72.0",
-    "socket.io": "^1.4.5"
-  }
+    "socket.io": "^1.4.6"
+  },
+  "engine": {
+    "node": ">=6.0.0"
+  },
+  "readme": "README.md",
+  "license": "MIT",
+  "repository": "https://github.com/JarvusInnovations/spark-realtime.git",
+  "private": true
 }

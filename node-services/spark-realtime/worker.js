@@ -11,6 +11,8 @@ var config = JSON.parse(process.env.SPARK_REALTIME),
     sections = {},
     sectionPeople = {},
     personSections = {},
+    refreshInterval = null,
+    async = require('async'),
     io;
 
 // TODO: Add real logging framework
@@ -22,7 +24,7 @@ console.log = function() {
     console._log.apply(this, args);
 };
 
-function initDatabase() {
+function initDatabase(cb) {
     var cfg = config.postgresql;
 
     if (!cfg) {
@@ -92,9 +94,10 @@ function initDatabase() {
             for (let entity in lookup.counts) {
                 console.log(`${lookup.counts[entity].toLocaleString()} entries in ${entity} lookup table`);
             }
-        });
 
-        initMiddleware();
+            done();
+            cb && cb(null);
+        });
     });
 }
 
@@ -126,7 +129,7 @@ function query(sql, values, cb) {
     });
 }
 
-function initMiddleware() {
+function initMiddleware(cb) {
     config.middleware = config.middleware || {};
 
     config.middleware.stats = config.middleware.stats || {};
@@ -143,10 +146,10 @@ function initMiddleware() {
         io.use(middleware[name]);
     });
 
-    initNats();
+    cb && cb(null);
 }
 
-function initServer() {
+function initServer(cb) {
     io.use(function (socket, next) {
         var stats = global.stats,
             sections = stats.sections;
@@ -201,9 +204,9 @@ function initServer() {
     server.listen(config.port);
 
     console.log(`Listening on ${config.port}`);
-}
 
-initDatabase();
+    cb && cb(null);
+}
 
 const USER_ID_COLUMNS = [
     'PersonID',
@@ -225,7 +228,46 @@ function extractUserIds(data, userIds) {
     });
 }
 
-function initNats() {
+function initNats(cb) {
+    var materializedViews = [
+        'fusebox_apply_projects',
+        'fusebox_assessments',
+        'fusebox_conference_resources',
+        'fusebox_guiding_questions',
+        'fusebox_learn_links',
+        'fusebox_vendor_domains',
+        'fusebox_vendors'
+    ];
+
+    nats.subscribe('fusebox-live' + '.>', function(msg) {
+        if (!msg) {
+            return;
+        }
+
+        msg = JSON.parse(msg);
+
+        if (msg.table.indexOf('s2_') === 0) {
+            let materializedView = msg.table.replace('s2_', 'fusebox_');
+
+            if (materializedViews.indexOf(materializedView) !== -1) {
+                // TODO: All the workers will execute this, which we do not want...
+                // HACK: only one worker should refresh the materialized views... for now we select sandbox-school
+                // until this is deployed in production
+                if (config.schema === 'sandbox-school') {
+                    console.log('Attempting to refresh materialized view: ' + materializedView);
+
+                    query(`REFRESH MATERIALIZED VIEW ${materializedView};`, [], function(err) {
+                        if (err) {
+                            console.error(err);
+                        } else {
+                            console.log('Refreshed materialized view: ' + materializedView);
+                        }
+                    });
+                }
+            }
+        }
+    });
+
     nats.subscribe(config.schema + '.>', function (msg) {
         var stats = global.stats,
             identified = false,
@@ -301,8 +343,26 @@ function initNats() {
         }
     });
 
-    initServer();
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+
+
+    refreshInterval = setInterval(function() {
+        initDatabase(function() {
+            console.log('Lookup tables are 5 minutes old, time to refresh...');
+        })
+    }, config.refreshInterval || (5/*min*/ * 60 /*sec*/ * 1000 /*msec*/));
+
+    cb && cb(null);
 }
+
+async.series([
+    initDatabase,
+    initMiddleware,
+    initNats,
+    initServer
+]);
 
 process.on('uncaughtException', function (err) {
     var markdown, request, options;
