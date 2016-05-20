@@ -310,9 +310,9 @@ function* patchHandler() {
                 review.errors = errors;
             }
 
-            if (review.rating !== undefined && (review.rating <= 0 || review.rating > 10)) {
+            if (review.rating !== undefined && Math.abs(review.rating) !== 1) {
                 review.errors || (review.errors = []);
-                review.errors.push(`rating: must be a number between 1-10, you gave: ${review.rating}`)
+                review.errors.push(`rating: is 1 for thumbs up and -1 for thumbs down, you provided: ${review.rating}`)
             }
 
             if (review.errors) {
