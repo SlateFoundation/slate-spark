@@ -3,12 +3,15 @@ var util = require('../../lib/util');
 function *getHandler() {
     this.require(['section_id']);
 
-    var sectionId = this.query.section_id,
-        ctx = this;
+    var ctx = this,
+        sectionId = ctx.query.section_id,
+        status = ctx.query.status || 'active';
 
     ctx.assert(ctx.isTeacher, 'Only teachers can access the activity endpoint.', 403);
+    ctx.assert(status === 'all' || status === 'active', 'status is implied active, valid values are all/active', 400);
 
-    ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+    if (status === 'active') {
+        ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -52,19 +55,10 @@ function *getHandler() {
            AND ss.student_id = t.student_id
           JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
          WHERE t.rn = 1;`,
-        [sectionId]
-    );
-}
-
-function *getHistoryHandler() {
-    this.require(['section_id']);
-
-    var sectionId = this.query.section_id,
-        ctx = this;
-
-    ctx.assert(ctx.isTeacher, 'Only teachers can access the activity history endpoint.', 403);
-
-    ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+            [sectionId]
+        );
+    } else {
+        ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -109,8 +103,9 @@ function *getHistoryHandler() {
            AND ss.student_id = t.student_id
           JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
           ORDER BY code DESC`,
-        [sectionId]
-    );
+            [sectionId]
+        );
+    }
 }
 
 function *patchHandler(req, res, next) {
@@ -290,6 +285,5 @@ function *patchHandler(req, res, next) {
 
 module.exports = {
     get: getHandler,
-    patch: patchHandler,
-    history: getHistoryHandler
+    patch: patchHandler
 };
