@@ -100,7 +100,7 @@ function *getHistoryHandler() {
                    cs."Code" AS section_code,
                    ROW_NUMBER() OVER (
                      PARTITION BY ssas.student_id, ssas.section_id
-                         ORDER BY ssas.last_accessed DESC) AS rn
+                         ORDER BY ssas.last_accessed ASC) AS rn
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN course_sections cs ON cs."ID" = section_id
              WHERE section_id = $1 AND last_accessed IS NOT NULL
