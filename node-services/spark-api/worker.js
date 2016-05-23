@@ -102,6 +102,8 @@ router.get('/preferences/learns', routes.preferences.stopgap.get);
 router.patch('/preferences/learns', routes.preferences.stopgap.patch);
 router.post('/preferences/learns', routes.preferences.stopgap.post);
 
+router.get('/work/activity/history', routes.work.activity.history);
+
 app
     .use(router.routes())
     .use(router.allowedMethods());
