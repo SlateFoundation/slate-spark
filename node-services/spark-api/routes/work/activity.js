@@ -260,7 +260,7 @@ function *patchHandler(req, res, next) {
                     record.sparkpoint = util.toSparkpointId(sparkpointId);
                 } else {
                     record[key] = null;
-                }w
+                }
             });
         }
     } else {
