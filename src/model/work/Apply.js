@@ -18,6 +18,8 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'sparkpointIds',
         'sparkpointCodes',
         'standardCodes',
+        'review',
+        'comment',
         {
             name: 'todos',
             convert: function (value) {
