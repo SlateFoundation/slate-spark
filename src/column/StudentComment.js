@@ -34,7 +34,12 @@ Ext.define('SparkClassroom.column.StudentComment', {
 
                         if (column.getEnableEditing()) {
                             record.set(dataIndex, cmnt);
+
+                            if (record.dirty && (record.store && !record.store.getAutoSync())) {
+                                record.save();
+                            }
                         }
+
                     }
                 }
             }
