@@ -11,16 +11,58 @@ Ext.define('SparkClassroom.column.StudentRating', {
         text: 'Rating',
         cell: {
             xtype: 'widgetcell',
+            $configStrict: false,
+            updateValue: function(val, oldVal) {
+                var me = this,
+                    widget = me.getWidget(),
+                    column = me.getColumn(),
+                    record = me.getRecord(),
+                    _unpressAllBtns = function() {
+                        widget.getItems().each(function(btn) {
+                            var pressedCls = btn.getPressedCls();
+                            btn.toggleCls(pressedCls, false);
+                        });
+                    },
+                    btn, btnKey = 'student-thumbs';
+
+                if (val >= 1) {
+                    btnKey += 'up'
+                } else if (val <= -1) {
+                    btnKey += 'down';
+                } else {
+                    btnKey = null;
+                }
+
+                _unpressAllBtns();
+
+                if (btnKey) {
+                    btn = widget.getItems().getByKey(btnKey);
+                    btn.toggleCls(btn.getPressedCls(), true);
+                }
+            },
+
             widget: {
-                xtype: 'numberfield',
-                inputCls: 'input-student-rating',
-                minValue: 0,
-                maxValue: 10,
-                maxLength: 2,
-                stepValue: 1,
-                clearIcon: false,
-                placeHolder: '-',
-                style: { textAlign: 'center' },
+
+                xtype: 'segmentedbutton',
+                layout: {
+                    align: 'stretch'
+                },
+                defaults: {
+                    flex: 1,
+                },
+
+                items: [{
+                    // iconCls: 'arrow_down icon-thumbs-down icon-arrow-down',
+                    ui: 'round',
+                    text: 'down',
+                    itemId: 'student-thumbsdown'
+                }, {
+                    // iconCls: 'icon-thumbs-up icon-arrow-up',
+                    ui: 'round',
+                    text: 'up',
+                    itemId: 'student-thumbsup'
+                }],
+
                 listeners: {
                     buffer: 500,
                     initialize: function() {
@@ -28,18 +70,32 @@ Ext.define('SparkClassroom.column.StudentRating', {
                             column = widgetcell.getColumn(),
                             enableEditing = column.getEnableEditing();
 
-                        this.setReadOnly(!enableEditing);
+                        this.setDisabled(!enableEditing);
                     },
-                    change: function(field, rating) {
+
+                    toggle: function(segButton, btn, pressed) {
                         var widgetcell = this.getParent(),
                             record = widgetcell.getRecord(),
                             column = widgetcell.getColumn(),
                             dataIndex = column.getDataIndex(),
-                            fieldName = column.getFieldName();
+                            fieldName = column.getFieldName(),
+                            liked = null;
+
 
                         if (column.getEnableEditing()) {
-                            if (rating) {
-                                record.set(fieldName, rating);
+                            if (!pressed) {
+                                record.set(fieldName, 0);
+                            } else {
+                                if (btn.getItemId() == 'student-thumbsup') {
+                                    liked = 1;
+                                } else {
+                                    liked = -1;
+                                }
+                                record.set(fieldName, liked);
+                            }
+
+                            if (record.dirty && (record.store && !record.store.getAutoSync())) {
+                                record.save();
                             }
                         }
 
