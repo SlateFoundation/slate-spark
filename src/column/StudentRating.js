@@ -10,26 +10,99 @@ Ext.define('SparkClassroom.column.StudentRating', {
         width: 112,
         text: 'Your Rating',
         cell: {
-            cls: 'spark-cell-studentrating',
-            encodeHtml: false,
-        },
-        tpl: [
-            // TODO use correct conditionals for .is-selected and [disabled] states
-            '<button type="button"',
-                'class="plain spark-studentrating-like <tpl if="like">is-selected</tpl>"',
-                '<tpl if="readonly">disabled</tpl>',
-            '>',
-                '<i class="fa fa-thumbs-up"></i>',
-                '<span class="visually-hidden">Like</span>',
-            '</button>',
 
-            '<button type="button"',
-                'class="plain spark-studentrating-dislike <tpl if="dislike">is-selected</tpl>"',
-                '<tpl if="!!!readonly">disabled</tpl>',
-            '>',
-                '<i class="fa fa-thumbs-down"></i>',
-                '<span class="visually-hidden">Dislike</span>',
-            '</button>',
-        ]
+            xtype: 'widgetcell',
+            $configStrict: false,
+            updateValue: function(val, oldVal) {
+                var me = this,
+                    widget = me.getWidget(),
+                    column = me.getColumn(),
+                    record = me.getRecord(),
+                    _unpressAllBtns = function() {
+                        widget.getItems().each(function(btn) {
+                            var pressedCls = btn.getPressedCls();
+                            btn.toggleCls(pressedCls, false);
+                        });
+                    },
+                    btn, btnKey = 'student-thumbs';
+
+                if (val >= 1) {
+                    btnKey += 'up'
+                } else if (val <= -1) {
+                    btnKey += 'down';
+                } else {
+                    btnKey = null;
+                }
+
+                _unpressAllBtns();
+
+                if (btnKey) {
+                    btn = widget.getItems().getByKey(btnKey);
+                    btn.toggleCls(btn.getPressedCls(), true);
+                }
+            },
+
+            widget: {
+
+                xtype: 'segmentedbutton',
+                layout: {
+                    align: 'stretch'
+                },
+                defaults: {
+                    flex: 1,
+                },
+
+                items: [{
+                    // iconCls: 'arrow_down icon-thumbs-down icon-arrow-down',
+                    ui: 'round',
+                    text: 'down',
+                    itemId: 'student-thumbsdown'
+                }, {
+                    // iconCls: 'icon-thumbs-up icon-arrow-up',
+                    ui: 'round',
+                    text: 'up',
+                    itemId: 'student-thumbsup'
+                }],
+
+                listeners: {
+                    buffer: 500,
+                    initialize: function() {
+                        var widgetcell = this.getParent(),
+                            column = widgetcell.getColumn(),
+                            enableEditing = column.getEnableEditing();
+
+                        this.setDisabled(!enableEditing);
+                    },
+
+                    toggle: function(segButton, btn, pressed) {
+                        var widgetcell = this.getParent(),
+                            record = widgetcell.getRecord(),
+                            column = widgetcell.getColumn(),
+                            dataIndex = column.getDataIndex(),
+                            fieldName = column.getFieldName(),
+                            liked = null;
+
+
+                        if (column.getEnableEditing()) {
+                            if (!pressed) {
+                                record.set(fieldName, 0);
+                            } else {
+                                if (btn.getItemId() == 'student-thumbsup') {
+                                    liked = 1;
+                                } else {
+                                    liked = -1;
+                                }
+                                record.set(fieldName, liked);
+                            }
+
+                            if (record.dirty && (record.store && !record.store.getAutoSync())) {
+                                record.save();
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
     }
 });
