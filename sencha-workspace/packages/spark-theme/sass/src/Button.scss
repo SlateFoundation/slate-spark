@@ -7,3 +7,11 @@
         margin-right: ($font-size * .25);
     }
 }
+
+button.plain {
+	background: none;
+	border: 0;
+	box-shadow: 0;
+	margin: 0;
+	padding: 0;
+}
