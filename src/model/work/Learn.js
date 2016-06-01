@@ -42,11 +42,29 @@ Ext.define('SparkClassroom.model.work.Learn', {
         },
         {
             name: 'student_rating',
-            mapping: 'rating.student'
+            persist: false,
+
+            depends: 'rating',
+            calculate: function(data) {
+                var rating = null;
+                if (Ext.isObject(data.rating)) {
+                    rating = data.rating.student;
+                }
+                return rating;
+            }
         },
         {
             name: 'teacher_rating',
-            mapping: 'rating.teacher'
+            persist: false,
+
+            depends: 'rating',
+            calculate: function(data) {
+                var rating = null;
+                if (Ext.isObject(data.rating)) {
+                    rating = data.rating.teacher;
+                }
+                return rating;
+            }
         },
 
         // for teacher assign UI
