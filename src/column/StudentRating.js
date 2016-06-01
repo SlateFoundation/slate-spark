@@ -6,101 +6,61 @@ Ext.define('SparkClassroom.column.StudentRating', {
     config: {
         enableEditing: false,
 
-        dataIndex: 'rating',
+        dataIndex: 'student_rating',
+        fieldName: 'rating',
         width: 112,
         text: 'Your Rating',
+
+        renderer: function(val) {
+            var enableEditing = this.getEnableEditing();
+            return [
+                //like button
+                '<button type="button" class="plain spark-studentrating-like',
+                    enableEditing ? '' : ' disabled',
+                    val === 1 ? ' is-selected' : '',
+                '">',
+                    '<i class="fa fa-thumbs-up"></i>',
+                    '<span class="visually-hidden">Like</span>',
+                '</button>',
+                //dislike button
+                '<button type="button" class="plain spark-studentrating-dislike',
+                enableEditing ? '' : ' disabled',
+                    val === -1 ? ' is-selected' : '',
+                '">',
+                    '<i class="fa fa-thumbs-down"></i>',
+                    '<span class="visually-hidden">Dislike</span>',
+                '</button>'
+            ].join('');
+        },
+
         cell: {
+            encodeHtml: false,
+            listeners: {
+                element: 'element',
+                delegate: 'button',
 
-            xtype: 'widgetcell',
-            $configStrict: false,
-            updateValue: function(val, oldVal) {
-                var me = this,
-                    widget = me.getWidget(),
-                    column = me.getColumn(),
-                    record = me.getRecord(),
-                    _unpressAllBtns = function() {
-                        widget.getItems().each(function(btn) {
-                            var pressedCls = btn.getPressedCls();
-                            btn.toggleCls(pressedCls, false);
-                        });
-                    },
-                    btn, btnKey = 'student-thumbs';
+                tap: function(ev, t) {
+                    var button = Ext.fly(ev.currentTarget),
+                        record = this.getRecord(),
+                        selectedCls = 'is-selected',
+                        rating = 0;
 
-                if (val >= 1) {
-                    btnKey += 'up'
-                } else if (val <= -1) {
-                    btnKey += 'down';
-                } else {
-                    btnKey = null;
-                }
-
-                _unpressAllBtns();
-
-                if (btnKey) {
-                    btn = widget.getItems().getByKey(btnKey);
-                    btn.toggleCls(btn.getPressedCls(), true);
-                }
-            },
-
-            widget: {
-
-                xtype: 'segmentedbutton',
-                layout: {
-                    align: 'stretch'
-                },
-                defaults: {
-                    flex: 1,
-                },
-
-                items: [{
-                    // iconCls: 'arrow_down icon-thumbs-down icon-arrow-down',
-                    ui: 'round',
-                    text: 'down',
-                    itemId: 'student-thumbsdown'
-                }, {
-                    // iconCls: 'icon-thumbs-up icon-arrow-up',
-                    ui: 'round',
-                    text: 'up',
-                    itemId: 'student-thumbsup'
-                }],
-
-                listeners: {
-                    buffer: 500,
-                    initialize: function() {
-                        var widgetcell = this.getParent(),
-                            column = widgetcell.getColumn(),
-                            enableEditing = column.getEnableEditing();
-
-                        this.setDisabled(!enableEditing);
-                    },
-
-                    toggle: function(segButton, btn, pressed) {
-                        var widgetcell = this.getParent(),
-                            record = widgetcell.getRecord(),
-                            column = widgetcell.getColumn(),
-                            dataIndex = column.getDataIndex(),
-                            fieldName = column.getFieldName(),
-                            liked = null;
-
-
-                        if (column.getEnableEditing()) {
-                            if (!pressed) {
-                                record.set(fieldName, 0);
-                            } else {
-                                if (btn.getItemId() == 'student-thumbsup') {
-                                    liked = 1;
-                                } else {
-                                    liked = -1;
-                                }
-                                record.set(fieldName, liked);
-                            }
-
-                            if (record.dirty && (record.store && !record.store.getAutoSync())) {
-                                record.save();
-                            }
+                    if (!button.hasCls(selectedCls)) {
+                        if (button.hasCls('spark-studentrating-like')) {
+                            rating = 1;
+                        } else if (button.hasCls('spark-studentrating-dislike')) {
+                            rating = -1;
                         }
-
                     }
+
+                    record.set({
+                        rating: rating
+                    });
+
+                    if (record.dirty && (record.store && !record.store.getAutoSync())) {
+                        record.sync();
+                    }
+
                 }
             }
         }
