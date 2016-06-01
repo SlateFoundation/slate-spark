@@ -143,25 +143,45 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'assesses' && data.table != 'learn_reviews') {
+        if (data.table != 'assesses' && data.table != 'learn_reviews' && data.table != 'apply_reviews') {
             return;
         }
 
         var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
             itemData = data.item,
             reflectionCt,
-            assessLearnsGrid, learnRecord, learnData;
+            grid, record, recordData = {};
 
         if ( //update ratings/comments
             data.table == 'learn_reviews' &&
-            (assessLearnsGrid = this.getAssessCt().down('spark-work-assess-learnsgrid')) &&
-            (learnRecord = assessLearnsGrid.getStore().getById(itemData.resource_id))
+            selectedStudentSparkpoint &&
+            itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
+            (assessCt = this.getAssessCt()) &&
+            (grid = assessCt.down('spark-work-assess-learnsgrid')) &&
+            (record = grid.getStore().getById(itemData.resource_id))
         ) {
-            learnData = {
+            recordData = {
+                comment: itemData.comment,
+                student_rating: null,
+                rating: Ext.merge(record.data.rating || {},{
+                    student: itemData.rating
+                }),
+
+            };
+            // record.fieldsMap.student_rating.calculated = false;
+            record.set(recordData, {dirty: false});
+        } else if (
+            data.table == 'apply_reviews' &&
+            selectedStudentSparkpoint &&
+            itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
+            (grid = this.getAssessCt().down('spark-work-assess-appliesgrid')) &&
+            (record = grid.getStore().getById(itemData.apply_id))
+        ) {
+            recordData = {
                 comment: itemData.comment,
                 student_rating: itemData.rating
             };
-            learnRecord.set(learnData, {dirty: false});
+            record.set(recordData, {dirty: false});
         } else if (
             data.table == 'assessses' &&
             selectedStudentSparkpoint &&
