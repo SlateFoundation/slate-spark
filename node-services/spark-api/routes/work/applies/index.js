@@ -99,7 +99,7 @@ function *getHandler() {
         'comment',
         ar.comment,
         'rating',
-        ar.rating,
+        json_build_object('user', ar.rating, 'student', null, 'teacher', null),
         'grade',
         a.grade,
         'graded_by',
