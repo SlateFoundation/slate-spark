@@ -163,12 +163,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             recordData = {
                 comment: itemData.comment,
                 student_rating: null,
-                rating: Ext.merge(record.data.rating || {},{
-                    student: itemData.rating
-                }),
-
+                rating: {
+                    user: itemData.rating
+                }
             };
-            // record.fieldsMap.student_rating.calculated = false;
             record.set(recordData, {dirty: false});
         } else if (
             data.table == 'apply_reviews' &&
@@ -179,7 +177,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         ) {
             recordData = {
                 comment: itemData.comment,
-                student_rating: itemData.rating
+                student_rating: null,
+                rating: {
+                    user: itemData.rating
+                }
             };
             record.set(recordData, {dirty: false});
         } else if (
