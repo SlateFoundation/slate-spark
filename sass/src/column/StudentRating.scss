@@ -40,7 +40,8 @@ button.spark-studentrating-dislike {
 
 button.spark-studentrating-dislike {
 	&:hover,
-	&:focus {
+	&:focus,
+	&.is-selected {
 		color: $spark-studentrating-dislike-color;
 	}
 }

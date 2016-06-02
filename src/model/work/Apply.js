@@ -18,6 +18,8 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'sparkpointIds',
         'sparkpointCodes',
         'standardCodes',
+        'rating',
+        'comment',
         {
             name: 'todos',
             convert: function (value) {
@@ -96,6 +98,45 @@ Ext.define('SparkClassroom.model.work.Apply', {
                 var assignments = r.get('assignments');
 
                 return assignments.student || assignments.section || null;
+            }
+        },
+        {
+            name: 'user_rating',
+            persist: false,
+
+            depends: 'rating',
+            calculate: function(data) {
+                var rating = null;
+                if (Ext.isObject(data.rating)) {
+                    rating = data.rating.user;
+                }
+                return rating;
+            }
+        },
+        {
+            name: 'student_rating',
+            persist: false,
+
+            depends: 'rating',
+            calculate: function(data) {
+                var rating = null;
+                if (Ext.isObject(data.rating)) {
+                    rating = data.rating.student;
+                }
+                return rating;
+            }
+        },
+        {
+            name: 'teacher_rating',
+            persist: false,
+
+            depends: 'rating',
+            calculate: function(data) {
+                var rating = null;
+                if (Ext.isObject(data.rating)) {
+                    rating = data.rating.teacher;
+                }
+                return rating;
             }
         }
     ],
