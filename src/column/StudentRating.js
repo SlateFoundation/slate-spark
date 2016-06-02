@@ -1,6 +1,7 @@
 Ext.define('SparkClassroom.column.StudentRating', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-column-studentrating',
+
     cls: 'spark-column-studentrating',
 
     config: {
@@ -74,9 +75,12 @@ Ext.define('SparkClassroom.column.StudentRating', {
                             }, {dirty: false});
                         }, null, {single: true});
                     }
-
                 }
             }
         }
+    },
+
+    updateEnableEditing: function(enableEditing) {
+        this.setText(enableEditing ? 'Your Rating' : 'Rating');
     }
 });

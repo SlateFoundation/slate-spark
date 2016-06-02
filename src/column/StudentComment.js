@@ -9,6 +9,7 @@ Ext.define('SparkClassroom.column.StudentComment', {
         dataIndex: 'comment',
         text: 'Comments',
         flex: 1,
+
         cell: {
 
             xtype: 'widgetcell',
