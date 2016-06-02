@@ -162,7 +162,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         ) {
             recordData = {
                 comment: itemData.comment,
-                student_rating: null,
                 rating: {
                     user: itemData.rating
                 }
@@ -177,7 +176,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         ) {
             recordData = {
                 comment: itemData.comment,
-                student_rating: null,
                 rating: {
                     user: itemData.rating
                 }
