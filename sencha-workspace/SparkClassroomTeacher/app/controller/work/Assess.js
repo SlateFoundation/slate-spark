@@ -15,7 +15,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         assessCt: 'spark-teacher-work-assess',
         reflectionCt: 'spark-teacher-work-assess #reflectionCt',
         sparkpointField: 'spark-teacher-work-assess  spark-sparkpointfield',
-        completeBtn: 'spark-teacher-work-assess #completeBtn'
+        completeBtn: 'spark-teacher-work-assess #completeBtn',
+        learnsGrid: 'spark-teacher-work-assess spark-work-assess-learnsgrid',
+        appliesGrid: 'spark-teacher-work-assess spark-work-assess-appliesgrid'
     },
 
     control: {
@@ -156,8 +158,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             data.table == 'learn_reviews' &&
             selectedStudentSparkpoint &&
             itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
-            (assessCt = this.getAssessCt()) &&
-            (grid = assessCt.down('spark-work-assess-learnsgrid')) &&
+            (grid = this.getLearnsGrid()) &&
             (record = grid.getStore().getById(itemData.resource_id))
         ) {
             recordData = {
@@ -171,7 +172,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             data.table == 'apply_reviews' &&
             selectedStudentSparkpoint &&
             itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
-            (grid = this.getAssessCt().down('spark-work-assess-appliesgrid')) &&
+            (grid = this.getAppliesGrid()) &&
             (record = grid.getStore().getById(itemData.apply_id))
         ) {
             recordData = {
