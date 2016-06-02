@@ -48,7 +48,7 @@ if (isset($_GET['url'])) {
 
                 // Detection for read only Google Docs
                 foreach ($metaTags as $metaTag) {
-                    $name = $metaTag->getAttribute('name');
+                    $name = $metaTag->getAttribute('name') ?: $metaTag->getAttribute('property');
                     $content = $metaTag->getAttribute('content');
 
                     if ($name == 'twitter:site' && $content == '@googledocs') {
