@@ -15,7 +15,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         assessCt: 'spark-teacher-work-assess',
         reflectionCt: 'spark-teacher-work-assess #reflectionCt',
         sparkpointField: 'spark-teacher-work-assess  spark-sparkpointfield',
-        completeBtn: 'spark-teacher-work-assess #completeBtn'
+        completeBtn: 'spark-teacher-work-assess #completeBtn',
+        learnsGrid: 'spark-teacher-work-assess spark-work-assess-learnsgrid',
+        appliesGrid: 'spark-teacher-work-assess spark-work-assess-appliesgrid'
     },
 
     control: {
@@ -143,15 +145,45 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'assesses') {
+        if (data.table != 'assesses' && data.table != 'learn_reviews' && data.table != 'apply_reviews') {
             return;
         }
 
         var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
             itemData = data.item,
-            reflectionCt;
+            reflectionCt,
+            grid, record, recordData = {};
 
-        if (
+        if ( //update ratings/comments
+            data.table == 'learn_reviews' &&
+            selectedStudentSparkpoint &&
+            itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
+            (grid = this.getLearnsGrid()) &&
+            (record = grid.getStore().getById(itemData.resource_id))
+        ) {
+            recordData = {
+                comment: itemData.comment,
+                rating: {
+                    user: itemData.rating
+                }
+            };
+            record.set(recordData, {dirty: false});
+        } else if (
+            data.table == 'apply_reviews' &&
+            selectedStudentSparkpoint &&
+            itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
+            (grid = this.getAppliesGrid()) &&
+            (record = grid.getStore().getById(itemData.apply_id))
+        ) {
+            recordData = {
+                comment: itemData.comment,
+                rating: {
+                    user: itemData.rating
+                }
+            };
+            record.set(recordData, {dirty: false});
+        } else if (
+            data.table == 'assessses' &&
             selectedStudentSparkpoint &&
             itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
             itemData.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
