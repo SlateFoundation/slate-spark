@@ -6,8 +6,7 @@ Ext.define('SparkClassroom.column.StudentRating', {
     config: {
         enableEditing: false,
 
-        dataIndex: 'student_rating',
-        fieldName: 'rating',
+        dataIndex: 'user_rating',
         width: 112,
         text: 'Your Rating',
 
@@ -57,8 +56,23 @@ Ext.define('SparkClassroom.column.StudentRating', {
                         rating: rating
                     });
 
+                    //save record && convert rating back into object afterwards.
                     if (record.dirty && (record.store && !record.store.getAutoSync())) {
-                        record.sync();
+                        record.save({
+                            success: function() {
+                                record.set({
+                                    rating: {
+                                        user: rating
+                                    }
+                                }, {dirty: false});
+                            }
+                        });
+                    } else {
+                        record.store.on('update', function(store, record, operation, modifiedFieldNames) {
+                            record.set('rating', {
+                                user: record.get('rating')
+                            }, {dirty: false});
+                        }, null, {single: true});
                     }
 
                 }

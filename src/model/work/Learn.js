@@ -41,6 +41,19 @@ Ext.define('SparkClassroom.model.work.Learn', {
             defaultValue: false
         },
         {
+            name: 'user_rating',
+            persist: false,
+
+            depends: 'rating',
+            calculate: function(data) {
+                var rating = null;
+                if (Ext.isObject(data.rating)) {
+                    rating = data.rating.user;
+                }
+                return rating;
+            }
+        },
+        {
             name: 'student_rating',
             persist: false,
 
