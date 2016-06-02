@@ -25,6 +25,9 @@ Ext.define('SparkClassroom.work.assess.AppliesGrid', {
             },
             {
                 xtype: 'spark-column-studentrating'
+            },
+            {
+                xtype: 'spark-column-studentcomment'
             }
         ],
 
