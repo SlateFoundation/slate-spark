@@ -39,9 +39,10 @@ button.spark-studentrating-dislike {
 }
 
 button.spark-studentrating-dislike {
-	&:hover,
-	&:focus,
-	&.is-selected {
-		color: $spark-studentrating-dislike-color;
-	}
+    &:hover,
+    &:focus,
+    &:active,
+    &.is-selected {
+        color: $spark-studentrating-dislike-color;
+    }
 }
