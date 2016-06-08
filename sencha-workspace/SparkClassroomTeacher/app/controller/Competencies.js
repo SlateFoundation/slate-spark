@@ -298,10 +298,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
             studentStore = Ext.getStore('Students'),
             studentCompetencyColumnXType = 'spark-student-competency-column',
-            gridColumns = grid ? grid.getColumns() : [],
-            _renderColumn = function (v, r) {
-                console.log('render column', v, r);
-            };
+            gridColumns = grid ? grid.getColumns() : [];
 
         //grid has not rendered yet, return. this method will be called again when the grid is activated.
         if (!grid || !grid.rendered) {
@@ -330,25 +327,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                         '</small>',
                     '</div>'
                 ].join('')
-                // tpl: null,
-                // renderer: _renderColumn
-                // tpl: [
-                //     '<tpl if="'+student.get('Username')+'">',
-                //         '<tpl for="'+student.get('Username')+'">',
-                //             '<div class="flex-ct cycle-gauge">',
-                //                 '<div class="flex-1 cycle-gauge-pip <tpl if="values.learn_finish_time">is-complete"><i class="fa fa-check"></i><tpl else>"></tpl></div>',
-                //                 '<div class="flex-1 cycle-gauge-pip <tpl if="conference_finish_time">is-complete"><i class="fa fa-check"></i><tpl else>"></tpl></div>',
-                //                 '<div class="flex-1 cycle-gauge-pip <tpl if="apply_finish_time">is-complete"><i class="fa fa-check"></i><tpl else>"></tpl></div>',
-                //                 '<div class="flex-1 cycle-gauge-pip <tpl if="assess_finish_time">is-complete"><i class="fa fa-check"></i><tpl else>"></tpl></div>',
-                //             '</div>',
-                //         '</tpl>',
-                //     '<tpl else>',
-                //         '<div class="flex-1 cycle-gauge-pip"></div>',
-                //         '<div class="flex-1 cycle-gauge-pip"></div>',
-                //         '<div class="flex-1 cycle-gauge-pip"></div>',
-                //         '<div class="flex-1 cycle-gauge-pip"></div>',
-                //     '</tpl>'
-                // ]
             });
         });
     }
