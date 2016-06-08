@@ -236,17 +236,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         gridStore.removeAll();
 
-        //debug
-        var iterations = 0;
         //add sparkpoints to grid store
         Ext.each(activityStore.getData().items,function(studentSparkpoint) {
             var sparkpointId = studentSparkpoint.get('sparkpoint_id'),
                 studentId = studentSparkpoint.get('student_id'),
                 student = studentStore.getById(studentId),
                 record, recordData = {};
-
-            //debug
-            iterations++;
 
             if (student) {
                 studentSparkpoint.set('student', student)
@@ -277,9 +272,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 record.set(recordData, {dirty: false});
             }
         });
-
-        console.log('total iterations', iterations);
-
     },
 
     columnSorterFn: function(first, second) {
@@ -293,9 +285,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     populateCompetencyColumns: function() {
         var me = this,
-            // competenciesCt = me.getCompetenciesCt(),
             grid = me.getCompetenciesGrid(),
-
             studentStore = Ext.getStore('Students'),
             studentCompetencyColumnXType = 'spark-student-competency-column',
             gridColumns = grid ? grid.getColumns() : [];
