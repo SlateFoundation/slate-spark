@@ -126,35 +126,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             }
         },
         {
-            name: 'completed_phase_numerical',
-            persist: false,
-            depends: [
-                'learn_finish_time',
-                'conference_finish_time',
-                'apply_finish_time',
-                'assess_finish_time'
-            ],
-            convert: function(v, r) {
-                if (r.get('assess_finish_time')) {
-                    return 4;
-                }
-
-                if (r.get('apply_finish_time')) {
-                    return 3;
-                }
-
-                if (r.get('conference_finish_time')) {
-                    return 2;
-                }
-
-                if (r.get('learn_finish_time')) {
-                    return 1;
-                }
-
-                return -1;
-            }
-        },
-        {
             name: 'learn_subphase_duration',
             persist: false,
             depends: [
