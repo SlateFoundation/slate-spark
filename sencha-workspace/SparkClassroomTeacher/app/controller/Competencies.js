@@ -63,6 +63,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 update: 'onActivitiesStoreUpdate'
             },
             '#Students': {
+                beforeload: 'onBeforeStudentStoreLoad',
                 load: {
                     fn: 'onStudentsStoreLoad',
                     buffer: 100
@@ -100,6 +101,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onCompetenciesGridActivate: function(grid) {
+        this.maskCompetenciesGrid();
         this.populateCompetencyColumns();
     },
 
@@ -137,6 +139,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
             gridRecord.set(recordData, {dirty: false});
         }
+    },
+
+    onBeforeStudentStoreLoad: function() {
+        this.maskCompetenciesGrid();
     },
 
     onStudentsStoreLoad: function() {
@@ -187,6 +193,17 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             teacherTab = teacherTabbar.down('#competencies');
 
         teacherTabbar.setActiveTab(teacherTab);
+    },
+
+    maskCompetenciesGrid: function(msg) {
+        var grid = this.getCompetenciesGrid();
+
+        if (grid) {
+            grid.setMasked({
+                xtype: 'loadmask',
+                message: msg || 'Loading Competency Data'
+            });
+        }
     },
 
     /**
@@ -255,6 +272,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 record.set(recordData, {dirty: false});
             }
         });
+
+        grid.setMasked(false);
     },
 
     /**
@@ -292,7 +311,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             grid.setCurrentSection(currentSection);
         }
 
-
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
             if (column && column.xtype == studentCompetencyColumnXType) {
                 column.destroy();
@@ -320,6 +338,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             });
         });
 
+        grid.setMasked(false);
         grid.resumeEvents();
 
         me.populateCompetenciesGrid();
