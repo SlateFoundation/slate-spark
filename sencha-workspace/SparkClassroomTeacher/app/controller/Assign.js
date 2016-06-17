@@ -76,9 +76,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             autoCreate: true,
 
             xtype: 'spark-assign-assess'
-        },
-        teacherTabBar: 'spark-teacher-tabbar',
-        popupRequiredLearns: 'spark-teacher-assign-learns spark-teacher-assign-learns-learnsrequiredfield'
+        }
     },
 
     control: {
@@ -88,9 +86,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         },
         assignNavButton: {
             tap: 'onNavAssignTap'
-        },
-        learnCt: {
-            deactivate: 'onLearnCtDeactivate'
         },
         assignCt: {
             activate: 'onAssignCtActivate',
@@ -102,9 +97,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         },
         assignTabbar: {
             activetabchange: 'onAssignTabChange'
-        },
-        teacherTabBar: {
-            activetabchange: 'onTeacherTabChange'
         }
     },
 
@@ -204,7 +196,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         this.hideOverlays();
-        this.hideRequiredLearns();
         this.syncSelectedStudentSparkpoint();
     },
 
@@ -224,10 +215,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         this.getSparkpointField().setValue(selectedSparkpoint);
     },
 
-    onLearnCtDeactivate: function() {
-        this.hideRequiredLearns();
-    },
-
     onAssignCtDeactivate: function() {
         this.hideOverlays();
     },
@@ -242,16 +229,10 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             itemId = tabbar.getActiveTab().getItemId();
 
         me.hideOverlays();
-        me.hideRequiredLearns();
 
         if (oldValue !== null) {
             me.redirectTo(['assign', itemId]);
         }
-    },
-
-    onTeacherTabChange: function(tabBar, value, oldValue) {
-        this.hideOverlays();
-        this.hideRequiredLearns();
     },
 
 
@@ -317,12 +298,6 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
         for (; i < columnsLength; i++) {
             columns[i].setPopupCell(null);
-        }
-    },
-
-    hideRequiredLearns: function() {
-        if (this.getPopupRequiredLearns()) {
-            this.getPopupRequiredLearns().setPopupVisible(false);
         }
     }
 });

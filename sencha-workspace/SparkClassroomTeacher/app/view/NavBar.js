@@ -9,9 +9,8 @@ Ext.define('SparkClassroomTeacher.view.NavBar', {
                 itemId: 'work'
             },
             {
-                text: 'Competency Overview',
-                itemId: 'competencies',
-                disabled: !location.search.match(/\WenableAlpha(\W|$)/)
+                text: 'Sparkpoint Overview',
+                itemId: 'competencies'
             },
             {
                 text: 'Assign Sparkpoints',

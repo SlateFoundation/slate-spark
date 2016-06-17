@@ -81,14 +81,6 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
             //     xtype: 'spark-flag-column'
             // }
         ]
-    },
-
-    onItemTap: function(ev, t) {
-        var me = this;
-
-        me.fireEvent('learntap', me, Ext.get(t).component);
-
-        me.callParent(arguments);
     }
 
     // initialize: function() {

@@ -3,55 +3,34 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
     xtype: 'spark-competencies-grid',
     requires: [
         'Jarvus.plugin.GridHeight',
+        'Jarvus.plugin.GridFlex',
         'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.StudentCompetency'
     ],
 
     config: {
+        currentSection: null,
         plugins: [
             {
                 type: 'gridheight',
                 enableVertical: true
+            }, {
+                type: 'gridflex'
             }
         ],
         titleBar: null,
-        store: 'assign.Learn',
+        store: {
+            fields: [{
+                name: 'id'
+            },{
+                name: 'sparkpoint'
+            }]
+        },
+
         columns:[
             {
                 xtype: 'spark-sparkpoints-column'
-            },
-            {
-                flex: null,
-                width: 500,
-                xtype: 'spark-title-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
-            },
-            {
-                xtype: 'spark-student-competency-column'
             }
         ]
     }
