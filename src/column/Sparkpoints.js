@@ -3,10 +3,9 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
     xtype: 'spark-sparkpoints-column',
 
     config: {
-        dataIndex: 'sparkpoints',
+        dataIndex: 'sparkpoint',
         cls: 'spark-sparkpoints-column',
         width: 208,
-        text: 'Sparkpoints',
-        tpl: '<tpl if="sparkpoints">{[values.sparkpoints.join(", ")]}</tpl>'
+        text: 'Sparkpoints'
     }
 });

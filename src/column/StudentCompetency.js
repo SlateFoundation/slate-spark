@@ -8,7 +8,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         width: 192,
         text: [
             '<div class="text-center">',
-                '[Student Fullname] ',
+                //'[Student Fullname] ',
                 '<small class="flex-ct text-center">',
                     '<div class="flex-1">L&amp;P</div>',
                     '<div class="flex-1">C</div>',
@@ -21,13 +21,61 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
             innerCls: 'no-padding',
             encodeHtml: false
         },
-        tpl: [
-            '<div class="flex-ct cycle-gauge">',
-                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
-                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
-                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
-                '<div class="flex-1 cycle-gauge-pip is-complete"><i class="fa fa-check"></i></div>',
-            '</div>'
-        ]
+
+        renderer: function(v, r) {
+            var dataIndex = this.getDataIndex(),
+                studentUsername = dataIndex.split('_').shift(),
+                studentData = r.get(studentUsername),
+                completedMarkup = ' is-complete"><i class="fa fa-check"></i>',
+                html = [
+                    '<div class="flex-ct cycle-gauge">',
+                        '<div class="flex-1 cycle-gauge-pip',
+                            (studentData && studentData["learn_finish_time"] ? completedMarkup : '">'),
+                        '</div>',
+                        '<div class="flex-1 cycle-gauge-pip',
+                            (studentData && studentData["conference_finish_time"] ? completedMarkup : '">'),
+                        '</div>',
+                        '<div class="flex-1 cycle-gauge-pip',
+                            (studentData && studentData["apply_finish_time"] ? completedMarkup : '">'),
+                        '</div>',
+                        '<div class="flex-1 cycle-gauge-pip',
+                            (studentData && studentData["assess_finish_time"] ? completedMarkup : '">'),
+                        '</div>',
+                    '</div>'
+                ];
+            return html.join('');
+        }
+    },
+
+    listeners: {
+        sort: function(column, direction, oldDirection) {
+            var dataIndex = column.getDataIndex(),
+                grid = column.up('grid'),
+                store = grid.getStore(),
+                sorters = store.getSorters();
+
+            if (!direction) {
+                return;
+            }
+
+            if (store.sorters.length) {
+                store.sorters.removeAll();
+            }
+
+            grid.getStore().sort({
+                sorterFn: function(r1, r2) {
+                    var defaultValue = (direction == 'ASC' ? 100 : -100),
+                        d1 = r1.get(dataIndex) || defaultValue,
+                        d2 = r2.get(dataIndex) || defaultValue;
+
+                    if (direction == 'ASC') {
+                        return (d1 > d2 ? 1 : (d1 === d2 ? 0 : -1));
+                    } else {
+                        return (d1 > d2 ? -1 : (d1 === d2 ? 0 : 1));
+                    }
+                }
+            });
+
+        }
     }
 });
