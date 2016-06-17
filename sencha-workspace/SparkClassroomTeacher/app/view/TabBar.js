@@ -21,7 +21,7 @@ Ext.define('SparkClassroomTeacher.view.TabBar', {
                 itemId: 'work'
             },
             {
-                title: 'Competency Overview',
+                title: 'Sparkpoint Overview',
                 itemId: 'competencies'
             },
             {
