@@ -104,10 +104,10 @@ function *getHandler() {
     RIGHT JOIN student_sparkpoint ss
             ON ss.sparkpoint_id = t.sparkpoint_id
            AND (
-            ss.learn_start_time IS NOT NULL OR
-            ss.conference_start_time IS NOT NULL OR
-            ss.apply_start_time IS NOT NULL OR
-            ss.assess_start_time IS NOT NULL
+            (ss.learn_start_time      IS NOT NULL AND ss.learn_finish_time      IS NOT NULL) OR
+            (ss.conference_start_time IS NOT NULL AND ss.conference_finish_time IS NOT NULL) OR
+            (ss.apply_start_time      IS NOT NULL AND ss.apply_finish_time      IS NOT NULL) OR
+            (ss.assess_start_time     IS NOT NULL AND ss.assess_finish_time     IS NOT NULL)
            )
            AND ss.student_id = t.student_id
           JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
