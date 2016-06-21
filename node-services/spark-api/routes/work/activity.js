@@ -3,10 +3,15 @@ var util = require('../../lib/util');
 function *getHandler() {
     this.require(['section_id']);
 
-    var sectionId = this.query.section_id,
-        ctx = this;
+    var ctx = this,
+        sectionId = ctx.query.section_id,
+        status = ctx.query.status || 'active';
 
-    ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+    ctx.assert(ctx.isTeacher, 'Only teachers can access the activity endpoint.', 403);
+    ctx.assert(status === 'all' || status === 'active', 'status is implied active, valid values are all/active', 400);
+
+    if (status === 'active') {
+        ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -64,8 +69,57 @@ function *getHandler() {
            AND ss.student_id = t.student_id
           JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
          WHERE t.rn = 1;`,
-        [sectionId]
-    );
+            [sectionId]
+        );
+    } else {
+        ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+        SELECT t.last_accessed,
+               t.section_id,
+               t.section_code,
+               t.student_id,
+               t.sparkpoint_id,
+               t.recommender_id,
+               t.recommended_time,
+               learn_start_time,
+               learn_finish_time,
+               conference_start_time,
+               conference_finish_time,
+               conference_join_time,
+               apply_start_time,
+               apply_ready_time,
+               apply_finish_time,
+               assess_start_time,
+               assess_ready_time,
+               assess_finish_time,
+               conference_group_id,
+               selected_apply_id,
+               selected_apply_resource_id,
+               learn_mastery_check_score,
+               conference_mastery_check_score,
+               code AS sparkpoint,
+               rn::INTEGER AS student_sequence
+          FROM (
+            SELECT student_id,
+                   sparkpoint_id,
+                   section_id,
+                   last_accessed,
+                   recommender_id,
+                   recommended_time,
+                   cs."Code" AS section_code,
+                   ROW_NUMBER() OVER (
+                     PARTITION BY ssas.student_id, ssas.section_id
+                         ORDER BY ssas.last_accessed ASC) AS rn
+              FROM section_student_active_sparkpoint ssas
+         LEFT JOIN course_sections cs ON cs."ID" = section_id
+             WHERE section_id = $1 AND last_accessed IS NOT NULL
+          ) t
+     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
+           AND ss.student_id = t.student_id
+          JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
+          ORDER BY code DESC`,
+            [sectionId]
+        );
+    }
 }
 
 function *patchHandler(req, res, next) {
@@ -245,5 +299,5 @@ function *patchHandler(req, res, next) {
 
 module.exports = {
     get: getHandler,
-    patch: patchHandler,
+    patch: patchHandler
 };
