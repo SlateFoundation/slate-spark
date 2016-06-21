@@ -101,9 +101,9 @@ function *getHandler() {
              WHERE section_id = $1
              AND last_accessed IS NOT NULL
           ) t
-     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
+     INNER JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
            AND ss.student_id = t.student_id
-           AND (
+           (
                 ss.learn_start_time IS NOT NULL OR
                 ss.learn_finish_time IS NOT NULL OR
                 ss.conference_start_time IS NOT NULL OR
