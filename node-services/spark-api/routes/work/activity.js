@@ -44,7 +44,21 @@ function *getHandler() {
                          ORDER BY ssas.last_accessed DESC) AS rn
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN course_sections cs ON cs."ID" = section_id
-             WHERE section_id = $1 AND last_accessed IS NOT NULL
+             WHERE section_id = $1
+             AND last_accessed IS NOT NULL
+             AND (
+                    learn_start_time IS NOT NULL OR
+                    learn_finish_time IS NOT NULL OR
+                    conference_start_time IS NOT NULL OR
+                    conference_join_time  IS NOT NULL OR
+                    conference_finish_time  IS NOT NULL OR
+                    apply_start_time  IS NOT NULL OR
+                    apply_ready_time  IS NOT NULL OR
+                    apply_finish_time  IS NOT NULL OR
+                    assess_start_time  IS NOT NULL OR
+                    assess_ready_time  IS NOT NULL OR
+                    assess_finish_time  IS NOT NULL
+                )
           ) t
      LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
            AND ss.student_id = t.student_id
