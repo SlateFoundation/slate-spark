@@ -101,23 +101,17 @@ function *getHandler() {
              WHERE section_id = $1
              AND last_accessed IS NOT NULL
           ) t
-     INNER JOIN student_sparkpoint ss ON ss.sparkpoint_id = t.sparkpoint_id
+    RIGHT JOIN student_sparkpoint ss
+            ON ss.sparkpoint_id = t.sparkpoint_id
+           AND (
+            ss.learn_start_time IS NOT NULL OR
+            ss.conference_start_time IS NOT NULL OR
+            ss.apply_start_time IS NOT NULL OR
+            ss.assess_start_time IS NOT NULL
+           )
            AND ss.student_id = t.student_id
-           (
-                ss.learn_start_time IS NOT NULL OR
-                ss.learn_finish_time IS NOT NULL OR
-                ss.conference_start_time IS NOT NULL OR
-                ss.conference_join_time  IS NOT NULL OR
-                ss.conference_finish_time  IS NOT NULL OR
-                ss.apply_start_time  IS NOT NULL OR
-                ss.apply_ready_time  IS NOT NULL OR
-                ss.apply_finish_time  IS NOT NULL OR
-                ss.assess_start_time  IS NOT NULL OR
-                ss.assess_ready_time  IS NOT NULL OR
-                ss.assess_finish_time  IS NOT NULL
-          )
           JOIN sparkpoints ON sparkpoints.id = t.sparkpoint_id
-          ORDER BY code DESC`,
+      ORDER BY code DESC`,
             [sectionId]
         );
     }
@@ -130,7 +124,8 @@ function *patchHandler(req, res, next) {
         sparkpointId = ctx.query.sparkpoint_id,
         allowedKeys = [
             'sparkpoint',
-            'learn_start_time',
+            'learn_star' +
+            't_time',
             'learn_finish_time',
             'conference_start_time',
             'conference_join_time',
