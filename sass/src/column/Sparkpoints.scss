@@ -1,0 +1,24 @@
+.spark-sparkpoints-cell {
+    .spark-column-value {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .button[action="add-to-queue"] {
+        background-color: #666;
+        color: white;
+        display: none;
+        font-weight: bold;
+        margin: 0 0 0 .5em;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: mix(white, $base-color, 90%);
+
+        .button[action="add-to-queue"] {
+            display: block;
+        }
+    }
+}
