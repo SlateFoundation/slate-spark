@@ -6,17 +6,28 @@
     }
 
     .button[action="add-to-queue"] {
-        background-color: #666;
+        background-color: $slate-add-to-queue-button-color;
         color: white;
         display: none;
         font-weight: bold;
         margin: 0 0 0 .5em;
+
+        &:hover,
+        &:focus {
+            background-color: lighten($slate-add-to-queue-button-color, 7);
+        }
+
+        &:active {
+            background-color: darken($slate-add-to-queue-button-color, 7);
+        }
+
+        &.is-stuck {
+            display: block;
+        }
     }
 
     &:hover,
     &:focus {
-        background-color: mix(white, $base-color, 90%);
-
         .button[action="add-to-queue"] {
             display: block;
         }

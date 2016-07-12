@@ -1,6 +1,9 @@
 Ext.define('SparkClassroom.column.Sparkpoints', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-sparkpoints-column',
+    requires: [
+        'SparkClassroom.column.panel.AddToQueue'
+    ],
 
     config: {
         dataIndex: 'sparkpoint',
@@ -10,6 +13,25 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
         cell: {
             cls: 'spark-sparkpoints-cell',
             encodeHtml: false,
+
+            listeners: {
+                click: {
+                    element: 'element',
+                    delegate: 'button[action="add-to-queue"]',
+                    fn: function(ev, t) {
+                        var btn = Ext.get(t),
+                            cellDom = ev.getTarget('.x-grid-cell'),
+                            cell = Ext.getCmp(cellDom.id);
+
+                        Ext.select('.is-stuck').each(function() {
+                            this.removeCls('is-stuck');
+                        });
+                        btn.addCls('is-stuck');
+
+                        Ext.create('SparkClassroom.column.panel.AddToQueue').showBy(btn, 'cl-cr?');
+                    }
+                }
+            }
         },
         renderer: function (value, record) {
             return [
