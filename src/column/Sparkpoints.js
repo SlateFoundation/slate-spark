@@ -28,6 +28,9 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
                         });
                         btn.addCls('is-stuck');
 
+                        Ext.select('.spark-addtoqueue-popover').each(function() {
+                            this.destroy();
+                        });
                         Ext.create('SparkClassroom.column.panel.AddToQueue').showBy(btn, 'cl-cr?');
                     }
                 }

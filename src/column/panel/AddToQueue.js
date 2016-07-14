@@ -17,12 +17,23 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
                 defaults: {
                     xtype: 'button',
                     ui: 'action',
-                    margin: '10 0 0'
+                    margin: '10 0 0',
+                    listeners: {
+                        click: {
+                            element: 'element',
+                            fn: function() {
+                                this.up('spark-addtoqueue-popover').destroy();
+                                Ext.select('.is-stuck').each(function() {
+                                    this.removeCls('is-stuck');
+                                });
+                            }
+                        }
+                    }
                 },
                 items: [
                     {
                         text: 'Add to Queue'
-                    },
+                  },
                     {
                         margin: '10 0 0 10',
                         text: 'Add Next Up'
