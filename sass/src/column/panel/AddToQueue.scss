@@ -14,8 +14,6 @@
         height: $slate-anchor-size;
         position: absolute;
         width: $slate-anchor-size;
-
-        -webkit-filter: drop-shadow(-4px 2px 2px rgba(0,0,0,.1));
     }
 
     .x-anchor-left {
@@ -23,6 +21,31 @@
         background-position: right;
         margin-left: -1 * ($slate-anchor-size);
         margin-top: -1 * ($slate-anchor-size);
+        -webkit-filter: drop-shadow(-4px 2px 2px rgba(0,0,0,.1));
+    }
+
+    .x-anchor-right {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 4"><polygon fill="white" points="0,0 0,4 2,2"></polygon></svg>');
+        background-position: left;
+        margin-right: -1 * ($slate-anchor-size);
+        margin-top: .5 * $slate-anchor-size;
+        -webkit-filter: drop-shadow(4px 2px 2px rgba(0,0,0,.1));
+    }
+
+    .x-anchor-top {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 2"><polygon fill="white" points="2,0 4,2 0,2"></polygon></svg>');
+        background-position: bottom;
+        margin-left: -(2/3) * $slate-anchor-size;
+        margin-top:  -1 * ($slate-anchor-size);
+        -webkit-filter: drop-shadow(0 -2px 2px rgba(0,0,0,.1));
+    }
+
+    .x-anchor-bottom {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 2"><polygon fill="white" points="0,0 4,0 2,2"></polygon></svg>');
+        background-position: top;
+        margin-left: -(1/2) * $slate-anchor-size;
+        margin-bottom: -1 * ($slate-anchor-size);
+        -webkit-filter: drop-shadow(0 2px 2px rgba(0,0,0,.1));
     }
 }
 
