@@ -10,6 +10,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
     ],
 
     config: {
+        cls: 'spark-competencies-grid',
         currentSection: null,
         plugins: [
             {

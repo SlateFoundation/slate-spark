@@ -326,15 +326,14 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
                 text: [
                     '<div class="text-center">',
-                       student.getFullName(),
-                        '<small class="flex-ct text-center">',
-                            '<div class="flex-1">L&amp;P</div>',
-                            '<div class="flex-1">C</div>',
-                            '<div class="flex-1">A</div>',
-                            '<div class="flex-1">A</div>',
-                        '</small>',
+                        '<div class="student-name">', student.getFullName(), '</div>',
+                        '<div class="field auto-width">',
+                            '<label class="field-label">Q4 Goal</label>',
+                            '<select class="field-control tiny"><option>20</option></select>',
+                            '<a href="#"><i class="fa fa-lg fa-wrench"></i></a>',
+                        '</div>',
                     '</div>'
-                ].join('')
+                ].join(' ')
             });
         });
 
