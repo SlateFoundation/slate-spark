@@ -1,6 +1,44 @@
+.spark-sparkpoints-column {
+    padding: .5em;
+
+    .student-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .field {
+        align-items: center;
+        display: flex;
+        line-height: 1;
+        margin-bottom: -.375em;
+        margin-top: .625em;
+        padding: 0 .5em;
+
+        .field-control {
+            flex: 1;
+            margin: 0 .75em 0 0.5em;
+        }
+    }
+
+    .field-control {
+        border: 1px solid #eee;
+        border-bottom-color: #ccc;
+        border-top-color: #f5f5f5;
+
+        + .field-control {
+            margin-top: .25em;
+        }
+    }
+}
+
 .spark-sparkpoints-cell {
+    background-color: #f5f5f5;
+
     .spark-column-value {
         flex: 1;
+        font-size: smaller;
+        font-weight: bold;
         overflow: hidden;
         text-overflow: ellipsis;
     }

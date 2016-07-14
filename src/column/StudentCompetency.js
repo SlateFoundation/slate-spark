@@ -6,17 +6,6 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         dataIndex: '',
         cls: 'spark-sparkpoints-column',
         width: 192,
-        text: [
-            '<div class="text-center">',
-                //'[Student Fullname] ',
-                '<small class="flex-ct text-center">',
-                    '<div class="flex-1">L&amp;P</div>',
-                    '<div class="flex-1">C</div>',
-                    '<div class="flex-1">A</div>',
-                    '<div class="flex-1">A</div>',
-                '</small>',
-            '</div>'
-        ].join(''),
         cell: {
             innerCls: 'no-padding',
             encodeHtml: false
@@ -26,20 +15,20 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
             var dataIndex = this.getDataIndex(),
                 studentUsername = dataIndex.split('_').shift(),
                 studentData = r.get(studentUsername),
-                completedMarkup = ' is-complete"><i class="fa fa-check"></i>',
+                completedMarkup = ' is-complete">&bull;',
                 html = [
                     '<div class="flex-ct cycle-gauge">',
                         '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["learn_finish_time"] ? completedMarkup : '">'),
+                            (studentData && studentData["learn_finish_time"] ? completedMarkup : '">&nbsp;'),
                         '</div>',
                         '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["conference_finish_time"] ? completedMarkup : '">'),
+                            (studentData && studentData["conference_finish_time"] ? completedMarkup : '">&nbsp;'),
                         '</div>',
                         '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["apply_finish_time"] ? completedMarkup : '">'),
+                            (studentData && studentData["apply_finish_time"] ? completedMarkup : '">&nbsp;'),
                         '</div>',
                         '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["assess_finish_time"] ? completedMarkup : '">'),
+                            (studentData && studentData["assess_finish_time"] ? completedMarkup : '">&nbsp;'),
                         '</div>',
                     '</div>'
                 ];

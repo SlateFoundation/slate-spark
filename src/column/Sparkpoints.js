@@ -9,7 +9,10 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
         dataIndex: 'sparkpoint',
         cls: 'spark-sparkpoints-column',
         width: 208,
-        text: 'Sparkpoints',
+        text: [
+            '<select class="field-control"><option>Student</option></select>',
+            '<select class="field-control"><option>Sparkpoint</option></select>'
+        ].join(''),
         cell: {
             cls: 'spark-sparkpoints-cell',
             encodeHtml: false,
