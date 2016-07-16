@@ -1,6 +1,9 @@
 Ext.define('SparkClassroom.column.StudentCompetency', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-student-competency-column',
+    requires: [
+        'SparkClassroom.column.panel.StudentCompetency'
+    ],
 
     config: {
         dataIndex: '',
@@ -8,31 +11,62 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         width: 192,
         cell: {
             innerCls: 'no-padding',
-            encodeHtml: false
+            encodeHtml: false,
+            listeners: {
+                click: {
+                    element: 'element',
+                    fn: function(ev, t) {
+                        Ext.select('.spark-studentcompetency-popover').each(function() {
+                            this.destroy();
+                        });
+                        Ext.create('SparkClassroom.column.panel.StudentCompetency').showBy(Ext.fly(t), 'tc-cc?');
+                    }
+                }
+            }
         },
 
         renderer: function(v, r) {
-            var dataIndex = this.getDataIndex(),
+            // TODO connect to real data
+            // & investigate perf of tpl inside renderer?
+            var statuses = [ 'ahead', 'on-pace', 'behind' ],
+                randomStatusCls = function() { return 'is-' + statuses[Math.floor(Math.random() * statuses.length)]; },
+                dataIndex = this.getDataIndex(),
                 studentUsername = dataIndex.split('_').shift(),
                 studentData = r.get(studentUsername),
-                completedMarkup = ' is-complete">&bull;',
-                html = [
+                gaugeTpl = new Ext.XTemplate([
                     '<div class="flex-ct cycle-gauge">',
-                        '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["learn_finish_time"] ? completedMarkup : '">&nbsp;'),
-                        '</div>',
-                        '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["conference_finish_time"] ? completedMarkup : '">&nbsp;'),
-                        '</div>',
-                        '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["apply_finish_time"] ? completedMarkup : '">&nbsp;'),
-                        '</div>',
-                        '<div class="flex-1 cycle-gauge-pip',
-                            (studentData && studentData["assess_finish_time"] ? completedMarkup : '">&nbsp;'),
-                        '</div>',
+                        '<tpl for=".">',
+                            '<div class="flex-1 cycle-gauge-pip {status}">',
+                                '<abbr class="pip-text" title="{title}">{shortText}</abbr>',
+                            '</div>',
+                        '</tpl>',
                     '</div>'
-                ];
-            return html.join('');
+                ]).compile();
+
+            var stages = [
+                {
+                    title: 'Learn and Practice',
+                    shortText: 'L&amp;P',
+                    status: (studentData && studentData.learn_finish_time) ? randomStatusCls() : 'is-empty'
+                },
+                {
+                    title: 'Conference',
+                    shortText: 'C',
+                    status: (studentData && studentData.conference_finish_time) ? randomStatusCls() : 'is-empty'
+                },
+                {
+                    title: 'Apply',
+                    shortText: 'Ap',
+                    status: (studentData && studentData.apply_finish_time) ? randomStatusCls() : 'is-empty'
+                },
+                {
+                    title: 'Assess',
+                    shortText: 'As',
+                    status: (studentData && studentData.assess_finish_time) ? randomStatusCls() : 'is-empty'
+                }
+            ];
+
+            return gaugeTpl.apply(stages);
         }
     },
 
