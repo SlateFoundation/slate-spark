@@ -1,10 +1,9 @@
 Ext.define('SparkClassroom.column.panel.AddToQueue', {
-    extend: 'Ext.Panel',
+    extend: 'SparkClassroom.column.panel.Panel',
     xtype: 'spark-addtoqueue-popover',
 
     config: {
         cls: 'spark-addtoqueue-popover',
-        left: 0, // left is required due to bug EXTJS-17697
         items: [
             {
                 xtype: 'component',
