@@ -324,6 +324,16 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 xtype: studentCompetencyColumnXType,
                 dataIndex: student.get('Username')+'_completed_phase',
 
+                listeners: {
+                    click: {
+                        element: 'element',
+                        delegate: '.fa-wrench',
+                        fn: function(ev, t) {
+                            Ext.create('SparkClassroom.column.panel.SparkpointsConfig').show();
+                        }
+                    }
+                },
+
                 text: [
                     '<div class="text-center">',
                         '<div class="student-name">', student.getFullName(), '</div>',
