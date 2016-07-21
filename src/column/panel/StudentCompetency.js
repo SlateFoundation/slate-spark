@@ -16,7 +16,25 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                         {
                             phase: 'Learn',
                             status: '0/6',
-                            expected: 1
+                            expected: 1,
+                            actual: 1
+                        },
+                        {
+                            phase: 'Conference',
+                            status: 'Waiting',
+                            expected: 2,
+                            actual: 3
+                        },
+                        {
+                            phase: 'Apply',
+                            status: 'Not Started',
+                            expected: 4,
+                            actual: 3
+                        },
+                        {
+                            phase: 'Assess',
+                            status: 'Not Started',
+                            expected: 5
                         }
                     ]
                 },
@@ -26,10 +44,10 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                             '<tr>',
                                 '<th class="cycle-col">',
                                     '<div class="student-name">{studentName}</div>',
-                                    '<div class="sparkpoint-code"><span class="{paceCls}">{sparkpointCode}</strong>',
+                                    '<div class="sparkpoint-code">{sparkpointCode}</div>',
                                 '</th>',
-                                '<th class="expected-col">Expected Day of Completion</th>',
-                                '<th class="actual-col">{paceDesc}</th>',
+                                '<th class="expected-col">Expected Completion</th>',
+                                '<th class="actual-col"><span class="{paceCls}">{paceDesc}</span></th>',
                             '</tr>',
                         '</thead>',
                         '<tbody>',
@@ -38,7 +56,7 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                                     '<td class="cycle-col">',
                                         '<label class="phase-checkbox">',
                                             '<input type="checkbox">',
-                                            '<span class="phase-name">{phase}:</span>',
+                                            '<span class="phase-name">{phase} </span>',
                                         '</label>',
                                         '<span class="phase-status">{status}</span>',
                                     '</td>',
@@ -46,12 +64,59 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                                         'Day <strong class="is-on-pace">{expected}</strong>',
                                     '</td>',
                                     '<td class="actual-col">',
-                                        '<tpl if="{actual}>Day <strong class="{actualCls}">{actual}</strong></tpl>',
+                                        '<tpl if="{actual}">',
+                                            'Day <strong class="{[ this.getPaceCls(values.expected, values.actual) ]}">{actual}</strong>',
+                                        '<tpl else>',
+                                            '&mdash;',
+                                        '</tpl>',
                                     '</td>',
                                 '</tr>',
                             '</tpl>',
                         '</tbody>',
-                    '</table>'
+                    '</table>',
+                    {
+                        getPaceCls: function(expected, actual) {
+                            if (expected == actual) {
+                                return 'is-on-pace';
+                            } else if (expected > actual) {
+                                return 'is-ahead';
+                            } else if (expected < actual) {
+                                return 'is-behind';
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                xtype: 'textareafield',
+                label: 'Please explain how Christopher earned credit:',
+                margin: 16
+            },
+            {
+                xtype: 'button',
+                margin: 16,
+                ui: 'action',
+                text: 'Give Credit'
+            },
+            {
+                xtype: 'container',
+                layout: 'hbox',
+                margin: 16,
+                defaults: {
+                    flex: 1,
+                    xtype: 'button',
+                    ui: 'action'
+                },
+                items: [
+                    {
+                        text: 'Add to Queue',
+                        margin: '0 16 0 0'
+                    },
+                    {
+                        text: 'Add Next Up'
+                    }
                 ]
             }
         ]
