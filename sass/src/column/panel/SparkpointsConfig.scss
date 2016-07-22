@@ -18,6 +18,18 @@
         }
     }
 
+    thead th {
+        border: none;
+        font-size: .875em;
+    }
+
+    thead > tr:first-child th {
+        font-size: 1em;
+        font-weight: bold;
+        padding-bottom: .5em;
+        text-align: left;
+    }
+
     .field-control {
         padding: .25em .5em;
     }
