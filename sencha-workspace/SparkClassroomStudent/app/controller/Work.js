@@ -223,21 +223,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
                 (workFeedbackStore = me.getWorkFeedbackStore()) &&
                 !workFeedbackStore.getById(itemData.id)
             ) {
-                sameAuthorFeedback = workFeedbackStore.findRecord('author_id', itemData.author_id);
-
-                newFeedback = workFeedbackStore.add(Ext.apply({
-                    author_name: sameAuthorFeedback ? sameAuthorFeedback.get('author_name') : null
-                }, itemData))[0];
-
-                if (!sameAuthorFeedback) {
-                    me.getPersonModel().load(newFeedback.get('author_id'), {
-                        callback: function(author, operation, success) {
-                            if (success) {
-                                newFeedback.set('author_name', author.get('FullName'), { dirty: false });
-                            }
-                        }
-                    });
-                }
+                workFeedbackStore.add(itemData)[0];
             }
         }
     },
