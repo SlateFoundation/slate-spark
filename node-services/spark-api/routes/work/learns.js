@@ -29,7 +29,27 @@ function* getHandler() {
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
 
-    learnsRequired = yield getLearnsRequired(ctx);
+    // TODO: 5 magic number should come from preferences
+
+    learnsRequired = (yield ctx.pgp.one(/*language=SQL*/ `
+    
+    WITH learns_required AS (
+        SELECT required,
+               student_id
+          FROM learns_required
+         WHERE sparkpoint_id = $1
+           AND section_id = $2
+           AND (student_id = $3 OR student_id IS NULL)
+     )
+
+     SELECT json_build_object(
+               'site',
+               5,
+               'section',
+               (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id IS NULL), null)),
+               'student',
+               (SELECT COALESCE((SELECT required FROM learns_required WHERE student_id = $3), null))
+     ) AS json;`, [sparkpointId, sectionId, studentId]));
 
     // TODO: learnsRequired was coming back as undefined when we called this route from within /assign/learns
     if (learnsRequired && learnsRequired.json) {
@@ -45,7 +65,6 @@ function* getHandler() {
     params = {
         limit: 50,
         standard_ids: openedIds,
-        // TODO: Remove this before production
         // DISABLE PREMIUM CONTENT FOR DEPLOY: license: 'all',
         resource_type: OpenEd.studentResourceTypes
     };
@@ -363,8 +382,8 @@ function* launchHandler() {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
-        let accessToken = yield OpenEd.getUserAccessToken();
-        ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
+        // let accessToken = yield OpenEd.getUserAccessToken();
+        //ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
 
         let url = learnResource.url;
 
