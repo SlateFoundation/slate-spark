@@ -65,7 +65,7 @@ function* getHandler() {
     params = {
         limit: 50,
         standard_ids: openedIds,
-        // DISABLE PREMIUM CONTENT FOR DEPLOY: license: 'all',
+        license: 'all',
         resource_type: OpenEd.studentResourceTypes
     };
 
