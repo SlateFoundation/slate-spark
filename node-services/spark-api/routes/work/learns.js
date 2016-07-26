@@ -382,12 +382,11 @@ function* launchHandler() {
     learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
-        // let accessToken = yield OpenEd.getUserAccessToken();
-        //ctx.redirect((learnResource.url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/'));
-
         let url = learnResource.url;
 
         if (url.indexOf('opened.com') !== -1) {
+            let accessToken = yield OpenEd.getUserAccessToken();
+
             if(url.indexOf('student_view=true') === -1) {
                 if (ctx.isStudent) {
                     url += '&student_view=true';
@@ -397,6 +396,8 @@ function* launchHandler() {
             if (url.indexOf('hideRelatedResources=true') === -1) {
                 url += '&hideRelatedResources=true';
             }
+
+            url = (url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/')
         }
         
         ctx.redirect(url);
