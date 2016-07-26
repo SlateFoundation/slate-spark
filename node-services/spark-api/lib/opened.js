@@ -430,13 +430,16 @@ function* getResources(params, resources) {
     if (response.body.meta && response.body.meta.pagination) {
         let {limit, offset, entries, total_entries} = response.body.meta.pagination;
 
-        console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
-
         if ((entries + offset) < total_entries) {
             params.offset = (entries + offset);
-            yield getResources(params, resources);
+            console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
+            yield* getResources(params, resources);
+        } else {
+
         }
     }
+
+    console.log('OpenEd resources: ' + resources.length);
 
     return {
         resources: resources
@@ -455,17 +458,10 @@ function* getResources(params, resources) {
  */
 function* createUser(user, ctx) {
     var url = '/users',
-        params = {
-            "email": "slate+test_teacher_merit@matchbooklearning.com",
-            "first_name": "Slate",
-            "last_name": "Development",
-            "password": "7*cRq&tCKz",
-            "role": "student",
-            "username": "slate_test_teacher_merit",
-            "school_nces_id": "340076003235",
-            "client_id": openEdClientId
-        },
+        params = user,
         response;
+
+    params.client_id = openEdClientId;
 
     yield getAccessToken();
 
@@ -646,6 +642,7 @@ module.exports = {
     findUser: findUser,
     createUser: createUser,
     updateUser: updateUser,
+    getUserAccessToken: getAccessToken,
     studentResourceTypes: studentResourceTypes,
     generateLaunchUrl: generateLaunchUrl
 };
