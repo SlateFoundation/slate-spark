@@ -6,6 +6,18 @@ Ext.define('SparkClassroom.column.panel.SparkpointsConfig', {
         cls: 'spark-sparkpointsconfig-window',
         title: 'Manage Alexandra’s Sparkpoints',
         width: 640,
+        buttons: [
+            {
+                text: 'Done',
+                ui: 'action',
+                listeners: {
+                    element: 'element',
+                    click: function() {
+                        this.up('spark-sparkpointsconfig-window').destroy();
+                    }
+                }
+            }
+        ],
         items: [
             {
                 xtype: 'component',
@@ -39,17 +51,17 @@ Ext.define('SparkClassroom.column.panel.SparkpointsConfig', {
                     '<table>',
                         '<thead>',
                             '<tr>',
-                                '<th>Current</th>',
-                                '<th colspan="4">Expected Completion</th>',
+                                '<th><strong>Current</strong></th>',
+                                '<th colspan="4"><strong>Expected Completion</strong></th>',
                                 '<th colspan="2">&nbsp;</th>',
                             '</tr>',
-                            '<tr>',
+                            '<tr class="col-legend-row">',
                                 '<th>&nbsp;</th>',
-                                '<th>L&amp;P</th>',
-                                '<th>C</th>',
-                                '<th>Ap</th>',
-                                '<th>As</th>',
-                                '<th>Overall</th>',
+                                '<th class="col-legend">L&amp;P</th>',
+                                '<th class="col-legend">C</th>',
+                                '<th class="col-legend">Ap</th>',
+                                '<th class="col-legend">As</th>',
+                                '<th class="col-legend">Overall</th>',
                                 '<th>&nbsp;</th>',
                             '</tr>',
                         '</thead>',
@@ -62,7 +74,15 @@ Ext.define('SparkClassroom.column.panel.SparkpointsConfig', {
                                     '<td><input class="field-control" value="{Ap}"></td>',
                                     '<td><input class="field-control" value="{As}"></td>',
                                     '<td><input class="field-control" value="{completion}"></td>',
-                                    '<td><span class="fa fa-lg fa-times-circle-o"></span>&ensp;<span class="fa fa-lg fa-bars"></span></td>',
+                                    '<td>',
+                                        '<button class="plain" action="row-remove">',
+                                            '<span class="fa fa-lg fa-times-circle"></span>',
+                                        '</button>',
+                                        '&ensp;',
+                                        '<button class="plain" action="row-drag">',
+                                            '<span class="fa fa-lg fa-bars"></span>',
+                                        '</button>',
+                                    '</td>',
                                 '</tr>',
                             '</tpl>',
                         '</tbody>',
@@ -107,13 +127,12 @@ Ext.define('SparkClassroom.column.panel.SparkpointsConfig', {
                     '<table>',
                         '<thead>',
                             '<tr>',
-                                '<th>On Queue</th>',
-                                '<th>&nbsp;</th>',
-                                '<th>L&amp;P</th>',
-                                '<th>C</th>',
-                                '<th>Ap</th>',
-                                '<th>As</th>',
-                                '<th>Overall</th>',
+                                '<th><strong>On Queue</strong></th>',
+                                '<th class="col-legend">L&amp;P</th>',
+                                '<th class="col-legend">C</th>',
+                                '<th class="col-legend">Ap</th>',
+                                '<th class="col-legend">As</th>',
+                                '<th class="col-legend">Overall</th>',
                                 '<th>&nbsp;</th>',
                             '</tr>',
                         '</thead>',
@@ -126,22 +145,12 @@ Ext.define('SparkClassroom.column.panel.SparkpointsConfig', {
                                     '<td><input class="field-control" value="{Ap}"></td>',
                                     '<td><input class="field-control" value="{As}"></td>',
                                     '<td><input class="field-control" value="{completion}"></td>',
-                                    '<td><span class="fa fa-lg fa-times-circle-o"></span>&ensp;<span class="fa fa-lg fa-bars"></span></td>',
+                                    '<td><span class="fa fa-lg fa-times-circle"></span>&ensp;<span class="fa fa-lg fa-bars"></span></td>',
                                 '</tr>',
                             '</tpl>',
                         '</tbody>',
                     '</table>'
                 ]
-            },
-            {
-                xtype: 'button',
-                text: 'Close',
-                listeners: {
-                    element: 'element',
-                    click: function() {
-                        this.up('spark-sparkpointsconfig-window').destroy();
-                    }
-                }
             }
         ]
     }

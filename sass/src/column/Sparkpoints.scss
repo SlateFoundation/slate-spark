@@ -30,6 +30,15 @@
             margin-top: .25em;
         }
     }
+
+    button {
+        padding: 0 .125em;
+
+        .fa {
+            color: $base-color;
+            font-size: 14px * (4/3);
+        }
+    }
 }
 
 .spark-sparkpoints-cell {
