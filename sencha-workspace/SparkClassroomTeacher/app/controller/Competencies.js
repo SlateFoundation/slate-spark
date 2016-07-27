@@ -340,7 +340,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                         '<div class="field auto-width">',
                             '<label class="field-label">Q4 Goal</label>',
                             '<select class="field-control tiny"><option>20</option></select>',
-                            '<a href="#"><i class="fa fa-lg fa-wrench"></i></a>',
+                            '<button type="button" class="plain"><i class="fa fa-lg fa-wrench"></i></button>',
                         '</div>',
                     '</div>'
                 ].join(' ')
