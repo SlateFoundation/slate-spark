@@ -338,7 +338,7 @@ function *patchHandler(req, res, next) {
     // HACK: Get display names for teachers
     for (var key in record) {
         if (key.indexOf('_teacher_id') !== -1 && record[key] !== null) {
-            record[key.replace('_teacher_id', '_teacher_name')] = ctx.lookup.people.idToDisplayName[record[key]];
+            record[key.replace('_teacher_id', '_teacher_name')] = ctx.lookup.person.idToDisplayName[record[key]];
         }
     }
 
