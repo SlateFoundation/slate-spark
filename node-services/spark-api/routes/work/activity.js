@@ -19,17 +19,32 @@ function *getHandler() {
                t.sparkpoint_id,
                t.recommender_id,
                t.recommended_time,
+               
                learn_start_time,
                learn_finish_time,
+               learn_override_teacher_id,
+               learn_override_time,
+               
                conference_start_time,
                conference_finish_time,
                conference_join_time,
+               conference_override_teacher_id,
+               conference_override_time,
+               
                apply_start_time,
                apply_ready_time,
                apply_finish_time,
+               apply_override_teacher_id,
+               apply_override_time,
+               
                assess_start_time,
                assess_ready_time,
                assess_finish_time,
+               assess_override_teacher_id,
+               assess_override_time,
+               
+               override_reason,
+               
                conference_group_id,
                selected_apply_id,
                selected_apply_resource_id,
@@ -69,15 +84,24 @@ function *getHandler() {
                t.recommended_time,
                learn_start_time,
                learn_finish_time,
+               learn_override_teacher_id,
+               learn_override_time,
                conference_start_time,
                conference_finish_time,
                conference_join_time,
+               conference_override_teacher_id,
+               conference_override_time,
                apply_start_time,
                apply_ready_time,
                apply_finish_time,
+               apply_override_teacher_id,
+               apply_override_time,
                assess_start_time,
                assess_ready_time,
                assess_finish_time,
+               assess_override_teacher_id,
+               assess_override_time,
+               override_reason,
                conference_group_id,
                selected_apply_id,
                selected_apply_resource_id,
@@ -138,7 +162,12 @@ function *patchHandler(req, res, next) {
             'assess_finish_time',
             'conference_group_id',
             'learn_mastery_check_score',
-            'conference_mastery_check_score'
+            'conference_mastery_check_score',
+            'learn_override_time',
+            'conference_override_time',
+            'apply_override_time',
+            'assess_override_time',
+            'override_reason'
         ],
         timeKeys = [],
         updateValues = [],
@@ -146,7 +175,7 @@ function *patchHandler(req, res, next) {
         body = ctx.request.body,
         allKeys = Object.keys(body || {}),
         hasMasteryCheckScores = false,
-        invalidKeys, activeSql, sparkpointSql, record, values;
+        invalidKeys, activeSql, sparkpointSql, record, values, overridesAllPhases;
 
     ctx.require(['section_id', 'sparkpoint_id']);
 
@@ -243,7 +272,14 @@ function *patchHandler(req, res, next) {
         activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
     }
 
-    if (!hasMasteryCheckScores) {
+    overridesAllPhases = (
+        body.learn_override_time &&
+        body.conference_override_time &&
+        body.apply_override_time &&
+        body.assess_override_time
+    );
+
+    if (!hasMasteryCheckScores && !overridesAllPhases) {
         // Do not set the recommended time when a teacher posts a mastery check score
         yield ctx.pgp.oneOrNone(activeSql, values);
     }
@@ -279,7 +315,7 @@ function *patchHandler(req, res, next) {
             INSERT INTO student_sparkpoint (student_id, sparkpoint_id,  ${timeKeys.join(', ')})
                                     VALUES ($1, $2, ${timeValues.join(', ')}) ON CONFLICT (student_id, sparkpoint_id)
                              DO UPDATE SET ${updateValues.join(',\n')}
-                                 RETURNING *;`;
+                                 RETURNING *`;
 
         record = yield ctx.pgp.one(sparkpointSql, [studentId, sparkpointId]);
     }
