@@ -146,203 +146,84 @@ function *patchHandler(req, res, next) {
         sectionId = ctx.query.section_id,
         studentId = ctx.studentId,
         sparkpointId = ctx.query.sparkpoint_id,
-        allowedKeys = [
-            'sparkpoint',
-            'learn_star' +
-            't_time',
-            'learn_finish_time',
-            'conference_start_time',
-            'conference_join_time',
-            'conference_finish_time',
-            'apply_start_time',
-            'apply_ready_time',
-            'apply_finish_time',
-            'assess_start_time',
-            'assess_ready_time',
-            'assess_finish_time',
-            'conference_group_id',
-            'learn_mastery_check_score',
-            'conference_mastery_check_score',
-            'learn_override_time',
-            'conference_override_time',
-            'apply_override_time',
-            'assess_override_time',
-            'learn_override_teacher_id',
-            'conference_override_teacher_id',
-            'apply_override_teacher_id',
-            'assess_override_teacher_id',
-            'override_reason'
-        ],
-        timeKeys = [],
-        updateValues = [],
-        timeValues = [],
-        body = ctx.request.body,
-        allKeys = Object.keys(body || {}),
-        hasMasteryCheckScores = false,
-        invalidKeys, activeSql, sparkpointSql, record, values, overridesAllPhases;
+        updateLastAccessed = true,
+        recordToUpsert = util.recordToUpsert.bind(ctx),
+        activity = ctx.request.body,
+        vals = new util.Values(),
+        record = {
+            sparkpoint_id: sparkpointId,
+            student_id: studentId
+        },
+        recordOriginalLen = Object.keys(record).length,
+        errors,
+        sql;
 
     ctx.require(['section_id', 'sparkpoint_id']);
-
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
 
-    // This filter also sets timeKeys and timeValues
-    invalidKeys = allKeys.filter(function (key) {
-        var val;
 
-        if (key === 'student_id') {
-            return;
+    // Parse _time values and set them on the student_sparkpoint record
+    for (let key in activity) {
+        let val = activity[key];
+
+        if (key.indexOf('time') !== -1) {
+            val = parseInt(activity[key], 10);
+            ctx.assert(!isNaN(val), `${key} should be a UTC timestamp you provided: ${activity[key]}`, 400);
+            record[key] = new Date(val * 1000).toUTCString();
+        } else if (key.indexOf('_mastery_check_score') !== -1) {
+            let val = parseInt(activity[key], 10);
+            let isValid = isNaN(val) || val < 1 || val > 100;
+
+            ctx.assert(ctx.isTeacher, 'Only teachers can set mastery check scores.', 403);
+            ctx.assert(isValid, `${key} must be between 1 and 100 or null, not: ${val}`, 400);
+
+            record[key] = val;
+            // When only a mastery_score value is set, we do not update the last_accessed time
+            updateLastAccessed = false;
+        } else if (key in ctx.introspection.tables.student_sparkpoint) {
+            record[key] = val;
         }
-        
-        if (key === 'conference_group_id') {
-            // Allow null values and values that cast to a number, silently ignore invalid values
-
-            if (body.conference_group_id !== null) {
-                val = parseInt(body.conference_group_id, 10);
-
-                if (isNaN(val)) {
-                    ctx.throw(
-                        `conference_group_id must be a number or null, you provided: ${body.conference_group_id}`,
-                        400
-                    );
-                }
-            } else {
-                val = 'NULL';
-            }
-
-            timeKeys.push('conference_group_id');
-            timeValues.push(val);
-            updateValues.push(`conference_group_id = ${val}`);
-        } else if (key.indexOf('time') !== -1) {
-            val = parseInt(body[key], 10);
-
-            if (!isNaN(val)) {
-                val = "'" + new Date(val * 1000).toUTCString() + "'";
-                timeKeys.push(key);
-                timeValues.push(val);
-                updateValues.push(`${key} = ${val}`);
-            } else {
-                // TODO: breakout date/time parsing
-                ctx.throw(
-                    `${key} must should be the number of seconds since epoch in UTC, you provided: ${body[key]}`,
-                    400
-                );
-            }
-        } else if (key.indexOf('mastery_check_score') !== -1) {
-            hasMasteryCheckScores = true;
-
-            // TODO: implement in RLS
-            if (!ctx.isTeacher) {
-                ctx.throw(new Error('Only teachers can set mastery check scores.'), 403);
-            }
-
-            if (body[key] !== null) {
-                val = parseInt(body[key], 10);
-
-                // TODO: this should be a database check constraint
-                if (isNaN(val) || val < 1 || val > 100) {
-                    ctx.throw(
-                        `${key} must be a number between 1 and 100 or null, you provided: ${body[key]}`,
-                        400
-                    );
-                }
-            } else {
-                val = 'NULL';
-            }
-
-            timeKeys.push(key);
-            timeValues.push(val);
-            updateValues.push(`${key} = ${val}`);
-        } else if (key.indexOf('_teacher_id') !== -1) {
-            updateValues.push(`${key} = ${parseInt(body[key], 10)}`);
-        } else if (key === 'override_explanation') {
-            // TODO: IMPORTANT: This is vulnerable to SQL injection!!!
-            updateValues.push(`${key} = 'You provided a string that was: ${body[key].length} characters long.'`);
-        }
-
-        return allowedKeys.indexOf(key) === -1;
-    });
-
-    if (invalidKeys.length > 0) {
-        ctx.throw(new Error('Unexpected field(s) encountered: ' + invalidKeys.join(', ')), 400);
     }
 
-    activeSql = `
-        INSERT INTO section_student_active_sparkpoint
-                    (section_id, student_id, sparkpoint_id, ${ctx.isStudent ? 'last_accessed' : 'recommended_time, recommender_id'})
-             VALUES ($1, $2, $3, now()::timestamp without time zone ${ctx.isStudent ? '' : ', $4'})
-        ON CONFLICT (section_id, student_id, sparkpoint_id) DO `;
+    // When an entire sparkpoint is overridden, we do not update the last accessed time
+    if (activity.learn_override_time &&
+        activity.conference_override_time &&
+        activity.apply_override_time &&
+        activity.assess_override_time) {
+        updateLastAccessed = false;
+    }
 
-    values = [sectionId, studentId, sparkpointId];
+    if (updateLastAccessed) {
+        let record = {
+            section_id: sectionId,
+            sparkpoint_id: sparkpointId,
+            student_id: studentId
+        };
 
-    if (ctx.isTeacher) {
-        activeSql += 'UPDATE SET recommender_id = $4, recommended_time = now()::timestamp without time zone;';
-        values.push(ctx.userId);
+        if (ctx.isStudent) {
+            record.last_accessed = new Date();
+        } else {
+            record.recommended_time = new Date();
+            record.recommender_id = ctx.userId;
+        }
+
+        yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint', record, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
+    }
+
+    // Validate record and generate SQL for student_sparkpoint table
+    if (Object.keys(record).length > recordOriginalLen) {
+        errors = ctx.validation.student_sparkpoint(record);
+        ctx.assert(!errors, errors, 400);
+        ctx.body = yield ctx.pgp.one(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     } else {
-        activeSql += 'UPDATE SET last_accessed = now()::timestamp without time zone;';
-    }
-
-    overridesAllPhases = (
-        body.learn_override_time &&
-        body.conference_override_time &&
-        body.apply_override_time &&
-        body.assess_override_time
-    );
-
-    if (!hasMasteryCheckScores && !overridesAllPhases) {
-        // Do not set the recommended time when a teacher posts a mastery check score
-        yield ctx.pgp.oneOrNone(activeSql, values);
-    }
-
-    if (timeKeys.length === 0) {
-        // Return existing row, no time updates
-        sparkpointSql = `
+        ctx.body = yield ctx.pgp.one(`
             SELECT *
               FROM student_sparkpoint
              WHERE student_id = $1
-               AND sparkpoint_id = $2;
-        `;
-
-        record = yield ctx.pgp.oneOrNone(sparkpointSql, [studentId, sparkpointId]);
-
-        if (!record) {
-            record = {
-                student_id: studentId,
-                sparkpoint_id: sparkpointId
-            };
-
-            allowedKeys.forEach(function (key) {
-                if (key === 'sparkpoint') {
-                    record.sparkpoint = util.toSparkpointId(sparkpointId);
-                } else {
-                    record[key] = null;
-                }
-            });
-        }
-    } else {
-        // Upsert time updates, return updated row
-        sparkpointSql = `
-            INSERT INTO student_sparkpoint (student_id, sparkpoint_id,  ${timeKeys.join(', ')})
-                                    VALUES ($1, $2, ${timeValues.join(', ')}) ON CONFLICT (student_id, sparkpoint_id)
-                             DO UPDATE SET ${updateValues.join(',\n')}
-                                 RETURNING *`;
-
-        record = yield ctx.pgp.one(sparkpointSql, [studentId, sparkpointId]);
+               AND sparkpoint_id = $2;`,
+            [studentId, sparkpointId]
+        );
     }
-
-    delete record.id;
-    record.section_id = ctx.query.section_id;
-    record = util.codifyRecord(record, ctx.lookup);
-    // TODO: Deprecate sparkpoint (use sparkpoint_code instead)
-    record.sparkpoint = record.sparkpoint_code;
-
-    // HACK: Get display names for teachers
-    for (var key in record) {
-        if (key.indexOf('_teacher_id') !== -1 && record[key] !== null) {
-            record[key.replace('_teacher_id', '_teacher_name')] = ctx.lookup.person.idToDisplayName[record[key]];
-        }
-    }
-
-    ctx.body = record;
 }
 
 module.exports = {
