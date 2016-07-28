@@ -150,17 +150,11 @@ function *patchHandler(req, res, next) {
         recordToUpsert = util.recordToUpsert.bind(ctx),
         activity = ctx.request.body,
         vals = new util.Values(),
-        record = {
-            sparkpoint_id: sparkpointId,
-            student_id: studentId
-        },
-        recordOriginalLen = Object.keys(record).length,
-        errors,
-        sql;
+        record = {},
+        errors;
 
     ctx.require(['section_id', 'sparkpoint_id']);
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
-
 
     // Parse _time values and set them on the student_sparkpoint record
     for (let key in activity) {
@@ -209,13 +203,9 @@ function *patchHandler(req, res, next) {
 
         yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint', record, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
     }
-
-    // Validate record and generate SQL for student_sparkpoint table
-    if (Object.keys(record).length > recordOriginalLen) {
-        errors = ctx.validation.student_sparkpoint(record);
-        ctx.assert(!errors, errors, 400);
-        ctx.body = yield ctx.pgp.one(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
-    } else {
+    
+    if (Object.keys(record).length === 1 && record.student_id) {
+        // Return existing row if there are no changes to stage
         ctx.body = yield ctx.pgp.one(`
             SELECT *
               FROM student_sparkpoint
@@ -223,6 +213,13 @@ function *patchHandler(req, res, next) {
                AND sparkpoint_id = $2;`,
             [studentId, sparkpointId]
         );
+    } else {
+        // Validate record and generate SQL for student_sparkpoint table
+        record.sparkpoint_id = sparkpointId;
+        record.student_id = studentId;
+        errors = ctx.validation.student_sparkpoint(record);
+        ctx.assert(!errors, errors, 400);
+        ctx.body = yield ctx.pgp.one(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     }
 }
 
