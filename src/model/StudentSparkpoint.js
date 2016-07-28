@@ -40,6 +40,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'sparkdate',
             allowNull: true
         },{
+            name: 'learn_override_time',
+            type: 'sparkdate',
+            allowNull: true
+        },{
+            name: 'learn_override_teacher_id',
+            type: 'int',
+            allowNull: true
+        },{
             name: 'conference_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -50,6 +58,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         },{
             name: 'conference_finish_time',
             type: 'sparkdate',
+            allowNull: true
+        },{
+            name: 'conference_override_time',
+            type: 'sparkdate',
+            allowNull: true
+        },{
+            name: 'conference_override_teacher_id',
+            type: 'int',
             allowNull: true
         },{
             name: 'apply_start_time',
@@ -64,6 +80,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'sparkdate',
             allowNull: true
         },{
+            name: 'apply_override_time',
+            type: 'sparkdate',
+            allowNull: true
+        },{
+            name: 'apply_override_teacher_id',
+            type: 'int',
+            allowNull: true
+        },{
             name: 'assess_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -74,6 +98,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         },{
             name: 'assess_finish_time',
             type: 'sparkdate',
+            allowNull: true
+        },{
+            name: 'assess_override_time',
+            type: 'sparkdate',
+            allowNull: true
+        },{
+            name: 'assess_override_teacher_id',
+            type: 'int',
             allowNull: true
         },
 
@@ -96,6 +128,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         {
             name: 'conference_mastery_check_score',
             type: 'int',
+            allowNull: true
+        },
+        {
+            name: 'override_reason',
+            type: 'string',
             allowNull: true
         },
 
