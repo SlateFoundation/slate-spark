@@ -252,6 +252,11 @@ function *patchHandler(req, res, next) {
             timeKeys.push(key);
             timeValues.push(val);
             updateValues.push(`${key} = ${val}`);
+        } else if (key.indexOf('_teacher_id') !== -1) {
+            updateValues.push(`${key} = ${parseInt(body[key], 10)}`);
+        } else if (key === 'override_explanation') {
+            // TODO: IMPORTANT: This is vulnerable to SQL injection!!!
+            updateValues.push(`${key} = 'You provided a string that was: ${body[key].length} characters long.'`);
         }
 
         return allowedKeys.indexOf(key) === -1;
