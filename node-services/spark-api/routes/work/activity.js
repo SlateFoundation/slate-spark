@@ -167,6 +167,10 @@ function *patchHandler(req, res, next) {
             'conference_override_time',
             'apply_override_time',
             'assess_override_time',
+            'learn_teacher_id',
+            'conference_teacher_id',
+            'apply_teacher_id',
+            'assess_teacher_id',
             'override_reason'
         ],
         timeKeys = [],
@@ -325,6 +329,13 @@ function *patchHandler(req, res, next) {
     record = util.codifyRecord(record, ctx.lookup);
     // TODO: Deprecate sparkpoint (use sparkpoint_code instead)
     record.sparkpoint = record.sparkpoint_code;
+
+    // HACK: Get display names for teachers
+    for (var key in record) {
+        if (key.indexOf('_teacher_id') !== -1 && record[key] !== null) {
+            record[key.replace('_teacher_id', '_teacher_name')] = ctx.lookup.people.idToDisplayName[record[key]];
+        }
+    }
 
     ctx.body = record;
 }
