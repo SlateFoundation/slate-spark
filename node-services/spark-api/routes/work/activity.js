@@ -166,10 +166,10 @@ function *patchHandler(req, res, next) {
             record[key] = new Date(val * 1000).toUTCString();
         } else if (key.indexOf('_mastery_check_score') !== -1) {
             let val = parseInt(activity[key], 10);
-            let isValid = isNaN(val) || val < 1 || val > 100;
+            let isInvalid = isNaN(val) || val < 1 || val > 100;
 
             ctx.assert(ctx.isTeacher, 'Only teachers can set mastery check scores.', 403);
-            ctx.assert(isValid, `${key} must be between 1 and 100 or null, not: ${val}`, 400);
+            ctx.assert(!isInvalid, `${key} must be between 1 and 100 or null, not: ${val}`, 400);
 
             record[key] = val;
             // When only a mastery_score value is set, we do not update the last_accessed time
