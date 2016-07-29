@@ -179,8 +179,10 @@ function *patchHandler(req, res, next) {
         }
     }
 
-    // Force student_id
-    record.student_id = studentId;
+    // We will set this explicitly later
+    delete record.student_id;
+    delete record.sparkpoint_id;
+    delete record.id;
 
     // When an entire sparkpoint is overridden, we do not update the last accessed time
     if (activity.learn_override_time &&
@@ -207,7 +209,7 @@ function *patchHandler(req, res, next) {
         yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint', record, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
     }
     
-    if (Object.keys(record).length === 1) {
+    if (Object.keys(record).length === 0) {
         // Return existing row if there are no changes to stage
         ctx.body = yield ctx.pgp.one(`
             SELECT *
