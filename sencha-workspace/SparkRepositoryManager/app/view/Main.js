@@ -10,7 +10,8 @@ Ext.define('SparkRepositoryManager.view.Main', {
         'SparkRepositoryManager.view.pbl.Panel',
         'SparkRepositoryManager.view.resource.Panel',
         'SparkRepositoryManager.view.resource.Panel',
-        'SparkRepositoryManager.view.sparkpoints.Panel'
+        'SparkRepositoryManager.view.sparkpoints.Panel',
+        'SparkRepositoryManager.view.units.Panel'
     ],
 
 
@@ -57,12 +58,12 @@ Ext.define('SparkRepositoryManager.view.Main', {
 
             xtype: 'srm-sparkpoints-panel',
             title: 'Sparkpoints'
-        }/*,
+        },
         {
-            xtype: 's2m-pbl-panel',
-            title: 'PBL',
-            itemId: 'pbl-panel',
-            disabled: true
-        }*/
+            itemId: 'units',
+
+            xtype: 's2m-units-panel',
+            title: 'Units'
+        }
     ]
 });
