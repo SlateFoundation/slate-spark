@@ -26,6 +26,6 @@ Ext.define('SparkRepositoryManager.API', {
     // allow API host to be overridden via apiHost param
     if (pageParams.apiHost) {
         API.setHost(pageParams.apiHost);
-        API.setUseSSL(false);
+        API.setUseSSL(true);
     }
 });
