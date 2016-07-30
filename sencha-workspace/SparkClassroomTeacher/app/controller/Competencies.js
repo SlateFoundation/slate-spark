@@ -53,6 +53,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             activate: {
                 fn: 'onCompetenciesGridActivate',
                 buffer: 100
+            },
+            itemtap: {
+                fn: 'onCompetenciesGridItemTap'
             }
         }
     },
@@ -105,6 +108,18 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         this.populateCompetencyColumns();
     },
 
+    onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
+        Ext.select('.spark-studentcompetency-popover').each(function() {
+            this.destroy();
+        });
+
+        var compPanel = Ext.create('SparkClassroom.column.panel.StudentCompetency', {
+            dataIndex: rec.getData().id
+        });
+
+        compPanel.showBy(Ext.fly(e.target), 'tc-cc?');
+    },
+
     onSelectedSectionChange: function(appCt, section, oldSection) {
         var me = this;
         if (section && section != oldSection) { //load all activities when section changes -- will trigger repopulation of competency columns/data.
@@ -115,7 +130,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onActivitiesStoreUpdate: function(store, record, operation, modifiedFieldNames, details) {
         var me = this,
             competenciesGrid = me.getCompetenciesCt().down('spark-competencies-grid'),
-            ignoreModifiedFields = ['student'], student, recordData = {};
+            ignoreModifiedFields = ['student'], student, recordData = {}, gridRecord;
 
         //ignore modifications to only the student field.
         if (
@@ -126,7 +141,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         }
 
         //update competencies grid store
-        //TODO: only set modified fields
         if ((gridRecord = competenciesGrid.getStore().getById(record.get('sparkpoint_id')))) {
             recordData[student.get('Username')] = {
                 learn_finish_time: record.get('learn_finish_time'),
@@ -157,7 +171,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             sparkpointId, sparkpoint,
             updatedFields;
 
-
         //update sparkpoint in activities store
         if (table == 'student_sparkpoint') {
             if (
@@ -176,7 +189,16 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     sparkpoint_id: itemData.sparkpoint_id,
                     student_sparkpointid: itemData.student_id + '_' + itemData.sparkpoint_id, // TODO: REMOVE?
                     section_id: itemData.section_id,
-                    section_code: itemData.section_code
+                    section_code: itemData.section_code,
+                    learn_override_time: itemData.learn_override_time,
+                    learn_override_teacher_id: itemData.learn_override_teacher_id,
+                    conference_override_time: itemData.conference_override_time,
+                    conference_override_teacher_id: itemData.conference_override_teacher_id,
+                    apply_override_time: itemData.apply_override_time,
+                    apply_override_teacher_id: itemData.apply_override_teacher_id,
+                    assess_override_time: itemData.assess_override_time,
+                    assess_override_teacher_id: itemData.assess_override_teacher_id,
+                    override_reason: itemData.override_reason
                 })[0];
             }
         }
@@ -240,8 +262,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         gridStore.removeAll();
 
-        //add sparkpoints to grid store
-        Ext.each(activityStore.getData().items,function(studentSparkpoint) {
+        // add sparkpoints to grid store and link to respective StudentCompetency panel.
+        Ext.each(activityStore.getRange(), function(studentSparkpoint) {
             var sparkpointId = studentSparkpoint.get('sparkpoint_id'),
                 studentId = studentSparkpoint.get('student_id'),
                 student = studentStore.getById(studentId),
@@ -264,21 +286,28 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     learn_finish_time: studentSparkpoint.get('learn_finish_time'),
                     conference_finish_time: studentSparkpoint.get('conference_finish_time'),
                     apply_finish_time: studentSparkpoint.get('apply_finish_time'),
-                    assess_finish_time: studentSparkpoint.get('assess_finish_time')
-
+                    assess_finish_time: studentSparkpoint.get('assess_finish_time'),
+                    learn_override_time: studentSparkpoint.get('learn_override_time'),
+                    learn_override_teacher_id: studentSparkpoint.get('learn_override_teacher_id'),
+                    conference_override_time: studentSparkpoint.get('conference_override_time'),
+                    conference_override_teacher_id: studentSparkpoint.get('conference_override_teacher_id'),
+                    assess_override_time: studentSparkpoint.get('assess_override_time'),
+                    assess_override_teacher_id: studentSparkpoint.get('assess_override_teacher_id'),
+                    override_reason: studentSparkpoint.get('override_reason')
                 };
+
                 recordData[student.get('Username')+'_completed_phase'] = studentSparkpoint.get('completed_phase_numerical');
 
                 record.set(recordData, {dirty: false});
             }
-        });
+        }, me);
 
         grid.setMasked(false);
     },
 
     /**
      * @private
-     * populates comptencies grid columns with students associated with {SparkClassroomTeacher.view.AppContainer}
+     * populates competencies grid columns with students associated with {SparkClassroomTeacher.view.AppContainer}
      */
 
     populateCompetencyColumns: function() {
@@ -286,7 +315,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             grid = me.getCompetenciesGrid(),
             studentStore = Ext.getStore('Students'),
             studentCompetencyColumnXType = 'spark-student-competency-column',
-            gridColumns = grid ? grid.getColumns() : [],
             currentSection = me.getAppCt().getSelectedSection();
 
         //grid has not rendered yet, return. this method will be called again when the grid is activated.
