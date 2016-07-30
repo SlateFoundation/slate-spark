@@ -168,6 +168,18 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         }
     },
 
+    onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
+        Ext.select('.spark-studentcompetency-popover').each(function() {
+            this.destroy();
+        });
+
+        var compPanel = Ext.create('SparkClassroom.column.panel.StudentCompetency', {
+            dataIndex: rec.getData().id
+        });
+
+        compPanel.showBy(Ext.fly(e.target), 'tc-cc?');
+    },
+
     onSelectedSectionChange: function(appCt, section, oldSection) {
         var me = this;
 
@@ -217,34 +229,38 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var activityStore = this.getActivitiesStore(),
             table = data.table,
             itemData = data.item,
-            sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id);
+            sparkpointId, sparkpoint,
+            updatedFields;
 
-        // update sparkpoint in activities store
-        if (table === 'student_sparkpoint') {
-            if (sparkpoint) {
-                sparkpoint.set(itemData, {
-                    dirty: false
-                });
+        //update sparkpoint in activities store
+        if (table == 'student_sparkpoint') {
+            if (
+                (sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))
+            ) {
+                sparkpoint.set(itemData, {dirty: false});
             }
-        } else if (table == 'section_student_active_sparkpoint') { // if no activity exists for this sparkpoint, create one.
-            if (Ext.isEmpty(activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
-                // create model, add neccessary data.
-                activityStore.add({
-                    'student': Ext.getStore('Students').getById(itemData.student_id),
-                    'student_id': itemData.student_id,
-                    'sparkpoint_id': itemData.sparkpoint_id,
-                    'section_id': itemData.section_id,
-                    'section_code': itemData.section_code,
-                    'learn_override_time': itemData.learn_override_time,
-                    'learn_override_teacher_id': itemData.learn_override_teacher_id,
-                    'conference_override_time': itemData.conference_override_time,
-                    'conference_override_teacher_id': itemData.conference_override_teacher_id,
-                    'apply_override_time': itemData.apply_override_time,
-                    'apply_override_teacher_id': itemData.apply_override_teacher_id,
-                    'assess_override_time': itemData.assess_override_time,
-                    'assess_override_teacher_id': itemData.assess_override_teacher_id,
-                    'override_reason': itemData.override_reason
-                });
+        } else if (table == 'section_student_active_sparkpoint') { //if no activity exists for this sparkpoint, create one.
+            if (
+                !(sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))
+            ) {
+                //create model, add neccessary data.
+                sparkpoint = activityStore.add({
+                    student: Ext.getStore('Students').getById(itemData.student_id),
+                    student_id: itemData.student_id,
+                    sparkpoint_id: itemData.sparkpoint_id,
+                    student_sparkpointid: itemData.student_id + '_' + itemData.sparkpoint_id, // TODO: REMOVE?
+                    section_id: itemData.section_id,
+                    section_code: itemData.section_code,
+                    learn_override_time: itemData.learn_override_time,
+                    learn_override_teacher_id: itemData.learn_override_teacher_id,
+                    conference_override_time: itemData.conference_override_time,
+                    conference_override_teacher_id: itemData.conference_override_teacher_id,
+                    apply_override_time: itemData.apply_override_time,
+                    apply_override_teacher_id: itemData.apply_override_teacher_id,
+                    assess_override_time: itemData.assess_override_time,
+                    assess_override_teacher_id: itemData.assess_override_teacher_id,
+                    override_reason: itemData.override_reason
+                })[0];
             }
         }
     },
@@ -313,12 +329,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         gridStore.removeAll();
 
         // add sparkpoints to grid store and link to respective StudentCompetency panel.
-        for (; count < activityData.length; count++) {
-            studentSparkpoint = activityData[count];
-            sparkpointId = studentSparkpoint.get('sparkpoint_id');
-            studentId = studentSparkpoint.get('student_id');
-            student = studentStore.getById(studentId);
-            recordData = {};
+        Ext.each(activityStore.getRange(), function(studentSparkpoint) {
+            var sparkpointId = studentSparkpoint.get('sparkpoint_id'),
+                studentId = studentSparkpoint.get('student_id'),
+                student = studentStore.getById(studentId),
+                record, recordData = {};
 
             // create record for each unique sparkpoint id
             if (gridDataIds.indexOf(sparkpointId) === -1) {
@@ -333,21 +348,24 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
             if (record && student) {
                 recordData[student.get('Username')] = {
-                    'student_id': studentId,
-                    'student_sparkpointid': studentId + '_' + sparkpointId,
-                    'learn_finish_time': studentSparkpoint.get('learn_finish_time'),
-                    'conference_finish_time': studentSparkpoint.get('conference_finish_time'),
-                    'apply_finish_time': studentSparkpoint.get('apply_finish_time'),
-                    'assess_finish_time': studentSparkpoint.get('assess_finish_time'),
-                    'learn_override_time': studentSparkpoint.get('learn_override_time'),
-                    'conference_override_time': studentSparkpoint.get('conference_override_time'),
-                    'assess_override_time': studentSparkpoint.get('assess_override_time'),
-                    'override_reason': studentSparkpoint.get('override_reason')
+                    learn_finish_time: studentSparkpoint.get('learn_finish_time'),
+                    conference_finish_time: studentSparkpoint.get('conference_finish_time'),
+                    apply_finish_time: studentSparkpoint.get('apply_finish_time'),
+                    assess_finish_time: studentSparkpoint.get('assess_finish_time'),
+                    learn_override_time: studentSparkpoint.get('learn_override_time'),
+                    learn_override_teacher_id: studentSparkpoint.get('learn_override_teacher_id'),
+                    conference_override_time: studentSparkpoint.get('conference_override_time'),
+                    conference_override_teacher_id: studentSparkpoint.get('conference_override_teacher_id'),
+                    assess_override_time: studentSparkpoint.get('assess_override_time'),
+                    assess_override_teacher_id: studentSparkpoint.get('assess_override_teacher_id'),
+                    override_reason: studentSparkpoint.get('override_reason')
                 };
+
+                recordData[student.get('Username')+'_completed_phase'] = studentSparkpoint.get('completed_phase_numerical');
 
                 record.set(recordData, { dirty: false });
             }
-        }
+        }, me);
 
         grid.setMasked(false);
     },
