@@ -9,37 +9,6 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
             {
                 xtype: 'component',
                 reference: 'popoverTable',
-                data: {
-                    studentName: 'Christophe Alfano',
-                    sparkpointCode: 'K-ESS2-2',
-                    paceCls: 'is-not-started',
-                    paceDesc: 'Not Started Yet',
-                    phases: [
-                        {
-                            phase: 'Learn',
-                            status: '0/6',
-                            expected: 1,
-                            actual: 1
-                        },
-                        {
-                            phase: 'Conference',
-                            status: 'Waiting',
-                            expected: 2,
-                            actual: 3
-                        },
-                        {
-                            phase: 'Apply',
-                            status: 'Not Started',
-                            expected: 4,
-                            actual: 3
-                        },
-                        {
-                            phase: 'Assess',
-                            status: 'Not Started',
-                            expected: 5
-                        }
-                    ]
-                },
                 tpl: [
                     '<table class="spark-studentcompetency-popover-table">',
                         '<thead>',
@@ -90,19 +59,19 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                         }
                     }
                 ]
-            },
-            {
+            },{
                 xtype: 'textareafield',
-                label: 'Please explain how Christopher earned credit:',
+                reference: 'popoverDescribe',
                 margin: 16
-            },
-            {
+            },{
                 xtype: 'button',
                 margin: 16,
                 ui: 'action',
-                text: 'Give Credit'
-            },
-            {
+                text: 'Give Credit',
+                handler: function() {
+                    debugger;
+                }
+            },{
                 xtype: 'container',
                 layout: 'hbox',
                 margin: 16,
@@ -111,26 +80,57 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                     xtype: 'button',
                     ui: 'action'
                 },
-                items: [
-                    {
-                        text: 'Add to Queue',
-                        margin: '0 16 0 0'
-                    },
-                    {
-                        text: 'Add Next Up'
+                items: [{
+                    text: 'Add to Queue',
+                    margin: '0 16 0 0',
+                    handler: function() {
+                        
                     }
-                ]
+                },{
+                    text: 'Add Next Up',
+                    handler: function() {
+                        
+                    }
+                }]
             }
         ],
         listeners: {
             initialize: {
-                fn: function(){
+                fn: function() {
                     var activityStore = Ext.getStore('Activities'),
-                        sparkData = activityStore.findRecord('sparkpoint_id', this.getDataIndex()).getData();
+                        studentStore = Ext.getStore('Students'),
+                        sparkData = activityStore.findRecord('sparkpoint_id', this.dataIndex).getData(),
+                        studentData = studentStore.findRecord('ID', sparkData.student_id).getData();
 
                     this.lookupReference('popoverTable').updateData({
-
+                        studentName: studentData.FullName,
+                        sparkpointCode: sparkData.sparkpoint,
+                        //TODO calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
+                        paceCls: 'is-not-started',
+                        paceDesc: 'Not Started Yet',
+                        phases: [{
+                                phase: 'Learn',
+                                status: '0/6',
+                                expected: 1,
+                                actual: 1
+                            }, {
+                                phase: 'Conference',
+                                status: 'Waiting',
+                                expected: 2,
+                                actual: 3
+                            }, {
+                                phase: 'Apply',
+                                status: 'Not Started',
+                                expected: 4,
+                                actual: 3
+                            }, {
+                                phase: 'Assess',
+                                status: 'Not Started',
+                                expected: 5
+                            }]
                     });
+                    
+                    this.lookupReference('popoverDescribe').setLabel('Please explain how ' + studentData.FirstName + ' earned credit:')
                 }
             }
         }
