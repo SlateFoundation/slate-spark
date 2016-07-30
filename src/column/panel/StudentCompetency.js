@@ -4,9 +4,11 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
 
     config: {
         cls: 'spark-studentcompetency-popover',
+        referenceHolder: true,
         items: [
             {
                 xtype: 'component',
+                reference: 'popoverTable',
                 data: {
                     studentName: 'Christophe Alfano',
                     sparkpointCode: 'K-ESS2-2',
@@ -119,6 +121,18 @@ Ext.define('SparkClassroom.column.panel.StudentCompetency', {
                     }
                 ]
             }
-        ]
+        ],
+        listeners: {
+            initialize: {
+                fn: function(){
+                    var activityStore = Ext.getStore('Activities'),
+                        sparkData = activityStore.findRecord('sparkpoint_id', this.getDataIndex()).getData();
+
+                    this.lookupReference('popoverTable').updateData({
+
+                    });
+                }
+            }
+        }
     }
 })
