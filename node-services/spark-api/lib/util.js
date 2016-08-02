@@ -763,12 +763,12 @@ function recordToInsert(tableName, record, vals) {
 
     sql += `(${valueColumns.join(', ')}) VALUES (${valuePlaceholders.join(', ')})`;
 
-    // Generate an upsert
-    sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
-
     if (conflictColumns.length > 0) {
         let setSql = [];
 
+        // Generate an upsert
+        sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
+        
         // Do not include conflict columns or PKs in the SET values
         valueColumns.forEach(function(col, i) {
             if (conflictColumns.indexOf(col) === -1) {
@@ -825,9 +825,9 @@ function recordToUpsert(tableName, record, vals, _conflictColumns) {
     sql += `(${valueColumns.join(', ')}) VALUES (${valuePlaceholders.join(', ')})`;
 
     // Generate an upsert
-    sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
-
     if (conflictColumns.length > 0) {
+        sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
+
         let setSql = [];
 
         // Do not include conflict columns or PKs in the SET values
