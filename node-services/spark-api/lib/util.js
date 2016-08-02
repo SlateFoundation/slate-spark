@@ -596,13 +596,18 @@ function namifyRecord(record, lookup) {
     assert(lookup.person, 'person lookup is missing');
     assert(lookup.person.idToDisplayName, 'person lookup table is not populated');
 
+    // TODO: We should be able to populate this using foreign key constraints
     [ 'author_id',
       'teacher_id',
       'recommender_id',
       'user_id',
       'closed_by',
       'student_id',
-      'graded_by'
+      'graded_by',
+      'assess_override_teacher_id',
+      'learn_override_teacher_id',
+      'conference_override_teacher_id',
+      'assess_override_teacher_id'
     ].forEach(function(col) {
         var val = record[col];
 
@@ -759,11 +764,23 @@ function recordToInsert(tableName, record, vals) {
     sql += `(${valueColumns.join(', ')}) VALUES (${valuePlaceholders.join(', ')})`;
 
     // Generate an upsert
+    sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
+
     if (conflictColumns.length > 0) {
-        sql += ` ON CONFLICT (${conflictColumns.join(', ')}) DO UPDATE SET `;
-        sql += valueColumns.map(function(col, i) {
-            return `${col} = ${valuePlaceholders[i]}`;
-        }).join(', ');
+        let setSql = [];
+
+        // Do not include conflict columns or PKs in the SET values
+        valueColumns.forEach(function(col, i) {
+            if (conflictColumns.indexOf(col) === -1) {
+                setSql.push(`${col} = ${valuePlaceholders[i]}`);
+            }
+        });
+
+        if (setSql.length === 0) {
+            sql += 'DO NOTHING';
+        } else {
+            sql += 'DO UPDATE SET ' + setSql.join(', ');
+        }
     }
 
     return sql;
@@ -778,6 +795,8 @@ function recordToUpsert(tableName, record, vals, _conflictColumns) {
         valueColumns = [],
         valuePlaceholders = [],
         sql = `INSERT INTO ${tableName} `;
+
+    _conflictColumns || (_conflictColumns = []);
 
     allowedKeys.forEach(function (col) {
         let val = record[col],
@@ -806,17 +825,23 @@ function recordToUpsert(tableName, record, vals, _conflictColumns) {
     sql += `(${valueColumns.join(', ')}) VALUES (${valuePlaceholders.join(', ')})`;
 
     // Generate an upsert
+    sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
+
     if (conflictColumns.length > 0) {
-        sql += ` ON CONFLICT (${conflictColumns.join(', ')}) DO UPDATE SET `;
+        let setSql = [];
 
         // Do not include conflict columns or PKs in the SET values
-        sql += valueColumns.map(function(col, i) {
-            if (conflictColumns.indexOf(col) !== -1) {
-                return null;
+        valueColumns.forEach(function(col, i) {
+            if (conflictColumns.indexOf(col) === -1) {
+                setSql.push(`${col} = ${valuePlaceholders[i]}`);
             }
+        });
 
-            return `${col} = ${valuePlaceholders[i]}`;
-        }).filter(sql => sql !== null).join(', ');
+        if (setSql.length === 0) {
+            sql += 'DO NOTHING';
+        } else {
+            sql += 'DO UPDATE SET ' + setSql.join(', ');
+        }
     }
 
     return sql;
