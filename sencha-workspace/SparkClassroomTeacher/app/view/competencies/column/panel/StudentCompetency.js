@@ -4,7 +4,6 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
 
     config: {
         cls: 'spark-studentcompetency-popover',
-        referenceHolder: true,
         items: [
             {
                 xtype: 'component',
@@ -67,10 +66,8 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
                 xtype: 'button',
                 margin: 16,
                 ui: 'action',
-                text: 'Give Credit',
-                handler: function() {
-                    //debugger;
-                }
+                reference: 'giveCreditBtn',
+                text: 'Give Credit'
             },{
                 xtype: 'container',
                 layout: 'hbox',
@@ -83,56 +80,12 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
                 items: [{
                     text: 'Add to Queue',
                     margin: '0 16 0 0',
-                    handler: function() {
-                        
-                    }
+                    reference: 'addToQueueBtn'
                 },{
                     text: 'Add Next Up',
-                    handler: function() {
-                        
-                    }
+                    reference: 'addNextUpBtn'
                 }]
             }
-        ],
-        listeners: {
-            initialize: {
-                fn: function() {
-                    var activityStore = Ext.getStore('Activities'),
-                        studentStore = Ext.getStore('Students'),
-                        sparkData = activityStore.findRecord('sparkpoint_id', this.dataIndex).getData(),
-                        studentData = studentStore.findRecord('ID', sparkData.student_id).getData();
-
-                    this.lookupReference('popoverTable').updateData({
-                        studentName: studentData.FullName,
-                        sparkpointCode: sparkData.sparkpoint,
-                        //TODO calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
-                        paceCls: 'is-not-started',
-                        paceDesc: 'Not Started Yet',
-                        phases: [{
-                                phase: 'Learn',
-                                status: '0/6',
-                                expected: 1,
-                                actual: 1
-                            }, {
-                                phase: 'Conference',
-                                status: 'Waiting',
-                                expected: 2,
-                                actual: 3
-                            }, {
-                                phase: 'Apply',
-                                status: 'Not Started',
-                                expected: 4,
-                                actual: 3
-                            }, {
-                                phase: 'Assess',
-                                status: 'Not Started',
-                                expected: 5
-                            }]
-                    });
-                    
-                    this.lookupReference('popoverDescribe').setLabel('Please explain how ' + studentData.FirstName + ' earned credit:')
-                }
-            }
-        }
+        ]
     }
 })

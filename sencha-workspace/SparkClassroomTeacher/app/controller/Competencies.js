@@ -18,7 +18,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     ],
 
     stores: [
-        'Activities@SparkClassroom.store'
+        'Activities@SparkClassroom.store',
+        'Students@SparkClassroom.store'
     ],
 
     refs:{
