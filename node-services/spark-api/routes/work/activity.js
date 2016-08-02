@@ -200,32 +200,22 @@ function *patchHandler(req, res, next) {
         };
 
         if (ctx.isStudent) {
-            record.last_accessed = new Date();
+            record.last_accessed = new Date().toUTCString();
         } else {
-            record.recommended_time = new Date();
+            record.recommended_time = new Date().toUTCString();
             record.recommender_id = ctx.userId;
         }
 
         yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint', record, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
     }
-    
-    if (Object.keys(record).length === 0) {
-        // Return existing row if there are no changes to stage
-        ctx.body = yield ctx.pgp.one(`
-            SELECT *
-              FROM student_sparkpoint
-             WHERE student_id = $1
-               AND sparkpoint_id = $2;`,
-            [studentId, sparkpointId]
-        );
-    } else {
-        // Validate record and generate SQL for student_sparkpoint table
-        record.sparkpoint_id = sparkpointId;
-        record.student_id = studentId;
-        errors = ctx.validation.student_sparkpoint(record);
-        ctx.assert(!errors, errors, 400);
-        ctx.body = yield ctx.pgp.one(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
-    }
+
+    // Validate record and generate SQL for student_sparkpoint table
+    record.sparkpoint_id = sparkpointId;
+    record.student_id = studentId;
+    errors = ctx.validation.student_sparkpoint(record);
+    ctx.assert(!errors, errors, 400);
+    let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
+    ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
 
 module.exports = {
