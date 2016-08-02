@@ -7,7 +7,7 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
         items: [
             {
                 xtype: 'component',
-                reference: 'popoverTable',
+                cls: 'studentcompetency-popover-table',
                 tpl: [
                     '<table class="spark-studentcompetency-popover-table">',
                         '<thead>',
@@ -60,13 +60,13 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
                 ]
             },{
                 xtype: 'textareafield',
-                reference: 'popoverDescribe',
+                cls: 'popover-describe-field',
                 margin: 16
             },{
                 xtype: 'button',
                 margin: 16,
                 ui: 'action',
-                reference: 'giveCreditBtn',
+                cls: 'give-credit-button',
                 text: 'Give Credit'
             },{
                 xtype: 'container',
@@ -80,10 +80,10 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
                 items: [{
                     text: 'Add to Queue',
                     margin: '0 16 0 0',
-                    reference: 'addToQueueBtn'
+                    cls: 'add-to-queue-button'
                 },{
                     text: 'Add Next Up',
-                    reference: 'addNextUpBtn'
+                    cls: 'add-next-up-button'
                 }]
             }
         ]

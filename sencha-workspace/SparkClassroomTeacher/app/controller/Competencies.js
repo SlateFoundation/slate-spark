@@ -29,7 +29,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     	competenciesCt: {
             selector: 'spark-competencies',
             autoCreate: true,
-
             xtype: 'spark-competencies'
         },
 

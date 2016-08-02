@@ -17,13 +17,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
         'Students@SparkClassroom.store'
     ],
 
-    views: [
-        'competencies.column.panel.StudentCompetency'
-    ],
-
     refs: {
         competenciesGrid: 'spark-competencies spark-competencies-grid',
-        studentCompetencyPopover: 'spark-studentcompetency-popover'
+        studentCompetencyPopover: 'spark-studentcompetency-popover',
+        popoverTable: 'spark-studentcompetency-popover component[cls=studentcompetency-popover-table]',
+        addToQueueButton: 'spark-studentcompetency-popover button[cls=add-to-queue-button]',
+        addNextUpButton: 'spark-studentcompetency-popover button[cls=add-next-up-button]',
+        giveCreditButton: 'spark-studentcompetency-popover button[cls=give-credit-button]',
+        describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]'
     },
 
     control: {
@@ -37,22 +38,38 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             initialize: {
                 fn: 'onInitializePanel'
             }
+        },
+
+        addToQueueButton: {
+            tap: {
+                fn: 'addToQueue'
+            }
+        },
+
+        addNextUpButton: {
+            tap: {
+                fn: 'addNextUp'
+            }
+        },
+
+        giveCreditButton: {
+            tap: {
+                fn: 'giveCredit'
+            }
         }
     },
 
     onInitializePanel: function() {
-        //debugger;
         this.loadDataIntoView();
-        this.bindActions();
     },
 
     loadDataIntoView: function() {
         var activityStore = Ext.getStore('Activities'),
             studentStore = Ext.getStore('Students'),
-            sparkData = activityStore.findRecord('sparkpoint_id', this.dataIndex).getData(),
+            sparkData = activityStore.findRecord('sparkpoint_id', this.getStudentCompetencyPopover().dataIndex).getData(),
             studentData = studentStore.findRecord('ID', sparkData.student_id).getData();
 
-        this.lookupReference('popoverTable').updateData({
+        this.getPopoverTable().updateData({
             studentName: studentData.FullName,
             sparkpointCode: sparkData.sparkpoint,
             //TODO calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
@@ -80,26 +97,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             }]
         });
 
-        this.lookupReference('popoverDescribe').setLabel('Please explain how ' + studentData.FirstName + ' earned credit:');
-    },
-
-    bindActions: function() {
-        this.lookupReference('giveCreditBtn').on({
-            'tap': this.giveCredit,
-            'scope': this
-        });
-
-        this.lookupReference('addToQueueBtn').on({
-            'tap': this.addToQueue,
-            'scope': this
-        });
-
-        this.lookupReference('addNextUpBtn').on({
-            'tap': this.addNextUp,
-            'scope': this
-        });
-
-
+        this.getDescribeTextArea().setLabel('Please explain how ' + studentData.FirstName + ' earned credit:');
     },
 
     giveCredit: function() {
