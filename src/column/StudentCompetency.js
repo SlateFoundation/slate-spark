@@ -1,9 +1,6 @@
 Ext.define('SparkClassroom.column.StudentCompetency', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-student-competency-column',
-    requires: [
-        'SparkClassroom.column.panel.StudentCompetency'
-    ],
 
     config: {
         dataIndex: '',
