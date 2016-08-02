@@ -1,5 +1,5 @@
 Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
-    extend: 'Ext.Container',
+    extend: 'Ext.Panel',
     requires: [
         'SparkRepositoryManager.units.editor.Intro'
     ],
@@ -7,14 +7,33 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
 
     componentCls: 's2m-units-navigator',
 
-    padding: '25 50',
+    padding: '10 0 0',
+    bodyPadding: '5 21',
+    dockedItems: [
+        {
+            xtype: 'toolbar',
+            docked: 'top',
+            items: [
+                {
+                    xtype: 'button',
+                    text: 'Clone Unit'
+                },
+                '-',
+                {
+                    xtype: 'checkbox',
+                    boxLabel: 'Share unit globally'
+                }
+            ]
+        }
+    ],
     items: [
         {
-            xtype: 'form',
+            xtype: 'container',
             items: [
                 {
                     xtype: 'container',
                     cls: 's2m-units-editor-meta',
+                    margin: '10 0 20',
                     layout: {
                         type: 'hbox'
                     },
@@ -25,7 +44,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
                     },
                     items: [
                         {
-                            width: 200,
+                            width: 192,
                             margin: '0 20 0 0',
                             fieldLabel: 'Code',
                             value: 'Ex: G6.U.3.4.A' // TODO remove hardcoded value
@@ -38,25 +57,8 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
                     ]
                 },
                 {
-                    xtype: 'container',
-                    layout: 'hbox',
-                    margin: '10 0 25',
-                    items: [
-                        {
-                            width: 200,
-                            xtype: 'checkbox',
-                            boxLabel: 'Share unit to global database'
-                        },
-                        {
-                            xtype: 'combo',
-                            fieldLabel: 'Clone Existing Unit',
-                            labelWidth: 130,
-                            margin: '0 0 0 20'
-                        }
-                    ]
-                },
-                {
                     xtype: 'tabpanel',
+                    bodyPadding: '10 0',
                     items: [
                         {
                             xtype: 's2m-units-editor-intro'
