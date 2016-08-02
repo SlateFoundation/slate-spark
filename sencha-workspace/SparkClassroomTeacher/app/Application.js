@@ -49,6 +49,8 @@ Ext.define('SparkClassroomTeacher.Application', {
         'assign.Applies',
 
         'Competencies',
+        'competencies.column.panel.StudentCompetency',
+
         'Activity',
         'Help',
         'Priorities'
@@ -102,7 +104,7 @@ Ext.define('SparkClassroomTeacher.Application', {
     control: {
         appCt: {
             selectedsectionchange: 'onSelectedSectionChange'
-        },
+        }
     },
 
 

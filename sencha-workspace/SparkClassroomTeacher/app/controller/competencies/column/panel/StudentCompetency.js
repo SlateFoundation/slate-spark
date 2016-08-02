@@ -17,9 +17,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
         'Students@SparkClassroom.store'
     ],
 
-    refs:{
+    views: [
+        'competencies.column.panel.StudentCompetency'
+    ],
+
+    refs: {
         competenciesGrid: 'spark-competencies spark-competencies-grid',
-        studentCompetencyPanel: 'spark-studentcompetency-popover'
+        studentCompetencyPopover: 'spark-studentcompetency-popover'
     },
 
     control: {
@@ -29,13 +33,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             }
         },
 
-        studentCompetencyPanel: {
-            initialize: 'onInitializePanel'
+        studentCompetencyPopover: {
+            initialize: {
+                fn: 'onInitializePanel'
+            }
         }
     },
 
     onInitializePanel: function() {
-        debugger;
+        //debugger;
         this.loadDataIntoView();
         this.bindActions();
     },

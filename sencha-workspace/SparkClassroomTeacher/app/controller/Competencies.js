@@ -9,9 +9,6 @@
  */
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
-    requires: [
-        'SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency'
-    ],
 
     views: [
         'competencies.Container'
