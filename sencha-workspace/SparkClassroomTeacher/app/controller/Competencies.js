@@ -9,6 +9,9 @@
  */
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency'
+    ],
 
     views: [
         'competencies.Container'
@@ -113,7 +116,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             this.destroy();
         });
 
-        var compPanel = Ext.create('SparkClassroom.column.panel.StudentCompetency', {
+        var compPanel = Ext.create('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency', {
             dataIndex: rec.getData().id
         });
 
