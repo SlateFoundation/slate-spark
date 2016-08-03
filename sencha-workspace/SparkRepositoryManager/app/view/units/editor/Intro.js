@@ -1,4 +1,4 @@
-Ext.define('SparkRepositoryManager.units.editor.Intro', {
+Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
     extend: 'Ext.Panel',
     xtype: 's2m-units-editor-intro',
 

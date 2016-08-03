@@ -1,7 +1,7 @@
 Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.units.editor.Intro'
+        'SparkRepositoryManager.view.units.editor.Intro',
     ],
     xtype: 's2m-units-editor',
 
