@@ -120,6 +120,14 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                     selModel: {
                         mode: 'MULTI'
                     },
+                    viewConfig: {
+                        plugins: {
+                            // TODO we need to store the order somehow for this to be useful
+                            // if that's not feasible, probably remove this plugin
+                            ptype: 'gridviewdragdrop',
+                            dragText: 'Drag and drop to reorganize'
+                        }
+                    },
                     // TODO offload to controller?
                     listeners: {
                         selectionchange: function(model, records) {
