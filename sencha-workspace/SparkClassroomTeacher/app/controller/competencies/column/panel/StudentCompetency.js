@@ -35,7 +35,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
         },
 
         studentCompetencyPopover: {
-            initialize: {
+            show: {
                 fn: 'onInitializePanel'
             }
         },
@@ -66,7 +66,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
     loadDataIntoView: function() {
         var activityStore = Ext.getStore('Activities'),
             studentStore = Ext.getStore('Students'),
-            sparkData = activityStore.findRecord('sparkpoint_id', this.getStudentCompetencyPopover().dataIndex).getData(),
+            sparkData = activityStore.getById(this.getStudentCompetencyPopover().dataIndex).getData(),
             studentData = studentStore.findRecord('ID', sparkData.student_id).getData();
 
         this.getPopoverTable().updateData({

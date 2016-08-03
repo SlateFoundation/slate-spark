@@ -109,15 +109,21 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
-        Ext.select('.spark-studentcompetency-popover').each(function() {
-            this.destroy();
-        });
+        var popover = Ext.ComponentQuery.query('spark-studentcompetency-popover');
 
-        var compPanel = Ext.create('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency', {
-            dataIndex: rec.getData().id
-        });
+        if(Ext.isEmpty(popover)) {
+            popover = Ext.create('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency', {
+                dataIndex: rec.getData().student_sparkpointid
+            });
 
-        compPanel.showBy(Ext.fly(e.target), 'tc-cc?');
+            popover.showBy(Ext.fly(e.target), 'tc-cc?');
+        } else {
+            popover = popover[0];
+            popover.dataIndex = rec.getData().student_sparkpointid;
+            popover.showBy(Ext.fly(e.target), 'tc-cc?');
+            // show event only fires the first time you showBy.
+            popover.fireEvent('show');
+        }
     },
 
     onSelectedSectionChange: function(appCt, section, oldSection) {
@@ -147,7 +153,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 conference_finish_time: record.get('conference_finish_time'),
                 apply_finish_time: record.get('apply_finish_time'),
                 assess_finish_time: record.get('assess_finish_time')
-
             };
             recordData[student.get('Username')+'_completed_phase'] = SparkClassroom.model.StudentSparkpoint.prototype.fieldsMap.completed_phase_numerical.convert(null, record);
 
@@ -297,7 +302,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 };
 
                 recordData[student.get('Username')+'_completed_phase'] = studentSparkpoint.get('completed_phase_numerical');
-
+                recordData.student_sparkpointid = studentId + '_' + sparkpointId;
                 record.set(recordData, {dirty: false});
             }
         }, me);
