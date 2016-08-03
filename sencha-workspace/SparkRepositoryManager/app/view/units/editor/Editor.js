@@ -2,6 +2,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
     extend: 'Ext.Panel',
     requires: [
         'SparkRepositoryManager.view.units.editor.Intro',
+        'SparkRepositoryManager.view.units.editor.Learn'
     ],
     xtype: 's2m-units-editor',
 
@@ -64,7 +65,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
                             xtype: 's2m-units-editor-intro'
                         },
                         {
-                            title: 'Learn &amp; Practice'
+                            xtype: 's2m-units-editor-learn'
                         },
                         {
                             title: 'Conference Questions'
