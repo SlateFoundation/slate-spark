@@ -23,7 +23,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                             styleHtmlContent: true,
                             style: {
                                 fontSize: '1.125em',
-                                lineHeight: (4/3)
+                                lineHeight: 4/3
                             },
                             html: 'Add Sparkpoints to this unit and check off any that will be evaluated.'
                         },
@@ -48,7 +48,14 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                                     listeners: {
                                         click: function(btn) {
                                             // TODO add an actual blank item? some way to search for a sparkpoint?
-                                            btn.up('s2m-units-editor-intro').down('#sparkpoint-grid').getStore().add({ code: 'SS.G6.3.5.B', willBeEvaluated: false });
+                                            btn
+                                                .up('s2m-units-editor-intro')
+                                                .down('#sparkpoint-grid')
+                                                .getStore()
+                                                .add({
+                                                    code: 'SS.G6.3.5.B',
+                                                    willBeEvaluated: false
+                                                });
                                         }
                                     }
                                 }
@@ -83,18 +90,18 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                     emptyText: 'No Sparkpoints in this unit.',
                     hideHeaders: true,
                     store: {
-                        fields: [ 'code', 'willBeEvaluated' ],
+                        fields: ['code', 'willBeEvaluated'],
                         data: [
-                            { code: 'SS.G6.1.2.A',  willBeEvaluated: false },
-                            { code: 'SS.G6.2.4.A',  willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.1',  willBeEvaluated: false },
-                            { code: 'ELA.G6.RI.2',  willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.3',  willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.4',  willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.6',  willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.5',  willBeEvaluated: false },
-                            { code: 'ELA.G6.RI.7',  willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.8',  willBeEvaluated: false }
+                            { code: 'SS.G6.1.2.A', willBeEvaluated: false },
+                            { code: 'SS.G6.2.4.A', willBeEvaluated: true },
+                            { code: 'ELA.G6.RI.1', willBeEvaluated: false },
+                            { code: 'ELA.G6.RI.2', willBeEvaluated: true },
+                            { code: 'ELA.G6.RI.3', willBeEvaluated: true },
+                            { code: 'ELA.G6.RI.4', willBeEvaluated: true },
+                            { code: 'ELA.G6.RI.6', willBeEvaluated: true },
+                            { code: 'ELA.G6.RI.5', willBeEvaluated: false },
+                            { code: 'ELA.G6.RI.7', willBeEvaluated: true },
+                            { code: 'ELA.G6.RI.8', willBeEvaluated: false }
                         ]
                     },
                     columns: {
