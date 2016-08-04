@@ -10,6 +10,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
 
     padding: '10 0 0',
     bodyPadding: '5 21',
+    scrollable: true,
     dockedItems: [
         {
             xtype: 'toolbar',
