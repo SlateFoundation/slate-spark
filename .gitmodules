@@ -31,3 +31,7 @@
 [submodule "sencha-workspace/packages/jarvus-postgrest-apikit"]
 	path = sencha-workspace/packages/jarvus-postgrest-apikit
 	url = git@github.com:JarvusInnovations/jarvus-postgrest-apikit.git
+[submodule "ext-5.1.1.451"]
+	path = sencha-workspace/ext-5.1.1.451
+	url = https://github.com/JarvusInnovations/extjs.git
+	branch = 5.1.1.451
