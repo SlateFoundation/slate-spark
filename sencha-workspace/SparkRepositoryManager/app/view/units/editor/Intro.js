@@ -12,7 +12,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                 type: 'hbox',
                 align: 'stretch'
             },
-            margin: '10',
+            margin: '10 0',
             items: [
                 {
                     width: 256,
@@ -145,15 +145,11 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                 {
                     flex: 1,
                     maxWidth: 480,
+                    cls: 'split-left',
                     xtype: 'container',
                     layout: {
                         type: 'vbox',
                         align: 'stretch'
-                    },
-                    margin: '0 0 0 20',
-                    padding: '0 0 0 40',
-                    style: {
-                        borderLeft: '1px solid #ccc'
                     },
                     items: [
                         {
