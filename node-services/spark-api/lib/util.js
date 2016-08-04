@@ -166,7 +166,7 @@ function isGtZero(str) {
  * @returns {Boolean}
  */
 function isAsnId(code) {
-    return (/^S[\dA-F]{7}$/).test('' + code);
+    return (/^[SM][\dA-F]{7}$/).test('' + code);
 }
 
 
@@ -768,7 +768,7 @@ function recordToInsert(tableName, record, vals) {
 
         // Generate an upsert
         sql += ` ON CONFLICT (${conflictColumns.join(', ')}) `;
-        
+
         // Do not include conflict columns or PKs in the SET values
         valueColumns.forEach(function(col, i) {
             if (conflictColumns.indexOf(col) === -1) {
