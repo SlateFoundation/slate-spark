@@ -6,7 +6,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
     ],
     xtype: 's2m-units-editor',
 
-    componentCls: 's2m-units-navigator',
+    componentCls: 's2m-units-editor',
 
     padding: '10 0 0',
     bodyPadding: '5 21',
