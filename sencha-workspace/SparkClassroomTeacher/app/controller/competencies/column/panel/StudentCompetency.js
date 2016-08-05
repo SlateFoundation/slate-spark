@@ -66,13 +66,27 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
     loadDataIntoView: function() {
         var activityStore = Ext.getStore('Activities'),
             studentStore = Ext.getStore('Students'),
-            sparkData = activityStore.getById(this.getStudentCompetencyPopover().dataIndex).getData(),
-            studentData = studentStore.findRecord('ID', sparkData.student_id).getData();
+            sparkData,
+            studentData,
+            records = activityStore.getRange(),
+            sparkParts = this.getStudentCompetencyPopover().dataIndex.split('_'),
+            studentId = sparkParts[0],
+            sparkpointId = sparkParts[1],
+            studentData = studentStore.findRecord('ID', studentId).getData();
+
+        //TODO: Fix this, hacky way to get record from this store, because the ID is not calculated properly.
+        for(var i = 0; i < records.length; i++) {
+            var data = records[i].getData();
+            if(data.student_id === parseInt(studentId) && data.sparkpoint_id === sparkpointId)
+            {
+                sparkData = data;
+            }
+        }
 
         this.getPopoverTable().updateData({
             studentName: studentData.FullName,
             sparkpointCode: sparkData.sparkpoint,
-            //TODO calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
+            //TODO: calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
             paceCls: 'is-not-started',
             paceDesc: 'Not Started Yet',
             phases: [{

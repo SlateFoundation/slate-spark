@@ -109,17 +109,32 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
+        var targetEl = Ext.fly(e.target);
         var popover = Ext.ComponentQuery.query('spark-studentcompetency-popover');
+
+        if(!Ext.isEmpty(popover[0])) {
+            popover[0].hide();
+        }
+
+        if(!targetEl.hasCls('pip-text')) {
+            return;
+        }
+
+        var studentId = targetEl.getAttribute('data-student-id')
+
+        if(Ext.isEmpty(studentId)){
+            return;
+        }
 
         if(Ext.isEmpty(popover)) {
             popover = Ext.create('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency', {
-                dataIndex: rec.getData().student_sparkpointid
+                dataIndex: targetEl.getAttribute('data-student-id') + '_' + rec.getData().id
             });
 
             popover.showBy(Ext.fly(e.target), 'tc-cc?');
         } else {
             popover = popover[0];
-            popover.dataIndex = rec.getData().student_sparkpointid;
+            popover.dataIndex = targetEl.getAttribute('data-student-id') + '_' + rec.getData().id;
             popover.showBy(Ext.fly(e.target), 'tc-cc?');
             // show event only fires the first time you showBy.
             popover.fireEvent('show');
@@ -192,7 +207,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     student: Ext.getStore('Students').getById(itemData.student_id),
                     student_id: itemData.student_id,
                     sparkpoint_id: itemData.sparkpoint_id,
-                    student_sparkpointid: itemData.student_id + '_' + itemData.sparkpoint_id, // TODO: REMOVE?
                     section_id: itemData.section_id,
                     section_code: itemData.section_code,
                     learn_override_time: itemData.learn_override_time,
@@ -272,7 +286,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             var sparkpointId = studentSparkpoint.get('sparkpoint_id'),
                 studentId = studentSparkpoint.get('student_id'),
                 student = studentStore.getById(studentId),
-                record, recordData = {};
+                record, recordData = {students: []};
 
             //create record for each unique sparkpoint id
             if (gridDataIds.indexOf(sparkpointId) === -1) {
@@ -285,24 +299,20 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 record = gridStore.getById(sparkpointId);
             }
 
-
             if (record && student) {
                 recordData[student.get('Username')] = {
+                    student_id: studentId,
+                    student_sparkpointid: studentId + '_' + sparkpointId,
                     learn_finish_time: studentSparkpoint.get('learn_finish_time'),
                     conference_finish_time: studentSparkpoint.get('conference_finish_time'),
                     apply_finish_time: studentSparkpoint.get('apply_finish_time'),
                     assess_finish_time: studentSparkpoint.get('assess_finish_time'),
                     learn_override_time: studentSparkpoint.get('learn_override_time'),
-                    learn_override_teacher_id: studentSparkpoint.get('learn_override_teacher_id'),
                     conference_override_time: studentSparkpoint.get('conference_override_time'),
-                    conference_override_teacher_id: studentSparkpoint.get('conference_override_teacher_id'),
                     assess_override_time: studentSparkpoint.get('assess_override_time'),
-                    assess_override_teacher_id: studentSparkpoint.get('assess_override_teacher_id'),
                     override_reason: studentSparkpoint.get('override_reason')
                 };
 
-                recordData[student.get('Username')+'_completed_phase'] = studentSparkpoint.get('completed_phase_numerical');
-                recordData.student_sparkpointid = studentId + '_' + sparkpointId;
                 record.set(recordData, {dirty: false});
             }
         }, me);
@@ -355,7 +365,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         Ext.each(studentStore.getData().items, function(student) {
             grid.addColumn({
                 xtype: studentCompetencyColumnXType,
-                dataIndex: student.get('Username')+'_completed_phase',
+                dataIndex: student.get('Username'),
 
                 listeners: {
                     click: {
