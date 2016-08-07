@@ -155,7 +155,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         //ignore modifications to only the student field.
         if (
-            (modifiedFieldNames.length === 1 && ignoreModifiedFields.indexOf(modifiedFieldNames[0]) !== -1) ||
+            (modifiedFieldNames && modifiedFieldNames.length === 1 && ignoreModifiedFields.indexOf(modifiedFieldNames[0]) !== -1) ||
             (!(student = record.get('student')))
         ) {
             return;

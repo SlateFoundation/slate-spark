@@ -103,25 +103,25 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             phases: [{
                 phase: 'Learn',
                 status: '0/6',
-                finished: !Ext.isEmpty(sparkData.learn_finish_time),
+                finished: !Ext.isEmpty(sparkData.learn_finish_time) || !Ext.isEmpty(sparkData.learn_override_time),
                 expected: 0,
                 actual: 0
             }, {
                 phase: 'Conference',
                 status: 'Waiting',
-                finished: !Ext.isEmpty(sparkData.conference_finish_time),
+                finished: !Ext.isEmpty(sparkData.conference_finish_time) || !Ext.isEmpty(sparkData.conference_override_time),
                 expected: 0,
                 actual: 0
             }, {
                 phase: 'Apply',
                 status: 'Not Started',
-                finished: !Ext.isEmpty(sparkData.apply_finish_time),
+                finished: !Ext.isEmpty(sparkData.apply_finish_time) || !Ext.isEmpty(sparkData.apply_override_time),
                 expected: 0,
                 actual: 0
             }, {
                 phase: 'Assess',
                 status: 'Not Started',
-                finished: !Ext.isEmpty(sparkData.assess_finish_time),
+                finished: !Ext.isEmpty(sparkData.assess_finish_time) || !Ext.isEmpty(sparkData.assess_override_time),
                 expected: 0,
                 actual: 0
             }]
@@ -146,7 +146,9 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             sparkData = this.getStudentSparkPoint().getData();
 
         // Action based on phase
-        // TODO: Come back to this, no action to be taken currently
+        // TODO: Come back to this, no action to be taken currently. Note:
+        // (maybe) Overriding a phase with previous phases uncompleted will override them too
+        // So if above is true we need to set checked on previous phases, and not allow to be checked if a later phase is checked.
         switch(phaseName) {
             case 'Learn':
                 break;
@@ -160,7 +162,41 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
     },
 
     giveCredit: function() {
+        var describeText = this.getDescribeTextArea().getValue(),
+            record = this.getStudentSparkPoint(),
+            checkedInputs = this.getPopoverTable().element.select('input.not-finished:checked');
 
+        // For now just close the window if no inputs were checked.
+        if(checkedInputs.length == 0) {
+            this.getStudentCompetencyPopover().hide();
+            return;
+        }
+
+        // Figure out which phases have been checked for override
+        Ext.Array.each(checkedInputs, function(el, i, arr) {
+            var phaseName = Ext.get(el.elements[0]).parent().select('span.phase-name', true).elements[0].getHtml();
+
+            switch(phaseName) {
+                case 'Learn':
+                    record.set('learn_override_time', new Date());
+                    break;
+                case 'Conference':
+                    record.set('conference_override_time', new Date());
+                    break;
+                case 'Apply':
+                    record.set('apply_override_time', new Date());
+                    break;
+                case 'Assess':
+                    record.set('assess_override_time', new Date());
+                    break;
+            }
+        }, this);
+
+        record.set('override_reason', describeText);
+        record.commit();
+        Ext.getStore('Activities').commitChanges();
+
+        this.getStudentCompetencyPopover().hide();
     },
 
     addToQueue: function() {
