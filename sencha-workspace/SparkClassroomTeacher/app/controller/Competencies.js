@@ -286,7 +286,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             var sparkpointId = studentSparkpoint.get('sparkpoint_id'),
                 studentId = studentSparkpoint.get('student_id'),
                 student = studentStore.getById(studentId),
-                record, recordData = {students: []};
+                record, recordData = {};
 
             //create record for each unique sparkpoint id
             if (gridDataIds.indexOf(sparkpointId) === -1) {

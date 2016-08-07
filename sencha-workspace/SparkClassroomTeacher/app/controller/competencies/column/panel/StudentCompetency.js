@@ -92,22 +92,27 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             phases: [{
                 phase: 'Learn',
                 status: '0/6',
-                expected: 1,
-                actual: 1
+                finished: !Ext.isEmpty(sparkData.learn_finish_time),
+                expected: 0,
+                actual: 0
             }, {
                 phase: 'Conference',
                 status: 'Waiting',
-                expected: 2,
-                actual: 3
+                finished: !Ext.isEmpty(sparkData.conference_finish_time),
+                expected: 0,
+                actual: 0
             }, {
                 phase: 'Apply',
                 status: 'Not Started',
-                expected: 4,
-                actual: 3
+                finished: !Ext.isEmpty(sparkData.apply_finish_time),
+                expected: 0,
+                actual: 0
             }, {
                 phase: 'Assess',
                 status: 'Not Started',
-                expected: 5
+                finished: !Ext.isEmpty(sparkData.assess_finish_time),
+                expected: 0,
+                actual: 0
             }]
         });
 

@@ -25,7 +25,7 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
                                 '<tr>',
                                     '<td class="cycle-col">',
                                         '<label class="phase-checkbox">',
-                                            '<input type="checkbox">',
+                                            '<input type="checkbox"{[ values.finished ? " disabled checked" : "" ]}>',
                                             '<span class="phase-name">{phase} </span>',
                                         '</label>',
                                         '<span class="phase-status">{status}</span>',
