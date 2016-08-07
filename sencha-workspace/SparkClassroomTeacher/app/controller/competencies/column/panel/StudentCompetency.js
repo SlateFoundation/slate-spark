@@ -40,6 +40,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             }
         },
 
+        popoverTable: {
+            updatedata: {
+                fn: 'bindClickPopoverTable'
+            }
+        },
+
         addToQueueButton: {
             tap: {
                 fn: 'addToQueue'
@@ -63,25 +69,30 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
         this.loadDataIntoView();
     },
 
-    loadDataIntoView: function() {
+    getStudentSparkPoint: function() {
         var activityStore = Ext.getStore('Activities'),
-            studentStore = Ext.getStore('Students'),
-            sparkData,
-            studentData,
             records = activityStore.getRange(),
             sparkParts = this.getStudentCompetencyPopover().dataIndex.split('_'),
             studentId = sparkParts[0],
-            sparkpointId = sparkParts[1],
-            studentData = studentStore.findRecord('ID', studentId).getData();
+            sparkpointId = sparkParts[1]
 
         //TODO: Fix this, hacky way to get record from this store, because the ID is not calculated properly.
         for(var i = 0; i < records.length; i++) {
-            var data = records[i].getData();
+            var rec = records[i];
+            var data = rec.getData();
+
             if(data.student_id === parseInt(studentId) && data.sparkpoint_id === sparkpointId)
             {
-                sparkData = data;
+                return rec;
             }
         }
+    },
+
+    loadDataIntoView: function() {
+        var studentStore = Ext.getStore('Students'),
+            sparkData = this.getStudentSparkPoint().getData(),
+            studentId = sparkData.student_id,
+            studentData = studentStore.findRecord('ID', studentId).getData();
 
         this.getPopoverTable().updateData({
             studentName: studentData.FullName,
@@ -116,7 +127,36 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             }]
         });
 
+
         this.getDescribeTextArea().setLabel('Please explain how ' + studentData.FirstName + ' earned credit:');
+    },
+
+    bindClickPopoverTable: function(cmp) {
+        var activeCheckboxes = Ext.get(cmp.el.select('input.not-finished', true));
+        activeCheckboxes.on({
+            'change': this.onPhaseCheckChange,
+            'scope': this
+        });
+    },
+
+    onPhaseCheckChange: function(e, target) {
+        var el = Ext.get(target),
+            checked = el.getValue() === "on",
+            phaseName = el.parent().select('span.phase-name', true).elements[0].getHtml(),
+            sparkData = this.getStudentSparkPoint().getData();
+
+        // Action based on phase
+        // TODO: Come back to this, no action to be taken currently
+        switch(phaseName) {
+            case 'Learn':
+                break;
+            case 'Conference':
+                break;
+            case 'Apply':
+                break;
+            case 'Assess':
+                break;
+        }
     },
 
     giveCredit: function() {
