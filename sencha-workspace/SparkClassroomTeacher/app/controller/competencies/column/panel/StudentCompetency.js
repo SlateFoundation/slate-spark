@@ -71,21 +71,9 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
 
     getStudentSparkPoint: function() {
         var activityStore = Ext.getStore('Activities'),
-            records = activityStore.getRange(),
-            sparkParts = this.getStudentCompetencyPopover().dataIndex.split('_'),
-            studentId = sparkParts[0],
-            sparkpointId = sparkParts[1]
+            rec = activityStore.getAt(activityStore.find('student_sparkpointid', this.getStudentCompetencyPopover().dataIndex));
 
-        //TODO: Fix this, hacky way to get record from this store, because the ID is not calculated properly.
-        for(var i = 0; i < records.length; i++) {
-            var rec = records[i];
-            var data = rec.getData();
-
-            if(data.student_id === parseInt(studentId) && data.sparkpoint_id === sparkpointId)
-            {
-                return rec;
-            }
-        }
+        return rec;
     },
 
     loadDataIntoView: function() {
@@ -103,25 +91,29 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
             phases: [{
                 phase: 'Learn',
                 status: '0/6',
-                finished: !Ext.isEmpty(sparkData.learn_finish_time) || !Ext.isEmpty(sparkData.learn_override_time),
+                finished: !Ext.isEmpty(sparkData.learn_finish_time),
+                overridden: !Ext.isEmpty(sparkData.learn_override_time),
                 expected: 0,
                 actual: 0
             }, {
                 phase: 'Conference',
                 status: 'Waiting',
-                finished: !Ext.isEmpty(sparkData.conference_finish_time) || !Ext.isEmpty(sparkData.conference_override_time),
+                finished: !Ext.isEmpty(sparkData.conference_finish_time),
+                overridden: !Ext.isEmpty(sparkData.conference_override_time),
                 expected: 0,
                 actual: 0
             }, {
                 phase: 'Apply',
                 status: 'Not Started',
-                finished: !Ext.isEmpty(sparkData.apply_finish_time) || !Ext.isEmpty(sparkData.apply_override_time),
+                finished: !Ext.isEmpty(sparkData.apply_finish_time),
+                overridden: !Ext.isEmpty(sparkData.apply_override_time),
                 expected: 0,
                 actual: 0
             }, {
                 phase: 'Assess',
                 status: 'Not Started',
-                finished: !Ext.isEmpty(sparkData.assess_finish_time) || !Ext.isEmpty(sparkData.assess_override_time),
+                finished: !Ext.isEmpty(sparkData.assess_finish_time),
+                overridden: !Ext.isEmpty(sparkData.assess_override_time),
                 expected: 0,
                 actual: 0
             }]
@@ -164,37 +156,47 @@ Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCo
     giveCredit: function() {
         var describeText = this.getDescribeTextArea().getValue(),
             record = this.getStudentSparkPoint(),
-            checkedInputs = this.getPopoverTable().element.select('input.not-finished:checked');
-
-        // For now just close the window if no inputs were checked.
-        if(checkedInputs.length == 0) {
-            this.getStudentCompetencyPopover().hide();
-            return;
-        }
+            inputs = this.getPopoverTable().element.select('input.not-finished:enabled').elements;
 
         // Figure out which phases have been checked for override
-        Ext.Array.each(checkedInputs, function(el, i, arr) {
-            var phaseName = Ext.get(el.elements[0]).parent().select('span.phase-name', true).elements[0].getHtml();
+        if(Ext.isArray(inputs)) {
+            Ext.Array.each(inputs, function(el, i, arr) {
+                var phaseName = Ext.get(el).parent().select('span.phase-name', true).elements[0].getHtml();
+                var fieldName;
 
-            switch(phaseName) {
-                case 'Learn':
-                    record.set('learn_override_time', new Date());
-                    break;
-                case 'Conference':
-                    record.set('conference_override_time', new Date());
-                    break;
-                case 'Apply':
-                    record.set('apply_override_time', new Date());
-                    break;
-                case 'Assess':
-                    record.set('assess_override_time', new Date());
-                    break;
-            }
-        }, this);
+                switch(phaseName) {
+                    case 'Learn':
+                        fieldName = 'learn_override_time';
+                        break;
+                    case 'Conference':
+                        fieldName = 'conference_override_time';
+                        break;
+                    case 'Apply':
+                        fieldName = 'apply_override_time';
+                        break;
+                    case 'Assess':
+                        fieldName = 'assess_override_time';
+                        break;
+                }
+
+                // Prevent recording a new override time if it was already set.
+                if(!Ext.isEmpty(record.get(fieldName)) && el.checked) {
+                    return;
+                }
+
+                var value = el.checked ? new Date() : null;
+
+                if(Ext.isEmpty(record.get(fieldName))) {
+                    record.set(fieldName, value);
+                }
+            }, this);
+        }
 
         record.set('override_reason', describeText);
-        record.commit();
-        Ext.getStore('Activities').commitChanges();
+
+        if(record.dirty) {
+            record.save();
+        }
 
         this.getStudentCompetencyPopover().hide();
     },

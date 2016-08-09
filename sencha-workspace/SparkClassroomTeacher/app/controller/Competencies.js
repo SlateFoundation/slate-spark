@@ -169,7 +169,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 apply_finish_time: record.get('apply_finish_time'),
                 assess_finish_time: record.get('assess_finish_time')
             };
-            recordData[student.get('Username')+'_completed_phase'] = SparkClassroom.model.StudentSparkpoint.prototype.fieldsMap.completed_phase_numerical.convert(null, record);
+            recordData[student.get('Username')+'_completed_phase'] = SparkClassroom.model.Activity.prototype.fieldsMap.completed_phase_numerical.convert(null, record);
 
             gridRecord.set(recordData, {dirty: false});
         }
