@@ -8,23 +8,26 @@ Ext.define('SparkClassroom.model.Activity', {
         'section_id',
         'section_code',
         {
-            name: 'completed_phase_number',
+            name: 'completed_phase_numerical',
+            depends: [
+                'learn_finish_time',
+                'conference_finish_time',
+                'apply_finish_time',
+                'assess_finish_time'
+            ],
             persist: false,
             calculate: function(data) {
-                if (data.assess_finish_time || data.assess_override_time) {
+                if (data.assess_finish_time) {
                     return 4;
-                }
-                if (data.apply_finish_time || data.apply_override_time) {
+                } else if (data.apply_finish_time) {
                     return 3;
-                }
-                if (data.conference_finish_time || data.conference_override_time) {
+                } else if (data.conference_finish_time) {
                     return 2;
-                }
-                if (data.learn_finish_time || data.learn_override_time) {
+                } else if (data.learn_finish_time) {
                     return 1;
+                } else {
+                    return 0;
                 }
-
-                return 0;
             }
         },
 
