@@ -1,25 +1,12 @@
 /*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkClassroom.model.Activity', {
-    extend: 'Ext.data.Model',
-    // extend: 'SparkClassroom.model.StudentSparkpoint',
+    extend: 'SparkClassroom.model.StudentSparkpoint',
     requires: [
         'Slate.proxy.API'
     ],
-
-    idProperty: 'student_sparkpointid',
-
     fields: [
         'section_id',
         'section_code',
-
-        'sparkpoint_id',
-        'student_id',
-
-        'learn_finish_time',
-        'conference_finish_time',
-        'apply_finish_time',
-        'assess_finish_time',
-
         {
             name: 'completed_phase_numerical',
             depends: [
@@ -47,8 +34,7 @@ Ext.define('SparkClassroom.model.Activity', {
         {
             name: 'student_sparkpointid',
             depends: ['student_id', 'sparkpoint_id'],
-            persist: false,
-            crtical: true,
+            critical: true,
             calculate: function(data) {
                 return data.student_id + '_' + data.sparkpoint_id;
             }
@@ -58,7 +44,7 @@ Ext.define('SparkClassroom.model.Activity', {
     proxy: {
         type: 'slate-api',
         url: '/spark/api/work/activity',
-
+        idProperty: 'student_sparkpointid',
         extraParams: {
             status: 'all'
         }

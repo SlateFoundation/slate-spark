@@ -23,7 +23,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                     '<div class="flex-ct cycle-gauge">',
                         '<tpl for=".">',
                             '<div class="flex-1 cycle-gauge-pip {status}">',
-                                '<abbr class="pip-text" title="{title}">{shortText}</abbr>',
+                                '<abbr class="pip-text" data-student-id="' + (studentData ? studentData.student_id : '' ) + '" title="{title}">{shortText}</abbr>',
                             '</div>',
                         '</tpl>',
                     '</div>'
