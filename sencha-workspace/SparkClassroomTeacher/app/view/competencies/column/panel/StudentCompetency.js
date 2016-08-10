@@ -25,7 +25,7 @@ Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetenc
                                 '<tr>',
                                     '<td class="cycle-col">',
                                         '<label class="phase-checkbox">',
-                                            '<input class="{[ values.finished ? "finished" : "not-finished" ]}" type="checkbox"{[ values.finished ? " disabled" : "" ]}{[ values.overridden || values.finished ? " checked" : "" ]}>',
+                                            '<input data-phase="{phase}" class="{[ values.finished ? "finished" : "not-finished" ]}" type="checkbox"{[ values.disabled ? " disabled" : "" ]}{[ values.checked ? " checked" : "" ]}>',
                                             '<span class="phase-name">{phase}</span>',
                                         '</label>',
                                         '<span class="phase-status">{status}</span>',
