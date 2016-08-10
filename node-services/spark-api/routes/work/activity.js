@@ -153,6 +153,7 @@ function *patchHandler(req, res, next) {
         record = {},
         errors;
 
+    ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
     ctx.require(['section_id', 'sparkpoint_id']);
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
 
@@ -160,11 +161,11 @@ function *patchHandler(req, res, next) {
     for (let key in activity) {
         let val = activity[key];
 
-        if (key.indexOf('time') !== -1) {
+        if (key.includes('time')) {
             val = parseInt(activity[key], 10);
             ctx.assert(!isNaN(val), `${key} should be a UTC timestamp you provided: ${activity[key]}`, 400);
             record[key] = new Date(val * 1000).toUTCString();
-        } else if (key.indexOf('_mastery_check_score') !== -1) {
+        } else if (key.includes('_mastery_check_score')) {
             let val = parseInt(activity[key], 10);
             let isInvalid = isNaN(val) || val < 1 || val > 100;
 
