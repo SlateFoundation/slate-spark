@@ -280,15 +280,5 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return Date.now() - learnStartTime;
             }
         }
-    ],
-
-    proxy: {
-        type: 'slate-api',
-        url: '/spark/api/work/activity',
-
-        writer: {
-            type: 'json',
-            allowSingle: true
-        }
-    }
+    ]
 });

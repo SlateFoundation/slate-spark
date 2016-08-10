@@ -38,7 +38,6 @@ Ext.define('SparkClassroom.model.Activity', {
         {
             name: 'student_sparkpointid',
             depends: ['student_id', 'sparkpoint_id'],
-            critical: true,
             calculate: function(data) {
                 return data.student_id + '_' + data.sparkpoint_id;
             }
@@ -92,13 +91,16 @@ Ext.define('SparkClassroom.model.Activity', {
             }
         }
     ],
-
     proxy: {
         type: 'slate-api',
         url: '/spark/api/work/activity',
-        idProperty: 'student_sparkpointid',
+        batchActions: false,
         extraParams: {
             status: 'all'
+        },
+        writer: {
+            type: 'json',
+            allowSingle: true
         }
     }
 });
