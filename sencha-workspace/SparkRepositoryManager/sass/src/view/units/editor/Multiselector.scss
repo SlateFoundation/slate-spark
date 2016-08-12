@@ -1,0 +1,31 @@
+.s2m-units-multiselector {
+    .x-grid-group-hd {
+        border-color: $grid-row-cell-border-color;
+    }
+
+    .x-grid-group-title {
+        color: #666;
+    }
+
+    .x-form-trigger-wrap {
+        border: 0;
+    }
+
+    .x-field-form-focus {
+        box-shadow: inset 0 0 0 1px darken($base-color, 12);
+    }
+
+    .x-action-col-glyph {
+        margin: 0;
+    }
+}
+
+.s2m-units-multiselector-unitgrid {
+    margin-left: 20px;
+}
+
+.s2m-units-remove-cell {
+    .x-grid-cell-inner {
+        padding-right: 0;
+    }
+}
