@@ -60,7 +60,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
                 },
                 {
                     xtype: 'tabpanel',
-                    bodyPadding: '10 0',
+                    bodyPadding: '20 0',
                     items: [
                         {
                             xtype: 's2m-units-editor-intro'
