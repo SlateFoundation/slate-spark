@@ -1,4 +1,4 @@
-Ext.define('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency', {
+Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
     extend: 'SparkClassroom.column.panel.Panel',
     xtype: 'spark-studentcompetency-popover',
 

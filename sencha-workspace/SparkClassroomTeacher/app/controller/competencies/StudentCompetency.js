@@ -5,12 +5,8 @@
  * - Allow teacher to override and provide a reason.
  * - Write override times to the store
  */
-Ext.define('SparkClassroomTeacher.controller.competencies.column.panel.StudentCompetency', {
+Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     extend: 'Ext.app.Controller',
-    requires: [
-        'Ext.MessageBox',
-        'Slate.API'
-    ],
 
     stores: [
         'Activities@SparkClassroom.store',

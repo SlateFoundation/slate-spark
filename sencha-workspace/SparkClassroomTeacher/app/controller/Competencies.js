@@ -127,7 +127,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         }
 
         if(Ext.isEmpty(popover)) {
-            popover = Ext.create('SparkClassroomTeacher.app.competencies.column.panel.StudentCompetency', {
+            popover = Ext.create('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                 dataIndex: targetEl.getAttribute('data-student-id') + '_' + rec.getData().id
             });
 
@@ -169,7 +169,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 apply_finish_time: record.get('apply_finish_time'),
                 assess_finish_time: record.get('assess_finish_time')
             };
-            recordData[student.get('Username')+'_completed_phase'] = SparkClassroom.model.Activity.prototype.fieldsMap.completed_phase_number.convert(null, record);
+            recordData[student.get('Username')+'_completed_phase'] = record.get('completed_phase_number');
 
             gridRecord.set(recordData, {dirty: false});
         }

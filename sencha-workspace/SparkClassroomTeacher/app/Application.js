@@ -49,7 +49,7 @@ Ext.define('SparkClassroomTeacher.Application', {
         'assign.Applies',
 
         'Competencies',
-        'competencies.column.panel.StudentCompetency',
+        'competencies.StudentCompetency',
 
         'Activity',
         'Help',
