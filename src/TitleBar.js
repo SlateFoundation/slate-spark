@@ -10,7 +10,7 @@ Ext.define('SparkClassroom.TitleBar', {
         cls: 'spark-titlebar',
         items: [
             {
-                flex: 1,
+                width: 480,
 
                 xtype: 'selectfield',
                 itemId: 'sectionSelect',
