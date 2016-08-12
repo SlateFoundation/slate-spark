@@ -128,7 +128,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         if(Ext.isEmpty(popover)) {
             popover = Ext.create('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
-                dataIndex: targetEl.getAttribute('data-student-id') + '_' + rec.getData().id
+                dataIndex: targetEl.getAttribute('data-student-id') + '_' + rec.getData().id,
+                modal: {
+                    style: 'opacity: 0'
+                },
+                hideOnMaskTap: true
             });
 
             popover.showBy(Ext.fly(e.target), 'tc-cc?');

@@ -113,7 +113,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             confDisabled  = applyDisabled || applyChecked || !Ext.isEmpty(sparkData.conference_finish_time),
             confChecked = confDisabled || !Ext.isEmpty(sparkData.conference_override_time),
             learnDisabled  = confDisabled || confChecked || !Ext.isEmpty(sparkData.learn_finish_time),
-            learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time);
+            learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time),
+            allFinished = !Ext.isEmpty(sparkData.learn_finish_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
 
         this.getPopoverTable().updateData({
             studentName: studentData.FullName,
@@ -156,9 +157,19 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }]
         });
 
-        var describeText = this.getDescribeTextArea();
+        var describeText = this.getDescribeTextArea(),
+            giveCreditBtn = this.getGiveCreditButton();
+
+        if(allFinished) {
+            describeText.hide();
+            giveCreditBtn.hide();
+            return;
+        }
+
+        describeText.show();
+        giveCreditBtn.show();
         describeText.setLabel('Please explain how ' + studentData.FirstName + ' earned credit:');
-        describeText.setValue("");
+        describeText.setValue(sparkData.override_reason);
     },
 
     bindClickPopoverTable: function(cmp) {
