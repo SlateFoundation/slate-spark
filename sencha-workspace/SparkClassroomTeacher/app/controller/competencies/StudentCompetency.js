@@ -10,7 +10,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     stores: [
         'Activities@SparkClassroom.store',
-        'Students@SparkClassroom.store'
+        'Students@SparkClassroom.store',
+        'work.Learns@SparkClassroom.store'
     ],
 
     refs: {
@@ -64,8 +65,23 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
     },
 
+    loadWorkLearnsStore: function() {
+        var me = this,
+            store = me.getWorkLearnsStore(),
+            proxy = store.getProxy(),
+            studentSparkpoint = this.getStudentSparkPoint();
+
+        proxy.setExtraParam('student_id', studentSparkpoint.get('student_id'));
+        proxy.setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
+
+        store.load({
+            callback: this.loadDataIntoView(),
+            scope: this
+        });
+    },
+
     onInitializePanel: function() {
-        this.loadDataIntoView();
+        this.loadWorkLearnsStore();
     },
 
     onHidePanel: function() {
@@ -101,6 +117,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     loadDataIntoView: function() {
         var studentStore = Ext.getStore('Students'),
+            learnsStore = Ext.getStore('work.Learns'),
             sparkData = this.getStudentSparkPoint().getData(),
             studentId = sparkData.student_id,
             studentData = studentStore.findRecord('ID', studentId).getData();
