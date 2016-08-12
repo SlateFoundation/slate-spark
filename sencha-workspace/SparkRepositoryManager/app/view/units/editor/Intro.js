@@ -12,7 +12,6 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                 type: 'hbox',
                 align: 'stretch'
             },
-            margin: '10 0',
             items: [
                 {
                     width: 256,
