@@ -32,6 +32,14 @@
             background-color: mix($neutral-dark-color, $alert-color);
             border-color: mix($neutral-dark-color, $alert-color);
             color: white;
+
+            &::before {
+                content: '\f111'; // fa-circle
+                font-family: FontAwesome;
+                font-size: 11px;
+                margin-left: 4px;
+                position: absolute;
+            }
         }
 
         &.spark-phase-complete,
@@ -85,10 +93,6 @@
                 display: block;
                 display: flex;
             }
-        }
-
-        &.spark-phase-active {
-            text-decoration: underline;
         }
     }
 
