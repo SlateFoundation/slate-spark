@@ -15,6 +15,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         loadingText: null,
         cls: 'spark-gps-studentlist',
         itemCls: 'studentlist-item',
+        itemHeight: 60,
         itemTpl: [
             '<header class="item-header">',
                 '<tpl for="student.getData()">',
