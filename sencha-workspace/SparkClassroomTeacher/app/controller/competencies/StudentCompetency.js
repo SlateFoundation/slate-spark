@@ -75,9 +75,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         proxy.setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
         store.load({
-            callback: this.loadDataIntoView(),
+            callback: this.loadDataIntoView,
             scope: this
         });
+
+        return;
     },
 
     onInitializePanel: function() {
@@ -118,9 +120,45 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     loadDataIntoView: function() {
         var studentStore = Ext.getStore('Students'),
             learnsStore = Ext.getStore('work.Learns'),
+            learnsRawData = learnsStore.getProxy().getReader().rawData,
+            learns = learnsStore.getRange(),
+            learnsRequiredSection = learnsRawData.learns_required.section,
+            learnsRequiredStudent = learnsRawData.learns_required.student,
+            completedLearns = 0,
+            minimumRequired = 0,
+            completedRequiredLearns = 0,
+            requiredLearns = 0,
             sparkData = this.getStudentSparkPoint().getData(),
             studentId = sparkData.student_id,
             studentData = studentStore.findRecord('ID', studentId).getData();
+
+        // Calculate Learns phase status value.
+        if (learnsRawData && learnsRawData.learns_required && learnsRawData.learns_required.site) {
+            minimumRequired = Math.min(learns.length, learnsRawData.learns_required.site);
+        }
+
+        if (learnsRequiredStudent !== null) {
+            minimumRequired = Math.min(learns.length, learnsRequiredStudent);
+        } else if (learnsRequiredSection !== null) {
+            minimumRequired = Math.min(learns.length, learnsRequiredSection);
+        }
+
+        for (var i = 0; i < learns.length; i++) {
+            var learn = learns[i],
+                learnAssignments = learn.get('assignments');
+
+            if (learn.get('completed')) {
+                completedLearns++;
+            }
+
+            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+                if (learn.get('completed')) {
+                    completedRequiredLearns++;
+                }
+                requiredLearns++;
+            }
+        }
 
         // Teachers can only disable an override if a student hasn't completed or had a later phase overridden
         var assessDisabled = !Ext.isEmpty(sparkData.assess_finish_time),
@@ -141,7 +179,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             paceDesc: 'Not Started Yet',
             phases: [{
                 phase: 'Learn',
-                status: '0/6',
+                status: completedRequiredLearns + '/' + requiredLearns,
                 finished: !Ext.isEmpty(sparkData.learn_finish_time),
                 disabled: learnDisabled,
                 checked: learnChecked,
@@ -180,13 +218,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         if(allFinished) {
             describeText.hide();
             giveCreditBtn.hide();
-            return;
+        } else {
+            describeText.show();
+            giveCreditBtn.show();
+            describeText.setLabel('Please explain how ' + studentData.FirstName + ' earned credit:');
+            describeText.setValue(sparkData.override_reason);
         }
 
-        describeText.show();
-        giveCreditBtn.show();
-        describeText.setLabel('Please explain how ' + studentData.FirstName + ' earned credit:');
-        describeText.setValue(sparkData.override_reason);
+        this.getStudentCompetencyPopover().unmask();
     },
 
     bindClickPopoverTable: function(cmp) {
