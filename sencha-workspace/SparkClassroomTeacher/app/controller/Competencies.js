@@ -38,6 +38,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         'competencies.Container'
     ],
 
+    requires: [
+        'SparkClassroomTeacher.view.competencies.StudentCompetencyPanel'
+    ],
+
     stores: [
         'Activities@SparkClassroom.store',
         'Students@SparkClassroom.store'
