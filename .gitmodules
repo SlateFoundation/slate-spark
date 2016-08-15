@@ -39,3 +39,5 @@
 	path = sencha-workspace/ext-6.0.1.250
 	url = https://github.com/JarvusInnovations/extjs.git
 	branch = 6.0.1.250
+[submodule "jarvus-hotfixes"]
+	branch = ext/6/0/1/250
