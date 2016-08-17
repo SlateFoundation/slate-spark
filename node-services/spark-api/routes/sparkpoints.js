@@ -99,7 +99,7 @@ function* suggestedGetHandler() {
     ctx.assert(sectionId > 0, 'section_id is required', 400);
     ctx.assert(studentId > 0, 'Non-student users must provide a student_id', 400);
 
-    results = yield ctx.pgp.one(`
+    results = yield ctx.pgp.one(/*language=SQL*/ `
     WITH past AS (
             SELECT sp.code,
                    ss.sparkpoint_id AS id,
@@ -118,6 +118,13 @@ function* suggestedGetHandler() {
                    ss.conference_group_id,
                    ss.selected_apply_id,
                    ss.selected_apply_resource_id,
+                       
+                   /* TODO: Do we need these here? */                   
+                   ss.learn_pace_target,
+                   ss.conference_pace_target,
+                   ss.apply_pace_target,
+                   ss.assess_pace_target,
+               
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
@@ -152,6 +159,13 @@ function* suggestedGetHandler() {
                    ss.conference_group_id,
                    ss.selected_apply_id,
                    ss.selected_apply_resource_id,
+                                      
+                   /* TODO: Do we need these here? */                   
+                   ss.learn_pace_target,
+                   ss.conference_pace_target,
+                   ss.apply_pace_target,
+                   ss.assess_pace_target,
+                   
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
@@ -186,6 +200,13 @@ function* suggestedGetHandler() {
                    ss.conference_group_id,
                    ss.selected_apply_id,
                    ss.selected_apply_resource_id,
+                   
+                   /* TODO: Do we need these here? */                   
+                   ss.learn_pace_target,
+                   ss.conference_pace_target,
+                   ss.apply_pace_target,
+                   ss.assess_pace_target,
+                   
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,

@@ -50,6 +50,12 @@ function *getHandler() {
                selected_apply_resource_id,
                learn_mastery_check_score,
                conference_mastery_check_score,
+               
+               learn_pace_target,
+               conference_pace_target,
+               apply_pace_target,
+               assess_pace_target,
+               
                code AS sparkpoint
           FROM (
             SELECT student_id,
@@ -108,6 +114,10 @@ function *getHandler() {
                learn_mastery_check_score,
                conference_mastery_check_score,
                code AS sparkpoint,
+               learn_pace_target,
+               conference_pace_target,
+               apply_pace_target,
+               assess_pace_target,
                rn::INTEGER AS student_sequence
           FROM (
             SELECT student_id,
@@ -141,12 +151,12 @@ function *getHandler() {
     }
 }
 
-function *patchHandler(req, res, next) {
+function *patchHandler() {
     var ctx = this,
         sectionId = ctx.query.section_id,
         studentId = ctx.studentId,
         sparkpointId = ctx.query.sparkpoint_id,
-        updateLastAccessed = true,
+        updateSectionStudentActiveSparkpoint = true,
         recordToUpsert = util.recordToUpsert.bind(ctx),
         activity = ctx.request.body,
         vals = new util.Values(),
@@ -174,7 +184,7 @@ function *patchHandler(req, res, next) {
 
             record[key] = val;
             // When only a mastery_score value is set, we do not update the last_accessed time
-            updateLastAccessed = false;
+            updateSectionStudentActiveSparkpoint = false;
         } else if (key in ctx.introspection.tables.student_sparkpoint) {
             record[key] = val;
         }
@@ -190,25 +200,27 @@ function *patchHandler(req, res, next) {
         activity.conference_override_time &&
         activity.apply_override_time &&
         activity.assess_override_time) {
-        updateLastAccessed = false;
+        updateSectionStudentActiveSparkpoint = false;
     }
 
-    if (updateLastAccessed) {
-        let record = {
+    if (updateSectionStudentActiveSparkpoint) {
+        let ssasRecord = {
             section_id: sectionId,
             sparkpoint_id: sparkpointId,
             student_id: studentId
         };
 
         if (ctx.isStudent) {
-            record.last_accessed = new Date().toUTCString();
+             ssasRecord.last_accessed = new Date().toUTCString();
         } else {
-            record.recommended_time = new Date().toUTCString();
-            record.recommender_id = ctx.userId;
+             ssasRecord.recommended_time = record.recommended_time || new Date().toUTCString();
+             ssasRecord.recommender_id = ctx.userId;
         }
 
-        yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint', record, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
+        yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint',  ssasRecord, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
     }
+
+    delete record.recommended_time;
 
     // Validate record and generate SQL for student_sparkpoint table
     record.sparkpoint_id = sparkpointId;
