@@ -6,7 +6,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Learn', {
     xtype: 's2m-units-editor-learn',
 
     title: 'Learn &amp; Practice',
-    componentCls: 's2m-units-editor-intro',
+    componentCls: 's2m-units-editor-learn',
 
     layout: 'fit',
     items: [
