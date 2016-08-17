@@ -15,7 +15,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     ],
 
     requires: [
-        'SparkClassroomTeacher.view.competencies.StudentCompetencyPanel'
+        'SparkClassroomTeacher.view.competencies.StudentCompetencyPanel',
+        'SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow'
     ],
 
     stores: [
@@ -371,17 +372,16 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         grid.suspendEvents();
 
         Ext.each(studentStore.getData().items, function(student) {
+            var studentUsername = student.get('Username');
             grid.addColumn({
                 xtype: studentCompetencyColumnXType,
-                dataIndex: student.get('Username'),
+                dataIndex: studentUsername,
 
                 listeners: {
                     click: {
                         element: 'element',
                         delegate: '.fa-wrench',
-                        fn: function(ev, t) {
-                            Ext.create('SparkClassroom.column.panel.SparkpointsConfig').show();
-                        }
+                        fn: Ext.Function.pass(this.showSparkpointsConfig, [studentUsername], this)
                     }
                 },
 
@@ -396,12 +396,23 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     '</div>'
                 ].join(' ')
             });
-        });
+        }, this);
 
         grid.setMasked(false);
         grid.resumeEvents();
 
         me.populateCompetenciesGrid();
+    },
 
+    showSparkpointsConfig: function(studentUsername) {
+        var sparkpointsConfigWin = Ext.ComponentQuery.query('spark-sparkpointsconfig-window');
+
+        if (sparkpointsConfigWin.length == 0) {
+            sparkpointsConfigWin = Ext.create('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow');
+        } else {
+            sparkpointsConfigWin = sparkpointsConfigWin[0];
+        }
+
+        sparkpointsConfigWin.fireEventArgs("initialize", [studentUsername]);
     }
 });

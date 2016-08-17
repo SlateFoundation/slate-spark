@@ -50,6 +50,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         'Competencies',
         'competencies.StudentCompetency',
+        'competencies.SparkpointsConfig',
 
         'Activity',
         'Help',
