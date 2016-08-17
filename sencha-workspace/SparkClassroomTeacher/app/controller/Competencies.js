@@ -114,8 +114,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
-        var targetEl = Ext.fly(e.target);
-        var popover = Ext.ComponentQuery.query('spark-studentcompetency-popover');
+        var targetEl = Ext.fly(e.target),
+            popover = Ext.ComponentQuery.query('spark-studentcompetency-popover')
 
         if(!Ext.isEmpty(popover[0])) {
             popover[0].hide();
@@ -125,7 +125,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             return;
         }
 
-        var studentId = targetEl.getAttribute('data-student-id')
+        var studentId = targetEl.getAttribute('data-student-id'),
+            studentSparkpointId = studentId + '_' + rec.getData().id
 
         if(Ext.isEmpty(studentId)){
             return;
@@ -133,21 +134,17 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         if(Ext.isEmpty(popover)) {
             popover = Ext.create('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
-                dataIndex: targetEl.getAttribute('data-student-id') + '_' + rec.getData().id,
                 modal: {
                     style: 'opacity: 0'
                 },
                 hideOnMaskTap: true
             });
 
-            popover.showBy(Ext.fly(e.target), 'tc-cc?');
         } else {
             popover = popover[0];
-            popover.dataIndex = targetEl.getAttribute('data-student-id') + '_' + rec.getData().id;
-            popover.showBy(Ext.fly(e.target), 'tc-cc?');
-            // show event only fires the first time you showBy.
-            popover.fireEvent('show');
         }
+
+        popover.fireEventArgs('loadstudentsparkpoint', [studentSparkpointId, Ext.fly(e.target)]);
     },
 
     onSelectedSectionChange: function(appCt, section, oldSection) {
@@ -413,6 +410,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             sparkpointsConfigWin = sparkpointsConfigWin[0];
         }
 
-        sparkpointsConfigWin.fireEventArgs("initialize", [studentUsername]);
+        sparkpointsConfigWin.fireEventArgs("loadnewstudent", [studentUsername]);
     }
 });

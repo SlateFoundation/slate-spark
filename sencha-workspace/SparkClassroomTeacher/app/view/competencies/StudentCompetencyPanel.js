@@ -1,3 +1,9 @@
+/**
+ * A floating panel that displays Student Sparkpoint phase details and provides override options for finishing phases.
+ *
+ * ## Events
+ * loadstudentsparkpoint: fired when the popover is loading a different student from the parent grid.
+ */
 Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
     extend: 'SparkClassroom.column.panel.Panel',
     xtype: 'spark-studentcompetency-popover',

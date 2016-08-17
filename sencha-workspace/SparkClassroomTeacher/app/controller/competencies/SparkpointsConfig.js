@@ -30,8 +30,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         },
 
         sparkpointsConfigWindow: {
-            initialize: {
-                fn: 'onInitializeWindow'
+            loadnewstudent: {
+                fn: 'onInitializeStudent'
             }
         },
 
@@ -41,7 +41,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         }
     },
-    onInitializeWindow: function(studentUsername) {
+    onInitializeStudent: function(studentUsername) {
         this.loadDataIntoView(studentUsername);
         this.getSparkpointsConfigWindow().show();
     },
