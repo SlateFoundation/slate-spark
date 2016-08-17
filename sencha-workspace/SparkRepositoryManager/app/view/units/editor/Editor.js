@@ -2,7 +2,11 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
     extend: 'Ext.Panel',
     requires: [
         'SparkRepositoryManager.view.units.editor.Intro',
-        'SparkRepositoryManager.view.units.editor.Learn'
+        'SparkRepositoryManager.view.units.editor.Learn',
+        'SparkRepositoryManager.view.units.editor.Questions',
+        'SparkRepositoryManager.view.units.editor.Resources',
+        'SparkRepositoryManager.view.units.editor.Apply',
+        'SparkRepositoryManager.view.units.editor.Assess'
     ],
     xtype: 's2m-units-editor',
 
@@ -69,16 +73,16 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
                             xtype: 's2m-units-editor-learn'
                         },
                         {
-                            title: 'Conference Questions'
+                            xtype: 's2m-units-editor-questions'
                         },
                         {
-                            title: 'Conference Resources'
+                            xtype: 's2m-units-editor-resources'
                         },
                         {
-                            title: 'Apply'
+                            xtype: 's2m-units-editor-apply'
                         },
                         {
-                            title: 'Assess'
+                            xtype: 's2m-units-editor-assess'
                         }
                     ]
                 }
