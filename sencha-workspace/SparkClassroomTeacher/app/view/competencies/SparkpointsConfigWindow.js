@@ -4,7 +4,6 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
 
     config: {
         cls: 'spark-sparkpointsconfig-window',
-        title: 'Manage Alexandra’s Sparkpoints',
         width: 640,
         buttons: [
             {
@@ -16,7 +15,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
         items: [
             {
                 xtype: 'component',
-                cls: 'sparkpointsconfig-table',
+                cls: 'sparkpointsconfig-table-current',
                 tpl: [
                     '<table>',
                         '<thead>',
@@ -67,32 +66,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
             },
             {
                 xtype: 'component',
-                data: [
-                    {
-                        code: 'SCI.G5.LS1-1',
-                        L: 2,
-                        C: 3,
-                        Ap: 5,
-                        As: 6,
-                        completion: 6
-                    },
-                    {
-                        code: 'SCI.G9-12.ESS.1-2',
-                        L: 2,
-                        C: 3,
-                        Ap: 4,
-                        As: 5,
-                        completion: 5
-                    },
-                    {
-                        code: 'SS.G9-12.6.2.C.3.d',
-                        L: 3,
-                        C: 4,
-                        Ap: 5,
-                        As: 7,
-                        completion: 7
-                    }
-                ],
+                cls: 'sparkpointsconfig-table-queue',
                 tpl: [
                     '<table>',
                         '<thead>',

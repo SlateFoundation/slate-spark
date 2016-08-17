@@ -18,7 +18,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     refs: {
         competenciesGrid: 'spark-competencies spark-competencies-grid',
         sparkpointsConfigWindow: 'spark-sparkpointsconfig-window',
-        sparkpointsConfigTable: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table]',
+        configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-current]',
+        configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-queue]',
         doneButton: 'spark-sparkpointsconfig-window button[cls*=sparkpointsconfig-done-button]'
     },
 
@@ -47,8 +48,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     loadDataIntoView: function(studentUsername) {
+        var studentStore = this.getStudentsStore(),
+            studentRec = studentStore.findRecord("Username", studentUsername),
+            studentData = studentRec.getData();
+
+        this.getSparkpointsConfigWindow().setTitle(studentData.FullName);
+
         // TEMPORARY
-        this.getSparkpointsConfigTable().updateData([
+        this.getConfigTableCurrent().updateData([
             {
                 code: 'SCI.G5.LS1-1',
                 L: 1,
@@ -72,6 +79,33 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 Ap: 5,
                 As: 6,
                 completion: 6
+            }
+        ]);
+
+        this.getConfigTableQueue().updateData([
+            {
+                code: 'SCI.G5.LS1-1',
+                L: 2,
+                C: 3,
+                Ap: 5,
+                As: 6,
+                completion: 6
+            },
+            {
+                code: 'SCI.G9-12.ESS.1-2',
+                L: 2,
+                C: 3,
+                Ap: 4,
+                As: 5,
+                completion: 5
+            },
+            {
+                code: 'SS.G9-12.6.2.C.3.d',
+                L: 3,
+                C: 4,
+                Ap: 5,
+                As: 7,
+                completion: 7
             }
         ]);
     },

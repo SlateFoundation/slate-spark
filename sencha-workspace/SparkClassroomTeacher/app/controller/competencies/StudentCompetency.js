@@ -133,8 +133,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     },
 
     loadDataIntoView: function() {
-        var studentStore = Ext.getStore('Students'),
-            learnsStore = Ext.getStore('work.Learns'),
+        var studentStore = this.getStudentsStore(),
+            learnsStore = this.getWorkLearnsStore(),
             learnsRawData = learnsStore.getProxy().getReader().rawData,
             learns = learnsStore.getRange(),
             learnsRequiredSection = learnsRawData.learns_required.section,
