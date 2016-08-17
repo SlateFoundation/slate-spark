@@ -81,6 +81,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         store.load({
             callback: function() {
                 this.loadDataIntoView();
+                this.getCompetenciesGrid().unmask();
                 this.getStudentCompetencyPopover().showBy(this.showByTarget, 'tc-cc?');
             },
             scope: this
@@ -90,6 +91,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     },
 
     onInitializeStudentSparkpoint: function(studentSparkpointId, target) {
+        this.getCompetenciesGrid().setMasked({
+            xtype: 'loadmask',
+            message: 'Loading Student Competency'
+        });
+
         this.showByTarget = target;
         this.loadWorkLearnsStore(studentSparkpointId);
     },
