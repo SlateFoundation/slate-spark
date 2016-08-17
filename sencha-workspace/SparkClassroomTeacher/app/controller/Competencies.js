@@ -154,8 +154,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         me.maskCompetenciesGrid();
         me.populateCompetencyColumns();
     },
-
+/* TODO: Ryan - I have no idea how to resolve this conflict
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
+<<<<<<< c8c3f2f75d11929faf83f2031c86858f5bff3bb0
         var me = this,
             targetEl = Ext.fly(e.target),
             activityStore = me.getActivitiesStore(),
@@ -167,11 +168,20 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             if (Ext.isEmpty(studentId)) {
                 return;
             }
+=======
+        var targetEl = Ext.fly(e.target),
+            popover = Ext.ComponentQuery.query('spark-studentcompetency-popover')
+
+        if(!Ext.isEmpty(popover[0])) {
+            popover[0].hide();
+        }
+>>>>>>> Add events for loading info into StudentCompetency popover and SparkpointsConfigWindow
 
             me.updateStudentSparkpoint(studentSparkPoint, Ext.fly(e.target));
         }
     },
 
+<<<<<<< c8c3f2f75d11929faf83f2031c86858f5bff3bb0
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         Ext.select('.spark-studentcompetency-popover').each(function() {
             this.destroy();
@@ -182,7 +192,30 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         });
 
         compPanel.showBy(Ext.fly(e.target), 'tc-cc?');
+=======
+        var studentId = targetEl.getAttribute('data-student-id'),
+            studentSparkpointId = studentId + '_' + rec.getData().id
+
+        if(Ext.isEmpty(studentId)){
+            return;
+        }
+
+        if(Ext.isEmpty(popover)) {
+            popover = Ext.create('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
+                modal: {
+                    style: 'opacity: 0'
+                },
+                hideOnMaskTap: true
+            });
+
+        } else {
+            popover = popover[0];
+        }
+
+        popover.fireEventArgs('loadstudentsparkpoint', [studentSparkpointId, Ext.fly(e.target)]);
+>>>>>>> Add events for loading info into StudentCompetency popover and SparkpointsConfigWindow
     },
+    */
 
     onSelectedSectionChange: function(appCt, section, oldSection) {
         var me = this;
@@ -461,7 +494,15 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         me.populateCompetenciesGrid();
     },
 
-    showSparkpointsConfig: function(studentId) {
-        this.updateActiveStudentId(studentId);
+    showSparkpointsConfig: function(studentUsername) {
+        var sparkpointsConfigWin = Ext.ComponentQuery.query('spark-sparkpointsconfig-window');
+
+        if (sparkpointsConfigWin.length == 0) {
+            sparkpointsConfigWin = Ext.create('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow');
+        } else {
+            sparkpointsConfigWin = sparkpointsConfigWin[0];
+        }
+
+        sparkpointsConfigWin.fireEventArgs('loadnewstudent', [studentUsername]);
     }
 });

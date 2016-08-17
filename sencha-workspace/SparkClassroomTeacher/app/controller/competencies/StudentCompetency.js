@@ -4,6 +4,10 @@
  * ## Responsibilities
  * - Allow teacher to override and provide a reason.
  * - Write override times to the store
+ *
+ * ## Properties
+ * - studentSparkPoint: Passed in when the studentCompetencyPopover is loaded for a student
+ * - showByTarget: Passed in when the studentCompetencyPopover is loaded for a student
  */
 Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     extend: 'Ext.app.Controller',
@@ -77,6 +81,9 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         },
 
         studentCompetencyPopover: {
+            loadstudentsparkpoint: {
+                fn: 'onInitializeStudentSparkpoint'
+            },
             hide: {
                 fn: 'onHidePanel'
             }
@@ -106,7 +113,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }
         }
     },
-
+/* TODO: Ryan - not sure how to resolve these ones either
+<<<<<<< c8c3f2f75d11929faf83f2031c86858f5bff3bb0
 
     // event handlers
     onInitializeStudentSparkpoint: function(studentSparkpoint, showByTarget) {
@@ -121,23 +129,45 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             xtype: 'loadmask',
             message: 'Loading Student Competency'
         });
+=======
+    loadWorkLearnsStore: function(studentSparkpointId) {
+        var me = this,
+            store = me.getWorkLearnsStore(),
+            proxy = store.getProxy(),
+            studentSparkpoint = this.getStudentSparkPoint(studentSparkpointId);
+>>>>>>> Add events for loading info into StudentCompetency popover and SparkpointsConfigWindow
 
         proxy.setExtraParam('student_id', studentSparkpoint.get('student_id'));
         proxy.setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
         store.load({
             callback: function() {
+<<<<<<< c8c3f2f75d11929faf83f2031c86858f5bff3bb0
                 var popover = me.getStudentCompetencyPopover();
 
                 me.loadDataIntoView();
                 me.getCompetenciesGrid().unmask();
                 popover.showBy(showByTarget, 'tc-cc?');
             }
+=======
+                this.loadDataIntoView();
+                this.getStudentCompetencyPopover().showBy(this.showByTarget, 'tc-cc?');
+            },
+            scope: this
+>>>>>>> Add events for loading info into StudentCompetency popover and SparkpointsConfigWindow
         });
 
         return;
     },
 
+<<<<<<< c8c3f2f75d11929faf83f2031c86858f5bff3bb0
+=======
+    onInitializeStudentSparkpoint: function(studentSparkpointId, target) {
+        this.showByTarget = target;
+        this.loadWorkLearnsStore(studentSparkpointId);
+    },
+
+>>>>>>> Add events for loading info into StudentCompetency popover and SparkpointsConfigWindow
     onHidePanel: function() {
         var model = this.getStudentSparkpoint();
 
@@ -145,7 +175,37 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             model.reject();
         }
     },
+*/
 
+    /**
+     *
+     * @param {String} studentSparkpointId (Optional)
+     * @returns {Ext.data.Model}
+     */
+    getStudentSparkPoint: function(studentSparkpointId) {
+        if(Ext.isEmpty(this.studentSparkPoint) || !Ext.isEmpty(studentSparkpointId)) {
+            var activityStore = Ext.getStore('Activities');
+            this.studentSparkPoint = activityStore.getAt(activityStore.find('student_sparkpointid', studentSparkpointId));
+        }
+
+        return this.studentSparkPoint;
+    },
+
+    getLearnCheckbox: function() {
+        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Learn"]').elements[0]);
+    },
+
+    getConferenceCheckbox: function() {
+        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Conference"]').elements[0]);
+    },
+
+    getApplyCheckbox: function() {
+        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Apply"]').elements[0]);
+    },
+
+    getAssessCheckbox: function() {
+        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Assess"]').elements[0]);
+    },
 
     // custom controller methods
     loadDataIntoView: function() {

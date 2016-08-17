@@ -58,13 +58,18 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         },
 
+        sparkpointsConfigWindow: {
+            loadnewstudent: {
+                fn: 'onInitializeStudent'
+            }
+        },
+
         doneButton: {
             tap: {
                 fn: 'onDoneTap'
             }
         }
     },
-
     initializeStudent: function(studentId) {
         var me = this;
 
