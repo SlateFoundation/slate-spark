@@ -95,13 +95,13 @@
     "sass": {
         /**
          * The root namespace to use when mapping *.scss files to classes in the
-         * sass/src and sass/var directories. For example, "AggregridExample.view.Foo" would
-         * map to "sass/src/view/Foo.scss". If we changed this to "AggregridExample.view" then
+         * sass/src and sass/var directories. For example, "SparkRepositoryManager.view.Foo" would
+         * map to "sass/src/view/Foo.scss". If we changed this to "SparkRepositoryManager.view" then
          * it would map to "sass/src/Foo.scss". To style classes outside the app's
          * root namespace, change this to "". Doing so would change the mapping of
-         * "AggregridExample.view.Foo" to "sass/src/AggregridExample/view/Foo.scss".
+         * "SparkRepositoryManager.view.Foo" to "sass/src/SparkRepositoryManager/view/Foo.scss".
          */
-        "namespace": "AggregridExample",
+        "namespace": "SparkRepositoryManager",
 
         /**
          * File used to save sass variables edited via Sencha Inspector. This file
