@@ -14,11 +14,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         'competencies.Container'
     ],
 
-    requires: [
-        'SparkClassroomTeacher.view.competencies.StudentCompetencyPanel',
-        'SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow'
-    ],
-
     stores: [
         'Activities@SparkClassroom.store',
         'Students@SparkClassroom.store'
@@ -38,8 +33,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         },
 
         appCt: 'spark-teacher-appct',
-
-        competenciesGrid: 'spark-competencies spark-competencies-grid'
+        competenciesGrid: 'spark-competencies spark-competencies-grid',
+        studentCompetencyPopover: 'spark-studentcompetency-popover',
+        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window'
     },
 
     control: {
@@ -115,7 +111,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var targetEl = Ext.fly(e.target),
-            popover = Ext.ComponentQuery.query('spark-studentcompetency-popover')
+            popover = this.getStudentCompetencyPopover(),
+            activityStore = Ext.getStore('Activities'),
+            studentId = targetEl.getAttribute('data-student-id'),
+            studentSparkpointId = studentId + '_' + rec.getData().id,
+            studentSparkPoint = activityStore.getAt(activityStore.find('student_sparkpointid', studentSparkpointId));
 
         if(!Ext.isEmpty(popover[0])) {
             popover[0].hide();
@@ -125,26 +125,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             return;
         }
 
-        var studentId = targetEl.getAttribute('data-student-id'),
-            studentSparkpointId = studentId + '_' + rec.getData().id
-
         if(Ext.isEmpty(studentId)){
             return;
         }
 
-        if(Ext.isEmpty(popover)) {
-            popover = Ext.create('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
-                modal: {
-                    style: 'opacity: 0'
-                },
-                hideOnMaskTap: true
-            });
-
-        } else {
-            popover = popover[0];
-        }
-
-        popover.fireEventArgs('loadstudentsparkpoint', [studentSparkpointId, Ext.fly(e.target)]);
+        popover.updateShowByTarget(Ext.fly(e.target));
+        popover.updateStudentSparkpoint(studentSparkPoint);
     },
 
     onSelectedSectionChange: function(appCt, section, oldSection) {

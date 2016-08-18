@@ -4,13 +4,31 @@
  * ## Responsibilities
  * - Allow teacher to override and provide a reason.
  * - Write override times to the store
- *
- * ## Properties
- * - studentSparkPoint: Passed in when the studentCompetencyPopover is loaded for a student
- * - showByTarget: Passed in when the studentCompetencyPopover is loaded for a student
  */
 Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     extend: 'Ext.app.Controller',
+
+
+    // mutable state
+    config: {
+        /**
+         * @private
+         * Passed in when the studentCompetencyPopover is loaded for a student
+         */
+        studentSparkPoint: null,
+
+        /**
+         * @private
+         * The target cell block element to show the studentCompetencyPopover at.
+         */
+        showByTarget: null
+    },
+
+
+    // dependencies
+    views: [
+        'competencies.StudentCompetencyPanel'
+    ],
 
     stores: [
         'Activities@SparkClassroom.store',
@@ -18,9 +36,17 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         'work.Learns@SparkClassroom.store'
     ],
 
+
+    // component references
     refs: {
         competenciesGrid: 'spark-competencies spark-competencies-grid',
-        studentCompetencyPopover: 'spark-studentcompetency-popover',
+
+        studentCompetencyPopover: {
+            selector: 'spark-studentcompetency-popover',
+            xtype: 'spark-studentcompetency-popover',
+            autoCreate: true
+        },
+
         popoverTable: 'spark-studentcompetency-popover component[cls=studentcompetency-popover-table]',
         addToQueueButton: 'spark-studentcompetency-popover button[cls=add-to-queue-button]',
         addNextUpButton: 'spark-studentcompetency-popover button[cls=add-next-up-button]',
@@ -28,6 +54,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]'
     },
 
+
+    // entry points
     control: {
         store: {
             "#Activities": {
@@ -36,9 +64,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         },
 
         studentCompetencyPopover: {
-            loadstudentsparkpoint: {
-                fn: 'onInitializeStudentSparkpoint'
-            },
             hide: {
                 fn: 'onHidePanel'
             }
@@ -69,11 +94,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
     },
 
-    loadWorkLearnsStore: function(studentSparkpointId) {
+
+    // controller templates method overrides
+    loadWorkLearnsStore: function() {
         var me = this,
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy(),
-            studentSparkpoint = this.getStudentSparkPoint(studentSparkpointId);
+            studentSparkpoint = this.getStudentSparkPoint();
 
         proxy.setExtraParam('student_id', studentSparkpoint.get('student_id'));
         proxy.setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
@@ -90,14 +117,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         return;
     },
 
-    onInitializeStudentSparkpoint: function(studentSparkpointId, target) {
+
+    // event handlers
+    onInitializeStudentSparkpoint: function() {
         this.getCompetenciesGrid().setMasked({
             xtype: 'loadmask',
             message: 'Loading Student Competency'
         });
 
-        this.showByTarget = target;
-        this.loadWorkLearnsStore(studentSparkpointId);
+        this.loadWorkLearnsStore();
     },
 
     onHidePanel: function() {
@@ -108,20 +136,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
     },
 
-    /**
-     *
-     * @param {String} studentSparkpointId (Optional)
-     * @returns {Ext.data.Model}
-     */
-    getStudentSparkPoint: function(studentSparkpointId) {
-        if(Ext.isEmpty(this.studentSparkPoint) || !Ext.isEmpty(studentSparkpointId)) {
-            var activityStore = Ext.getStore('Activities');
-            this.studentSparkPoint = activityStore.getAt(activityStore.find('student_sparkpointid', studentSparkpointId));
-        }
 
-        return this.studentSparkPoint;
-    },
-
+    // custom controller methods
     getLearnCheckbox: function() {
         return Ext.get(this.getPopoverTable().element.select('input[data-phase="Learn"]').elements[0]);
     },
@@ -332,5 +348,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     addNextUp: function() {
 
+    },
+
+    updateStudentSparkpoint: function(sparkpoint) {
+        this.studentSparkpoint = sparkpoint;
+        this.onInitializeStudentSparkpoint()
     }
 });

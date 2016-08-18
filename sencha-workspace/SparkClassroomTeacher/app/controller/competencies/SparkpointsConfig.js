@@ -9,6 +9,10 @@
 Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     extend: 'Ext.app.Controller',
 
+    views: [
+        'competencies.SparkpointsConfigWindow'
+    ],
+
     stores: [
         'Activities@SparkClassroom.store',
         'Students@SparkClassroom.store',
@@ -17,7 +21,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
     refs: {
         competenciesGrid: 'spark-competencies spark-competencies-grid',
-        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window',
+
+        sparkpointsConfigWindow: {
+            selector: 'spark-sparkpointsconfig-window',
+            xtype: 'spark-sparkpointsconfig-window',
+            autoCreate: true
+        },
+
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-queue]',
         doneButton: 'spark-sparkpointsconfig-window button[cls*=sparkpointsconfig-done-button]'
