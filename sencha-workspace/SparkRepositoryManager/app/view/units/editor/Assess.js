@@ -16,7 +16,8 @@ Ext.define('SparkRepositoryManager.view.units.editor.Assess', {
         {
             xtype: 'button',
             scale: 'large',
-            text: 'Go to Illuminate to Create Assessment'
+            text: 'Go to Illuminate to Create Assessment',
+            href: 'https://www.illuminateed.com/'
         }
     ]
 });
