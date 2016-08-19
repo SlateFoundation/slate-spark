@@ -18,6 +18,14 @@
     .x-action-col-glyph {
         margin: 0;
     }
+
+    .x-grid-empty {
+        background-color: white;
+        font-style: italic;
+        font-size: medium;
+        padding: 1.25em;
+        text-align: center;
+    }
 }
 
 .s2m-units-multiselector-unitgrid {
