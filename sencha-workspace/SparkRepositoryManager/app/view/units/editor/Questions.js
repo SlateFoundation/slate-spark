@@ -71,29 +71,6 @@ Ext.define('SparkRepositoryManager.view.units.editor.Questions', {
                         title: 'How much time do you spend each week using this skill?'
                     }
                 ]
-            },
-            unitStore: {
-                fields: [
-                    {
-                        name: 'ordinal',
-                        type: 'integer'
-                    },
-                    'title'
-                ],
-                data: [
-                    {
-                        ordinal: 1,
-                        title: 'What are some practical ways to explain this?'
-                    },
-                    {
-                        ordinal: 2,
-                        title: 'How would you explain this Sparkpoint to an alien?'
-                    },
-                    {
-                        ordinal: 3,
-                        title: 'How much time do you spend each week using this skill?'
-                    }
-                ]
             }
         }
     ]
