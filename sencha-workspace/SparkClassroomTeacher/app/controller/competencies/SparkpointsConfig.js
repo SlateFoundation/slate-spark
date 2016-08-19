@@ -9,6 +9,15 @@
 Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     extend: 'Ext.app.Controller',
 
+    config: {
+
+        /**
+         * @private
+         * Handle for the student in focus
+         */
+        activeStudentId: null
+    },
+
     views: [
         'competencies.SparkpointsConfigWindow'
     ],
@@ -33,16 +42,19 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         doneButton: 'spark-sparkpointsconfig-window button[cls*=sparkpointsconfig-done-button]'
     },
 
+    // entry points
+    listen: {
+        controller: {
+            '#': {
+                activestudentidchange: 'initializeStudent'
+            }
+        }
+    },
+
     control: {
         store: {
-            "#Activities": {
+            '#Activities': {
                 update: 'loadDataIntoView'
-            }
-        },
-
-        sparkpointsConfigWindow: {
-            loadnewstudent: {
-                fn: 'onInitializeStudent'
             }
         },
 
@@ -52,19 +64,22 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         }
     },
-    onInitializeStudent: function(studentUsername) {
-        this.loadDataIntoView(studentUsername);
+
+    initializeStudent: function(studentId) {
+        this.setActiveStudentId(studentId);
+        this.loadDataIntoView();
         this.getSparkpointsConfigWindow().show();
     },
 
-    loadDataIntoView: function(studentUsername) {
+    loadDataIntoView: function() {
         var studentStore = this.getStudentsStore(),
-            studentRec = studentStore.findRecord("Username", studentUsername),
+            studentId = this.getActiveStudentId(),
+            studentRec = studentStore.getById(studentId),
             studentData = studentRec.getData();
 
         this.getSparkpointsConfigWindow().setTitle(studentData.FullName);
 
-        // TEMPORARY
+        // TEMPORARY static data
         this.getConfigTableCurrent().updateData([
             {
                 code: 'SCI.G5.LS1-1',

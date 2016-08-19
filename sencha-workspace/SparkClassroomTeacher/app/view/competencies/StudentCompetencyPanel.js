@@ -10,6 +10,13 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
 
     config: {
         cls: 'spark-studentcompetency-popover',
+
+        modal: {
+            style: 'opacity: 0'
+        },
+
+        hideOnMaskTap: true,
+
         items: [
             {
                 xtype: 'component',

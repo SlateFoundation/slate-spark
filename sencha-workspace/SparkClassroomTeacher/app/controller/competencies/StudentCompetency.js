@@ -11,11 +11,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     // mutable state
     config: {
+
         /**
          * @private
          * Passed in when the studentCompetencyPopover is loaded for a student
          */
-        studentSparkPoint: null,
+        studentSparkpoint: null,
 
         /**
          * @private
@@ -47,18 +48,30 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             autoCreate: true
         },
 
-        popoverTable: 'spark-studentcompetency-popover component[cls=studentcompetency-popover-table]',
-        addToQueueButton: 'spark-studentcompetency-popover button[cls=add-to-queue-button]',
-        addNextUpButton: 'spark-studentcompetency-popover button[cls=add-next-up-button]',
-        giveCreditButton: 'spark-studentcompetency-popover button[cls=give-credit-button]',
-        describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]'
+        popoverTable: 'spark-studentcompetency-popover component[cls~=studentcompetency-popover-table]',
+        addToQueueButton: 'spark-studentcompetency-popover button[cls~=add-to-queue-button]',
+        addNextUpButton: 'spark-studentcompetency-popover button[cls~=add-next-up-button]',
+        giveCreditButton: 'spark-studentcompetency-popover button[cls~=give-credit-button]',
+        describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]',
+        learnCheckbox: 'spark-studentcompetency-popover input[data-phase="Learn"]',
+        conferenceCheckbox: 'spark-studentcompetency-popover input[data-phase="Conference"]',
+        applyCheckbox: 'spark-studentcompetency-popover input[data-phase="Apply"]',
+        assessCheckbox: 'spark-studentcompetency-popover input[data-phase="Assess"]'
     },
 
 
     // entry points
+    listen: {
+        controller: {
+            '#': {
+                studentsparkpointchange: 'onInitializeStudentSparkpoint'
+            }
+        }
+    },
+
     control: {
         store: {
-            "#Activities": {
+            '#Activities': {
                 update: 'loadDataIntoView'
             }
         },
@@ -95,101 +108,67 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     },
 
 
-    // controller templates method overrides
-    loadWorkLearnsStore: function() {
+    // event handlers
+    onInitializeStudentSparkpoint: function(studentSparkpoint, showByTarget) {
         var me = this,
             store = me.getWorkLearnsStore(),
-            proxy = store.getProxy(),
-            studentSparkpoint = this.getStudentSparkPoint();
+            proxy = store.getProxy()
+
+        me.setStudentSparkpoint(studentSparkpoint);
+        me.setShowByTarget(showByTarget);
+
+        me.getCompetenciesGrid().setMasked({
+            xtype: 'loadmask',
+            message: 'Loading Student Competency'
+        });
 
         proxy.setExtraParam('student_id', studentSparkpoint.get('student_id'));
         proxy.setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
         store.load({
             callback: function() {
-                this.loadDataIntoView();
-                this.getCompetenciesGrid().unmask();
-                this.getStudentCompetencyPopover().showBy(this.showByTarget, 'tc-cc?');
-            },
-            scope: this
+                var popover = me.getStudentCompetencyPopover();
+
+                me.loadDataIntoView();
+                me.getCompetenciesGrid().unmask();
+                popover.showBy(showByTarget, 'tc-cc?');
+            }
         });
 
         return;
     },
 
-
-    // event handlers
-    onInitializeStudentSparkpoint: function() {
-        this.getCompetenciesGrid().setMasked({
-            xtype: 'loadmask',
-            message: 'Loading Student Competency'
-        });
-
-        this.loadWorkLearnsStore();
-    },
-
     onHidePanel: function() {
-        var model = this.getStudentSparkPoint();
+        var model = this.getStudentSparkpoint();
 
-        if(model.dirty) {
+        if (model.dirty) {
             model.reject();
         }
     },
 
 
     // custom controller methods
-    getLearnCheckbox: function() {
-        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Learn"]').elements[0]);
-    },
-
-    getConferenceCheckbox: function() {
-        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Conference"]').elements[0]);
-    },
-
-    getApplyCheckbox: function() {
-        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Apply"]').elements[0]);
-    },
-
-    getAssessCheckbox: function() {
-        return Ext.get(this.getPopoverTable().element.select('input[data-phase="Assess"]').elements[0]);
-    },
-
     loadDataIntoView: function() {
         var studentStore = this.getStudentsStore(),
             learnsStore = this.getWorkLearnsStore(),
-            learnsRawData = learnsStore.getProxy().getReader().rawData,
             learns = learnsStore.getRange(),
-            learnsRequiredSection = learnsRawData.learns_required.section,
-            learnsRequiredStudent = learnsRawData.learns_required.student,
-            completedLearns = 0,
-            minimumRequired = 0,
             completedRequiredLearns = 0,
             requiredLearns = 0,
-            sparkData = this.getStudentSparkPoint().getData(),
+            sparkData = this.getStudentSparkpoint().getData(),
             studentId = sparkData.student_id,
-            studentData = studentStore.findRecord('ID', studentId).getData();
+            studentData = studentStore.findRecord('ID', studentId).getData(),
+            describeText = this.getDescribeTextArea(),
+            giveCreditBtn = this.getGiveCreditButton(),
+            assessDisabled, assessChecked, applyDisabled, applyChecked, confDisabled,
+            confChecked, learnDisabled, learnChecked, allFinished,
+            learn, learnAssignments, count = 0;
 
-        // Calculate Learns phase status value.
-        if (learnsRawData && learnsRawData.learns_required && learnsRawData.learns_required.site) {
-            minimumRequired = Math.min(learns.length, learnsRawData.learns_required.site);
-        }
+        for (; count < learns.length; count++) {
+            learn = learns[count];
+            learnAssignments = learn.get('assignments');
 
-        if (learnsRequiredStudent !== null) {
-            minimumRequired = Math.min(learns.length, learnsRequiredStudent);
-        } else if (learnsRequiredSection !== null) {
-            minimumRequired = Math.min(learns.length, learnsRequiredSection);
-        }
-
-        for (var i = 0; i < learns.length; i++) {
-            var learn = learns[i],
-                learnAssignments = learn.get('assignments');
-
-            if (learn.get('completed')) {
-                completedLearns++;
-            }
-
-            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
-                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+            if (learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required' || learnAssignments.student == 'required') {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
                 }
@@ -198,20 +177,20 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
 
         // Teachers can only disable an override if a student hasn't completed or had a later phase overridden
-        var assessDisabled = !Ext.isEmpty(sparkData.assess_finish_time),
-            assessChecked = assessDisabled || !Ext.isEmpty(sparkData.assess_override_time),
-            applyDisabled  = assessDisabled || assessChecked || !Ext.isEmpty(sparkData.apply_finish_time),
-            applyChecked = applyDisabled || !Ext.isEmpty(sparkData.apply_override_time),
-            confDisabled  = applyDisabled || applyChecked || !Ext.isEmpty(sparkData.conference_finish_time),
-            confChecked = confDisabled || !Ext.isEmpty(sparkData.conference_override_time),
-            learnDisabled  = confDisabled || confChecked || !Ext.isEmpty(sparkData.learn_finish_time),
-            learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time),
-            allFinished = !Ext.isEmpty(sparkData.learn_finish_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
+        assessDisabled = !Ext.isEmpty(sparkData.assess_finish_time);
+        assessChecked = assessDisabled || !Ext.isEmpty(sparkData.assess_override_time);
+        applyDisabled = assessDisabled || assessChecked || !Ext.isEmpty(sparkData.apply_finish_time);
+        applyChecked = applyDisabled || !Ext.isEmpty(sparkData.apply_override_time);
+        confDisabled = applyDisabled || applyChecked || !Ext.isEmpty(sparkData.conference_finish_time);
+        confChecked = confDisabled || !Ext.isEmpty(sparkData.conference_override_time);
+        learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkData.learn_finish_time);
+        learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time);
+        allFinished = !Ext.isEmpty(sparkData.learn_finish_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
 
         this.getPopoverTable().updateData({
             studentName: studentData.FullName,
             sparkpointCode: sparkData.sparkpoint,
-            //TODO: calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
+            // TODO: calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
             paceCls: 'is-not-started',
             paceDesc: 'Not Started Yet',
             phases: [{
@@ -249,10 +228,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }]
         });
 
-        var describeText = this.getDescribeTextArea(),
-            giveCreditBtn = this.getGiveCreditButton();
-
-        if(allFinished) {
+        if (allFinished) {
             describeText.hide();
             giveCreditBtn.hide();
         } else {
@@ -267,6 +243,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     bindClickPopoverTable: function(cmp) {
         var activeCheckboxes = Ext.get(cmp.el.select('input.not-finished', true));
+
         activeCheckboxes.on({
             'change': this.onPhaseCheckChange,
             'scope': this
@@ -277,11 +254,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         var el = Ext.get(target),
             checked = el.is(':checked'),
             phaseName = el.getAttribute('data-phase'),
-            record = this.getStudentSparkPoint(),
+            record = this.getStudentSparkpoint(),
             chainCheckbox,
-            fieldName;
+            fieldName,
+            value;
 
-        switch(phaseName) {
+        switch (phaseName) {
             case 'Learn':
                 fieldName = 'learn_override_time';
                 break;
@@ -297,15 +275,16 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 fieldName = 'assess_override_time';
                 chainCheckbox = this.getApplyCheckbox();
                 break;
+            default:
         }
 
         // If we checked a later phase, ensure that the previous phases are also checked
-        if(!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
-            if(!chainCheckbox.is(':disabled')) {
+        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
+            if (!chainCheckbox.is(':disabled')) {
                 chainCheckbox.dom.disabled = true;
             }
 
-            if(!chainCheckbox.is(':checked')) {
+            if (!chainCheckbox.is(':checked')) {
                 chainCheckbox.dom.checked = true;
             }
 
@@ -313,45 +292,43 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
 
         // If we unchecked this then remove disabled state if the prev phase wasn't finished
-        if(!Ext.isEmpty(chainCheckbox) && !checked) {
-            if(!chainCheckbox.hasCls('finished')) {
+        if (!Ext.isEmpty(chainCheckbox) && !checked) {
+            if (!chainCheckbox.hasCls('finished')) {
                 chainCheckbox.dom.removeAttribute('disabled');
             }
         }
 
-        var value = checked ? new Date() : null;
+        value = checked ? new Date() : null;
 
         record.set(fieldName, value);
     },
 
     giveCredit: function() {
-        var describeText = this.getDescribeTextArea().getValue(),
-            record = this.getStudentSparkPoint();
+        var me = this,
+            describeText = me.getDescribeTextArea().getValue(),
+            record = me.getStudentSparkpoint();
 
         record.set('override_reason', describeText);
 
-        if(record.dirty) {
+        if (record.dirty) {
             record.save({
                 // hide on callback to ensure dirty status is cleared on hide
-                callback: Ext.Function.pass(function() {
-                    this.getStudentCompetencyPopover().hide();
-                }, [], this)
+                callback: function() {
+                    me.getStudentCompetencyPopover().hide();
+                }
             });
-        } else {
-            this.getStudentCompetencyPopover().hide();
+
+            return;
         }
+
+        me.getStudentCompetencyPopover().hide();
     },
 
     addToQueue: function() {
-
+        Ext.emptyFn();
     },
 
     addNextUp: function() {
-
-    },
-
-    updateStudentSparkpoint: function(sparkpoint) {
-        this.studentSparkpoint = sparkpoint;
-        this.onInitializeStudentSparkpoint()
+        Ext.emptyFn();
     }
 });

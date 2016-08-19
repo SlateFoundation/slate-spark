@@ -10,6 +10,30 @@
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
 
+
+    // mutable state
+    config: {
+
+        /**
+         * @private
+         * Passed in when the studentCompetencyPopover is loaded for a student
+         */
+        studentSparkPoint: null,
+
+		/**
+		 * @private
+         * Set when loading the sparkpointsConfigWindow
+         */
+        activeStudentId: null,
+
+        /**
+         * @private
+         * The target cell block element to show the studentCompetencyPopover at.
+         */
+        showByTarget: null,
+    },
+
+
     views: [
         'competencies.Container'
     ],
@@ -19,14 +43,13 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         'Students@SparkClassroom.store'
     ],
 
-    refs:{
+    refs: {
         navBar: 'spark-navbar',
         competenciesNavButton: 'spark-navbar button#competencies',
-
-    	tabsCt: 'spark-teacher-tabscontainer',
+        tabsCt: 'spark-teacher-tabscontainer',
         teacherTabbar: 'spark-teacher-tabbar',
 
-    	competenciesCt: {
+        competenciesCt: {
             selector: 'spark-competencies',
             autoCreate: true,
             xtype: 'spark-competencies'
@@ -63,7 +86,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     listen: {
         store: {
-            "#Activities": {
+            '#Activities': {
                 update: 'onActivitiesStoreUpdate'
             },
             '#Students': {
@@ -80,18 +103,35 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     routes: {
-      	'competencies': 'showCompetencies'
+        'competencies': 'showCompetencies'
     },
 
 
+    // config handlers
+    updateStudentSparkpoint: function(sparkpoint, target) {
+        var me = this;
+
+        me.studentSparkpoint = sparkpoint;
+        me.showByTarget = target;
+        me.getApplication().fireEvent('studentsparkpointchange', sparkpoint, target);
+    },
+
+    updateActiveStudentId: function(studentId) {
+        var me = this;
+
+        me.activeStudentId = studentId;
+        me.getApplication().fireEvent('activestudentidchange', studentId);
+    },
+
     // route handlers
     showCompetencies: function() {
-        var tabsCt = this.getTabsCt();
+        var me = this,
+            tabsCt = me.getTabsCt();
 
-        this.doHighlightTabbars();
+        me.doHighlightTabbars();
 
         tabsCt.removeAll();
-        tabsCt.add(this.getCompetenciesCt());
+        tabsCt.add(me.getCompetenciesCt());
     },
 
 
@@ -104,66 +144,64 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         this.getNavBar().setSelectedButton(this.getCompetenciesNavButton());
     },
 
-    onCompetenciesGridActivate: function(grid) {
-        this.maskCompetenciesGrid();
-        this.populateCompetencyColumns();
+    onCompetenciesGridActivate: function() {
+        var me = this;
+
+        me.maskCompetenciesGrid();
+        me.populateCompetencyColumns();
     },
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
-        var targetEl = Ext.fly(e.target),
-            popover = this.getStudentCompetencyPopover(),
-            activityStore = Ext.getStore('Activities'),
+        var me = this,
+            targetEl = Ext.fly(e.target),
+            activityStore = this.getActivitiesStore(),
             studentId = targetEl.getAttribute('data-student-id'),
             studentSparkpointId = studentId + '_' + rec.getData().id,
             studentSparkPoint = activityStore.getAt(activityStore.find('student_sparkpointid', studentSparkpointId));
 
-        if(!Ext.isEmpty(popover[0])) {
-            popover[0].hide();
-        }
+        if (targetEl.hasCls('pip-text')) {
+            if (Ext.isEmpty(studentId)) {
+                return;
+            }
 
-        if(!targetEl.hasCls('pip-text')) {
-            return;
+            me.updateStudentSparkpoint(studentSparkPoint, Ext.fly(e.target));
         }
-
-        if(Ext.isEmpty(studentId)){
-            return;
-        }
-
-        popover.updateShowByTarget(Ext.fly(e.target));
-        popover.updateStudentSparkpoint(studentSparkPoint);
     },
 
     onSelectedSectionChange: function(appCt, section, oldSection) {
         var me = this;
-        if (section && section != oldSection) { //load all activities when section changes -- will trigger repopulation of competency columns/data.
+
+        if (section && section != oldSection) { // load all activities when section changes -- will trigger repopulation of competency columns/data.
             me.getActivitiesStore().load();
         }
     },
 
-    onActivitiesStoreUpdate: function(store, record, operation, modifiedFieldNames, details) {
+    onActivitiesStoreUpdate: function(store, record, operation, modifiedFieldNames) {
         var me = this,
             competenciesGrid = me.getCompetenciesCt().down('spark-competencies-grid'),
             ignoreModifiedFields = ['student'], student, recordData = {}, gridRecord;
 
-        //ignore modifications to only the student field.
-        if (
-            (modifiedFieldNames && modifiedFieldNames.length === 1 && ignoreModifiedFields.indexOf(modifiedFieldNames[0]) !== -1) ||
-            (!(student = record.get('student')))
-        ) {
+        // ignore modifications to only the student field.
+        if ((modifiedFieldNames && modifiedFieldNames.length === 1 && ignoreModifiedFields.indexOf(modifiedFieldNames[0]) !== -1) || !(student = record.get('student'))) {
             return;
         }
 
-        //update competencies grid store
-        if ((gridRecord = competenciesGrid.getStore().getById(record.get('sparkpoint_id')))) {
+        // update competencies grid store
+        gridRecord = competenciesGrid.getStore().getById(record.get('sparkpoint_id'));
+
+        if (gridRecord) {
             recordData[student.get('Username')] = {
-                learn_finish_time: record.get('learn_finish_time'),
-                conference_finish_time: record.get('conference_finish_time'),
-                apply_finish_time: record.get('apply_finish_time'),
-                assess_finish_time: record.get('assess_finish_time')
+                'learn_finish_time': record.get('learn_finish_time'),
+                'conference_finish_time': record.get('conference_finish_time'),
+                'apply_finish_time': record.get('apply_finish_time'),
+                'assess_finish_time': record.get('assess_finish_time')
             };
+
             recordData[student.get('Username')+'_completed_phase'] = record.get('completed_phase_number');
 
-            gridRecord.set(recordData, {dirty: false});
+            gridRecord.set(recordData, {
+                dirty: false
+            });
         }
     },
 
@@ -176,41 +214,37 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onSocketData: function(socket, data) {
-        var me = this,
-            activityStore = Ext.getStore('Activities'),
+        var activityStore = this.getActivitiesStore(),
             table = data.table,
             itemData = data.item,
-            sparkpointId, sparkpoint,
-            updatedFields;
+            sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id);
 
-        //update sparkpoint in activities store
-        if (table == 'student_sparkpoint') {
-            if (
-                (sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))
-            ) {
-                sparkpoint.set(itemData, {dirty: false});
+        // update sparkpoint in activities store
+        if (table === 'student_sparkpoint') {
+            if (sparkpoint) {
+                sparkpoint.set(itemData, {
+                    dirty: false
+                });
             }
-        } else if (table == 'section_student_active_sparkpoint') { //if no activity exists for this sparkpoint, create one.
-            if (
-                !(sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))
-            ) {
-                //create model, add neccessary data.
-                sparkpoint = activityStore.add({
-                    student: Ext.getStore('Students').getById(itemData.student_id),
-                    student_id: itemData.student_id,
-                    sparkpoint_id: itemData.sparkpoint_id,
-                    section_id: itemData.section_id,
-                    section_code: itemData.section_code,
-                    learn_override_time: itemData.learn_override_time,
-                    learn_override_teacher_id: itemData.learn_override_teacher_id,
-                    conference_override_time: itemData.conference_override_time,
-                    conference_override_teacher_id: itemData.conference_override_teacher_id,
-                    apply_override_time: itemData.apply_override_time,
-                    apply_override_teacher_id: itemData.apply_override_teacher_id,
-                    assess_override_time: itemData.assess_override_time,
-                    assess_override_teacher_id: itemData.assess_override_teacher_id,
-                    override_reason: itemData.override_reason
-                })[0];
+        } else if (table == 'section_student_active_sparkpoint') { // if no activity exists for this sparkpoint, create one.
+            if (Ext.isEmpty(activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
+                // create model, add neccessary data.
+                activityStore.add({
+                    'student': Ext.getStore('Students').getById(itemData.student_id),
+                    'student_id': itemData.student_id,
+                    'sparkpoint_id': itemData.sparkpoint_id,
+                    'section_id': itemData.section_id,
+                    'section_code': itemData.section_code,
+                    'learn_override_time': itemData.learn_override_time,
+                    'learn_override_teacher_id': itemData.learn_override_teacher_id,
+                    'conference_override_time': itemData.conference_override_time,
+                    'conference_override_teacher_id': itemData.conference_override_teacher_id,
+                    'apply_override_time': itemData.apply_override_time,
+                    'apply_override_teacher_id': itemData.apply_override_teacher_id,
+                    'assess_override_time': itemData.assess_override_time,
+                    'assess_override_teacher_id': itemData.assess_override_teacher_id,
+                    'override_reason': itemData.override_reason
+                });
             }
         }
     },
@@ -221,7 +255,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
      * @private
      * highlights proper section in the spark teacher tabbar
      */
-    doHighlightTabbars: function(section) {
+    doHighlightTabbars: function() {
         var teacherTabbar = this.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#competencies');
 
@@ -247,44 +281,50 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             grid = me.getCompetenciesGrid(),
             activityStore = Ext.getStore('Activities'),
+            activityData = activityStore.getRange(),
             studentStore = Ext.getStore('Students'),
-            uniqueSparkpointIds = [],
-            gridData = [], gridDataIds = [],
-            groupedSparkpoints = {},
+            gridDataIds = [],
             gridStore,
-            currentSection = me.getAppCt().getSelectedSection();
+            count = 0, studentId, student, record, recordData, sparkpointId, studentSparkpoint;
 
-        if (!grid) {
+        if (Ext.isEmpty(grid)) {
             return;
-        } else {
-            gridStore = grid.getStore();
         }
 
-        //check if activities are done loading, if not wait for that to happen.
+        gridStore = grid.getStore();
+
+        // check if activities are done loading, if not wait for that to happen.
         if (activityStore.isLoading()) {
-            return activityStore.on('load', function() {
+            activityStore.on('load', function() {
                 return me.populateCompetenciesGrid();
-            }, null, {single: true});
-        } else if (!activityStore.isLoaded()) {
-            return activityStore.load(function() {
+            }, null, { single: true });
+
+            return;
+        }
+
+        if (!activityStore.isLoaded()) {
+            activityStore.load(function() {
                 return me.populateCompetenciesGrid();
             });
+
+            return;
         }
 
         gridStore.removeAll();
 
         // add sparkpoints to grid store and link to respective StudentCompetency panel.
-        Ext.each(activityStore.getRange(), function(studentSparkpoint) {
-            var sparkpointId = studentSparkpoint.get('sparkpoint_id'),
-                studentId = studentSparkpoint.get('student_id'),
-                student = studentStore.getById(studentId),
-                record, recordData = {};
+        for (; count < activityData.length; count++) {
+            studentSparkpoint = activityData[count];
+            sparkpointId = studentSparkpoint.get('sparkpoint_id');
+            studentId = studentSparkpoint.get('student_id');
+            student = studentStore.getById(studentId);
+            recordData = {};
 
-            //create record for each unique sparkpoint id
+            // create record for each unique sparkpoint id
             if (gridDataIds.indexOf(sparkpointId) === -1) {
                 record = gridStore.add({
-                    id: sparkpointId,
-                    sparkpoint: studentSparkpoint.get('sparkpoint')
+                    'id': sparkpointId,
+                    'sparkpoint': studentSparkpoint.get('sparkpoint')
                 })[0];
                 gridDataIds.push(sparkpointId);
             } else {
@@ -293,21 +333,21 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
             if (record && student) {
                 recordData[student.get('Username')] = {
-                    student_id: studentId,
-                    student_sparkpointid: studentId + '_' + sparkpointId,
-                    learn_finish_time: studentSparkpoint.get('learn_finish_time'),
-                    conference_finish_time: studentSparkpoint.get('conference_finish_time'),
-                    apply_finish_time: studentSparkpoint.get('apply_finish_time'),
-                    assess_finish_time: studentSparkpoint.get('assess_finish_time'),
-                    learn_override_time: studentSparkpoint.get('learn_override_time'),
-                    conference_override_time: studentSparkpoint.get('conference_override_time'),
-                    assess_override_time: studentSparkpoint.get('assess_override_time'),
-                    override_reason: studentSparkpoint.get('override_reason')
+                    'student_id': studentId,
+                    'student_sparkpointid': studentId + '_' + sparkpointId,
+                    'learn_finish_time': studentSparkpoint.get('learn_finish_time'),
+                    'conference_finish_time': studentSparkpoint.get('conference_finish_time'),
+                    'apply_finish_time': studentSparkpoint.get('apply_finish_time'),
+                    'assess_finish_time': studentSparkpoint.get('assess_finish_time'),
+                    'learn_override_time': studentSparkpoint.get('learn_override_time'),
+                    'conference_override_time': studentSparkpoint.get('conference_override_time'),
+                    'assess_override_time': studentSparkpoint.get('assess_override_time'),
+                    'override_reason': studentSparkpoint.get('override_reason')
                 };
 
-                record.set(recordData, {dirty: false});
+                record.set(recordData, { dirty: false });
             }
-        }, me);
+        }
 
         grid.setMasked(false);
     },
@@ -322,41 +362,54 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             grid = me.getCompetenciesGrid(),
             studentStore = Ext.getStore('Students'),
             studentCompetencyColumnXType = 'spark-student-competency-column',
-            currentSection = me.getAppCt().getSelectedSection();
+            currentSection = me.getAppCt().getSelectedSection(),
+            studentRecs = studentStore.getData().items,
+            sparkConfigCallback,
+            count = 0, studentUsername, student, columns = [];
 
-        //grid has not rendered yet, return. this method will be called again when the grid is activated.
+        // grid has not rendered yet, return. this method will be called again when the grid is activated.
         if (!grid || !grid.rendered) {
             return;
         }
 
-        //make sure students are loaded first
+        // make sure students are loaded first
         if (studentStore.isLoading()) {
-            return studentStore.on('load', function() {
+            studentStore.on('load', function() {
                 return me.populateCompetenciesGrid();
-            }, null, {single: true});
-        } else if (!studentStore.isLoaded()) {
-            return studentStore.load(function() {
+            }, null, { single: true });
+
+            return
+        }
+
+        if (!studentStore.isLoaded()) {
+            studentStore.load(function() {
                 return me.populateCompetenciesGrid();
             });
+
+            return;
         }
 
         if (grid.getCurrentSection() == currentSection) {
             return;
-        } else {
-            grid.setCurrentSection(currentSection);
         }
 
+        grid.setCurrentSection(currentSection);
+
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
-            if (column && column.xtype == studentCompetencyColumnXType) {
+            if (column && column.xtype === studentCompetencyColumnXType) {
                 column.destroy();
             }
         });
 
-        grid.suspendEvents();
+        sparkConfigCallback = function() {
+            // this is represented by the column
+            me.showSparkpointsConfig(studentStore.findRecord('Username', this.getDataIndex()).getId());
+        };
 
-        Ext.each(studentStore.getData().items, function(student) {
-            var studentUsername = student.get('Username');
-            grid.addColumn({
+        for (; count < studentRecs.length; count++) {
+            student = studentRecs[count];
+            studentUsername = student.get('Username');
+            columns.push({
                 xtype: studentCompetencyColumnXType,
                 dataIndex: studentUsername,
 
@@ -364,38 +417,29 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     click: {
                         element: 'element',
                         delegate: '.fa-wrench',
-                        fn: Ext.Function.pass(this.showSparkpointsConfig, [studentUsername], this)
+                        fn: sparkConfigCallback
                     }
                 },
 
                 text: [
                     '<div class="text-center">',
-                        '<div class="student-name">', student.getFullName(), '</div>',
-                        '<div class="field auto-width">',
-                            '<label class="field-label">Q4 Goal</label>',
-                            '<select class="field-control tiny"><option>20</option></select>',
-                            '<button type="button" class="plain"><i class="fa fa-lg fa-wrench"></i></button>',
-                        '</div>',
+                    '<div class="student-name">', student.getFullName(), '</div>',
+                    '<div class="field auto-width">',
+                    '<label class="field-label">Q4 Goal</label>',
+                    '<select class="field-control tiny"><option>20</option></select>',
+                    '<button type="button" class="plain"><i class="fa fa-lg fa-wrench"></i></button>',
+                    '</div>',
                     '</div>'
                 ].join(' ')
             });
-        }, this);
+        }
 
+        grid.addColumn(columns);
         grid.setMasked(false);
-        grid.resumeEvents();
-
         me.populateCompetenciesGrid();
     },
 
-    showSparkpointsConfig: function(studentUsername) {
-        var sparkpointsConfigWin = Ext.ComponentQuery.query('spark-sparkpointsconfig-window');
-
-        if (sparkpointsConfigWin.length == 0) {
-            sparkpointsConfigWin = Ext.create('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow');
-        } else {
-            sparkpointsConfigWin = sparkpointsConfigWin[0];
-        }
-
-        sparkpointsConfigWin.fireEventArgs("loadnewstudent", [studentUsername]);
+    showSparkpointsConfig: function(studentId) {
+        this.updateActiveStudentId(studentId);
     }
 });
