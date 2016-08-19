@@ -19,6 +19,11 @@
         margin: 0;
     }
 
+    .x-grid-cell-inner-row-numberer {
+        background-color: transparent;
+        color: $muted-color;
+    }
+
     .x-grid-empty {
         background-color: white;
         font-style: italic;
