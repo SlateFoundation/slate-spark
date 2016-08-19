@@ -32,6 +32,11 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
             }],
             hideHeaders: true,
             disableSelection: true,
+            emptyText: 'None available.',
+            store: {
+                fields: [],
+                data: []
+            },
             columns: [
                 {
                     xtype: 'templatecolumn',
@@ -75,6 +80,11 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                 }
             },
             hideHeaders: true,
+            emptyText: 'None yet. Add some from the Sparkpoints to the left, <br> or from scratch using the button above.',
+            store: {
+                fields: [],
+                data: []
+            },
             columns: {
                 defaults: {
                     menuDisabled: true
