@@ -9,22 +9,43 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
     idProperty: 'sparkpoint',
     fields: [
+        'section_id',
+        'section_code',
         {
+            name: 'completed_phase_numerical',
+            depends: [
+                'learn_finish_time',
+                'conference_finish_time',
+                'apply_finish_time',
+                'assess_finish_time'
+            ],
+            persist: false,
+            calculate: function(data) {
+                if (data.assess_finish_time) {
+                    return 4;
+                } else if (data.apply_finish_time) {
+                    return 3;
+                } else if (data.conference_finish_time) {
+                    return 2;
+                } else if (data.learn_finish_time) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        }, {
             name: 'sparkpoint',
             type: 'string',
             critical: true
-        },
-        {
+        }, {
             name: 'section',
             type: 'string'
-        },
-        {
+        }, {
             name: 'student_id',
             type: 'int',
             allowNull: true,
             critical: true
-        },
-        {
+        }, {
             name: 'sparkpoint_id',
             type: 'string',
             allowNull: true
@@ -82,18 +103,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'last_accessed',
             type: 'sparkdate',
             allowNull: true
-        },
-        {
+        }, {
             name: 'conference_group_id',
             type: 'int',
             allowNull: true
-        },
-        {
+        }, {
             name: 'learn_mastery_check_score',
             type: 'int',
             allowNull: true
-        },
-        {
+        }, {
             name: 'conference_mastery_check_score',
             type: 'int',
             allowNull: true
@@ -124,8 +142,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return 'learn';
             }
-        },
-        {
+        }, {
             name: 'learn_subphase_duration',
             persist: false,
             depends: [
@@ -140,8 +157,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - learnStartTime;
             }
-        },
-        {
+        }, {
             name: 'conference_subphase_duration',
             persist: false,
             depends: [
@@ -167,8 +183,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - conferenceJoinTime;
             }
-        },
-        {
+        }, {
             name: 'apply_subphase_duration',
             persist: false,
             depends: [
@@ -193,8 +208,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - applyReadyTime;
             }
-        },
-        {
+        }, {
             name: 'assess_subphase_duration',
             persist: false,
             depends: [
@@ -225,8 +239,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - assessFinishTime;
             }
-        },
-        {
+        }, {
             name: 'total_duration',
             persist: false,
             depends: [
