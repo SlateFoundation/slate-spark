@@ -1,4 +1,4 @@
-/*jslint browser: true, undef: true *//*global Ext*/
+/* global Ext */
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
@@ -35,43 +35,43 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'learn_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'learn_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_join_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_ready_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_ready_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_finish_time',
             type: 'sparkdate',
             allowNull: true
