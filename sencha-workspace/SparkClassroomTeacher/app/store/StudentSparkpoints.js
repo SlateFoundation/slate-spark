@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
 
 
     // TODO: use autoSync and eliminate manual calls to record.save() everywhere?
-    model: 'SparkClassroomTeacher.model.gps.ActiveStudent',
+    model: 'SparkClassroom.model.StudentSparkpoint',
 
     config: {
         // filter out activity that didn't match a student in the active roster
