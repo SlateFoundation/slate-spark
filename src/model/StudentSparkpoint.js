@@ -382,6 +382,23 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - learnStartTime;
             }
+        }, {
+            name: 'last_accesssed',
+            type: 'sparkdate'
+        }, {
+            name: 'recommender_id',
+            type: 'int',
+            allowNull: true
+        }, {
+            name: 'recommended',
+            mapping: 'recommender_id',
+            convert: function(v) {
+                return Boolean(v);
+            }
+        }, {
+            name: 'recommended_time',
+            type: 'sparkdate',
+            allowNull: true
         }
     ],
 
