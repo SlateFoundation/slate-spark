@@ -66,21 +66,24 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     initializeStudent: function(studentId) {
-        this.setActiveStudentId(studentId);
-        this.loadDataIntoView();
-        this.getSparkpointsConfigWindow().show();
+        var me = this;
+
+        me.setActiveStudentId(studentId);
+        me.loadDataIntoView();
+        me.getSparkpointsConfigWindow().show();
     },
 
     loadDataIntoView: function() {
-        var studentStore = this.getStudentsStore(),
-            studentId = this.getActiveStudentId(),
+        var me = this,
+            studentStore = me.getStudentsStore(),
+            studentId = me.getActiveStudentId(),
             studentRec = studentStore.getById(studentId),
             studentData = studentRec.getData();
 
-        this.getSparkpointsConfigWindow().setTitle(studentData.FullName);
+        me.getSparkpointsConfigWindow().setTitle(studentData.FullName);
 
         // TEMPORARY static data
-        this.getConfigTableCurrent().updateData([
+        me.getConfigTableCurrent().updateData([
             {
                 code: 'SCI.G5.LS1-1',
                 L: 1,
@@ -107,7 +110,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         ]);
 
-        this.getConfigTableQueue().updateData([
+        me.getConfigTableQueue().updateData([
             {
                 code: 'SCI.G5.LS1-1',
                 L: 2,

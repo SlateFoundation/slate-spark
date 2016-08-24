@@ -154,7 +154,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var me = this,
             targetEl = Ext.fly(e.target),
-            activityStore = this.getActivitiesStore(),
+            activityStore = me.getActivitiesStore(),
             studentId = targetEl.getAttribute('data-student-id'),
             studentSparkpointId = studentId + '_' + rec.getData().id,
             studentSparkPoint = activityStore.getAt(activityStore.find('student_sparkpointid', studentSparkpointId));

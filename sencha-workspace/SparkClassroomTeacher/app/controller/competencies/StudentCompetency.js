@@ -149,16 +149,17 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     // custom controller methods
     loadDataIntoView: function() {
-        var studentStore = this.getStudentsStore(),
-            learnsStore = this.getWorkLearnsStore(),
+        var me = this,
+            studentStore = me.getStudentsStore(),
+            learnsStore = me.getWorkLearnsStore(),
             learns = learnsStore.getRange(),
             completedRequiredLearns = 0,
             requiredLearns = 0,
-            sparkData = this.getStudentSparkpoint().getData(),
+            sparkData = me.getStudentSparkpoint().getData(),
             studentId = sparkData.student_id,
             studentData = studentStore.findRecord('ID', studentId).getData(),
-            describeText = this.getDescribeTextArea(),
-            giveCreditBtn = this.getGiveCreditButton(),
+            describeText = me.getDescribeTextArea(),
+            giveCreditBtn = me.getGiveCreditButton(),
             assessDisabled, assessChecked, applyDisabled, applyChecked, confDisabled,
             confChecked, learnDisabled, learnChecked, allFinished,
             learn, learnAssignments, count = 0;
@@ -187,7 +188,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time);
         allFinished = !Ext.isEmpty(sparkData.learn_finish_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
 
-        this.getPopoverTable().updateData({
+        me.getPopoverTable().updateData({
             studentName: studentData.FullName,
             sparkpointCode: sparkData.sparkpoint,
             // TODO: calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
@@ -238,23 +239,26 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             describeText.setValue(sparkData.override_reason);
         }
 
-        this.getStudentCompetencyPopover().unmask();
+        me.getStudentCompetencyPopover().unmask();
     },
 
     bindClickPopoverTable: function(cmp) {
-        var activeCheckboxes = Ext.get(cmp.el.select('input.not-finished', true));
+        var me = this,
+            activeCheckboxes = Ext.get(cmp.el.select('input.not-finished', true));
 
         activeCheckboxes.on({
-            'change': this.onPhaseCheckChange,
-            'scope': this
+            'change': function() {
+                me.onPhaseCheckChange();
+            }
         });
     },
 
     onPhaseCheckChange: function(e, target) {
-        var el = Ext.get(target),
+        var me = this,
+            el = Ext.get(target),
             checked = el.is(':checked'),
             phaseName = el.getAttribute('data-phase'),
-            record = this.getStudentSparkpoint(),
+            record = me.getStudentSparkpoint(),
             chainCheckbox,
             fieldName,
             value;
@@ -265,15 +269,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 break;
             case 'Conference':
                 fieldName = 'conference_override_time';
-                chainCheckbox = this.getLearnCheckbox();
+                chainCheckbox = me.getLearnCheckbox();
                 break;
             case 'Apply':
                 fieldName = 'apply_override_time';
-                chainCheckbox = this.getConferenceCheckbox();
+                chainCheckbox = me.getConferenceCheckbox();
                 break;
             case 'Assess':
                 fieldName = 'assess_override_time';
-                chainCheckbox = this.getApplyCheckbox();
+                chainCheckbox = me.getApplyCheckbox();
                 break;
             default:
         }
@@ -288,7 +292,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 chainCheckbox.dom.checked = true;
             }
 
-            this.onPhaseCheckChange(null, chainCheckbox);
+            me.onPhaseCheckChange(null, chainCheckbox);
         }
 
         // If we unchecked this then remove disabled state if the prev phase wasn't finished
@@ -324,10 +328,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         me.getStudentCompetencyPopover().hide();
     },
 
+    // TODO: Implement Add to Queue button
     addToQueue: function() {
         Ext.emptyFn();
     },
 
+    // TODO: Implement Add Next Up button
     addNextUp: function() {
         Ext.emptyFn();
     }
