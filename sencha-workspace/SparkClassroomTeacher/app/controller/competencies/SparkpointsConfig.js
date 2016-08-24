@@ -77,65 +77,62 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         var me = this,
             studentStore = me.getStudentsStore(),
             studentId = me.getActiveStudentId(),
+            activitesStore = me.getActivitiesStore(),
             studentRec = studentStore.getById(studentId),
-            studentData = studentRec.getData();
+            studentData = studentRec.getData(),
+            currentSparkpoints, queuedSparkpoints,
+            count,
+            sparkpoint,
+            currentTableData = [],
+            queuedTableData = [];
+
+        currentSparkpoints = activitesStore.queryBy(function(rec) {
+            return !Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
+        }).sort('last_accessed', 'DESC').getRange();
+
+        queuedSparkpoints = activitesStore.queryBy(function(rec) {
+            return Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
+        }).sort('last_accessed', 'DESC').getRange();
 
         me.getSparkpointsConfigWindow().setTitle(studentData.FullName);
 
-        // TEMPORARY static data
-        me.getConfigTableCurrent().updateData([
-            {
-                code: 'SCI.G5.LS1-1',
-                L: 1,
-                C: 2,
-                Ap: 4,
-                As: 5,
-                completion: 6
-            },
-            {
-                code: 'SCI.G9-12.ESS.1-2',
-                L: 2,
-                C: 3,
-                Ap: 4,
-                As: 5,
-                completion: 6
-            },
-            {
-                code: 'SS.G9-12.6.2.C.3.d',
-                L: 3,
-                C: 4,
-                Ap: 5,
-                As: 6,
-                completion: 6
-            }
-        ]);
+        for (count = 0; count < currentSparkpoints.length; count++) {
+            sparkpoint = currentSparkpoints[count];
 
-        me.getConfigTableQueue().updateData([
-            {
-                code: 'SCI.G5.LS1-1',
-                L: 2,
-                C: 3,
-                Ap: 5,
-                As: 6,
-                completion: 6
-            },
-            {
-                code: 'SCI.G9-12.ESS.1-2',
-                L: 2,
-                C: 3,
-                Ap: 4,
-                As: 5,
-                completion: 5
-            },
-            {
-                code: 'SS.G9-12.6.2.C.3.d',
-                L: 3,
-                C: 4,
-                Ap: 5,
-                As: 7,
-                completion: 7
-            }
-        ]);
+            currentTableData.push({
+                code: sparkpoint.get('sparkpoint'),
+                C: '',
+                Ap: '',
+                As: '',
+                completion: ''
+            });
+        }
+
+        for (count = 0; count < queuedSparkpoints.length; count++) {
+            sparkpoint = queuedSparkpoints[count];
+
+            currentTableData.push({
+                code: sparkpoint.get('sparkpoint'),
+                C: '',
+                Ap: '',
+                As: '',
+                completion: ''
+            })
+        }
+
+        if (currentTableData.length == 0) {
+            me.getConfigTableCurrent().hide();
+        } else {
+            me.getConfigTableCurrent().updateData(currentTableData);
+            me.getConfigTableCurrent().show();
+        }
+
+        if (queuedTableData.length == 0) {
+            me.getConfigTableQueue().hide();
+        } else {
+            me.getConfigTableQueue().updateData(queuedTableData);
+            me.getConfigTableQueue().show();
+        }
     },
 
     onDoneTap: function() {
