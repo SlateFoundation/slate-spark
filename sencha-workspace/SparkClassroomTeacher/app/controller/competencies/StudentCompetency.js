@@ -247,8 +247,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             activeCheckboxes = Ext.get(cmp.el.select('input.not-finished', true));
 
         activeCheckboxes.on({
-            'change': function() {
-                me.onPhaseCheckChange();
+            'change': function(e, target) {
+                me.onPhaseCheckChange(e, target);
             }
         });
     },
