@@ -11,29 +11,6 @@ Ext.define('SparkClassroom.model.Sparkpoint', {
         'id',
         'code',
         'student_title',
-        'teacher_title',
-
-        // student-personalized results
-        {
-            name: 'last_accesssed',
-            type: 'sparkdate'
-        },
-        {
-            name: 'recommender_id',
-            type: 'int',
-            allowNull: true
-        },
-        {
-            name: 'recommended',
-            mapping: 'recommender_id',
-            convert: function(v) {
-                return !!v;
-            }
-        },
-        {
-            name: 'recommended_time',
-            type: 'sparkdate',
-            allowNull: true
-        }
+        'teacher_title'
     ]
 });

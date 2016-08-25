@@ -1,4 +1,4 @@
-/*jslint browser: true, undef: true *//*global Ext*/
+/* global Ext */
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
@@ -9,22 +9,133 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
     idProperty: 'sparkpoint',
     fields: [
+        'section_id',
+        'section_code',
         {
+            name: 'completed_phase_numerical',
+            depends: [
+                'learn_finish_time',
+                'conference_finish_time',
+                'apply_finish_time',
+                'assess_finish_time'
+            ],
+            persist: false,
+            calculate: function(data) {
+                if (data.assess_finish_time) {
+                    return 4;
+                } else if (data.apply_finish_time) {
+                    return 3;
+                } else if (data.conference_finish_time) {
+                    return 2;
+                } else if (data.learn_finish_time) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        }, {
+            name: 'student_sparkpoint',
+            persist: false
+        }, {
+            name: 'student',
+            persist: false,
+            mapping: 'student_id',
+            depends: ['student_id'],
+            convert: function(v) {
+                return Ext.getStore('Students').getById(v);
+            }
+        }, {
+            name: 'student_name',
+            persist: false,
+            depends: ['student'],
+            convert: function(v, r) {
+                var student = r.get('student');
+
+                return student ? student.get('FullName') : '[Unenrolled Student]';
+            }
+        }, {
+            name: 'priority_need',
+            persist: false,
+            depends: [
+                'conference_start_time',
+                'conference_join_time',
+                'conference_finish_time',
+                'apply_ready_time',
+                'apply_finish_time',
+                'assess_ready_time',
+                'assess_finish_time'
+            ],
+            convert: function(v, r) {
+                var conferenceJoinTime = r.get('conference_join_time');
+
+                if (r.get('conference_start_time') && !conferenceJoinTime) {
+                    return 'conference-group';
+                }
+
+                if (conferenceJoinTime && !r.get('conference_finish_time')) {
+                    return 'conference-finish';
+                }
+
+                if (r.get('apply_ready_time') && !r.get('apply_finish_time')) {
+                    return 'apply-grade';
+                }
+
+                if (r.get('assess_ready_time') && !r.get('assess_finish_time')) {
+                    return 'assess-grade';
+                }
+
+                return null;
+            }
+        }, {
+            name: 'subphase_duration',
+            persist: false,
+            depends: [
+                'active_phase',
+                'learn_subphase_duration',
+                'conference_subphase_duration',
+                'apply_subphase_duration',
+                'assess_subphase_duration'
+            ],
+            convert: function(v, r) {
+                switch (r.get('active_phase')) {
+                    case 'learn':
+                        return r.get('learn_subphase_duration');
+                    case 'conference':
+                        return r.get('conference_subphase_duration');
+                    case 'apply':
+                        return r.get('apply_subphase_duration');
+                    case 'assess':
+                        return r.get('assess_subphase_duration');
+                    default:
+                        return null;
+                }
+            }
+        }, {
+            name: 'conference_feedback',
+            persist: false,
+            convert: function(v) {
+                return v || [];
+            }
+        }, {
+            name: 'conference_feedback_count',
+            persist: false,
+            depends: ['conference_feedback'],
+            convert: function(v, r) {
+                return r.get('conference_feedback').length;
+            }
+        }, {
             name: 'sparkpoint',
             type: 'string',
             critical: true
-        },
-        {
+        }, {
             name: 'section',
             type: 'string'
-        },
-        {
+        }, {
             name: 'student_id',
             type: 'int',
             allowNull: true,
             critical: true
-        },
-        {
+        }, {
             name: 'sparkpoint_id',
             type: 'string',
             allowNull: true
@@ -35,43 +146,43 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'learn_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'learn_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_join_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_ready_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_start_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_ready_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_finish_time',
             type: 'sparkdate',
             allowNull: true
@@ -82,18 +193,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'last_accessed',
             type: 'sparkdate',
             allowNull: true
-        },
-        {
+        }, {
             name: 'conference_group_id',
             type: 'int',
             allowNull: true
-        },
-        {
+        }, {
             name: 'learn_mastery_check_score',
             type: 'int',
             allowNull: true
-        },
-        {
+        }, {
             name: 'conference_mastery_check_score',
             type: 'int',
             allowNull: true
@@ -124,8 +232,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return 'learn';
             }
-        },
-        {
+        }, {
             name: 'learn_subphase_duration',
             persist: false,
             depends: [
@@ -140,8 +247,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - learnStartTime;
             }
-        },
-        {
+        }, {
             name: 'conference_subphase_duration',
             persist: false,
             depends: [
@@ -167,8 +273,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - conferenceJoinTime;
             }
-        },
-        {
+        }, {
             name: 'apply_subphase_duration',
             persist: false,
             depends: [
@@ -193,8 +298,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - applyReadyTime;
             }
-        },
-        {
+        }, {
             name: 'assess_subphase_duration',
             persist: false,
             depends: [
@@ -225,8 +329,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - assessFinishTime;
             }
-        },
-        {
+        }, {
             name: 'total_duration',
             persist: false,
             depends: [
@@ -241,6 +344,23 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
                 return Date.now() - learnStartTime;
             }
+        }, {
+            name: 'last_accesssed',
+            type: 'sparkdate'
+        }, {
+            name: 'recommender_id',
+            type: 'int',
+            allowNull: true
+        }, {
+            name: 'recommended',
+            mapping: 'recommender_id',
+            convert: function(v) {
+                return Boolean(v);
+            }
+        }, {
+            name: 'recommended_time',
+            type: 'sparkdate',
+            allowNull: true
         }
     ],
 
@@ -251,6 +371,25 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         writer: {
             type: 'json',
             allowSingle: true
+        }
+    },
+
+    saveConferenceGroup: function(groupId) {
+        var me = this;
+
+        me.beginEdit();
+
+        me.set('conference_group_id', groupId || null);
+
+        if (groupId && !me.get('conference_join_time')) {
+            me.set('conference_join_time', new Date());
+        }
+
+        me.endEdit();
+
+
+        if (me.dirty) {
+            me.save();
         }
     }
 });

@@ -1,6 +1,12 @@
-/*jslint browser: true, undef: true *//*global Ext*/
+/* global Ext */
 Ext.define('SparkClassroom.store.Activities', {
     extend: 'Ext.data.Store',
 
-    model: 'SparkClassroom.model.Activity'
+    proxy: {
+		type: 'slate-api',
+		url: '/spark/api/work/activity',
+		extraParams: {
+			status: 'all'
+		}
+	}
 });
