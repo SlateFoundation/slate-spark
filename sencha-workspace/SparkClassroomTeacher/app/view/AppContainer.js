@@ -6,13 +6,14 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
      * @event selectedstudentsparkpointchange
      * Fires when the user selects a course section.
      * @parem {SparkClassroomTeacher.view.AppContainer} appCt
-     * @param {SparkClassroomTeacher.model.gps.ActiveStudent} selectedStudentSparkpoint The newly selected StudentSparkpoint object
-     * @param {SparkClassroomTeacher.model.gps.ActiveStudent/null} oldSelectedStudentSparkpoint The previously selected StudentSparkpoint if any
+     * @param {SparkClassroom.model.StudentSparkpoint} selectedStudentSparkpoint The newly selected StudentSparkpoint object
+     * @param {SparkClassroom.model.StudentSparkpoint/null} oldSelectedStudentSparkpoint The previously selected StudentSparkpoint if any
      */
 
     config: {
+
         /**
-         * Tracks the currently selected {@link SparkClassroomTeacher.model.gps.ActiveStudent}
+         * Tracks the currently selected {@link SparkClassroom.model.StudentSparkpoint}
          */
         selectedSection: null,
         selectedStudentSparkpoint: null,
