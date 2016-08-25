@@ -159,6 +159,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'int',
             allowNull: true
         }, {
+            name: 'learn_pace_target',
+            type: 'int',
+            allowNull: true
+        }, {
             name: 'conference_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -176,6 +180,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             allowNull: true
         }, {
             name: 'conference_override_teacher_id',
+            type: 'int',
+            allowNull: true
+        }, {
+            name: 'conference_pace_target',
             type: 'int',
             allowNull: true
         }, {
@@ -199,6 +207,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'int',
             allowNull: true
         }, {
+            name: 'apply_pace_target',
+            type: 'int',
+            allowNull: true
+        }, {
             name: 'assess_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -216,6 +228,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             allowNull: true
         }, {
             name: 'assess_override_teacher_id',
+            type: 'int',
+            allowNull: true
+        }, {
+            name: 'assess_pace_target',
             type: 'int',
             allowNull: true
         },
