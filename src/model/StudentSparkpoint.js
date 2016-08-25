@@ -12,30 +12,29 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         'section_id',
         'section_code',
         {
-            name: 'completed_phase_numerical',
-            depends: [
-                'learn_finish_time',
-                'conference_finish_time',
-                'apply_finish_time',
-                'assess_finish_time'
-            ],
+            name: 'completed_phase_number',
             persist: false,
             calculate: function(data) {
-                if (data.assess_finish_time) {
+                if (data.assess_finish_time || data.assess_override_time) {
                     return 4;
-                } else if (data.apply_finish_time) {
+                }
+                if (data.apply_finish_time || data.apply_override_time) {
                     return 3;
-                } else if (data.conference_finish_time) {
+                }
+                if (data.conference_finish_time || data.conference_override_time) {
                     return 2;
-                } else if (data.learn_finish_time) {
+                }
+                if (data.learn_finish_time || data.learn_override_time) {
                     return 1;
                 }
 
                 return 0;
             }
         }, {
-            name: 'student_sparkpoint',
-            persist: false
+            name: 'student_sparkpointid',
+            calculate: function(data) {
+                return data.student_id + '_' + data.sparkpoint_id;
+            }
         }, {
             name: 'student',
             persist: false,
@@ -151,15 +150,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'learn_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'learn_override_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'learn_override_teacher_id',
             type: 'int',
             allowNull: true
-        },{
+        }, {
             name: 'conference_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -171,15 +170,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'conference_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_override_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'conference_override_teacher_id',
             type: 'int',
             allowNull: true
-        },{
+        }, {
             name: 'apply_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -191,15 +190,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'apply_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_override_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'apply_override_teacher_id',
             type: 'int',
             allowNull: true
-        },{
+        }, {
             name: 'assess_start_time',
             type: 'sparkdate',
             allowNull: true
@@ -211,11 +210,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'assess_finish_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_override_time',
             type: 'sparkdate',
             allowNull: true
-        },{
+        }, {
             name: 'assess_override_teacher_id',
             type: 'int',
             allowNull: true
@@ -399,13 +398,40 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'recommended_time',
             type: 'sparkdate',
             allowNull: true
+        }, {
+            name: 'learn_completed_time',
+            persist: false,
+            calculate: function(data) {
+                return data.learn_finish_time || data.learn_override_time || null
+            }
+        }, {
+            name: 'conference_completed_time',
+            persist: false,
+            calculate: function(data) {
+                return data.conference_finish_time || data.conference_override_time || null
+            }
+        }, {
+            name: 'apply_completed_time',
+            persist: false,
+            calculate: function(data) {
+                return data.apply_finish_time || data.apply_override_time || null
+            }
+        }, {
+            name: 'assess_completed_time',
+            persist: false,
+            calculate: function(data) {
+                return data.assess_finish_time || data.assess_override_time || null
+            }
         }
     ],
 
     proxy: {
         type: 'slate-api',
         url: '/spark/api/work/activity',
-
+        batchActions: false,
+        extraParams: {
+            status: 'all'
+        },
         writer: {
             type: 'json',
             allowSingle: true
