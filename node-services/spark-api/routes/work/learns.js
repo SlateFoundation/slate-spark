@@ -209,7 +209,7 @@ function* getHandler() {
             resource.assignment = resourceId.assignment || { student: null, section: null };
 
             // HACK: Learning targets should appear as "required-first" unless they are set to something else
-            if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
+            if (resource.title.toLowerCase().contains('learning target')) {
                 resource.assignment.section = resource.assignment.section || 'required-first';
             }
 
@@ -310,7 +310,11 @@ function* patchHandler() {
                 review.errors = errors;
             }
 
-            if (review.rating !== undefined && Math.abs(review.rating) !== 1) {
+            if (review.rating === 0) {
+                review.rating = null;
+            }
+
+            if (review.rating !== undefined && review.rating !== null && Math.abs(review.rating) !== 1) {
                 review.errors || (review.errors = []);
                 review.errors.push(`rating: is 1 for thumbs up and -1 for thumbs down, you provided: ${review.rating}`)
             }
@@ -384,16 +388,16 @@ function* launchHandler() {
     if (learnResource.url) {
         let url = learnResource.url;
 
-        if (url.indexOf('opened.com') !== -1) {
+        if (url.contains('opened.com')) {
             let accessToken = yield OpenEd.getUserAccessToken();
 
-            if(url.indexOf('student_view=true') === -1) {
+            if(!url.includes('student_view=true')) {
                 if (ctx.isStudent) {
                     url += '&student_view=true';
                 }
             }
 
-            if (url.indexOf('hideRelatedResources=true') === -1) {
+            if (!url.includes('hideRelatedResources=true')) {
                 url += '&hideRelatedResources=true';
             }
 

@@ -171,10 +171,15 @@ function *patchHandler() {
     for (let key in activity) {
         let val = activity[key];
 
-        if (key.includes('time')) {
-            val = parseInt(activity[key], 10);
-            ctx.assert(!isNaN(val), `${key} should be a UTC timestamp you provided: ${activity[key]}`, 400);
-            record[key] = new Date(val * 1000).toUTCString();
+        if (key.includes('_time')) {
+            // Allow *_override_time to be blanked by passing a null value
+            if (val === null && key.includes('override_time')) {
+                record[key] = null;
+            } else {
+                val = parseInt(activity[key], 10);
+                ctx.assert(!isNaN(val), `${key} should be a UTC timestamp you provided: ${activity[key]}`, 400);
+                record[key] = (val === null) ? null : new Date(val * 1000).toUTCString();
+            }
         } else if (key.includes('_mastery_check_score')) {
             let val = parseInt(activity[key], 10);
             let isInvalid = isNaN(val) || val < 1 || val > 100;
