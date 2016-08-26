@@ -44,10 +44,14 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                         '<span class="phase-status">{status}</span>',
                                     '</td>',
                                     '<td class="expected-col">',
-                                        'Day <strong class="is-on-pace">{expected}</strong>',
+                                        '<tpl if="Ext.isEmpty(expected) == false">',
+                                            'Day <strong class="{[ this.getPaceCls(values.expected, values.actual) ]}">{expected}</strong>',
+                                        '<tpl else>',
+                                            '&mdash;',
+                                        '</tpl>',
                                     '</td>',
                                     '<td class="actual-col">',
-                                        '<tpl if="{actual}">',
+                                        '<tpl if="Ext.isEmpty(actual) == false">',
                                             'Day <strong class="{[ this.getPaceCls(values.expected, values.actual) ]}">{actual}</strong>',
                                         '<tpl else>',
                                             '&mdash;',
@@ -61,27 +65,31 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                         getPaceCls: function(expected, actual) {
                             if (expected == actual) {
                                 return 'is-on-pace';
-                            } else if (expected > actual) {
-                                return 'is-ahead';
-                            } else if (expected < actual) {
-                                return 'is-behind';
-                            } else {
-                                return '';
                             }
+
+                            if (expected > actual) {
+                                return 'is-ahead';
+                            }
+
+                            if (expected < actual) {
+                                return 'is-behind';
+                            }
+
+                            return '';
                         }
                     }
                 ]
-            },{
+            }, {
                 xtype: 'textareafield',
                 cls: 'popover-describe-field',
                 margin: 16
-            },{
+            }, {
                 xtype: 'button',
                 margin: 16,
                 ui: 'action',
                 cls: 'give-credit-button',
                 text: 'Give Credit'
-            },{
+            }, {
                 xtype: 'container',
                 layout: 'hbox',
                 margin: 16,
@@ -94,7 +102,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                     text: 'Add to Queue',
                     margin: '0 16 0 0',
                     cls: 'add-to-queue-button'
-                },{
+                }, {
                     text: 'Add Next Up',
                     cls: 'add-next-up-button'
                 }]
