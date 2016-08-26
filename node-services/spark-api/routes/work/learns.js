@@ -209,7 +209,7 @@ function* getHandler() {
             resource.assignment = resourceId.assignment || { student: null, section: null };
 
             // HACK: Learning targets should appear as "required-first" unless they are set to something else
-            if (resource.title.toLowerCase().contains('learning target')) {
+            if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
                 resource.assignment.section = resource.assignment.section || 'required-first';
             }
 
@@ -388,7 +388,7 @@ function* launchHandler() {
     if (learnResource.url) {
         let url = learnResource.url;
 
-        if (url.contains('opened.com')) {
+        if (url.includes('opened.com')) {
             let accessToken = yield OpenEd.getUserAccessToken();
 
             if(!url.includes('student_view=true')) {
