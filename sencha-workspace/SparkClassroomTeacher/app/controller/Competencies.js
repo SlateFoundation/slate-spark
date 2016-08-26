@@ -157,7 +157,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             activityStore = me.getActivitiesStore(),
             studentId = targetEl.getAttribute('data-student-id'),
             studentSparkpointId = studentId + '_' + rec.getData().id,
-            studentSparkPoint = activityStore.getAt(activityStore.find('student_sparkpointid', studentSparkpointId));
+            studentSparkPoint = activityStore.findRecord('student_sparkpointid', studentSparkpointId);
 
         if (targetEl.hasCls('pip-text')) {
             if (Ext.isEmpty(studentId)) {

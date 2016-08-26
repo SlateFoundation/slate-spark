@@ -39,7 +39,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-queue]',
-        doneButton: 'spark-sparkpointsconfig-window button[cls*=sparkpointsconfig-done-button]'
+        doneButton: 'spark-sparkpointsconfig-window button[cls*=sparkpointsconfig-done-button]',
+        sparkpointRows: 'spark-sparkpointsconfig-window tr[cls~=sparkpoint-row]'
     },
 
     // entry points
@@ -100,11 +101,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             sparkpoint = currentSparkpoints[count];
 
             currentTableData.push({
+                'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
                 code: sparkpoint.get('sparkpoint'),
-                C: '',
-                Ap: '',
-                As: '',
-                completion: ''
+                L: sparkpoint.get('learn_pace_target'),
+                C: sparkpoint.get('conference_pace_target'),
+                Ap: sparkpoint.get('apply_pace_target'),
+                As: sparkpoint.get('assess_pace_target')
             });
         }
 
@@ -112,11 +114,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             sparkpoint = queuedSparkpoints[count];
 
             currentTableData.push({
+                'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
                 code: sparkpoint.get('sparkpoint'),
-                C: '',
-                Ap: '',
-                As: '',
-                completion: ''
+                L: sparkpoint.get('learn_pace_target'),
+                C: sparkpoint.get('conference_pace_target'),
+                Ap: sparkpoint.get('apply_pace_target'),
+                As: sparkpoint.get('assess_pace_target')
             })
         }
 
@@ -133,12 +136,60 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             me.getConfigTableQueue().updateData(queuedTableData);
             me.getConfigTableQueue().show();
         }
+
+        // TODO: Bind event handlers to the pace inputs to prevent entering non-integer values
     },
 
     onDoneTap: function() {
         // 1. Save fields
+        var me = this,
+            activityStore = me.getActivitiesStore(),
+            sparkpointRows = Ext.DomQuery.select('.spark-sparkpointsconfig-window tr.sparkpoint-row'),
+            rowElement,
+            paceFields,
+            row,
+            field,
+            paceField,
+            phase,
+            studentSparkpointId,
+            sparkpoint,
+            paceValue;
+
+        for(row = 0; row < sparkpointRows.length; row++) {
+            rowElement = Ext.fly(sparkpointRows[row]);
+            paceFields = rowElement.query('input.pace-field', true);
+            studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
+            sparkpoint = activityStore.findRecord('student_sparkpointid', studentSparkpointId);
+
+            for (field = 0; field < paceFields.length; field++) {
+                paceField = Ext.fly(paceFields[field]);
+                phase = paceField.getAttribute('data-phase');
+                paceValue = paceField.getValue();
+
+                switch (phase) {
+                    case 'Learn':
+                        sparkpoint.set('learn_pace_target', paceValue);
+                        break;
+                    case 'Conference':
+                        sparkpoint.set('conference_pace_target', paceValue);
+                        break;
+                    case 'Apply':
+                        sparkpoint.set('apply_pace_target', paceValue);
+                        break;
+                    case 'Assess':
+                        sparkpoint.set('assess_pace_target', paceValue);
+                        break;
+                    default:
+                }
+            }
+
+            if (sparkpoint.dirty) {
+                sparkpoint.save();
+            }
+        }
+
         // 2. Update underlying grid (go back to StudentCompetency controller and add there as well)
         // 3. Hide SparkpointsConfigWindow
-        this.getSparkpointsConfigWindow().hide();
+        me.getSparkpointsConfigWindow().hide();
     }
 });
