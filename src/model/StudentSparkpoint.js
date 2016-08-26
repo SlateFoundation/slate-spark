@@ -24,7 +24,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 if (data.conference_finish_time || data.conference_override_time) {
                     return 2;
                 }
-                if (data.learn_finish_time || data.learn_override_time) {
+                if (data.learn_completed_time) {
                     return 1;
                 }
 
@@ -265,7 +265,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'active_phase',
             persist: false,
             depends: [
-                'learn_finish_time',
+                'learn_completed_time',
                 'conference_finish_time',
                 'apply_finish_time',
                 'assess_finish_time'
@@ -279,7 +279,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                     return 'apply';
                 }
 
-                if (r.get('learn_finish_time')) {
+                if (r.get('learn_completed_time')) {
                     return 'conference';
                 }
 
@@ -308,7 +308,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 'conference_start_time'
             ],
             convert: function(v, r) {
-                var learnFinishTime = r.get('learn_finish_time'),
+                var learnFinishTime = r.get('learn_completed_time'),
                     conferenceStartTime = r.get('conference_start_time'),
                     conferenceJoinTime = r.get('conference_join_time');
 
@@ -418,7 +418,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'learn_completed_time',
             persist: false,
             calculate: function(data) {
-                return data.learn_finish_time || data.learn_override_time || null
+                return data.learn_override_time || data.learn_finish_time || null
             }
         }, {
             name: 'conference_completed_time',

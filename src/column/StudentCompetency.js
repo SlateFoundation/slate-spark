@@ -33,7 +33,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                 {
                     title: 'Learn and Practice',
                     shortText: 'L&amp;P',
-                    status: (studentData && studentData.learn_finish_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentData && studentData.learn_completed_time) ? randomStatusCls() : 'is-empty'
                 },
                 {
                     title: 'Conference',
