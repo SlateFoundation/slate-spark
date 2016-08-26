@@ -191,7 +191,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         if (gridRecord) {
             recordData[student.get('Username')] = {
-                'learn_finish_time': record.get('learn_finish_time'),
+                'learn_finish_time': record.get('learn_completed_time'),
                 'conference_finish_time': record.get('conference_finish_time'),
                 'apply_finish_time': record.get('apply_finish_time'),
                 'assess_finish_time': record.get('assess_finish_time')
@@ -335,7 +335,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 recordData[student.get('Username')] = {
                     'student_id': studentId,
                     'student_sparkpointid': studentId + '_' + sparkpointId,
-                    'learn_finish_time': studentSparkpoint.get('learn_finish_time'),
+                    'learn_finish_time': studentSparkpoint.get('learn_completed_time'),
                     'conference_finish_time': studentSparkpoint.get('conference_finish_time'),
                     'apply_finish_time': studentSparkpoint.get('apply_finish_time'),
                     'assess_finish_time': studentSparkpoint.get('assess_finish_time'),

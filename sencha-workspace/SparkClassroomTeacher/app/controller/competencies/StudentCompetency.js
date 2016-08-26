@@ -184,9 +184,9 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         applyChecked = applyDisabled || !Ext.isEmpty(sparkData.apply_override_time);
         confDisabled = applyDisabled || applyChecked || !Ext.isEmpty(sparkData.conference_finish_time);
         confChecked = confDisabled || !Ext.isEmpty(sparkData.conference_override_time);
-        learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkData.learn_finish_time);
+        learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkData.learn_completed_time);
         learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time);
-        allFinished = !Ext.isEmpty(sparkData.learn_finish_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
+        allFinished = !Ext.isEmpty(sparkData.learn_completed_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
 
         me.getPopoverTable().updateData({
             studentName: studentData.FullName,
@@ -197,7 +197,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             phases: [{
                 phase: 'Learn',
                 status: completedRequiredLearns + '/' + requiredLearns,
-                finished: !Ext.isEmpty(sparkData.learn_finish_time),
+                finished: !Ext.isEmpty(sparkData.learn_completed_time),
                 disabled: learnDisabled,
                 checked: learnChecked,
                 expected: sparkData.learn_pace_target,
