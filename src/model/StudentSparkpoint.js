@@ -161,7 +161,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'learn_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(v, r) {
+                var paceTarget = r.get('learn_pace_target');
+
+                if (Ext.isEmpty(paceTarget)) {
+                    return 1;
+                }
+
+                return paceTarget;
+            }
         }, {
             name: 'conference_start_time',
             type: 'sparkdate',
@@ -185,7 +194,17 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'conference_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(v, r) {
+                // defaultValue did not work for these pace_target fields, neither did calculate because of circular dependency
+                var paceTarget = r.get('conference_pace_target');
+
+                if (Ext.isEmpty(paceTarget)) {
+                    return 2;
+                }
+
+                return paceTarget;
+            }
         }, {
             name: 'apply_start_time',
             type: 'sparkdate',
@@ -209,7 +228,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'apply_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(v, r) {
+                var paceTarget = r.get('apply_pace_target');
+
+                if (Ext.isEmpty(paceTarget)) {
+                    return 4;
+                }
+
+                return paceTarget;
+            }
         }, {
             name: 'assess_start_time',
             type: 'sparkdate',
@@ -233,7 +261,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'assess_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(v, r) {
+                var paceTarget = r.get('assess_pace_target');
+
+                if (Ext.isEmpty(paceTarget)) {
+                    return 5;
+                }
+
+                return paceTarget;
+            }
         },
 
         // other persistent student+sparkpoint state
