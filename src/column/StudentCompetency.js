@@ -38,17 +38,17 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                 {
                     title: 'Conference',
                     shortText: 'C',
-                    status: (studentData && studentData.conference_finish_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentData && studentData.conference_completed_time) ? randomStatusCls() : 'is-empty'
                 },
                 {
                     title: 'Apply',
                     shortText: 'Ap',
-                    status: (studentData && studentData.apply_finish_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentData && studentData.apply_completed_time) ? randomStatusCls() : 'is-empty'
                 },
                 {
                     title: 'Assess',
                     shortText: 'As',
-                    status: (studentData && studentData.assess_finish_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentData && studentData.assess_completed_time) ? randomStatusCls() : 'is-empty'
                 }
             ];
 
