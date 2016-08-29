@@ -445,9 +445,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         type: 'slate-api',
         url: '/spark/api/work/activity',
         batchActions: false,
-        extraParams: {
-            status: 'all'
-        },
         writer: {
             type: 'json',
             allowSingle: true
