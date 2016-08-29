@@ -63,6 +63,18 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             tap: {
                 fn: 'onDoneTap'
             }
+        },
+
+        configTableCurrent: {
+            updatedata: {
+                fn: 'onUpdateSparkRows'
+            }
+        },
+
+        configTableQueue: {
+            updatedata: {
+                fn: 'onUpdateSparkRows'
+            }
         }
     },
 
@@ -84,6 +96,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             currentSparkpoints, queuedSparkpoints,
             count,
             sparkpoint,
+            assessDisabled, assessChecked, applyDisabled, applyChecked, confDisabled,
+            confChecked, learnDisabled, learnChecked, allFinished,
             currentTableData = [],
             queuedTableData = [];
 
@@ -100,13 +114,45 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         for (count = 0; count < currentSparkpoints.length; count++) {
             sparkpoint = currentSparkpoints[count];
 
+            // Teachers can only disable an override if a student hasn't completed or had a later phase overridden
+            assessDisabled = !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
+            assessChecked = assessDisabled || !Ext.isEmpty(sparkpoint.get('assess_override_time'));
+            applyDisabled = assessDisabled || assessChecked || !Ext.isEmpty(sparkpoint.get('apply_finish_time'));
+            applyChecked = applyDisabled || !Ext.isEmpty(sparkpoint.get('apply_override_time'));
+            confDisabled = applyDisabled || applyChecked || !Ext.isEmpty(sparkpoint.get('conference_finish_time'));
+            confChecked = confDisabled || !Ext.isEmpty(sparkpoint.get('conference_override_time'));
+            learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkpoint.get('learn_finish_time'));
+            learnChecked = learnDisabled || !Ext.isEmpty(sparkpoint.get('learn_override_time'));
+            allFinished = !Ext.isEmpty(sparkpoint.get('learn_finish_time')) && !Ext.isEmpty(sparkpoint.get('conference_finish_time')) && !Ext.isEmpty(sparkpoint.get('apply_finish_time')) && !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
+
             currentTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
-                code: sparkpoint.get('sparkpoint'),
-                L: sparkpoint.get('learn_pace_target'),
-                C: sparkpoint.get('conference_pace_target'),
-                Ap: sparkpoint.get('apply_pace_target'),
-                As: sparkpoint.get('assess_pace_target')
+                'sparkpoint': sparkpoint.get('sparkpoint'),
+                'phases': [{
+                    phase: 'Learn',
+                    finished: !Ext.isEmpty(sparkpoint.get('learn_finish_time')),
+                    disabled: learnDisabled,
+                    checked: learnChecked,
+                    expected: sparkpoint.get('learn_pace_target')
+                }, {
+                    phase: 'Conference',
+                    finished: !Ext.isEmpty(sparkpoint.get('conference_finish_time')),
+                    disabled: confDisabled,
+                    checked: confChecked,
+                    expected: sparkpoint.get('conference_pace_target')
+                }, {
+                    phase: 'Apply',
+                    finished: !Ext.isEmpty(sparkpoint.get('apply_finish_time')),
+                    disabled: applyDisabled,
+                    checked: applyChecked,
+                    expected: sparkpoint.get('apply_pace_target')
+                }, {
+                    phase: 'Assess',
+                    finished: !Ext.isEmpty(sparkpoint.get('assess_finish_time')),
+                    disabled: assessDisabled,
+                    checked: assessChecked,
+                    expected: sparkpoint.get('assess_pace_target')
+                }]
             });
         }
 
@@ -115,12 +161,33 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
             currentTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
-                code: sparkpoint.get('sparkpoint'),
-                L: sparkpoint.get('learn_pace_target'),
-                C: sparkpoint.get('conference_pace_target'),
-                Ap: sparkpoint.get('apply_pace_target'),
-                As: sparkpoint.get('assess_pace_target')
-            })
+                'sparkpoint': sparkpoint.get('sparkpoint'),
+                'phases': [{
+                    phase: 'Learn',
+                    finished: !Ext.isEmpty(sparkpoint.get('learn_finish_time')),
+                    disabled: learnDisabled,
+                    checked: learnChecked,
+                    expected: sparkpoint.get('learn_pace_target')
+                }, {
+                    phase: 'Conference',
+                    finished: !Ext.isEmpty(sparkpoint.get('conference_finish_time')),
+                    disabled: confDisabled,
+                    checked: confChecked,
+                    expected: sparkpoint.get('conference_pace_target')
+                }, {
+                    phase: 'Apply',
+                    finished: !Ext.isEmpty(sparkpoint.get('apply_finish_time')),
+                    disabled: applyDisabled,
+                    checked: applyChecked,
+                    expected: sparkpoint.get('apply_pace_target')
+                }, {
+                    phase: 'Assess',
+                    finished: !Ext.isEmpty(sparkpoint.get('assess_finish_time')),
+                    disabled: assessDisabled,
+                    checked: assessChecked,
+                    expected: sparkpoint.get('assess_pace_target')
+                }]
+            });
         }
 
         if (currentTableData.length == 0) {
@@ -136,14 +203,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             me.getConfigTableQueue().updateData(queuedTableData);
             me.getConfigTableQueue().show();
         }
-
-        // TODO: Bind event handlers to the pace inputs to prevent entering non-integer values
     },
 
     onDoneTap: function() {
-        // 1. Save fields
         var me = this,
             activityStore = me.getActivitiesStore(),
+            // DomQuery usage due to the fact refs do not allow multiple selections
             sparkpointRows = Ext.DomQuery.select('.spark-sparkpointsconfig-window tr.sparkpoint-row'),
             rowElement,
             paceFields,
@@ -155,7 +220,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             sparkpoint,
             paceValue;
 
-        for(row = 0; row < sparkpointRows.length; row++) {
+        for (row = 0; row < sparkpointRows.length; row++) {
             rowElement = Ext.fly(sparkpointRows[row]);
             paceFields = rowElement.query('input.pace-field', true);
             studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
@@ -191,5 +256,72 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         // 2. Update underlying grid (go back to StudentCompetency controller and add there as well)
         // 3. Hide SparkpointsConfigWindow
         me.getSparkpointsConfigWindow().hide();
+    },
+
+    onUpdateSparkRows: function(component) {
+        var me = this,
+            overrideFields = Ext.select('component[cls*=' + component.getConfig('cls')[0] + '] input.override-checkbox'),
+            overrideField,
+            count;
+
+        for (count = 0; count < overrideFields.elements.length; count++) {
+            overrideField = Ext.fly(overrideFields[count]);
+
+            overrideField.on('change', me.onOverrideChange);
+        }
+    },
+
+    onOverrideChange: function(e, target) {
+        var me = this,
+            el = Ext.get(target),
+            checked = el.is(':checked'),
+            phaseName = el.getAttribute('data-phase'),
+            record = me.getStudentSparkpoint(),
+            chainCheckbox,
+            fieldName,
+            value;
+
+        switch (phaseName) {
+            case 'Learn':
+                fieldName = 'learn_override_time';
+                break;
+            case 'Conference':
+                fieldName = 'conference_override_time';
+                chainCheckbox = me.getLearnCheckbox();
+                break;
+            case 'Apply':
+                fieldName = 'apply_override_time';
+                chainCheckbox = me.getConferenceCheckbox();
+                break;
+            case 'Assess':
+                fieldName = 'assess_override_time';
+                chainCheckbox = me.getApplyCheckbox();
+                break;
+            default:
+        }
+
+        // If we checked a later phase, ensure that the previous phases are also checked
+        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
+            if (!chainCheckbox.is(':disabled')) {
+                chainCheckbox.dom.disabled = true;
+            }
+
+            if (!chainCheckbox.is(':checked')) {
+                chainCheckbox.dom.checked = true;
+            }
+
+            me.onPhaseCheckChange(null, chainCheckbox);
+        }
+
+        // If we unchecked this then remove disabled state if the prev phase wasn't finished
+        if (!Ext.isEmpty(chainCheckbox) && !checked) {
+            if (!chainCheckbox.hasCls('finished')) {
+                chainCheckbox.dom.removeAttribute('disabled');
+            }
+        }
+
+        value = checked ? new Date() : null;
+
+        record.set(fieldName, value);
     }
 });
