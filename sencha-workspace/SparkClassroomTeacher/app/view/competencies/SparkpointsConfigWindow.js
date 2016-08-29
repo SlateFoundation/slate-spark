@@ -5,6 +5,8 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
     config: {
         cls: 'spark-sparkpointsconfig-window',
         width: 640,
+        hideOnMaskTap: true,
+
         buttons: [
             {
                 text: 'Done',
@@ -12,6 +14,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                 cls: 'sparkpointsconfig-done-button'
             }
         ],
+
         items: [
             {
                 xtype: 'component',

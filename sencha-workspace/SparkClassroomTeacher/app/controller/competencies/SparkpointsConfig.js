@@ -75,6 +75,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             updatedata: {
                 fn: 'onUpdateSparkRows'
             }
+        },
+
+        sparkpointsConfigWindow: {
+            hide: {
+                fn: 'onHideWindow'
+            }
         }
     },
 
@@ -205,11 +211,17 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
     },
 
+    onHideWindow: function() {
+        var activityStore = this.getActivitiesStore();
+
+        activityStore.rejectChanges();
+    },
+
     onDoneTap: function() {
         var me = this,
             activityStore = me.getActivitiesStore(),
             // DomQuery usage due to the fact refs do not allow multiple selections
-            sparkpointRows = Ext.DomQuery.select('.spark-sparkpointsconfig-window tr.sparkpoint-row'),
+            sparkpointRows = Ext.query('.spark-sparkpointsconfig-window tr.sparkpoint-row'),
             rowElement,
             paceFields,
             row,
@@ -260,23 +272,27 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
     onUpdateSparkRows: function(component) {
         var me = this,
-            overrideFields = Ext.select('component[cls*=' + component.getConfig('cls')[0] + '] input.override-checkbox'),
+            overrideFields = component.element.select('.override-field'),
             overrideField,
             count;
 
         for (count = 0; count < overrideFields.elements.length; count++) {
-            overrideField = Ext.fly(overrideFields[count]);
+            overrideField = Ext.get(overrideFields.elements[count]);
 
-            overrideField.on('change', me.onOverrideChange);
+            overrideField.on('change', function(e, target) {
+                me.onOverrideChange(e, target);
+            });
         }
     },
 
     onOverrideChange: function(e, target) {
         var me = this,
+            activityStore = me.getActivitiesStore(),
             el = Ext.get(target),
             checked = el.is(':checked'),
             phaseName = el.getAttribute('data-phase'),
-            record = me.getStudentSparkpoint(),
+            studentSparkpointId = el.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
+            record = activityStore.findRecord('student_sparkpointid', studentSparkpointId),
             chainCheckbox,
             fieldName,
             value;
@@ -287,15 +303,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 break;
             case 'Conference':
                 fieldName = 'conference_override_time';
-                chainCheckbox = me.getLearnCheckbox();
+                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Learn"]');
                 break;
             case 'Apply':
                 fieldName = 'apply_override_time';
-                chainCheckbox = me.getConferenceCheckbox();
+                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Conference"]');
                 break;
             case 'Assess':
                 fieldName = 'assess_override_time';
-                chainCheckbox = me.getApplyCheckbox();
+                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Apply"]');
                 break;
             default:
         }
@@ -310,7 +326,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 chainCheckbox.dom.checked = true;
             }
 
-            me.onPhaseCheckChange(null, chainCheckbox);
+            me.onOverrideChange(null, chainCheckbox);
         }
 
         // If we unchecked this then remove disabled state if the prev phase wasn't finished
