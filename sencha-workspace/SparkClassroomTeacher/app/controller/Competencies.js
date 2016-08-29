@@ -335,14 +335,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 recordData[student.get('Username')] = {
                     'student_id': studentId,
                     'student_sparkpointid': studentId + '_' + sparkpointId,
-                    'learn_finish_time': studentSparkpoint.get('learn_completed_time'),
-                    'conference_finish_time': studentSparkpoint.get('conference_finish_time'),
-                    'apply_finish_time': studentSparkpoint.get('apply_finish_time'),
-                    'assess_finish_time': studentSparkpoint.get('assess_finish_time'),
-                    'learn_override_time': studentSparkpoint.get('learn_override_time'),
-                    'conference_override_time': studentSparkpoint.get('conference_override_time'),
-                    'assess_override_time': studentSparkpoint.get('assess_override_time'),
-                    'override_reason': studentSparkpoint.get('override_reason')
+                    'learn_completed_time': studentSparkpoint.get('learn_completed_time'),
+                    'conference_completed_time': studentSparkpoint.get('conference_completed_time'),
+                    'apply_completed_time': studentSparkpoint.get('apply_completed_time'),
+                    'assess_completed_time': studentSparkpoint.get('assess_completed_time')
                 };
 
                 record.set(recordData, { dirty: false });
