@@ -136,25 +136,25 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 'sparkpoint': sparkpoint.get('sparkpoint'),
                 'phases': [{
                     phase: 'Learn',
-                    finished: !Ext.isEmpty(sparkpoint.get('learn_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('learn_finish_time')),
                     disabled: learnDisabled,
                     checked: learnChecked,
                     expected: sparkpoint.get('learn_pace_target')
                 }, {
                     phase: 'Conference',
-                    finished: !Ext.isEmpty(sparkpoint.get('conference_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('conference_finish_time')),
                     disabled: confDisabled,
                     checked: confChecked,
                     expected: sparkpoint.get('conference_pace_target')
                 }, {
                     phase: 'Apply',
-                    finished: !Ext.isEmpty(sparkpoint.get('apply_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('apply_finish_time')),
                     disabled: applyDisabled,
                     checked: applyChecked,
                     expected: sparkpoint.get('apply_pace_target')
                 }, {
                     phase: 'Assess',
-                    finished: !Ext.isEmpty(sparkpoint.get('assess_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('assess_finish_time')),
                     disabled: assessDisabled,
                     checked: assessChecked,
                     expected: sparkpoint.get('assess_pace_target')
@@ -170,25 +170,25 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 'sparkpoint': sparkpoint.get('sparkpoint'),
                 'phases': [{
                     phase: 'Learn',
-                    finished: !Ext.isEmpty(sparkpoint.get('learn_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('learn_finish_time')),
                     disabled: learnDisabled,
                     checked: learnChecked,
                     expected: sparkpoint.get('learn_pace_target')
                 }, {
                     phase: 'Conference',
-                    finished: !Ext.isEmpty(sparkpoint.get('conference_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('conference_finish_time')),
                     disabled: confDisabled,
                     checked: confChecked,
                     expected: sparkpoint.get('conference_pace_target')
                 }, {
                     phase: 'Apply',
-                    finished: !Ext.isEmpty(sparkpoint.get('apply_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('apply_finish_time')),
                     disabled: applyDisabled,
                     checked: applyChecked,
                     expected: sparkpoint.get('apply_pace_target')
                 }, {
                     phase: 'Assess',
-                    finished: !Ext.isEmpty(sparkpoint.get('assess_completed_time')),
+                    finished: !Ext.isEmpty(sparkpoint.get('assess_finish_time')),
                     disabled: assessDisabled,
                     checked: assessChecked,
                     expected: sparkpoint.get('assess_pace_target')
