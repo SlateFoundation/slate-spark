@@ -52,11 +52,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         addToQueueButton: 'spark-studentcompetency-popover button[cls~=add-to-queue-button]',
         addNextUpButton: 'spark-studentcompetency-popover button[cls~=add-next-up-button]',
         giveCreditButton: 'spark-studentcompetency-popover button[cls~=give-credit-button]',
-        describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]',
-        learnCheckbox: 'spark-studentcompetency-popover input[data-phase="Learn"]',
-        conferenceCheckbox: 'spark-studentcompetency-popover input[data-phase="Conference"]',
-        applyCheckbox: 'spark-studentcompetency-popover input[data-phase="Apply"]',
-        assessCheckbox: 'spark-studentcompetency-popover input[data-phase="Assess"]'
+        describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]'
     },
 
 
@@ -245,7 +241,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     bindClickPopoverTable: function(cmp) {
         var me = this,
             activeCheckboxes = Ext.get(cmp.el.select('input.not-finished', true));
-            
+
         activeCheckboxes.on({
             'change': function(e, target) {
                 me.onPhaseCheckChange(e, target);
@@ -269,15 +265,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 break;
             case 'Conference':
                 fieldName = 'conference_override_time';
-                chainCheckbox = me.getLearnCheckbox();
+                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Learn"]')
                 break;
             case 'Apply':
                 fieldName = 'apply_override_time';
-                chainCheckbox = me.getConferenceCheckbox();
+                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Conference"]');
                 break;
             case 'Assess':
                 fieldName = 'assess_override_time';
-                chainCheckbox = me.getApplyCheckbox();
+                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Apply"]');
                 break;
             default:
         }
