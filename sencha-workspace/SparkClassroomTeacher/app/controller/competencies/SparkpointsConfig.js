@@ -237,6 +237,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             paceFields = rowElement.query('input.pace-field', true);
             studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
             sparkpoint = activityStore.findRecord('student_sparkpointid', studentSparkpointId);
+            sparkpoint.beginEdit();
 
             for (field = 0; field < paceFields.length; field++) {
                 paceField = Ext.fly(paceFields[field]);
@@ -259,6 +260,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     default:
                 }
             }
+
+            sparkpoint.endEdit();
 
             if (sparkpoint.dirty) {
                 sparkpoint.save();
