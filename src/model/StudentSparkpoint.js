@@ -424,19 +424,19 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'conference_completed_time',
             persist: false,
             calculate: function(data) {
-                return data.conference_finish_time || data.conference_override_time || null
+                return data.conference_override_time || data.conference_finish_time || null
             }
         }, {
             name: 'apply_completed_time',
             persist: false,
             calculate: function(data) {
-                return data.apply_finish_time || data.apply_override_time || null
+                return data.apply_override_time || data.apply_finish_time || null
             }
         }, {
             name: 'assess_completed_time',
             persist: false,
             calculate: function(data) {
-                return data.assess_finish_time || data.assess_override_time || null
+                return data.assess_override_time || data.assess_finish_time || null
             }
         }
     ],
