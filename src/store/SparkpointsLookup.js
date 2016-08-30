@@ -16,7 +16,7 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
         },
         grouper: {
             groupFn: function(r) {
-                if (r.get('assess_finish_time')) {
+                if (r.get('assess_completed_time')) {
                     return 'Completed Sparkpoints';
                 }
 
@@ -28,8 +28,8 @@ Ext.define('SparkClassroom.store.SparkpointsLookup', {
                 return 'Next Up';
             },
             sorterFn: function(r1, r2) {
-                var assessFinish1 = r1.get('assess_finish_time'),
-                    assessFinish2 = r2.get('assess_finish_time'),
+                var assessFinish1 = r1.get('assess_completed_time'),
+                    assessFinish2 = r2.get('assess_completed_time'),
                     current1 = r1.get('learn_start_time') && !assessFinish1,
                     current2 = r2.get('learn_start_time') && !assessFinish2;
 

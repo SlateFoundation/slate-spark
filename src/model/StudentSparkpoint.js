@@ -15,13 +15,13 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'completed_phase_number',
             persist: false,
             calculate: function(data) {
-                if (data.assess_finish_time || data.assess_override_time) {
+                if (data.assess_completed_time) {
                     return 4;
                 }
-                if (data.apply_finish_time || data.apply_override_time) {
+                if (data.apply_completed_time) {
                     return 3;
                 }
-                if (data.conference_finish_time || data.conference_override_time) {
+                if (data.conference_completed_time) {
                     return 2;
                 }
                 if (data.learn_completed_time) {
@@ -58,11 +58,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             depends: [
                 'conference_start_time',
                 'conference_join_time',
-                'conference_finish_time',
+                'conference_completed_time',
                 'apply_ready_time',
-                'apply_finish_time',
+                'apply_completed_time',
                 'assess_ready_time',
-                'assess_finish_time'
+                'assess_completed_time'
             ],
             convert: function(v, r) {
                 var conferenceJoinTime = r.get('conference_join_time');
@@ -71,15 +71,15 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                     return 'conference-group';
                 }
 
-                if (conferenceJoinTime && !r.get('conference_finish_time')) {
+                if (conferenceJoinTime && !r.get('conference_completed_time')) {
                     return 'conference-finish';
                 }
 
-                if (r.get('apply_ready_time') && !r.get('apply_finish_time')) {
+                if (r.get('apply_ready_time') && !r.get('apply_completed_time')) {
                     return 'apply-grade';
                 }
 
-                if (r.get('assess_ready_time') && !r.get('assess_finish_time')) {
+                if (r.get('assess_ready_time') && !r.get('assess_completed_time')) {
                     return 'assess-grade';
                 }
 
@@ -266,16 +266,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             depends: [
                 'learn_completed_time',
-                'conference_finish_time',
-                'apply_finish_time',
-                'assess_finish_time'
+                'conference_completed_time',
+                'apply_completed_time',
+                'assess_completed_time'
             ],
             convert: function(v, r) {
-                if (r.get('apply_finish_time')) {
+                if (r.get('apply_completed_time')) {
                     return 'assess';
                 }
 
-                if (r.get('conference_finish_time')) {
+                if (r.get('conference_completed_time')) {
                     return 'apply';
                 }
 
@@ -330,10 +330,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'apply_subphase_duration',
             persist: false,
             depends: [
-                'conference_finish_time'
+                'conference_completed_time'
             ],
             convert: function(v, r) {
-                var conferenceFinishTime = r.get('conference_finish_time'),
+                var conferenceFinishTime = r.get('conference_completed_time'),
                     applyStartTime = r.get('apply_start_time'),
                     applyReadyTime = r.get('apply_ready_time');
 
@@ -355,14 +355,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'assess_subphase_duration',
             persist: false,
             depends: [
-                'apply_finish_time',
+                'apply_completed_time',
                 'assess_start_time'
             ],
             convert: function(v, r) {
-                var applyFinishTime = r.get('apply_finish_time'),
+                var applyFinishTime = r.get('apply_completed_time'),
                     assessStartTime = r.get('assess_start_time'),
                     assessReadyTime = r.get('assess_ready_time'),
-                    assessFinishTime = r.get('assess_finish_time');
+                    assessFinishTime = r.get('assess_completed_time');
 
                 if (!applyFinishTime) {
                     return null;
