@@ -277,17 +277,17 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
         me.getConferenceTab().setDuration(
             conferenceStartTime &&
-            ((studentSparkpoint.get('conference_finish_time') || now) - conferenceStartTime)
+            ((studentSparkpoint.get('conference_completed_time') || now) - conferenceStartTime)
         );
 
         me.getApplyTab().setDuration(
             applyStartTime &&
-            ((studentSparkpoint.get('apply_finish_time') || now) - applyStartTime)
+            ((studentSparkpoint.get('apply_completed_time') || now) - applyStartTime)
         );
 
         me.getAssessTab().setDuration(
             assessStartTime &&
-            ((studentSparkpoint.get('assess_finish_time') || now) - assessStartTime)
+            ((studentSparkpoint.get('assess_completed_time') || now) - assessStartTime)
         );
 
         workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
