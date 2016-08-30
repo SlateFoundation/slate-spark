@@ -14,41 +14,44 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         renderer: function(v, r) {
             // TODO connect to real data
             // & investigate perf of tpl inside renderer?
-            var statuses = [ 'ahead', 'on-pace', 'behind' ],
-                randomStatusCls = function() { return 'is-' + statuses[Math.floor(Math.random() * statuses.length)]; },
+            var statuses = ['ahead', 'on-pace', 'behind'],
+                stages,
+                randomStatusCls = function() {
+                    return 'is-' + statuses[Math.floor(Math.random() * statuses.length)];
+                },
                 dataIndex = this.getDataIndex(),
                 studentUsername = dataIndex.split('_').shift(),
-                studentData = r.get(studentUsername),
+                studentSparkpoint = r.get(studentUsername),
                 gaugeTpl = new Ext.XTemplate([
                     '<div class="flex-ct cycle-gauge">',
                         '<tpl for=".">',
                             '<div class="flex-1 cycle-gauge-pip {status}">',
-                                '<abbr class="pip-text" data-student-id="' + (studentData ? studentData.student_id : '' ) + '" title="{title}">{shortText}</abbr>',
+                                '<abbr class="pip-text" data-student-id="' + (studentSparkpoint ? studentSparkpoint.get('student_id') : '') + '" title="{title}">{shortText}</abbr>',
                             '</div>',
                         '</tpl>',
                     '</div>'
                 ]).compile();
 
-            var stages = [
+            stages = [
                 {
                     title: 'Learn and Practice',
                     shortText: 'L&amp;P',
-                    status: (studentData && studentData.learn_completed_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentSparkpoint && studentSparkpoint.get('learn_completed_time')) ? randomStatusCls() : 'is-empty'
                 },
                 {
                     title: 'Conference',
                     shortText: 'C',
-                    status: (studentData && studentData.conference_completed_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentSparkpoint && studentSparkpoint.get('conference_completed_time')) ? randomStatusCls() : 'is-empty'
                 },
                 {
                     title: 'Apply',
                     shortText: 'Ap',
-                    status: (studentData && studentData.apply_completed_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentSparkpoint && studentSparkpoint.get('apply_completed_time')) ? randomStatusCls() : 'is-empty'
                 },
                 {
                     title: 'Assess',
                     shortText: 'As',
-                    status: (studentData && studentData.assess_completed_time) ? randomStatusCls() : 'is-empty'
+                    status: (studentSparkpoint && studentSparkpoint.get('assess_completed_time')) ? randomStatusCls() : 'is-empty'
                 }
             ];
 
@@ -57,7 +60,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
     },
 
     listeners: {
-        sort: function(column, direction, oldDirection) {
+        sort: function(column, direction) {
             var dataIndex = column.getDataIndex(),
                 grid = column.up('grid'),
                 store = grid.getStore(),
@@ -67,8 +70,8 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                 return;
             }
 
-            if (store.sorters.length) {
-                store.sorters.removeAll();
+            if (!Ext.isEmpty(sorters)) {
+                sorters.removeAll();
             }
 
             grid.getStore().sort({
@@ -79,9 +82,9 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
 
                     if (direction == 'ASC') {
                         return (d1 > d2 ? 1 : (d1 === d2 ? 0 : -1));
-                    } else {
-                        return (d1 > d2 ? -1 : (d1 === d2 ? 0 : 1));
                     }
+
+                    return (d1 > d2 ? -1 : (d1 === d2 ? 0 : 1));
                 }
             });
 
