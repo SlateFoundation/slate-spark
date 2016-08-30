@@ -18,7 +18,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Assess', {
                     return 'Working';
                 }
 
-                if (!r.get('assess_finish_time')) {
+                if (!r.get('assess_completed_time')) {
                     return 'Ready for Grading';
                 }
 
@@ -29,8 +29,8 @@ Ext.define('SparkClassroomTeacher.store.gps.Assess', {
                     applyStart2 = r2.get('assess_start_time'),
                     applyReady1 = r1.get('assess_ready_time'),
                     applyReady2 = r2.get('assess_ready_time'),
-                    applyFinished1 = r1.get('assess_finish_time'),
-                    applyFinished2 = r2.get('assess_finish_time');
+                    applyFinished1 = r1.get('assess_completed_time'),
+                    applyFinished2 = r2.get('assess_completed_time');
 
                 // choosing first
                 if (applyStart1 && !applyStart2) {

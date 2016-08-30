@@ -92,7 +92,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             activeStudent === this.getAppCt().getSelectedStudentSparkpoint() &&
             (
                 modifiedFieldNames.indexOf('assess_ready_time') != -1 ||
-                modifiedFieldNames.indexOf('assess_finish_time') != -1
+                modifiedFieldNames.indexOf('assess_completed_time') != -1
             )
         ) {
             this.refreshCompleteBtn();
@@ -115,7 +115,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             completeBtnDirty = false,
             studentSparkpoint;
 
-        if (!selectedStudentSparkpoint.get('assess_finish_time')) {
+        if (!selectedStudentSparkpoint.get('assess_completed_time')) {
             selectedStudentSparkpoint.set('assess_finish_time', new Date());
             selectedStudentSparkpoint.save();
 
@@ -222,7 +222,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             sparkpointField = me.getSparkpointField(),
             selectedSparkpoint = sparkpointField.getSelectedSparkpoint(),
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            assessFinishTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('assess_finish_time')
+            assessFinishTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('assess_completed_time')
 
         if (!completeBtn || !selectedStudentSparkpoint) {
             return;

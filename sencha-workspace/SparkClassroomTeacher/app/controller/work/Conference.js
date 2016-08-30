@@ -352,14 +352,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         for (; i < selectedStudentsLength; i++) {
             student = selectedStudents[i];
 
-            if (!student.get('conference_finish_time')) {
+            if (!student.get('conference_completed_time')) {
                 student.set('conference_finish_time', now);
                 student.save();
             }
         }
 
         unreadyStudentIndex = studentsGrid.getStore().findBy(function(student) {
-            return !student.get('conference_finish_time');
+            return !student.get('conference_completed_time');
         });
 
         if (
@@ -488,7 +488,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             groupsCount = groups.length,
             i = 0, group, members,
             filterReadyStudents = function(student) {
-                return !student.get('conference_finish_time');
+                return !student.get('conference_completed_time');
             };
 
         if (!groupsStore.isLoaded() || !activeStudentsStore.isLoaded()) {

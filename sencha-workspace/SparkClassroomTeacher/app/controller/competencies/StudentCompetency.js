@@ -205,7 +205,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }, {
                 phase: 'Conference',
                 status: 'Waiting',
-                finished: !Ext.isEmpty(sparkData.conference_finish_time),
+                finished: !Ext.isEmpty(sparkData.conference_completed_time),
                 disabled: confDisabled,
                 checked: confChecked,
                 expected: sparkData.conference_pace_target,
@@ -213,7 +213,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }, {
                 phase: 'Apply',
                 status: 'Not Started',
-                finished: !Ext.isEmpty(sparkData.apply_finish_time),
+                finished: !Ext.isEmpty(sparkData.apply_completed_time),
                 disabled: applyDisabled,
                 checked: applyChecked,
                 expected: sparkData.apply_pace_target,
@@ -221,7 +221,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }, {
                 phase: 'Assess',
                 status: 'Not Started',
-                finished: !Ext.isEmpty(sparkData.assess_finish_time),
+                finished: !Ext.isEmpty(sparkData.assess_completed_time),
                 disabled: assessDisabled,
                 checked: assessChecked,
                 expected: sparkData.assess_pace_target,

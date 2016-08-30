@@ -135,7 +135,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
     onReadyBtnTap: function() {
         var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint();
 
-        if (!selectedStudentSparkpoint.get('apply_finish_time')) {
+        if (!selectedStudentSparkpoint.get('apply_completed_time')) {
             selectedStudentSparkpoint.set('apply_finish_time', new Date());
             selectedStudentSparkpoint.save();
             this.syncReadyState();
@@ -204,7 +204,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
             me.getTimelineCmp().setData({
                 start: startTime,
-                finish: selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_finish_time'),
+                finish: selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_completed_time'),
                 estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
             });
 
@@ -236,7 +236,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             readyBtn = me.getReadyBtn(),
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             applyReadyTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_ready_time'),
-            applyFinishTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_finish_time');
+            applyFinishTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('apply_completed_time');
 
         if (!gradePanel || !readyBtn || !selectedStudentSparkpoint) {
             return;
