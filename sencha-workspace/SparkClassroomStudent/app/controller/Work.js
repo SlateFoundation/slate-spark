@@ -272,7 +272,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
         me.getLearnTab().setDuration(
             learnStartTime &&
-            ((studentSparkpoint.get('learn_finish_time') || now) - learnStartTime)
+            ((studentSparkpoint.get('learn_completed_time') || now) - learnStartTime)
         );
 
         me.getConferenceTab().setDuration(
