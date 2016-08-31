@@ -249,12 +249,27 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                         sparkpoint.set('learn_pace_target', paceValue);
                         break;
                     case 'Conference':
+                        if (paceValue <= sparkpoint.get('learn_pace_target')) {
+                            sparkpoint.endEdit();
+                            Ext.Msg.setStyle({ 'z-index': 2000 }).alert('Invalid Pace Target', 'The Conference phase must be done after the Learn phase. Please enter a Conference completeion day that is after the Learn completion day');
+                            return;
+                        }
                         sparkpoint.set('conference_pace_target', paceValue);
                         break;
                     case 'Apply':
+                        if (paceValue <= sparkpoint.get('conference_pace_target')) {
+                            sparkpoint.endEdit();
+                            Ext.Msg.setStyle({ 'z-index': 2000 }).alert('Invalid Pace Target', 'The Apply phase must be done after the Conference phase. Please enter an Apply completeion day that is after the Conference completion day');
+                            return;
+                        }
                         sparkpoint.set('apply_pace_target', paceValue);
                         break;
                     case 'Assess':
+                        if (paceValue <= sparkpoint.get('apply_pace_target')) {
+                            sparkpoint.endEdit();
+                            Ext.Msg.setStyle({ 'z-index': 2000 }).alert('Invalid Pace Target', 'The Assess phase must be done after the Apply phase. Please enter an Assess completeion day that is after the Apply completion day');
+                            return;
+                        }
                         sparkpoint.set('assess_pace_target', paceValue);
                         break;
                     default:
