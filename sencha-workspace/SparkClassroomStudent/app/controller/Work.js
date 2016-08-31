@@ -162,8 +162,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             this.refreshTabbar();
 
             feedbackStore.getProxy().setExtraParams({
-                student_id: studentSparkpoint.get('student_id'),
-                sparkpoint: studentSparkpoint.getId()
+                'student_id': studentSparkpoint.get('student_id'),
+                'sparkpoint': studentSparkpoint.getId()
             });
             feedbackStore.load();
         }
@@ -202,26 +202,29 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         var me = this,
             tableName = data.table,
             itemData = data.item,
-            studentSparkpoint, modifiedFieldNames,
-            workFeedbackStore, sameAuthorFeedback, newFeedback;
+            studentSparkpoint = me.getStudentSparkpoint(),
+            modifiedFieldNames,
+            workFeedbackStore;
 
 
-        if (tableName == 'student_sparkpoint') {
-            if (
-                (studentSparkpoint = me.getStudentSparkpoint()) &&
-                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
-                studentSparkpoint.get('student_id') == itemData.student_id
-            ) {
+        if (tableName === 'student_sparkpoint' || tableName === 'section_student_active_sparkpoint') {
+            if (studentSparkpoint
+                && studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
+                && studentSparkpoint.get('student_id') == itemData.student_id) {
                 modifiedFieldNames = studentSparkpoint.set(itemData, { dirty: false });
-                me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames);
+                // itemData is strictly from the database table and does not represent fields from the API call.
+                studentSparkpoint.load({
+                    success: function() {
+                        me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames);
+                    }
+                });
             }
-        } else if (tableName == 'teacher_feedback') {
-            if (
-                (studentSparkpoint = me.getStudentSparkpoint()) &&
-                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id &&
-                studentSparkpoint.get('student_id') == itemData.student_id &&
-                (workFeedbackStore = me.getWorkFeedbackStore()) &&
-                !workFeedbackStore.getById(itemData.id)
+        } else if (tableName === 'teacher_feedback') {
+            if (studentSparkpoint
+                && studentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
+                && studentSparkpoint.get('student_id') === itemData.student_id
+                && (workFeedbackStore = me.getWorkFeedbackStore())
+                && !workFeedbackStore.getById(itemData.id)
             ) {
                 workFeedbackStore.add(itemData)[0];
             }
