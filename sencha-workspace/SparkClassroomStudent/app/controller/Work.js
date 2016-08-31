@@ -212,12 +212,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
                 && studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
                 && studentSparkpoint.get('student_id') == itemData.student_id) {
                 modifiedFieldNames = studentSparkpoint.set(itemData, { dirty: false });
-                // itemData is strictly from the database table and does not represent fields from the API call.
-                studentSparkpoint.load({
-                    success: function() {
-                        me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames);
-                    }
-                });
+                me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames)
             }
         } else if (tableName === 'teacher_feedback') {
             if (studentSparkpoint
