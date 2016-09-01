@@ -306,3 +306,44 @@ a {
         }
     }
 }
+
+select.field-control {
+    -webkit-appearance: none;
+    background: white no-repeat right .5em center;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 2"><polygon fill="#666" points="0,0 4,0 2,2"></polygon></svg>');
+    background-size: 10px;
+    padding: 0 1.375em 0 .5em;
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    background-color: white;
+    border: 1px solid rgba(black, .6);
+    border-radius: .125em;
+    cursor: pointer;
+    height: 1.25em;
+    position: relative;
+    vertical-align: -.25em;
+    width: 1.25em;
+
+    &:checked {
+        background-color: $base-color;
+        border-color: transparent;
+
+        &::before {
+            color: white;
+            content: '\f00c'; // fa-check
+            display: block;
+            font-family: FontAwesome;
+            font-size: 14px;
+            line-height: 18px;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+        }
+    }
+
+    &:active {
+        background-color: mix(white, $base-color);
+    }
+}
