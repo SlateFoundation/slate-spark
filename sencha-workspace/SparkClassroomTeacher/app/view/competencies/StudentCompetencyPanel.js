@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                     '<div class="sparkpoint-code">{sparkpointCode}</div>',
                                 '</th>',
                                 '<th class="expected-col">Expected Completion</th>',
-                                '<th class="actual-col"><span class="[{ this.getOverallPaceCls(values) }]">[{ this.getOverallPaceDesc(values) }]</span></th>',
+                                '<th class="actual-col"><span class="{[ this.getOverallPaceCls(values) ]}">{[ this.getOverallPaceDesc(values) ]}</span></th>',
                             '</tr>',
                         '</thead>',
                         '<tbody>',
@@ -78,14 +78,47 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                             return '';
                         },
 
+                        getCurrentPhase: function(values) {
+                            var count = 0,
+                                currentPhase;
+
+                            // actual pace is not calculated unless the phase is started.
+                            // currentPhase wil be the last phase with an actual pace.
+                            for (; count < values.phases.length; count++) {
+                                if (!Ext.isEmpty(values.phases[count].actual)) {
+                                    currentPhase = values.phases[count];
+                                }
+                            }
+
+                            return currentPhase;
+                        },
+
                         getOverallPaceDesc: function(values) {
-                            // TODO: calculate overall pace description
-                            return 'Not Started Yet';
+                            var currentPhase = this.getCurrentPhase(values),
+                                expected = currentPhase.expected,
+                                actual = currentPhase.actual;
+
+                            if (expected == actual) {
+                                return 'On Pace';
+                            }
+
+                            if (expected > actual) {
+                                return 'Ahead';
+                            }
+
+                            if (expected < actual) {
+                                return 'Behind';
+                            }
+
+                            return '';
                         },
 
                         getOverallPaceCls: function(values) {
-                            // TODO: calculate overall pace
-                            return 'is-not-started';
+                            var currentPhase = this.getCurrentPhase(values),
+                                expected = currentPhase.expected,
+                                actual = currentPhase.actual;
+
+                            return this.getPaceCls(expected, actual);
                         }
                     }
                 ]
