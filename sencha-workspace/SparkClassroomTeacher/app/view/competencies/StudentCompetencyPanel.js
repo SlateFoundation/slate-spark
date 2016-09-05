@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                     '<div class="sparkpoint-code">{sparkpointCode}</div>',
                                 '</th>',
                                 '<th class="expected-col">Expected Completion</th>',
-                                '<th class="actual-col"><span class="{paceCls}">{paceDesc}</span></th>',
+                                '<th class="actual-col"><span class="[{ this.getOverallPaceCls(values) }]">[{ this.getOverallPaceDesc(values) }]</span></th>',
                             '</tr>',
                         '</thead>',
                         '<tbody>',
@@ -76,6 +76,16 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                             }
 
                             return '';
+                        },
+
+                        getOverallPaceDesc: function(values) {
+                            // TODO: calculate overall pace description
+                            return 'Not Started Yet';
+                        },
+
+                        getOverallPaceCls: function(values) {
+                            // TODO: calculate overall pace
+                            return 'is-not-started';
                         }
                     }
                 ]

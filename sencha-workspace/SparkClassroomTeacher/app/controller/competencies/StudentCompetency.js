@@ -175,7 +175,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
         // Teachers can only disable an override if a student hasn't completed or had a later phase overridden
         assessDisabled = !Ext.isEmpty(sparkData.assess_finish_time);
-        assessChecked = assessDisabled || !Ext.isEmpty(sparkData.assess_override_time);
+        assessChecked = assessDisabled || !Ext.isEmpty(sparkData.assess_override_time),
         applyDisabled = assessDisabled || assessChecked || !Ext.isEmpty(sparkData.apply_finish_time);
         applyChecked = applyDisabled || !Ext.isEmpty(sparkData.apply_override_time);
         confDisabled = applyDisabled || applyChecked || !Ext.isEmpty(sparkData.conference_finish_time);
@@ -187,9 +187,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         me.getPopoverTable().updateData({
             studentName: studentData.FullName,
             sparkpointCode: sparkData.sparkpoint,
-            // TODO: calculate whether they receive class/desc for is-not-started is-on-pace is-behind is-ahead, possibly from API call?
-            paceCls: 'is-not-started',
-            paceDesc: 'Not Started Yet',
             phases: [{
                 phase: 'Learn',
                 status: completedRequiredLearns + '/' + requiredLearns,
@@ -197,7 +194,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: learnDisabled,
                 checked: learnChecked,
                 expected: sparkData.learn_pace_target,
-                actual: ''
+                actual: sparkData.learn_pace_actual
             }, {
                 phase: 'Conference',
                 status: 'Waiting',
@@ -205,7 +202,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: confDisabled,
                 checked: confChecked,
                 expected: sparkData.conference_pace_target,
-                actual: ''
+                actual: sparkData.conference_pace_actual
             }, {
                 phase: 'Apply',
                 status: 'Not Started',
@@ -213,7 +210,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: applyDisabled,
                 checked: applyChecked,
                 expected: sparkData.apply_pace_target,
-                actual: ''
+                actual: sparkData.apply_pace_actual
             }, {
                 phase: 'Assess',
                 status: 'Not Started',
@@ -221,7 +218,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: assessDisabled,
                 checked: assessChecked,
                 expected: sparkData.assess_pace_target,
-                actual: ''
+                actual: sparkData.assess_pace_actual
             }]
         });
 
