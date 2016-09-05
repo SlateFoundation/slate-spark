@@ -12,7 +12,6 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         },
 
         renderer: function(v, r) {
-            // TODO connect to real data
             // & investigate perf of tpl inside renderer?
             var stages,
                 statusCls = function(expected, actual) {
