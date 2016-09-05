@@ -161,7 +161,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'learn_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(val) {
+                if (Ext.isEmpty(val)) {
+                    return 1;
+                }
+
+                return val;
+            }
         }, {
             name: 'conference_start_time',
             type: 'sparkdate',
@@ -185,7 +192,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'conference_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(val) {
+                if (Ext.isEmpty(val)) {
+                    return 2;
+                }
+
+                return val;
+            }
         }, {
             name: 'apply_start_time',
             type: 'sparkdate',
@@ -209,7 +223,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'apply_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(val) {
+                if (Ext.isEmpty(val)) {
+                    return 4;
+                }
+
+                return val;
+            }
         }, {
             name: 'assess_start_time',
             type: 'sparkdate',
@@ -233,7 +254,14 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'assess_pace_target',
             type: 'int',
-            allowNull: true
+            allowNull: true,
+            convert: function(val) {
+                if (Ext.isEmpty(val)) {
+                    return 5;
+                }
+
+                return val;
+            }
         },
 
         // other persistent student+sparkpoint state
