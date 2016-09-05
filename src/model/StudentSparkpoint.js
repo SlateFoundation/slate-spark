@@ -329,6 +329,17 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return Date.now() - learnStartTime;
             }
         }, {
+            name: 'learn_pace_actual',
+            persist: false,
+            allowNull: true,
+            calculate: function(data) {
+                if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.learn_completed_time)) {
+                    return null;
+                }
+
+                return Ext.Date.diff(data.learn_start_time, data.learn_completed_time, Ext.Date.DAY) + 1;
+            }
+        }, {
             name: 'conference_subphase_duration',
             persist: false,
             depends: [
@@ -355,6 +366,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return Date.now() - conferenceJoinTime;
             }
         }, {
+            name: 'conference_pace_actual',
+            persist: false,
+            calculate: function(data) {
+                if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.conference_completed_time)) {
+                    return null;
+                }
+
+                return Ext.Date.diff(data.learn_start_time, data.conference_completed_time, Ext.Date.DAY) + 1;
+            }
+        }, {
             name: 'apply_subphase_duration',
             persist: false,
             depends: [
@@ -378,6 +399,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 }
 
                 return Date.now() - applyReadyTime;
+            }
+        }, {
+            name: 'apply_pace_actual',
+            persist: false,
+            calculate: function(data) {
+                if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.apply_completed_time)) {
+                    return null;
+                }
+
+                return Ext.Date.diff(data.learn_start_time, data.apply_completed_time, Ext.Date.DAY) + 1;
             }
         }, {
             name: 'assess_subphase_duration',
@@ -409,6 +440,16 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 }
 
                 return Date.now() - assessFinishTime;
+            }
+        }, {
+            name: 'assess_pace_actual',
+            persist: false,
+            calculate: function(data) {
+                if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.assess_completed_time)) {
+                    return null;
+                }
+
+                return Ext.Date.diff(data.learn_start_time, data.assess_completed_time, Ext.Date.DAY) + 1;
             }
         }, {
             name: 'total_duration',
