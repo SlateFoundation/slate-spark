@@ -14,10 +14,25 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         renderer: function(v, r) {
             // TODO connect to real data
             // & investigate perf of tpl inside renderer?
-            var statuses = ['ahead', 'on-pace', 'behind'],
-                stages,
-                randomStatusCls = function() {
-                    return 'is-' + statuses[Math.floor(Math.random() * statuses.length)];
+            var stages,
+                statusCls = function(expected, actual) {
+                    if (Ext.isEmpty(expected) || Ext.isEmpty(actual)) {
+                        return 'is-empty';
+                    }
+
+                    if (expected == actual) {
+                        return 'is-on-pace';
+                    }
+
+                    if (expected > actual) {
+                        return 'is-ahead';
+                    }
+
+                    if (expected < actual) {
+                        return 'is-behind';
+                    }
+
+                    return '';
                 },
                 dataIndex = this.getDataIndex(),
                 studentUsername = dataIndex.split('_').shift(),
@@ -36,22 +51,22 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                 {
                     title: 'Learn and Practice',
                     shortText: 'L&amp;P',
-                    status: (studentSparkpoint && studentSparkpoint.get('learn_completed_time')) ? randomStatusCls() : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('learn_pace_target'), studentSparkpoint.get('learn_pace_actual')) : 'is-empty'
                 },
                 {
                     title: 'Conference',
                     shortText: 'C',
-                    status: (studentSparkpoint && studentSparkpoint.get('conference_completed_time')) ? randomStatusCls() : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('conference_pace_target'), studentSparkpoint.get('conference_pace_actual')) : 'is-empty'
                 },
                 {
                     title: 'Apply',
                     shortText: 'Ap',
-                    status: (studentSparkpoint && studentSparkpoint.get('apply_completed_time')) ? randomStatusCls() : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('apply_pace_target'), studentSparkpoint.get('apply_pace_actual')) : 'is-empty'
                 },
                 {
                     title: 'Assess',
                     shortText: 'As',
-                    status: (studentSparkpoint && studentSparkpoint.get('assess_completed_time')) ? randomStatusCls() : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('assess_pace_target'), studentSparkpoint.get('assess_pace_actual')) : 'is-empty'
                 }
             ];
 
