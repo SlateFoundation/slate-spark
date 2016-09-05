@@ -209,6 +209,54 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             me.getConfigTableQueue().updateData(queuedTableData);
             me.getConfigTableQueue().show();
         }
+
+        me.bindPaceFields();
+    },
+
+    bindPaceFields: function() {
+        var me = this,
+            paceFields = me.getSparkpointsConfigWindow().element.select('input.pace-field').elements,
+            paceField,
+            count;
+
+        for (count = 0; count < paceFields.length; count++) {
+            paceField = Ext.get(paceFields[count]);
+            paceField.on('change', me.onPaceFieldChange);
+        }
+    },
+
+    onPaceFieldChange: function(e, el) {
+        var paceField = Ext.get(el),
+            paceFieldVal = paceField.getValue(),
+            prevCell = paceField.up('td').prev('td'),
+            nextCell = paceField.up('td').next('td'),
+            prevInput,
+            nextInput;
+
+        if (!Ext.isEmpty(prevCell)) {
+            prevInput = prevCell.down('input.pace-field');
+
+            // Prevent setting future phase pace before previous phase
+            if (parseInt(paceFieldVal, 10) <= parseInt(prevInput.getValue(), 10)) {
+                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done after the ' + prevInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is after the ' + prevInput.getAttribute('data-phase') + ' phase.', function() {
+                    paceField.focus(50);
+                });
+
+                paceField.dom.value = parseInt(prevInput.getValue(), 10) + 1;
+            }
+        }
+
+        if (!Ext.isEmpty(nextCell)) {
+            nextInput = nextCell.down('input.pace-field');
+
+            // Prevent setting previous phase pace before next phase
+            if (parseInt(paceFieldVal, 10) >= parseInt(nextInput.getValue(), 10)) {
+                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done before the ' + nextInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is before the ' + nextInput.getAttribute('data-phase') + ' phase.', function() {
+                    paceField.focus(50);
+                });
+                paceField.dom.value = parseInt(nextInput.getValue(), 10) - 1;
+            }
+        }
     },
 
     onHideWindow: function() {
@@ -283,8 +331,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         }
 
-        // 2. Update underlying grid (go back to StudentCompetency controller and add there as well)
-        // 3. Hide SparkpointsConfigWindow
         me.getSparkpointsConfigWindow().hide();
     },
 

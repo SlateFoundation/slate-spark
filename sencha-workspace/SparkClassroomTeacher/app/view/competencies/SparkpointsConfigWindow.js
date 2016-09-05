@@ -5,6 +5,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
     config: {
         cls: 'spark-sparkpointsconfig-window',
         width: 640,
+        zIndex: 998, // Puts it below Ext.Msg.alert and other dialogs
         hideOnMaskTap: true,
 
         buttons: [

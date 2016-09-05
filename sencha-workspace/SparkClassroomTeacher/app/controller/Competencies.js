@@ -277,7 +277,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         // check if activities are done loading, if not wait for that to happen.
         if (activityStore.isLoading()) {
             activityStore.on('load', function() {
-                return me.populateCompetenciesGrid();
+                me.populateCompetenciesGrid();
             }, null, { single: true });
 
             return;
@@ -285,7 +285,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         if (!activityStore.isLoaded()) {
             activityStore.load(function() {
-                return me.populateCompetenciesGrid();
+                me.populateCompetenciesGrid();
             });
 
             return;
