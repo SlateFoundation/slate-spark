@@ -5,6 +5,14 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
     // TODO: use autoSync and eliminate manual calls to record.save() everywhere?
     model: 'SparkClassroom.model.StudentSparkpoint',
 
+    proxy: {
+        type: 'spark-studentsparkpoints',
+        url: '/spark/api/work/activity',
+        extraParams: {
+            status: 'all'
+        }
+    },
+
     config: {
         // filter out activity that didn't match a student in the active roster
         filters: [{
