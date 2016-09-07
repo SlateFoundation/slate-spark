@@ -85,7 +85,13 @@ function* getHandler() {
             console.error('OPENED: OpenEd failed to return resources!');
         }
 
-        opened = opened.resources ? opened.resources.map(OpenEd.normalize) : [];
+        if (opened.resources) {
+            opened = opened.resources
+                .filter(resource => resource.publisher.toLowerCase().includes('learnzillion') === false)
+                .map(OpenEd.normalize)
+        } else {
+            opened = [];
+        }
     }
 
     var resources = fusebox.concat(opened),
@@ -401,7 +407,7 @@ function* launchHandler() {
                 url += '&hideRelatedResources=true';
             }
 
-            url = (url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/')
+            url = (url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/');
         }
         
         ctx.redirect(url);
