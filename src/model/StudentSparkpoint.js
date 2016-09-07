@@ -31,10 +31,8 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return 0;
             }
         }, {
-            name: 'student_sparkpointid',
-            calculate: function(data) {
-                return data.student_id + '_' + data.sparkpoint_id;
-            }
+            name: 'student_sparkpoint',
+            persist: false
         }, {
             name: 'student',
             persist: false,
