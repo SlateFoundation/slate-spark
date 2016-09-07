@@ -18,6 +18,8 @@ Ext.define('SparkClassroom.proxy.StudentSparkpoints', {
             }
         },
 
+        batchActions: false,
+
         writer: {
             type: 'json',
             allowSingle: true,

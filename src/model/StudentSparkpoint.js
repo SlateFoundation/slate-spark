@@ -2,12 +2,12 @@
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
-        'Slate.proxy.API',
+        'SparkClassroom.proxy.StudentSparkpoints',
         'SparkClassroom.data.field.SparkDate'
     ],
 
 
-    idProperty: 'sparkpoint',
+    idProperty: 'student_sparkpoint',
     fields: [
         'section_id',
         'section_code',
@@ -509,13 +509,8 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
     ],
 
     proxy: {
-        type: 'slate-api',
-        url: '/spark/api/work/activity',
-        batchActions: false,
-        writer: {
-            type: 'json',
-            allowSingle: true
-        }
+        type: 'spark-studentsparkpoints',
+        url: '/spark/api/work/activity'
     },
 
     saveConferenceGroup: function(groupId) {

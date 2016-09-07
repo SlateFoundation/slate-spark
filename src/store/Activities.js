@@ -5,15 +5,10 @@ Ext.define('SparkClassroom.store.Activities', {
 
 	model: 'SparkClassroom.model.StudentSparkpoint',
 	proxy: {
-		type: 'slate-api',
+		type: 'spark-studentsparkpoints',
 		url: '/spark/api/work/activity',
-		batchActions: false,
 		extraParams: {
 			status: 'all'
-		},
-		writer: {
-			type: 'json',
-			allowSingle: true
 		}
 	}
 });
