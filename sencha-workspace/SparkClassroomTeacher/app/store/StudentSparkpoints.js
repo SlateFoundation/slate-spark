@@ -27,7 +27,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
 
         me.createOperation('read', {
             callback: function(incomingRecords) {
-                var existingIds = me.collect('student_sparkpoint'),
+                var existingIds = me.collect('student_sparkpointid'),
                     i, len,
                     id, existingRecord, incomingRecord,
                     newRecords = [];
