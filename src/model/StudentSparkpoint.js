@@ -7,7 +7,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
     ],
 
 
-    idProperty: 'student_sparkpoint',
+    idProperty: 'student_sparkpointid',
     fields: [
         'section_id',
         'section_code',
@@ -31,8 +31,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return 0;
             }
         }, {
-            name: 'student_sparkpoint',
-            persist: false
+            name: 'student_sparkpointid',
+            calculate: function(data) {
+                return data.student_id + '_' + data.sparkpoint_id;
+            }
         }, {
             name: 'student',
             persist: false,
