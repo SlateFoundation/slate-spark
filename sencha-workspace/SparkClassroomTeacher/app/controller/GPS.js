@@ -134,7 +134,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 me.refreshGps();
             }
         } else if (table == 'student_sparkpoint') {
-            studentSparkpointId = itemData.student_id + '-' + itemData.sparkpoint_id;
+            studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id;
 
             if ((studentSparkpoint = me.getStudentSparkpointsStore().getById(studentSparkpointId))) {
                 updatedFields = studentSparkpoint.set(itemData, { dirty: false });

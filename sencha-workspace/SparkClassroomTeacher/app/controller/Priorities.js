@@ -88,7 +88,7 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
                 me.refreshPriorities();
             }
         } else if (table == 'student_sparkpoint') {
-            studentSparkpointId = itemData.student_id + '-' + itemData.sparkpoint_id;
+            studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id;
 
             if ((studentSparkpoint = me.getGpsPrioritiesStore().getById(studentSparkpointId))) {
                 updatedFields = studentSparkpoint.set(itemData, { dirty: false });
