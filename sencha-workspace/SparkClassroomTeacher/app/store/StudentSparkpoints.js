@@ -7,10 +7,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
 
     proxy: {
         type: 'spark-studentsparkpoints',
-        url: '/spark/api/work/activity',
-        extraParams: {
-            status: 'all'
-        }
+        url: '/spark/api/work/activity'
     },
 
     config: {
