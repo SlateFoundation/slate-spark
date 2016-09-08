@@ -31,6 +31,12 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                 placeHolder: 'Suggest Next Sparkpoint'
             },
             {
+                itemId: 'suggestBtn',
+
+                text: 'Suggest Next Sparkpoint',
+                margin: '0 16 0 0',
+            },
+            {
                 itemId: 'completeBtn',
 
                 text: 'Mark Standard Complete',
