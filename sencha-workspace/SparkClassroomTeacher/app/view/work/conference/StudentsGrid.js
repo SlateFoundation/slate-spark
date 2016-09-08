@@ -31,7 +31,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
                         placeHolder: 'Add a student…',
                         store: {
                             type: 'chained',
-                            source: 'gps.ActiveStudents',
+                            source: 'StudentSparkpoints',
                             filters: [
                                 {
                                     filterFn: function(r) {
@@ -50,7 +50,7 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
         ],
         store: {
             type: 'chained',
-            source: 'gps.ActiveStudents',
+            source: 'StudentSparkpoints',
             filters: [{
                 property: 'conference_group_id',
                 value: 0

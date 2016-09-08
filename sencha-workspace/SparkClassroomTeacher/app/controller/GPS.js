@@ -15,7 +15,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     stores: [
-        'gps.ActiveStudents',
+        'StudentSparkpoints',
 
         'gps.Learn',
         'gps.Conference',
@@ -28,9 +28,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             '#Students': {
                 load: 'onStudentsStoreLoad'
             },
-            '#gps.ActiveStudents': {
-                update: 'onActiveStudentStoreUpdate',
-                endupdate: 'onActiveStudentsStoreEndUpdate'
+            '#StudentSparkpoints': {
+                update: 'onStudentSparkpointsUpdate',
+                endupdate: 'onStudentSparkpointsStoreEndUpdate'
             }
         },
         socket: {
@@ -75,10 +75,10 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             return;
         }
 
-        me.getGpsActiveStudentsStore().load();
+        me.getStudentSparkpointsStore().load();
     },
 
-    onActiveStudentStoreUpdate: function(store, selectedStudentSparkpoint, operation, modifiedFieldNames) {
+    onStudentSparkpointsUpdate: function(store, selectedStudentSparkpoint, operation, modifiedFieldNames) {
         var me = this,
             workaroundRefreshQueue = me.workaroundRefreshQueue,
             listId;
@@ -102,7 +102,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
-    onActiveStudentsStoreEndUpdate: function() {
+    onStudentSparkpointsStoreEndUpdate: function() {
         this.syncSelectedStudentSparkpoint();
     },
 
@@ -123,7 +123,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             if (
                 itemData.section_code == me.getAppCt().getSelectedSection() &&
                 (
-                    !(studentSparkpoint = me.getGpsActiveStudentsStore().findRecord('student_id', itemData.student_id)) ||
+                    !(studentSparkpoint = me.getStudentSparkpointsStore().findRecord('student_id', itemData.student_id)) ||
                     (
                         studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id &&
                         studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
@@ -136,7 +136,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         } else if (table == 'student_sparkpoint') {
             studentSparkpointId = itemData.student_id + '-' + itemData.sparkpoint_id;
 
-            if ((studentSparkpoint = me.getGpsActiveStudentsStore().getById(studentSparkpointId))) {
+            if ((studentSparkpoint = me.getStudentSparkpointsStore().getById(studentSparkpointId))) {
                 updatedFields = studentSparkpoint.set(itemData, { dirty: false });
             }
         }
@@ -163,7 +163,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     refreshGps: Ext.Function.createBuffered(function() {
-        this.getGpsActiveStudentsStore().loadUpdates();
+        this.getStudentSparkpointsStore().loadUpdates();
     }, 1000),
 
     /**

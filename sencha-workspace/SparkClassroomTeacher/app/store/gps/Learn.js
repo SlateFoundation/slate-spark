@@ -3,7 +3,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Learn', {
 
 
     config: {
-        source: 'gps.ActiveStudents',
+        source: 'StudentSparkpoints',
         filters: [{
             property: 'active_phase',
             value: 'learn'

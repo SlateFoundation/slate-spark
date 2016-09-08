@@ -40,8 +40,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     listen: {
         store: {
-            '#gps.ActiveStudents': {
-                update: 'onActiveStudentUpdate'
+            '#StudentSparkpoints': {
+                update: 'onStudentSparkpointsStoreUpdate'
             },
             '#work.Assessments': {
                 load: 'onAssessmentsStoreLoad'
@@ -92,7 +92,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         }
     },
 
-    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+    onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation, modifiedFieldNames) {
         if (
             operation == 'edit' &&
             activeStudent === this.getAppCt().getSelectedStudentSparkpoint() &&

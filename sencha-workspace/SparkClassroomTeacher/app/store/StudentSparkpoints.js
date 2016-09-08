@@ -2,7 +2,6 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
     extend: 'Ext.data.Store',
 
 
-    // TODO: use autoSync and eliminate manual calls to record.save() everywhere?
     model: 'SparkClassroom.model.StudentSparkpoint',
 
     proxy: {

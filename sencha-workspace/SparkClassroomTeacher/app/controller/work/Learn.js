@@ -36,8 +36,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     listen: {
         store: {
-            '#gps.ActiveStudents': {
-                update: 'onActiveStudentUpdate'
+            '#StudentSparkpoints': {
+                update: 'onStudentSparkpointsStoreUpdate'
             },
             '#work.Learns': {
                 load: 'onLearnsStoreLoad',
@@ -84,7 +84,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         this.syncSelectedStudentSparkpoint();
     },
 
-    onActiveStudentUpdate: function(activeStudentsStore, studentSparkpoint, operation, modifiedFieldNames) {
+    onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, studentSparkpoint, operation, modifiedFieldNames) {
         var me = this,
             scoreField;
 
