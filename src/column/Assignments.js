@@ -42,7 +42,7 @@ Ext.define('SparkClassroom.column.Assignments', {
     config: {
         showTrigger: true,
         studentsStore: 'Students',
-        activeStudentsStore: 'gps.ActiveStudents',
+        studentSparkpointsStore: 'StudentSparkpoints',
         flags: [
             {
                 id: 'required',
@@ -240,7 +240,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         }
     },
 
-    applyActiveStudentsStore: function(store) {
+    applyStudentSparkpointsStore: function(store) {
         return Ext.StoreMgr.lookup(store);
     },
 
@@ -284,7 +284,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         var me = this,
             popup = me.getPopup(),
             containingScrollable = me.containingScrollable,
-            activeStudentsStore = me.getActiveStudentsStore(),
+            studentSparkpointsStore = me.getStudentSparkpointsStore(),
 
             studentsStore = me.getStudentsStore(),
             studentsCount = studentsStore.getCount(),
@@ -347,7 +347,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             popupStore.add({
                 id: studentId,
                 student: student,
-                studentSparkpoint: activeStudentsStore.findRecord('student_id', studentId),
+                studentSparkpoint: studentSparkpointsStore.findRecord('student_id', studentId),
                 assignments: {
                     section: assignments.section,
                     student: assignments[studentId]
