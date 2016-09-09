@@ -179,13 +179,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onActivitiesStoreUpdate: function(store, record, operation, modifiedFieldNames) {
         var me = this,
             competenciesGrid = me.getCompetenciesCt().down('spark-competencies-grid'),
-            ignoreModifiedFields = ['student'], student, recordData = {}, gridRecord;
+            ignoreModifiedFields = ['student'], recordData = {}, gridRecord,
+            student = Ext.getStore('Students').getById(record.get('student_id'));
 
-        //TODO... why is record.data.student null here when a student with record.data.studentid exists in the student store??
-        //         this is causeing us to return out of this function and not update the gridRecord when we should be
-        //          steps to reproduce: 1) start a sparkpoint that hasnt been started yet by a student 2) debug here and you will see
-        // ignore modifications to only the student field.
-        if ((modifiedFieldNames && modifiedFieldNames.length === 1 && ignoreModifiedFields.indexOf(modifiedFieldNames[0]) !== -1) || !(student = record.get('student'))) {
+        if (modifiedFieldNames && modifiedFieldNames.length === 1 && ignoreModifiedFields.indexOf(modifiedFieldNames[0]) !== -1 || !student) {
             return;
         }
 
