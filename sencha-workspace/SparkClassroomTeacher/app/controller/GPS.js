@@ -148,7 +148,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         var me = this,
             activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
             lists = me.getGpsCt().query('#phasesCt list'),
-            listCount = lists.length, i = 0, list;
+            listCount = lists.length, i = 0, list, selectedExists = false, studentSparkpoint;
 
         // sync list selection
         for (; i < listCount; i++) {
@@ -156,8 +156,25 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
             if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
                 list.select(activeStudent);
+                selectedExists = true;
             } else {
                 list.deselectAll();
+            }
+        }
+
+        // If the selected student sparkpoint doesn't exist in a list then the student may have switched their current sparkpoint.
+        if (!selectedExists && activeStudent) {
+            // Try to find student's current sparkpoint
+            for (i = 0; i < listCount; i++) {
+                list = lists[i];
+
+                studentSparkpoint = list.getStore().findRecord('student_id', activeStudent.get('student_id'));
+
+                if (studentSparkpoint) {
+                    list.select(studentSparkpoint);
+                    me.getAppCt().setSelectedStudentSparkpoint(studentSparkpoint);
+                    break;
+                }
             }
         }
     },
