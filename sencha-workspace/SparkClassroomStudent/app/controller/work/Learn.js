@@ -57,8 +57,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             sparkpointCt = me.getSparkpointCt(),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
-        store.removeAll();
-
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
         me.learnsRequiredStudent = null;
