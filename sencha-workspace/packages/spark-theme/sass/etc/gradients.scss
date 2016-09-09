@@ -1,0 +1,3 @@
+// use literal string because Fashion tries to interpret the repeating-linear-gradient function
+$slate-pattern-diagonal:     dynamic(#{'repeating-linear-gradient(-45deg, transparent, transparent .5em, rgba(0,0,0,.125) .2em, rgba(0,0,0,.125) 1em)'});
+$slate-pattern-diagonal-sm:  dynamic(#{'repeating-linear-gradient(-45deg, transparent, transparent .25em, rgba(0,0,0,.1875) .25em, rgba(0,0,0,.1875) .5em)'});
