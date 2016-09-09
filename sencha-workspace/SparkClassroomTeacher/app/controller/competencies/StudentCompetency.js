@@ -158,6 +158,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             giveCreditBtn = me.getGiveCreditButton(),
             assessDisabled, assessChecked, applyDisabled, applyChecked, confDisabled,
             confChecked, learnDisabled, learnChecked, allFinished,
+            learnStatus, confStatus, applyStatus, assessStatus,
             learn, learnAssignments, count = 0;
 
         for (; count < learns.length; count++) {
@@ -175,13 +176,41 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
         // Teachers can only disable an override if a student hasn't completed or had a later phase overridden
         assessDisabled = !Ext.isEmpty(sparkData.assess_finish_time);
-        assessChecked = assessDisabled || !Ext.isEmpty(sparkData.assess_override_time),
+        assessChecked = assessDisabled || !Ext.isEmpty(sparkData.assess_override_time);
+
+        if (Ext.isEmpty(sparkData.assess_start_time)) {
+            assessStatus = 'Not Started';
+        } else if (Ext.isEmpty(sparkData.assess_completed_time)) {
+            assessStatus = 'Working';
+        } else {
+            assessStatus = 'Completed';
+        }
+
         applyDisabled = assessDisabled || assessChecked || !Ext.isEmpty(sparkData.apply_finish_time);
         applyChecked = applyDisabled || !Ext.isEmpty(sparkData.apply_override_time);
+
+        if (Ext.isEmpty(sparkData.apply_start_time)) {
+            applyStatus = 'Not Started';
+        } else if (Ext.isEmpty(sparkData.apply_completed_time)) {
+            applyStatus = 'Working';
+        } else {
+            applyStatus = 'Completed';
+        }
+
         confDisabled = applyDisabled || applyChecked || !Ext.isEmpty(sparkData.conference_finish_time);
         confChecked = confDisabled || !Ext.isEmpty(sparkData.conference_override_time);
+
+        if (Ext.isEmpty(sparkData.conference_start_time)) {
+            confStatus = 'Not Started';
+        } else if (Ext.isEmpty(sparkData.conference_completed_time)) {
+            confStatus = 'Waiting';
+        } else {
+            confStatus = 'Completed';
+        }
+
         learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkData.learn_completed_time);
         learnChecked = learnDisabled || !Ext.isEmpty(sparkData.learn_override_time);
+        learnStatus = completedRequiredLearns + '/' + requiredLearns;
         allFinished = !Ext.isEmpty(sparkData.learn_completed_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
 
         me.getPopoverTable().updateData({
@@ -189,7 +218,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             sparkpointCode: sparkData.sparkpoint,
             phases: [{
                 phase: 'Learn',
-                status: completedRequiredLearns + '/' + requiredLearns,
+                status: learnStatus,
                 finished: !Ext.isEmpty(sparkData.learn_finish_time),
                 disabled: learnDisabled,
                 checked: learnChecked,
@@ -197,7 +226,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 actual: sparkData.learn_pace_actual
             }, {
                 phase: 'Conference',
-                status: 'Waiting',
+                status: confStatus,
                 finished: !Ext.isEmpty(sparkData.conference_finish_time),
                 disabled: confDisabled,
                 checked: confChecked,
@@ -205,7 +234,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 actual: sparkData.conference_pace_actual
             }, {
                 phase: 'Apply',
-                status: 'Not Started',
+                status: applyStatus,
                 finished: !Ext.isEmpty(sparkData.apply_finish_time),
                 disabled: applyDisabled,
                 checked: applyChecked,
@@ -213,7 +242,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 actual: sparkData.apply_pace_actual
             }, {
                 phase: 'Assess',
-                status: 'Not Started',
+                status: assessStatus,
                 finished: !Ext.isEmpty(sparkData.assess_finish_time),
                 disabled: assessDisabled,
                 checked: assessChecked,
