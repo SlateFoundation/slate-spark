@@ -154,7 +154,7 @@ function *getHandler() {
 function *patchHandler() {
     var ctx = this,
         sectionId = ctx.query.section_id,
-        studentId = ctx.studentId,
+        studentId = ctx.isStudent ? ctx.userId : ctx.studentId,
         sparkpointId = ctx.query.sparkpoint_id,
         updateSectionStudentActiveSparkpoint = true,
         recordToUpsert = util.recordToUpsert.bind(ctx),
