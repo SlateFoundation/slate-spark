@@ -190,11 +190,13 @@ function* getAccessToken(ctx) {
     if (ctx && ctx.state && ctx.state.preferences) {
         if (ctx.isStudent && ctx.state.preferences.student_opened_token) {
             console.log('OPENED: Using hardcoded student credentials');
+            clientOptions.headers.authorization = 'Bearer ' + ctx.state.preferences.student_opened_token;
             return ctx.state.preferences.student_opened_token;
         }
 
         if (ctx.isTeacher && ctx.state.preferences.teacher_opened_token) {
             console.log('OPENED: Using hardcoded teacher credentials');
+            clientOptions.headers.authorization = 'Bearer ' + ctx.state.preferences.teacher_opened_token;
             return ctx.state.preferences.teacher_opened_token;
         }
     }
