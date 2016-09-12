@@ -164,7 +164,7 @@ function *patchHandler() {
         errors;
 
     ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
-    ctx.require(['section_id', 'sparkpoint_id']);
+    ctx.require(['section_id', record.section_id = sectionId;'sparkpoint_id']);
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
 
     // Parse _time values and set them on the student_sparkpoint record
@@ -232,14 +232,14 @@ function *patchHandler() {
     record.student_id = studentId;
     //TODO: section_id is a string in production
     if (ctx.schema === 'sandbox-school' || ctx.schema.indexOf('-staging') !== -1) {
-        //record.section_id = sectionId;
+        record.section_id = sectionId;
     } else {
         record.section_id = '' + sectionId;
     }
 
     errors = ctx.validation.student_sparkpoint(record);
 
-    ctx.assert(!errors, errors.join('\n'), 400);
+    ctx.assert(errors !== null, errors, 400);
     let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
