@@ -154,7 +154,7 @@ function *getHandler() {
 function *patchHandler() {
     var ctx = this,
         sectionId = ctx.query.section_id,
-        studentId = ctx.isStudent ? ctx.userId : ctx.studentId,
+        studentId = ctx.studentId,
         sparkpointId = ctx.query.sparkpoint_id,
         updateSectionStudentActiveSparkpoint = true,
         recordToUpsert = util.recordToUpsert.bind(ctx),
@@ -231,7 +231,11 @@ function *patchHandler() {
     record.sparkpoint_id = sparkpointId;
     record.student_id = studentId;
     errors = ctx.validation.student_sparkpoint(record);
-    ctx.assert(!errors, errors, 400);
+
+    console.error(errors);
+    debugger;
+
+    ctx.assert(errors, errors, 403);
     let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
