@@ -231,10 +231,15 @@ function *patchHandler() {
     record.sparkpoint_id = sparkpointId;
     record.student_id = studentId;
     //TODO: section_id is a string in production
-    record.section_id = '' + sectionId;
+    if (ctx.schema === 'sandbox-school' || ctx.schema.indexOf('-staging') !== -1) {
+        //record.section_id = sectionId;
+    } else {
+        record.section_id = '' + sectionId;
+    }
+
     errors = ctx.validation.student_sparkpoint(record);
 
-    ctx.assert(!errors, errors, 400);
+    ctx.assert(!errors, errors.join('\n'), 400);
     let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
