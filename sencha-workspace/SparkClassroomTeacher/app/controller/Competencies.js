@@ -186,17 +186,20 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             return;
         }
 
-        // update competencies grid store
+        // update/add competencies grid store record
         gridRecord = competenciesGrid.getStore().getById(record.get('sparkpoint_id'));
+        recordData[student.get('Username')] = record;
+        recordData[student.get('Username')+'_completed_phase'] = record.get('completed_phase_number');
 
         if (gridRecord) {
-            recordData[student.get('Username')] = record;
-
-            recordData[student.get('Username')+'_completed_phase'] = record.get('completed_phase_number');
-
             gridRecord.set(recordData, {
                 dirty: false
             });
+        } else {
+            recordData.id = record.data.sparkpoint_id;
+            recordData.sparkpoint = record.data.sparkpoint_code;
+
+            competenciesGrid.getStore().add(recordData);
         }
     },
 
