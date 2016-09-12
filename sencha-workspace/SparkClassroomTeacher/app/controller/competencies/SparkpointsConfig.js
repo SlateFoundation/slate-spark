@@ -37,6 +37,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             autoCreate: true
         },
 
+        configTableActive: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-active]',
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table-queue]',
         doneButton: 'spark-sparkpointsconfig-window button[cls*=sparkpointsconfig-done-button]',
@@ -99,26 +100,32 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             activitesStore = me.getActivitiesStore(),
             studentRec = studentStore.getById(studentId),
             studentData = studentRec.getData(),
-            currentSparkpoints, queuedSparkpoints,
+            activeSparkpoints, queuedSparkpoints,
             count,
             sparkpoint,
             assessDisabled, assessChecked, applyDisabled, applyChecked, confDisabled,
             confChecked, learnDisabled, learnChecked, allFinished,
             currentTableData = [],
-            queuedTableData = [];
+            queuedTableData = [],
+            activeTableData = [],
+            lastAccessedIndex = 0;
 
-        currentSparkpoints = activitesStore.queryBy(function(rec) {
+        activeSparkpoints = activitesStore.queryBy(function(rec) {
             return !Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
-        }).sort('last_accessed', 'DESC').getRange();
+        }).sort('recommended_time', 'DESC').getRange();
 
         queuedSparkpoints = activitesStore.queryBy(function(rec) {
             return Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
-        }).sort('last_accessed', 'DESC').getRange();
+        }).sort('recommended_time', 'DESC').getRange();
 
         me.getSparkpointsConfigWindow().setTitle(studentData.FullName);
 
-        for (count = 0; count < currentSparkpoints.length; count++) {
-            sparkpoint = currentSparkpoints[count];
+        for (count = 0; count < activeSparkpoints.length; count++) {
+            sparkpoint = activeSparkpoints[count];
+
+            if (sparkpoint.get('last_accessed') > activeSparkpoints[lastAccessedIndex].get('last_accessed')) {
+                lastAccessedIndex = count;
+            }
 
             // Teachers can only disable an override if a student hasn't completed or had a later phase overridden
             assessDisabled = !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
@@ -131,7 +138,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             learnChecked = learnDisabled || !Ext.isEmpty(sparkpoint.get('learn_override_time'));
             allFinished = !Ext.isEmpty(sparkpoint.get('learn_finish_time')) && !Ext.isEmpty(sparkpoint.get('conference_finish_time')) && !Ext.isEmpty(sparkpoint.get('apply_finish_time')) && !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
 
-            currentTableData.push({
+            activeTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
                 'sparkpoint': sparkpoint.get('sparkpoint'),
                 'phases': [{
@@ -162,10 +169,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             });
         }
 
+        // move last accessed sparkpoint to active table data
+        currentTableData.push(activeTableData.splice(lastAccessedIndex, 1)[0]);
+
         for (count = 0; count < queuedSparkpoints.length; count++) {
             sparkpoint = queuedSparkpoints[count];
 
-            currentTableData.push({
+            queuedTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
                 'sparkpoint': sparkpoint.get('sparkpoint'),
                 'phases': [{
@@ -201,6 +211,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         } else {
             me.getConfigTableCurrent().updateData(currentTableData);
             me.getConfigTableCurrent().show();
+        }
+
+        if (activeTableData.length == 0) {
+            me.getConfigTableActive().hide();
+        } else {
+            me.getConfigTableActive().updateData(activeTableData);
+            me.getConfigTableActive().show();
         }
 
         if (queuedTableData.length == 0) {
