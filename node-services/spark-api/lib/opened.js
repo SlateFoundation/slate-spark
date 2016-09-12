@@ -446,7 +446,7 @@ function* getResources(params, resources, ctx) {
         if ((entries + offset) < total_entries) {
             params.offset = (entries + offset);
             console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
-            yield* getResources(params, resources);
+            yield* getResources(params, resources, ctx);
         } else {
 
         }
