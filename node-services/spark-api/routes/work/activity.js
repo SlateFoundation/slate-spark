@@ -234,8 +234,8 @@ function *patchHandler() {
 
     errors = ctx.validation.student_sparkpoint(record);
 
-    //ctx.assert(!errors, errors, 400);
-    let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
+    ctx.assert(!errors, errors, 400);
+    let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, new util.Values(), ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
 
