@@ -164,7 +164,7 @@ function *patchHandler() {
         errors;
 
     ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
-    ctx.require(['section_id', record.section_id = sectionId;'sparkpoint_id']);
+    ctx.require(['section_id', 'sparkpoint_id']);
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
 
     // Parse _time values and set them on the student_sparkpoint record
