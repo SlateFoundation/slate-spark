@@ -185,7 +185,20 @@ if (configError) {
     throw new Error(`OpenEd: ${configPath}: ${configError}`);
 }
 
-function* getAccessToken() {
+function* getAccessToken(ctx) {
+    // HACK: use hard coded account credentials
+    if (ctx && ctx.state && ctx.state.preferences) {
+        if (ctx.isStudent && ctx.state.preferences.student_opened_token) {
+            console.log('OPENED: Using hardcoded student credentials');
+            return ctx.state.preferences.student_opened_token;
+        }
+
+        if (ctx.isTeacher && ctx.state.preferences.teacher_opened_token) {
+            console.log('OPENED: Using hardcoded teacher credentials');
+            return ctx.state.preferences.teacher_opened_token;
+        }
+    }
+
     if (new Date().getTime() < openEdTokenExpiration) {
         return openEdAccessToken;
     } else {
@@ -384,7 +397,7 @@ function generateErrorString(err) {
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
 }
 
-function* getResources(params, resources) {
+function* getResources(params, resources, ctx) {
     var url = '/resources.json',
         resourceTypes = params.resource_type ? Array.isArray(params.resource_type) ? params.resource_type : params.resource_type.split(',') : [],
         standardIds = params.standard_ids ? Array.isArray(params.standard_ids) ? params.standard_ids : params.standard_ids.split(',') : [],
@@ -407,7 +420,7 @@ function* getResources(params, resources) {
         url += '?' + queryString;
     }
 
-    yield getAccessToken();
+    yield getAccessToken(ctx);
 
     clientOptions.uri = openEdClientBaseUrl + url;
 

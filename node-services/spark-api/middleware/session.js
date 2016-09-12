@@ -17,6 +17,9 @@ module.exports = function *parseSession(next) {
         }
         
 
+        ctx.firstName = session.firstName;
+        ctx.lastName = session.lastName;
+
         ctx.role = session.accountLevel.toLowerCase();
         ctx.username = session.username;
         ctx.session = session;

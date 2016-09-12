@@ -75,7 +75,7 @@ function* getHandler() {
         opened = [];
     } else {
         try {
-            opened = yield OpenEd.getResources(params);
+            opened = yield OpenEd.getResources(params, null, ctx);
         } catch (e) {
             console.error('OPENED: ', e);
             opened = [];
@@ -395,7 +395,7 @@ function* launchHandler() {
         let url = learnResource.url;
 
         if (url.includes('opened.com')) {
-            let accessToken = yield OpenEd.getUserAccessToken();
+            let accessToken = yield OpenEd.getUserAccessToken(ctx);
 
             if(!url.includes('student_view=true')) {
                 if (ctx.isStudent) {
