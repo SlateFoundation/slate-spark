@@ -233,6 +233,8 @@ function *patchHandler() {
     //TODO: section_id is a string in production
     if (ctx.schema === 'sandbox-school' || ctx.schema.indexOf('-staging') !== -1) {
         record.section_id = sectionId;
+    } else {
+        record.section_id = '' + sectionId;
     }
 
     errors = ctx.validation.student_sparkpoint(record);
