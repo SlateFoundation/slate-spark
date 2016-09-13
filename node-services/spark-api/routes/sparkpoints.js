@@ -1,6 +1,7 @@
 'use strict';
 
 var suggestionCache = {};
+var getArrayParam = require('../lib/util').getArrayParam;
 
 function* autocompleteGetHandler() {
     var ctx = this,
@@ -101,30 +102,10 @@ function* suggestedGetHandler() {
 
     results = yield ctx.pgp.one(/*language=SQL*/ `
     WITH past AS (
-            SELECT sp.code,
-                   ss.sparkpoint_id AS id,
-                   ss.student_id,
-                   ss.learn_start_time,
-                   ss.learn_finish_time,
-                   ss.conference_start_time,
-                   ss.conference_join_time,
-                   ss.conference_finish_time,
-                   ss.apply_start_time,
-                   ss.apply_ready_time,
-                   ss.apply_finish_time,
-                   ss.assess_start_time,
-                   ss.assess_ready_time,
-                   ss.assess_finish_time,
-                   ss.conference_group_id,
-                   ss.selected_apply_id,
-                   ss.selected_apply_resource_id,
-                       
-                   /* TODO: Do we need these here? */                   
-                   ss.learn_pace_target,
-                   ss.conference_pace_target,
-                   ss.apply_pace_target,
-                   ss.assess_pace_target,
-               
+            SELECT sp.id,
+                   sp.code,
+                   sp.student_title,
+                   ss.*,
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
@@ -142,35 +123,15 @@ function* suggestedGetHandler() {
          ),
 
          current AS (
-            SELECT sp.code,
-                   ss.sparkpoint_id AS id,
-                   ss.student_id,
-                   ss.learn_start_time,
-                   ss.learn_finish_time,
-                   ss.conference_start_time,
-                   ss.conference_join_time,
-                   ss.conference_finish_time,
-                   ss.apply_start_time,
-                   ss.apply_ready_time,
-                   ss.apply_finish_time,
-                   ss.assess_start_time,
-                   ss.assess_ready_time,
-                   ss.assess_finish_time,
-                   ss.conference_group_id,
-                   ss.selected_apply_id,
-                   ss.selected_apply_resource_id,
-                                      
-                   /* TODO: Do we need these here? */                   
-                   ss.learn_pace_target,
-                   ss.conference_pace_target,
-                   ss.apply_pace_target,
-                   ss.assess_pace_target,
-                   
+            SELECT sp.id,
+                   sp.code,
+                   sp.student_title,
+                   ss.*,
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
                    ssas.recommended_time,
-                   sp.student_title
+                   
               FROM section_student_active_sparkpoint ssas
         RIGHT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
                AND ss.student_id = $1
@@ -183,35 +144,14 @@ function* suggestedGetHandler() {
          ),
 
         queued AS (
-            SELECT sp.code,
-                   ss.sparkpoint_id AS id,
-                   ss.student_id,
-                   ss.learn_start_time,
-                   ss.learn_finish_time,
-                   ss.conference_start_time,
-                   ss.conference_join_time,
-                   ss.conference_finish_time,
-                   ss.apply_start_time,
-                   ss.apply_ready_time,
-                   ss.apply_finish_time,
-                   ss.assess_start_time,
-                   ss.assess_ready_time,
-                   ss.assess_finish_time,
-                   ss.conference_group_id,
-                   ss.selected_apply_id,
-                   ss.selected_apply_resource_id,
-                   
-                   /* TODO: Do we need these here? */                   
-                   ss.learn_pace_target,
-                   ss.conference_pace_target,
-                   ss.apply_pace_target,
-                   ss.assess_pace_target,
-                   
+            SELECT sp.id,
+                   sp.code,
+                   sp.student_title,
+                   ss.*,
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
-                   ssas.recommended_time,
-                   sp.student_title
+                   ssas.recommended_time
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
                AND ss.student_id = $1
@@ -251,19 +191,22 @@ function *getHandler() {
     ctx.assert(studentId > 0, 'Non-student users must provide a student_id', 400);
 
     ctx.body = yield ctx.pgp.any(/*language=SQL*/ `
-       SELECT sp.code,
+       SELECT sp.id,
+              sp.code,
+              sp.student_title,
               ss.*,
               ssas.last_accessed,
               ssas.section_id,
               ssas.recommender_id,
-              ssas.recommended_time,
-              sp.student_title
+              ssas.recommended_time
          FROM section_student_active_sparkpoint ssas
     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
           AND ss.student_id = $1
          JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
-        WHERE ssas.section_id = $2
-          AND ssas.student_id = $1
+        WHERE ssas.student_id = $1
+          AND ssas.section_id = $2
+          AND ss.assess_finish_time IS NULL
+          AND ss.assess_override_time IS NULL
      ORDER BY ssas.last_accessed DESC
     `, [studentId, sectionId]);
 }
