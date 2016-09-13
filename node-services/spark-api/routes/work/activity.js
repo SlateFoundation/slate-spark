@@ -230,11 +230,10 @@ function *patchHandler() {
     // Validate record and generate SQL for student_sparkpoint table
     record.sparkpoint_id = sparkpointId;
     record.student_id = studentId;
-    delete record.section_id;
 
     errors = ctx.validation.student_sparkpoint(record);
 
-    //ctx.assert(errors === null, errors || 'error during validation', 400);
+    ctx.assert(!errors, errors && errors.join('\n'), 400);
     let result = yield ctx.pgp.oneOrNone(recordToUpsert('student_sparkpoint', record, vals, ['sparkpoint_id', 'student_id']) + ' RETURNING *;', vals.vals);
     ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
