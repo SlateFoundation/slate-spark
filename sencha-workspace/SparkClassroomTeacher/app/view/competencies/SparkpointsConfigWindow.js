@@ -7,6 +7,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
         width: 640,
         zIndex: 998, // Puts it below Ext.Msg.alert and other dialogs
         hideOnMaskTap: true,
+        style: 'overflow-y:scroll', // workaround - scrollable config not working
 
         buttons: [
             {
