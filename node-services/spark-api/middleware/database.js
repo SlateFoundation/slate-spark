@@ -90,6 +90,7 @@ function pgp(options) {
                 for (let tableName in tables) {
                     let table = tables[tableName];
                     appContext.validation[schema][tableName] = generateValidationFunction(table, enums);
+                    appContext.validation[schema][tableName] = generateValidationFunction(tableName, table, enums);
                 }
             }
 
@@ -321,14 +322,14 @@ var columnValidators = {
 };
 
 
-function generateValidationFunction(table, enums) {
+function generateValidationFunction(tableName, table, enums) {
     var columns = Object.keys(table);
 
     return function(row) {
         let keys = Object.keys(row),
             errors = keys
                 .filter(key => table[key] === undefined)
-                .map(key => `${key}: unexpected key, allowed keys are: ${columns.join(', ')}`);
+                .map(key => `${tableName}: ${key}: unexpected key, allowed keys are: ${columns.join(', ')}`);
 
         for (var columnName in table) {
             let column = table[columnName],
@@ -340,16 +341,16 @@ function generateValidationFunction(table, enums) {
             if (val === null || val === undefined) {
                 // A column can be omitted if it is nullable or a default value is provided
                 if (column.is_nullable === false && column.default_value === null) {
-                    errors.push(`${columnName} (${column.type}) is required.`);
+                    errors.push(`${tableName}: ${columnName} (${column.type}) is required.`);
                 }
             } else if (enumValues = enums[column.type]) {
                 // The column is an enum type
                 if (enumValues.indexOf(val) === -1) {
-                    errors.push(`${columnName}: Allowed values are: ${enumValues.join(', ')}; you gave: ${val}`);
+                    errors.push(`${tableName}: ${columnName}: Allowed values are: ${enumValues.join(', ')}; you gave: ${val}`);
                 }
             } else if (validator = columnValidators[column.type]) {
                 if (error = validator(val, column)) {
-                    errors.push(columnName + ': ' + error);
+                    errors.push(`${tableName}: ${columnName} : ${error}`);
                 }
             }
         }
