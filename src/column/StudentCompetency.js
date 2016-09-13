@@ -16,7 +16,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                         Ext.select('.spark-studentcompetency-popover').each(function() {
                             this.destroy();
                         });
-                        Ext.create('SparkClassroom.column.panel.StudentCompetency').showBy(Ext.fly(t));
+                        Ext.create('SparkClassroom.column.StudentCompetency').showBy(Ext.fly(t));
                     }
                 }
             }
