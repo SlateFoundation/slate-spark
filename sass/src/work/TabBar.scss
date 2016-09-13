@@ -25,7 +25,7 @@
         @include transition(.2s);
 
         + .x-tab {
-            border-left: 1px solid #ccc;
+            border-left: 1px solid #bbb;
         }
 
         &.spark-phase-active {
@@ -59,10 +59,16 @@
 
             &::before {
                 color: $active-color;
-                content: '\f05d'; // fa-check-circle-o
+                content: '\f058'; // fa-check-circle
                 font-family: FontAwesome;
                 font-size: 21px;
                 position: absolute;
+            }
+        }
+
+        &.spark-phase-credit-given {
+            &::before {
+                content: '\f05d'; // fa-check-circle-o
             }
         }
 
@@ -79,6 +85,10 @@
 
             + .x-tab {
                 border-color: transparent;
+            }
+
+            &::before {
+                color: white;
             }
         }
 

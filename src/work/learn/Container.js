@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroom.work.learn.Container', {
     extend: 'Ext.Container',
     xtype: 'spark-work-learn',
