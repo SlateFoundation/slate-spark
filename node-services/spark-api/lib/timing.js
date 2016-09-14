@@ -6,23 +6,36 @@
     var gradeRangeToArray = require('./util').gradeRangeToArray;
     var daysOffByGrade = {};
 
-    // Resets time to 00:00:00 on a date
+    /**
+     * Resets time to 00:00:00 on a date
+     * @param {date} date - a date object
+     */
     function stripTime(date) {
         return new Date(date.toDateString());
     }
 
-    // Returns true for weekends (Sat/Sun)
+    /**
+     * Returns true for weekends (Sat/Sun)
+     * @param {date} date - a date object
+     */
     function isWeekend(date) {
         var day = date.getDay();
         return day === 0 || day === 6;
     }
 
-    // Returns true for Monday-Friday
+    /**
+     * Returns true for Monday-Friday
+     * @param {date} date - a date object
+     */
     function isWeekDay(date) {
         return !isWeekend(date);
     }
 
-    // Returns an array of date objects for every day between startDate and endDate (inclusive)
+    /**
+     * Returns an array of date objects for every day between startDate and endDate (inclusive)
+     * @param {date} startDate - the beginning date object
+     * @param {date} endDate - the end date object
+     */
     function getDatesBetween(startDate, endDate) {
         startDate = stripTime(startDate);
         endDate = stripTime(endDate);
@@ -38,7 +51,13 @@
         return dates;
     }
 
-    // Returns the duration between two timestamps IN MILLISECONDS excluding days off AT A GRANULARITY OF 1 DAY
+    /**
+     * Returns the duration between two timestamps IN MILLISECONDS excluding days off and weekends
+     * AT A GRANULARITY OF 1 DAY
+     * @param {string} grade - the grade (used for multi-campus schools) K for Kindergarten, no leading zeros
+     * @param {date} startDate - the beginning date object
+     * @param {date} endDate - the end date object
+     */
     function getDuration(grade, startDate, endDate) {
         var daysOff = this.daysOffByGrade ? this.daysOffByGrade[grade] : daysOffByGrade ? daysOffByGrade[grade] : {};
         return getDatesBetween(startDate, endDate)
@@ -47,7 +66,13 @@
             }).length * MS_IN_DAY;
     }
 
-    // Returns the duration between two timestamps IN DAYS excluding days off AT A GRANULARITY OF 1 DAY
+    /**
+     * Returns the duration between two timestamps IN DAYS excluding days off and weekends
+     * AT A GRANULARITY OF 1 DAY
+     * @param {string} grade - the grade (used for multi-campus schools) K for Kindergarten, no leading zeros
+     * @param {date} startDate - the beginning date object
+     * @param {date} endDate - the end date object
+     */
     function getDurationInDays(grade, startDate, endDate) {
         var daysOff = this.daysOffByGrade ? this.daysOffByGrade[grade] : daysOffByGrade ? daysOffByGrade[grade] : {};
         return getDatesBetween(startDate, endDate)
@@ -56,7 +81,10 @@
             }).length;
     }
 
-    // Takes an object keyed by grade ranges and expands it into an object keyed by grade
+    /**
+     * Takes an object keyed by grade ranges and expands it into an object keyed by grade
+     * @param {object} data - an object keyed by grade ranges
+     */
     function unpackGradeRanges(data) {
         var byGrade = {};
 
@@ -70,7 +98,11 @@
         return byGrade;
     }
 
-    // Returns the grade from a section code, throws when the pattern is not matched (ADV${grade}-#)
+    /**
+     * Returns the grade from a section code, throws when the pattern is not matched (ADV${grade}-#)
+     * @param {string} code - a section code
+     * @param {string} [kValue='K'] - the value to return for kindergarten
+     */
     function sectionCodeToGrade(code, kValue) {
         var matches = code.match(/(\d+|K)-\d+/);
 
@@ -101,7 +133,7 @@
             unpackGradeRanges: unpackGradeRanges,
             getDurationInDays: getDurationInDays,
             getDuration: getDuration,
-            daysOffByGrade: daysOffByGrade
+            daysOffByGrade: daysOffByGrade,
         };
     } else if (typeof Ext !== 'undefined') {
         Ext.define('Spark.Timing', {
@@ -115,7 +147,7 @@
             unpackGradeRanges: unpackGradeRanges,
             getDurationInDays: getDurationInDays,
             getDuration: getDuration,
-            daysOffByGrade: {}
+            daysOffByGrade: {},
         });
     }
 })();
