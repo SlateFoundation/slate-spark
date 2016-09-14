@@ -192,6 +192,8 @@ function *getHandler() {
 
     ctx.body = yield ctx.pgp.any(/*language=SQL*/ `
        SELECT sp.id,
+              sp.code AS sparkpoint,
+              -- TODO: check with @rgipson to see when we can remove code
               sp.code,
               sp.student_title,
               ss.*,
