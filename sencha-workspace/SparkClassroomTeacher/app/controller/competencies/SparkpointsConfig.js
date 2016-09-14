@@ -232,7 +232,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
     bindPaceFields: function() {
         var me = this,
-            paceFields = me.getSparkpointsConfigWindow().element.select('input.pace-field').elements,
+            paceFields = me.getSparkpointsConfigWindow().element.select('input.expected-completion').elements,
             paceField,
             count;
 
@@ -262,7 +262,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             nextInput;
 
         if (!Ext.isEmpty(prevCell)) {
-            prevInput = prevCell.down('input.pace-field');
+            prevInput = prevCell.down('input.expected-completion');
 
             // Prevent setting future phase pace before previous phase
             if (prevInput && parseInt(paceFieldVal, 10) <= parseInt(prevInput.getValue(), 10)) {
@@ -275,7 +275,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         if (!Ext.isEmpty(nextCell)) {
-            nextInput = nextCell.down('input.pace-field');
+            nextInput = nextCell.down('input.expected-completion');
 
             // Prevent setting previous phase pace before next phase
             if (nextInput && parseInt(paceFieldVal, 10) >= parseInt(nextInput.getValue(), 10)) {
