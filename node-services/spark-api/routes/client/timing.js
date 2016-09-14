@@ -1,7 +1,6 @@
 'use strict';
 
-var babel = require('babel-core'),
-    ical = require('ical'),
+var ical = require('ical'),
     timing = require('../../lib/timing'),
     gradeRangeToArray = require('../../lib/util').gradeRangeToArray,
     slateConfig = require('../../config/slate.json'),
