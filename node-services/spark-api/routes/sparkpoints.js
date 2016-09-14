@@ -105,12 +105,14 @@ function* suggestedGetHandler() {
             SELECT sp.id,
                    sp.code,
                    sp.student_title,
+                   
                    ss.*,
+                   
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
                    ssas.recommended_time,
-                   sp.student_title
+                   
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
                AND ss.student_id = $1
@@ -126,11 +128,13 @@ function* suggestedGetHandler() {
             SELECT sp.id,
                    sp.code,
                    sp.student_title,
+                   
                    ss.*,
+                   
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
-                   ssas.recommended_time,
+                   ssas.recommended_time
                    
               FROM section_student_active_sparkpoint ssas
         RIGHT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
@@ -147,11 +151,14 @@ function* suggestedGetHandler() {
             SELECT sp.id,
                    sp.code,
                    sp.student_title,
+                   
                    ss.*,
+                   
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
                    ssas.recommended_time
+                   
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
                AND ss.student_id = $1
