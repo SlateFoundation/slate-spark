@@ -23,7 +23,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     ],
 
     stores: [
-        'Activities@SparkClassroom.store',
+        'ConfigSparkpoints@SparkClassroomTeacher.store.competencies',
         'Students@SparkClassroom.store',
         'work.Learns@SparkClassroom.store'
     ],
@@ -86,18 +86,24 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     initializeStudent: function(studentId) {
-        var me = this;
+        var me = this,
+            configStore = me.getConfigSparkpointsStore();
 
         me.setActiveStudentId(studentId);
-        me.loadDataIntoView();
-        me.getSparkpointsConfigWindow().show();
+
+        configStore.getProxy().setExtraParam('student_id', studentId);
+
+        configStore.load(function() {
+            me.loadDataIntoView();
+            me.getSparkpointsConfigWindow().show();
+        });
     },
 
     loadDataIntoView: function() {
         var me = this,
             studentStore = me.getStudentsStore(),
             studentId = me.getActiveStudentId(),
-            activitesStore = me.getActivitiesStore(),
+            configSparkpointsStore = me.getConfigSparkpointsStore(),
             studentRec = studentStore.getById(studentId),
             studentData = studentRec.getData(),
             activeSparkpoints, queuedSparkpoints,
@@ -110,11 +116,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             activeTableData = [],
             lastAccessedIndex = 0;
 
-        activeSparkpoints = activitesStore.queryBy(function(rec) {
+        activeSparkpoints = configSparkpointsStore.queryBy(function(rec) {
             return !Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
         }).sort('recommended_time', 'DESC').getRange();
 
-        queuedSparkpoints = activitesStore.queryBy(function(rec) {
+        queuedSparkpoints = configSparkpointsStore.queryBy(function(rec) {
             return Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
         }).sort('recommended_time', 'DESC').getRange();
 
@@ -250,12 +256,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     onPaceFieldChange: function(e, el) {
-        var activitiesStore = this.getActivitiesStore(),
+        var configSparkpointsStore = this.getConfigSparkpointsStore(),
             paceField = Ext.get(el),
             paceFieldVal = paceField.getValue(),
             phase = paceField.getAttribute('data-phase'),
             studentSparkpointId = paceField.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            sparkpoint = activitiesStore.findRecord('student_sparkpointid', studentSparkpointId),
+            sparkpoint = configSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
             prevCell = paceField.up('td').prev('td'),
             nextCell = paceField.up('td').next('td'),
             prevInput,
@@ -291,14 +297,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     onHideWindow: function() {
-        var activityStore = this.getActivitiesStore();
+        var configStore = this.getConfigSparkpointsStore();
 
-        activityStore.rejectChanges();
+        configStore.rejectChanges();
     },
 
     onDoneTap: function() {
         var me = this,
-            activityStore = me.getActivitiesStore(),
+            configStore = me.getConfigSparkpointsStore(),
             // DomQuery usage due to the fact refs do not allow multiple selections
             sparkpointRows = Ext.query('.spark-sparkpointsconfig-window tr.sparkpoint-row'),
             rowElement,
@@ -310,7 +316,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         for (row = 0; row < sparkpointRows.length; row++) {
             rowElement = Ext.fly(sparkpointRows[row]);
             studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
-            sparkpoint = activityStore.findRecord('student_sparkpointid', studentSparkpointId);
+            sparkpoint = configStore.findRecord('student_sparkpointid', studentSparkpointId);
 
             if (sparkpoint.dirty) {
                 sparkpoint.save();
@@ -337,12 +343,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
     onOverrideChange: function(e, target) {
         var me = this,
-            activityStore = me.getActivitiesStore(),
+            configStore = me.getConfigSparkpointsStore(),
             el = Ext.get(target),
             checked = el.is(':checked'),
             phaseName = el.getAttribute('data-phase'),
             studentSparkpointId = el.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            record = activityStore.findRecord('student_sparkpointid', studentSparkpointId),
+            record = configStore.findRecord('student_sparkpointid', studentSparkpointId),
             chainCheckbox,
             value;
 
