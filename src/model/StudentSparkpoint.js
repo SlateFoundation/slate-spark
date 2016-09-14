@@ -125,7 +125,17 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'sparkpoint',
             type: 'string',
-            critical: true
+            critical: true,
+            convert: function(v, r) {
+                // TODO: Remove this once the sparkpoints endpoint returns sparkpoint instead of code
+                var code = r.get('code');
+
+                if (Ext.isEmpty(code)) {
+                    return v;
+                }
+
+                return code;
+            }
         }, {
             name: 'section',
             type: 'string'
