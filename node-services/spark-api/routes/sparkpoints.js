@@ -111,7 +111,7 @@ function* suggestedGetHandler() {
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
-                   ssas.recommended_time,
+                   ssas.recommended_time
                    
               FROM section_student_active_sparkpoint ssas
          LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
