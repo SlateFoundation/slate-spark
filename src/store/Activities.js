@@ -2,8 +2,10 @@
 Ext.define('SparkClassroom.store.Activities', {
     extend: 'Ext.data.Store',
 
-    proxy: {
-		type: 'slate-api',
+
+	model: 'SparkClassroom.model.StudentSparkpoint',
+	proxy: {
+		type: 'spark-studentsparkpoints',
 		url: '/spark/api/work/activity',
 		extraParams: {
 			status: 'all'

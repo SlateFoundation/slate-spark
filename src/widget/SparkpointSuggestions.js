@@ -23,8 +23,8 @@ Ext.define('SparkClassroom.widget.SparkpointSuggestions', {
                 '<tpl if="recommended">',
                     '<div class="sparkpoint-recommended"></div>',
                 '</tpl>',
-                '<tpl if="assess_finish_time">',
-                    '<div class="sparkpoint-completed-date">{assess_finish_time:date("n/j/y")}</div>',
+                '<tpl if="assess_completed_time">',
+                    '<div class="sparkpoint-completed-date">{assess_completed_time:date("n/j/y")}</div>',
                 '</tpl>',
                 '<tpl if="student_title">',
                     '</div>', // close flex container

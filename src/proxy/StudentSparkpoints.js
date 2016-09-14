@@ -12,11 +12,13 @@ Ext.define('SparkClassroom.proxy.StudentSparkpoints', {
 
                 for (; i < length; i++) {
                     record = data[i];
-                    record.student_sparkpoint = record.student_id + '-' + record.sparkpoint_id;
+                    record.student_sparkpointid = record.student_id + '_' + record.sparkpoint_id;
                 }
                 return data;
             }
         },
+
+        batchActions: false,
 
         writer: {
             type: 'json',
