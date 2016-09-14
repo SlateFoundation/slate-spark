@@ -42,14 +42,18 @@
     function getDuration(grade, startDate, endDate) {
         var daysOff = this.daysOffByGrade ? this.daysOffByGrade[grade] : daysOffByGrade ? daysOffByGrade[grade] : {};
         return getDatesBetween(startDate, endDate)
-            .filter(d => daysOff[d.toDateString()] !== 1).length * MS_IN_DAY;
+            .filter(function(date) {
+                return daysOff[date.toDateString()] !== 1 && !isWeekend(date);
+            }).length * MS_IN_DAY;
     }
 
     // Returns the duration between two timestamps IN DAYS excluding days off AT A GRANULARITY OF 1 DAY
     function getDurationInDays(grade, startDate, endDate) {
         var daysOff = this.daysOffByGrade ? this.daysOffByGrade[grade] : daysOffByGrade ? daysOffByGrade[grade] : {};
         return getDatesBetween(startDate, endDate)
-            .filter(d => daysOff[d.toDateString()] !== 1).length;
+            .filter(function(date) {
+                return daysOff[date.toDateString()] !== 1 && !isWeekend(date);
+            }).length;
     }
 
     // Takes an object keyed by grade ranges and expands it into an object keyed by grade
@@ -58,7 +62,9 @@
 
         for (var range in data) {
             let grades = gradeRangeToArray(range);
-            grades.forEach(grade => byGrade[grade] = data[range]);
+            grades.forEach(function(grade) {
+                byGrade[grade] = data[range]
+            });
         }
 
         return byGrade;
