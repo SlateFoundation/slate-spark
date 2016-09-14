@@ -118,7 +118,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
             me.getTimelineCmp().setData({
                 start: startTime,
-                finish: studentSparkpoint && studentSparkpoint.get('apply_finish_time'),
+                finish: studentSparkpoint && studentSparkpoint.get('apply_completed_time'),
                 estimate: startTime && Ext.Date.add(startTime, Ext.Date.DAY, 3)
             });
 
@@ -321,7 +321,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             return;
         }
 
-        submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('conference_finish_time') || !studentSparkpoint.get('apply_start_time'));
+        submitBtn.setDisabled(applyReadyTime || !studentSparkpoint.get('conference_completed_time') || !studentSparkpoint.get('apply_start_time'));
         submitBtn.setText(applyReadyTime ? 'Submitted to Teacher' : submitBtn.config.text);
     },
 

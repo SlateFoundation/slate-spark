@@ -2,3 +2,4 @@
 /sencha-workspace/ext-*/
 /sencha-workspace/SparkClassroomStudent/bootstrap.*
 /sencha-workspace/SparkClassroomStudent/sass/example/bootstrap.*
+.idea/

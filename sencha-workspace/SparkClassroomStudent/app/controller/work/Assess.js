@@ -98,7 +98,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         var studentSparkpoint = this.getStudentSparkpoint();
 
         // TODO: disable/enable the button automatically
-        if (!studentSparkpoint.get('apply_finish_time')) {
+        if (!studentSparkpoint.get('apply_completed_time')) {
             Ext.Msg.alert('Not Ready', 'Wait until your apply has been graded before starting your assessment');
             ev.stopEvent();
             return;

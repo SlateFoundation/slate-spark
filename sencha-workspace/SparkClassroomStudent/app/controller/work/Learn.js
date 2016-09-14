@@ -57,8 +57,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             sparkpointCt = me.getSparkpointCt(),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
-        store.removeAll();
-
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
         me.learnsRequiredStudent = null;
@@ -167,7 +165,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         var me = this,
             studentSparkpoint = me.getStudentSparkpoint();
 
-        if (!studentSparkpoint.get('learn_finish_time')) {
+        if (!studentSparkpoint.get('learn_completed_time')) {
             studentSparkpoint.set('learn_finish_time', new Date());
             studentSparkpoint.save();
             me.refreshLearnProgress();
@@ -224,7 +222,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             progressBanner = me.getProgressBanner(),
             readyBtn = me.getReadyBtn(),
             studentSparkpoint = me.getStudentSparkpoint(),
-            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_finish_time'),
+            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
             learnsStore = me.getWorkLearnsStore(),
             learns = learnsStore.getRange(),
             rawData = learnsStore.getProxy().getReader().rawData,
