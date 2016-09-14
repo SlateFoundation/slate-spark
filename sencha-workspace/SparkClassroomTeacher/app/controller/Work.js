@@ -48,6 +48,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             xtype: 'spark-teacher-work-ct'
         },
         workTabbar: 'spark-work-tabbar',
+        learnTab: 'spark-work-tab#learn',
+        conferenceTab: 'spark-work-tab#conference',
+        applyTab: 'spark-work-tab#apply',
+        assessTab: 'spark-work-tab#assess',
 
         learnCt: {
             selector: 'spark-teacher-work-learn',
@@ -193,6 +197,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             });
 
             feedbackStore.load();
+
+            me.updateTabBar(selectedStudentSparkpoint);
         }
     },
 
@@ -286,5 +292,41 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         workTabbar.setActiveTab(assignTab);
         teacherTabbar.setActiveTab(teacherTab);
+    },
+
+    updateTabBar: function(studentSparkpoint) {
+        var me = this,
+            now = new Date(),
+            learnStartTime = studentSparkpoint.get('learn_start_time'),
+            conferenceStartTime = studentSparkpoint.get('conference_start_time'),
+            applyStartTime = studentSparkpoint.get('apply_start_time'),
+            assessStartTime = studentSparkpoint.get('assess_start_time'),
+            workTabbar = me.getWorkTabbar();
+
+        if (!workTabbar) {
+            return;
+        }
+
+        me.getLearnTab().setDuration(
+            learnStartTime &&
+            ((studentSparkpoint.get('learn_completed_time') || now) - learnStartTime)
+        );
+
+        me.getConferenceTab().setDuration(
+            conferenceStartTime &&
+            ((studentSparkpoint.get('conference_completed_time') || now) - conferenceStartTime)
+        );
+
+        me.getApplyTab().setDuration(
+            applyStartTime &&
+            ((studentSparkpoint.get('apply_completed_time') || now) - applyStartTime)
+        );
+
+        me.getAssessTab().setDuration(
+            assessStartTime &&
+            ((studentSparkpoint.get('assess_completed_time') || now) - assessStartTime)
+        );
+
+        workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
     }
 });

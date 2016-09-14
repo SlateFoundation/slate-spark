@@ -82,9 +82,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             '#work.ConferenceQuestions': {
                 load: 'onConferenceQuestionsStoreLoad'
             },
-            '#gps.ActiveStudents': {
-                load: 'onActiveStudentsStoreLoad',
-                update: 'onActiveStudentsStoreUpdate'
+            '#StudentSparkpoints': {
+                load: 'onStudentSparkpointsStoreLoad',
+                update: 'onStudentSparkpointsStoreUpdate'
             },
             '#work.ConferenceGroups': {
                 load: 'onConferenceGroupsStoreLoad'
@@ -160,11 +160,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         me.refreshResources();
     },
 
-    onActiveStudentsStoreLoad: function() {
+    onStudentSparkpointsStoreLoad: function() {
         this.syncConferenceGroupMembers();
     },
 
-    onActiveStudentsStoreUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+    onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation, modifiedFieldNames) {
         var me = this;
 
         if (operation != 'edit') {
@@ -352,14 +352,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         for (; i < selectedStudentsLength; i++) {
             student = selectedStudents[i];
 
-            if (!student.get('conference_finish_time')) {
+            if (!student.get('conference_completed_time')) {
                 student.set('conference_finish_time', now);
                 student.save();
             }
         }
 
         unreadyStudentIndex = studentsGrid.getStore().findBy(function(student) {
-            return !student.get('conference_finish_time');
+            return !student.get('conference_completed_time');
         });
 
         if (
@@ -482,16 +482,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
     syncConferenceGroupMembers: function() {
         var joinConeferenceDataview = this.getJoinConeferenceDataview(),
-            activeStudentsStore = Ext.getStore('gps.ActiveStudents'),
+            studentSparkpointsStore = Ext.getStore('StudentSparkpoints'),
             groupsStore = this.getWorkConferenceGroupsStore(),
             groups = groupsStore.getRange(),
             groupsCount = groups.length,
             i = 0, group, members,
             filterReadyStudents = function(student) {
-                return !student.get('conference_finish_time');
+                return !student.get('conference_completed_time');
             };
 
-        if (!groupsStore.isLoaded() || !activeStudentsStore.isLoaded()) {
+        if (!groupsStore.isLoaded() || !studentSparkpointsStore.isLoaded()) {
             return;
         }
 
@@ -499,7 +499,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
         for (; i < groupsCount; i++) {
             group = groups[i];
-            members = activeStudentsStore.query('conference_group_id', group.getId());
+            members = studentSparkpointsStore.query('conference_group_id', group.getId());
 
             group.beginEdit();
 

@@ -40,8 +40,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     listen: {
         store: {
-            '#gps.ActiveStudents': {
-                update: 'onActiveStudentUpdate'
+            '#StudentSparkpoints': {
+                update: 'onStudentSparkpointsStoreUpdate'
             },
             '#work.Assessments': {
                 load: 'onAssessmentsStoreLoad'
@@ -92,13 +92,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         }
     },
 
-    onActiveStudentUpdate: function(activeStudentsStore, activeStudent, operation, modifiedFieldNames) {
+    onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation, modifiedFieldNames) {
         if (
             operation == 'edit' &&
             activeStudent === this.getAppCt().getSelectedStudentSparkpoint() &&
             (
                 modifiedFieldNames.indexOf('assess_ready_time') != -1 ||
-                modifiedFieldNames.indexOf('assess_finish_time') != -1
+                modifiedFieldNames.indexOf('assess_completed_time') != -1
             )
         ) {
             this.refreshCompleteBtn();
@@ -141,7 +141,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             completeBtnDirty = false;
 
-        if (!selectedStudentSparkpoint.get('assess_finish_time')) {
+        if (!selectedStudentSparkpoint.get('assess_completed_time')) {
             selectedStudentSparkpoint.set('assess_finish_time', new Date());
             selectedStudentSparkpoint.save();
 
@@ -240,13 +240,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         var me = this,
             completeBtn = me.getCompleteBtn(),
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            assessFinishTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('assess_finish_time');
+            assessCompleteTime = selectedStudentSparkpoint && selectedStudentSparkpoint.get('assess_completed_time');
 
         if (!completeBtn || !selectedStudentSparkpoint) {
             return;
         }
 
-        completeBtn.setDisabled(assessFinishTime || !selectedStudentSparkpoint.get('assess_ready_time'));
+        completeBtn.setDisabled(assessCompleteTime || !selectedStudentSparkpoint.get('assess_ready_time'));
         completeBtn.setText(completeBtn.config.text);
     }
 });

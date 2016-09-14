@@ -2,8 +2,12 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
     extend: 'Ext.data.Store',
 
 
-    // TODO: use autoSync and eliminate manual calls to record.save() everywhere?
     model: 'SparkClassroom.model.StudentSparkpoint',
+
+    proxy: {
+        type: 'spark-studentsparkpoints',
+        url: '/spark/api/work/activity'
+    },
 
     config: {
         // filter out activity that didn't match a student in the active roster
@@ -19,7 +23,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
 
         me.createOperation('read', {
             callback: function(incomingRecords) {
-                var existingIds = me.collect('student_sparkpoint'),
+                var existingIds = me.collect('student_sparkpointid'),
                     i, len,
                     id, existingRecord, incomingRecord,
                     newRecords = [];

@@ -16,7 +16,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
         // internal state
         popup: null,
         studentsStore: 'Students',
-        activeStudentsStore: 'gps.ActiveStudents',
+        studentSparkpointsStore: 'StudentSparkpoints',
         assignLearnsStore: 'assign.Learns',
 
         labelAlign: 'left',
@@ -64,7 +64,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
         }
     },
 
-    applyActiveStudentsStore: function(store) {
+    applyStudentSparkpointsStore: function(store) {
         return Ext.StoreMgr.lookup(store);
     },
 
@@ -161,7 +161,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
             studentsStore = me.getStudentsStore(),
             studentsCount = studentsStore.getCount(),
             learnsRequiredDefault = me.getValue() || learnsRequired.site,
-            activeStudentsStore = me.getActiveStudentsStore(),
+            studentSparkpointsStore = me.getStudentSparkpointsStore(),
             popupStore, student, studentId;
 
         // find container that provides scrolling
@@ -195,7 +195,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.LearnsRequiredField', {
             popupStore.add({
                 id: studentId,
                 student: student,
-                studentSparkpoint: activeStudentsStore.findRecord('student_id', studentId),
+                studentSparkpoint: studentSparkpointsStore.findRecord('student_id', studentId),
                 learnsRequired: learnsRequired[studentId],
                 learnsRequiredDefault: learnsRequiredDefault
             });
