@@ -1,5 +1,9 @@
 Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Slate.API',
+        'Ext.MessageBox'
+    ],
 
 
     stores: [
@@ -117,18 +121,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         var me = this,
         selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
         sparkpointField = me.getSparkpointField(),
-        recommendedSparkpoint = sparkpointField.getSelectedSparkpoint(),
-        studentSparkpoint;
+        recommendedSparkpoint = sparkpointField.getSelectedSparkpoint();
 
         if (recommendedSparkpoint) {
-            studentSparkpoint = me.getStudentSparkpointModel().create({
-                sparkpoint: recommendedSparkpoint.getId()
-            });
+            Slate.API.request({
+                method: 'PATCH',
+                url: '/spark/api/work/activity',
+                jsonData: {
+                    sparkpoint: recommendedSparkpoint.getId(),
+                    student_id: selectedStudentSparkpoint.get('student_id')
+                },
+                callback: function(options, success) {
+                    if (!success) {
+                        Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
+                        return;
+                    }
 
-            studentSparkpoint.set('student_id', selectedStudentSparkpoint.get('student_id'));
-
-            studentSparkpoint.save({
-                callback: function(studentSparkpoint, operation, success) {
                     sparkpointField.setSelectedSparkpoint(null);
                     sparkpointField.setQuery(null);
                 }
