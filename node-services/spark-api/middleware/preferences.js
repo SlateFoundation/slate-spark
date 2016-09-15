@@ -65,6 +65,10 @@ module.exports = function preferenceMiddlewareInit(options) {
 
         console.error('NEXT NEXT NEXT IS:');
         console.error(next);
+        console.error(typeof next);
+        console.error(this.schema);
+        yield next;
+        return;
 
         // HACK: for static files
         // TODO: Remove hack
