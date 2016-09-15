@@ -17,6 +17,7 @@ var koa = require('koa'),
     middleware = requireDirectory(module, './middleware'),
     routes = requireDirectory(module, './routes'),
 
+    serve = require('koa-static-folder'),
     jsonBody = require('koa-json-body'),
     router = require('koa-router')(),
     error = require('koa-error'),
@@ -70,6 +71,10 @@ app
     // .use(middleware.opened(config))
     .use(json());
 
+function* notImplementedHandler() {
+    ctx.throw(405, `${ctx.method} not implemented.`);
+}
+
 // TODO: I hate to have rolled my own auto-router...
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;
@@ -80,13 +85,42 @@ iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     }
 
     // If the route module exports an HTTP method, we'll route to it
-    if (urlPath && methods.indexOf(key) !== -1) {
+    if (urlPath && methods.includes(key)) {
         router[key](urlPath, obj[key]);
     }
 });
 
+var methodsForPath = {};
+
+// HACK: make sure 405s work
+iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
+    var urlPath;
+
+    // If the route module exports autoRoute: false, we won't setup auto routes to it
+    if (typeof obj === 'object' && obj.autoRoute !== false) {
+        urlPath = '/' + path.filter(key => key !== 'index').join('/');
+    }
+
+    // If the route module exports an HTTP method, we'll route to it
+    if (urlPath && methods.includes(key)) {
+        methodsForPath[urlPath] || (methodsForPath[urlPath] = {});
+        methodsForPath[urlPath][key] = true;
+    }
+});
+
+for (var path in methodsForPath) {
+    var pathMethods = methodsForPath[path];
+    methods
+        .filter(method => pathMethods[method] === true)
+        .forEach(method => router[method](path, notImplementedHandler));
+}
+
+console.log(methodsForPath);
+
 // Custom routes
 router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
+
+router.get('/test', routes.test.index.get);
 
 router.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get);
 router.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get);
@@ -111,7 +145,8 @@ router.post('/preferences/learns', routes.preferences.stopgap.post);
 
 app
     .use(router.routes())
-    .use(router.allowedMethods());
+    .use(router.allowedMethods())
+    .use(serve('./static'));
 
 if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
     let co = require('co');
