@@ -93,7 +93,8 @@ module.exports = function preferenceMiddlewareInit(options) {
                 let preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
                 ctx.state.preferences = preferences;
             } catch (e) {
-                console.warn('Set preferences failed to reload effective preferences for scope: ', scope, e);
+                ctx.throw(500, e);
+                console.error('Set preferences failed to reload effective preferences for scope: ', scope, e);
             }
         };
 
