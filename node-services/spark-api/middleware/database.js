@@ -9,7 +9,9 @@ var promise = require('bluebird'),
     },
     Pgp = require('pg-promise')(options),
     pgpConnections = {},
-    PgpWrapper = require('./../lib/pgp-wrapper.js');
+    PgpWrapper = require('./../lib/pgp-wrapper.js'),
+    changeCase = require('change-case'),
+    beautify = require('js-beautify').js_beautify;
 
 const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2'];
 
@@ -40,7 +42,7 @@ function pgp(options) {
             appContext = ctx.app.context,
             // TODO: We should pass the schema and request id so that we're able to work locally without a load
             // balancer and/or change header names
-            schema = ctx.header['x-nginx-mysql-schema'],
+            schema = 'sandbox-school',
             requestId = ctx.headers['x-nginx-request-id'],
             guc;
 
@@ -56,7 +58,7 @@ function pgp(options) {
                 'spark.request_id': requestId,
                 application_name: `spark-api_${ctx.username}_${requestId}`
             };
-        } else if (ctx.healthcheck) {
+        } else if (ctx.healthcheck || ctx.path.indexOf('/static/') === 0) {
             // Do not set GUC for health checks
             ctx._pgp = appContext.pgp.shared;
             ctx.pgp = appContext.pgp.shared;
@@ -71,6 +73,7 @@ function pgp(options) {
         ctx.sharedPgp = appContext.pgp.shared;
 
         appContext.introspection || (appContext.introspection = {});
+        appContext.models || (appContext.models = {});
 
         if (schema) {
             if (appContext.introspection[schema] === undefined) {
@@ -89,8 +92,8 @@ function pgp(options) {
 
                 for (let tableName in tables) {
                     let table = tables[tableName];
-                    appContext.validation[schema][tableName] = generateValidationFunction(table, enums);
                     appContext.validation[schema][tableName] = generateValidationFunction(tableName, table, enums);
+                    // appContext.models[tableName] = generateV8OptimizedModel(tableName, table, ctx);
                 }
             }
 
@@ -293,7 +296,8 @@ var columnValidators = {
     },
 
     text: function(val) {
-        if (typeof val !== 'string') {
+        // HACK: Allow numbers
+        if (typeof val !== 'string' && typeof val !== 'number') {
             return `${JSON.stringify(val)} is not a string`;
         }
     },
@@ -360,7 +364,42 @@ function generateValidationFunction(tableName, table, enums) {
         } else {
             return errors;
         }
-    }
+    };
+}
+
+
+function generateV8OptimizedModel(tableName, table, ctx) {
+    var columns = Object.keys(table),
+        modelName = changeCase.pascal(tableName),
+        code = `function ${modelName} (data) {`,
+        modelPath = `${global.appRoot}/models/${modelName}.js`;
+
+        code += `'use strict';\n`;
+
+        // TODO: port validation code to code generation
+        // code += `var isObjectLiteral = typeof data == 'object' && data.constructor == Object;\n\n`;
+
+    code += columns.map(function(column) {
+        let camelCase = changeCase.camel(column);
+
+        if (camelCase === column) {
+            return `this.${column} = data.${column};`;
+        } else {
+            return `this.${column} = data.${column} || data.${camelCase} || data.${changeCase.pascal(column)};`;
+        }
+    }).join('\n');
+
+    code += '}';
+
+    code += `\n${modelName}.prototype.columns = [` + columns.map(column => `'${column}'`).join(', ') + '];\n';
+
+    code += `\nmodule.exports = ${modelName};`;
+
+    code = beautify(code, { wrap_line_length: 80 });
+
+    // require('fs').writeFileSync(modelPath, code);
+
+    return require(modelPath);
 }
 
 module.exports = {
