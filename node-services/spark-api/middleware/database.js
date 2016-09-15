@@ -9,9 +9,7 @@ var promise = require('bluebird'),
     },
     Pgp = require('pg-promise')(options),
     pgpConnections = {},
-    PgpWrapper = require('./../lib/pgp-wrapper.js'),
-    changeCase = require('change-case'),
-    beautify = require('js-beautify').js_beautify;
+    PgpWrapper = require('./../lib/pgp-wrapper.js');
 
 const EXCLUDED_SCHEMAS = ['information_schema', 'pg_catalog', 'spark0', 'spark1', 'slate1', 'slate2'];
 
@@ -42,7 +40,7 @@ function pgp(options) {
             appContext = ctx.app.context,
             // TODO: We should pass the schema and request id so that we're able to work locally without a load
             // balancer and/or change header names
-            schema = 'sandbox-school',
+            schema = ctx.header['x-nginx-mysql-schema'],
             requestId = ctx.headers['x-nginx-request-id'],
             guc;
 
@@ -93,7 +91,6 @@ function pgp(options) {
                 for (let tableName in tables) {
                     let table = tables[tableName];
                     appContext.validation[schema][tableName] = generateValidationFunction(tableName, table, enums);
-                    // appContext.models[tableName] = generateV8OptimizedModel(tableName, table, ctx);
                 }
             }
 
@@ -365,41 +362,6 @@ function generateValidationFunction(tableName, table, enums) {
             return errors;
         }
     };
-}
-
-
-function generateV8OptimizedModel(tableName, table, ctx) {
-    var columns = Object.keys(table),
-        modelName = changeCase.pascal(tableName),
-        code = `function ${modelName} (data) {`,
-        modelPath = `${global.appRoot}/models/${modelName}.js`;
-
-        code += `'use strict';\n`;
-
-        // TODO: port validation code to code generation
-        // code += `var isObjectLiteral = typeof data == 'object' && data.constructor == Object;\n\n`;
-
-    code += columns.map(function(column) {
-        let camelCase = changeCase.camel(column);
-
-        if (camelCase === column) {
-            return `this.${column} = data.${column};`;
-        } else {
-            return `this.${column} = data.${column} || data.${camelCase} || data.${changeCase.pascal(column)};`;
-        }
-    }).join('\n');
-
-    code += '}';
-
-    code += `\n${modelName}.prototype.columns = [` + columns.map(column => `'${column}'`).join(', ') + '];\n';
-
-    code += `\nmodule.exports = ${modelName};`;
-
-    code = beautify(code, { wrap_line_length: 80 });
-
-    // require('fs').writeFileSync(modelPath, code);
-
-    return require(modelPath);
 }
 
 module.exports = {
