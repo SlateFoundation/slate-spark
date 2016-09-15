@@ -59,6 +59,17 @@ function generateScopedPreferenceQuery (scope) {
 
 module.exports = function preferenceMiddlewareInit(options) {
     return function* (next) {
+
+        console.log('NEXT NEXT NEXT IS:');
+        console.log(next);
+
+        // HACK: for static files
+        // TODO: Remove hack
+        if (!this.schema) {
+            yield next;
+            return;
+        }
+
         var ctx = this,
             scope = ctx.state.scope = {
                 user_id: ctx.userId || 0,
@@ -66,7 +77,8 @@ module.exports = function preferenceMiddlewareInit(options) {
                 sparkpoint_id: ctx.query.sparkpoint_id || '0'
             };
         try {
-            ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+            //ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+            ctx.state.preferences = {};
         } catch (e) {
             console.warn('Error getting effective preferences for scope: ', scope, e);
             ctx.state.preferences = {};

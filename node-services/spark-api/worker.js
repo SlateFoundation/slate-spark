@@ -42,6 +42,8 @@ if (PRODUCTION) {
     });
 }
 
+global.appRoot = require('path').resolve(__dirname);
+
 // TODO: global.app is used by asn-standard, let's remove it (module.exports is required by koa-cluster!)
 module.exports = global.app = app;
 
