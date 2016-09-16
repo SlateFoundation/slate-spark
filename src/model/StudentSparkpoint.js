@@ -9,8 +9,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
     idProperty: 'student_sparkpointid',
     fields: [
-        'section_id',
-        'section_code',
         {
             name: 'completed_phase_number',
             persist: false,
