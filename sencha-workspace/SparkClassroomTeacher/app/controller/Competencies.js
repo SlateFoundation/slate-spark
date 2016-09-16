@@ -156,7 +156,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             targetEl = Ext.fly(e.target),
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentId = targetEl.getAttribute('data-student-id'),
-            studentSparkpointId = studentId + '_' + rec.getData().id,
+            studentSparkpointId = rec.getData().id,
             studentSparkPoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
 
         if (targetEl.hasCls('pip-text')) {
@@ -265,12 +265,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     populateCompetenciesGrid: function() {
         var me = this,
             grid = me.getCompetenciesGrid(),
-            copmetencySparkpointsStore = Ext.getStore('CompetencySparkpoints'),
-            studentSparkpointData = copmetencySparkpointsStore.getRange(),
+            competencySparkpointsStore = Ext.getStore('CompetencySparkpoints'),
+            studentSparkpointData = competencySparkpointsStore.getRange(),
             studentStore = Ext.getStore('Students'),
             gridDataIds = [],
             gridStore,
-            count = 0, studentId, student, record, recordData, sparkpointId, studentSparkpoint;
+            count = 0, studentId, student, record, recordData, studentSparkpointId, studentSparkpoint;
 
         if (Ext.isEmpty(grid)) {
             return;
@@ -279,16 +279,16 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         gridStore = grid.getStore();
 
         // check if student sparkpoints are done loading, if not wait for that to happen.
-        if (copmetencySparkpointsStore.isLoading()) {
-            copmetencySparkpointsStore.on('load', function() {
+        if (competencySparkpointsStore.isLoading()) {
+            competencySparkpointsStore.on('load', function() {
                 me.populateCompetenciesGrid();
             }, null, { single: true });
 
             return;
         }
 
-        if (!copmetencySparkpointsStore.isLoaded()) {
-            copmetencySparkpointsStore.load(function() {
+        if (!competencySparkpointsStore.isLoaded()) {
+            competencySparkpointsStore.load(function() {
                 me.populateCompetenciesGrid();
             });
 
@@ -300,20 +300,20 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         // add sparkpoints to grid store and link to respective StudentCompetency panel.
         for (; count < studentSparkpointData.length; count++) {
             studentSparkpoint = studentSparkpointData[count];
-            sparkpointId = studentSparkpoint.get('sparkpoint_id');
+            studentSparkpointId = studentSparkpoint.get('student_sparkpointid');
             studentId = studentSparkpoint.get('student_id');
             student = studentStore.getById(studentId);
             recordData = {};
 
             // create record for each unique sparkpoint id
-            if (gridDataIds.indexOf(sparkpointId) === -1) {
+            if (gridDataIds.indexOf(studentSparkpointId) === -1) {
                 record = gridStore.add({
-                    'id': sparkpointId,
+                    'id': studentSparkpointId,
                     'sparkpoint': studentSparkpoint.get('sparkpoint')
                 })[0];
-                gridDataIds.push(sparkpointId);
+                gridDataIds.push(studentSparkpointId);
             } else {
-                record = gridStore.getById(sparkpointId);
+                record = gridStore.getById(studentSparkpointId);
             }
 
             if (record && student) {
