@@ -4,8 +4,8 @@ Ext.define('SparkClassroom.activity.ActivityList', {
     xtype: 'spark-activity-list',
 
     config: {
-        store: 'Activities',
-    	grouped: true,
+        store: '', // This feature is on ice for now, removed Activities store to avoid misuse and confusion.
+        grouped: true,
         itemTpl: [
             '<header class="studentlist-item-header">',
                 '<a class="studentlist-name" href="#">{FirstName} {LastName}</a> ',
