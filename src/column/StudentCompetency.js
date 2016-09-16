@@ -8,18 +8,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         width: 192,
         cell: {
             innerCls: 'no-padding',
-            encodeHtml: false,
-            listeners: {
-                click: {
-                    element: 'element',
-                    fn: function(ev, t) {
-                        Ext.select('.spark-studentcompetency-popover').each(function() {
-                            this.destroy();
-                        });
-                        Ext.create('SparkClassroom.column.StudentCompetency').showBy(Ext.fly(t));
-                    }
-                }
-            }
+            encodeHtml: false
         },
 
         renderer: function(v, r) {
