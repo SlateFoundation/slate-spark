@@ -5,8 +5,6 @@ Ext.define('SparkClassroomTeacher.controller.Activity', {
         'activity.Container'
     ],
 
-    stores: ['Activities@SparkClassroom.store'],
-
     refs: {
         navBar: 'spark-navbar',
         activityNavButton: 'spark-navbar button#activity',

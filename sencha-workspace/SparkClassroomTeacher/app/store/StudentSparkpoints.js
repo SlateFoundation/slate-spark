@@ -1,3 +1,5 @@
+/* This is the store used in the GPS, Assignments, and extended by the CompetencySparkpoints store,
+ it contains student sparkpoints that are active and incomplete for a section */
 Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
     extend: 'Ext.data.Store',
 
@@ -10,7 +12,7 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
     },
 
     config: {
-        // filter out activity that didn't match a student in the active roster
+        // filter out student sparkpoints that didn't match a student in the active roster
         filters: [{
             filterFn: function(r) {
                 return r.get('student');

@@ -32,7 +32,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     ],
 
     stores: [
-        'Activities@SparkClassroom.store',
+        'CompetencySparkpoints@SparkClassroomTeacher.store',
         'Students@SparkClassroom.store',
         'work.Learns@SparkClassroom.store'
     ],
@@ -67,7 +67,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     control: {
         store: {
-            '#Activities': {
+            '#CompetencySparkpoints': {
                 update: 'loadDataIntoView'
             }
         },

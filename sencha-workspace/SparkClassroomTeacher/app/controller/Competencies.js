@@ -39,7 +39,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     ],
 
     stores: [
-        'Activities@SparkClassroom.store',
+        'CompetencySparkpoints@SparkClassroomTeacher.store',
         'Students@SparkClassroom.store'
     ],
 
@@ -86,8 +86,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     listen: {
         store: {
-            '#Activities': {
-                update: 'onActivitiesStoreUpdate'
+            '#CompetencySparkpoints': {
+                update: 'onCompetencySparkpointsStoreUpdate'
             },
             '#Students': {
                 beforeload: 'onBeforeStudentStoreLoad',
@@ -154,11 +154,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var me = this,
             targetEl = Ext.fly(e.target),
-            activityStore = me.getActivitiesStore(),
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentId = targetEl.getAttribute('data-student-id'),
             studentSparkpointId = studentId + '_' + rec.getData().id,
-            studentSparkPoint = activityStore.findRecord('student_sparkpointid', studentSparkpointId);
-            
+            studentSparkPoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
+
         if (targetEl.hasCls('pip-text')) {
             if (Ext.isEmpty(studentId)) {
                 return;
@@ -171,12 +171,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onSelectedSectionChange: function(appCt, section, oldSection) {
         var me = this;
 
-        if (section && section != oldSection) { // load all activities when section changes -- will trigger repopulation of competency columns/data.
-            me.getActivitiesStore().load();
+        if (section && section != oldSection) { // load all student sparkpoints when section changes -- will trigger repopulation of competency columns/data.
+            me.getCompetencySparkpointsStore().load();
         }
     },
 
-    onActivitiesStoreUpdate: function(store, record, operation, modifiedFieldNames) {
+    onCompetencySparkpointsStoreUpdate: function(store, record, operation, modifiedFieldNames) {
         var me = this,
             competenciesGrid = me.getCompetenciesCt().down('spark-competencies-grid'),
             ignoreModifiedFields = ['student'], recordData = {}, gridRecord,
@@ -212,24 +212,24 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onSocketData: function(socket, data) {
-        var activityStore = this.getActivitiesStore(),
+        var competencySparkpointsStore = this.getCompetencySparkpointsStore(),
             table = data.table,
             itemData = data.item,
-            sparkpoint = activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id);
+            sparkpoint = competencySparkpointsStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id);
 
-        // update sparkpoint in activities store
+        // update sparkpoint in student sparkpoints store
         if (table === 'student_sparkpoint') {
             if (sparkpoint) {
                 sparkpoint.set(itemData, {
                     dirty: false
                 });
             }
-        } else if (table == 'section_student_active_sparkpoint') { // if no activity exists for this sparkpoint, create one.
-            if (Ext.isEmpty(activityStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
+        } else if (table == 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
+            if (Ext.isEmpty(competencySparkpointsStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
                 // create model, add neccessary data.
                 itemData.student = Ext.getStore('Students').getById(itemData.student_id);
                 itemData.student_sparkpointid = itemData.student_id + '_' + itemData.sparkpoint_id;
-                activityStore.add(itemData);
+                competencySparkpointsStore.add(itemData);
             }
         }
     },
@@ -260,13 +260,13 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     /**
      * @private
-     * populates comptencies grid based on activity store data.
+     * populates comptencies grid based on CompetencySparkpoints store data.
      */
     populateCompetenciesGrid: function() {
         var me = this,
             grid = me.getCompetenciesGrid(),
-            activityStore = Ext.getStore('Activities'),
-            activityData = activityStore.getRange(),
+            copmetencySparkpointsStore = Ext.getStore('CompetencySparkpoints'),
+            studentSparkpointData = copmetencySparkpointsStore.getRange(),
             studentStore = Ext.getStore('Students'),
             gridDataIds = [],
             gridStore,
@@ -278,17 +278,17 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         gridStore = grid.getStore();
 
-        // check if activities are done loading, if not wait for that to happen.
-        if (activityStore.isLoading()) {
-            activityStore.on('load', function() {
+        // check if student sparkpoints are done loading, if not wait for that to happen.
+        if (copmetencySparkpointsStore.isLoading()) {
+            copmetencySparkpointsStore.on('load', function() {
                 me.populateCompetenciesGrid();
             }, null, { single: true });
 
             return;
         }
 
-        if (!activityStore.isLoaded()) {
-            activityStore.load(function() {
+        if (!copmetencySparkpointsStore.isLoaded()) {
+            copmetencySparkpointsStore.load(function() {
                 me.populateCompetenciesGrid();
             });
 
@@ -298,8 +298,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         gridStore.removeAll();
 
         // add sparkpoints to grid store and link to respective StudentCompetency panel.
-        for (; count < activityData.length; count++) {
-            studentSparkpoint = activityData[count];
+        for (; count < studentSparkpointData.length; count++) {
+            studentSparkpoint = studentSparkpointData[count];
             sparkpointId = studentSparkpoint.get('sparkpoint_id');
             studentId = studentSparkpoint.get('student_id');
             student = studentStore.getById(studentId);
