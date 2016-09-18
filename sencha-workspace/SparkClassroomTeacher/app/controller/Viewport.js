@@ -1,3 +1,4 @@
+/* global SparkClassroom */
 /**
  * The Viewport controller is the first controller loaded in the application. It manages
  * the top-level framing and navigation.
@@ -12,7 +13,8 @@
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+        'SparkClassroom.DurationDisplay'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -102,15 +104,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     onLaunch: function() {
         var me = this;
 
-        Ext.getStore('Sections').load();
-
-        // add items to viewport's appCt
-        me.getAppCt().add([
-            me.getSparkTitleBar(),
-            me.getNavBar(),
-            me.getSparkGPS(),
-            me.getTabsCt()
-        ]);
+        SparkClassroom.DurationDisplay.init(function() {
+            me.renderViews();
+        });
     },
 
 
@@ -170,5 +166,20 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     onTeacherTabChange: function(tabBar, value) {
         this.redirectTo(value.getItemId());
-    }
+    },
+
+    // custom controller methods
+    renderViews: function() {
+        var me = this;
+
+        Ext.getStore('Sections').load();
+
+        // add items to viewport's appCt
+        me.getAppCt().add([
+            me.getSparkTitleBar(),
+            me.getNavBar(),
+            me.getSparkGPS(),
+            me.getTabsCt()
+        ]);
+    },
 });
