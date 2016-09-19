@@ -17,7 +17,6 @@ var koa = require('koa'),
     middleware = requireDirectory(module, './middleware'),
     routes = requireDirectory(module, './routes'),
 
-    serve = require('koa-static-folder'),
     jsonBody = require('koa-json-body'),
     router = require('koa-router')(),
     error = require('koa-error'),
@@ -68,7 +67,6 @@ app
     .use(middleware.debugging)
     .use(json())
     .use(middleware.preferences())
-    // .use(middleware.opened(config))
     .use(json());
 
 function* notImplementedHandler() {
@@ -115,8 +113,6 @@ for (var path in methodsForPath) {
         .forEach(method => router[method](path, notImplementedHandler));
 }
 
-console.log(methodsForPath);
-
 // Custom routes
 router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
 
@@ -145,8 +141,7 @@ router.post('/preferences/learns', routes.preferences.stopgap.post);
 
 app
     .use(router.routes())
-    .use(router.allowedMethods())
-    .use(serve('./static'));
+    .use(router.allowedMethods());
 
 if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
     let co = require('co');
