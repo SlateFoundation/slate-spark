@@ -67,7 +67,6 @@ module.exports = function preferenceMiddlewareInit(options) {
             };
         try {
             ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
-            ctx.state.preferences = {};
         } catch (e) {
             console.warn('Error getting effective preferences for scope: ', scope, e);
             ctx.state.preferences = {};
