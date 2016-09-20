@@ -1,7 +1,8 @@
 /sencha-workspace/build/
 /sencha-workspace/ext-*/
-/sencha-workspace/SparkClassroomTeacher/bootstrap.*
-/sencha-workspace/SparkClassroomTeacher/sass/example/bootstrap.*
-.DS_Store
-.idea/*
 
+/sencha-workspace/Spark*/bootstrap.*
+/sencha-workspace/Spark*/sass/example/bootstrap.*
+
+.DS_Store
+.idea/

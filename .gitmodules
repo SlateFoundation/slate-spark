@@ -18,10 +18,6 @@
 	path = sencha-workspace/packages/slate-core-data
 	url = https://github.com/SlateFoundation/slate-core-data.git
 	branch = master
-[submodule "sencha-workspace/packages/jarvus-apikit-minniti"]
-	path = sencha-workspace/packages/jarvus-apikit-minniti
-	url = https://github.com/theminniti/jarvus-apikit.git
-	branch = master
 [submodule "sencha-workspace/packages/jarvus-hotfixes"]
 	path = sencha-workspace/packages/jarvus-hotfixes
 	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
