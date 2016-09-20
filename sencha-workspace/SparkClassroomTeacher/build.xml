@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="SparkClassroomTeacher" default=".help">
+    <!--
+    The build-impl.xml file imported here contains the guts of the build process. It is
+    a great idea to read that file to understand how the process works, but it is best to
+    limit your changes to this file.
+    -->
+    <import file="${basedir}/.sencha/app/build-impl.xml"/>
+
+    <!--
+    The following targets can be provided to inject logic before and/or after key steps
+    of the build process:
+
+        The "init-local" target is used to initialize properties that may be personalized
+        for the local machine.
+
+            <target name="-before-init-local"/>
+            <target name="-after-init-local"/>
+
+        The "clean" target is used to clean build output from the build.dir.
+
+            <target name="-before-clean"/>
+            <target name="-after-clean"/>
+
+        The general "init" target is used to initialize all other properties, including
+        those provided by Sencha Cmd.
+
+            <target name="-before-init"/>
+            <target name="-after-init"/>
+
+        The "page" target performs the call to Sencha Cmd to build the 'all-classes.js' file.
+
+            <target name="-before-page"/>
+            <target name="-after-page"/>
+
+        The "build" target performs the call to Sencha Cmd to build the application.
+
+            <target name="-before-build"/>
+            <target name="-after-build"/>
+    -->
+
+    <target name="-before-init">
+        <if>
+            <isset property="build.compression.closure.jar"/>
+            <then>
+                <property name="build.compression" value=""/>
+                <property name="enable.resource.compression" value=""/>
+            </then>
+        </if>
+    </target>
+
+    <target name="-after-build">
+        <if>
+            <isset property="build.compression.closure.jar"/>
+            <then>
+                <move file="${build.dir}/app.js" tofile="${build.dir}/app.debug.js"></move>
+
+                <echo>Compressing with closure ${build.dir}/app.js</echo>
+                <java jar="${build.compression.closure.jar}" fork="true" failonerror="true">
+                    <sysproperty key="DEBUG" value="true"/>
+                    <arg value="--warning_level=QUIET"/>
+                    <arg value="--js=${build.dir}/app.debug.js"/>
+                    <arg value="--create_source_map=${build.dir}/app.js.map"/>
+                    <arg value="--source_map_format=V3"/>
+                    <arg value="--source_map_location_mapping=${build.dir}|."/>
+                    <arg value="--js_output_file=${build.dir}/app.js"/>
+                </java>
+                <echo file="${build.dir}/app.js" append="true">//# sourceMappingURL=app.js.map</echo>
+            </then>
+        </if>
+    </target>
+
+</project>

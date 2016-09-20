@@ -1,0 +1,14 @@
+.spark-competencies-grid {
+    .x-grid-header-container {
+        border: none;
+    }
+
+    .x-grid-cell {
+        border: 2px solid $color;
+        border-width: 0 2px 0 1px;
+    }
+
+    .spark-sparkpoints-cell {
+        border-left: 0;
+    }
+}

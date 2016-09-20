@@ -1,0 +1,11 @@
+.spark-assign-sparkpoint-ct {
+    background: mix(mix($base-light-color, $active-color), #f5f5f5, 15%);
+    border-radius: 0 0 .5em .5em;
+    box-shadow: 0 .5em .5em -.5em rgba(black, .2);
+    margin: -1.5em 0 1.5em;
+    padding: .6em .9em;
+
+    .x-form-label {
+        margin-top: .5em;
+    }
+}

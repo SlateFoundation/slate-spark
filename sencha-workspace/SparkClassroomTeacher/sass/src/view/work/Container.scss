@@ -1,0 +1,48 @@
+.students-tabbar {
+    background-color: $neutral-color;
+    box-shadow: 0 2px 4px rgba(black, .2);
+    margin-top: .5em;
+    padding: 0;
+
+    .x-tabbar-inner > .x-tab {
+        margin: 0;
+    }
+
+    .x-tab {
+        background-color: $neutral-dark-color;
+        border: none;
+        color: $light-color;
+        cursor: pointer;
+        font-size: .9em;
+
+        + .x-tab {
+            border-left: 1px solid $neutral-color;
+        }
+
+        &.x-tab-active {
+            background-color: $alert-color;
+            color: $light-color;
+        }
+
+        .x-button-label::before {
+            background-color: $alert-color;
+            border: 1px solid white;
+            border-radius: 100%;
+            content: ' ';
+            display: inline-block;
+            height: .5em;
+            margin-right: .25em;
+            width: .5em;
+            vertical-align: .0625em;
+        }
+
+        &:nth-child(2) { // TODO make this a real selector
+            border-color: transparent;
+            outline: $spark-students-tabbar-group-outline-width $spark-students-tabbar-group-outline-style $spark-students-tabbar-group-outline-color;
+        }
+    }
+
+    + .spark-work-tabbar {
+        margin-top: $spark-students-tabbar-group-outline-width;
+    }
+}
