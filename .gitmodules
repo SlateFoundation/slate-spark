@@ -1,7 +1,3 @@
-[submodule "sencha-workspace/packages/spark-classroom"]
-	path = sencha-workspace/packages/spark-classroom
-	url = git@github.com:JarvusInnovations/spark-classroom.git
-	branch = develop
 [submodule "sencha-workspace/packages/spark-theme"]
 	path = sencha-workspace/packages/spark-theme
 	url = git@github.com:JarvusInnovations/spark-theme.git
