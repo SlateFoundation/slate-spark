@@ -1,11 +1,10 @@
 'use strict';
 
-var promise = require('bluebird'),
-    monitor = require('pg-monitor'),
+var monitor = require('pg-monitor'),
     options = {
-        promiseLib: promise,
         noLocking: true,
-        capTX: true
+        capTX: true,
+        capSQL: true
     },
     Pgp = require('pg-promise')(options),
     pgpConnections = {},
