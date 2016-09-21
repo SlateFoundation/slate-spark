@@ -81,6 +81,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             itemtap: {
                 fn: 'onCompetenciesGridItemTap'
             }
+        },
+
+        'spark-student-competency-column': {
+            sparkconfigclick: {
+                fn: 'onSparkConfigClick'
+            }
         }
     },
 
@@ -149,6 +155,13 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.maskCompetenciesGrid();
         me.populateCompetencyColumns();
+    },
+
+    onSparkConfigClick: function(dataIndex) {
+        var me = this,
+            rec = me.getStudentsStore().findRecord('Username', dataIndex);
+
+        me.updateActiveStudentId(rec.getId());
     },
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
@@ -338,7 +351,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             studentCompetencyColumnXType = 'spark-student-competency-column',
             currentSection = me.getAppCt().getSelectedSection(),
             studentRecs = studentStore.getData().items,
-            sparkConfigCallback,
             count = 0, studentUsername, student, columns = [];
 
         // grid has not rendered yet, return. this method will be called again when the grid is activated.
@@ -375,33 +387,19 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             }
         });
 
-        sparkConfigCallback = function() {
-            // this is represented by the column
-            me.showSparkpointsConfig(studentStore.findRecord('Username', this.getDataIndex()).getId());
-        };
-
         for (; count < studentRecs.length; count++) {
             student = studentRecs[count];
             studentUsername = student.get('Username');
             columns.push({
                 xtype: studentCompetencyColumnXType,
                 dataIndex: studentUsername,
-
-                listeners: {
-                    click: {
-                        element: 'element',
-                        delegate: '.fa-wrench',
-                        fn: sparkConfigCallback
-                    }
-                },
-
                 text: [
                     '<div class="text-center">',
                     '<div class="student-name">', student.getFullName(), '</div>',
                     '<div class="field auto-width">',
                     '<label class="field-label">Q4 Goal</label>',
                     '<select class="field-control tiny"><option>20</option></select>',
-                    '<button type="button" class="plain"><i class="fa fa-lg fa-wrench"></i></button>',
+                    '<button type="button" class="plain"><i class="spark-config-btn fa fa-lg fa-wrench"></i></button>',
                     '</div>',
                     '</div>'
                 ].join(' ')
@@ -411,9 +409,5 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         grid.addColumn(columns);
         grid.setMasked(false);
         me.populateCompetenciesGrid();
-    },
-
-    showSparkpointsConfig: function(studentId) {
-        this.updateActiveStudentId(studentId);
     }
 });
