@@ -66,7 +66,9 @@ module.exports = function preferenceMiddlewareInit(options) {
                 sparkpoint_id: ctx.query.sparkpoint_id || '0'
             };
         try {
+            var d = new Date();
             ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+            ctx.set('X-Preferences-Took-How-Long', new Date().getTime() - d.getTime());
         } catch (e) {
             console.warn('Error getting effective preferences for scope: ', scope, e);
             ctx.state.preferences = {};
