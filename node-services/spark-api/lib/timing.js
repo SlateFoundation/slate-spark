@@ -115,7 +115,7 @@
                 console.error(err);
                 return;
             } else {
-                throw err;
+                throw err; // Throw on staging and live; development environments always return 9
             }
         }
 

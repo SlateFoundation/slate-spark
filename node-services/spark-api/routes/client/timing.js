@@ -2,28 +2,54 @@
 
 var ical = require('ical'),
     timing = require('../../lib/timing'),
+    defer = require('co-defer'),
     gradeRangeToArray = require('../../lib/util').gradeRangeToArray,
+
+    // Get shared code as strings for code generation
+    gradeRangeToArrayCode = require('../../lib/util')
+        .gradeRangeToArray
+        .toString(),
+    code = require('fs')
+        .readFileSync(__dirname + '/../../lib/timing.js')
+        .toString()
+        .replace("require('./util').gradeRangeToArray", gradeRangeToArrayCode),
+
     slateConfig = require('../../config/slate.json'),
+
+    // Keyed by grade range
     calendarUrlsByInstanceGradeRange = {},
-    eventsByCalendarUrl = {},
     daysOffByInstanceGradeRange = {},
+
+    // Keyed by calendar URL
+    eventsByCalendarUrl = {},
     daysOffByCalendarUrl = {},
-    code = require('fs').readFileSync(__dirname + '/../../lib/timing.js').toString();
+
+    // Keyed by instance
+    expirationByInstanceKey = {},
+
+    refreshInterval = 300 * 1000 /* 5 Minutes*/;
 
 (slateConfig.instances || []).forEach(function(instance) {
-    var daysOff = instance.daysOff;
+    var daysOff = instance.daysOff,
+        instanceKey = instance.key;
 
     if (daysOff) {
-        calendarUrlsByInstanceGradeRange[instance.key] = {};
+        calendarUrlsByInstanceGradeRange[instanceKey] = {};
 
         for (var gradeRange in daysOff) {
             let url = daysOff[gradeRange];
             eventsByCalendarUrl[url] = null;
-            calendarUrlsByInstanceGradeRange[instance.key][gradeRange] = url;
+            calendarUrlsByInstanceGradeRange[instanceKey][gradeRange] = url;
         }
+    } else {
+        console.warn(`WARNING: Missing daysOff calendar url for: ${instanceKey}`);
     }
+
+    defer.setInterval(getInstanceCalendars(instanceKey), refreshInterval);
+    defer.setImmediate(getInstanceCalendars(instanceKey));
 });
 
+// Returns a "thunk" for the callback-based ical module
 function getIcalThunk(url) {
     return function(callback) {
         ical.fromURL(url, {}, function(err, data) {
@@ -32,6 +58,7 @@ function getIcalThunk(url) {
     };
 }
 
+// Convert ical events into an object keyed by .toDateString() with a truthy value of 1 to indicate the key is a day off
 function eventsToDaysOff(events) {
     var daysOff = {};
 
@@ -51,34 +78,46 @@ function eventsToDaysOff(events) {
     return daysOff;
 }
 
-function* refreshInstanceCalendars(instance) {
-    var instanceCalendarUrls = calendarUrlsByInstanceGradeRange[instance];
+// Refreshes all calendars associated with a slate instance
+function* getInstanceCalendars(instanceKey) {
+    console.log(`Timing: Updating google calendars for: ${instanceKey}`);
 
-    daysOffByInstanceGradeRange[instance] || (daysOffByInstanceGradeRange[instance] = {});
+    var instanceCalendarUrls = calendarUrlsByInstanceGradeRange[instanceKey];
+
+    daysOffByInstanceGradeRange[instanceKey] || (daysOffByInstanceGradeRange[instanceKey] = {});
 
     for (var gradeRange in instanceCalendarUrls) {
         let url = instanceCalendarUrls[gradeRange];
         eventsByCalendarUrl[url] = (yield getIcalThunk(url));
         daysOffByCalendarUrl[url] = eventsToDaysOff(eventsByCalendarUrl[url]);
-        daysOffByInstanceGradeRange[instance][gradeRange] = daysOffByCalendarUrl[url];
+        daysOffByInstanceGradeRange[instanceKey][gradeRange] = daysOffByCalendarUrl[url];
     }
 
-    return daysOffByInstanceGradeRange[instance];
+    expirationByInstanceKey[instanceKey] = new Date().getTime() + refreshInterval;
+
+    return daysOffByInstanceGradeRange[instanceKey];
 }
 
 function *getHandler() {
     var ctx = this,
-        calendars = daysOffByInstanceGradeRange[ctx.schema] || (yield refreshInstanceCalendars(ctx.schema)),
-        gradeRangeToArray = require('../../lib/util')
-            .gradeRangeToArray
-            .toString(),
-        daysOffByGrade = `unpackGradeRanges(${JSON.stringify(calendars)})`;
+        instanceKey = ctx.schema,
+        calendars = daysOffByInstanceGradeRange[instanceKey] || (yield getInstanceCalendars(instanceKey)),
+        daysOffByGrade = `unpackGradeRanges(${JSON.stringify(calendars)})`,
+        clientCode = code.replace('daysOffByGrade: {}', `daysOffByGrade: ${daysOffByGrade}`),
+        maxAgeInMs = expirationByInstanceKey[instanceKey] - new Date().getTime();
 
     ctx.type = 'application/javascript';
+    ctx.set('Cache-control', 'private, max-age=' + (maxAgeInMs ? Math.floor((maxAgeInMs / 1000)) : 0));
 
-    ctx.body = code
-        .replace("require('./util').gradeRangeToArray", gradeRangeToArray)
-        .replace('daysOffByGrade: {}', `daysOffByGrade: ${daysOffByGrade}`);
+    // For development environments only
+    if (!(instanceKey.endsWith('-staging') || instanceKey.endsWith('-live'))) {
+        clientCode = clientCode.replace(
+            'throw err; // Throw on staging and live; development environments always return 9',
+            `console.warn('Falling back to 9th grade for timing:', err); return 9; // Dev environments always return 9`
+        );
+    }
+
+    ctx.body = clientCode;
 }
 
 module.exports = {
