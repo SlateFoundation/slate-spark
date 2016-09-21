@@ -8,5 +8,10 @@ Ext.define('SparkClassroomTeacher.store.CompetencySparkpoints', {
         extraParams: {
             status: 'all'
         }
+    },
+
+    config: {
+        // blow out the filter from StudentSparkpoint store we're extending
+        filters: []
     }
 });
