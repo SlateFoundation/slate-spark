@@ -7,6 +7,7 @@ var generateRandomPassword = require('./password').generateRandomPassword,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
     util = require('util'),
+    defer = require('co-defer'),
     request = require('koa-request'),
     path = require('path'),
     fs = require('fs'),
@@ -184,6 +185,8 @@ if (!(openEdClientSecret && openEdClientId && openEdUsername)) {
 if (configError) {
     throw new Error(`OpenEd: ${configPath}: ${configError}`);
 }
+
+defer.setImmediate(getAccessToken);
 
 function* getAccessToken(ctx) {
     // HACK: use hard coded account credentials
