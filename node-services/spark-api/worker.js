@@ -25,7 +25,9 @@ var koa = require('koa'),
     lookup = require('./lib/lookup'),
     methods = require('methods'),
     iterator = require('object-recursive-iterator'),
-    requestToCurl = require('koa-request-to-curl');
+    requestToCurl = require('koa-request-to-curl'),
+    conditional = require('koa-conditional-get'),
+    etag = require('koa-etag');
 
 if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
@@ -51,6 +53,7 @@ app.context.config = config;
 
 app
     .use(requestToCurl())
+    .use(conditional())
     .use(middleware.logging)
     .use(middleware.response_time)
     .use(error({ template: __dirname + '/config/error.html' }))
@@ -67,7 +70,8 @@ app
     .use(middleware.debugging)
     .use(json())
     .use(middleware.preferences())
-    .use(json());
+    .use(json())
+    .use(etag());
 
 function* notImplementedHandler() {
     ctx.throw(405, `${ctx.method} not implemented.`);
