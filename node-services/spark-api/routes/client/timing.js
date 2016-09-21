@@ -64,12 +64,17 @@ function eventsToDaysOff(events) {
 
     for (var eventId in events) {
         let event = events[eventId];
+
+        // This handles timezone events and daylight savings time weirdness (events without end dates)
+        if (event.type === 'VTIMEZONE' || !event.end || !event.start) continue;
+
         event.start = timing.stripTime(event.start);
         event.end = timing.stripTime(event.end);
 
         if (event.start !== event.end) {
             // Multi day event
-            timing.getDatesBetween(event.start, event.end).forEach(day => daysOff[day.toDateString()] = 1);
+            let dates = timing.getDatesBetween(event.start, event.end);
+            dates.forEach(day => daysOff[day.toDateString()] = 1);
         } else {
             daysOff[day.toDateString()] = 1;
         }
