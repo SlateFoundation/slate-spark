@@ -6,56 +6,54 @@
  * TODO - Replace this content of this view to suite the needs of your application.
  */
 Ext.define('SparkDashboardStudent.view.main.Main', {
-    extend: 'Ext.tab.Panel',
+    extend: 'Ext.Container',
     xtype: 'app-main',
 
-    requires: [
-        'Ext.MessageBox',
-
-        'SparkDashboardStudent.view.main.MainController',
-        'SparkDashboardStudent.view.main.MainModel',
-        'SparkDashboardStudent.view.main.List'
-    ],
-
-    controller: 'main',
-    viewModel: 'main',
-
-    defaults: {
-        tab: {
-            iconAlign: 'top'
-        },
-        styleHtmlContent: true
-    },
-
-    tabBarPosition: 'bottom',
+    requires: [],
 
     items: [
         {
-            title: 'Home',
-            iconCls: 'x-fa fa-home',
-            layout: 'fit',
-            // The following grid shares a store with the classic version's grid as well!
-            items: [{
-                xtype: 'mainlist'
-            }]
-        },{
-            title: 'Users',
-            iconCls: 'x-fa fa-user',
-            bind: {
-                html: '{loremIpsum}'
-            }
-        },{
-            title: 'Groups',
-            iconCls: 'x-fa fa-users',
-            bind: {
-                html: '{loremIpsum}'
-            }
-        },{
-            title: 'Settings',
-            iconCls: 'x-fa fa-cog',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            xtype: 'container',
+            layout: 'hbox',
+            defaults: {
+                xtype: 'component'
+            },
+            items: [
+                {
+                    html: 'student photo'
+                },
+                {
+                    flex: 1,
+                    html: 'student name<br>grade • advisor</br>'
+                },
+                {
+                    html: 'class/teacher info'
+                },
+                {
+                    html: 'header image control'
+                }
+            ]
+        },
+        {
+            xtype: 'container',
+            layout: 'hbox',
+            defaults: {
+                flex: 1
+            },
+            items: [
+                {
+                    html: 'classes'
+                },
+                {
+                    html: 'behavior'
+                },
+                {
+                    html: 'attendance'
+                }
+            ]
+        },
+        {
+            html: 'class cards'
         }
     ]
 });
