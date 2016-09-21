@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
         items: [
             {
                 xtype: 'component',
-                cls: 'sparkpointsconfig-table-current',
+                cls: 'sparkpointsconfig-table current',
                 tpl: [
                     '<table>',
                         '<thead>',
@@ -44,15 +44,14 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                             '<tpl for=".">',
                                 '<tr class="sparkpoint-row" data-student-sparkpointid="{student_sparkpointid}">',
                                     '<td class="remove-cell">',
-                                        /*'<button class="plain" action="row-remove">',
+                                        '<button class="plain" action="row-remove">',
                                             '<span class="fa fa-times-circle"></span>',
-                                        '</button>',*/ // hide delete buttons for now
-                                        '&nbsp;',
+                                        '</button>',
                                     '</td>',
                                     '<th>{sparkpoint}</th>',
                                     '<tpl for="phases">',
                                         '<td class="{[ values.finished || values.checked ? "phase-cell is-credit-given" : "phase-cell" ]}">',
-                                            '<input class="completion-checkbox override-field {[ values.finished ? "finished" : "not-finished" ]}" type="checkbox"{[ values.disabled ? " disabled" : "" ]}{[ values.checked ? " checked" : "" ]} data-phase="{phase}">',
+                                            '<input class="completion-checkbox override-field {[ values.finished ? "finished" : "not-finished" ]}" type="checkbox" disabled {[ values.checked ? "checked" : "" ]} data-phase="{phase}">',
                                             '<input class="expected-completion field-control" type="number" min="1" step="1" data-phase="{phase}" value="{expected}">',
                                             '<div class="actual-completion {[ this.getPaceCls(values) ]}">{[ Ext.isEmpty(values.actual) ? "" : "Day " + values.actual ]}</div>',
                                         '</td>',
@@ -91,7 +90,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
             },
             {
                 xtype: 'component',
-                cls: 'sparkpointsconfig-table-active',
+                cls: 'sparkpointsconfig-table active',
                 tpl: [
                     '<table>',
                         '<thead>',
@@ -105,28 +104,26 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                             '<tpl for=".">',
                                 '<tr class="sparkpoint-row" data-student-sparkpointid="{student_sparkpointid}">',
                                     '<td class="remove-cell">',
-                                        /*'<button class="plain" action="row-remove">',
+                                        '<button class="plain" action="row-remove">',
                                             '<span class="fa fa-times-circle"></span>',
-                                        '</button>',*/ // hide delete buttons for now
-                                        '&nbsp;',
+                                        '</button>',
                                     '</td>',
                                     '<th>{sparkpoint}</th>',
                                     '<tpl for="phases">',
                                         '<td class="{[ values.finished || values.checked ? "phase-cell is-credit-given" : "phase-cell" ]}">',
-                                            '<input class="completion-checkbox override-field {[ values.finished ? "finished" : "not-finished" ]}" type="checkbox"{[ values.disabled ? " disabled" : "" ]}{[ values.checked ? " checked" : "" ]} data-phase="{phase}">',
+                                            '<input class="completion-checkbox override-field {[ values.finished ? "finished" : "not-finished" ]}" type="checkbox" disabled {[ values.checked ? "checked" : "" ]} data-phase="{phase}">',
                                             '<input class="expected-completion field-control" type="number" min="1" step="1" data-phase="{phase}" value="{expected}">',
                                             '<div class="actual-completion {[ this.getPaceCls(values) ]}">{[ Ext.isEmpty(values.actual) ? "" : "Day " + values.actual ]}</div>',
                                         '</td>',
                                     '</tpl>',
                                     '<td class="reorder-cell">',
                                         '<div class="row-reorder-buttons">',
-                                            /*'<button class="plain" action="row-reorder-up" {[ this.checkDisabled("up", xindex, xcount) ]}>',
+                                            '<button class="plain" action="row-reorder-up" {[ this.checkDisabled("up", xindex, xcount) ]}>',
                                                 '<i class="fa fa-arrow-up" title="Move Up"></i>',
                                             '</button>',
                                             '<button class="plain" action="row-reorder-down" {[ this.checkDisabled("down", xindex, xcount) ]}>',
                                                 '<i class="fa fa-arrow-down" title="Move Down"></i>',
-                                            '</button>',*/ // hide reorder buttons for now
-                                            '&nbsp;',
+                                            '</button>',
                                         '</div>',
                                     '</td>',
                                 '</tr>',
@@ -170,7 +167,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                     }
                 ]
             },
-            /*{ // hide search box for now
+            {
                 xtype: 'container',
                 padding: '8 24',
                 items: [{
@@ -178,10 +175,10 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                     placeHolder: 'Search for a Sparkpoint',
                     width: '100%'
                 }]
-            },*/
+            },
             {
                 xtype: 'component',
-                cls: 'sparkpointsconfig-table-queue',
+                cls: 'sparkpointsconfig-table queue',
                 tpl: [
                     '<table>',
                     '<thead>',
@@ -195,10 +192,9 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                         '<tpl for=".">',
                             '<tr class="sparkpoint-row" data-student-sparkpointid="{student_sparkpointid}">',
                                 '<td class="remove-cell">',
-                                    /*'<button class="plain" action="row-remove">',
+                                    '<button class="plain" action="row-remove">',
                                         '<span class="fa fa-times-circle"></span>',
-                                    '</button>',*/ // hide delete buttons for now
-                                    '&nbsp;',
+                                    '</button>',
                                 '</td>',
                                 '<th>{sparkpoint}</th>',
                                 '<tpl for="phases">',
@@ -208,13 +204,12 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                                 '</tpl>',
                                 '<td class="reorder-cell">',
                                     '<div class="row-reorder-buttons">',
-                                        /*'<button class="plain" action="row-reorder-up" {[ this.checkDisabled("up", xindex, xcount) ]}>',
+                                        '<button class="plain" action="row-reorder-up" {[ this.checkDisabled("up", xindex, xcount) ]}>',
                                             '<i class="fa fa-arrow-up" title="Move Up"></i>',
                                         '</button>',
                                         '<button class="plain" action="row-reorder-down" {[ this.checkDisabled("down", xindex, xcount) ]}>',
                                             '<i class="fa fa-arrow-down" title="Move Down"></i>',
-                                        '</button>',*/ // hide reorder buttons for now
-                                        '&nbsp;',
+                                        '</button>',
                                     '</div>',
                                 '</td>',
                             '</tr>',
