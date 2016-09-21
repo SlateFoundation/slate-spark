@@ -114,15 +114,16 @@ try {
     console.log('Lookup cache miss');
 }
 
-module.exports = function* (next) {
-    var ctx = this;
+function* lookup(next) {
+    var ctx = this,
+        populateYields = [],
+        sharedPgp = ctx.app.context.pgp.shared;
 
     // Initialize global/shared lookup tables
     if (!initialized) {
         initialized = true;
 
-        // TODO: figure out which of these to use
-        shared.vendor = (yield ctx.pgp.one(/*language=SQL*/ `
+        shared.vendor = sharedPgp.one(/*language=SQL*/ `
             WITH asn_id_to_vendor_identifier AS (
                 SELECT
                   vendor_id,
@@ -170,13 +171,14 @@ module.exports = function* (next) {
                        (SELECT json_object_agg(id, name)
                         FROM vendors)
                    ) AS json;
-        `)).json;
+        `);
 
+        populateYields.push(shared.vendor);
 
         for (var entity in shared) {
             if (!(shared[entity] instanceof LookupTable) && shared[entity].entity) {
                 shared[entity] = new LookupTable(
-                    Object.assign({ pgp: this.app.context.pgp.shared, natsClient: nc }, shared[entity])
+                    Object.assign({ pgp: sharedPgp, natsClient: nc }, shared[entity])
                 );
 
                 if (cachingEnabled &&
@@ -189,112 +191,77 @@ module.exports = function* (next) {
                     shared[entity].cache = lookupCache.shared[entity].cache;
                 } else {
                     console.log(`Shared ${entity} cache miss`);
-                    yield shared[entity].populate(this.app.context.pgp.shared);
+                    populateYields.push(shared[entity].populate(ctx.pgp));
                 }
-            }
-        }
-
-        // TODO: HACK: Populating the vendor lookup table here doesn't make sense from a structural standpoint
-        if (!cachingEnabled || typeof lookupCache.shared.vendor !== 'object') {
-            let result = yield this.app.context.pgp.shared.one(/*language=SQL*/ `
-                SELECT json_build_object(
-                    'idToName',
-                    (SELECT json_object_agg(id, name) FROM vendors),
-    
-                    'nameToId',
-                    (SELECT json_object_agg(lower(name), id) FROM vendors),
-    
-                    'asnIdToVendorIdentifier',
-                    (SELECT json_object_agg(id,
-                        (SELECT json_object_agg(asn_id, vendor_identifier)
-                           FROM vendor_standards_crosswalk
-                          WHERE asn_id IS NOT NULL
-                            AND vendor_id = vendors.id
-                        )
-                    ) FROM vendors),
-    
-                    'asnIdToVendorCode',
-                    (SELECT json_object_agg(id,
-                        (SELECT json_object_agg(asn_id, lower(vendor_code))
-                           FROM vendor_standards_crosswalk
-                          WHERE asn_id IS NOT NULL
-                            AND vendor_id = vendors.id
-                        )
-                    ) FROM vendors)
-                ) AS json;
-            `);
-
-            shared.vendor = result.json;
-
-            if (cachingEnabled) {
-                require('fs').writeFile(cachePath, JSON.stringify({ shared: shared }, null, '\t'), (err) => {
-                    if (err) {
-                        console.warn('Shared lookup cache could not be written to disk: ' + err);
-                    } else {
-                        console.log('Shared lookup cache written to disk');
-                    }
-                });
             }
         }
     }
 
-    if (!this.healthcheck &&
+    if (!ctx.healthcheck &&
         ctx.request.path.indexOf('/develop') === -1 &&
         ctx.schema !== undefined &&
         schema[ctx.schema] === undefined
     ) {
-        let bustJsonCache = false;
-
-        schema[this.schema] || (schema[this.schema] = {});
+        schema[ctx.schema] || (schema[ctx.schema] = {});
 
         for (let entity in perSchool) {
-            schema[this.schema][entity] = new LookupTable(
+            schema[ctx.schema][entity] = new LookupTable(
                 Object.assign(
-                    { pgp: this.app.context.pgp[this.schema], natsClient: nc },
+                    { pgp: ctx.app.context.pgp[ctx.schema], natsClient: nc },
                     perSchool[entity],
-                    { schema: this.schema }
+                    { schema: ctx.schema }
                 )
             );
 
             if (cachingEnabled &&
                 entity !== 'sparkpoint' &&
                 lookupCache.schema &&
-                lookupCache.schema[this.schema] &&
-                lookupCache.schema[this.schema][entity] &&
-                typeof lookupCache.schema[this.schema][entity].cache === 'object') {
-                schema[this.schema][entity].cache = lookupCache.schema[this.schema][entity].cache;
-                console.log(`${this.schema} ${entity} cache hit`);
+                lookupCache.schema[ctx.schema] &&
+                lookupCache.schema[ctx.schema][entity] &&
+                typeof lookupCache.schema[ctx.schema][entity].cache === 'object') {
+                schema[ctx.schema][entity].cache = lookupCache.schema[ctx.schema][entity].cache;
+                console.log(`${ctx.schema} ${entity} cache hit`);
             } else {
-                console.log(`${this.schema} ${entity} cache miss`);
-                bustJsonCache = true;
-                yield schema[this.schema][entity].populate(ctx.pgp);
+                console.log(`${ctx.schema} ${entity} cache miss`);
+                populateYields.push(schema[ctx.schema][entity].populate(ctx.app.context.pgp[ctx.schema]));
             }
         }
+    }
 
-        if (cachingEnabled && bustJsonCache) {
+    if (populateYields.length > 0) {
+        console.log(`Populating ${populateYields.length} lookup tables in parallel`);
+
+        yield populateYields;
+
+        if (shared.vendor && typeof shared.vendor.json !== 'object') {
+            shared.vendor = shared.vendor.json;
+        }
+
+        if (cachingEnabled) {
             require('fs').writeFile(cachePath, JSON.stringify({ shared: shared, schema: schema }, null, '\t'), (err) => {
                 if (err) {
-                    console.warn(`${this.schema} lookup cache could not be written to disk: ${err}`);
+                    console.warn(`${ctx.schema} lookup cache could not be written to disk: ${err}`);
                 } else {
-                    console.log(`${this.schema} lookup cache written to disk`);
+                    console.log(`${ctx.schema} lookup cache written to disk`);
                 }
             });
         }
     }
 
-    if (this.healthcheck) {
-        this.lookup = shared;
+    if (ctx.healthcheck) {
+        ctx.lookup = shared;
     } else {
-        this.lookup = Object.assign(shared, schema[this.schema]);
+        // TODO: This seems like it could cause excessive memory usage or GC churn
+        ctx.lookup = Object.assign(shared, schema[ctx.schema]);
     }
 
-    this.app.context.lookup || (this.app.context.lookup = {
+    ctx.app.context.lookup || (ctx.app.context.lookup = {
         shared: shared,
         schema: schema
     });
 
     yield next;
-};
+}
 
 nc.on('error', function(error) {
     // TODO: evaluate how we want to handle NATS connection errors in the production API
@@ -321,3 +288,4 @@ nc.on('reconnect', function() {
    console.log('NATS: Reconnected');
 });
 
+module.exports = lookup;
