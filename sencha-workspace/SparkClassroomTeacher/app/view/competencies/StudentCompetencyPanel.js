@@ -95,8 +95,12 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
 
                         getOverallPaceDesc: function(values) {
                             var currentPhase = this.getCurrentPhase(values),
-                                expected = currentPhase.expected,
+                                expected, actual;
+
+                            if (currentPhase) {
+                                expected = currentPhase.expected;
                                 actual = currentPhase.actual;
+                            }
 
                             if (expected == actual) {
                                 return 'On Pace';
@@ -115,8 +119,12 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
 
                         getOverallPaceCls: function(values) {
                             var currentPhase = this.getCurrentPhase(values),
-                                expected = currentPhase.expected,
+                                expected, actual;
+
+                            if (currentPhase) {
+                                expected = currentPhase.expected;
                                 actual = currentPhase.actual;
+                            }
 
                             return this.getPaceCls(expected, actual);
                         }

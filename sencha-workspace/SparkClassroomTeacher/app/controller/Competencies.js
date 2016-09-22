@@ -108,12 +108,31 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(sparkpoint, target) {
-        var me = this;
+    updateStudentSparkpoint: function(studentSparkpointId, target) {
+        var me = this,
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            studentSparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
+            studentSparkpointIdArray = studentSparkpointId.split('_'),
+            studentId = studentSparkpointIdArray[0],
+            sparkpointId = studentSparkpointIdArray[1],
+            existingSparkpoint;
 
-        me.studentSparkpoint = sparkpoint;
+        // If the studentSparkpoint doesn't exist, we need to piece together a new record from the data we have
+        if (Ext.isEmpty(studentSparkpoint)) {
+            existingSparkpoint = competencySparkpointsStore.findRecord('sparkpoint_id', sparkpointId);
+
+            studentSparkpoint = competencySparkpointsStore.add({
+                student_id: studentId,
+                sparkpoint_id: sparkpointId,
+                student_sparkpointid: studentSparkpointId,
+                sparkpoint: existingSparkpoint.get('sparkpoint'),
+                section_id: existingSparkpoint.get('section_id')
+            })[0];
+        }
+
+        me.studentSparkpoint = studentSparkpoint;
         me.showByTarget = target;
-        me.getApplication().fireEvent('studentsparkpointchange', sparkpoint, target);
+        me.getApplication().fireEvent('studentsparkpointchange', studentSparkpoint, target);
     },
 
     updateActiveStudentId: function(studentId) {
@@ -157,17 +176,15 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var me = this,
             targetEl = Ext.fly(e.target),
-            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentId = targetEl.getAttribute('data-student-id'),
-            studentSparkpointId = studentId + '_' + rec.getId(),
-            studentSparkPoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
+            studentSparkpointId = studentId + '_' + rec.getId();
 
         if (targetEl.hasCls('pip-text')) {
             if (Ext.isEmpty(studentId)) {
                 return;
             }
 
-            me.updateStudentSparkpoint(studentSparkPoint, Ext.fly(e.target));
+            me.updateStudentSparkpoint(studentSparkpointId, Ext.fly(e.target));
         }
     },
 
@@ -321,7 +338,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             }
 
             if (record && student) {
-                recordData[student.get('Username')] = studentSparkpoint;
+                recordData[studentId] = studentSparkpoint;
 
                 record.set(recordData, { dirty: false });
             }
@@ -340,8 +357,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             studentStore = Ext.getStore('Students'),
             studentCompetencyColumnXType = 'spark-student-competency-column',
             currentSection = me.getAppCt().getSelectedSection(),
-            studentRecs = studentStore.getData().items,
-            count = 0, studentUsername, student, columns = [];
+            studentRecs = studentStore.getRange(),
+            count = 0, studentId, student, columns = [];
 
         grid.setCurrentSection(currentSection);
 
@@ -353,10 +370,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         for (; count < studentRecs.length; count++) {
             student = studentRecs[count];
-            studentUsername = student.get('Username');
+            studentId = student.getId();
             columns.push({
                 xtype: studentCompetencyColumnXType,
-                dataIndex: studentUsername,
+                dataIndex: studentId,
                 text: [
                     '<div class="text-center">',
                     '<div class="student-name">', student.getFullName(), '</div>',

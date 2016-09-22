@@ -38,8 +38,12 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             mapping: 'student_id',
             depends: ['student_id'],
-            convert: function(v) {
-                return Ext.getStore('Students').getById(v);
+            convert: function(v, r) {
+                if (v) {
+                    return Ext.getStore('Students').getById(v);
+                }
+
+                return Ext.getStore('Students').getById(r.data.student_id);
             }
         }, {
             name: 'student_name',

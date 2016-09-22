@@ -1,17 +1,12 @@
 /* This is the store used in the Competencies feature, it contains ALL student sparkpoints for a section */
 Ext.define('SparkClassroomTeacher.store.CompetencySparkpoints', {
-    extend: 'SparkClassroomTeacher.store.StudentSparkpoints',
+    extend: 'Ext.data.Store',
+
+
+    model: 'SparkClassroom.model.StudentSparkpoint',
 
     proxy: {
         type: 'spark-studentsparkpoints',
-        url: '/spark/api/work/activity',
-        extraParams: {
-            status: 'all'
-        }
-    },
-
-    config: {
-        // blow out the filter from StudentSparkpoint store we're extending
-        filters: []
+        url: '/spark/api/sparkpoints'
     }
 });

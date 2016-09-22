@@ -34,13 +34,13 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                     return '';
                 },
                 dataIndex = this.getDataIndex(),
-                studentUsername = dataIndex.split('_').shift(),
-                studentSparkpoint = r.get(studentUsername),
+                studentId = dataIndex,
+                studentSparkpoint = r.get(studentId),
                 gaugeTpl = new Ext.XTemplate([
                     '<div class="flex-ct cycle-gauge">',
                         '<tpl for=".">',
                             '<div class="flex-1 cycle-gauge-pip {status}">',
-                                '<abbr class="pip-text" data-student-id="' + (studentSparkpoint ? studentSparkpoint.get('student_id') : '') + '" title="{title}">{shortText}</abbr>',
+                                '<abbr class="pip-text" data-student-id="' + studentId + '" title="{title}">{shortText}</abbr>',
                             '</div>',
                         '</tpl>',
                     '</div>'
