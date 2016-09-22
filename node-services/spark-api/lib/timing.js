@@ -1,6 +1,6 @@
-'use strict';
-
 (function() {
+    'use strict';
+
     var MS_IN_DAY = 86400000;
     var IS_NODE = (typeof window === 'undefined');
     var gradeRangeToArray = require('./util').gradeRangeToArray;
@@ -122,20 +122,9 @@
         return matches[1] === 'K' ? kValue : parseInt(matches[1], 10);
     }
 
-    if (typeof module !== 'undefined') {
-        // Node environment
-        module.exports = {
-            stripTime: stripTime,
-            isWeekend: isWeekend,
-            isWeekday: isWeekDay,
-            getDatesBetween: getDatesBetween,
-            sectionCodeToGrade: sectionCodeToGrade,
-            unpackGradeRanges: unpackGradeRanges,
-            getDurationInDays: getDurationInDays,
-            getDuration: getDuration,
-            daysOffByGrade: daysOffByGrade,
-        };
-    } else if (typeof Ext !== 'undefined') {
+    /* INJECT daysOffByGrade */
+
+    if (typeof Ext !== 'undefined' && typeof Ext.define === 'function') {
         Ext.define('Spark.Timing', {
             singleton: true,
 
@@ -147,7 +136,25 @@
             unpackGradeRanges: unpackGradeRanges,
             getDurationInDays: getDurationInDays,
             getDuration: getDuration,
-            daysOffByGrade: {},
+            daysOffByGrade: daysOffByGrade
         });
+    } else {
+        var timingExports = {
+            stripTime: stripTime,
+            isWeekend: isWeekend,
+            isWeekday: isWeekDay,
+            getDatesBetween: getDatesBetween,
+            sectionCodeToGrade: sectionCodeToGrade,
+            unpackGradeRanges: unpackGradeRanges,
+            getDurationInDays: getDurationInDays,
+            getDuration: getDuration,
+            daysOffByGrade: daysOffByGrade
+        };
+
+        if (typeof module !== 'undefined') {
+            module.exports = timingExports;
+        } else {
+            window.SparkTiming = timingExports;
+        }
     }
 })();

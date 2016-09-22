@@ -108,7 +108,7 @@ function *getHandler() {
         instanceKey = ctx.schema,
         calendars = daysOffByInstanceGradeRange[instanceKey] || (yield getInstanceCalendars(instanceKey)),
         daysOffByGrade = `unpackGradeRanges(${JSON.stringify(calendars)})`,
-        clientCode = code.replace('daysOffByGrade: {}', `daysOffByGrade: ${daysOffByGrade}`),
+        clientCode = code.replace('/* INJECT daysOffByGrade */', `daysOffByGrade = ${daysOffByGrade};`),
         maxAgeInMs = expirationByInstanceKey[instanceKey] - new Date().getTime();
 
     ctx.type = 'application/javascript';
