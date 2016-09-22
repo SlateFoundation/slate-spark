@@ -182,7 +182,7 @@ function *patchHandler() {
             }
         } else if (key.includes('_mastery_check_score')) {
             let val = parseInt(activity[key], 10);
-            let isInvalid = isNaN(val) || val < 1 || val > 100;
+            let isInvalid = (isNaN(val) && val !== null) || val < 1 || val > 100;
 
             ctx.assert(ctx.isTeacher, 'Only teachers can set mastery check scores.', 403);
             ctx.assert(!isInvalid, `${key} must be between 1 and 100 or null, not: ${val}`, 400);
