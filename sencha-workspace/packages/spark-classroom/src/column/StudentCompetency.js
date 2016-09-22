@@ -103,5 +103,16 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
             });
 
         }
+    },
+
+    onColumnTap: function(ev) {
+        var me = this;
+
+        if (ev.getTarget().className.indexOf('spark-config-btn') > -1) {
+            me.fireEvent('sparkconfigclick', me.getDataIndex());
+            return;
+        }
+
+        me.callParent(arguments);
     }
 });
