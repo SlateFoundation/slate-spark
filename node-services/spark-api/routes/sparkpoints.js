@@ -210,6 +210,7 @@ function *getHandler() {
               ssas.recommended_time
          FROM section_student_active_sparkpoint ssas
     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
+          AND ss.student_id = ssas.student_id
          JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
         WHERE ssas.section_id = $1
           ${studentWhere}
