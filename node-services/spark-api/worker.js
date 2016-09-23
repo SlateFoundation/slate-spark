@@ -57,8 +57,7 @@ app
     .use(conditional())
     .use(middleware.response_time)
     .use(error({
-        template: __dirname + '/config/error.html',
-        engine: 'nunjucks'
+        template: __dirname + '/config/error.html'
     }))
     .use(middleware.process)
     .use(middleware.session)
