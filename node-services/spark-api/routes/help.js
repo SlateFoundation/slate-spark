@@ -135,7 +135,7 @@ function *postHandler() {
     if (!returnArray) {
         ctx.body = aclDecorator(yield ctx.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
     } else {
-        ctx.body = yield ctx.pgp.many(util.queriesToReturningCte(query.sql), query.vals.vals).map(aclDecorator);
+        ctx.body = yield ctx.pgp.any(util.queriesToReturningCte(query.sql), query.vals.vals).map(aclDecorator);
     }
 }
 
