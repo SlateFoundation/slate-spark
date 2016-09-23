@@ -1,7 +1,9 @@
 'use strict';
 
 function *getHandler() {
-    ctx.body = 'Not implemented';
+    var ctx = this;
+    ctx.type = 'html';
+    ctx.body = '<form action="sync_fusebox_users" method="POST"><button type="submit">Sync Fusebox Users</button></form>';
 }
 
 module.exports = {
