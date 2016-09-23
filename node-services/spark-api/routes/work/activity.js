@@ -10,6 +10,8 @@ function *getHandler() {
     ctx.assert(ctx.isTeacher, 'Only teachers can access the activity endpoint.', 403);
     ctx.assert(status === 'all' || status === 'active', 'status is implied active, valid values are all/active', 400);
 
+    ctx.set('Cache-control', 'private, must-revalidate;');
+
     if (status === 'active') {
         ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
