@@ -53,8 +53,8 @@ app.context.config = config;
 
 app
     .use(requestToCurl())
-    .use(conditional())
     .use(middleware.logging)
+    .use(conditional())
     .use(middleware.response_time)
     .use(error({ template: __dirname + '/config/error.html' }))
     .use(middleware.process)
