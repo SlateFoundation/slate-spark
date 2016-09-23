@@ -34,7 +34,7 @@ function *syncUsers(instances, pgp) {
         SELECT * FROM missing_users;
     `;
 
-    return pgp.any(query);
+    yield pgp.any(query);
 }
 
 function *postHandler() {
