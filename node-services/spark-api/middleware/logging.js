@@ -161,7 +161,7 @@ module.exports = function *logger(next) {
         schema: ctx.schema
     };
 
-    textLogString = `[${start.toUTCString()}] - ${ctx.method} ${ctx.url} - ${ms}ms - ${ctx.username} - ${ctx.schema}`;
+    textLogString = `[${start.toUTCString()}] - ${ctx.method} ${ctx.url} - ${ctx.status} - ${ms}ms - ${ctx.username} - ${ctx.schema}`;
 
     if (ctx.requestId) {
         ctx.set('X-Request-Id', ctx.requestId);
