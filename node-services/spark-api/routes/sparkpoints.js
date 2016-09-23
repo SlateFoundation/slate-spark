@@ -214,8 +214,6 @@ function *getHandler() {
          JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
         WHERE ssas.section_id = $1
           ${studentWhere}
-          AND ss.assess_finish_time IS NULL
-          AND ss.assess_override_time IS NULL
      ORDER BY ssas.last_accessed DESC
     `, [
         sectionId,
