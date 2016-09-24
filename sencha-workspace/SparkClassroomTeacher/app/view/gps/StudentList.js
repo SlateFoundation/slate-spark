@@ -44,7 +44,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         ]
     },
 
-    prepareData: function(data, index, record) {
+    prepareData: function(data) {
         data.showDismissButton = this.getShowDismissButton();
         return data;
     },
