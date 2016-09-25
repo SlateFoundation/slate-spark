@@ -341,7 +341,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             studentCompetencyColumnXType = 'spark-student-competency-column',
             currentSection = me.getAppCt().getSelectedSection(),
             studentRecs = studentStore.getData().items,
-            goalDropdowns,
             count = 0, studentUsername, student, columns = [];
 
         grid.setCurrentSection(currentSection);
