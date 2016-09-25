@@ -22,10 +22,15 @@ Ext.define('SparkClassroom.column.StudentComment', {
                 listeners: {
                     buffer: 500,
                     initialize: function() {
-                        var widgetcell = this.getParent(),
+                        var me = this,
+                            widgetcell = me.getParent(),
                             enableEditing = widgetcell.getColumn().getEnableEditing();
 
-                        this.setReadOnly(!enableEditing);
+                        me.setReadOnly(!enableEditing);
+
+                        if (!enableEditing) {
+                            me.setPlaceHolder('');
+                        }
                     },
                     change: function(field, cmnt) {
                         var widgetcell = this.getParent(),
