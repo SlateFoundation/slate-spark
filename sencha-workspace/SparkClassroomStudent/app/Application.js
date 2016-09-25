@@ -37,10 +37,11 @@ Ext.define('SparkClassroomStudent.Application', {
         viewport: {
             items: {
                 itemId: 'appCt',
-
                 xtype: 'container',
                 layout: 'auto',
-                scrollable: 'vertical'
+                fullscreen: true,
+                scrollable: 'vertical',
+                padding: '44 0 0 0'
             }
         }
     },

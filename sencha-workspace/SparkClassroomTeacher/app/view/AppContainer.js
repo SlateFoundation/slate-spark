@@ -17,9 +17,9 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
          */
         selectedSection: null,
         selectedStudentSparkpoint: null,
-
-        layout: 'auto',
-        scrollable: 'vertical'
+        fullscreen: true,
+        scrollable: 'vertical',
+        padding: '44 0 0 0'
     },
 
     updateSelectedSection: function(selectedSection, oldSelectedSection) {
