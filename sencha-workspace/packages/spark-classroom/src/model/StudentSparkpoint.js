@@ -2,6 +2,7 @@
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
+        'SparkClassroom.DurationDisplay',
         'SparkClassroom.proxy.StudentSparkpoints',
         'SparkClassroom.data.field.SparkDate'
     ],
@@ -103,6 +104,96 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                         return r.get('apply_subphase_duration');
                     case 'assess':
                         return r.get('assess_subphase_duration');
+                    default:
+                        return null;
+                }
+            }
+        }, {
+            name: 'subphase_start_time',
+            persist: false,
+            depends: [
+                'active_phase',
+                'learn_start_time',
+                'learn_completed_time',
+                'conference_start_time',
+                'conference_join_time',
+                'conference_completed_time',
+                'apply_start_time',
+                'apply_ready_time',
+                'assess_start_time',
+                'assess_ready_time',
+                'assess_completed_time'
+            ],
+            convert: function(v, r) {
+                var learnFinishTime = r.get('learn_completed_time'),
+                    conferenceStartTime = r.get('conference_start_time'),
+                    conferenceJoinTime = r.get('conference_join_time'),
+                    conferenceFinishTime = r.get('conference_completed_time'),
+                    applyStartTime = r.get('apply_start_time'),
+                    applyReadyTime = r.get('apply_ready_time'),
+                    applyFinishTime = r.get('apply_completed_time'),
+                    assessStartTime = r.get('assess_start_time'),
+                    assessReadyTime = r.get('assess_ready_time'),
+                    assessFinishTime = r.get('assess_completed_time');
+
+                switch (r.get('active_phase')) {
+
+                    case 'learn':
+
+                        return r.get('learn_start_time');
+
+                    case 'conference':
+
+                        if (!learnFinishTime) {
+                            return null;
+                        }
+
+                        if (!conferenceStartTime) {
+                            return learnFinishTime;
+                        }
+
+                        if (!conferenceJoinTime) {
+                            return conferenceStartTime;
+                        }
+
+                        return conferenceJoinTime;
+
+                    case 'apply':
+
+                        if (!conferenceFinishTime) {
+                            return null;
+                        }
+
+                        if (!applyStartTime) {
+                            return conferenceFinishTime;
+                        }
+
+                        if (!applyReadyTime) {
+                            return Math.max(conferenceFinishTime, applyStartTime);
+                        }
+
+                        return applyReadyTime;
+
+                    case 'assess':
+
+                        if (!applyFinishTime) {
+                            return null;
+                        }
+
+                        if (!assessStartTime) {
+                            return applyFinishTime;
+                        }
+
+                        if (!assessReadyTime) {
+                            return assessStartTime;
+                        }
+
+                        if (!assessFinishTime) {
+                            return assessReadyTime;
+                        }
+
+                        return assessFinishTime;
+
                     default:
                         return null;
                 }
