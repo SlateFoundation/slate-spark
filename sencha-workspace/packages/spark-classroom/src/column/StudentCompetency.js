@@ -113,6 +113,11 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
             return;
         }
 
+        if (ev.getTarget().className.indexOf('spark-goal-dropdown') > -1) {
+            // TODO: Update goal dropdown to perform proper action instead of returning false (once that is determined).
+            return;
+        }
+
         me.callParent(arguments);
     }
 });
