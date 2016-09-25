@@ -4,10 +4,11 @@ Ext.define('SparkClassroom.DurationDisplay', {
 
     requires: [
         'Slate.API',
+        'Jarvus.util.format.FuzzyTime'
     ],
 
     config: {
-        timer: null,
+        timing: null,
         isLoading: false,
         error: null
     },
@@ -38,7 +39,7 @@ Ext.define('SparkClassroom.DurationDisplay', {
         Ext.Loader.loadScript({
             url: Slate.API.buildUrl('/spark/api/client/timing'),
             onLoad: function() {
-                me.setTimer(Spark.Timer);
+                me.setTiming(Spark.Timing);
                 me.setIsLoading(false);
             },
             onError: function(err) {
@@ -52,6 +53,21 @@ Ext.define('SparkClassroom.DurationDisplay', {
     },
 
     isLoaded: function() {
-        return this.getTimer() !== null;
+        return this.getTiming() !== null;
+    },
+
+    calculateDuration: function(sectionCode, activePhaseStartTime) {
+        var me = this,
+            timing = me.getTiming(),
+            grade = timing.sectionCodeToGrade(sectionCode),
+            duration = '--';
+
+        if (activePhaseStartTime instanceof Date) {
+            duration = Ext.util.Format.fuzzyDuration(
+                timing.getDuration(grade, activePhaseStartTime, new Date()),
+                true
+            );
+        }
+        return duration;
     }
 });
