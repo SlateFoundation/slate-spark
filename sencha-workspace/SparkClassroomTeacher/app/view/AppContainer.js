@@ -17,8 +17,10 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
          */
         selectedSection: null,
         selectedStudentSparkpoint: null,
-        fullscreen: true,
         scrollable: 'vertical',
+
+        // Needed for showBy functionality to not go off screen
+        fullscreen: true,
         padding: '44 0 0 0'
     },
 

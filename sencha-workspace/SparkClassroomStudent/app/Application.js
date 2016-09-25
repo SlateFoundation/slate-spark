@@ -39,8 +39,10 @@ Ext.define('SparkClassroomStudent.Application', {
                 itemId: 'appCt',
                 xtype: 'container',
                 layout: 'auto',
-                fullscreen: true,
                 scrollable: 'vertical',
+
+                // Needed for showBy functionality to not go off screen
+                fullscreen: true,
                 padding: '44 0 0 0'
             }
         }
