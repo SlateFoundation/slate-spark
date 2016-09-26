@@ -379,6 +379,36 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         me.getSparkpointsConfigWindow().hide();
+        me.suggestNextSparkpoint();
+    },
+
+    suggestNextSparkpoint: function() {
+        var me = this,
+            studentId = me.getActiveStudentId(),
+            sparkpointField = me.getSparkpointField(),
+            recommendedSparkpoint = sparkpointField.getSelectedSparkpoint();
+
+        if (!recommendedSparkpoint) {
+            return;
+        }
+
+        Slate.API.request({
+            method: 'PATCH',
+            url: '/spark/api/work/activity',
+            jsonData: {
+                'sparkpoint': recommendedSparkpoint.getId(),
+                'student_id': studentId
+            },
+            callback: function(options, success) {
+                if (!success) {
+                    Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
+                    return;
+                }
+
+                sparkpointField.setSelectedSparkpoint(null);
+                sparkpointField.setQuery(null);
+            }
+        });
     },
 
     onUpdateSparkRows: function(component) {
