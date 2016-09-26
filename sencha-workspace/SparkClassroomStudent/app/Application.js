@@ -37,13 +37,10 @@ Ext.define('SparkClassroomStudent.Application', {
         viewport: {
             items: {
                 itemId: 'appCt',
+
                 xtype: 'container',
                 layout: 'auto',
-                scrollable: 'vertical',
-
-                // Needed for showBy functionality to not go off screen
-                fullscreen: true,
-                padding: '44 0 0 0'
+                scrollable: 'vertical'
             }
         }
     },
