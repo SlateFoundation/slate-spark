@@ -168,7 +168,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     onSparkConfigClick: function(dataIndex) {
         var me = this,
-            rec = me.getStudentsStore().findRecord('Username', dataIndex);
+            rec = me.getStudentsStore().getById(dataIndex);
 
         me.updateActiveStudentId(rec.getId());
     },
