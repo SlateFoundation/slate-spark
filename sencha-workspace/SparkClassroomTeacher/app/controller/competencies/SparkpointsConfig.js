@@ -37,6 +37,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             autoCreate: true
         },
 
+        sparkpointField: 'spark-sparkpointsconfig-window spark-sparkpointfield',
+
         configTableActive: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table active]',
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table queue]',
@@ -90,6 +92,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             configStore = me.getConfigSparkpointsStore();
 
         me.setActiveStudentId(studentId);
+
         configStore.getProxy().setExtraParam('student_id', studentId);
 
         configStore.load(function() {
@@ -100,6 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
     loadDataIntoView: function() {
         var me = this,
+            sparkpointField,
             studentStore = me.getStudentsStore(),
             studentId = me.getActiveStudentId(),
             configSparkpointsStore = me.getConfigSparkpointsStore(),
@@ -141,7 +145,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             confChecked = confDisabled || !Ext.isEmpty(sparkpoint.get('conference_override_time'));
             learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkpoint.get('learn_finish_time'));
             learnChecked = learnDisabled || !Ext.isEmpty(sparkpoint.get('learn_override_time'));
-            allFinished = !Ext.isEmpty(sparkpoint.get('learn_finish_time')) && !Ext.isEmpty(sparkpoint.get('conference_finish_time')) && !Ext.isEmpty(sparkpoint.get('apply_finish_time')) && !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
 
             activeTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
@@ -224,8 +227,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             me.getConfigTableQueue().show();
         }
 
+        sparkpointField = me.getSparkpointField(); // Declared now since it will have rendered
+
         me.bindPaceFields();
         me.bindReordering();
+
+        sparkpointField.updateSelectedStudent(studentId);
+        sparkpointField.getSuggestionsList().setWidth(500);
     },
 
     bindPaceFields: function() {

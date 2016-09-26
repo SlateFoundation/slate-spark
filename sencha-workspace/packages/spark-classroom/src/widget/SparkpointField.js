@@ -27,14 +27,37 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         placeHolder: 'Select Sparkpoint',
 
         listeners: {
-            focus: 'onFieldFocus',
-            blur: 'onFieldBlur',
+            focus: {
+                fn: 'onFieldFocus',
+                element: 'element'
+            },
+
+            initialize: 'onInitialize',
+
             change: { fn: 'onFieldChange', buffer: 250 },
             action: 'onFieldAction',
             keyup: 'onFieldKeyUp'
         }
     },
 
+    onInitialize: function() {
+        var me = this,
+            body = Ext.getBody(),
+            suggestionsList;
+
+        body.on('click', function(e) {
+            var targetEl = Ext.get(e.target);
+
+            suggestionsList = me.getSuggestionsList();
+
+            // Hide the suggestions list if we clicked anywhere but this field or the list
+            if (!Ext.isEmpty(targetEl.up('#' + me.getId())) || !Ext.isEmpty(targetEl.up('#' + suggestionsList.getId()))) {
+                return;
+            }
+
+            Ext.defer(suggestionsList.hide, 100, suggestionsList);
+        });
+    },
 
     applySuggestionsList: function(config, oldList) {
         if (config === true) {
@@ -74,8 +97,20 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         me.fireEvent('sparkpointselect', me, sparkpoint, oldSparkpoint);
     },
 
+    updateSelectedStudent: function(studentId) {
+        var sparkpointSuggestionsStore = this.getSuggestionsList().getStore();
+
+        sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', studentId);
+
+        if (sparkpointSuggestionsStore.isLoaded()) {
+            sparkpointSuggestionsStore.load();
+        }
+    },
+
     onFieldFocus: function(me) {
-        var suggestionsList = me.getSuggestionsList();
+        var suggestionsList = me.getSuggestionsList(),
+            parent,
+            parentZIndex;
 
         suggestionsList.setVisibility(false);
 
@@ -88,13 +123,12 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
         me.setQuery(me.getValue()||'');
 
+        // TODO: Figure out less hacky way to place the suggestion list on top of modals
+        if ((parent = me.getParent()) && (parentZIndex = parent.getZIndex()) && !Ext.isEmpty(parentZIndex)) {
+            suggestionsList.setZIndex(parentZIndex + 1); // Ensure it overlaps this component's parent.
+        }
+
         suggestionsList.setVisibility(true);
-    },
-
-    onFieldBlur: function(me) {
-        var suggestionsList = this.getSuggestionsList();
-
-        Ext.defer(suggestionsList.hide, 250, suggestionsList);
     },
 
     onFieldChange: function(me, value) {
@@ -110,10 +144,10 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
     onFieldKeyUp: function(me, ev) {
         var key = ev.getKey(),
-            isDown = key == ev.DOWN,
+            isDown = key === ev.DOWN,
             list, store, index, max;
 
-        if (!isDown && key != ev.UP) {
+        if (!isDown && key !== ev.UP) {
             return;
         }
 

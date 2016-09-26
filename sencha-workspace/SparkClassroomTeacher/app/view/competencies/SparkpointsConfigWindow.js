@@ -168,13 +168,10 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                 ]
             },
             {
-                xtype: 'container',
+                xtype: 'spark-sparkpointfield',
                 padding: '8 24',
-                items: [{
-                    xtype: 'spark-sparkpointfield',
-                    placeHolder: 'Search for a Sparkpoint',
-                    width: '100%'
-                }]
+                placeHolder: 'Search for a Sparkpoint',
+                width: '100%'
             },
             {
                 xtype: 'component',
