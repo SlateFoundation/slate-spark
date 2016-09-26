@@ -33,6 +33,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         showByTarget: null,
     },
 
+    requires: [
+        'Slate.proxy.API'
+    ],
 
     views: [
         'competencies.Container'
@@ -40,7 +43,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     stores: [
         'CompetencySparkpoints@SparkClassroomTeacher.store',
-        'Students@SparkClassroom.store'
+        'Students@SparkClassroom.store',
+        'SectionGoals@SparkClassroomTeacher.store.competencies'
     ],
 
     refs: {
@@ -83,6 +87,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         'spark-student-competency-column': {
             sparkconfigclick: {
                 fn: 'onSparkConfigClick'
+            },
+            sparkgoalclick: {
+                fn: 'onSparkGoalClick'
             }
         }
     },
@@ -94,6 +101,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 load: 'refreshGrid'
             },
             '#Students': {
+                load: 'refreshColumns'
+            },
+            '#SectionGoals': {
                 load: 'refreshColumns'
             }
         },
@@ -147,6 +157,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             tabsCt = me.getTabsCt();
 
+        me.loadSectionGoals();
+
         me.doHighlightTabbars();
 
         tabsCt.removeAll();
@@ -172,6 +184,63 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.updateActiveStudentId(rec.getId());
     },
+
+    onSparkGoalClick: function(dataIndex, field) {
+        this.currentDataIndex = dataIndex;
+        this.currentGoalField = field;
+        this.currentGoalValue = field.value;
+
+        field.addEventListener('input', this.onSparkGoalInput.bind(this), false);
+    },
+
+    onSparkGoalInput: function() {
+        var me = this,
+            sectionGoal,
+            filterFloat = function (value) {
+                if (/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value)) {
+                    return Number(value);
+                }
+                return NaN;
+            };
+
+        if (!me.currentDataIndex || !me.currentGoalField) {
+            return;
+        }
+
+        // sectionGoal can either be null (empty field) or a positive integer
+        sectionGoal = me.currentGoalField.value === '' ? null : filterFloat(me.currentGoalField.value);
+        if (sectionGoal !== null && (!Ext.isNumber(sectionGoal) || sectionGoal < 0)) {
+            me.currentGoalField.value = me.currentGoalValue;
+            return;
+        }
+
+        me.saveSectionGoal(sectionGoal);
+    },
+
+    saveSectionGoal: Ext.Function.createBuffered(function(sectionGoal) {
+        var me = this,
+            sectionCode = me.getAppCt().getSelectedSection(),
+            onFailure;
+
+        onFailure = function(response) {
+            // reset the field to old value and alert the user
+            me.currentGoalField.value = me.currentGoalValue;
+
+            Ext.Msg.alert('Error', response.statusText);
+        };
+
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/sparkpoints/section/goals',
+            jsonData: [{
+                student_id: me.currentDataIndex,
+                section_code: sectionCode,
+                goal: sectionGoal,
+                term_id: 1 // TODO change this once the UI is aware of term_id
+            }],
+            failure: onFailure.bind(me)
+        });
+    }, 100),
 
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var me = this,
@@ -250,10 +319,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     refreshColumns: function() {
         var me = this,
             studentStore = this.getStudentsStore(),
+            sectionGoalsStore = me.getSectionGoalsStore(),
             bufferedRefreshColumns = me.bufferedRefreshColumns,
             grid = me.getCompetenciesGrid();
 
-        if (!grid || !studentStore || !studentStore.isLoaded()) {
+        if (!grid || !studentStore || !studentStore.isLoaded() || !sectionGoalsStore || !sectionGoalsStore.isLoaded()) {
             return;
         }
 
@@ -301,6 +371,18 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 message: msg || 'Loading Competency Data'
             });
         }
+    },
+
+    loadSectionGoals: function() {
+        var me = this,
+            currentSection = me.getAppCt().getSelectedSection(),
+            sectionGoalsStore = me.getSectionGoalsStore();
+
+        sectionGoalsStore.getProxy().setExtraParams({
+            section_id: currentSection
+        });
+
+        sectionGoalsStore.load();
     },
 
     /**
@@ -355,10 +437,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             grid = me.getCompetenciesGrid(),
             studentStore = Ext.getStore('Students'),
+            sectionGoalsStore = me.getSectionGoalsStore(),
             studentCompetencyColumnXType = 'spark-student-competency-column',
             currentSection = me.getAppCt().getSelectedSection(),
             studentRecs = studentStore.getRange(),
-            count = 0, studentId, student, columns = [];
+            count = 0, studentId, student, columns = [],
+            goalRec, goalValue;
 
         grid.setCurrentSection(currentSection);
 
@@ -371,6 +455,14 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         for (; count < studentRecs.length; count++) {
             student = studentRecs[count];
             studentId = student.getId();
+            goalRec = sectionGoalsStore.findRecord('student_id', studentId);
+            goalValue = '';
+
+            // if it's null, leave goalValue as empty string
+            if (goalRec && goalRec.get('goal') !== null) {
+                goalValue = goalRec.get('goal');
+            }
+
             columns.push({
                 xtype: studentCompetencyColumnXType,
                 dataIndex: studentId,
@@ -379,7 +471,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     '<div class="student-name">', student.getFullName(), '</div>',
                     '<div class="field auto-width">',
                     '<label class="field-label">Q4 Goal</label>',
-                    '<select class="field-control tiny"><option>20</option></select>',
+                    '<input class="spark-goal field-control tiny" value="' + goalValue + '"/>',
                     '<button type="button" class="plain"><i class="spark-config-btn fa fa-lg fa-wrench"></i></button>',
                     '</div>',
                     '</div>'

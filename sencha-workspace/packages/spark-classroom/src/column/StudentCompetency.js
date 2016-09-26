@@ -106,10 +106,16 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
     },
 
     onColumnTap: function(ev) {
-        var me = this;
+        var me = this,
+            target = ev.getTarget();
 
-        if (ev.getTarget().className.indexOf('spark-config-btn') > -1) {
+        if (target.className.indexOf('spark-config-btn') > -1) {
             me.fireEvent('sparkconfigclick', me.getDataIndex());
+            return;
+        }
+
+        if (target.className.indexOf('spark-goal') > -1) {
+            me.fireEvent('sparkgoalclick', me.getDataIndex(), target);
             return;
         }
 
