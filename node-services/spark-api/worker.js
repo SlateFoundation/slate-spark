@@ -124,10 +124,6 @@ router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
 
 router.get('/test', routes.test.index.get);
 
-router.get('/sparkpoints/autocomplete/:input', routes.sparkpoints.autocomplete.get);
-router.get('/sparkpoints/autocomplete', routes.sparkpoints.autocomplete.get);
-router.get('/sparkpoints/suggested', routes.sparkpoints.suggested.get);
-
 router.get('/test/error/:code', require(__dirname + '/routes/test/error').get);
 
 router.get('/assignments/:entity', routes.assignments.entity.get);
