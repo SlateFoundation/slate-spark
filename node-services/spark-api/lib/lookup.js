@@ -73,6 +73,30 @@ var nats = require('nats'),
             }
         },
 
+        term: {
+            entity: 'term',
+            idColumn: 'ID',
+            codeColumn: 'Handle',
+            additionalColumns: ['Title', 'Status', 'StartDate', 'EndDate'],
+            customFunction: function (records) {
+                var self = this;
+
+                self.idToRecord || (self.idToRecord = {});
+                self.codeToRecord || (self.codeToRecord = {});
+
+                records.forEach(function(record) {
+                    record.StartDate = new Date(record.StartDate);
+                    record.EndDate = new Date(record.EndDate);
+
+                    self.idToRecord[record.ID] = record;
+                    self.codeToRecord[record.Handle] = record;
+                });
+            },
+            onCacheBust: function* () {
+                yield this.pgp.none(`REFRESH MATERIALIZED VIEW CONCURRENTLY "${this.schema}".terms`);
+            }
+        },
+
         person: {
             entity: 'person',
             tableName: 'people',
