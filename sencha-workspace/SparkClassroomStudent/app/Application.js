@@ -40,6 +40,7 @@ Ext.define('SparkClassroomStudent.Application', {
 
                 xtype: 'container',
                 layout: 'auto',
+                padding: '44 0 0 0',
                 scrollable: 'vertical'
             }
         }
