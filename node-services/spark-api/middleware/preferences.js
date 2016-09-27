@@ -70,12 +70,7 @@ module.exports = function preferenceMiddlewareInit(options) {
 
         var start = process.hrtime();
         ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
-        ctx.set('X-Preferences-Took-How-Long', process.hrtime(start) / NANOSECONDS_IN_MS);
-
-        } catch (e) {
-            console.warn('Error getting effective preferences for scope: ', scope, e);
-            ctx.state.preferences = {};
-        }
+        ctx.set('X-Preferences-Took-How-Long', process.hrtime(start)[1] / NANOSECONDS_IN_MS);
 
         ctx.setPreferences = function* setPreferences(preferences = {}, scope = ctx.state.scope, sticky = false) {
             yield ctx.pgp.one(/*language=SQL*/ `
