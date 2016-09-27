@@ -21,7 +21,7 @@ function *getHandler() {
     ctx.body = yield ctx.pgp.any(/*language=SQL*/ `
       SELECT tsssg.*,
              terms."Title" AS term_title,
-             terms."Handle" AS term_handle,
+             terms."Handle" AS term_code,
              course_sections."Code" AS section_code
         FROM term_section_student_sparkpoint_goals tsssg
    LEFT JOIN terms ON terms."ID" = tsssg.term_id
@@ -38,6 +38,8 @@ function *postHandler() {
         recordToInsert = util.recordToInsert.bind(ctx),
         records,
         sql;
+
+    ctx.body = goals;
 
     ctx.assert(Array.isArray(goals), 'The request body must be an array of goals objects.', 400);
 
