@@ -163,7 +163,8 @@ function *patchHandler() {
         activity = ctx.request.body,
         vals = new util.Values(),
         record = {},
-        errors;
+        errors,
+        now = new Date();
 
     ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
     ctx.require(['section_id', 'sparkpoint_id']);
@@ -177,9 +178,15 @@ function *patchHandler() {
             // Allow *_override_time to be blanked by passing a null value
             if (val === null && key.includes('override_time')) {
                 record[key] = null;
+            } else if (activity[key] === true || activity[key] === 'now') {
+                record[key] = now;
             } else {
                 val = parseInt(activity[key], 10);
-                ctx.assert(!isNaN(val), `${key} should be a UTC timestamp you provided: ${activity[key]}`, 400);
+
+                ctx.assert(!isNaN(val),
+                    `${key} should be a UTC timestamp, "now", or true you provided: ${activity[key]}`, 400
+                );
+
                 record[key] = (val === null) ? null : new Date(val * 1000).toUTCString();
             }
         } else if (key.includes('_mastery_check_score')) {
