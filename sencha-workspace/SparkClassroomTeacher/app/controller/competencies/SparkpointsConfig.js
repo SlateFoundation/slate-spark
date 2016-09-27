@@ -37,6 +37,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             autoCreate: true
         },
 
+        appCt: {
+            selectedsectionchange: 'onSelectedSectionChange'
+        },
+
         configTableActive: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table active]',
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table queue]',
@@ -82,7 +86,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             hide: {
                 fn: 'onHideWindow'
             }
+        },
+
+        appCt: {
+            initialize: 'onInitializeAppCt'
         }
+    },
+
+    onInitializeAppCt: function() {
+        this.getAppCt().add(this.getStudentCompetencyPopover());
     },
 
     initializeStudent: function(studentId) {
