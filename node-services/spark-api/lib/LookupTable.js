@@ -2,6 +2,8 @@
 
 var co = require('co');
 
+const NANOSECONDS_IN_MS = 1e+6;
+
 function LookupTable(options) {
     var self = this;
 
@@ -28,13 +30,16 @@ function LookupTable(options) {
     }
 
     if (this.autoBust) {
+        let subject = `cache.*.${this.schema}.${this.tableName}.>`;
+
         if (!this.natsClient) {
             throw new Error('autoBust requires you to pass natsClient in your options to the constructor');
         }
 
-        console.log(`Subscribing to: cache.*.${this.schema}.${this.tableName}.>`);
+        console.log(`Subscribing to: ${subject}`);
 
-        this.natsClient.subscribe(`cache.*.${this.schema}.${this.tableName}.>`, function (msg, reply, subject) {
+        this.natsClient.subscribe(subject, function (msg, reply, subject) {
+
 
             var [, action, pk, table, schema] = subject.split('.'),
                 event = {
@@ -53,6 +58,8 @@ function LookupTable(options) {
             self.timeout = setTimeout(function () {
                 console.log(`Busting ${self.schema}.${self.tableName} lookup table...`);
 
+                let startTime = process.hrtime();
+
                 co(function*() {
                     if (self.onCacheBust) {
                         if (self.onCacheBust.constructor.name === 'GeneratorFunction') {
@@ -65,6 +72,9 @@ function LookupTable(options) {
                     yield self.populate();
                     self.timeout = null;
                 });
+
+                let duration = process.hrtime(startTime)[1] / NANOSECONDS_IN_MS;
+                console.log(`Busted ${self.schema}.${self.tableName} in ${duration} ms`);
             });
         });
     }
@@ -96,6 +106,8 @@ LookupTable.prototype.populate = function* populate (pgp) {
 
     console.log(`Populating ${schema}.${tableName} lookup table...`);
 
+    let startTime = process.hrtime();
+
     // Blow out / initialize lookup tables
     cache.idToCode = {};
     cache.codeToId = {};
@@ -118,7 +130,10 @@ LookupTable.prototype.populate = function* populate (pgp) {
         yield customGenerator.apply(this, [results, columns]);
     }
 
-    console.log(`${schema}.${tableName} populated with ${results.length.toLocaleString()} ${entity}(s).`);
+    let count = results.length.toLocaleString();
+    let duration = process.hrtime(startTime)[1] / NANOSECONDS_IN_MS;
+
+    console.log(`${schema}.${tableName} populated with ${count} ${entity}(s) in ${duration} ms`);
 
     this.populated = true;
 };
