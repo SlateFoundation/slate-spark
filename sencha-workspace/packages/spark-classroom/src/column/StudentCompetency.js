@@ -19,7 +19,9 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                         return 'is-empty';
                     }
 
-                    if (expected == actual) {
+                    // NOTE: The cell will receive "on pace" styling if the sparkpoint has not been started AND the phase overridden,
+                    // OR if it is legitimately on pace.
+                    if (actual === 'nostart-override' || expected === actual) {
                         return 'is-on-pace';
                     }
 
