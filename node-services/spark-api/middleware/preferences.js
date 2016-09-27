@@ -8,6 +8,8 @@ const PREFERENCE_SCOPES = {
     section_id: `(section_id = \${section_id} OR section_id = 0 OR section_id < 0)`
 };
 
+const NANOSECONDS_IN_MS = 1e+6;
+
 function scopeToWhere(scope = {}, vals) {
     var where = ['1=1'];
 
@@ -65,10 +67,11 @@ module.exports = function preferenceMiddlewareInit(options) {
                 section_id: ctx.query.section_id || 0,
                 sparkpoint_id: ctx.query.sparkpoint_id || '0'
             };
-        try {
-            var d = new Date();
-            ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
-            ctx.set('X-Preferences-Took-How-Long', new Date().getTime() - d.getTime());
+
+        var start = process.hrtime();
+        ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+        ctx.set('X-Preferences-Took-How-Long', process.hrtime(start) / NANOSECONDS_IN_MS);
+
         } catch (e) {
             console.warn('Error getting effective preferences for scope: ', scope, e);
             ctx.state.preferences = {};
