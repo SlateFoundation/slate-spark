@@ -41,6 +41,7 @@ var nats = require('nats'),
             entity: 'sparkpoint',
             additionColumns: ['abbreviation'],
             customGenerator: function* () {
+                // TODO: This doesn't use sparkpoint alignments, it uses metadata
                 var results = yield this.pgp.any(`SELECT id, code, metadata->>'asn_id' AS asn_id FROM sparkpoints`),
                     self = this;
 
