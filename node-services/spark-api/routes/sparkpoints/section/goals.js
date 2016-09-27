@@ -7,9 +7,8 @@ const util = require('../../../lib/util');
      term_id integer,
      section_id integer,
      student_id integer,
-     sparkpoint_id char(8) REFERENCES public.sparkpoints (id),
      goal integer,
-     PRIMARY KEY(term_id, section_id, student_id, sparkpoint_id)
+     PRIMARY KEY(term_id, section_id, student_id)
  );
  */
 
@@ -23,12 +22,10 @@ function *getHandler() {
       SELECT tsssg.*,
              terms."Title" AS term_title,
              terms."Handle" AS term_handle,
-             course_sections."Code" AS section_code,
-             sparkpoints."code" AS sparkpoint_code
+             course_sections."Code" AS section_code
         FROM term_section_student_sparkpoint_goals tsssg
    LEFT JOIN terms ON terms."ID" = tsssg.term_id
    LEFT JOIN course_sections ON course_sections."ID" = tsssg.section_id
-   LEFT JOIN sparkpoints ON sparkpoints.id = tsssg.sparkpoint_id
        WHERE tsssg.section_id = $1
     `, [sectionId]);
 }
