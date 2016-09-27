@@ -362,7 +362,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     '<div class="student-name">', student.getFullName(), '</div>',
                     '<div class="field auto-width">',
                     '<label class="field-label">Q4 Goal</label>',
-                    '<select class="field-control tiny"><option>20</option></select>',
+                    '<select class="field-control tiny spark-goal-dropdown"><option>20</option></select>',
                     '<button type="button" class="plain"><i class="spark-config-btn fa fa-lg fa-wrench"></i></button>',
                     '</div>',
                     '</div>'
