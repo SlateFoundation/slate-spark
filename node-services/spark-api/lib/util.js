@@ -479,6 +479,7 @@ function validateNumericKeys(obj) {
 function* identifyRecord(record, lookup) {
     yield identifyRecordEntity(record, 'sparkpoint', lookup);
     yield identifyRecordEntity(record, 'section', lookup);
+    yield identifyRecordEntity(record, 'term', lookup);
 }
 
 function* identifyRecordEntity(record, entity, lookup) {
@@ -558,7 +559,7 @@ function identifyRecordEntitySync(record, entity, lookup) {
 }
 
 function identifyRecordSync(record, lookup) {
-    var sparkpointId, sectionId;
+    var sparkpointId, sectionId, termId;
 
     if (sparkpointId = identifyRecordEntitySync(record, 'sparkpoint', lookup)) {
         record.sparkpoint_id = sparkpointId;
@@ -566,6 +567,10 @@ function identifyRecordSync(record, lookup) {
 
     if (sectionId = identifyRecordEntitySync(record, 'section', lookup)) {
         record.section_id = sectionId;
+    }
+
+    if (termId = identifyRecordEntitySync(record, 'term', lookup)) {
+        record.term_id = termId;
     }
 
     return record;
@@ -582,6 +587,10 @@ function codifyRecord(record, lookup) {
 
     if (record.sparkpoint_id) {
         record.sparkpoint_code = lookup.sparkpoint.cache.idToCode[record.sparkpoint_id];
+    }
+
+    if (record.term_id) {
+        record.term_code = lookup.term.cache.idToCode[record.term_id];
     }
 
     return record;
