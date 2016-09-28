@@ -4,6 +4,13 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
 
     config: {
         cls: 'spark-addtoqueue-popover',
+
+        modal: {
+            style: 'opacity: 0'
+        },
+
+        hideOnMaskTap: true,
+
         items: [
             {
                 xtype: 'component',
