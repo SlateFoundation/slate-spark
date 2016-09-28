@@ -51,7 +51,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                         '</tpl>',
                                     '</td>',
                                     '<td class="actual-col">',
-                                        '<tpl if="Ext.isEmpty(actual) == false">',
+                                        '<tpl if="Ext.isNumeric(actual)">',
                                             'Day <strong class="{[ this.getPaceCls(values.expected, values.actual) ]}">{actual}</strong>',
                                         '<tpl else>',
                                             '&mdash;',
@@ -63,7 +63,9 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                     '</table>',
                     {
                         getPaceCls: function(expected, actual) {
-                            if (expected == actual) {
+                            // NOTE: The cell will receive "on pace" styling if the sparkpoint has not been started AND the phase overridden,
+                            // OR if it is legitimately on pace.
+                            if (actual === 'nostart-override' || expected === actual) {
                                 return 'is-on-pace';
                             }
 
@@ -95,8 +97,12 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
 
                         getOverallPaceDesc: function(values) {
                             var currentPhase = this.getCurrentPhase(values),
-                                expected = currentPhase.expected,
+                                expected, actual;
+
+                            if (currentPhase) {
+                                expected = currentPhase.expected;
                                 actual = currentPhase.actual;
+                            }
 
                             if (expected == actual) {
                                 return 'On Pace';
@@ -115,8 +121,12 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
 
                         getOverallPaceCls: function(values) {
                             var currentPhase = this.getCurrentPhase(values),
-                                expected = currentPhase.expected,
+                                expected, actual;
+
+                            if (currentPhase) {
+                                expected = currentPhase.expected;
                                 actual = currentPhase.actual;
+                            }
 
                             return this.getPaceCls(expected, actual);
                         }
