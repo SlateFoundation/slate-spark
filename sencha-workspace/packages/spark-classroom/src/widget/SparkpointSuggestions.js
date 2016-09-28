@@ -5,7 +5,6 @@ Ext.define('SparkClassroom.widget.SparkpointSuggestions', {
         'SparkClassroom.store.SparkpointsLookup'
     ],
 
-
     config: {
         cls: 'spark-navbar-sparkpoint-selector-list',
         left: 0,

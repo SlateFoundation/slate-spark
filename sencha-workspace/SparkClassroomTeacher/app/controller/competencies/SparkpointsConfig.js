@@ -37,6 +37,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             autoCreate: true
         },
 
+        appCt: {
+            selectedsectionchange: 'onSelectedSectionChange'
+        },
+        sparkpointField: 'spark-sparkpointsconfig-window spark-sparkpointfield',
+
         configTableActive: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table active]',
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table queue]',
@@ -82,7 +87,15 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             hide: {
                 fn: 'onHideWindow'
             }
+        },
+
+        appCt: {
+            initialize: 'onInitializeAppCt'
         }
+    },
+
+    onInitializeAppCt: function() {
+        this.getAppCt().add(this.getStudentCompetencyPopover());
     },
 
     initializeStudent: function(studentId) {
@@ -90,6 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             configStore = me.getConfigSparkpointsStore();
 
         me.setActiveStudentId(studentId);
+
         configStore.getProxy().setExtraParam('student_id', studentId);
 
         configStore.load(function() {
@@ -100,6 +114,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
     loadDataIntoView: function() {
         var me = this,
+            sparkpointField,
             studentStore = me.getStudentsStore(),
             studentId = me.getActiveStudentId(),
             configSparkpointsStore = me.getConfigSparkpointsStore(),
@@ -141,7 +156,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             confChecked = confDisabled || !Ext.isEmpty(sparkpoint.get('conference_override_time'));
             learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkpoint.get('learn_finish_time'));
             learnChecked = learnDisabled || !Ext.isEmpty(sparkpoint.get('learn_override_time'));
-            allFinished = !Ext.isEmpty(sparkpoint.get('learn_finish_time')) && !Ext.isEmpty(sparkpoint.get('conference_finish_time')) && !Ext.isEmpty(sparkpoint.get('apply_finish_time')) && !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
 
             activeTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
@@ -224,8 +238,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             me.getConfigTableQueue().show();
         }
 
+        sparkpointField = me.getSparkpointField(); // Declared now since it will have rendered
+
         me.bindPaceFields();
         me.bindReordering();
+        me.bindRemoveBtns();
+
+        sparkpointField.updateSelectedStudent(studentId);
+        sparkpointField.getSuggestionsList().setWidth(500);
     },
 
     bindPaceFields: function() {
@@ -257,6 +277,21 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             arrow = Ext.get(sortArrows[count]);
             arrow.on('click', function(e, el) {
                 me.onSortArrowClick(e, el);
+            });
+        }
+    },
+
+    bindRemoveBtns: function() {
+        var me = this,
+            removeBtns = me.getSparkpointsConfigWindow().element.select('.remove-cell button[action="row-remove"]').elements,
+            removeBtn,
+            count;
+
+        for (count = 0; count < removeBtns.length; count++) {
+            removeBtn = Ext.get(removeBtns[count]);
+
+            removeBtn.on('click', function(e, el) {
+                me.onRemoveSparkpoint(e, el);
             });
         }
     },
@@ -343,6 +378,22 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         me.loadDataIntoView();
     },
 
+    onRemoveSparkpoint: function(e, el) {
+        var me = this,
+            configStore = me.getConfigSparkpointsStore(),
+            sparkRow = Ext.get(el).up('tr.sparkpoint-row'),
+            studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
+            sparkpoint = configStore.findRecord('student_sparkpointid', studentSparkpointId);
+
+        if (Ext.isEmpty(sparkpoint)) {
+            return;
+        }
+
+        // TEST REMOVE
+        sparkpoint.set('conference_finish_time', null);
+        sparkpoint.save();
+    },
+
     onHideWindow: function() {
         var configStore = this.getConfigSparkpointsStore();
 
@@ -365,12 +416,42 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
             sparkpoint = configStore.findRecord('student_sparkpointid', studentSparkpointId);
 
-            if (sparkpoint.dirty) {
+            if (sparkpoint && sparkpoint.dirty) {
                 sparkpoint.save();
             }
         }
 
         me.getSparkpointsConfigWindow().hide();
+        me.suggestNextSparkpoint();
+    },
+
+    suggestNextSparkpoint: function() {
+        var me = this,
+            studentId = me.getActiveStudentId(),
+            sparkpointField = me.getSparkpointField(),
+            recommendedSparkpoint = sparkpointField.getSelectedSparkpoint();
+
+        if (!recommendedSparkpoint) {
+            return;
+        }
+
+        Slate.API.request({
+            method: 'PATCH',
+            url: '/spark/api/work/activity',
+            jsonData: {
+                'sparkpoint': recommendedSparkpoint.getId(),
+                'student_id': studentId
+            },
+            callback: function(options, success) {
+                if (!success) {
+                    Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
+                    return;
+                }
+
+                sparkpointField.setSelectedSparkpoint(null);
+                sparkpointField.setQuery(null);
+            }
+        });
     },
 
     onUpdateSparkRows: function(component) {

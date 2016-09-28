@@ -346,6 +346,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             allowNull: true,
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.learn_completed_time)) {
+                    if (!Ext.isEmpty(data.learn_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
@@ -382,6 +387,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.conference_completed_time)) {
+                    if (!Ext.isEmpty(data.conference_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
@@ -417,6 +427,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.apply_completed_time)) {
+                    if (!Ext.isEmpty(data.apply_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
@@ -458,6 +473,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.assess_completed_time)) {
+                    if (!Ext.isEmpty(data.assess_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 

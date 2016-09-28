@@ -277,7 +277,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         // update/add competencies grid store record
         gridRecord = competenciesGrid.getStore().getById(record.get('sparkpoint_id'));
-        recordData[student.get('Username')] = record;
+        recordData[student.getId()] = record;
         recordData[student.get('Username')+'_completed_phase'] = record.get('completed_phase_number');
 
         if (gridRecord) {
