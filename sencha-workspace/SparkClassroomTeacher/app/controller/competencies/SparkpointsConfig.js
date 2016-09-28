@@ -373,7 +373,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
             sparkpoint = configStore.findRecord('student_sparkpointid', studentSparkpointId);
 
-            if (sparkpoint.dirty) {
+            if (sparkpoint && sparkpoint.dirty) {
                 sparkpoint.save();
             }
         }
