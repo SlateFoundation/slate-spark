@@ -1,3 +1,5 @@
+'use strict';
+
 var util = require('../../lib/util');
 
 function *getHandler() {
@@ -164,7 +166,8 @@ function *patchHandler() {
         vals = new util.Values(),
         record = {},
         errors,
-        now = new Date();
+        now = new Date(),
+        activityLog = [];
 
     ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
     ctx.require(['section_id', 'sparkpoint_id']);
@@ -180,6 +183,7 @@ function *patchHandler() {
                 record[key] = null;
             } else if (activity[key] === true || activity[key] === 'now') {
                 record[key] = now;
+                activityLog.push('learn');
             } else {
                 val = parseInt(activity[key], 10);
 
@@ -231,7 +235,11 @@ function *patchHandler() {
              ssasRecord.recommender_id = ctx.userId;
         }
 
-        yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint',  ssasRecord, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
+        try {
+            yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint',  ssasRecord, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
+        } catch (error) {
+            ctx.throw(400, error.message);
+        }
     }
 
     delete record.recommended_time;
@@ -247,7 +255,30 @@ function *patchHandler() {
     ctx.body = result || (yield ctx.pgp.one('SELECT * FROM student_sparkpoint WHERE sparkpoint_id = $1 AND student_id = $2', [sparkpointId, studentId]));
 }
 
+function *deleteHandler() {
+    var ctx = this,
+        sectionId = ~~ctx.query.section_id,
+        studentId = ~~ctx.query.student_id,
+        sparkpointId = ctx.query.sparkpoint_id;
+
+    ctx.assert(sectionId > 0, 'section_id is required', 400);
+    ctx.assert(studentId > 0, 'student_id is required', 400);
+    ctx.assert(sparkpointId, 'sparkpoint_id is required', 400);
+    ctx.assert(ctx.isTeacher, 'Only teachers can delete activity records', 403);
+
+    yield ctx.pgp.none(/*language=SQL*/ `
+      DELETE FROM section_student_active_sparkpoint
+            WHERE section_id = $1
+              AND student_id = $2
+              AND sparkpoint_id = $3
+    `, [sectionId, studentId, sparkpointId]
+    );
+
+    ctx.status = 204;
+}
+
 module.exports = {
     get: getHandler,
-    patch: patchHandler
+    patch: patchHandler,
+    delete: deleteHandler
 };
