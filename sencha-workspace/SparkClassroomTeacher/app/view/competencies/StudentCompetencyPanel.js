@@ -134,6 +134,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                 text: 'Give Credit'
             }, {
                 xtype: 'container',
+                cls: 'lower-button-ct',
                 layout: 'hbox',
                 margin: 16,
                 defaults: {
