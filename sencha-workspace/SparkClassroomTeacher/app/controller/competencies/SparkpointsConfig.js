@@ -238,6 +238,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
         me.bindPaceFields();
         me.bindReordering();
+        me.bindRemoveBtns();
+
+        sparkpointField.updateSelectedStudent(studentId);
+        sparkpointField.getSuggestionsList().setWidth(500);
     },
 
     bindPaceFields: function() {
@@ -269,6 +273,21 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             arrow = Ext.get(sortArrows[count]);
             arrow.on('click', function(e, el) {
                 me.onSortArrowClick(e, el);
+            });
+        }
+    },
+
+    bindRemoveBtns: function() {
+        var me = this,
+            removeBtns = me.getSparkpointsConfigWindow().element.select('.remove-cell button[action="row-remove"]').elements,
+            removeBtn,
+            count;
+
+        for (count = 0; count < removeBtns.length; count++) {
+            removeBtn = Ext.get(removeBtns[count]);
+
+            removeBtn.on('click', function(e, el) {
+                me.onRemoveSparkpoint(e, el);
             });
         }
     },
@@ -353,6 +372,22 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         me.loadDataIntoView();
+    },
+
+    onRemoveSparkpoint: function(e, el) {
+        var me = this,
+            configStore = me.getConfigSparkpointsStore(),
+            sparkRow = Ext.get(el).up('tr.sparkpoint-row'),
+            studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
+            sparkpoint = configStore.findRecord('student_sparkpointid', studentSparkpointId);
+
+        if (Ext.isEmpty(sparkpoint)) {
+            return;
+        }
+
+        // TEST REMOVE
+        sparkpoint.set('conference_finish_time', null);
+        sparkpoint.save();
     },
 
     onHideWindow: function() {
