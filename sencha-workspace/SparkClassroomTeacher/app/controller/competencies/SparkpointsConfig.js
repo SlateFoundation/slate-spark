@@ -55,6 +55,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             '#': {
                 activestudentidchange: 'initializeStudent'
             }
+        },
+
+        store: {
+            '#ConfigSparkpoints': {
+                load: 'loadDataIntoView'
+            }
         }
     },
 
@@ -91,6 +97,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
         appCt: {
             initialize: 'onInitializeAppCt'
+        },
+
+        sparkpointField: {
+            sparkpointselect: 'suggestNextSparkpoint'
         }
     },
 
@@ -422,7 +432,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         me.getSparkpointsConfigWindow().hide();
-        me.suggestNextSparkpoint();
     },
 
     suggestNextSparkpoint: function() {
@@ -448,9 +457,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     return;
                 }
 
+                this.getConfigSparkpointsStore().load();
+
                 sparkpointField.setSelectedSparkpoint(null);
                 sparkpointField.setQuery(null);
-            }
+            },
+            scope: me
         });
     },
 
