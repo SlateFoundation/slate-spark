@@ -11,6 +11,12 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
 
         hideOnMaskTap: true,
 
+		/**
+		 * The sparkpoint being configured for all students. Should be get on initialization.
+         * @string
+         */
+        sparkpoint: null,
+
         items: [
             {
                 xtype: 'component',
@@ -28,7 +34,6 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
                         click: {
                             element: 'element',
                             fn: function() {
-                                this.up('spark-addtoqueue-popover').destroy();
                                 Ext.select('.is-stuck').each(function() {
                                     this.removeCls('is-stuck');
                                 });
@@ -38,9 +43,11 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
                 },
                 items: [
                     {
+                        cls: 'spark-add-to-queue-btn',
                         text: 'Add to Queue'
-                  },
+                    },
                     {
+                        cls: 'spark-add-next-up-btn',
                         margin: '10 0 0 10',
                         text: 'Add Next Up'
                     }

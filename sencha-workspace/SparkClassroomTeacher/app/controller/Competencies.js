@@ -61,6 +61,15 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         appCt: 'spark-teacher-appct',
         competenciesGrid: 'spark-competencies spark-competencies-grid',
+
+        addToQueuePopover: {
+            selector: 'spark-addtoqueue-popover',
+            autoCreate: true,
+            xtype: 'spark-addtoqueue-popover'
+        },
+
+        addToQueueBtn: 'spark-addtoqueue-popover button[cls~=spark-add-to-queue-btn]',
+        addNextUpBtn: 'spark-addtoqueue-popover button[cls~=spark-add-next-up-btn]',
         studentCompetencyPopover: 'spark-studentcompetency-popover',
         sparkpointsConfigWindow: 'spark-sparkpointsconfig-window'
     },
@@ -79,9 +88,15 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         competenciesGrid: {
             activate: 'refreshColumns',
-            itemtap: {
-                fn: 'onCompetenciesGridItemTap'
-            }
+            itemtap: 'onCompetenciesGridItemTap'
+        },
+
+        addToQueueBtn: {
+            tap: 'onAddToQueue'
+        },
+
+        addNextUpBtn: {
+            tap: 'onAddNextUp'
         },
 
         'spark-student-competency-column': {
@@ -167,6 +182,14 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
     // event handlers
+    onAddToQueue: function() {
+        debugger;
+    },
+
+    onAddNextUp: function() {
+        debugger;
+    },
+
     onNavCompetenciesTap: function() {
         this.redirectTo('competencies');
     },
@@ -255,6 +278,19 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
             me.updateStudentSparkpoint(studentSparkpointId, Ext.fly(e.target));
         }
+
+        if (targetEl.getAttribute('action') === 'add-to-queue') {
+            me.onToggleQueuePopover(targetEl, e);
+        }
+    },
+
+    onToggleQueuePopover: function(el, e) {
+        var cellDom = e.getTarget('.x-grid-cell'),
+            addToQueuePopover = this.getAddToQueuePopover(),
+            sparkpoint = Ext.get(cellDom).down('.spark-column-value').getHtml();
+
+        addToQueuePopover.showBy(el, 'cl-cr?');
+        addToQueuePopover.setSparkpoint(sparkpoint);
     },
 
     onSelectedSectionChange: function(appCt, section, oldSection) {
