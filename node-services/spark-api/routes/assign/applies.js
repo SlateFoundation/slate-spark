@@ -12,7 +12,9 @@ function* getHandler() {
 
     ctx.require(['sparkpoint_id', 'section_id']);
 
+    // TODO: synchronous ctx.lookup is deprecated
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
+        console.log(asnId);
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
@@ -20,7 +22,7 @@ function* getHandler() {
     ctx.assert(ctx.isTeacher, 'Only teachers can assign applies', 403);
 
     result = yield this.pgp.one(/*language=SQL*/ `
-        WITH applies AS (
+        WITH fusebox_applies AS (
             SELECT *
               FROM fusebox_apply_projects
              WHERE standardids ?| $1
@@ -42,8 +44,24 @@ function* getHandler() {
                   FROM apply_assignments
                  WHERE sparkpoint_id = $2
                    AND section_id = $3
-                   AND resource_id = ANY(SELECT id FROM applies)
+                   AND resource_id = ANY(SELECT id FROM fusebox_applies)
              ) t GROUP BY resource_id
+        ),
+        
+        apply_activity AS (
+            SELECT resource_id,
+                   json_object_agg(
+                       student_id,
+                       CASE WHEN grade IS NOT NULL
+                            THEN 'completed'
+                            ELSE 'launched'
+                       END
+                   ) AS activity
+              FROM applies
+             WHERE student_id = ANY(SELECT "PersonID" FROM course_section_participants WHERE "CourseSectionID" = 4)
+               AND resource_id = ANY(SELECT id FROM fusebox_applies)
+               AND selected = TRUE
+          GROUP BY resource_id
         )
         
         SELECT json_build_object(
@@ -121,8 +139,13 @@ function* getHandler() {
                 COALESCE(
                     (SELECT assignment FROM apply_assignments WHERE resource_id = ap.id),
                     '{}':: JSON
+                ),
+                'activity',
+                COALESCE(
+                    (SELECT activity FROM apply_activity WHERE resource_id = ap.id),
+                    '{}':: JSON
                 )
-            )) FROM applies ap
+            )) FROM fusebox_applies ap
             ), '[]'::JSON)
         ) AS json;
     `, [standardIds, sparkpointId, sectionId]);
