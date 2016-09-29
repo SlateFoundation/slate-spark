@@ -138,10 +138,13 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         var me = this,
             token = Ext.util.History.getToken(),
             sectionMatch = token && me.tokenSectionRe.exec(token),
-            studentStore = Ext.getStore('Students');
+            studentStore = Ext.getStore('Students'),
+            sectionSelect = me.getSectionSelect();
 
         if (selectedSection) {
-            me.getSectionSelect().setValue(selectedSection);
+            if (sectionSelect) {
+                sectionSelect.setValue(selectedSection);
+            }
 
             // show section dependant components
             me.getNavBar().show();
@@ -167,6 +170,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     onTeacherTabChange: function(tabBar, value) {
         this.redirectTo(value.getItemId());
     },
+
 
     // custom controller methods
     renderViews: function() {
