@@ -183,11 +183,67 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     // event handlers
     onAddToQueue: function() {
-        debugger;
+        this.addToQueue(false);
+    },
+
+    addToQueue: function(nextUp) {
+        var me = this,
+            sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
+            studentStore = me.getStudentsStore(),
+            students = studentStore.getRange(),
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            newSparkpointsArray = [],
+            studentSparkpoints,
+            studentSparkpoint,
+            count,
+            studentCount,
+            recommendedTime,
+            studentId;
+
+        for (count = 0; count < students.length; count++) {
+            studentId = students[count].getId();
+            competencySparkpointsStore.filter('student_id', studentId);
+            studentSparkpoints = competencySparkpointsStore.getRange();
+
+            // Run API request for sparkpoint for every student.
+            // TODO: See if there is a way to run this for all students in a single AJAX request
+            Slate.API.request({
+                method: 'PATCH',
+                url: '/spark/api/work/activity',
+                jsonData: {
+                    'sparkpoint': sparkpoint,
+                    'student_id': studentId
+                },
+                callback: function(options, success) {
+                    if (!success) {
+                        Ext.Msg.alert('Failed to add sparkpoint', 'This sparkpoint could not be added to this student\'s queue, please try again or contact an administrator');
+                        return;
+                    }
+                }
+            });
+        }
+
+        if (!nextUp) {
+            return;
+        }
+
+        // For adding next up, this sparkpoint needs to have its recommended_time bumped forward
+        //for (count = 0; count < students.length; count++) {
+        //    studentId = students[count].get('student_id');
+        //    competencySparkpointsStore.filter('student_id', studentId);
+        //    studentSparkpoints = competencySparkpointsStore.getRange();
+		//
+        //    for (studentCount = 0; studentCount < studentSparkpoints.length; studentCount++) {
+        //        studentSparkpoint = studentSparkpoints[studentCount];
+        //        recommendedTime = studentSparkpoint.get('recommended_time');
+        //    }
+		//
+        //    competencySparkpointsStore.clearFilter();
+        //}
     },
 
     onAddNextUp: function() {
-        debugger;
+        this.addToQueue(true);
     },
 
     onNavCompetenciesTap: function() {
