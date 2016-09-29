@@ -389,9 +389,29 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             return;
         }
 
-        // TEST REMOVE
-        sparkpoint.set('conference_finish_time', null);
-        sparkpoint.save();
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/work/activity',
+            jsonData: {
+                'student_id': null,
+                'section_id': sparkpoint.get('section_id'),
+                'sparkpoint': sparkpoint.get('sparkpoint')
+            },
+            success: function() {
+                configStore.remove(sparkpoint);
+            },
+            failure: function(response) {
+                var error = response.data.error;
+
+                // this structure is a mess to access safely..
+                error = error && error[0];
+                error = error && error.errors;
+                error = error && error.join('</li><li>');
+                error = error || 'Unknown problem';
+
+                Ext.Msg.alert('Sparkpoint Not Removed', 'Unable to remove this sparkpoint.<ul><li>'+error+'</li></ul>');
+            }
+        });
     },
 
     onHideWindow: function() {
