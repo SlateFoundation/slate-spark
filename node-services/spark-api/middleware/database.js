@@ -1,10 +1,11 @@
 'use strict';
 
-var monitor = require('pg-monitor'),
+var promise = require('bluebird'),
+    monitor = require('pg-monitor'),
     options = {
+        promiseLib: promise,
         noLocking: true,
-        capTX: true,
-        capSQL: true
+        capTX: true
     },
     Pgp = require('pg-promise')(options),
     pgpConnections = {},
@@ -262,9 +263,10 @@ var columnValidators = {
 
         let num = parseInt(val, 10);
 
-        if (isNaN(num)) {
-            return `${JSON.stringify(val)} is not a number`;
+        if (!Number.isInteger(val)) {
+            return `${JSON.stringify(val)} is not an integer`;
         }
+
         if (num < MIN || num > MAX) {
             return `${val} is out of range for integer (${MIN} to ${MAX})`;
         }

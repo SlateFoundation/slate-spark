@@ -57,6 +57,15 @@ function *getHandler(next) {
                ) unrolled_playlist
            )
            ORDER BY id
+        ), learn_activity AS (
+          SELECT resource_id,
+                 json_object_agg(user_id, CASE WHEN completed = TRUE THEN 'completed' ELSE 'launched' END) AS users
+            FROM learn_activity
+           WHERE resource_id = ANY (
+               SELECT jsonb_extract_path_text(jsonb_array_elements(playlist), 'resource_id')::INTEGER
+                 FROM playlist_cache
+               )
+            GROUP BY resource_id
         )
 
         SELECT json_build_object(
@@ -67,7 +76,9 @@ function *getHandler(next) {
             'learns_required',
             coalesce((SELECT learns_required FROM learns_required), '{}'::JSON),
             'discussions',
-            coalesce((SELECT json_agg(learn_discussions) FROM learn_discussions), '{}'::JSON)
+            coalesce((SELECT json_agg(learn_discussions) FROM learn_discussions), '{}'::JSON),
+            'activity',
+            coalesce((SELECT json_object_agg(resource_id, users) FROM learn_activity), '{}'::JSON)
         ) AS json;
     `, [sparkpointId, sectionId])).json;
 
@@ -85,6 +96,8 @@ function *getHandler(next) {
         if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
             resource.assignments.section = resource.assignments.section || 'required-first';
         }
+
+        resource.activity = result.activity[resource.resource_id] || {};
     });
 
     for (let resourceId in result.discussions) {
@@ -95,6 +108,7 @@ function *getHandler(next) {
     result.learns_required.site = 5;
 
     delete result.assignments;
+    delete result.activity;
 
     ctx.body = result;
 }
