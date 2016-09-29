@@ -13,6 +13,7 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
 
     config: {
         flags: null,
+        showStatus: false,
 
         cls: 'spark-teacher-assign-popup',
         floating: true,
@@ -30,7 +31,9 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
                     fields: [
                         'student',
                         'studentSparkpoint',
-                        'assignments'
+                        'assignments',
+                        'launched',
+                        'completed'
                     ],
                     trackRemoved: false
                 },
@@ -59,6 +62,14 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
                         ]
                     },
                     {
+                        text: 'Status',
+                        xtype: 'spark-completed-column',
+                        width: 70,
+                        sortable: false,
+                        allowToggle: false,
+                        hidden: true
+                    },
+                    {
                         xtype: 'spark-column-assignments',
                         showTrigger: false
                     }
@@ -69,6 +80,10 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
 
     updateFlags: function(flags) {
         this.down('spark-column-assignments').setFlags(flags);
+    },
+
+    updateShowStatus: function(showStatus) {
+        this.down('spark-completed-column').setHidden(!showStatus);
     },
 
     getGrid: function() {

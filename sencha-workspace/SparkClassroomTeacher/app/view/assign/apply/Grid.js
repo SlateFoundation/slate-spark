@@ -39,7 +39,8 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
                 xtype: 'spark-createdby-column'
             },
             {
-                xtype: 'spark-column-assignments'
+                xtype: 'spark-column-assignments',
+                showStatus: true
             }
         ]
     },

@@ -244,7 +244,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
         } else {
             assignments.section = assignment;
 
-            // update `seciton` assignment student-level store if open
+            // update `section` assignment student-level store if open
             if (
                 (popupHostColumn = me.getPopupHostColumn()) &&
                 (popup = popupHostColumn.getPopup())

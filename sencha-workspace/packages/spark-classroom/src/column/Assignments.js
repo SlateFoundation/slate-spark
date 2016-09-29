@@ -43,6 +43,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         showTrigger: true,
         studentsStore: 'Students',
         studentSparkpointsStore: 'StudentSparkpoints',
+        showStatus: false,
         flags: [
             {
                 id: 'required',
@@ -290,7 +291,7 @@ Ext.define('SparkClassroom.column.Assignments', {
             studentsCount = studentsStore.getCount(),
             i = 0, student, studentId,
 
-            record, assignments,
+            record, assignments, activity,
             popupStore, assignCellEl, x, y, scrollable,
             headerCt, finishShow;
 
@@ -305,6 +306,7 @@ Ext.define('SparkClassroom.column.Assignments', {
         // read record and assignments for cell
         record = cell.getRecord();
         assignments = record.get('assignments') || {};
+        activity = record.get('activity') || {};
 
         if (record instanceof SparkClassroom.model.StudentSparkpoint) {
             Ext.Logger.warn('Cannot set popupCell to one bound to a student');
@@ -320,7 +322,8 @@ Ext.define('SparkClassroom.column.Assignments', {
         if (!popup) {
             me.setPopup(popup = Ext.create('SparkClassroom.panel.StudentAssignments', {
                 hidden: true,
-                flags: me.getFlags()
+                flags: me.getFlags(),
+                showStatus: me.getShowStatus()
             }));
 
             // use this column as the parent of the popup for the component hierarchy
@@ -351,7 +354,9 @@ Ext.define('SparkClassroom.column.Assignments', {
                 assignments: {
                     section: assignments.section,
                     student: assignments[studentId]
-                }
+                },
+                completed: activity[studentId] === 'completed',
+                launched: activity[studentId] === 'launched'
             });
         }
 
