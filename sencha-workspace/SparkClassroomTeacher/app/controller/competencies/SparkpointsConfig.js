@@ -389,28 +389,22 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             return;
         }
 
-        Slate.API.request({
-            method: 'POST',
-            url: '/spark/api/work/activity',
-            jsonData: {
-                'student_id': null,
-                'section_id': sparkpoint.get('section_id'),
-                'sparkpoint': sparkpoint.get('sparkpoint')
+        sparkpoint.getProxy().setExtraParams({
+            'student_id': sparkpoint.get('student_id'),
+            'section_id': sparkpoint.get('section_id'),
+            'sparkpoint': sparkpoint.get('sparkpoint')
+        });
+
+        sparkpoint.erase({
+            failure: function(rec, op) {
+                var error = op && op.error && op.error.statusText;
+
+                Ext.Msg.alert('Error', 'Unable to remove this sparkpoint. (' + error + ')');
             },
             success: function() {
-                configStore.remove(sparkpoint);
+                this.loadDataIntoView();
             },
-            failure: function(response) {
-                var error = response.data.error;
-
-                // this structure is a mess to access safely..
-                error = error && error[0];
-                error = error && error.errors;
-                error = error && error.join('</li><li>');
-                error = error || 'Unknown problem';
-
-                Ext.Msg.alert('Sparkpoint Not Removed', 'Unable to remove this sparkpoint.<ul><li>'+error+'</li></ul>');
-            }
+            scope: me
         });
     },
 
