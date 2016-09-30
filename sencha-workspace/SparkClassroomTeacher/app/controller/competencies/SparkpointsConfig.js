@@ -55,6 +55,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             '#': {
                 activestudentidchange: 'initializeStudent'
             }
+        },
+
+        store: {
+            '#ConfigSparkpoints': {
+                load: 'loadDataIntoView'
+            }
         }
     },
 
@@ -91,6 +97,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
         appCt: {
             initialize: 'onInitializeAppCt'
+        },
+
+        sparkpointField: {
+            sparkpointselect: 'suggestNextSparkpoint'
         }
     },
 
@@ -243,6 +253,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         me.bindPaceFields();
         me.bindReordering();
         me.bindRemoveBtns();
+
+        sparkpointField.filterFn = function(rec) { // Note - setter wasn't working
+            // only show sparkpoints that are not already associated with this student
+            return Ext.getStore('ConfigSparkpoints').find('sparkpoint_id', rec.data.id) === -1;
+        };
 
         sparkpointField.updateSelectedStudent(studentId);
         sparkpointField.getSuggestionsList().setWidth(500);
@@ -422,7 +437,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         me.getSparkpointsConfigWindow().hide();
-        me.suggestNextSparkpoint();
     },
 
     suggestNextSparkpoint: function() {
@@ -448,9 +462,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     return;
                 }
 
+                this.getConfigSparkpointsStore().load();
+
                 sparkpointField.setSelectedSparkpoint(null);
                 sparkpointField.setQuery(null);
-            }
+            },
+            scope: me
         });
     },
 

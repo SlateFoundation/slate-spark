@@ -20,6 +20,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         selectedSparkpoint: null,
         query: null,
         suggestionsList: true,
+        filterFn: null,
 
         cls: 'spark-navbar-sparkpoint-selector',
         label: 'Sparkpoint',
@@ -102,9 +103,7 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
 
         sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', studentId);
 
-        if (sparkpointSuggestionsStore.isLoaded()) {
-            sparkpointSuggestionsStore.load();
-        }
+        sparkpointSuggestionsStore.load();
     },
 
     onFieldFocus: function(me) {
@@ -177,6 +176,10 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
         var me = this,
             query = me.getQuery(),
             selectedSparkpoint = me.getSelectedSparkpoint();
+
+        if (this.filterFn && Ext.isFunction(this.filterFn)) {
+            this.getSuggestionsList().getStore().filterBy(this.filterFn);
+        }
 
         me.getSuggestionsList().select(
             (query && suggestionsStore.query('code', query, false, false, true).first()) ||
