@@ -1,4 +1,8 @@
 /* global Slate Spark */
+/**
+ * Load the dynamically generated Spark.Timing Singleton class and provide utility method for calculating
+ * and displaying phase duration
+ */
 Ext.define('SparkClassroom.DurationDisplay', {
     singleton: true,
 
@@ -56,17 +60,40 @@ Ext.define('SparkClassroom.DurationDisplay', {
         return this.getTiming() !== null;
     },
 
-    calculateDuration: function(sectionCode, activePhaseStartTime) {
+    /**
+     * Calculate the phase duration using the dynamically generated Spark.Timing Singleton class
+     * @param {String} sectionCode the sectionCode used to calculate grade.
+     * @param {Date} phaseStartTime The start of the phase.
+     * @param {Boolean} inDays true to use the inDays version of the timing function. Defaults to true.
+     * @param {Boolean} skipFuzzy true to not format the result using Jarvus.util.format.FuzzyTime. Defaults to false.
+     * @return {String}
+     */
+    calculateDuration: function(sectionCode, activePhaseStartTime, inDays, skipFuzzy) {
         var me = this,
             timing = me.getTiming(),
             grade = timing.sectionCodeToGrade(sectionCode),
             duration = '--';
 
+        // use 'days' function by default
+        inDays = (inDays !== false);  // eslint-disable-line no-extra-parens
+
+        // use fuzzy duration formatting by default
+        skipFuzzy = (skipFuzzy === true); // eslint-disable-line no-extra-parens
+
         if (activePhaseStartTime instanceof Date) {
-            duration = Ext.util.Format.fuzzyDuration(
-                timing.getDuration(grade, activePhaseStartTime, new Date()),
-                true
-            );
+            if (inDays) {
+                duration = timing.getDurationInDays(grade, activePhaseStartTime, new Date());
+            } else {
+                duration = timing.getDuration(grade, activePhaseStartTime, new Date());
+            }
+
+            if (!skipFuzzy) {
+                if (inDays) {
+                    duration = Ext.util.Format.fuzzyDuration(duration * 86400000, true);
+                } else {
+                    duration = Ext.util.Format.fuzzyDuration(duration, true);
+                }
+            }
         }
         return duration;
     }
