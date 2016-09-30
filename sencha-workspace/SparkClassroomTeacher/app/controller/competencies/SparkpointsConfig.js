@@ -404,9 +404,23 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             return;
         }
 
-        // TEST REMOVE
-        sparkpoint.set('conference_finish_time', null);
-        sparkpoint.save();
+        sparkpoint.getProxy().setExtraParams({
+            'student_id': sparkpoint.get('student_id'),
+            'section_id': sparkpoint.get('section_id'),
+            'sparkpoint': sparkpoint.get('sparkpoint')
+        });
+
+        sparkpoint.erase({
+            failure: function(rec, op) {
+                var error = op && op.error && op.error.statusText;
+
+                Ext.Msg.alert('Error', 'Unable to remove this sparkpoint. (' + error + ')');
+            },
+            success: function() {
+                this.loadDataIntoView();
+            },
+            scope: me
+        });
     },
 
     onHideWindow: function() {

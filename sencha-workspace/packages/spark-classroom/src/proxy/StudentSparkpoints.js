@@ -4,6 +4,7 @@ Ext.define('SparkClassroom.proxy.StudentSparkpoints', {
     alias: 'proxy.spark-studentsparkpoints',
 
     config: {
+        idParam: null, // prevent automatically sending client generated idProperty over the wire
         reader: {
             type: 'json',
             transform: function(data) {
