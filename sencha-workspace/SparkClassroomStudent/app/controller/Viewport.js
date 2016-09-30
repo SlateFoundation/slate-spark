@@ -78,12 +78,12 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
                 beforeredirect: 'onBeforeRedirect',
                 beforeroute: 'onBeforeRoute',
                 studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-                //<debug>
-                ,unmatchedroute: function(token) {
+                studentsparkpointupdate: 'onStudentSparkpointUpdate',
+                // <debug>
+                unmatchedroute: function(token) {
                     Ext.log.warn('Unmatched token: ' + token);
                 }
-                //</debug>
+                // </debug>
             }
         },
         store: {
@@ -145,7 +145,10 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
         studentSparkpoint.set('sparkpoint', sparkpoint);
 
-        tabsCt.setMasked({xtype: 'loadmask', message: 'Opening Sparkpoint&hellip;'});
+        tabsCt.setMasked({
+            xtype: 'loadmask',
+            message: 'Opening Sparkpoint&hellip;'
+        });
         studentSparkpoint.save({
             success: function() {
                 tabsCt.setMasked(false);
@@ -171,6 +174,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             resume(sectionCode + (sparkpointCode ? ':' + sparkpointCode : '') + '::' + token);
             return false;
         }
+        return true;
     },
 
     onBeforeRoute: function(token, resume) {
@@ -183,6 +187,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             resume(prefixMatch[4]);
             return false;
         }
+        return true;
     },
 
     onStudentSparkpointLoad: function(studentSparkpoint) {
@@ -198,7 +203,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
 
-    onStudentSparkpointUpdate: function(studentSparkpoint, modifiedFieldNames) {
+    onStudentSparkpointUpdate: function(studentSparkpoint) {
+
         /* TODO enable this when local studentsparkpoint changes fire update event
         if (modifiedFieldNames.indexOf('total_duration') == -1) {
             return;
@@ -210,11 +216,11 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         });
     },
 
-    onSectionsStoreLoad: function(store) {
+    onSectionsStoreLoad: function() {
         this.getSectionSelect().setValue(this.getSelectedSection());
     },
 
-    onSectionSelectChange: function(select, section, oldSection) {
+    onSectionSelectChange: function(select, section) {
         this.setSelectedSection(section.get('Code'));
     },
 
@@ -236,18 +242,21 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
                 me.getSectionSelect().setValue(sectionCode || null);
                 me.getSparkpointSelect().setValue(sparkpointCode || null);
 
-                //show section dependant components
+                // show section dependant components
                 me.getNavBar().setHidden(!sectionCode);
                 me.getWelcomeCmp().setHidden(sectionCode && sparkpointCode);
                 me.getTabsCt().setHidden(!sparkpointCode);
 
                 // redirect with the current un-prefixed route or the default section to write the new section into the route
-                me.redirectTo((prefixMatch && prefixMatch[4]) || 'work');
+                me.redirectTo((prefixMatch && prefixMatch[4]) || 'work'); // eslint-disable-line no-extra-parens
             },
             latestCurrentSparkpoint;
 
         if (sectionCode && !sparkpointCode) {
-            appCt.setMasked({xtype: 'loadmask', message: 'Resuming last sparkpoint&hellip;'});
+            appCt.setMasked({
+                xtype: 'loadmask',
+                message: 'Resuming last sparkpoint&hellip;'
+            });
             sparkpointsLookupStore.load({
                 callback: function(sparkpoints, operation, success) {
                     if (success && (latestCurrentSparkpoint = sparkpointsLookupStore.getAt(0))) {
