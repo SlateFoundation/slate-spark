@@ -68,7 +68,7 @@ Ext.define('SparkClassroom.DurationDisplay', {
      * @param {Boolean} skipFuzzy true to not format the result using Jarvus.util.format.FuzzyTime. Defaults to false.
      * @return {String}
      */
-    calculateDuration: function(sectionCode, activePhaseStartTime, inDays, skipFuzzy) {
+    calculateDuration: function(sectionCode, phaseStartTime, inDays, skipFuzzy) {
         var me = this,
             timing = me.getTiming(),
             grade = timing.sectionCodeToGrade(sectionCode),
@@ -80,11 +80,11 @@ Ext.define('SparkClassroom.DurationDisplay', {
         // use fuzzy duration formatting by default
         skipFuzzy = (skipFuzzy === true); // eslint-disable-line no-extra-parens
 
-        if (activePhaseStartTime instanceof Date) {
+        if (phaseStartTime instanceof Date) {
             if (inDays) {
-                duration = timing.getDurationInDays(grade, activePhaseStartTime, new Date());
+                duration = timing.getDurationInDays(grade, phaseStartTime, new Date());
             } else {
-                duration = timing.getDuration(grade, activePhaseStartTime, new Date());
+                duration = timing.getDuration(grade, phaseStartTime, new Date());
             }
 
             if (!skipFuzzy) {
