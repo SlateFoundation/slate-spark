@@ -108,15 +108,16 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
     },
 
     onColumnTap: function(ev) {
-        var me = this;
+        var me = this,
+            target = ev.getTarget();
 
-        if (ev.getTarget().className.indexOf('spark-config-btn') > -1) {
+        if (target.className.indexOf('spark-config-btn') > -1) {
             me.fireEvent('sparkconfigclick', me.getDataIndex());
             return;
         }
 
-        if (ev.getTarget().className.indexOf('spark-goal-dropdown') > -1) {
-            // TODO: Update goal dropdown to perform proper action instead of returning false (once that is determined).
+        if (target.className.indexOf('spark-goal') > -1) {
+            me.fireEvent('sparkgoalclick', me.getDataIndex(), target);
             return;
         }
 
