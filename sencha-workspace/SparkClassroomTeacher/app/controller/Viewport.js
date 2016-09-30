@@ -14,7 +14,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.DurationDisplay'
+        'SparkClassroom.timing.DurationDisplay'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -104,7 +104,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     onLaunch: function() {
         var me = this;
 
-        SparkClassroom.DurationDisplay.init(function() {
+        SparkClassroom.timing.DurationDisplay.init(function() {
             me.renderViews();
         });
     },

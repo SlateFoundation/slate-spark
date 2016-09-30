@@ -2,7 +2,7 @@
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
-        'SparkClassroom.DurationDisplay',
+        'SparkClassroom.timing.DurationDisplay',
         'SparkClassroom.proxy.StudentSparkpoints',
         'SparkClassroom.data.field.SparkDate'
     ],

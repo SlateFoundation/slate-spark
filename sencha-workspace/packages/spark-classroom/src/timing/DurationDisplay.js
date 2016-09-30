@@ -3,7 +3,7 @@
  * Load the dynamically generated Spark.Timing Singleton class and provide utility method for calculating
  * and displaying phase duration
  */
-Ext.define('SparkClassroom.DurationDisplay', {
+Ext.define('SparkClassroom.timing.DurationDisplay', {
     singleton: true,
 
     requires: [

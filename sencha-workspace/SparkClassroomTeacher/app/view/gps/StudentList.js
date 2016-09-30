@@ -6,7 +6,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         'SparkClassroom.mixin.DockedTitle'
     ],
     requires: [
-        'SparkClassroom.DurationDisplay',
+        'SparkClassroom.timing.DurationDisplay',
         'Jarvus.util.format.FuzzyTime'
     ],
 
@@ -45,7 +45,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
             '</div>',
         {
             adjustDuration: function(r) {
-                return SparkClassroom.DurationDisplay.calculateDuration(r.section_code, r.subphase_start_time);
+                return SparkClassroom.timing.DurationDisplay.calculateDuration(r.section_code, r.subphase_start_time);
             }
         }]
     },
