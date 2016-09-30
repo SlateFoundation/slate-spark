@@ -6,10 +6,8 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         'SparkClassroom.mixin.DockedTitle'
     ],
     requires: [
-        'SparkClassroom.timing.DurationDisplay',
-        'Jarvus.util.format.FuzzyTime'
+        'SparkClassroom.timing.DurationDisplay'
     ],
-
 
     config: {
         showDismissButton: false,
