@@ -1,5 +1,9 @@
+/* global SparkClassroom */
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.timing.DurationDisplay'
+    ],
 
     tokenPrefixRe: /^([^:]+)(:([^:]+))?::(.*)$/,
 
@@ -194,9 +198,16 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         var timerCmp = this.getTimerCmp();
 
         if (studentSparkpoint) {
-            timerCmp.setData({
-                duration: studentSparkpoint.get('total_duration')
-            });
+            if (studentSparkpoint.get('total_duration') > 0) {
+                timerCmp.setHtml(
+                    SparkClassroom.timing.DurationDisplay.calculateDuration(
+                        studentSparkpoint.get('sparkpoint'),
+                        studentSparkpoint.get('learn_start_time')
+                    )
+                );
+            } else {
+                timerCmp.setHtml('Not Started');
+            }
             timerCmp.show();
         } else {
             timerCmp.hide();
