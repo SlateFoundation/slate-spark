@@ -14,7 +14,11 @@ function *getHandler() {
               -- TODO: check with @rgipson to see when we can remove code
               sp.code,
               sp.student_title,
+              
+              cs."Code" AS section,
+              
               ss.*,
+              
               ssas.last_accessed,
               ssas.section_id,
               ssas.recommender_id,
@@ -23,6 +27,7 @@ function *getHandler() {
     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
           AND ss.student_id = ssas.student_id
          JOIN sparkpoints sp ON sp.id = ssas.sparkpoint_id
+         JOIN course_sections cs ON cs."ID" = ssas.section_id
         WHERE ssas.section_id = $1
           ${studentWhere}
      ORDER BY ssas.last_accessed DESC
