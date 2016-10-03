@@ -1,4 +1,4 @@
-/* global Ext */
+/* global Ext SparkClassroom */
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
@@ -431,12 +431,23 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'learn_pace_actual',
             persist: false,
             allowNull: true,
+            depends: [
+                'section',
+                'learn_start_time',
+                'learn_completed_time'
+            ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.learn_completed_time)) {
                     return null;
                 }
 
-                return Ext.Date.diff(data.learn_start_time, data.learn_completed_time, Ext.Date.DAY) + 1;
+                return SparkClassroom.timing.DurationDisplay.calculateDuration(
+                    data.section,
+                    data.learn_start_time,
+                    data.learn_completed_time,
+                    true,
+                    true
+                ) + 1;
             }
         }, {
             name: 'conference_subphase_duration',
@@ -467,12 +478,23 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'conference_pace_actual',
             persist: false,
+            depends: [
+                'section',
+                'learn_start_time',
+                'conference_completed_time'
+            ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.conference_completed_time)) {
                     return null;
                 }
 
-                return Ext.Date.diff(data.learn_start_time, data.conference_completed_time, Ext.Date.DAY) + 1;
+                return SparkClassroom.timing.DurationDisplay.calculateDuration(
+                    data.section,
+                    data.learn_start_time,
+                    data.conference_completed_time,
+                    true,
+                    true
+                ) + 1;
             }
         }, {
             name: 'apply_subphase_duration',
@@ -502,12 +524,23 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'apply_pace_actual',
             persist: false,
+            depends: [
+                'section',
+                'learn_start_time',
+                'apply_completed_time'
+            ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.apply_completed_time)) {
                     return null;
                 }
 
-                return Ext.Date.diff(data.learn_start_time, data.apply_completed_time, Ext.Date.DAY) + 1;
+                return SparkClassroom.timing.DurationDisplay.calculateDuration(
+                    data.section,
+                    data.learn_start_time,
+                    data.apply_completed_time,
+                    true,
+                    true
+                ) + 1;
             }
         }, {
             name: 'assess_subphase_duration',
@@ -543,12 +576,23 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'assess_pace_actual',
             persist: false,
+            depends: [
+                'section',
+                'learn_start_time',
+                'assess_completed_time'
+            ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.assess_completed_time)) {
                     return null;
                 }
 
-                return Ext.Date.diff(data.learn_start_time, data.assess_completed_time, Ext.Date.DAY) + 1;
+                return SparkClassroom.timing.DurationDisplay.calculateDuration(
+                    data.section,
+                    data.learn_start_time,
+                    data.assess_completed_time,
+                    true,
+                    true
+                ) + 1;
             }
         }, {
             name: 'total_duration',
