@@ -68,11 +68,16 @@ Ext.define('SparkClassroom.timing.DurationDisplay', {
      * @param {Boolean} skipFuzzy true to not format the result using Jarvus.util.format.FuzzyTime. Defaults to false.
      * @return {String}
      */
-    calculateDuration: function(sectionCode, phaseStartTime, inDays, skipFuzzy) {
+    calculateDuration: function(sectionCode, phaseStartTime, phaseEndTime, inDays, skipFuzzy) {
         var me = this,
             timing = me.getTiming(),
             grade = timing.sectionCodeToGrade(sectionCode),
             duration = '--';
+
+        // use now if no phaseEndTime sent
+        if (!phaseEndTime || !(phaseEndTime instanceof Date)) {
+            phaseEndTime = new Date();
+        }
 
         // use 'days' function by default
         inDays = (inDays !== false);  // eslint-disable-line no-extra-parens
@@ -82,9 +87,9 @@ Ext.define('SparkClassroom.timing.DurationDisplay', {
 
         if (phaseStartTime instanceof Date) {
             if (inDays) {
-                duration = timing.getDurationInDays(grade, phaseStartTime, new Date());
+                duration = timing.getDurationInDays(grade, phaseStartTime, phaseEndTime);
             } else {
-                duration = timing.getDuration(grade, phaseStartTime, new Date());
+                duration = timing.getDuration(grade, phaseStartTime, phaseEndTime);
             }
 
             if (!skipFuzzy) {
