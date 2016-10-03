@@ -83,7 +83,7 @@ function* getHandler() {
            cs."Code" AS section
       FROM combined_sparkpoints
       JOIN course_sections cs ON cs."ID" = combined_sparkpoints.section_id
-      JOIN sparkpoints sp ON sp.id = combined_sparkpoints.id
+      JOIN sparkpoints sp ON sp.id = combined_sparkpoints.sparkpoint_id
     `, [
         studentId,
         sectionId,
