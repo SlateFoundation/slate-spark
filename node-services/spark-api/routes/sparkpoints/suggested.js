@@ -16,7 +16,6 @@ function* getHandler() {
         WITH past AS (
             SELECT ss.*,
     
-                   ssas.sparkpoint_id AS id,
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
@@ -34,8 +33,7 @@ function* getHandler() {
     
          current AS (
             SELECT ss.*,
-    
-                   ssas.sparkpoint_id AS id,
+            
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
@@ -54,7 +52,6 @@ function* getHandler() {
         queued AS (
             SELECT ss.*,
     
-                   ssas.sparkpoint_id AS id,
                    ssas.last_accessed,
                    ssas.section_id,
                    ssas.recommender_id,
