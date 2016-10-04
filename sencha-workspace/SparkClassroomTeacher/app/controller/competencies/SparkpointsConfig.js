@@ -71,24 +71,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         },
 
-        configTableActive: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
-        configTableCurrent: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
-        configTableQueue: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
         sparkpointsConfigWindow: {
             hide: {
                 fn: 'onHideWindow'
@@ -483,71 +465,5 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             },
             scope: me
         });
-    },
-
-    onUpdateSparkRows: function(component) {
-        var me = this,
-            overrideFields = component.element.select('.override-field'),
-            overrideField,
-            count;
-
-        for (count = 0; count < overrideFields.elements.length; count++) {
-            overrideField = Ext.get(overrideFields.elements[count]);
-
-            overrideField.on('change', function(e, target) {
-                me.onOverrideChange(e, target);
-            });
-        }
-    },
-
-    onOverrideChange: function(e, target) {
-        var me = this,
-            configStore = me.getConfigSparkpointsStore(),
-            el = Ext.get(target),
-            checked = el.is(':checked'),
-            phaseName = el.getAttribute('data-phase'),
-            studentSparkpointId = el.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            record = configStore.findRecord('student_sparkpointid', studentSparkpointId),
-            chainCheckbox,
-            value;
-
-        switch (phaseName) {
-            case 'Learn':
-                break;
-            case 'Conference':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Learn"]');
-                break;
-            case 'Apply':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Conference"]');
-                break;
-            case 'Assess':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Apply"]');
-                break;
-            default:
-        }
-
-        // If we checked a later phase, ensure that the previous phases are also checked
-        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
-            if (!chainCheckbox.is(':disabled')) {
-                chainCheckbox.dom.disabled = true;
-            }
-
-            if (!chainCheckbox.is(':checked')) {
-                chainCheckbox.dom.checked = true;
-            }
-
-            me.onOverrideChange(null, chainCheckbox);
-        }
-
-        // If we unchecked this then remove disabled state if the prev phase wasn't finished
-        if (!Ext.isEmpty(chainCheckbox) && !checked) {
-            if (!chainCheckbox.hasCls('finished')) {
-                chainCheckbox.dom.removeAttribute('disabled');
-            }
-        }
-
-        value = checked ? new Date() : null;
-
-        record.set(phaseName.toLowerCase() + '_override_time', value);
     }
 });
