@@ -293,7 +293,44 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
     },
 
+    /*
+    Ensure that subsequent phase pace values are greater than previous phase and set sparkpoint with new values
+    */
     onPaceFieldChange: function(e, el) {
+        var me = this,
+            configSparkpointsStore = me.getConfigSparkpointsStore(),
+            changedPaceField = Ext.get(el),
+            newPaceValue = changedPaceField.getValue(),
+            changedPhase = changedPaceField.getAttribute('data-phase'),
+            sparkRow = changedPaceField.up('tr.sparkpoint-row'),
+            studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
+            sparkpoint = configSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
+            paceFields = sparkRow.select('input.expected-completion').elements,
+            count, fieldEl, fieldVal, nextFieldEl, nextFieldVal;
+
+            // convert to integer, if input is blank, replace with 1
+            newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
+            sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
+
+            for (count = 0; count + 1 < paceFields.length; count++) {
+                fieldEl = Ext.fly(paceFields[count]);
+                fieldVal = parseInt(fieldEl.getValue(), 10);
+                nextFieldEl = Ext.fly(paceFields[count + 1]);
+                nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
+
+                if (!Ext.isNumber(fieldVal)) {
+                    fieldEl.dom.value = 1;
+                }
+
+                if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+                    nextFieldEl.dom.value = fieldVal + 1;
+
+                    sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
+                }
+            }
+    },
+
+    onPaceFieldChanges: function(e, el) { //TODO remove old function
         var configSparkpointsStore = this.getConfigSparkpointsStore(),
             paceField = Ext.get(el),
             paceFieldVal = paceField.getValue(),
