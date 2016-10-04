@@ -48,5 +48,7 @@ function *postHandler() {
 }
 
 module.exports = {
-    post: postHandler
+    post: postHandler,
+    patch: postHandler,
+    put: postHandler
 };
