@@ -70,9 +70,15 @@ app
     .use(lookup)
     .use(middleware.request)
     .use(middleware.debugging)
-    .use(middleware.preferences())
-    .use(json())
-    .use(etag());
+    .use(middleware.preferences());
+
+if (PRODUCTION) {
+    // In production calculate ETags
+    app.use(etag());
+} else {
+    // In development pretty-print responses
+    app.use(json());
+}
 
 function* notImplementedHandler() {
     ctx.throw(405, `${ctx.method} not implemented.`);
