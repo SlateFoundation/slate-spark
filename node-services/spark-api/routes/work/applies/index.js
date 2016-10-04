@@ -18,6 +18,7 @@ function *getHandler() {
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
+    // If standardIds is empty the query below will fail because PostgreSQL will not know it's array of integers
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 400);
 
@@ -38,16 +39,6 @@ function *getHandler() {
         ap.gradelevel,
         'timeEstimate',
         ap.timeestimate,
-        'sparkpointIds',
-        (SELECT json_agg(id)
-           FROM sparkpoints
-          WHERE metadata->>'asn_id' = ANY($3)
-        ),
-        'sparkpointCodes',
-        (SELECT json_agg(code)
-           FROM sparkpoints
-          WHERE metadata->>'asn_id' = ANY($3)
-        ),
         'standardCodes',
         ap.standards,
         'todos',
