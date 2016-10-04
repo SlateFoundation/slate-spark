@@ -15,8 +15,6 @@ Ext.define('SparkClassroom.model.work.Apply', {
         'title',
         'instructions',
         'dok',
-        'sparkpointIds',
-        'sparkpointCodes',
         'standardCodes',
         'rating',
         'comment',
