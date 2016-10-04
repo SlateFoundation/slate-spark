@@ -6,7 +6,6 @@ const util = require('../../../lib/util');
 function *postHandler() {
     var ctx = this,
         suggestions = ctx.request.body,
-        sectionId = ~~ctx.query.section_id,
         records,
         copyColumns = ['recommended_time', 'student_id', 'sparkpoint_id', 'section_id'],
         vals = new util.Values(),
@@ -14,7 +13,6 @@ function *postHandler() {
 
     ctx.assert(ctx.isTeacher, 'Only teachers can use the suggestions endpoint', 403);
     ctx.assert(Array.isArray(suggestions), 'The suggestions endpoint takes an array of suggestion objects', 400);
-    ctx.assert(sectionId > 0, 'section_id is required', 400);
 
     records = suggestions.map(function (suggestion) {
         var record = {};
