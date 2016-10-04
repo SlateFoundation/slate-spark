@@ -1,7 +1,7 @@
 'use strict';
 
-const identifyRecordSync = require('../../../lib/util').identifyRecordSync;
-const util = require('../../../lib/util');
+const identifyRecordSync = require('../../lib/util').identifyRecordSync;
+const util = require('../../lib/util');
 
 function *postHandler() {
     var ctx = this,
