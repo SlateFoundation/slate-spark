@@ -7,8 +7,8 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         'SparkClassroom.data.field.SparkDate'
     ],
 
-
     idProperty: 'student_sparkpointid',
+
     fields: [
         {
             name: 'completed_phase_number',
@@ -227,7 +227,8 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             }
         }, {
             name: 'section',
-            type: 'string'
+            type: 'string',
+            allowNull: true
         }, {
             name: 'student_id',
             type: 'int',
