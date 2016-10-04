@@ -70,7 +70,6 @@ app
     .use(lookup)
     .use(middleware.request)
     .use(middleware.debugging)
-    .use(json())
     .use(middleware.preferences())
     .use(json())
     .use(etag());
