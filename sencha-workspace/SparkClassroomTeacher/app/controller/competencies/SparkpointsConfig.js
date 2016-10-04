@@ -330,47 +330,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
     },
 
-    onPaceFieldChanges: function(e, el) { //TODO remove old function
-        var configSparkpointsStore = this.getConfigSparkpointsStore(),
-            paceField = Ext.get(el),
-            paceFieldVal = paceField.getValue(),
-            phase = paceField.getAttribute('data-phase'),
-            studentSparkpointId = paceField.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            sparkpoint = configSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
-            prevCell = paceField.up('td').prev('td'),
-            nextCell = paceField.up('td').next('td'),
-            prevInput,
-            nextInput;
-
-        if (!Ext.isEmpty(prevCell)) {
-            prevInput = prevCell.down('input.expected-completion');
-
-            // Prevent setting future phase pace before previous phase
-            if (prevInput && parseInt(paceFieldVal, 10) <= parseInt(prevInput.getValue(), 10)) {
-                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done after the ' + prevInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is after the ' + prevInput.getAttribute('data-phase') + ' phase.', function() {
-                    paceField.focus(50);
-                });
-
-                paceField.dom.value = parseInt(prevInput.getValue(), 10) + 1;
-            }
-        }
-
-        if (!Ext.isEmpty(nextCell)) {
-            nextInput = nextCell.down('input.expected-completion');
-
-            // Prevent setting previous phase pace before next phase
-            if (nextInput && parseInt(paceFieldVal, 10) >= parseInt(nextInput.getValue(), 10)) {
-                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done before the ' + nextInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is before the ' + nextInput.getAttribute('data-phase') + ' phase.', function() {
-                    paceField.focus(50);
-                });
-
-                paceField.dom.value = parseInt(nextInput.getValue(), 10) - 1;
-            }
-        }
-
-        sparkpoint.set(phase.toLowerCase() + '_pace_target', paceField.getValue());
-    },
-
     onSortArrowClick: function(e, el) {
         var me = this,
             sparkConfigStore = me.getConfigSparkpointsStore(),
