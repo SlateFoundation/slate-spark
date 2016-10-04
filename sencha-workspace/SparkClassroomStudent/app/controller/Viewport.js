@@ -93,6 +93,18 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         store: {
             '#Sections': {
                 load: 'onSectionsStoreLoad'
+            },
+            '#SparkpointsLookup': {
+                beforeload: function(store) {
+                    console.log('SparkpointsLookup BEFOREload~!!!!!!!!!!!!!!!');
+                    console.log(store.getProxy().url);
+                    alert('yo');
+                },
+                load: function(store) {
+                    console.log('SparkpointsLookup load~!!!!!!!!!!!!!!!');
+                    console.log(store.getProxy().url);
+                    console.log(store.getRange()[0]);
+                }
             }
         }
     },
@@ -197,6 +209,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     onStudentSparkpointLoad: function(studentSparkpoint) {
         var timerCmp = this.getTimerCmp();
 
+        console.log(studentSparkpoint);
+
         if (studentSparkpoint) {
             if (studentSparkpoint.get('total_duration') > 0) {
                 timerCmp.setHtml(
@@ -268,6 +282,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
                 xtype: 'loadmask',
                 message: 'Resuming last sparkpoint&hellip;'
             });
+            console.log('loading sparkpoint');
             sparkpointsLookupStore.load({
                 callback: function(sparkpoints, operation, success) {
                     if (success && (latestCurrentSparkpoint = sparkpointsLookupStore.getAt(0))) {
