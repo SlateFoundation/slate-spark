@@ -55,6 +55,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             '#': {
                 activestudentidchange: 'initializeStudent'
             }
+        },
+
+        store: {
+            '#ConfigSparkpoints': {
+                load: 'loadDataIntoView'
+            }
         }
     },
 
@@ -91,6 +97,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
         appCt: {
             initialize: 'onInitializeAppCt'
+        },
+
+        sparkpointField: {
+            sparkpointselect: 'suggestNextSparkpoint'
         }
     },
 
@@ -244,6 +254,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         me.bindReordering();
         me.bindRemoveBtns();
 
+        sparkpointField.filterFn = function(rec) { // Note - setter wasn't working
+            // only show sparkpoints that are not already associated with this student
+            return Ext.getStore('ConfigSparkpoints').find('sparkpoint_id', rec.data.id) === -1;
+        };
+
         sparkpointField.updateSelectedStudent(studentId);
         sparkpointField.getSuggestionsList().setWidth(500);
     },
@@ -389,9 +404,23 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             return;
         }
 
-        // TEST REMOVE
-        sparkpoint.set('conference_finish_time', null);
-        sparkpoint.save();
+        sparkpoint.getProxy().setExtraParams({
+            'student_id': sparkpoint.get('student_id'),
+            'section_id': sparkpoint.get('section_id'),
+            'sparkpoint': sparkpoint.get('sparkpoint')
+        });
+
+        sparkpoint.erase({
+            failure: function(rec, op) {
+                var error = op && op.error && op.error.statusText;
+
+                Ext.Msg.alert('Error', 'Unable to remove this sparkpoint. (' + error + ')');
+            },
+            success: function() {
+                this.loadDataIntoView();
+            },
+            scope: me
+        });
     },
 
     onHideWindow: function() {
@@ -422,7 +451,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         me.getSparkpointsConfigWindow().hide();
-        me.suggestNextSparkpoint();
     },
 
     suggestNextSparkpoint: function() {
@@ -448,9 +476,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     return;
                 }
 
+                this.getConfigSparkpointsStore().load();
+
                 sparkpointField.setSelectedSparkpoint(null);
                 sparkpointField.setQuery(null);
-            }
+            },
+            scope: me
         });
     },
 
