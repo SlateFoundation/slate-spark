@@ -430,7 +430,7 @@ function* summaryHandler() {
     ctx.assert(studentId > 0, 'a student_id in the query string', 400);
 
     ctx.body = yield ctx.pgp.one(/*language=SQL*/ `
-        WITH required_assignments AS (
+        WITH assignments AS (
                SELECT resource_id,
                  json_object_agg(
                     CASE WHEN student_id IS NULL
@@ -450,10 +450,6 @@ function* summaryHandler() {
                              student_id = $1
                           OR student_id IS NULL
                        )
-                   AND (
-                         assignment = 'required'
-                         OR assignment = 'required-first'
-                       )
              ) t GROUP BY resource_id
         )
         
@@ -472,8 +468,8 @@ function* summaryHandler() {
                  ), '[]'::JSON) AS completed_resource_ids,
                  COALESCE((
                    SELECT json_object_agg(resource_id, assignments)
-                     FROM required_assignments
-                 ), '{}'::JSON) AS required_assignments,
+                     FROM assignments
+                 ), '{}'::JSON) AS assignments,
                  COALESCE((
                     SELECT required
                       FROM learns_required
