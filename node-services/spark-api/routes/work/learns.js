@@ -427,7 +427,7 @@ function* summaryHandler() {
 
     ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
-    ctx.assert(studentId > 0, 'a student_id in the query string', 400);
+    ctx.assert(studentId > 0, 'a student_id must be passed in the query string', 400);
 
     ctx.body = yield ctx.pgp.one(/*language=SQL*/ `
         WITH assignments AS (
@@ -484,9 +484,74 @@ function* summaryHandler() {
     );
 }
 
+function* sectionHandler() {
+    var ctx = this,
+        sparkpointId = ctx.query.sparkpoint_id,
+        sectionId = ctx.query.section_id;
+
+    ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
+    ctx.assert(sectionId, 'a section must be passed in the query string', 400);
+
+    ctx.body = (yield ctx.pgp.one(/*language=SQL*/ `
+        WITH learn_assignments AS (
+               SELECT resource_id,
+                 json_object_agg(
+                    CASE WHEN student_id IS NULL
+                         THEN 'section'
+                         ELSE student_id::TEXT
+                     END,
+                     assignment
+                 ) AS assignments
+               FROM (
+                 SELECT resource_id,
+                        assignment,
+                        student_id
+                  FROM learn_assignments
+                 WHERE sparkpoint_id = $1
+                   AND section_id = $2
+             ) t GROUP BY resource_id
+        ), resource_ids AS (
+            SELECT DISTINCT(jsonb_extract_path_text(jsonb_array_elements(playlist), 'resource_id')::INTEGER) AS resource_id
+              FROM learn_playlist_cache
+             WHERE section_id = $2
+               AND sparkpoint_id = $1
+        ), completed_learns AS (
+          SELECT resource_id,
+                 array_agg(user_id) AS user_ids
+            FROM learn_activity
+           WHERE user_id = ANY (
+             SELECT "PersonID"
+               FROM course_section_participants
+              WHERE "CourseSectionID" = $2
+                AND "Role" = 'Student'
+           ) AND resource_id = ANY (
+            SELECT resource_id FROM resource_ids
+           ) AND completed = TRUE
+          GROUP BY resource_id
+        )
+        
+        SELECT json_build_object(
+          'learn_assignments',
+          (SELECT json_object_agg(resource_id, assignments) FROM learn_assignments),
+          'learns_required',
+          COALESCE((SELECT json_object_agg(
+                      coalesce(student_id :: TEXT, 'section'),
+                      required
+                  ) AS learns_required
+           FROM learns_required
+           WHERE sparkpoint_id = $1
+                 AND section_id = $2
+          ), '{}'::JSON),
+          'learns_completed',
+          (SELECT json_object_agg(resource_id, user_ids) FROM completed_learns)
+        ) AS json`, [ sparkpointId, sectionId ]
+    )).json;
+}
+
 module.exports = {
     get: getHandler,
     patch: patchHandler,
     launch: launchHandler,
-    summary: summaryHandler
+    summary: summaryHandler,
+    section: sectionHandler
 };

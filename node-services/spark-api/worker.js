@@ -127,6 +127,7 @@ for (var path in methodsForPath) {
 // Custom routes
 router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
 router.get('/work/learns/summary', routes.work.learns.summary);
+router.get('/work/learns/section', routes.work.learns.section);
 
 router.get('/test', routes.test.index.get);
 
