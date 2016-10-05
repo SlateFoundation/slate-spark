@@ -192,25 +192,71 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             studentStore = me.getStudentsStore(),
             students = studentStore.getRange(),
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
-            newStudentSparkpoints = [],
             section = me.getAppCt().getSelectedSection(),
+            newStudentSparkpoints = [],
+            studentSparkpoints,
+            currentNextUpDate,
             count,
+            recommendedTime,
+            currentNextUp,
+            newStudentSparkpoint,
             studentId;
 
         for (count = 0; count < students.length; count++) {
+            competencySparkpointsStore.clearFilter();
             studentId = students[count].getId();
             competencySparkpointsStore.filter('student_id', studentId);
+            studentSparkpoints = competencySparkpointsStore.getRange();
 
             // Check if student already has this sparkpoint
-            if (competencySparkpointsStore.find('sparkpoint', sparkpoint) > 0) {
+            if (competencySparkpointsStore.find('sparkpoint', sparkpoint) >= 0) {
                 continue;
             }
 
-            newStudentSparkpoints.push({
+            newStudentSparkpoint = {
                 'student_id': studentId,
                 'section_code': section,
                 'sparkpoint_code': sparkpoint
-            });
+            };
+
+            if (nextUp) {
+                // Sort sparkpoints by their recommended_time, earliest first
+                studentSparkpoints.sort(function(a, b) {
+                    var firstTime = a.get('recommended_time'),
+                        secondTime = b.get('recommended_time');
+
+                    if (Ext.isEmpty(firstTime)) {
+                        return secondTime;
+                    } else if (Ext.isEmpty(secondTime)) {
+                        return firstTime
+                    } else if (Ext.isEmpty(firstTime) && Ext.isEmpty(secondTime)) {
+                        return firstTime;
+                    }
+
+                    if (firstTime < secondTime) {
+                        return a;
+                    }
+
+                    return b;
+                });
+
+                currentNextUp = studentSparkpoints[0];
+                if (currentNextUp.get('sparkpoint') === sparkpoint) {
+                    currentNextUp = studentSparkpoints[1];
+                }
+
+                currentNextUpDate = currentNextUp.get('recommended_time');
+
+                if (Ext.isEmpty(currentNextUpDate)) {
+                    currentNextUpDate = new Date();
+                }
+
+                // Take earliest sparkpoint for student and set recommended_time to be earliest for next up sparkpoint
+                recommendedTime = Ext.Date.subtract(currentNextUpDate, Ext.Date.DAY, 1);
+                newStudentSparkpoint.recommended_time = recommendedTime;
+            }
+
+            newStudentSparkpoints.push(newStudentSparkpoint);
         }
 
         Slate.API.request({
@@ -218,78 +264,20 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             url: '/spark/api/sparkpoints/suggest',
             jsonData: newStudentSparkpoints,
             callback: function(options, success) {
+                me.getAddToQueuePopover().hide();
+
                 if (!success) {
                     Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
                     return;
                 }
             },
+            success: function(response) {
+                competencySparkpointsStore.beginUpdate();
+                competencySparkpointsStore.add(response.data);
+                competencySparkpointsStore.endUpdate();
+            },
             scope: me
         });
-
-        if (!nextUp) {
-            return;
-        }
-
-    },
-
-    setSparkpointNextUp: function() {
-        var me = this,
-            sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
-            studentStore = me.getStudentsStore(),
-            students = studentStore.getRange(),
-            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
-            studentSparkpoints,
-            count,
-            recommendedTime,
-            currentNextUp,
-            newStudentSparkpoint,
-            studentId;
-
-        // For adding next up, this sparkpoint needs to have its recommended_time bumped forward
-        for (count = 0; count < students.length; count++) {
-            studentId = students[count].getId();
-            competencySparkpointsStore.clearFilter();
-            competencySparkpointsStore.filter('student_id', studentId);
-            studentSparkpoints = competencySparkpointsStore.getRange();
-            newStudentSparkpoint = competencySparkpointsStore.findRecord('sparkpoint', sparkpoint);
-
-            // Precaution incase the student had completed the sparkpoint previously and it wasn't actually just added / is not in this store.
-            if (Ext.isEmpty(newStudentSparkpoint)) {
-                continue;
-            }
-
-            // Sort sparkpoints by their recommended_time, earliest first
-            studentSparkpoints.sort(function(a, b) {
-                var firstTime = a.get('recommended_time'),
-                    secondTime = b.get('recommended_time');
-
-                if (Ext.isEmpty(firstTime)) {
-                    return secondTime;
-                } else if (Ext.isEmpty(secondTime)) {
-                    return firstTime
-                } else if (Ext.isEmpty(firstTime) && Ext.isEmpty(secondTime)) {
-                    return firstTime;
-                }
-
-                if (firstTime < secondTime) {
-                    return a;
-                }
-
-                return b;
-            });
-
-            currentNextUp = studentSparkpoints[0];
-            if (currentNextUp.get('sparkpoint') === newStudentSparkpoint.get('sparkpoint')) {
-                currentNextUp = studentSparkpoints[1];
-            }
-
-            // Take earliest sparkpoint for student and set recommended_time to be earliest for next up sparkpoint
-            recommendedTime = Ext.Date.subtract(currentNextUp.get('recommended_time'), Ext.Date.DAY, 1);
-            newStudentSparkpoint.set('recommended_time', recommendedTime);
-            newStudentSparkpoint.save();
-        }
-
-        competencySparkpointsStore.clearFilter();
     },
 
     onAddNextUp: function() {
