@@ -532,7 +532,10 @@ function* sectionHandler() {
         
         SELECT json_build_object(
           'learn_assignments',
-          (SELECT json_object_agg(resource_id, assignments) FROM learn_assignments),
+          COALESCE((
+            SELECT json_object_agg(resource_id, assignments)
+              FROM learn_assignments
+          ), '{}'::JSON),
           'learns_required',
           COALESCE((SELECT json_object_agg(
                       coalesce(student_id :: TEXT, 'section'),
@@ -543,7 +546,7 @@ function* sectionHandler() {
                  AND section_id = $2
           ), '{}'::JSON),
           'learns_completed',
-          (SELECT json_object_agg(resource_id, user_ids) FROM completed_learns)
+          COALESCE((SELECT json_object_agg(resource_id, user_ids) FROM completed_learns), '{}'::JSON)
         ) AS json`, [ sparkpointId, sectionId ]
     )).json;
 }
