@@ -259,6 +259,13 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             newStudentSparkpoints.push(newStudentSparkpoint);
         }
 
+        competencySparkpointsStore.clearFilter();
+
+        if (newStudentSparkpoints.length === 0) {
+            Ext.Msg.alert('Failed to recommend sparkpoint', 'All students have this Sparkpoint either in their queue or already active.');
+            return;
+        }
+
         Slate.API.request({
             method: 'POST',
             url: '/spark/api/sparkpoints/suggest',
@@ -435,7 +442,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     dirty: false
                 });
             }
-        } else if (table == 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
+        } else if (table === 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
             if (Ext.isEmpty(competencySparkpointsStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
                 // create model, add neccessary data.
                 itemData.student = Ext.getStore('Students').getById(itemData.student_id);
