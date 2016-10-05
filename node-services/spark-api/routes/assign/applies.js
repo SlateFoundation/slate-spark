@@ -14,10 +14,10 @@ function* getHandler() {
 
     // TODO: synchronous ctx.lookup is deprecated
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
-        console.log(asnId);
         standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
     });
 
+    // If standardIds is empty the query below will fail because PostgreSQL will not know it's array of integers
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
     ctx.assert(ctx.isTeacher, 'Only teachers can assign applies', 403);
 
@@ -86,16 +86,6 @@ function* getHandler() {
                 ap.gradelevel,
                 'timeEstimate',
                 ap.timeestimate,
-                'sparkpointIds',
-                (SELECT json_agg(id)
-                 FROM sparkpoints
-                WHERE metadata->>'asn_id' = ANY($1)
-                ),
-                'sparkpointCodes',
-                (SELECT json_agg(code)
-                 FROM sparkpoints
-                WHERE metadata->>'asn_id' = ANY($1)
-                ),
                 'standardCodes',
                 ap.standards,
                 'todos',
