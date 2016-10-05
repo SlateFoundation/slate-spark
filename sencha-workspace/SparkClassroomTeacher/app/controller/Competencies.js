@@ -62,7 +62,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         appCt: 'spark-teacher-appct',
         competenciesGrid: 'spark-competencies spark-competencies-grid',
         studentCompetencyPopover: 'spark-studentcompetency-popover',
-        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window'
+        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window',
+        addToQueuePopover: 'spark-addtoqueue-popover'
     },
 
     control: {
