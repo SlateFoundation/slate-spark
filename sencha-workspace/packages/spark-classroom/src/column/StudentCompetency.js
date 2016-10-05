@@ -113,14 +113,12 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
 
         if (target.className.indexOf('spark-config-btn') > -1) {
             me.fireEvent('sparkconfigclick', me.getDataIndex());
-            return;
         }
 
         if (target.className.indexOf('spark-goal') > -1) {
             me.fireEvent('sparkgoalclick', me.getDataIndex(), target);
-            return;
         }
 
-        me.callParent(arguments);
+        return;
     }
 });
