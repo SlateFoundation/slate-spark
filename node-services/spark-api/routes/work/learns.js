@@ -21,6 +21,7 @@ function* getHandler() {
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
     ctx.assert(studentId > 0, 'non-student users must pass a student_id in the query string', 400);
 
+    // TODO: synchronous ctx.lookup is deprecated
     (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
         var standard = new AsnStandard(asnId);
         standardIds = standardIds.concat(standard.asnIds);
@@ -418,8 +419,78 @@ function* launchHandler() {
     }
 }
 
+function* summaryHandler() {
+    var ctx = this,
+        sparkpointId = ctx.query.sparkpoint_id,
+        studentId = ctx.isStudent ? ctx.userId : parseInt(ctx.query.student_id, 10),
+        sectionId = ctx.query.section_id;
+
+    ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
+    ctx.assert(sectionId, 'a section must be passed in the query string', 400);
+    ctx.assert(studentId > 0, 'a student_id in the query string', 400);
+
+    ctx.body = yield ctx.pgp.one(/*language=SQL*/ `
+        WITH required_assignments AS (
+               SELECT resource_id,
+                 json_object_agg(
+                    CASE WHEN student_id IS NULL
+                         THEN 'section'
+                         ELSE 'student'
+                     END,
+                     assignment
+                 ) AS assignments
+               FROM (
+                 SELECT resource_id,
+                        assignment,
+                        student_id
+                  FROM learn_assignments
+                 WHERE sparkpoint_id = $2
+                   AND section_id = $3
+                   AND (
+                             student_id = $1
+                          OR student_id IS NULL
+                       )
+                   AND (
+                         assignment = 'required'
+                         OR assignment = 'required-first'
+                       )
+             ) t GROUP BY resource_id
+        )
+        
+        SELECT COALESCE((
+                  SELECT json_agg(resource_id)
+                    FROM learn_activity
+                   WHERE user_id = $1
+                     AND resource_id = ANY (
+                        SELECT jsonb_extract_path_text(jsonb_array_elements(playlist), 'resource_id') :: INTEGER
+                          FROM learn_playlist_cache
+                         WHERE section_id = $3
+                           AND sparkpoint_id = $2
+                           AND student_id = $1
+                     )
+                     AND completed = TRUE
+                 ), '[]'::JSON) AS completed_resource_ids,
+                 COALESCE((
+                   SELECT json_object_agg(resource_id, assignments)
+                     FROM required_assignments
+                 ), '{}'::JSON) AS required_assignments,
+                 COALESCE((
+                    SELECT required
+                      FROM learns_required
+                     WHERE sparkpoint_id = $2
+                       AND section_id = $3
+                       AND (student_id = $1 OR student_id IS NULL)
+                  ORDER BY student_id IS NOT NULL DESC
+                     LIMIT 1),
+                5 -- Hard coded site default
+                ) AS total_learns_required;
+        `, [ studentId, sparkpointId, sectionId ]
+    );
+}
+
 module.exports = {
     get: getHandler,
     patch: patchHandler,
-    launch: launchHandler
+    launch: launchHandler,
+    summary: summaryHandler
 };
