@@ -192,39 +192,58 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             studentStore = me.getStudentsStore(),
             students = studentStore.getRange(),
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            newStudentSparkpoints = [],
+            section = me.getAppCt().getSelectedSection(),
+            count,
+            studentId;
+
+        for (count = 0; count < students.length; count++) {
+            studentId = students[count].getId();
+            competencySparkpointsStore.filter('student_id', studentId);
+
+            // Check if student already has this sparkpoint
+            if (competencySparkpointsStore.find('sparkpoint', sparkpoint) > 0) {
+                continue;
+            }
+
+            newStudentSparkpoints.push({
+                'student_id': studentId,
+                'section_code': section,
+                'sparkpoint_code': sparkpoint
+            });
+        }
+
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/sparkpoints/suggest',
+            jsonData: newStudentSparkpoints,
+            callback: function(options, success) {
+                if (!success) {
+                    Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
+                    return;
+                }
+            },
+            scope: me
+        });
+
+        if (!nextUp) {
+            return;
+        }
+
+    },
+
+    setSparkpointNextUp: function() {
+        var me = this,
+            sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
+            studentStore = me.getStudentsStore(),
+            students = studentStore.getRange(),
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentSparkpoints,
             count,
             recommendedTime,
             currentNextUp,
             newStudentSparkpoint,
             studentId;
-
-        for (count = 0; count < students.length; count++) {
-            studentId = students[count].getId();
-            competencySparkpointsStore.filter('student_id', studentId);
-            studentSparkpoints = competencySparkpointsStore.getRange();
-
-            // Check if student already has this sparkpoint
-            if (competencySparkpointsStore.find('sparkpoint', sparkpoint) < 0) {
-                continue;
-            }
-
-            // Run API request for sparkpoint for every student.
-            // TODO: See if there is a way to run this for all students in a single AJAX request.
-            // TODO: Also perhaps it can allow setting recommended_time to earliest if nextUp == true to prevent just as many saves.
-            Slate.API.request({
-                method: 'PATCH',
-                url: '/spark/api/work/activity',
-                jsonData: {
-                    'sparkpoint': sparkpoint,
-                    'student_id': studentId
-                } // No error, it may return that the student completed it in another section and we shouldn't display this multiple times here.
-            });
-        }
-
-        if (!nextUp) {
-            return;
-        }
 
         // For adding next up, this sparkpoint needs to have its recommended_time bumped forward
         for (count = 0; count < students.length; count++) {
