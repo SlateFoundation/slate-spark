@@ -476,12 +476,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     return;
                 }
 
-                this.getConfigSparkpointsStore().load();
+                me.getConfigSparkpointsStore().load();
 
                 sparkpointField.setSelectedSparkpoint(null);
                 sparkpointField.setQuery(null);
-            },
-            scope: me
+            }
         });
     },
 
