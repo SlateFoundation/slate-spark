@@ -112,7 +112,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
 
     // route handlers
-    rewriteShowWork: function(token, args, route) {
+    rewriteShowWork: function() {
         var workTabBar = this.getWorkTabbar(),
             workTabId, activeWorkTab, selectedStudentSparkpoint;
 
@@ -121,7 +121,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             && (activeWorkTab = workTabBar.getActiveTab())
         ) {
             workTabId = activeWorkTab.getItemId();
-        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {
+        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {  // eslint-disable-line no-cond-assign
             workTabId = selectedStudentSparkpoint.get('active_phase');
         }
 
@@ -176,7 +176,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
-        if (!activeTeacherTab || activeTeacherTab.getItemId() == 'work') {
+        if (!activeTeacherTab || activeTeacherTab.getItemId() === 'work') {
             me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
         }
 
@@ -186,13 +186,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             feedbackStore.setFilters([{
                 property: 'student_id',
                 value: studentId
-            },{
+            }, {
                 property: 'sparkpoint_id',
                 value: selectedStudentSparkpoint.get('sparkpoint_id')
             }]);
 
             feedbackStore.getProxy().setExtraParams({
-                student_id: studentId,
+                student_id: studentId, // eslint-disable-line camelcase
                 sparkpoint: selectedStudentSparkpoint.get('sparkpoint')
             });
 
@@ -220,11 +220,11 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             itemData = data.item,
             selectedStudentSparkpoint, workFeedbackStore, doLoadFeedback;
 
-        if (tableName == 'teacher_feedback') {
+        if (tableName === 'teacher_feedback') {
             if (
-                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint()) &&
-                selectedStudentSparkpoint.get('student_id') == itemData.student_id &&
-                selectedStudentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+                && selectedStudentSparkpoint.get('student_id') === itemData.student_id
+                && selectedStudentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
             ) {
                 workFeedbackStore = me.getWorkFeedbackStore();
 
@@ -235,7 +235,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
                         sameAuthorFeedback = workFeedbackStore.findRecord('author_id', itemData.author_id);
 
                         newFeedback = workFeedbackStore.add(Ext.apply({
-                            author_name: sameAuthorFeedback ? sameAuthorFeedback.get('author_name') : null
+                            author_name: sameAuthorFeedback ? sameAuthorFeedback.get('author_name') : null // eslint-disable-line camelcase
                         }, itemData))[0];
 
                         if (!sameAuthorFeedback) {
@@ -308,23 +308,23 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         }
 
         me.getLearnTab().setDuration(
-            learnStartTime &&
-            ((studentSparkpoint.get('learn_completed_time') || now) - learnStartTime)
+            learnStartTime
+            && ((studentSparkpoint.get('learn_completed_time') || now) - learnStartTime) // eslint-disable-line no-extra-parens
         );
 
         me.getConferenceTab().setDuration(
-            conferenceStartTime &&
-            ((studentSparkpoint.get('conference_completed_time') || now) - conferenceStartTime)
+            conferenceStartTime
+            && ((studentSparkpoint.get('conference_completed_time') || now) - conferenceStartTime) // eslint-disable-line no-extra-parens
         );
 
         me.getApplyTab().setDuration(
-            applyStartTime &&
-            ((studentSparkpoint.get('apply_completed_time') || now) - applyStartTime)
+            applyStartTime
+            && ((studentSparkpoint.get('apply_completed_time') || now) - applyStartTime) // eslint-disable-line no-extra-parens
         );
 
         me.getAssessTab().setDuration(
-            assessStartTime &&
-            ((studentSparkpoint.get('assess_completed_time') || now) - assessStartTime)
+            assessStartTime
+            && ((studentSparkpoint.get('assess_completed_time') || now) - assessStartTime) // eslint-disable-line no-extra-parens
         );
 
         workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
