@@ -71,8 +71,8 @@ Ext.define('SparkClassroom.timing.DurationDisplay', {
     calculateDuration: function(sectionCode, phaseStartTime, phaseEndTime, inDays, skipFuzzy) {
         var me = this,
             timing = me.getTiming(),
-            grade = timing.sectionCodeToGrade(sectionCode),
-            duration = '--';
+            duration = '--',
+            grade;
 
         // use now if no phaseEndTime sent
         if (!phaseEndTime || !(phaseEndTime instanceof Date)) {
@@ -84,6 +84,13 @@ Ext.define('SparkClassroom.timing.DurationDisplay', {
 
         // use fuzzy duration formatting by default
         skipFuzzy = (skipFuzzy === true); // eslint-disable-line no-extra-parens
+
+        // prevent regex matching errors in sectionCodeToGrade() function on null sectionCode
+        if (sectionCode === null) {
+            sectionCode = '';
+        }
+
+        grade = timing.sectionCodeToGrade(sectionCode);
 
         if (phaseStartTime instanceof Date) {
             if (inDays) {
