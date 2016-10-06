@@ -4,6 +4,8 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
 
     config: {
         cls: 'spark-addtoqueue-popover',
+        modal: true,
+        hideOnMaskTap: true,
         items: [
             {
                 xtype: 'component',
@@ -21,10 +23,7 @@ Ext.define('SparkClassroom.column.panel.AddToQueue', {
                         click: {
                             element: 'element',
                             fn: function() {
-                                this.up('spark-addtoqueue-popover').destroy();
-                                Ext.select('.is-stuck').each(function() {
-                                    this.removeCls('is-stuck');
-                                });
+                                this.up('spark-addtoqueue-popover').hide();
                             }
                         }
                     }

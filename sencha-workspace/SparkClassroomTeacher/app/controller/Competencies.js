@@ -62,7 +62,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         appCt: 'spark-teacher-appct',
         competenciesGrid: 'spark-competencies spark-competencies-grid',
         studentCompetencyPopover: 'spark-studentcompetency-popover',
-        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window'
+        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window',
+        addToQueuePopover: 'spark-addtoqueue-popover'
     },
 
     control: {
@@ -90,6 +91,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             },
             sparkgoalclick: {
                 fn: 'onSparkGoalClick'
+            }
+        },
+
+        addToQueuePopover: {
+            hide: {
+                fn: 'onAddToQueueHide'
             }
         }
     },
@@ -215,6 +222,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         }
 
         me.saveSectionGoal(sectionGoal);
+    },
+
+    onAddToQueueHide: function() {
+        Ext.select('.is-stuck').each(function() {
+            this.removeCls('is-stuck');
+        });
     },
 
     saveSectionGoal: Ext.Function.createBuffered(function(sectionGoal) {
