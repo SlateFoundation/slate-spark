@@ -129,18 +129,34 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'string',
             critical: true,
             convert: function(v, r) {
-                // TODO: Remove this once the sparkpoints endpoint returns sparkpoint instead of code
-                var code = r.get('code');
+                var code;
 
-                if (Ext.isEmpty(code)) {
+                // if value doesn't exist for this field name directly,
+                // try to convert from other possible field names
+                if (v) {
                     return v;
+                }
+
+                code = r.get('code');
+
+                if (!code) {
+                    code = r.get('sparkpoint_code');
                 }
 
                 return code;
             }
         }, {
             name: 'section',
-            type: 'string'
+            type: 'string',
+            convert: function(v, r) {
+                // if value doesn't exist for this field name directly,
+                // try to convert from other possible field names
+                if (v) {
+                    return v;
+                }
+
+                return r.get('section_code');
+            }
         }, {
             name: 'student_id',
             type: 'int',

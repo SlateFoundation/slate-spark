@@ -186,107 +186,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         this.addToQueue(false);
     },
 
-    addToQueue: function(nextUp) {
-        var me = this,
-            sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
-            studentStore = me.getStudentsStore(),
-            students = studentStore.getRange(),
-            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
-            section = me.getAppCt().getSelectedSection(),
-            newStudentSparkpoints = [],
-            studentSparkpoints,
-            currentNextUpDate,
-            count,
-            recommendedTime,
-            currentNextUp,
-            newStudentSparkpoint,
-            studentId;
-
-        for (count = 0; count < students.length; count++) {
-            competencySparkpointsStore.clearFilter();
-            studentId = students[count].getId();
-            competencySparkpointsStore.filter('student_id', studentId);
-            studentSparkpoints = competencySparkpointsStore.getRange();
-
-            // Check if student already has this sparkpoint
-            if (competencySparkpointsStore.find('sparkpoint', sparkpoint) >= 0) {
-                continue;
-            }
-
-            newStudentSparkpoint = {
-                'student_id': studentId,
-                'section_code': section,
-                'sparkpoint_code': sparkpoint
-            };
-
-            if (nextUp) {
-                // Sort sparkpoints by their recommended_time, earliest first
-                studentSparkpoints.sort(function(a, b) {
-                    var firstTime = a.get('recommended_time'),
-                        secondTime = b.get('recommended_time');
-
-                    if (Ext.isEmpty(firstTime)) {
-                        return secondTime;
-                    } else if (Ext.isEmpty(secondTime)) {
-                        return firstTime
-                    } else if (Ext.isEmpty(firstTime) && Ext.isEmpty(secondTime)) {
-                        return firstTime;
-                    }
-
-                    if (firstTime < secondTime) {
-                        return a;
-                    }
-
-                    return b;
-                });
-
-                currentNextUp = studentSparkpoints[0];
-                if (currentNextUp.get('sparkpoint') === sparkpoint) {
-                    currentNextUp = studentSparkpoints[1];
-                }
-
-                currentNextUpDate = currentNextUp.get('recommended_time');
-
-                if (Ext.isEmpty(currentNextUpDate)) {
-                    currentNextUpDate = new Date();
-                }
-
-                // Take earliest sparkpoint for student and set recommended_time to be earliest for next up sparkpoint
-                recommendedTime = Ext.Date.subtract(currentNextUpDate, Ext.Date.DAY, 1);
-                newStudentSparkpoint.recommended_time = recommendedTime;
-            }
-
-            newStudentSparkpoints.push(newStudentSparkpoint);
-        }
-
-        competencySparkpointsStore.clearFilter();
-
-        if (newStudentSparkpoints.length === 0) {
-            Ext.Msg.alert('Failed to recommend sparkpoint', 'All students have this Sparkpoint either in their queue or already active.');
-            return;
-        }
-
-        Slate.API.request({
-            method: 'POST',
-            url: '/spark/api/sparkpoints/suggest',
-            jsonData: newStudentSparkpoints,
-            callback: function(options, success) {
-                me.getAddToQueuePopover().hide();
-
-                if (!success) {
-                    Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
-                    return;
-                }
-            },
-            success: function(response) {
-                competencySparkpointsStore.beginUpdate();
-                competencySparkpointsStore.add(response.data);
-                competencySparkpointsStore.endUpdate();
-            },
-            scope: me
-        });
-    },
-
     onAddNextUp: function() {
         this.addToQueue(true);
     },
@@ -520,6 +419,69 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         });
 
         sectionGoalsStore.load();
+    },
+
+    addToQueue: function(nextUp) {
+         var me = this,
+            sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
+            studentStore = me.getStudentsStore(),
+            students = studentStore.getRange(),
+            section = me.getAppCt().getSelectedSection(),
+            count,
+            studentId,
+            newStudentSparkpoints = [],
+            recommendedTime;
+
+        for (count = 0; count < students.length; count++) {
+            studentId = students[count].getId();
+
+            recommendedTime = nextUp ? me.getNextUpTime(studentId) : new Date();
+
+            newStudentSparkpoints.push({
+                'student_id': studentId,
+                'section_code': section,
+                'sparkpoint_code': sparkpoint,
+                'recommended_time': recommendedTime
+            });
+        }
+
+        if (newStudentSparkpoints.length === 0) {
+            Ext.Msg.alert('Already Recommended', 'This sparkpoint is already either in queue or active for all students.');
+            return;
+        }
+
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/sparkpoints/suggest',
+            jsonData: newStudentSparkpoints,
+            callback: function(options, success) {
+                this.getAddToQueuePopover().hide();
+
+                if (!success) {
+                    Ext.Msg.alert('Error Adding to Queue', 'This sparkpoint could not be recommended, please try again or contact an administrator');
+                    return;
+                }
+            },
+            scope: me
+        });
+    },
+
+    getNextUpTime: function(studentId) {
+        var me = this,
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            studentSparkpoints,
+            currentNextUpTime;
+
+        // get all of this student's sparkpoints that have a valid recommended time and sort by earliest recommended
+        studentSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
+            return rec.get('student_id') === studentId && Ext.isDate(rec.get('recommended_time'));
+        }).sort('recommended_time', 'ASC').items;
+
+        // set the current next up time, if one doesn't exist, tnow is next up time
+        currentNextUpTime = studentSparkpoints[0] ? studentSparkpoints[0].get('recommended_time') : new Date();
+
+        // new next up time is a minute before current next up time
+        return Ext.Date.subtract(currentNextUpTime, Ext.Date.MINUTE, 1);
     },
 
     /**
