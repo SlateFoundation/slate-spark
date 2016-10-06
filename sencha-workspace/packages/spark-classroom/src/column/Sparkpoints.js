@@ -10,8 +10,8 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
         cls: 'spark-sparkpoints-column',
         width: 208,
         text: [
-            '<select class="field-control"><option>Student</option></select>',
-            '<select class="field-control"><option>Sparkpoint</option></select>'
+            '<select class="field-control spark-student-filter"></select>',
+            '<select class="field-control spark-sparkpoint-filter"></select>'
         ].join(''),
         cell: {
             cls: 'spark-sparkpoints-cell',
@@ -47,5 +47,13 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
                 '</div>'
             ].join('');
         }
+    },
+
+    getStudentFilter: function() {
+        return Ext.get(this.element.down('select.spark-student-filter'));
+    },
+
+    getSparkpointFilter: function() {
+        return Ext.get(this.element.down('select.spark-sparkpoint-filter'));
     }
 });

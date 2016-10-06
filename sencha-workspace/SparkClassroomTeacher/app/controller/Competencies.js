@@ -52,6 +52,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         competenciesNavButton: 'spark-navbar button#competencies',
         tabsCt: 'spark-teacher-tabscontainer',
         teacherTabbar: 'spark-teacher-tabbar',
+        sparkpointsColumn: 'spark-sparkpoints-column',
 
         competenciesCt: {
             selector: 'spark-competencies',
@@ -150,6 +151,49 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.activeStudentId = studentId;
         me.getApplication().fireEvent('activestudentidchange', studentId);
+    },
+
+    bindFilterActions: function() {
+        var me = this,
+            column = me.getSparkpointsColumn(),
+            studentFilter = column.getStudentFilter(),
+            sparkpointFilter = column.getSparkpointFilter(),
+            gridStore = me.getCompetenciesGrid().getStore(),
+            gridData = gridStore.getRange(),
+            gridRowData,
+            studentStore = me.getStudentsStore(),
+            students = studentStore.getRange(),
+            studentOptions = '',
+            sparkpointOptions = '',
+            student,
+            count;
+
+        if (!studentStore.isLoaded()) {
+            studentStore.on('load', function() {
+                me.bindFilterActions();
+            }, { single: true });
+
+            return;
+        }
+
+        if (!gridStore.isLoaded()) {
+            gridStore.on('datachanged', function() {
+                me.bindFilterActions();
+            }, { single: true })
+        }
+
+        for (count = 0; count < students.length; count++) {
+            student = students[count];
+            studentOptions += '<option>' + student.get('FullName') + '</option>';
+        }
+
+        for (count = 0; count < gridData.length; count++) {
+            gridRowData = gridData[count];
+            sparkpointOptions += '<option>' + gridRowData.get('sparkpoint') + '</option>';
+        }
+
+        studentFilter.setHtml(studentOptions);
+        sparkpointFilter.setHtml(sparkpointOptions);
     },
 
     // route handlers
@@ -436,7 +480,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     doRefreshColumns: function() {
         var me = this,
             grid = me.getCompetenciesGrid(),
-            studentStore = Ext.getStore('Students'),
+            studentStore = me.getStudentsStore(),
             sectionGoalsStore = me.getSectionGoalsStore(),
             studentCompetencyColumnXType = 'spark-student-competency-column',
             currentSection = me.getAppCt().getSelectedSection(),
