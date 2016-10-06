@@ -442,13 +442,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                     return null;
                 }
 
-                return SparkClassroom.timing.DurationDisplay.calculateDuration(
-                    data.section,
-                    data.learn_start_time,
-                    data.learn_completed_time,
-                    true,
-                    true
-                ) + 1;
+                return Ext.Date.diff(data.learn_start_time, data.learn_completed_time, Ext.Date.DAY) + 1;
             }
         }, {
             name: 'conference_subphase_duration',
@@ -489,13 +483,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                     return null;
                 }
 
-                return SparkClassroom.timing.DurationDisplay.calculateDuration(
-                    data.section,
-                    data.learn_start_time,
-                    data.conference_completed_time,
-                    true,
-                    true
-                ) + 1;
+                return Ext.Date.diff(data.learn_start_time, data.conference_completed_time, Ext.Date.DAY) + 1;
             }
         }, {
             name: 'apply_subphase_duration',
@@ -535,13 +523,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                     return null;
                 }
 
-                return SparkClassroom.timing.DurationDisplay.calculateDuration(
-                    data.section,
-                    data.learn_start_time,
-                    data.apply_completed_time,
-                    true,
-                    true
-                ) + 1;
+                return Ext.Date.diff(data.learn_start_time, data.apply_completed_time, Ext.Date.DAY) + 1;
             }
         }, {
             name: 'assess_subphase_duration',
@@ -587,13 +569,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                     return null;
                 }
 
-                return SparkClassroom.timing.DurationDisplay.calculateDuration(
-                    data.section,
-                    data.learn_start_time,
-                    data.assess_completed_time,
-                    true,
-                    true
-                ) + 1;
+                return Ext.Date.diff(data.learn_start_time, data.assess_completed_time, Ext.Date.DAY) + 1;
             }
         }, {
             name: 'total_duration',
