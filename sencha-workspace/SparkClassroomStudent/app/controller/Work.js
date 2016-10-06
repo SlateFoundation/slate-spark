@@ -230,7 +230,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
                 && (workFeedbackStore = me.getWorkFeedbackStore())
                 && !workFeedbackStore.getById(itemData.id)
             ) {
-                workFeedbackStore.add(itemData)[0];
+                workFeedbackStore.add(itemData);
             }
         }
     },
