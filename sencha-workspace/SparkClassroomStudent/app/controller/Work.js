@@ -10,6 +10,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
 
     config: {
+        selectedSection: null,
         studentSparkpoint: null
     },
 
@@ -100,7 +101,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         controller: {
             '#': {
                 studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
+                studentsparkpointupdate: 'onStudentSparkpointUpdate',
+                sectionselect: 'onSectionSelect'
             }
         },
         socket: {
@@ -175,6 +177,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
 
     // event handlers
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
+    },
+
     onStudentSparkpointLoad: function(studentSparkpoint) {
         var me = this;
 
@@ -260,7 +266,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     refreshTabbar: function() {
         var me = this,
             studentSparkpoint = me.getStudentSparkpoint(),
-            sectionCode = studentSparkpoint.get('sparkpoint'),
+            sectionCode = me.getSelectedSection(),
             workTabbar = me.getWorkTabbar();
 
         if (!workTabbar) {
