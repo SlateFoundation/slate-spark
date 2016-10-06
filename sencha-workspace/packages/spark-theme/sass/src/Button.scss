@@ -6,6 +6,10 @@
         font-size: 14px;
         margin-right: ($font-size * .25);
     }
+
+    &.x-button-plain {
+        box-shadow: none;
+    }
 }
 
 button.plain {
