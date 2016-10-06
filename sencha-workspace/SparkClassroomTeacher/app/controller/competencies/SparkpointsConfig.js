@@ -71,24 +71,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         },
 
-        configTableActive: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
-        configTableCurrent: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
-        configTableQueue: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
         sparkpointsConfigWindow: {
             hide: {
                 fn: 'onHideWindow'
@@ -311,45 +293,41 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
     },
 
+    /*
+    Ensure that subsequent phase pace values are greater than previous phase and set sparkpoint with new values
+    */
     onPaceFieldChange: function(e, el) {
-        var configSparkpointsStore = this.getConfigSparkpointsStore(),
-            paceField = Ext.get(el),
-            paceFieldVal = paceField.getValue(),
-            phase = paceField.getAttribute('data-phase'),
-            studentSparkpointId = paceField.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
+        var me = this,
+            configSparkpointsStore = me.getConfigSparkpointsStore(),
+            changedPaceField = Ext.get(el),
+            newPaceValue = changedPaceField.getValue(),
+            changedPhase = changedPaceField.getAttribute('data-phase'),
+            sparkRow = changedPaceField.up('tr.sparkpoint-row'),
+            studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
             sparkpoint = configSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
-            prevCell = paceField.up('td').prev('td'),
-            nextCell = paceField.up('td').next('td'),
-            prevInput,
-            nextInput;
+            paceFields = sparkRow.select('input.expected-completion').elements,
+            count, fieldEl, fieldVal, nextFieldEl, nextFieldVal;
 
-        if (!Ext.isEmpty(prevCell)) {
-            prevInput = prevCell.down('input.expected-completion');
+            // convert to integer, if input is blank, replace with 1
+            newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
+            sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
 
-            // Prevent setting future phase pace before previous phase
-            if (prevInput && parseInt(paceFieldVal, 10) <= parseInt(prevInput.getValue(), 10)) {
-                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done after the ' + prevInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is after the ' + prevInput.getAttribute('data-phase') + ' phase.', function() {
-                    paceField.focus(50);
-                });
+            for (count = 0; count + 1 < paceFields.length; count++) {
+                fieldEl = Ext.fly(paceFields[count]);
+                fieldVal = parseInt(fieldEl.getValue(), 10);
+                nextFieldEl = Ext.fly(paceFields[count + 1]);
+                nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
 
-                paceField.dom.value = parseInt(prevInput.getValue(), 10) + 1;
+                if (!Ext.isNumber(fieldVal)) {
+                    fieldEl.dom.value = 1;
+                }
+
+                if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+                    nextFieldEl.dom.value = fieldVal + 1;
+
+                    sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
+                }
             }
-        }
-
-        if (!Ext.isEmpty(nextCell)) {
-            nextInput = nextCell.down('input.expected-completion');
-
-            // Prevent setting previous phase pace before next phase
-            if (nextInput && parseInt(paceFieldVal, 10) >= parseInt(nextInput.getValue(), 10)) {
-                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done before the ' + nextInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is before the ' + nextInput.getAttribute('data-phase') + ' phase.', function() {
-                    paceField.focus(50);
-                });
-
-                paceField.dom.value = parseInt(nextInput.getValue(), 10) - 1;
-            }
-        }
-
-        sparkpoint.set(phase.toLowerCase() + '_pace_target', paceField.getValue());
     },
 
     onSortArrowClick: function(e, el) {
@@ -482,71 +460,5 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 sparkpointField.setQuery(null);
             }
         });
-    },
-
-    onUpdateSparkRows: function(component) {
-        var me = this,
-            overrideFields = component.element.select('.override-field'),
-            overrideField,
-            count;
-
-        for (count = 0; count < overrideFields.elements.length; count++) {
-            overrideField = Ext.get(overrideFields.elements[count]);
-
-            overrideField.on('change', function(e, target) {
-                me.onOverrideChange(e, target);
-            });
-        }
-    },
-
-    onOverrideChange: function(e, target) {
-        var me = this,
-            configStore = me.getConfigSparkpointsStore(),
-            el = Ext.get(target),
-            checked = el.is(':checked'),
-            phaseName = el.getAttribute('data-phase'),
-            studentSparkpointId = el.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            record = configStore.findRecord('student_sparkpointid', studentSparkpointId),
-            chainCheckbox,
-            value;
-
-        switch (phaseName) {
-            case 'Learn':
-                break;
-            case 'Conference':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Learn"]');
-                break;
-            case 'Apply':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Conference"]');
-                break;
-            case 'Assess':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Apply"]');
-                break;
-            default:
-        }
-
-        // If we checked a later phase, ensure that the previous phases are also checked
-        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
-            if (!chainCheckbox.is(':disabled')) {
-                chainCheckbox.dom.disabled = true;
-            }
-
-            if (!chainCheckbox.is(':checked')) {
-                chainCheckbox.dom.checked = true;
-            }
-
-            me.onOverrideChange(null, chainCheckbox);
-        }
-
-        // If we unchecked this then remove disabled state if the prev phase wasn't finished
-        if (!Ext.isEmpty(chainCheckbox) && !checked) {
-            if (!chainCheckbox.hasCls('finished')) {
-                chainCheckbox.dom.removeAttribute('disabled');
-            }
-        }
-
-        value = checked ? new Date() : null;
-
-        record.set(phaseName.toLowerCase() + '_override_time', value);
     }
 });
