@@ -210,11 +210,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             modifiedFieldNames,
             workFeedbackStore;
 
-
         if (tableName === 'student_sparkpoint' || tableName === 'section_student_active_sparkpoint') {
             if (studentSparkpoint
-                && studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
-                && studentSparkpoint.get('student_id') == itemData.student_id) {
+                && studentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
+                && studentSparkpoint.get('student_id') === itemData.student_id) {
                 modifiedFieldNames = studentSparkpoint.set(itemData, { dirty: false });
                 me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames)
             }
