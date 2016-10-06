@@ -195,15 +195,14 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     onStudentSparkpointLoad: function(studentSparkpoint) {
-        var timerCmp = this.getTimerCmp();
+        var me = this,
+            timerCmp = me.getTimerCmp(),
+            sectionCode = me.getSelectedSection();
 
         if (studentSparkpoint) {
             if (studentSparkpoint.get('total_duration') > 0) {
                 timerCmp.setHtml(
-                    SparkClassroom.timing.DurationDisplay.calculateDuration(
-                        studentSparkpoint.get('sparkpoint'),
-                        studentSparkpoint.get('learn_start_time')
-                    )
+                    SparkClassroom.timing.DurationDisplay.calculateDuration(sectionCode, studentSparkpoint.get('learn_start_time'))
                 );
             } else {
                 timerCmp.setHtml('Not Started');
