@@ -174,7 +174,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onSelectedSectionChange: function(appCt, section, oldSection) {
         var me = this;
 
-        if (section && section != oldSection) { // load all student sparkpoints when section changes -- will trigger repopulation of competency columns/data.
+        if (section && section !== oldSection) { // load all student sparkpoints when section changes -- will trigger repopulation of competency columns/data.
             me.getCompetencySparkpointsStore().load();
         }
     },
@@ -219,11 +219,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     dirty: false
                 });
             }
-        } else if (table == 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
+        } else if (table === 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
             if (Ext.isEmpty(competencySparkpointsStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
                 // create model, add neccessary data.
                 itemData.student = Ext.getStore('Students').getById(itemData.student_id);
-                itemData.student_sparkpointid = itemData.student_id + '_' + itemData.sparkpoint_id;
+                itemData.student_sparkpointid = itemData.student_id + '_' + itemData.sparkpoint_id; // eslint-disable-line camelcase
                 competencySparkpointsStore.add(itemData);
             }
         }
