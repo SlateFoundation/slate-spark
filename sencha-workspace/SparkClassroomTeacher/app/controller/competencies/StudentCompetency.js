@@ -165,8 +165,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             learn = learns[count];
             learnAssignments = learn.get('assignments');
 
-            if (learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
-                || learnAssignments.section == 'required' || learnAssignments.student == 'required') {
+            if (learnAssignments.section === 'required-first' || learnAssignments.student === 'required-first'
+                || learnAssignments.section === 'required' || learnAssignments.student === 'required') {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
                 }
