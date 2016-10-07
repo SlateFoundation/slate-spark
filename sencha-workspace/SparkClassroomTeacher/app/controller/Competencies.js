@@ -631,10 +631,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             grid = me.getCompetenciesGrid(),
             studentSparkpointData = me.getCompetencySparkpointsStore().getRange(),
             studentStore = me.getStudentsStore(),
-            gridDataIds = [],
             newRecords = [],
+            recordDictionary = {},
+            record,
             gridStore = grid.getStore(),
-            count = 0, studentId, student, record, recordData, sparkpointId, studentSparkpoint
+            count = 0, studentId, student, sparkpointId, studentSparkpoint
 
         gridStore.beginUpdate();
         gridStore.removeAll();
@@ -645,32 +646,23 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             sparkpointId = studentSparkpoint.get('sparkpoint_id');
             studentId = studentSparkpoint.get('student_id');
             student = studentStore.getById(studentId);
-            record = null;
-            recordData = {};
 
             // create record for each unique sparkpoint id
-            if (gridDataIds.indexOf(sparkpointId) === -1) {
-                record = {
-                    'id': sparkpointId,
-                    'sparkpoint': studentSparkpoint.get('sparkpoint')
-                };
-
-                if (student) {
-                    record[studentId] = studentSparkpoint;
+            if (recordDictionary[sparkpointId] && student) {
+                recordDictionary[sparkpointId][studentId] = studentSparkpoint;
+            } else if (student) {
+                recordDictionary[sparkpointId] = {
+                    id: sparkpointId,
+                    sparkpoint: studentSparkpoint.get('sparkpoint')
                 }
 
-                newRecords.push(record);
-                gridDataIds.push(sparkpointId);
-            } else {
-                record = gridStore.getById(sparkpointId);
-                if (record && student) {
-                    recordData[studentId] = studentSparkpoint;
+                recordDictionary[sparkpointId][studentId] = studentSparkpoint;
+            }
+        }
 
-                    record.set(recordData, {
-                        dirty: false,
-                        silent: true
-                    });
-                }
+        for (record in recordDictionary) {
+            if ({}.hasOwnProperty.call(recordDictionary, record)) {
+                newRecords.push(recordDictionary[record]);
             }
         }
 
