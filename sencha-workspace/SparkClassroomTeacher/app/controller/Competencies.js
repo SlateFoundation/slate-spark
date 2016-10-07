@@ -398,17 +398,18 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             column = me.getSparkpointsColumn(),
             studentFilter = column.getStudentFilter(),
+            oldValue = studentFilter.getValue(),
             studentStore = me.getStudentsStore(),
             students = studentStore.getRange(),
             studentOptions = '',
             student,
             count;
 
-        studentOptions += '<option value="all" selected>All Students</option>';
+        studentOptions += '<option value="all"' + (oldValue === 'all' ? ' selected' : '') + '>All Students</option>';
 
         for (count = 0; count < students.length; count++) {
             student = students[count];
-            studentOptions += '<option value="' + student.getId() + '">' + student.get('FullName') + '</option>';
+            studentOptions += '<option value="' + student.getId() + '"' + (parseInt(oldValue, 10) === student.getId() ? ' selected' : '') + '>' + student.get('FullName') + '</option>';
         }
 
         studentFilter.setHtml(studentOptions);
