@@ -270,7 +270,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this;
 
         me.refreshColumns();
-        me.refreshStudentFilter();
     },
 
     onNavCompetenciesTap: function() {
@@ -697,6 +696,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         grid.setCurrentSection(currentSection);
         grid.suspendEvents();
+
+        me.refreshStudentFilter();
 
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
             if (column && column.xtype === studentCompetencyColumnXType) {
