@@ -63,7 +63,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                     '</table>',
                     {
                         getPaceCls: function(expected, actual) {
-                            if (expected == actual) {
+                            if (expected === actual) {
                                 return 'is-on-pace';
                             }
 
@@ -98,7 +98,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                 expected = currentPhase.expected,
                                 actual = currentPhase.actual;
 
-                            if (expected == actual) {
+                            if (expected === actual) {
                                 return 'On Pace';
                             }
 
