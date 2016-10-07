@@ -473,7 +473,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 if (record && student) {
                     recordData[studentId] = studentSparkpoint;
 
-                    record.set(recordData, { dirty: false });
+                    record.set(recordData, {
+                        dirty: false,
+                        silent: true
+                    });
                 }
             }
         }
