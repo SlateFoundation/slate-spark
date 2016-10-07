@@ -86,7 +86,7 @@ Ext.define('SparkClassroom.timing.DurationDisplay', {
         skipFuzzy = (skipFuzzy === true); // eslint-disable-line no-extra-parens
 
         // prevent regex matching errors in sectionCodeToGrade() function on null sectionCode
-        if (sectionCode === null) {
+        if (Ext.isEmpty(sectionCode)) {
             sectionCode = '';
         }
 
