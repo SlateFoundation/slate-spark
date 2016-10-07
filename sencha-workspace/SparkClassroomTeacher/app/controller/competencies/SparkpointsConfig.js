@@ -202,21 +202,21 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             });
         }
 
-        if (currentTableData.length == 0) {
+        if (currentTableData.length === 0) {
             me.getConfigTableCurrent().hide();
         } else {
             me.getConfigTableCurrent().updateData(currentTableData);
             me.getConfigTableCurrent().show();
         }
 
-        if (activeTableData.length == 0) {
+        if (activeTableData.length === 0) {
             me.getConfigTableActive().hide();
         } else {
             me.getConfigTableActive().updateData(activeTableData);
             me.getConfigTableActive().show();
         }
 
-        if (queuedTableData.length == 0) {
+        if (queuedTableData.length === 0) {
             me.getConfigTableQueue().hide();
         } else {
             me.getConfigTableQueue().updateData(queuedTableData);
