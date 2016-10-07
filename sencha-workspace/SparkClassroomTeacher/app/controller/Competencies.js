@@ -221,7 +221,21 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onFilterBySparkpoint: function(e, target) {
-        debugger;
+        var me = this,
+            sparkpointId = Ext.get(target).getValue(),
+            grid = me.getCompetenciesGrid(),
+            gridStore = grid.getStore();
+
+
+        if (sparkpointId !== 'all') {
+            gridStore.suspendEvents();
+            gridStore.clearFilter();
+            gridStore.resumeEvents();
+            gridStore.filter('id', sparkpointId);
+            return;
+        }
+
+        gridStore.clearFilter();
     },
 
     onStudentStoreLoad: function() {
@@ -404,17 +418,18 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             column = me.getSparkpointsColumn(),
             sparkpointFilter = column.getSparkpointFilter(),
+            oldValue = sparkpointFilter.getValue(),
             gridStore = grid.getStore(),
-            gridData = gridStore.getRange(),
+            gridData = gridStore.isFiltered() ? gridStore.getData().getSource().getRange() : gridStore.getRange(), // returns unfiltered data for building these options
             gridRowData,
             sparkpointOptions = '',
             count;
 
-        sparkpointOptions += '<option value="all" selected>All Sparkpoints</option>';
+        sparkpointOptions += '<option value="all"' + (oldValue === 'all' ? ' selected' : '') + '>All Sparkpoints</option>';
 
         for (count = 0; count < gridData.length; count++) {
             gridRowData = gridData[count];
-            sparkpointOptions += '<option value="' + gridRowData.getId() + '">' + gridRowData.get('sparkpoint') + '</option>';
+            sparkpointOptions += '<option value="' + gridRowData.getId() + '"' + (oldValue === gridRowData.getId() ? ' selected' : '') + '>' + gridRowData.get('sparkpoint') + '</option>';
         }
 
         sparkpointFilter.setHtml(sparkpointOptions);
