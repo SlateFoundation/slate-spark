@@ -1,3 +1,4 @@
+/* global SparkClassroom */
 /**
  * Manages the floating panel that displays when you click on a spark point in the Sparkpoint Overview.
  *
@@ -157,12 +158,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             requiredLearns = 0,
             sparkData = me.getStudentSparkpoint().getData(),
             studentId = sparkData.student_id,
+            sectionCode = sparkData.senction_code,
             studentData = studentStore.findRecord('ID', studentId).getData(),
             describeText = me.getDescribeTextArea(),
             giveCreditBtn = me.getGiveCreditButton(),
             assessDisabled, assessChecked, applyDisabled, applyChecked, confDisabled,
             confChecked, learnDisabled, learnChecked, allFinished,
             learnStatus, confStatus, applyStatus, assessStatus,
+
             learn, learnAssignments, count = 0;
 
         for (; count < learns.length; count++) {
@@ -227,7 +230,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: learnDisabled,
                 checked: learnChecked,
                 expected: sparkData.learn_pace_target,
-                actual: sparkData.learn_pace_actual
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.learn_completed_time)
             }, {
                 phase: 'Conference',
                 status: confStatus,
@@ -235,7 +238,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: confDisabled,
                 checked: confChecked,
                 expected: sparkData.conference_pace_target,
-                actual: sparkData.conference_pace_actual
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.conference_completed_time)
             }, {
                 phase: 'Apply',
                 status: applyStatus,
@@ -243,7 +246,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: applyDisabled,
                 checked: applyChecked,
                 expected: sparkData.apply_pace_target,
-                actual: sparkData.apply_pace_actual
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.apply_completed_time)
             }, {
                 phase: 'Assess',
                 status: assessStatus,
@@ -251,7 +254,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: assessDisabled,
                 checked: assessChecked,
                 expected: sparkData.assess_pace_target,
-                actual: sparkData.assess_pace_actual
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.assess_completed_time)
             }]
         });
 
@@ -266,6 +269,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
 
         me.getStudentCompetencyPopover().unmask();
+    },
+
+    getPhaseDuration: function(sectionCode, startDate, endDate) {
+        if (Ext.isEmpty(startDate) || Ext.isEmpty(endDate)) {
+            return null;
+        }
+        return SparkClassroom.timing.DurationDisplay.calculateDuration(sectionCode, startDate, endDate, true, true);
     },
 
     bindClickPopoverTable: function(cmp) {
