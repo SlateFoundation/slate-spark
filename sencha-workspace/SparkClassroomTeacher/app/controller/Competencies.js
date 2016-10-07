@@ -229,15 +229,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             dataIndex,
             count;
 
-        grid.suspendEvents();
-
         for (count = 0; count < columns.length; count++) {
             column = columns[count];
             dataIndex = column.getDataIndex();
-
-            if (count === columns.length - 1) {
-                grid.resumeEvents();
-            }
 
             if (dataIndex === 'sparkpoint' || dataIndex === studentId || valueString === 'all') {
                 column.show();
@@ -256,9 +250,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
         if (sparkpointId !== 'all') {
-            gridStore.suspendEvents();
             gridStore.clearFilter();
-            gridStore.resumeEvents();
             gridStore.filter('id', sparkpointId);
             return;
         }
@@ -687,7 +679,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             goalRec, goalValue;
 
         grid.setCurrentSection(currentSection);
-        grid.suspendEvents();
 
         me.refreshStudentFilter();
 
@@ -725,7 +716,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         }
 
         grid.addColumn(columns);
-        grid.resumeEvents();
         me.refreshGrid();
     }
 });
