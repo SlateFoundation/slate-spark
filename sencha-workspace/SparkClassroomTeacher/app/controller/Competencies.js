@@ -184,7 +184,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             me.onFilterBySparkpoint(e, t);
         });
 
-        grid.getStore().on('update', function() {
+        grid.getStore().on('endupdate', function() {
             me.refreshSparkpointFilter(grid);
         });
 
