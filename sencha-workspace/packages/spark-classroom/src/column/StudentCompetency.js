@@ -19,7 +19,9 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                         return 'is-empty';
                     }
 
-                    if (expected == actual) {
+                    // NOTE: The cell will receive "on pace" styling if the sparkpoint has not been started AND the phase overridden,
+                    // OR if it is legitimately on pace.
+                    if (actual === 'nostart-override' || expected === actual) {
                         return 'is-on-pace';
                     }
 
@@ -34,13 +36,13 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                     return '';
                 },
                 dataIndex = this.getDataIndex(),
-                studentUsername = dataIndex.split('_').shift(),
-                studentSparkpoint = r.get(studentUsername),
+                studentId = dataIndex,
+                studentSparkpoint = r.get(studentId),
                 gaugeTpl = new Ext.XTemplate([
                     '<div class="flex-ct cycle-gauge">',
                         '<tpl for=".">',
                             '<div class="flex-1 cycle-gauge-pip {status}">',
-                                '<abbr class="pip-text" data-student-id="' + (studentSparkpoint ? studentSparkpoint.get('student_id') : '') + '" title="{title}">{shortText}</abbr>',
+                                '<abbr class="pip-text" data-student-id="' + studentId + '" title="{title}">{shortText}</abbr>',
                             '</div>',
                         '</tpl>',
                     '</div>'
@@ -106,13 +108,17 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
     },
 
     onColumnTap: function(ev) {
-        var me = this;
+        var me = this,
+            target = ev.getTarget();
 
-        if (ev.getTarget().className.indexOf('spark-config-btn') > -1) {
+        if (target.className.indexOf('spark-config-btn') > -1) {
             me.fireEvent('sparkconfigclick', me.getDataIndex());
-            return;
         }
 
-        me.callParent(arguments);
+        if (target.className.indexOf('spark-goal') > -1) {
+            me.fireEvent('sparkgoalclick', me.getDataIndex(), target);
+        }
+
+        return;
     }
 });

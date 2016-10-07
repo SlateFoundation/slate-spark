@@ -75,6 +75,7 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
                         icon: 'eye-slash'
                     }
                 ],
+                showStatus: true
             }
             // TODO: implement flagging
             // {

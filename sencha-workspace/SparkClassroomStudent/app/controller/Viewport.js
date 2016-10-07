@@ -235,7 +235,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
     onSparkpointSelectChange: function(sparkpointSelector, sparkpoint) {
-        this.setSelectedSparkpoint(sparkpoint.getId());
+        this.setSelectedSparkpoint(sparkpoint.get('sparkpoint'));
     },
 
 
@@ -270,7 +270,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             sparkpointsLookupStore.load({
                 callback: function(sparkpoints, operation, success) {
                     if (success && (latestCurrentSparkpoint = sparkpointsLookupStore.getAt(0))) {
-                        me.setSelectedSparkpoint(latestCurrentSparkpoint.getId());
+                        me.setSelectedSparkpoint(latestCurrentSparkpoint.get('sparkpoint'));
                     } else {
                         finishSync();
                     }

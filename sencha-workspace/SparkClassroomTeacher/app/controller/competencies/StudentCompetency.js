@@ -55,6 +55,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         popoverTable: 'spark-studentcompetency-popover component[cls~=studentcompetency-popover-table]',
         addToQueueButton: 'spark-studentcompetency-popover button[cls~=add-to-queue-button]',
         addNextUpButton: 'spark-studentcompetency-popover button[cls~=add-next-up-button]',
+        lowerButtonCt: 'spark-studentcompetency-popover component[cls~=lower-button-ct]',
         giveCreditButton: 'spark-studentcompetency-popover button[cls~=give-credit-button]',
         describeTextArea: 'spark-studentcompetency-popover textareafield[cls~=popover-describe-field]'
     },
@@ -268,6 +269,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             describeText.setValue(sparkData.override_reason);
         }
 
+        // Hide these buttons when last phase is completed
+        if (assessChecked) {
+            me.getLowerButtonCt().hide();
+        } else {
+            me.getLowerButtonCt().show();
+        }
+
         me.getStudentCompetencyPopover().unmask();
     },
 
@@ -314,6 +322,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             case 'Assess':
                 fieldName = 'assess_override_time';
                 chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Apply"]');
+
+                // Hide these buttons when last phase is completed
+                if (checked) {
+                    me.getLowerButtonCt().hide();
+                } else {
+                    me.getLowerButtonCt().show();
+                }
+
                 break;
             default:
         }

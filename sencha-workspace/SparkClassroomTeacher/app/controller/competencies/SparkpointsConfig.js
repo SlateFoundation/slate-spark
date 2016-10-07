@@ -1,4 +1,4 @@
-/* global SparkClassroom */
+/* global SparkClassroom Slate */
 /**
  * Manages the window for configuring Sparkpoints for a specific student.
  *
@@ -27,7 +27,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     ],
 
     stores: [
-        'ConfigSparkpoints@SparkClassroomTeacher.store.competencies',
+        'CompetencySparkpoints@SparkClassroomTeacher.store',
         'Students@SparkClassroom.store',
         'work.Learns@SparkClassroom.store'
     ],
@@ -40,6 +40,11 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             xtype: 'spark-sparkpointsconfig-window',
             autoCreate: true
         },
+
+        appCt: {
+            selectedsectionchange: 'onSelectedSectionChange'
+        },
+        sparkpointField: 'spark-sparkpointsconfig-window spark-sparkpointfield',
 
         configTableActive: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table active]',
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table current]',
@@ -54,7 +59,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             '#': {
                 activestudentidchange: 'initializeStudent'
             }
-        }
+        },
     },
 
     control: {
@@ -64,49 +69,39 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         },
 
-        configTableActive: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
-        configTableCurrent: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
-        configTableQueue: {
-            updatedata: {
-                fn: 'onUpdateSparkRows'
-            }
-        },
-
         sparkpointsConfigWindow: {
             hide: {
                 fn: 'onHideWindow'
             }
+        },
+
+        appCt: {
+            initialize: 'onInitializeAppCt'
+        },
+
+        sparkpointField: {
+            sparkpointselect: 'suggestNextSparkpoint'
         }
     },
 
+    onInitializeAppCt: function() {
+        this.getAppCt().add(this.getStudentCompetencyPopover());
+    },
+
     initializeStudent: function(studentId) {
-        var me = this,
-            configStore = me.getConfigSparkpointsStore();
+        var me = this;
 
         me.setActiveStudentId(studentId);
-        configStore.getProxy().setExtraParam('student_id', studentId);
-
-        configStore.load(function() {
-            me.loadDataIntoView();
-            me.getSparkpointsConfigWindow().show();
-        });
+        me.loadDataIntoView();
+        me.getSparkpointsConfigWindow().show();
     },
 
     loadDataIntoView: function() {
         var me = this,
+            sparkpointField,
             studentStore = me.getStudentsStore(),
             studentId = me.getActiveStudentId(),
-            configSparkpointsStore = me.getConfigSparkpointsStore(),
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentRec = studentStore.getById(studentId),
             studentData = studentRec.getData(),
             activeSparkpoints, queuedSparkpoints,
@@ -119,13 +114,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             currentTableData = [],
             lastAccessedIndex = 0;
 
-
-        activeSparkpoints = configSparkpointsStore.queryBy(function(rec) {
-            return !Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
+        activeSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
+            return rec.get('student_id') === studentData.ID && !Ext.isEmpty(rec.get('learn_start_time'));
         }).sort('recommended_time', 'ASC').getRange();
 
-        queuedSparkpoints = configSparkpointsStore.queryBy(function(rec) {
-            return Ext.isEmpty(rec.get('learn_start_time')) && rec.get('student_id') === studentData.ID;
+        queuedSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
+            return rec.get('student_id') === studentData.ID && Ext.isEmpty(rec.get('learn_start_time')) && !Ext.isEmpty(rec.get('recommended_time'));
         }).sort('recommended_time', 'ASC').getRange();
 
         me.getSparkpointsConfigWindow().setTitle(studentData.FullName);
@@ -149,7 +143,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
             activeTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
-                'sparkpoint': sparkpoint.get('code'),
+                'sparkpoint': sparkpoint.get('sparkpoint'),
                 'phases': [{
                     phase: 'Learn',
                     finished: !Ext.isEmpty(sparkpoint.get('learn_finish_time')),
@@ -206,7 +200,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
             queuedTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
-                'sparkpoint': sparkpoint.get('code'),
+                'sparkpoint': sparkpoint.get('sparkpoint'),
                 'phases': [{
                     phase: 'Learn',
                     expected: sparkpoint.get('learn_pace_target')
@@ -244,8 +238,19 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             me.getConfigTableQueue().show();
         }
 
+        sparkpointField = me.getSparkpointField(); // Declared now since it will have rendered
+
         me.bindPaceFields();
         me.bindReordering();
+        me.bindRemoveBtns();
+
+        sparkpointField.filterFn = function(rec) { // Note - setter wasn't working
+            // only show sparkpoints that are not already associated with this student
+            return Ext.getStore('CompetencySparkpoints').find('student_sparkpointid', rec.data.student_sparkpointid) === -1;
+        };
+
+        sparkpointField.updateSelectedStudent(studentId);
+        sparkpointField.getSuggestionsList().setWidth(500);
     },
 
     getPhaseDuration: function(sectionCode, startDate, endDate) {
@@ -288,55 +293,66 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
     },
 
+    bindRemoveBtns: function() {
+        var me = this,
+            removeBtns = me.getSparkpointsConfigWindow().element.select('.remove-cell button[action="row-remove"]').elements,
+            removeBtn,
+            count;
+
+        for (count = 0; count < removeBtns.length; count++) {
+            removeBtn = Ext.get(removeBtns[count]);
+
+            removeBtn.on('click', function(e, el) {
+                me.onRemoveSparkpoint(e, el);
+            });
+        }
+    },
+
+    /*
+    Ensure that subsequent phase pace values are greater than previous phase and set sparkpoint with new values
+    */
     onPaceFieldChange: function(e, el) {
-        var configSparkpointsStore = this.getConfigSparkpointsStore(),
-            paceField = Ext.get(el),
-            paceFieldVal = paceField.getValue(),
-            phase = paceField.getAttribute('data-phase'),
-            studentSparkpointId = paceField.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            sparkpoint = configSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
-            prevCell = paceField.up('td').prev('td'),
-            nextCell = paceField.up('td').next('td'),
-            prevInput,
-            nextInput;
+        var me = this,
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            changedPaceField = Ext.get(el),
+            newPaceValue = changedPaceField.getValue(),
+            changedPhase = changedPaceField.getAttribute('data-phase'),
+            sparkRow = changedPaceField.up('tr.sparkpoint-row'),
+            studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
+            sparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
+            paceFields = sparkRow.select('input.expected-completion').elements,
+            count, fieldEl, fieldVal, nextFieldEl, nextFieldVal;
 
-        if (!Ext.isEmpty(prevCell)) {
-            prevInput = prevCell.down('input.expected-completion');
+            // convert to integer, if input is blank, replace with 1
+            newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
+            sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
 
-            // Prevent setting future phase pace before previous phase
-            if (prevInput && parseInt(paceFieldVal, 10) <= parseInt(prevInput.getValue(), 10)) {
-                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done after the ' + prevInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is after the ' + prevInput.getAttribute('data-phase') + ' phase.', function() {
-                    paceField.focus(50);
-                });
+            for (count = 0; count + 1 < paceFields.length; count++) {
+                fieldEl = Ext.fly(paceFields[count]);
+                fieldVal = parseInt(fieldEl.getValue(), 10);
+                nextFieldEl = Ext.fly(paceFields[count + 1]);
+                nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
 
-                paceField.dom.value = parseInt(prevInput.getValue(), 10) + 1;
+                if (!Ext.isNumber(fieldVal)) {
+                    fieldEl.dom.value = 1;
+                }
+
+                if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+                    nextFieldEl.dom.value = fieldVal + 1;
+
+                    sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
+                }
             }
-        }
-
-        if (!Ext.isEmpty(nextCell)) {
-            nextInput = nextCell.down('input.expected-completion');
-
-            // Prevent setting previous phase pace before next phase
-            if (nextInput && parseInt(paceFieldVal, 10) >= parseInt(nextInput.getValue(), 10)) {
-                Ext.Msg.alert('Invalid Target Pace', 'The ' + paceField.getAttribute('data-phase') + ' must be done before the ' + nextInput.getAttribute('data-phase') + ' phase. Please enter a completion day that is before the ' + nextInput.getAttribute('data-phase') + ' phase.', function() {
-                    paceField.focus(50);
-                });
-
-                paceField.dom.value = parseInt(nextInput.getValue(), 10) - 1;
-            }
-        }
-
-        sparkpoint.set(phase.toLowerCase() + '_pace_target', paceField.getValue());
     },
 
     onSortArrowClick: function(e, el) {
         var me = this,
-            sparkConfigStore = me.getConfigSparkpointsStore(),
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             arrow = Ext.get(el),
             sparkRow = arrow.up('tr.sparkpoint-row'),
             siblingSparkRows = sparkRow.up('.sparkpointsconfig-table').query('.sparkpoint-row'),
             studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
-            sparkpoint = sparkConfigStore.findRecord('student_sparkpointid', studentSparkpointId),
+            sparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
             neighborSparkpoint,
             sortDirection,
             sortableSparkpoint,
@@ -344,18 +360,18 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             minutes;
 
         if (arrow.hasCls('fa-arrow-down')) {
-            neighborSparkpoint = sparkConfigStore.findRecord('student_sparkpointid', sparkRow.next('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'));
+            neighborSparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', sparkRow.next('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'));
             sortDirection = 'down';
 
         } else {
-            neighborSparkpoint = sparkConfigStore.findRecord('student_sparkpointid', sparkRow.prev('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'));
+            neighborSparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', sparkRow.prev('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'));
             sortDirection = 'up';
         }
 
         // loop through all sparkpoints in this table and set recommended_time to now + index,
         // change the index either up or down for sparkpoint/neighborsparkpoint so they switch positions appropriately
         for (count = 0; count < siblingSparkRows.length; count++) {
-            sortableSparkpoint = sparkConfigStore.findRecord('student_sparkpointid', siblingSparkRows[count].getAttribute('data-student-sparkpointid'));
+            sortableSparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', siblingSparkRows[count].getAttribute('data-student-sparkpointid'));
             minutes = count;
 
             if (sortableSparkpoint === sparkpoint) {
@@ -370,15 +386,43 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         me.loadDataIntoView();
     },
 
-    onHideWindow: function() {
-        var configStore = this.getConfigSparkpointsStore();
+    onRemoveSparkpoint: function(e, el) {
+        var me = this,
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            sparkRow = Ext.get(el).up('tr.sparkpoint-row'),
+            studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
+            sparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
 
-        configStore.rejectChanges();
+        if (Ext.isEmpty(sparkpoint)) {
+            return;
+        }
+
+        sparkpoint.getProxy().setExtraParams({
+            'student_id': sparkpoint.get('student_id'),
+            'section_id': sparkpoint.get('section_id'),
+            'sparkpoint': sparkpoint.get('sparkpoint')
+        });
+
+        sparkpoint.erase({
+            failure: function(rec, op) {
+                var error = op && op.error && op.error.statusText;
+
+                Ext.Msg.alert('Error', 'Unable to remove this sparkpoint. (' + error + ')');
+            },
+            success: function() {
+                this.loadDataIntoView();
+            },
+            scope: me
+        });
+    },
+
+    onHideWindow: function() {
+        this.getCompetencySparkpointsStore().rejectChanges();
     },
 
     onDoneTap: function() {
         var me = this,
-            configStore = me.getConfigSparkpointsStore(),
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             // DomQuery usage due to the fact refs do not allow multiple selections
             sparkpointRows = Ext.query('.spark-sparkpointsconfig-window tr.sparkpoint-row'),
             rowElement,
@@ -390,79 +434,45 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         for (row = 0; row < sparkpointRows.length; row++) {
             rowElement = Ext.fly(sparkpointRows[row]);
             studentSparkpointId = rowElement.getAttribute('data-student-sparkpointid');
-            sparkpoint = configStore.findRecord('student_sparkpointid', studentSparkpointId);
+            sparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
 
-            if (sparkpoint.dirty) {
+            if (sparkpoint && sparkpoint.dirty) {
                 sparkpoint.save();
             }
         }
 
+        competencySparkpointsStore.commitChanges();
         me.getSparkpointsConfigWindow().hide();
     },
 
-    onUpdateSparkRows: function(component) {
+    suggestNextSparkpoint: function() {
         var me = this,
-            overrideFields = component.element.select('.override-field'),
-            overrideField,
-            count;
+            studentId = me.getActiveStudentId(),
+            sparkpointField = me.getSparkpointField(),
+            recommendedSparkpoint = sparkpointField.getSelectedSparkpoint();
 
-        for (count = 0; count < overrideFields.elements.length; count++) {
-            overrideField = Ext.get(overrideFields.elements[count]);
-
-            overrideField.on('change', function(e, target) {
-                me.onOverrideChange(e, target);
-            });
-        }
-    },
-
-    onOverrideChange: function(e, target) {
-        var me = this,
-            configStore = me.getConfigSparkpointsStore(),
-            el = Ext.get(target),
-            checked = el.is(':checked'),
-            phaseName = el.getAttribute('data-phase'),
-            studentSparkpointId = el.up('tr.sparkpoint-row').getAttribute('data-student-sparkpointid'),
-            record = configStore.findRecord('student_sparkpointid', studentSparkpointId),
-            chainCheckbox,
-            value;
-
-        switch (phaseName) {
-            case 'Learn':
-                break;
-            case 'Conference':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Learn"]');
-                break;
-            case 'Apply':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Conference"]');
-                break;
-            case 'Assess':
-                chainCheckbox = el.up('.sparkpoint-row').down('input.override-field[data-phase="Apply"]');
-                break;
-            default:
+        if (!recommendedSparkpoint) {
+            return;
         }
 
-        // If we checked a later phase, ensure that the previous phases are also checked
-        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
-            if (!chainCheckbox.is(':disabled')) {
-                chainCheckbox.dom.disabled = true;
+        Slate.API.request({
+            method: 'PATCH',
+            url: '/spark/api/work/activity',
+            jsonData: {
+                'sparkpoint': recommendedSparkpoint.getId(),
+                'student_id': studentId
+            },
+            callback: function(options, success) {
+                if (!success) {
+                    Ext.Msg.alert('Failed to recommend sparkpoint', 'This sparkpoint could not be added to the student\'s recommended sparkpoints, please try again or contact an administrator');
+                    return;
+                }
+
+                me.loadDataIntoView();
+
+                sparkpointField.setSelectedSparkpoint(null);
+                sparkpointField.setQuery(null);
             }
-
-            if (!chainCheckbox.is(':checked')) {
-                chainCheckbox.dom.checked = true;
-            }
-
-            me.onOverrideChange(null, chainCheckbox);
-        }
-
-        // If we unchecked this then remove disabled state if the prev phase wasn't finished
-        if (!Ext.isEmpty(chainCheckbox) && !checked) {
-            if (!chainCheckbox.hasCls('finished')) {
-                chainCheckbox.dom.removeAttribute('disabled');
-            }
-        }
-
-        value = checked ? new Date() : null;
-
-        record.set(phaseName.toLowerCase() + '_override_time', value);
+        });
     }
 });

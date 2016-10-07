@@ -131,8 +131,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             method: 'PATCH',
             url: '/spark/api/work/activity',
             jsonData: {
-                sparkpoint: recommendedSparkpoint.getId(),
-                student_id: selectedStudentSparkpoint.get('student_id')
+                'sparkpoint': recommendedSparkpoint.getId(),
+                'student_id': selectedStudentSparkpoint.get('student_id')
             },
             callback: function(options, success) {
                 if (!success) {

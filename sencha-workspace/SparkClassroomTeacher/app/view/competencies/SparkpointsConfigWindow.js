@@ -7,7 +7,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
         width: 640,
         zIndex: 998, // Puts it below Ext.Msg.alert and other dialogs
         hideOnMaskTap: true,
-        style: 'overflow-y:scroll', // workaround - scrollable config not working
+        style: 'overflow-y:auto; overflow-x:hidden;', // workaround - scrollable config not working
 
         buttons: [
             {
@@ -44,9 +44,6 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                             '<tpl for=".">',
                                 '<tr class="sparkpoint-row" data-student-sparkpointid="{student_sparkpointid}">',
                                     '<td class="remove-cell">',
-                                        '<button class="plain" action="row-remove">',
-                                            '<span class="fa fa-times-circle"></span>',
-                                        '</button>',
                                     '</td>',
                                     '<th>{sparkpoint}</th>',
                                     '<tpl for="phases">',
@@ -168,13 +165,10 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                 ]
             },
             {
-                xtype: 'container',
+                xtype: 'spark-sparkpointfield',
                 padding: '8 24',
-                items: [{
-                    xtype: 'searchfield',
-                    placeHolder: 'Search for a Sparkpoint',
-                    width: '100%'
-                }]
+                placeHolder: 'Search for a Sparkpoint',
+                width: '100%'
             },
             {
                 xtype: 'component',

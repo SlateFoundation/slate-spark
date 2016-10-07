@@ -169,7 +169,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
             feedbackStore.getProxy().setExtraParams({
                 'student_id': studentSparkpoint.get('student_id'),
-                'sparkpoint': studentSparkpoint.getId()
+                'sparkpoint': studentSparkpoint.get('sparkpoint')
             });
             feedbackStore.load();
         }

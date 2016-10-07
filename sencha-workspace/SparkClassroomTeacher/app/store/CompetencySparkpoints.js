@@ -1,17 +1,21 @@
 /* This is the store used in the Competencies feature, it contains ALL student sparkpoints for a section */
 Ext.define('SparkClassroomTeacher.store.CompetencySparkpoints', {
-    extend: 'SparkClassroomTeacher.store.StudentSparkpoints',
+    extend: 'Ext.data.Store',
+
+
+    model: 'SparkClassroom.model.StudentSparkpoint',
 
     proxy: {
         type: 'spark-studentsparkpoints',
-        url: '/spark/api/work/activity',
-        extraParams: {
-            status: 'all'
-        }
+        url: '/spark/api/sparkpoints'
     },
 
     config: {
-        // blow out the filter from StudentSparkpoint store we're extending
-        filters: []
+        filters: [{
+            filterFn: function(rec) {
+                // filter out records with no student_id or sparkpoint_id to avoid data inconsistency errors
+                return rec.get('student_id') !== null && rec.get('sparkpoint_id') !== null;
+            }
+        }]
     }
 });

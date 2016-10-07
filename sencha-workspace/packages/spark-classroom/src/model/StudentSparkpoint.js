@@ -1,4 +1,3 @@
-/* global Ext SparkClassroom */
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [
@@ -39,8 +38,12 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             mapping: 'student_id',
             depends: ['student_id'],
-            convert: function(v) {
-                return Ext.getStore('Students').getById(v);
+            convert: function(v, r) {
+                if (v) {
+                    return Ext.getStore('Students').getById(v);
+                }
+
+                return Ext.getStore('Students').getById(r.data.student_id);
             }
         }, {
             name: 'student_name',
@@ -216,19 +219,19 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'string',
             critical: true,
             convert: function(v, r) {
-                // TODO: Remove this once the sparkpoints endpoint returns sparkpoint instead of code
-                var code = r.get('code');
-
-                if (Ext.isEmpty(code)) {
-                    return v;
-                }
-
-                return code;
+                // if value doesn't exist for this field name directly,
+                // try to convert from other possible field names
+                return v || r.get('code') || r.get('sparkpoint_code');
             }
         }, {
             name: 'section',
             type: 'string',
-            allowNull: true
+            allowNull: true,
+            convert: function(v, r) {
+                // if value doesn't exist for this field name directly,
+                // try to convert from other possible field names
+                return v || r.get('section_code');
+            }
         }, {
             name: 'student_id',
             type: 'int',
@@ -439,6 +442,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.learn_completed_time)) {
+                    if (!Ext.isEmpty(data.learn_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
@@ -480,6 +488,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.conference_completed_time)) {
+                    if (!Ext.isEmpty(data.conference_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
@@ -520,6 +533,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.apply_completed_time)) {
+                    if (!Ext.isEmpty(data.apply_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
@@ -566,6 +584,11 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             ],
             calculate: function(data) {
                 if (Ext.isEmpty(data.learn_start_time) || Ext.isEmpty(data.assess_completed_time)) {
+                    if (!Ext.isEmpty(data.assess_completed_time)) {
+                        // sparkpoint has not been started but phase has been overriden
+                        return 'nostart-override';
+                    }
+
                     return null;
                 }
 
