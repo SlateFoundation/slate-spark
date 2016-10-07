@@ -439,9 +439,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             studentSparkpointData = me.getCompetencySparkpointsStore().getRange(),
             studentStore = me.getStudentsStore(),
             gridDataIds = [],
+            newRecords = [],
             gridStore = grid.getStore(),
-            count = 0, studentId, student, record, recordData, sparkpointId, studentSparkpoint;
+            count = 0, studentId, student, record, recordData, sparkpointId, studentSparkpoint
 
+        gridStore.beginUpdate();
         gridStore.removeAll();
 
         // add sparkpoints to grid store and link to respective StudentCompetency panel.
@@ -450,26 +452,34 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             sparkpointId = studentSparkpoint.get('sparkpoint_id');
             studentId = studentSparkpoint.get('student_id');
             student = studentStore.getById(studentId);
+            record = null;
             recordData = {};
 
             // create record for each unique sparkpoint id
             if (gridDataIds.indexOf(sparkpointId) === -1) {
-                record = gridStore.add({
+                record = {
                     'id': sparkpointId,
                     'sparkpoint': studentSparkpoint.get('sparkpoint')
-                })[0];
+                };
+
+                if (student) {
+                    record[studentId] = studentSparkpoint;
+                }
+
+                newRecords.push(record);
                 gridDataIds.push(sparkpointId);
             } else {
                 record = gridStore.getById(sparkpointId);
-            }
+                if (record && student) {
+                    recordData[studentId] = studentSparkpoint;
 
-            if (record && student) {
-                recordData[studentId] = studentSparkpoint;
-
-                record.set(recordData, { dirty: false });
+                    record.set(recordData, { dirty: false });
+                }
             }
         }
 
+        gridStore.add(newRecords);
+        gridStore.endUpdate();
         grid.setMasked(false);
     },
 
@@ -489,10 +499,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             goalRec, goalValue;
 
         grid.setCurrentSection(currentSection);
+        grid.suspendEvents();
 
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
             if (column && column.xtype === studentCompetencyColumnXType) {
-                column.destroy();
+                grid.remove(column);
             }
         });
 
@@ -523,7 +534,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             });
         }
 
+        grid.resumeEvents();
         grid.addColumn(columns);
-        me.refreshGrid();
     }
 });
