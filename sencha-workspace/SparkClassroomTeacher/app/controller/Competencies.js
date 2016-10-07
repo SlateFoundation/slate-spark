@@ -732,7 +732,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             });
         }
 
-        grid.resumeEvents();
         grid.addColumn(columns);
+        grid.resumeEvents();
+        me.refreshGrid();
     }
 });
