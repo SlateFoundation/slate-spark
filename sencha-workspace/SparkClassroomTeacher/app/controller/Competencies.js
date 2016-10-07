@@ -426,6 +426,14 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             sparkpointOptions = '',
             count;
 
+        // Sort sparkpoint records alphabetically for easier selection
+        gridData = Ext.Array.sort(gridData, function(a, b) {
+            var spark1 = a.get('sparkpoint'),
+                spark2 = b.get('sparkpoint');
+
+            return spark1 < spark2 ? -1 : 1;
+        });
+
         sparkpointOptions += '<option value="all"' + (oldValue === 'all' ? ' selected' : '') + '>All Sparkpoints</option>';
 
         for (count = 0; count < gridData.length; count++) {
