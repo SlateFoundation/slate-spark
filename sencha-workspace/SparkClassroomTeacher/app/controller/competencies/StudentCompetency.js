@@ -7,6 +7,9 @@
  */
 Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.timing.DurationDisplay'
+    ],
 
 
     // mutable state
@@ -144,7 +147,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
 
     // custom controller methods
-    loadDataIntoView: function() {
+    // TODO: comment below will silence eslint complexity warning, but perhaps we should work on lessening the complexity of this function
+    loadDataIntoView: function() {  // eslint-disable-line complexity
         var me = this,
             studentStore = me.getStudentsStore(),
             learnsStore = me.getWorkLearnsStore(),
