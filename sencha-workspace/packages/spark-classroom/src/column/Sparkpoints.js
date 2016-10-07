@@ -49,6 +49,11 @@ Ext.define('SparkClassroom.column.Sparkpoints', {
         }
     },
 
+    onColumnTap: function() {
+        // Overrides default sorting behavior of a column.
+        return;
+    },
+
     getStudentFilter: function() {
         return Ext.get(this.element.down('select.spark-student-filter'));
     },

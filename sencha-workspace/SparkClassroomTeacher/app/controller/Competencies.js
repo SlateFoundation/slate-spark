@@ -81,7 +81,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         competenciesGrid: {
             initialize: 'onInitializeCompetenciesGrid',
             activate: 'refreshColumns',
-            updatedata: 'refreshSparkpointFilter',
             itemtap: {
                 fn: 'onCompetenciesGridItemTap'
             }
@@ -170,7 +169,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
     // event handlers
-    onInitializeCompetenciesGrid: function() {
+    onInitializeCompetenciesGrid: function(grid) {
         // Bind filter actions
         var me = this,
             column = me.getSparkpointsColumn(),
@@ -184,6 +183,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         sparkpointFilter.on('change', function(e, t) {
             me.onFilterBySparkpoint(e, t);
         });
+
+        grid.getStore().on('update', function() {
+            me.refreshSparkpointFilter(grid);
+        });
+
+        me.refreshSparkpointFilter(grid);
     },
 
     onFilterByStudent: function(e, target) {
@@ -370,11 +375,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         studentFilter.setHtml(studentOptions);
     },
 
-    refreshSparkpointFilter: function() {
+    refreshSparkpointFilter: function(grid) {
         var me = this,
             column = me.getSparkpointsColumn(),
             sparkpointFilter = column.getSparkpointFilter(),
-            gridStore = me.getCompetenciesGrid().getStore(),
+            gridStore = grid.getStore(),
             gridData = gridStore.getRange(),
             gridRowData,
             sparkpointOptions = '',
