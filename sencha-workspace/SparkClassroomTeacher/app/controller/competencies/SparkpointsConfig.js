@@ -141,7 +141,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             confChecked = confDisabled || !Ext.isEmpty(sparkpoint.get('conference_override_time'));
             learnDisabled = confDisabled || confChecked || !Ext.isEmpty(sparkpoint.get('learn_finish_time'));
             learnChecked = learnDisabled || !Ext.isEmpty(sparkpoint.get('learn_override_time'));
-            allFinished = !Ext.isEmpty(sparkpoint.get('learn_finish_time')) && !Ext.isEmpty(sparkpoint.get('conference_finish_time')) && !Ext.isEmpty(sparkpoint.get('apply_finish_time')) && !Ext.isEmpty(sparkpoint.get('assess_finish_time'));
 
             activeTableData.push({
                 'student_sparkpointid': sparkpoint.get('student_sparkpointid'),
