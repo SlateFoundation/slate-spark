@@ -192,11 +192,36 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onFilterByStudent: function(e, target) {
+        var me = this,
+            valueString = Ext.get(target).getValue(),
+            studentId = parseInt(valueString, 10),
+            grid = me.getCompetenciesGrid(),
+            columns = grid.getColumns(),
+            column,
+            dataIndex,
+            count;
 
+        grid.suspendEvents();
+
+        for (count = 0; count < columns.length; count++) {
+            column = columns[count];
+            dataIndex = column.getDataIndex();
+
+            if (count === columns.length - 1) {
+                grid.resumeEvents();
+            }
+
+            if (dataIndex === 'sparkpoint' || dataIndex === studentId || valueString === 'all') {
+                column.show();
+                continue;
+            }
+
+            column.hide();
+        }
     },
 
     onFilterBySparkpoint: function(e, target) {
-
+        debugger;
     },
 
     onStudentStoreLoad: function() {
@@ -306,7 +331,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     onCompetencySparkpointsStoreUpdate: function(store, record, operation, modifiedFieldNames) {
         var me = this,
-            competenciesGrid = me.getCompetenciesCt().down('spark-competencies-grid'),
+            competenciesGrid = me.getCompetenciesGrid(),
             ignoreModifiedFields = ['student'], recordData = {}, gridRecord,
             student = Ext.getStore('Students').getById(record.get('student_id'));
 
@@ -389,7 +414,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         for (count = 0; count < gridData.length; count++) {
             gridRowData = gridData[count];
-            sparkpointOptions += '<option value="' + gridRowData.get('sparkpoint') + '">' + gridRowData.get('sparkpoint') + '</option>';
+            sparkpointOptions += '<option value="' + gridRowData.getId() + '">' + gridRowData.get('sparkpoint') + '</option>';
         }
 
         sparkpointFilter.setHtml(sparkpointOptions);
