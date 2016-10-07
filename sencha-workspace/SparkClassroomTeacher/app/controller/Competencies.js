@@ -62,9 +62,17 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         appCt: 'spark-teacher-appct',
         competenciesGrid: 'spark-competencies spark-competencies-grid',
+
+        addToQueuePopover: {
+            selector: 'spark-addtoqueue-popover',
+            autoCreate: true,
+            xtype: 'spark-addtoqueue-popover'
+        },
+
+        addToQueueBtn: 'spark-addtoqueue-popover button[cls~=spark-add-to-queue-btn]',
+        addNextUpBtn: 'spark-addtoqueue-popover button[cls~=spark-add-next-up-btn]',
         studentCompetencyPopover: 'spark-studentcompetency-popover',
-        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window',
-        addToQueuePopover: 'spark-addtoqueue-popover'
+        sparkpointsConfigWindow: 'spark-sparkpointsconfig-window'
     },
 
     control: {
@@ -82,9 +90,15 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         competenciesGrid: {
             initialize: 'onInitializeCompetenciesGrid',
             activate: 'refreshColumns',
-            itemtap: {
-                fn: 'onCompetenciesGridItemTap'
-            }
+            itemtap: 'onCompetenciesGridItemTap'
+        },
+
+        addToQueueBtn: {
+            tap: 'onAddToQueue'
+        },
+
+        addNextUpBtn: {
+            tap: 'onAddNextUp'
         },
 
         'spark-student-competency-column': {
@@ -174,8 +188,14 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         tabsCt.add(me.getCompetenciesCt());
     },
 
-
     // event handlers
+    onAddToQueue: function() {
+        this.addToQueue(false);
+    },
+
+    onAddNextUp: function() {
+        this.addToQueue(true);
+
     onInitializeCompetenciesGrid: function(grid) {
         // Bind filter actions
         var me = this,
@@ -346,6 +366,19 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
             me.updateStudentSparkpoint(studentSparkpointId, Ext.fly(e.target));
         }
+
+        if (targetEl.getAttribute('action') === 'add-to-queue') {
+            me.onToggleQueuePopover(targetEl, e);
+        }
+    },
+
+    onToggleQueuePopover: function(el, e) {
+        var cellDom = e.getTarget('.x-grid-cell'),
+            addToQueuePopover = this.getAddToQueuePopover(),
+            sparkpoint = Ext.get(cellDom).down('.spark-column-value').getHtml();
+
+        addToQueuePopover.showBy(el, 'cl-cr?');
+        addToQueuePopover.setSparkpoint(sparkpoint);
     },
 
     onSelectedSectionChange: function(appCt, section, oldSection) {
@@ -396,7 +429,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     dirty: false
                 });
             }
-        } else if (table == 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
+        } else if (table === 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
             if (Ext.isEmpty(competencySparkpointsStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
                 // create model, add neccessary data.
                 itemData.student = Ext.getStore('Students').getById(itemData.student_id);
@@ -524,6 +557,69 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         });
 
         sectionGoalsStore.load();
+    },
+
+    addToQueue: function(nextUp) {
+         var me = this,
+            sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
+            studentStore = me.getStudentsStore(),
+            students = studentStore.getRange(),
+            section = me.getAppCt().getSelectedSection(),
+            count,
+            studentId,
+            newStudentSparkpoints = [],
+            recommendedTime;
+
+        for (count = 0; count < students.length; count++) {
+            studentId = students[count].getId();
+
+            recommendedTime = nextUp ? me.getNextUpTime(studentId) : new Date();
+
+            newStudentSparkpoints.push({
+                'student_id': studentId,
+                'section_code': section,
+                'sparkpoint_code': sparkpoint,
+                'recommended_time': recommendedTime
+            });
+        }
+
+        if (newStudentSparkpoints.length === 0) {
+            Ext.Msg.alert('Already Recommended', 'This sparkpoint is already either in queue or active for all students.');
+            return;
+        }
+
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/sparkpoints/suggest',
+            jsonData: newStudentSparkpoints,
+            callback: function(options, success) {
+                this.getAddToQueuePopover().hide();
+
+                if (!success) {
+                    Ext.Msg.alert('Error Adding to Queue', 'This sparkpoint could not be recommended, please try again or contact an administrator');
+                    return;
+                }
+            },
+            scope: me
+        });
+    },
+
+    getNextUpTime: function(studentId) {
+        var me = this,
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            studentSparkpoints,
+            currentNextUpTime;
+
+        // get all of this student's sparkpoints that have a valid recommended time and sort by earliest recommended
+        studentSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
+            return rec.get('student_id') === studentId && Ext.isDate(rec.get('recommended_time'));
+        }).sort('recommended_time', 'ASC').items;
+
+        // set the current next up time, if one doesn't exist, tnow is next up time
+        currentNextUpTime = studentSparkpoints[0] ? studentSparkpoints[0].get('recommended_time') : new Date();
+
+        // new next up time is a minute before current next up time
+        return Ext.Date.subtract(currentNextUpTime, Ext.Date.MINUTE, 1);
     },
 
     /**

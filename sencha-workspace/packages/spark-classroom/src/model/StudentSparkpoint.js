@@ -129,11 +129,18 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             type: 'string',
             critical: true,
             convert: function(v, r) {
+                // if value doesn't exist for this field name directly,
+                // try to convert from other possible field names
                 return v || r.get('code') || r.get('sparkpoint_code');
             }
         }, {
             name: 'section',
-            type: 'string'
+            type: 'string',
+            convert: function(v, r) {
+                // if value doesn't exist for this field name directly,
+                // try to convert from other possible field names
+                return v || r.get('section_code');
+            }
         }, {
             name: 'student_id',
             type: 'int',
