@@ -195,6 +195,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     onAddNextUp: function() {
         this.addToQueue(true);
+    },
 
     onInitializeCompetenciesGrid: function(grid) {
         // Bind filter actions
