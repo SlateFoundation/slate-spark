@@ -436,7 +436,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             allowNull: true,
             depends: [
-                'section',
                 'learn_start_time',
                 'learn_completed_time'
             ],
@@ -482,7 +481,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'conference_pace_actual',
             persist: false,
             depends: [
-                'section',
                 'learn_start_time',
                 'conference_completed_time'
             ],
@@ -527,7 +525,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'apply_pace_actual',
             persist: false,
             depends: [
-                'section',
                 'learn_start_time',
                 'apply_completed_time'
             ],
@@ -578,7 +575,6 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'assess_pace_actual',
             persist: false,
             depends: [
-                'section',
                 'learn_start_time',
                 'assess_completed_time'
             ],
