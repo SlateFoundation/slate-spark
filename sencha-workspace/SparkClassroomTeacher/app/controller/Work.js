@@ -1,3 +1,4 @@
+/* global SparkClassroom */
 /**
  * The Work controller handles activating the top-level
  * "Work" tab and manages navigation between its immediate
@@ -15,6 +16,9 @@
  */
 Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.timing.DurationDisplay'
+    ],
 
 
     views: [
@@ -297,11 +301,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     updateTabBar: function(studentSparkpoint) {
         var me = this,
             now = new Date(),
+            sectionCode = studentSparkpoint.get('section_code'),
             learnStartTime = studentSparkpoint.get('learn_start_time'),
             conferenceStartTime = studentSparkpoint.get('conference_start_time'),
             applyStartTime = studentSparkpoint.get('apply_start_time'),
             assessStartTime = studentSparkpoint.get('assess_start_time'),
-            workTabbar = me.getWorkTabbar();
+            workTabbar = me.getWorkTabbar(),
+            timing = SparkClassroom.timing.DurationDisplay;
 
         if (!workTabbar) {
             return;
@@ -309,22 +315,22 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         me.getLearnTab().setDuration(
             learnStartTime
-            && ((studentSparkpoint.get('learn_completed_time') || now) - learnStartTime) // eslint-disable-line no-extra-parens
+            && timing.calculateDuration(sectionCode, learnStartTime, studentSparkpoint.get('learn_completed_time') || now)
         );
 
         me.getConferenceTab().setDuration(
             conferenceStartTime
-            && ((studentSparkpoint.get('conference_completed_time') || now) - conferenceStartTime) // eslint-disable-line no-extra-parens
+            && timing.calculateDuration(sectionCode, conferenceStartTime, studentSparkpoint.get('conference_completed_time') || now)
         );
 
         me.getApplyTab().setDuration(
             applyStartTime
-            && ((studentSparkpoint.get('apply_completed_time') || now) - applyStartTime) // eslint-disable-line no-extra-parens
+            && timing.calculateDuration(sectionCode, applyStartTime, studentSparkpoint.get('apply_completed_time') || now)
         );
 
         me.getAssessTab().setDuration(
             assessStartTime
-            && ((studentSparkpoint.get('assess_completed_time') || now) - assessStartTime) // eslint-disable-line no-extra-parens
+            && timing.calculateDuration(sectionCode, assessStartTime, studentSparkpoint.get('assess_completed_time') || now)
         );
 
         workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
