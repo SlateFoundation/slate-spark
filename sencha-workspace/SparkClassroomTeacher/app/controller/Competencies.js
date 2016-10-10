@@ -421,8 +421,12 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                     dirty: false
                 });
             }
-        } else if (table === 'section_student_active_sparkpoint') { // if no record exists for this sparkpoint, create one.
-            if (Ext.isEmpty(competencySparkpointsStore.getById(itemData.student_id + '_' + itemData.sparkpoint_id))) {
+        } else if (table === 'section_student_active_sparkpoint') {
+            if (sparkpoint) {
+                sparkpoint.set(itemData, {
+                    dirty: false
+                });
+            } else {
                 // create model, add neccessary data.
                 itemData.student = Ext.getStore('Students').getById(itemData.student_id);
                 itemData.student_sparkpointid = itemData.student_id + '_' + itemData.sparkpoint_id;

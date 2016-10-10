@@ -40,6 +40,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
     // component references
     refs: {
+        appCt: 'spark-teacher-appct',
         competenciesGrid: 'spark-competencies spark-competencies-grid',
 
         studentCompetencyPopover: {
@@ -87,13 +88,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
         addToQueueButton: {
             tap: {
-                fn: 'addToQueue'
+                fn: 'onAddToQueue'
             }
         },
 
         addNextUpButton: {
             tap: {
-                fn: 'addNextUp'
+                fn: 'onAddNextUp'
             }
         },
 
@@ -141,6 +142,76 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         if (model.dirty) {
             model.reject();
         }
+    },
+
+    onPhaseCheckChange: function(e, target) {
+        var me = this,
+            el = Ext.get(target),
+            checked = el.is(':checked'),
+            phaseName = el.getAttribute('data-phase'),
+            record = me.getStudentSparkpoint(),
+            chainCheckbox,
+            fieldName,
+            value;
+
+        switch (phaseName) {
+            case 'Learn':
+                fieldName = 'learn_override_time';
+                break;
+            case 'Conference':
+                fieldName = 'conference_override_time';
+                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Learn"]')
+                break;
+            case 'Apply':
+                fieldName = 'apply_override_time';
+                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Conference"]');
+                break;
+            case 'Assess':
+                fieldName = 'assess_override_time';
+                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Apply"]');
+
+                // Hide these buttons when last phase is completed
+                if (checked) {
+                    me.getLowerButtonCt().hide();
+                } else {
+                    me.getLowerButtonCt().show();
+                }
+
+                break;
+            default:
+        }
+
+        // If we checked a later phase, ensure that the previous phases are also checked
+        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
+            if (!chainCheckbox.is(':disabled')) {
+                chainCheckbox.dom.disabled = true;
+            }
+
+            if (!chainCheckbox.is(':checked')) {
+                chainCheckbox.dom.checked = true;
+            }
+
+            me.onPhaseCheckChange(null, chainCheckbox);
+        }
+
+        // If we unchecked this then remove disabled state if the prev phase wasn't finished
+        if (!Ext.isEmpty(chainCheckbox) && !checked) {
+            if (!chainCheckbox.hasCls('finished')) {
+                chainCheckbox.dom.removeAttribute('disabled');
+            }
+        }
+
+        value = checked ? new Date() : null;
+
+        record.set(fieldName, value);
+    },
+
+    onAddToQueue: function() {
+        this.addToQueue(false);
+    },
+
+    onAddNextUp: function() {
+        this.addToQueue(true);
     },
 
 
@@ -283,68 +354,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         });
     },
 
-    onPhaseCheckChange: function(e, target) {
-        var me = this,
-            el = Ext.get(target),
-            checked = el.is(':checked'),
-            phaseName = el.getAttribute('data-phase'),
-            record = me.getStudentSparkpoint(),
-            chainCheckbox,
-            fieldName,
-            value;
-
-        switch (phaseName) {
-            case 'Learn':
-                fieldName = 'learn_override_time';
-                break;
-            case 'Conference':
-                fieldName = 'conference_override_time';
-                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Learn"]')
-                break;
-            case 'Apply':
-                fieldName = 'apply_override_time';
-                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Conference"]');
-                break;
-            case 'Assess':
-                fieldName = 'assess_override_time';
-                chainCheckbox = el.up('.spark-studentcompetency-popover-table').down('input[data-phase="Apply"]');
-
-                // Hide these buttons when last phase is completed
-                if (checked) {
-                    me.getLowerButtonCt().hide();
-                } else {
-                    me.getLowerButtonCt().show();
-                }
-
-                break;
-            default:
-        }
-
-        // If we checked a later phase, ensure that the previous phases are also checked
-        if (!Ext.isEmpty(chainCheckbox) && !chainCheckbox.hasCls('finished')) {
-            if (!chainCheckbox.is(':disabled')) {
-                chainCheckbox.dom.disabled = true;
-            }
-
-            if (!chainCheckbox.is(':checked')) {
-                chainCheckbox.dom.checked = true;
-            }
-
-            me.onPhaseCheckChange(null, chainCheckbox);
-        }
-
-        // If we unchecked this then remove disabled state if the prev phase wasn't finished
-        if (!Ext.isEmpty(chainCheckbox) && !checked) {
-            if (!chainCheckbox.hasCls('finished')) {
-                chainCheckbox.dom.removeAttribute('disabled');
-            }
-        }
-
-        value = checked ? new Date() : null;
-
-        record.set(fieldName, value);
-    },
-
     giveCredit: function() {
         var me = this,
             describeText = me.getDescribeTextArea().getValue(),
@@ -366,13 +375,52 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         me.getStudentCompetencyPopover().hide();
     },
 
-    // TODO: Implement Add to Queue button
-    addToQueue: function() {
-        Ext.emptyFn();
+    addToQueue: function(nextUp) {
+        var me = this,
+            studentSparkpoint = me.getStudentSparkpoint(),
+            recommendedTime = new Date(),
+            studentId = studentSparkpoint.get('student_id');
+
+        if (nextUp) {
+            recommendedTime = me.getNextUpTime(studentId);
+        }
+
+        Slate.API.request({
+            method: 'POST',
+            url: '/spark/api/sparkpoints/suggest',
+            jsonData: [{
+                'student_id': studentId,
+                'section_code': me.getAppCt().getSelectedSection(),
+                'sparkpoint_code': studentSparkpoint.get('sparkpoint'),
+                'recommended_time': recommendedTime
+            }],
+            callback: function(options, success) {
+                if (!success) {
+                    Ext.Msg.alert('Error Adding to Queue', 'This sparkpoint could not be recommended, please try again or contact an administrator');
+                    return;
+                }
+
+                me.getStudentCompetencyPopover().hide();
+            },
+            scope: me
+        });
     },
 
-    // TODO: Implement Add Next Up button
-    addNextUp: function() {
-        Ext.emptyFn();
+    getNextUpTime: function(studentId) {
+        var me = this,
+            competencySparkpointsStore = me.getCompetencySparkpointsStore(),
+            studentSparkpoints,
+            currentNextUpTime;
+
+        // get all of this student's sparkpoints that have a valid recommended time and sort by earliest recommended
+        studentSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
+            return rec.get('student_id') === studentId && Ext.isDate(rec.get('recommended_time'));
+        }).sort('recommended_time', 'ASC').items;
+
+        // set the current next up time, if one doesn't exist, tnow is next up time
+        currentNextUpTime = studentSparkpoints[0] ? studentSparkpoints[0].get('recommended_time') : new Date();
+
+        // new next up time is a minute before current next up time
+        return Ext.Date.subtract(currentNextUpTime, Ext.Date.MINUTE, 1);
     }
 });
