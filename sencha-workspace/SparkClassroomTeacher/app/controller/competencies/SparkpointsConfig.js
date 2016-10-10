@@ -111,10 +111,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             lastAccessedIndex = 0;
 
         activeSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
-            return rec.get('student_id') === studentData.ID && !Ext.isEmpty(rec.get('learn_start_time'));
+            // get sparkpoints that belong to this student that have been started but haven't been completed
+            return rec.get('student_id') === studentData.ID && !Ext.isEmpty(rec.get('learn_start_time')) && Ext.isEmpty(rec.get('assess_completed_time'));
         }).sort('recommended_time', 'ASC').getRange();
 
         queuedSparkpoints = competencySparkpointsStore.queryBy(function(rec) {
+            // get sparkpoints that belong to this student that have been recommended and not started
             return rec.get('student_id') === studentData.ID && Ext.isEmpty(rec.get('learn_start_time')) && !Ext.isEmpty(rec.get('recommended_time'));
         }).sort('recommended_time', 'ASC').getRange();
 
