@@ -313,24 +313,29 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             return;
         }
 
+        /**
+         * Duration calculations:
+         * if no phase start time, leave it blank.
+         * if calculateDuration returns blank (eg a case where phase is started and ended on a "day off"), show "0d"
+         */
         me.getLearnTab().setDuration(
             learnStartTime
-            && timing.calculateDuration(sectionCode, learnStartTime, studentSparkpoint.get('learn_completed_time') || now)
+            && (timing.calculateDuration(sectionCode, learnStartTime, studentSparkpoint.get('learn_completed_time') || now) || '0d')
         );
 
         me.getConferenceTab().setDuration(
             conferenceStartTime
-            && timing.calculateDuration(sectionCode, conferenceStartTime, studentSparkpoint.get('conference_completed_time') || now)
+            && (timing.calculateDuration(sectionCode, conferenceStartTime, studentSparkpoint.get('conference_completed_time') || now) || '0d')
         );
 
         me.getApplyTab().setDuration(
             applyStartTime
-            && timing.calculateDuration(sectionCode, applyStartTime, studentSparkpoint.get('apply_completed_time') || now)
+            && (timing.calculateDuration(sectionCode, applyStartTime, studentSparkpoint.get('apply_completed_time') || now) || '0d')
         );
 
         me.getAssessTab().setDuration(
             assessStartTime
-            && timing.calculateDuration(sectionCode, assessStartTime, studentSparkpoint.get('assess_completed_time') || now)
+            && (timing.calculateDuration(sectionCode, assessStartTime, studentSparkpoint.get('assess_completed_time') || now) || '0d')
         );
 
         workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
