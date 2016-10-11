@@ -60,6 +60,8 @@ function *getHandler() {
                apply_pace_target,
                assess_pace_target,
                
+               assessed_section_id,
+               
                code AS sparkpoint
           FROM (
             SELECT student_id,
@@ -122,6 +124,7 @@ function *getHandler() {
                conference_pace_target,
                apply_pace_target,
                assess_pace_target,
+               assessed_section_id,
                rn::INTEGER AS student_sequence
           FROM (
             SELECT student_id,

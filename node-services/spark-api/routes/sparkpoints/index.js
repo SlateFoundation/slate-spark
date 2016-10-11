@@ -56,7 +56,8 @@ function *getHandler() {
               learn_pace_target,
               conference_pace_target,
               apply_pace_target,
-              assess_pace_target
+              assess_pace_target,
+              assessed_section_id
               
          FROM section_student_active_sparkpoint ssas
     LEFT JOIN student_sparkpoint ss ON ss.sparkpoint_id = ssas.sparkpoint_id
