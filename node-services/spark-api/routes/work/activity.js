@@ -184,9 +184,11 @@ function *patchHandler() {
             // Allow *_override_time to be blanked by passing a null value
             if (val === null && key.includes('override_time')) {
                 record[key] = null;
+                record[key.replace('_time', '_teacher_id')] = null;
             } else if (activity[key] === true || activity[key] === 'now') {
                 record[key] = now;
                 activityLog.push('learn');
+                record[key.replace('_time', '_teacher_id')] = ctx.userId;
             } else {
                 val = parseInt(activity[key], 10);
 
