@@ -169,8 +169,7 @@ function *patchHandler() {
         vals = new util.Values(),
         record = {},
         errors,
-        now = new Date(),
-        activityLog = [];
+        now = new Date();
 
     ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
     ctx.require(['section_id', 'sparkpoint_id']);
@@ -187,7 +186,6 @@ function *patchHandler() {
                 record[key.replace('_time', '_teacher_id')] = null;
             } else if (activity[key] === true || activity[key] === 'now') {
                 record[key] = now;
-                activityLog.push('learn');
                 record[key.replace('_time', '_teacher_id')] = ctx.userId;
             } else {
                 val = parseInt(activity[key], 10);
