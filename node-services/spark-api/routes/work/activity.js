@@ -1,6 +1,7 @@
 'use strict';
 
-var util = require('../../lib/util');
+var util = require('../../lib/util'),
+    codifyRecord = util.codifyRecord;
 
 function *getHandler() {
     this.require(['section_id']);
@@ -224,6 +225,16 @@ function *patchHandler() {
         updateSectionStudentActiveSparkpoint = false;
     }
 
+    // If we allow setting overrides for completed phases, the logic below must change to guard against an assess phase
+    // override overwriting the assessed_section_id value containing the section_id the phase was actually completed in.
+    if (record.assess_override_time !== undefined) {
+        // If we have an override set, take care of setting OR unsetting the assessed_section_id
+        record.assessed_section_id = (record.assess_override_time === null) ? null : sectionId;
+    } else if (record.assess_finish_time) {
+        // If we have a assess_finish_time set, set the assessed_section_id
+        record.assessed_section_id = sectionId;
+    }
+
     if (updateSectionStudentActiveSparkpoint) {
         let ssasRecord = {
             section_id: sectionId,
@@ -239,7 +250,12 @@ function *patchHandler() {
         }
 
         try {
-            yield ctx.pgp.any(recordToUpsert('section_student_active_sparkpoint',  ssasRecord, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals.vals);
+            yield ctx.pgp.any(recordToUpsert(
+                'section_student_active_sparkpoint',
+                ssasRecord,
+                vals,
+                ['section_id', 'sparkpoint_id', 'student_id']
+            ), vals.vals);
         } catch (error) {
             ctx.throw(400, error.message);
         }
