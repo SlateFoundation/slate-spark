@@ -1,3 +1,4 @@
+/* global SparkClassroom */
 /**
  * The Viewport controller is the first controller loaded in the application. It manages
  * the top-level framing and navigation.
@@ -12,7 +13,8 @@
 Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+        'SparkClassroom.timing.DurationDisplay'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -70,12 +72,12 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         controller: {
             '#': {
                 beforeredirect: 'onBeforeRedirect',
-                beforeroute: 'onBeforeRoute'
-                //<debug>
-                ,unmatchedroute: function(token) {
+                beforeroute: 'onBeforeRoute',
+                // <debug>
+                unmatchedroute: function(token) {
                     Ext.log.warn('Unmatched token: ' + token);
                 }
-                //</debug>
+                // </debug>
             }
         },
         store: {
@@ -102,15 +104,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     onLaunch: function() {
         var me = this;
 
-        Ext.getStore('Sections').load();
-
-        // add items to viewport's appCt
-        me.getAppCt().add([
-            me.getSparkTitleBar(),
-            me.getNavBar(),
-            me.getSparkGPS(),
-            me.getTabsCt()
-        ]);
+        SparkClassroom.timing.DurationDisplay.init(function() {
+            me.renderViews();
+        });
     },
 
 
@@ -122,6 +118,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             resume(sectionCode + ':' + token);
             return false;
         }
+        return true;
     },
 
     onBeforeRoute: function(token, resume) {
@@ -134,18 +131,22 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             resume(sectionMatch[2]);
             return false;
         }
+        return true;
     },
 
-    onSelectedSectionChange: function(appCt, selectedSection, oldSelectedSection) {
+    onSelectedSectionChange: function(appCt, selectedSection) {
         var me = this,
             token = Ext.util.History.getToken(),
             sectionMatch = token && me.tokenSectionRe.exec(token),
-            studentStore = Ext.getStore('Students');
+            studentStore = Ext.getStore('Students'),
+            sectionSelect = me.getSectionSelect();
 
         if (selectedSection) {
-            me.getSectionSelect().setValue(selectedSection);
+            if (sectionSelect) {
+                sectionSelect.setValue(selectedSection);
+            }
 
-            //show section dependant components
+            // show section dependant components
             me.getNavBar().show();
             me.getSparkGPS().show();
             me.getTabsCt().show();
@@ -154,19 +155,35 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             studentStore.load();
 
             // redirect with the current un-prefixed route or an empty string to write the new section into the route
-            me.redirectTo((sectionMatch && sectionMatch[2]) || 'gps');
+            me.redirectTo((sectionMatch && sectionMatch[2]) || 'gps'); // eslint-disable-line no-extra-parens
         }
     },
 
-    onSectionsStoreLoad: function(store) {
+    onSectionsStoreLoad: function() {
         this.getSectionSelect().setValue(this.getAppCt().getSelectedSection());
     },
 
-    onSectionSelectChange: function(selectField, section, oldSection) {
+    onSectionSelectChange: function(selectField, section) {
         this.getAppCt().setSelectedSection(section.get('Code'));
     },
 
-    onTeacherTabChange: function(tabBar, value, oldValue) {
+    onTeacherTabChange: function(tabBar, value) {
         this.redirectTo(value.getItemId());
-    }
+    },
+
+
+    // custom controller methods
+    renderViews: function() {
+        var me = this;
+
+        Ext.getStore('Sections').load();
+
+        // add items to viewport's appCt
+        me.getAppCt().add([
+            me.getSparkTitleBar(),
+            me.getNavBar(),
+            me.getSparkGPS(),
+            me.getTabsCt()
+        ]);
+    },
 });

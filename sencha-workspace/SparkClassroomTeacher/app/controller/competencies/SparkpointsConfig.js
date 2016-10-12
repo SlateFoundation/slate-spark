@@ -1,3 +1,4 @@
+/* global SparkClassroom Slate */
 /**
  * Manages the window for configuring Sparkpoints for a specific student.
  *
@@ -8,6 +9,9 @@
  */
 Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.timing.DurationDisplay'
+    ],
 
     config: {
 
@@ -153,28 +157,44 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     disabled: learnDisabled,
                     checked: learnChecked,
                     expected: sparkpoint.get('learn_pace_target'),
-                    actual: sparkpoint.get('learn_pace_actual')
+                    actual: me.getPhaseDuration(
+                        sparkpoint.get('section'),
+                        sparkpoint.get('learn_start_time'),
+                        sparkpoint.get('learn_completed_time')
+                    )
                 }, {
                     phase: 'Conference',
                     finished: !Ext.isEmpty(sparkpoint.get('conference_finish_time')),
                     disabled: confDisabled,
                     checked: confChecked,
                     expected: sparkpoint.get('conference_pace_target'),
-                    actual: sparkpoint.get('conference_pace_actual')
+                    actual: me.getPhaseDuration(
+                        sparkpoint.get('section'),
+                        sparkpoint.get('learn_start_time'),
+                        sparkpoint.get('conference_completed_time')
+                    )
                 }, {
                     phase: 'Apply',
                     finished: !Ext.isEmpty(sparkpoint.get('apply_finish_time')),
                     disabled: applyDisabled,
                     checked: applyChecked,
                     expected: sparkpoint.get('apply_pace_target'),
-                    actual: sparkpoint.get('apply_pace_actual')
+                    actual: me.getPhaseDuration(
+                        sparkpoint.get('section'),
+                        sparkpoint.get('learn_start_time'),
+                        sparkpoint.get('apply_completed_time')
+                    )
                 }, {
                     phase: 'Assess',
                     finished: !Ext.isEmpty(sparkpoint.get('assess_finish_time')),
                     disabled: assessDisabled,
                     checked: assessChecked,
                     expected: sparkpoint.get('assess_pace_target'),
-                    actual: sparkpoint.get('assess_pace_actual')
+                    actual: me.getPhaseDuration(
+                        sparkpoint.get('section'),
+                        sparkpoint.get('learn_start_time'),
+                        sparkpoint.get('assess_completed_time')
+                    )
                 }]
             });
         }
@@ -204,21 +224,21 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             });
         }
 
-        if (currentTableData.length == 0) {
+        if (currentTableData.length === 0) {
             me.getConfigTableCurrent().hide();
         } else {
             me.getConfigTableCurrent().updateData(currentTableData);
             me.getConfigTableCurrent().show();
         }
 
-        if (activeTableData.length == 0) {
+        if (activeTableData.length === 0) {
             me.getConfigTableActive().hide();
         } else {
             me.getConfigTableActive().updateData(activeTableData);
             me.getConfigTableActive().show();
         }
 
-        if (queuedTableData.length == 0) {
+        if (queuedTableData.length === 0) {
             me.getConfigTableQueue().hide();
         } else {
             me.getConfigTableQueue().updateData(queuedTableData);
@@ -238,6 +258,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
         sparkpointField.updateSelectedStudent(studentId);
         sparkpointField.getSuggestionsList().setWidth(500);
+    },
+
+    getPhaseDuration: function(sectionCode, startDate, endDate) {
+        if (Ext.isEmpty(startDate) || Ext.isEmpty(endDate)) {
+            return null;
+        }
+        return SparkClassroom.timing.DurationDisplay.calculateDuration(sectionCode, startDate, endDate, true, true);
     },
 
     bindPaceFields: function() {

@@ -104,7 +104,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                 actual = currentPhase.actual;
                             }
 
-                            if (expected == actual) {
+                            if (expected === actual) {
                                 return 'On Pace';
                             }
 

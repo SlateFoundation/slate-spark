@@ -1,3 +1,4 @@
+/* global SparkClassroom */
 Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
     extend: 'Ext.dataview.List',
     xtype: 'spark-gps-studentlist',
@@ -5,9 +6,8 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         'SparkClassroom.mixin.DockedTitle'
     ],
     requires: [
-        'Jarvus.util.format.FuzzyTime'
+        'SparkClassroom.timing.DurationDisplay'
     ],
-
 
     config: {
         showDismissButton: false,
@@ -29,7 +29,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
 
                 '<tpl if="subphase_duration">',
                     '<span class="item-timestamp">',
-                        '{subphase_duration:fuzzyDuration(true)}',
+                        '{[ this.adjustDuration(values) ]}',
                     '</span>',
                 '</tpl>',
                 '<tpl if="showDismissButton">',
@@ -40,11 +40,15 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                 '<ul class="gps-list-sparkpoints">',
                     '<li class="gps-list-sparkpoint">{sparkpoint}</li>',
                 '</ul>',
-            '</div>'
-        ]
+            '</div>',
+        {
+            adjustDuration: function(r) {
+                return SparkClassroom.timing.DurationDisplay.calculateDuration(r.section_code, r.subphase_start_time);
+            }
+        }]
     },
 
-    prepareData: function(data, index, record) {
+    prepareData: function(data) {
         data.showDismissButton = this.getShowDismissButton();
         return data;
     },

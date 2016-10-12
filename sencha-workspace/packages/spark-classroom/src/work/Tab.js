@@ -2,10 +2,6 @@
 Ext.define('SparkClassroom.work.Tab', {
     extend: 'Ext.tab.Tab',
     xtype: 'spark-work-tab',
-    requires: [
-        'Jarvus.util.format.FuzzyTime'
-    ],
-
 
     config: {
         duration: null,
@@ -14,7 +10,7 @@ Ext.define('SparkClassroom.work.Tab', {
     titleTpl: [
         '{title}',
         '<tpl if="duration">',
-            '<div class="spark-tab-timer">{duration:fuzzyDuration(true)}</div>',
+            '<div class="spark-tab-timer">{duration}</div>',
         '</tpl>'
     ],
 

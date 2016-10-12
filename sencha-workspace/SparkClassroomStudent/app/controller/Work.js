@@ -1,11 +1,16 @@
+/* global SparkClassroom */
 /**
  * TODO: move all work routing to main work controller
  */
 Ext.define('SparkClassroomStudent.controller.Work', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'SparkClassroom.timing.DurationDisplay'
+    ],
 
 
     config: {
+        selectedSection: null,
         studentSparkpoint: null
     },
 
@@ -96,7 +101,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         controller: {
             '#': {
                 studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
+                studentsparkpointupdate: 'onStudentSparkpointUpdate',
+                sectionselect: 'onSectionSelect'
             }
         },
         socket: {
@@ -171,6 +177,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
 
     // event handlers
+    onSectionSelect: function(section) {
+        this.setSelectedSection(section);
+    },
+
     onStudentSparkpointLoad: function(studentSparkpoint) {
         var me = this;
 
@@ -206,11 +216,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
             modifiedFieldNames,
             workFeedbackStore;
 
-
         if (tableName === 'student_sparkpoint' || tableName === 'section_student_active_sparkpoint') {
             if (studentSparkpoint
-                && studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
-                && studentSparkpoint.get('student_id') == itemData.student_id) {
+                && studentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
+                && studentSparkpoint.get('student_id') === itemData.student_id) {
                 modifiedFieldNames = studentSparkpoint.set(itemData, { dirty: false });
                 me.getApplication().fireEvent('studentsparkpointupdate', studentSparkpoint, modifiedFieldNames)
             }
@@ -221,7 +230,7 @@ Ext.define('SparkClassroomStudent.controller.Work', {
                 && (workFeedbackStore = me.getWorkFeedbackStore())
                 && !workFeedbackStore.getById(itemData.id)
             ) {
-                workFeedbackStore.add(itemData)[0];
+                workFeedbackStore.add(itemData);
             }
         }
     },
@@ -256,12 +265,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
     refreshTabbar: function() {
         var me = this,
-            now = new Date(),
             studentSparkpoint = me.getStudentSparkpoint(),
-            learnStartTime = studentSparkpoint.get('learn_start_time'),
-            conferenceStartTime = studentSparkpoint.get('conference_start_time'),
-            applyStartTime = studentSparkpoint.get('apply_start_time'),
-            assessStartTime = studentSparkpoint.get('assess_start_time'),
+            sectionCode = me.getSelectedSection(),
             workTabbar = me.getWorkTabbar();
 
         if (!workTabbar) {
@@ -269,23 +274,35 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         }
 
         me.getLearnTab().setDuration(
-            learnStartTime &&
-            ((studentSparkpoint.get('learn_completed_time') || now) - learnStartTime)
+            SparkClassroom.timing.DurationDisplay.calculateDuration(
+                sectionCode,
+                studentSparkpoint.get('learn_start_time'),
+                studentSparkpoint.get('learn_completed_time')
+            )
         );
 
         me.getConferenceTab().setDuration(
-            conferenceStartTime &&
-            ((studentSparkpoint.get('conference_completed_time') || now) - conferenceStartTime)
+            SparkClassroom.timing.DurationDisplay.calculateDuration(
+                sectionCode,
+                studentSparkpoint.get('conference_start_time'),
+                studentSparkpoint.get('conference_completed_time')
+            )
         );
 
         me.getApplyTab().setDuration(
-            applyStartTime &&
-            ((studentSparkpoint.get('apply_completed_time') || now) - applyStartTime)
+            SparkClassroom.timing.DurationDisplay.calculateDuration(
+                sectionCode,
+                studentSparkpoint.get('apply_start_time'),
+                studentSparkpoint.get('apply_completed_time')
+            )
         );
 
         me.getAssessTab().setDuration(
-            assessStartTime &&
-            ((studentSparkpoint.get('assess_completed_time') || now) - assessStartTime)
+            SparkClassroom.timing.DurationDisplay.calculateDuration(
+                sectionCode,
+                studentSparkpoint.get('assess_start_time'),
+                studentSparkpoint.get('assess_completed_time')
+            )
         );
 
         workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));

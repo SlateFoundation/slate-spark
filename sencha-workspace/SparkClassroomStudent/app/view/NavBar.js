@@ -25,15 +25,6 @@ Ext.define('SparkClassroomStudent.view.NavBar', {
                 itemId: 'timer',
                 xtype: 'label',
                 cls: 'spark-navbar-timer',
-                tpl: [
-                    '<tpl if="duration === null">',
-                        'Not Started',
-                    '<tpl elseif="duration < 1000">',
-                        'Just Started',
-                    '<tpl else>',
-                        '{duration:fuzzyDuration}',
-                    '</tpl>'
-                ],
                 hidden: true
             },
             {
