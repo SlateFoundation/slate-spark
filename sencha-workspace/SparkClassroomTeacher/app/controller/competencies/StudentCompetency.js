@@ -144,12 +144,16 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
     },
 
-    onPhaseCheckChange: function(e, target) {
+    onPhaseCheckChange: function(e, target, updateButton) {
         var me = this,
+            updateButton = Ext.isEmpty(updateButton), // true by default
             el = Ext.get(target),
             checked = el.is(':checked'),
             phaseName = el.getAttribute('data-phase'),
             record = me.getStudentSparkpoint(),
+            phasesData = me.getPopoverTable().getData().phases,
+            phaseData,
+            count,
             chainCheckbox,
             fieldName,
             value;
@@ -191,7 +195,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 chainCheckbox.dom.checked = true;
             }
 
-            me.onPhaseCheckChange(null, chainCheckbox);
+            me.onPhaseCheckChange(null, chainCheckbox, false);
         }
 
         // If we unchecked this then remove disabled state if the prev phase wasn't finished
@@ -204,6 +208,25 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         value = checked ? new Date() : null;
 
         record.set(fieldName, value);
+
+        // Only update button text on first call to this method (not in the chain)
+        if (!updateButton) {
+            return;
+        }
+
+        for (count = 0; count < phasesData.length; count++) {
+            phaseData = phasesData[count];
+
+            if (phaseName !== phaseData.phase) {
+                continue;
+            }
+
+            if (phaseData.checked && !checked) {
+                me.getGiveCreditButton().setText('Remove Credit');
+            } else {
+                me.getGiveCreditButton().setText('Give Credit');
+            }
+        }
     },
 
     onAddToQueue: function() {
@@ -285,7 +308,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         learnStatus = completedRequiredLearns + '/' + requiredLearns;
         allFinished = !Ext.isEmpty(sparkData.learn_completed_time) && !Ext.isEmpty(sparkData.conference_finish_time) && !Ext.isEmpty(sparkData.apply_finish_time) && !Ext.isEmpty(sparkData.assess_finish_time);
 
-        me.getPopoverTable().updateData({
+        me.getPopoverTable().setData({
             studentName: studentData.FullName,
             sparkpointCode: sparkData.sparkpoint,
             phases: [{
