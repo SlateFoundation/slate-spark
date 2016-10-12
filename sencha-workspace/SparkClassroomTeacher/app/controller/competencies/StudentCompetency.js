@@ -22,13 +22,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
          * @private
          * Passed in when the studentCompetencyPopover is loaded for a student
          */
-        studentSparkpoint: null,
-
-        /**
-         * @private
-         * The target cell block element to show the studentCompetencyPopover at.
-         */
-        showByTarget: null
+        studentSparkpoint: null
     },
 
 
@@ -106,11 +100,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
 
 
     // event handlers
-    onInitializeStudentSparkpoint: function(studentSparkpoint, showByTarget) {
-        var me = this;
+    onInitializeStudentSparkpoint: function(studentSparkpoint, renderTarget) {
+        var me = this,
+            popover = me.getStudentCompetencyPopover();
+
+        me.renderTarget = renderTarget;
 
         me.setStudentSparkpoint(studentSparkpoint);
-        me.setShowByTarget(showByTarget);
 
         me.getCompetenciesGrid().setMasked({
             xtype: 'loadmask',
@@ -132,10 +128,12 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 this.getCompetenciesGrid().unmask();
             },
             success: function(response) {
-                var popover = this.getStudentCompetencyPopover();
+                var scrollableContainer = me.getCompetenciesGrid().up(':scrollable') || Ext.Viewport;
 
-                this.loadDataIntoView(response.data);
-                popover.showBy(showByTarget, 'tc-cc?');
+                me.loadDataIntoView(response.data);
+
+                popover.setRenderTo(scrollableContainer.innerElement);
+                popover.showBy(renderTarget);
             },
             scope: me
         });
@@ -242,7 +240,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     onAddNextUp: function() {
         this.addToQueue(true);
     },
-
 
     // custom controller methods
     // TODO: comment below will silence eslint complexity warning, but perhaps we should work on lessening the complexity of this function
