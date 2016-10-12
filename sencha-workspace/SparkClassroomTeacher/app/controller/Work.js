@@ -301,7 +301,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     updateTabBar: function(studentSparkpoint) {
         var me = this,
             now = new Date(),
-            sectionCode = studentSparkpoint.get('section_code'),
+            sectionCode = studentSparkpoint.get('section_code') || me.getAppCt().getSelectedSection(),
             learnStartTime = studentSparkpoint.get('learn_start_time'),
             conferenceStartTime = studentSparkpoint.get('conference_start_time'),
             applyStartTime = studentSparkpoint.get('apply_start_time'),

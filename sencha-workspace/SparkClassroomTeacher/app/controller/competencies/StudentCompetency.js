@@ -254,7 +254,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             requiredLearns = 0,
             sparkData = me.getStudentSparkpoint().getData(),
             studentId = sparkData.student_id,
-            sectionCode = sparkData.senction_code,
+            sectionCode = sparkData.section_code || me.getAppCt().getSelectedSection(),
             studentData = studentStore.findRecord('ID', studentId).getData(),
             describeText = me.getDescribeTextArea(),
             giveCreditBtn = me.getGiveCreditButton(),
@@ -375,6 +375,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     },
 
     getPhaseDuration: function(sectionCode, startDate, endDate) {
+        if (Ext.isEmpty(sectionCode)) {
+            sectionCode = this.getAppCt().getSelectedSection();
+        }
+
         if (Ext.isEmpty(startDate) || Ext.isEmpty(endDate)) {
             return null;
         }

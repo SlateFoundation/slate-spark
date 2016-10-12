@@ -85,11 +85,6 @@ Ext.define('SparkClassroom.timing.DurationDisplay', {
         // use fuzzy duration formatting by default
         skipFuzzy = (skipFuzzy === true); // eslint-disable-line no-extra-parens
 
-        // prevent regex matching errors in sectionCodeToGrade() function on null sectionCode
-        if (Ext.isEmpty(sectionCode)) {
-            sectionCode = '';
-        }
-
         grade = timing.sectionCodeToGrade(sectionCode);
 
         if (phaseStartTime instanceof Date) {

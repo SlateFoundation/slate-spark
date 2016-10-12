@@ -261,9 +261,14 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     getPhaseDuration: function(sectionCode, startDate, endDate) {
+        if (Ext.isEmpty(sectionCode)) {
+            sectionCode = this.getAppCt().getSelectedSection();
+        }
+
         if (Ext.isEmpty(startDate) || Ext.isEmpty(endDate)) {
             return null;
         }
+
         return SparkClassroom.timing.DurationDisplay.calculateDuration(sectionCode, startDate, endDate, true, true);
     },
 
