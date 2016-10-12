@@ -44,7 +44,7 @@ function *postHandler() {
     records = util.validateRecordSet(ctx, tableName, goals);
 
     if (records.success === false) {
-        return;
+        // return;
     }
 
     sql = util.queriesToReturningCte(records.map(record => recordToInsert(tableName, record, vals)));
