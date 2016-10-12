@@ -36,6 +36,7 @@ function *postHandler() {
         goals = ctx.request.body,
         vals = new util.Values(),
         recordToUpsert = util.recordToUpsert.bind(ctx),
+        identifyRecordSync = util.identifyRecordSync,
         records,
         sql;
 
@@ -46,6 +47,12 @@ function *postHandler() {
     if (records.success === false) {
         return;
     }*/
+
+    goals = goals.map(function(goal) {
+        var record = identifyRecordSync(goal, ctx.lookup);
+        record.term_id = 1;
+        return record;
+    });
 
     sql = util.queriesToReturningCte(
         goals.map(record => recordToUpsert(tableName, record, vals, ['term_id', 'section_id', 'student_id']))
