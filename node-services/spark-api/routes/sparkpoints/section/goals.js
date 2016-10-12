@@ -41,13 +41,13 @@ function *postHandler() {
 
     ctx.assert(Array.isArray(goals), 'The request body must be an array of goals objects.', 400);
 
-    records = util.validateRecordSet(ctx, tableName, goals);
+    /*records = util.validateRecordSet(ctx, tableName, goals);
 
     if (records.success === false) {
-        // return;
-    }
+         return;
+    }*/
 
-    sql = util.queriesToReturningCte(records.map(record => recordToInsert(tableName, record, vals)));
+    sql = util.queriesToReturningCte(goals.map(record => recordToInsert(tableName, record, vals)));
 
     yield ctx.pgp.any(sql, vals.vals);
 
