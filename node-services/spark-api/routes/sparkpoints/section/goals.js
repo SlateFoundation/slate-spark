@@ -41,8 +41,6 @@ function *postHandler() {
 
     ctx.assert(Array.isArray(goals), 'The request body must be an array of goals objects.', 400);
 
-    goals.forEach(goal => goal.term_id = 1);
-
     records = util.validateRecordSet(ctx, tableName, goals);
 
     if (records.success === false) {
