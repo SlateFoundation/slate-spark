@@ -35,19 +35,21 @@ function *postHandler() {
         tableName = 'term_section_student_sparkpoint_goals',
         goals = ctx.request.body,
         vals = new util.Values(),
-        recordToInsert = util.recordToInsert.bind(ctx),
+        recordToUpsert = util.recordToUpsert.bind(ctx),
         records,
         sql;
 
     ctx.assert(Array.isArray(goals), 'The request body must be an array of goals objects.', 400);
 
-    /*records = util.validateRecordSet(ctx, tableName, goals);
+    records = util.validateRecordSet(ctx, tableName, goals);
 
     if (records.success === false) {
-         return;
-    }*/
+        return;
+    }
 
-    sql = util.queriesToReturningCte(goals.map(record => recordToInsert(tableName, record, vals)));
+    sql = util.queriesToReturningCte(
+        goals.map(record => recordToUpsert(tableName, record, vals, ['term_id', 'section_id', 'student_id']))
+    );
 
     yield ctx.pgp.any(sql, vals.vals);
 
