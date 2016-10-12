@@ -41,11 +41,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             autoCreate: true
         },
 
-        appCt: {
-            selectedsectionchange: 'onSelectedSectionChange'
-        },
         sparkpointField: 'spark-sparkpointsconfig-window spark-sparkpointfield',
-
         configTableActive: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table active]',
         configTableCurrent: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table current]',
         configTableQueue: 'spark-sparkpointsconfig-window component[cls*=sparkpointsconfig-table queue]',
@@ -75,17 +71,9 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
         },
 
-        appCt: {
-            initialize: 'onInitializeAppCt'
-        },
-
         sparkpointField: {
             sparkpointselect: 'suggestNextSparkpoint'
         }
-    },
-
-    onInitializeAppCt: function() {
-        this.getAppCt().add(this.getStudentCompetencyPopover());
     },
 
     initializeStudent: function(studentId) {
