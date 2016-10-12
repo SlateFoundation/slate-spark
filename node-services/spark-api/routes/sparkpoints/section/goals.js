@@ -41,11 +41,11 @@ function *postHandler() {
 
     ctx.assert(Array.isArray(goals), 'The request body must be an array of goals objects.', 400);
 
-    records = util.validateRecordSet(ctx, tableName, goals);
+    /*records = util.validateRecordSet(ctx, tableName, goals);
 
     if (records.success === false) {
         return;
-    }
+    }*/
 
     sql = util.queriesToReturningCte(
         goals.map(record => recordToUpsert(tableName, record, vals, ['term_id', 'section_id', 'student_id']))
