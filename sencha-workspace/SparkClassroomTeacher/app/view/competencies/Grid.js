@@ -15,7 +15,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
         plugins: [
             {
                 type: 'gridheight',
-                enableVertical: true
+                scrollX: true
             }, {
                 type: 'gridflex'
             }
