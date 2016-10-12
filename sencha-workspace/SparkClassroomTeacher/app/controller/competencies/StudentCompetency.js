@@ -214,6 +214,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             return;
         }
 
+        // Check the original data to see if this has changed, essentially a dirty check
         for (count = 0; count < phasesData.length; count++) {
             phaseData = phasesData[count];
 
