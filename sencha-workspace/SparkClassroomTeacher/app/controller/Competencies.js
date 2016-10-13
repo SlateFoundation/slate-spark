@@ -124,9 +124,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             },
             '#Students': {
                 load: 'onStudentStoreLoad'
-            },
-            '#SectionGoals': {
-                load: 'refreshColumns'
             }
         },
         socket: {
