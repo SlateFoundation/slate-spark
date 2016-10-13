@@ -89,7 +89,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         competenciesGrid: {
             initialize: 'onInitializeCompetenciesGrid',
-            activate: 'refreshColumns',
             itemtap: 'onCompetenciesGridItemTap'
         },
 
@@ -125,9 +124,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             },
             '#Students': {
                 load: 'onStudentStoreLoad'
-            },
-            '#SectionGoals': {
-                load: 'refreshColumns'
             }
         },
         socket: {
@@ -180,7 +176,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             tabsCt = me.getTabsCt();
 
-        me.loadSectionGoals();
+        if (!me.getSectionGoalsStore().isLoaded()) {
+            me.loadSectionGoals();
+        }
 
         me.doHighlightTabbars();
 
@@ -272,7 +270,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this;
 
         me.getNavBar().setSelectedButton(me.getCompetenciesNavButton());
-        me.refreshColumns();
+
+        // Prevent drawing before store load occurs
+        if (me.getCompetencySparkpointsStore().isLoaded()) {
+            me.refreshGrid();
+        }
     },
 
     onSparkConfigClick: function(dataIndex) {
@@ -631,7 +633,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             recordDictionary = {},
             record,
             gridStore = grid.getStore(),
-            count = 0, studentId, student, sparkpointId, studentSparkpoint
+            count = 0, studentId, student, sparkpointId, studentSparkpoint;
 
         gridStore.beginUpdate();
         gridStore.removeAll();
@@ -683,12 +685,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             goalRec, goalValue;
 
         grid.setCurrentSection(currentSection);
-
         me.refreshStudentFilter();
 
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
             if (column && column.xtype === studentCompetencyColumnXType) {
-                grid.remove(column);
+                grid.removeColumn(column);
             }
         });
 

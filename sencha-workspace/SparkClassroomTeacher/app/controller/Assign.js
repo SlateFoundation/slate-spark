@@ -276,7 +276,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             assignCt.setSelectedSparkpoint(selectedStudentSparkpoint ? selectedStudentSparkpoint.get('sparkpoint') : null);
         }
 
-        sparkpointField.updateSelectedStudent(selectedStudentSparkpoint.get('student_id'));
+        sparkpointField.updateSelectedStudent(selectedStudentSparkpoint ? selectedStudentSparkpoint.get('student_id') : null);
     },
 
     /**
