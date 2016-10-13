@@ -89,7 +89,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         competenciesGrid: {
             initialize: 'onInitializeCompetenciesGrid',
-            activate: 'refreshColumns',
             itemtap: 'onCompetenciesGridItemTap'
         },
 
@@ -631,7 +630,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             recordDictionary = {},
             record,
             gridStore = grid.getStore(),
-            count = 0, studentId, student, sparkpointId, studentSparkpoint
+            count = 0, studentId, student, sparkpointId, studentSparkpoint;
 
         gridStore.beginUpdate();
         gridStore.removeAll();
@@ -683,7 +682,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             goalRec, goalValue;
 
         grid.setCurrentSection(currentSection);
-
         me.refreshStudentFilter();
 
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
