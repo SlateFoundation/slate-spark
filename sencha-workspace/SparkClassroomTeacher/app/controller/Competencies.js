@@ -179,7 +179,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this,
             tabsCt = me.getTabsCt();
 
-        me.loadSectionGoals();
+        if (!me.getSectionGoalsStore().isLoaded()) {
+            me.loadSectionGoals();
+        }
 
         me.doHighlightTabbars();
 
@@ -271,7 +273,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         var me = this;
 
         me.getNavBar().setSelectedButton(me.getCompetenciesNavButton());
-        me.refreshColumns();
+
+        // Prevent drawing before store load occurs
+        if (me.getCompetencySparkpointsStore().isLoaded()) {
+            me.refreshGrid();
+        }
     },
 
     onSparkConfigClick: function(dataIndex) {
