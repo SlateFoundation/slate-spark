@@ -688,7 +688,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
             if (column && column.xtype === studentCompetencyColumnXType) {
-                grid.remove(column);
+                grid.removeColumn(column);
             }
         });
 
