@@ -42,7 +42,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
 
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
-            store = Ext.getStore(store);
+            store = Ext.getStore(store.split('.').pop());
 
             if (!(store.isLoaded() || store.isLoading())) {
                 store.load();
