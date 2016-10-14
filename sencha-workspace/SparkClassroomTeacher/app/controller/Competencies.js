@@ -89,6 +89,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         competenciesGrid: {
             initialize: 'onInitializeCompetenciesGrid',
+            activate: 'refreshColumns',
             itemtap: 'onCompetenciesGridItemTap'
         },
 
@@ -124,6 +125,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             },
             '#Students': {
                 load: 'onStudentStoreLoad'
+            },
+            '#SectionGoals': {
+                load: 'refreshColumns'
             }
         },
         socket: {
