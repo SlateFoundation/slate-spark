@@ -127,7 +127,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 load: 'onStudentStoreLoad'
             },
             '#SectionGoals': {
-                load: 'refreshColumns'
+                load: 'onSectionGoalsStoreLoad'
             }
         },
         socket: {
@@ -261,9 +261,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onStudentStoreLoad: function() {
-        var me = this;
+        this.refreshColumns(true);
+    },
 
-        me.refreshColumns();
+    onSectionGoalsStoreLoad: function() {
+        this.refreshColumns(true);
     },
 
     onNavCompetenciesTap: function() {
@@ -491,7 +493,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
     // This method ensures that all pre-requisites of doRefreshColumns are satisfied before it is called,
     // and throttles the call using a bufferedFunction. DO NOT handle checking pre-requisites outside of this function
-    refreshColumns: function() {
+    refreshColumns: function(force) {
         var me = this,
             studentStore = this.getStudentsStore(),
             sectionGoalsStore = me.getSectionGoalsStore(),
@@ -499,6 +501,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             grid = me.getCompetenciesGrid();
 
         if (!grid || !studentStore || !studentStore.isLoaded() || !sectionGoalsStore || !sectionGoalsStore.isLoaded()) {
+            return;
+        }
+
+        // if force is true, refresh the columns even if they are already rendered
+        if (!force && grid.query('spark-student-competency-column').length > 0) {
             return;
         }
 
