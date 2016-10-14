@@ -275,10 +275,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.getNavBar().setSelectedButton(me.getCompetenciesNavButton());
 
-        // Prevent drawing before store load occurs
-        if (me.getCompetencySparkpointsStore().isLoaded()) {
-            me.refreshGrid();
-        }
+        me.refreshColumns();
     },
 
     onSparkConfigClick: function(dataIndex) {
@@ -492,6 +489,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         sparkpointFilter.setHtml(sparkpointOptions);
     },
 
+    // This method ensures that all pre-requisites of doRefreshColumns are satisfied before it is called,
+    // and throttles the call using a bufferedFunction. DO NOT handle checking pre-requisites outside of this function
     refreshColumns: function() {
         var me = this,
             studentStore = this.getStudentsStore(),
@@ -510,6 +509,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         bufferedRefreshColumns();
     },
 
+    // This method ensures that all pre-requisites of doRefreshGrid are satisfied before it is called,
+    // and throttles the call using a bufferedFunction DO NOT handle checking pre-requisites outside of this function
     refreshGrid: function() {
         var me = this,
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
