@@ -346,4 +346,17 @@ input[type="checkbox"] {
     &:active {
         background-color: mix(white, $base-color);
     }
+
+    &:disabled {
+        background-color: rgba(black, .1);
+        border-color: rgba(black, .1);
+
+        &:checked {
+            border-color: transparent;
+        }
+
+        &::before {
+            color: rgba(black, .2);
+        }
+    }
 }
