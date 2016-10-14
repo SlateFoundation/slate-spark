@@ -42,6 +42,8 @@
     .expected-col,
     .actual-col {
         border-left: 1px solid #ccc;
+        padding-left: .5em;
+        padding-right: .5em;
         text-align: center;
     }
 
@@ -67,12 +69,31 @@
         font-size: .8125em;
     }
 
+    input[type="checkbox"] {
+        &:disabled { // darken up a little to allow background stripes
+            background-color: rgba(black, (1/6));
+
+            &::before {
+                color: rgba(black, (1/3));
+            }
+        }
+
+        &.is-credit-given {
+            background-image: $slate-pattern-diagonal-sm;
+
+            &:disabled {
+                background-image: $slate-pattern-diagonal-sm-white;
+            }
+        }
+    }
+
     .phase-name {
         font-weight: bold;
-        margin: 0 .25em;
+        margin: 0 .5em 0 .25em;
     }
 
     .phase-status {
+        color: $neutral-dark-color;
         font-size: .8125em;
     }
 
