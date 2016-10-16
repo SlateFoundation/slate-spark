@@ -70,8 +70,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         },
 
         sparkpointsConfigWindow: {
-            hide: {
-                fn: 'onHideWindow'
+            beforehide: {
+                fn: 'onBeforeHideWindow'
             }
         },
 
@@ -355,6 +355,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                     sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
                 }
             }
+
+            me.getSparkpointsConfigWindow().setDirty(true);
     },
 
     onSortArrowClick: function(e, el) {
@@ -393,6 +395,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
 
             sortableSparkpoint.set('recommended_time', Ext.Date.add(new Date(), Ext.Date.MINUTE, minutes));
+            me.getSparkpointsConfigWindow().setDirty(true);
         }
 
         me.loadDataIntoView();
@@ -428,8 +431,22 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         });
     },
 
-    onHideWindow: function() {
-        this.getCompetencySparkpointsStore().rejectChanges();
+    onBeforeHideWindow: function(sparkpointsConfigWindow) {
+        var me = this;
+
+        if (sparkpointsConfigWindow.getDirty()) {
+            Ext.Msg.confirm('Unsaved Changes', 'Your changes will be lost if you continue. Do you still wish to continue?',
+                function (choice) {
+                    if (choice === 'yes') {
+                        me.getCompetencySparkpointsStore().rejectChanges();
+                        sparkpointsConfigWindow.setDirty(false);
+                        sparkpointsConfigWindow.hide();
+                    }
+                }
+            );
+
+            return false;
+        }
     },
 
     onDoneTap: function() {
@@ -454,6 +471,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         competencySparkpointsStore.commitChanges();
+        me.getSparkpointsConfigWindow().setDirty(false);
         me.getSparkpointsConfigWindow().hide();
     },
 
