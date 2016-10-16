@@ -333,30 +333,36 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
             sparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
             paceFields = sparkRow.select('input.expected-completion').elements,
+            oldPaceValue = sparkpoint.get(changedPhase.toLowerCase() + '_pace_target'),
             count, fieldEl, fieldVal, nextFieldEl, nextFieldVal;
 
-            // convert to integer, if input is blank, replace with 1
-            newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
-            sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
+        // convert to integer, if input is blank, replace with 1
+        newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
 
-            for (count = 0; count + 1 < paceFields.length; count++) {
-                fieldEl = Ext.fly(paceFields[count]);
-                fieldVal = parseInt(fieldEl.getValue(), 10);
-                nextFieldEl = Ext.fly(paceFields[count + 1]);
-                nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
+        if (newPaceValue === oldPaceValue) {
+            return;
+        }
 
-                if (!Ext.isNumber(fieldVal)) {
-                    fieldEl.dom.value = 1;
-                }
+        sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
 
-                if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
-                    nextFieldEl.dom.value = fieldVal + 1;
+        for (count = 0; count + 1 < paceFields.length; count++) {
+            fieldEl = Ext.fly(paceFields[count]);
+            fieldVal = parseInt(fieldEl.getValue(), 10);
+            nextFieldEl = Ext.fly(paceFields[count + 1]);
+            nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
 
-                    sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
-                }
+            if (!Ext.isNumber(fieldVal)) {
+                fieldEl.dom.value = 1;
             }
 
-            me.getSparkpointsConfigWindow().setDirty(true);
+            if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+                nextFieldEl.dom.value = fieldVal + 1;
+
+                sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
+            }
+        }
+
+        me.getSparkpointsConfigWindow().setDirty(true);
     },
 
     onSortArrowClick: function(e, el) {
@@ -447,6 +453,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
 
             return false;
         }
+
+        return true;
     },
 
     onDoneTap: function() {
