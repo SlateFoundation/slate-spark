@@ -115,12 +115,12 @@ function *getHandler() {
     ctx.set('Cache-control', 'private, max-age=' + (maxAgeInMs ? Math.floor((maxAgeInMs / 1000)) : 0));
 
     // For development environments only
-    if (!(instanceKey.endsWith('-staging') || instanceKey.endsWith('-live'))) {
-        clientCode = clientCode.replace(
-            'throw err; // Throw on staging and live; development environments always return 9',
-            `console.warn('Falling back to 9th grade for timing:', err); return 9; // Dev environments always return 9`
-        );
-    }
+    //if (!(instanceKey.endsWith('-staging') || instanceKey.endsWith('-live'))) {
+    clientCode = clientCode.replace(
+        'throw err; // Throw on staging and live; development environments always return 9',
+        `console.warn('Falling back to 9th grade for timing:', err); return 9; // Dev environments always return 9`
+    );
+    //}
 
     ctx.body = clientCode;
 }
