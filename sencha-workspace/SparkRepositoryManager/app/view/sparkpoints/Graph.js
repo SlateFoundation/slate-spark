@@ -41,7 +41,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
             },
             highlightedNodes: {
                 code: {
-                    'font-weight': 'bold',
+                    'font-weight': 'bold'
                 },
                 rect: {
                     height: 50,
@@ -53,7 +53,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
             },
             edges: {
                 color: '#00737e',
-                arrow_height: 8,
+                arrow_height: 8
             }
         },
         dag:      {

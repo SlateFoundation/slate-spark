@@ -32,6 +32,11 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
             }],
             hideHeaders: true,
             disableSelection: true,
+            emptyText: 'None available.',
+            store: {
+                fields: [],
+                data: []
+            },
             columns: [
                 {
                     xtype: 'templatecolumn',
@@ -61,75 +66,97 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
         },
         {
             flex: 2,
-            itemId: 'unit-grid',
-            xtype: 'grid',
-            cls: 's2m-units-multiselector-unitgrid',
-            features: [{
-                ftype: 'grouping',
-                groupHeaderTpl: '{name}',
-                collapsible: false // disabled because it doesn't work TODO maybe make this work?,
-            }],
-            viewConfig: {
-                plugins: {
-                    ptype: 'gridviewdragdrop'
-                }
-            },
-            hideHeaders: true,
-            columns: {
-                defaults: {
-                    menuDisabled: true
-                },
-                items: [
-                    {
-                        width: 24,
-                        xtype: 'actioncolumn',
-                        align: 'right',
-                        tdCls: 's2m-units-remove-cell',
+            xtype: 'container',
+            margin: '0 0 0 20',
+            items: [
+                {
+                    itemId: 'unit-grid',
+                    xtype: 'grid',
+                    cls: 's2m-units-multiselector-unitgrid',
+                    features: [{
+                        ftype: 'grouping',
+                        groupHeaderTpl: '{name}',
+                        collapsible: false // disabled because it doesn't work TODO maybe make this work?,
+                    }],
+                    viewConfig: {
+                        plugins: {
+                            ptype: 'gridviewdragdrop'
+                        }
+                    },
+                    hideHeaders: true,
+                    emptyText: 'None yet. Add some from the Sparkpoints to the left, <br> or from scratch using the button above.',
+                    store: {
+                        fields: [],
+                        data: []
+                    },
+                    columns: {
+                        defaults: {
+                            menuDisabled: true
+                        },
                         items: [
                             {
-                                action: 'remove',
-                                iconCls: 'glyph-danger',
-                                tooltip: 'Remove from Unit',
-                                glyph: 0xf056 // fa-minus-circle
+                                width: 24,
+                                xtype: 'actioncolumn',
+                                align: 'right',
+                                tdCls: 's2m-units-remove-cell',
+                                items: [
+                                    {
+                                        action: 'remove',
+                                        iconCls: 'glyph-danger',
+                                        tooltip: 'Remove from Unit',
+                                        glyph: 0xf056 // fa-minus-circle
+                                    }
+                                ]
+                            },
+                            {
+                                width: 32,
+                                xtype: 'rownumberer',
+                                draggable: true // TODO does this work? interfere?
+                            },
+                            {
+                                flex: 1,
+                                xtype: 'templatecolumn',
+                                itemId: 'unit-item-col',
+                                cellWrap: true,
+                                tpl: [
+                                    '<tpl if="url">',
+                                        '<a href="{url}" target="_blank">{title}</a>',
+                                    '<tpl else>',
+                                        '{title}',
+                                    '</tpl>'
+                                ]
+                            },
+                            {
+                                width: 48,
+                                xtype: 'checkcolumn',
+                                itemId: 'unit-required-column',
+                                text: '<abbr title="Required">Req’d</abbr>',
+                                dataIndex: 'isRequired',
+                                hidden: true
+                            },
+                            {
+                                width: 48,
+                                xtype: 'checkcolumn',
+                                itemId: 'unit-recommended-column',
+                                text: '<abbr title="Recommended">Recm’d</abbr>',
+                                dataIndex: 'isRecommended',
+                                hidden: true
                             }
                         ]
-                    },
-                    {
-                        width: 32,
-                        xtype: 'rownumberer',
-                        draggable: true // TODO does this work? interfere?
-                    },
-                    {
-                        flex: 1,
-                        xtype: 'templatecolumn',
-                        itemId: 'unit-item-col',
-                        cellWrap: true,
-                        tpl: [
-                            '<tpl if="url">',
-                                '<a href="{url}" target="_blank">{title}</a>',
-                            '<tpl else>',
-                                '{title}',
-                            '</tpl>'
-                        ]
-                    },
-                    {
-                        width: 80,
-                        xtype: 'checkcolumn',
-                        itemId: 'unit-required-column',
-                        text: '<abbr title="Required">Req’d</abbr>',
-                        dataIndex: 'isRequired',
-                        hidden: true
-                    },
-                    {
-                        width: 96,
-                        xtype: 'checkcolumn',
-                        itemId: 'unit-recommended-column',
-                        text: '<abbr title="Recommended">Recm’d</abbr>',
-                        dataIndex: 'isRecommended',
-                        hidden: true
                     }
-                ]
-            }
+                },
+                {
+                    xtype: 'component',
+                    cls: 's2m-units-multiselector-legend',
+                    itemId: 'legend',
+                    hidden: true,
+                    html: [
+                        '<i class="fa fa-asterisk"></i> Required ',
+                        '&emsp;',
+                        '<i class="fa fa-bookmark"></i> Recommended'
+                    ]
+                }
+            ]
         }
     ],
 
@@ -162,11 +189,9 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
         }
 
         if (showRequired || showRecommended) {
-            unitGrid.hideHeaders = false;
-            unitGrid.getHeaderContainer().setHeight('auto');
-
             unitGrid.down('#unit-required-column').setVisible(showRequired);
             unitGrid.down('#unit-recommended-column').setVisible(showRecommended);
+            me.down('#legend').show();
         }
     }
 });

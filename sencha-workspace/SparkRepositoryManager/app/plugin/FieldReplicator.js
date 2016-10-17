@@ -13,16 +13,13 @@
  * </code></pre>
  */
 Ext.define('SparkRepositoryManager.plugin.FieldReplicator', {
+    extend: 'Ext.plugin.Abstract',
+    alias: 'plugin.s2m-fieldreplicator',
     requires: [
         'Ext.plugin.Abstract',
         'Ext.Function'
     ],
 
-    xtype: 's2m-fieldreplicator',
-
-    extend: 'Ext.plugin.Abstract',
-
-    alias: 'plugin.fieldreplicator',
 
     init: function(field) {
         var me = this;

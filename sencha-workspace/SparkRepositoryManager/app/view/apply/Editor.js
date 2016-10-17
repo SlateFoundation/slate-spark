@@ -88,7 +88,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             readOnly: this.readOnly,
 
             plugins: {
-                ptype: 'fieldreplicator',
+                ptype: 's2m-fieldreplicator',
                 pluginId: 'fieldreplicator'
             },
 
