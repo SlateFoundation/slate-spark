@@ -66,8 +66,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         },
 
         sparkpointsConfigWindow: {
-            hide: {
-                fn: 'onHideWindow'
+            beforehide: {
+                fn: 'onBeforeHideWindow'
             }
         },
 
@@ -321,28 +321,36 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             studentSparkpointId = sparkRow.getAttribute('data-student-sparkpointid'),
             sparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
             paceFields = sparkRow.select('input.expected-completion').elements,
+            oldPaceValue = sparkpoint.get(changedPhase.toLowerCase() + '_pace_target'),
             count, fieldEl, fieldVal, nextFieldEl, nextFieldVal;
 
-            // convert to integer, if input is blank, replace with 1
-            newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
-            sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
+        // convert to integer, if input is blank, replace with 1
+        newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
 
-            for (count = 0; count + 1 < paceFields.length; count++) {
-                fieldEl = Ext.fly(paceFields[count]);
-                fieldVal = parseInt(fieldEl.getValue(), 10);
-                nextFieldEl = Ext.fly(paceFields[count + 1]);
-                nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
+        if (newPaceValue === oldPaceValue) {
+            return;
+        }
 
-                if (!Ext.isNumber(fieldVal)) {
-                    fieldEl.dom.value = 1;
-                }
+        sparkpoint.set(changedPhase.toLowerCase() + '_pace_target', newPaceValue);
 
-                if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
-                    nextFieldEl.dom.value = fieldVal + 1;
+        for (count = 0; count + 1 < paceFields.length; count++) {
+            fieldEl = Ext.fly(paceFields[count]);
+            fieldVal = parseInt(fieldEl.getValue(), 10);
+            nextFieldEl = Ext.fly(paceFields[count + 1]);
+            nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
 
-                    sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
-                }
+            if (!Ext.isNumber(fieldVal)) {
+                fieldEl.dom.value = 1;
             }
+
+            if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+                nextFieldEl.dom.value = fieldVal + 1;
+
+                sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
+            }
+        }
+
+        me.getSparkpointsConfigWindow().setDirty(true);
     },
 
     onSortArrowClick: function(e, el) {
@@ -381,6 +389,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             }
 
             sortableSparkpoint.set('recommended_time', Ext.Date.add(new Date(), Ext.Date.MINUTE, minutes));
+            me.getSparkpointsConfigWindow().setDirty(true);
         }
 
         me.loadDataIntoView();
@@ -416,8 +425,24 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         });
     },
 
-    onHideWindow: function() {
-        this.getCompetencySparkpointsStore().rejectChanges();
+    onBeforeHideWindow: function(sparkpointsConfigWindow) {
+        var me = this;
+
+        if (sparkpointsConfigWindow.getDirty()) {
+            Ext.Msg.confirm('Unsaved Changes', 'Your changes will be lost if you continue. Do you still wish to continue?',
+                function (choice) {
+                    if (choice === 'yes') {
+                        me.getCompetencySparkpointsStore().rejectChanges();
+                        sparkpointsConfigWindow.setDirty(false);
+                        sparkpointsConfigWindow.hide();
+                    }
+                }
+            );
+
+            return false;
+        }
+
+        return true;
     },
 
     onDoneTap: function() {
@@ -442,6 +467,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         competencySparkpointsStore.commitChanges();
+        me.getSparkpointsConfigWindow().setDirty(false);
         me.getSparkpointsConfigWindow().hide();
     },
 

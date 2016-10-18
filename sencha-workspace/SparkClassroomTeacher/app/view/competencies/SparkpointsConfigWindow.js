@@ -9,6 +9,8 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
         hideOnMaskTap: true,
         style: 'overflow-y:auto; overflow-x:hidden;', // workaround - scrollable config not working
 
+        dirty: false, // Track changes that would normally be saved to setDirty: true
+
         buttons: [
             {
                 text: 'Done',
@@ -248,5 +250,18 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                 ]
             }
         ]
+    },
+
+    /**
+     * Hides this Component optionally using an animation.
+     * Overridden to also fire a 'beforehide' event, if you return false in this event you prevent hiding.
+     * @param {Object/Boolean} [animation] You can specify an animation here or a bool to use the {@link #hideAnimation} config.
+     * @return {Ext.Component}
+     * @chainable
+     */
+    hide: function(animation) {
+        if (this.fireEvent('beforehide', this)) {
+            this.callParent(animation);
+        }
     }
 });
