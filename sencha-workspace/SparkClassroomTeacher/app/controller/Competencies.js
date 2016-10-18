@@ -141,7 +141,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(studentSparkpointId, target) {
+    updateStudentSparkpoint: function(studentSparkpointId, target, column) {
         var me = this,
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentSparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
@@ -165,7 +165,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.studentSparkpoint = studentSparkpoint;
         me.showByTarget = target;
-        me.getApplication().fireEvent('studentsparkpointchange', studentSparkpoint, target);
+        me.getApplication().fireEvent('studentsparkpointchange', studentSparkpoint, target, column);
     },
 
     updateActiveStudentId: function(studentId) {
@@ -353,15 +353,22 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var me = this,
             targetEl = Ext.fly(e.target),
-            studentId = targetEl.getAttribute('data-student-id'),
-            studentSparkpointId = studentId + '_' + rec.getId();
+            studentId,
+            studentSparkpointId;
+
+        if (targetEl.hasCls('cycle-gauge-pip')) {
+            targetEl = targetEl.down('.pip-text');
+        }
 
         if (targetEl.hasCls('pip-text')) {
+            studentId = targetEl.getAttribute('data-student-id');
+            studentSparkpointId = studentId + '_' + rec.getId();
+
             if (Ext.isEmpty(studentId)) {
                 return;
             }
 
-            me.updateStudentSparkpoint(studentSparkpointId, Ext.fly(e.target));
+            me.updateStudentSparkpoint(studentSparkpointId, targetEl);
         }
 
         if (targetEl.getAttribute('action') === 'add-to-queue') {

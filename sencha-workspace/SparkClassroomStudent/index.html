@@ -6,6 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <title>Spark Classroom (Student)</title>
         <link rel='stylesheet' type='text/css' href='resources/slate-frame/main.css'>
+        <style>
+            #ext-viewport {
+                padding-top: 2.75em;
+            }
+        </style>
         <link rel='stylesheet' type='text/css' href='resources/slate-frame/fonts/lato.css'>
         <link rel='stylesheet' type='text/css' href='resources/slate-frame/fonts/sanchez.css'>
         <link rel='stylesheet' type='text/css' href='resources/slate-frame/fonts/font-awesome.css'>
@@ -19,7 +24,7 @@
                     </li>
                     <li class="omnibar-item omnibar-search-item">
                         <form class="omnibar-search-form" action="/search">
-                            <input class="omnibar-search-field" name="q" type="search" placeholder="Search" required=""> 
+                            <input class="omnibar-search-field" name="q" type="search" placeholder="Search" required="">
                         </form>
                     </li>
                     <li class="omnibar-item icon-courses" data-icon="courses" data-href="/courses" data-label="Courses">
@@ -495,7 +500,7 @@
         <!--
         <script type="text/javascript">
             var Ext = Ext || {}; // Ext namespace won't be defined yet...
-    
+
             // This function is called by the Microloader after it has performed basic
             // device detection. The results are provided in the "tags" object. You can
             // use these tags here or even add custom tags. These can be used by platform
@@ -504,7 +509,7 @@
             Ext.beforeLoad = function (tags) {
                 var s = location.search,  // the query string (ex "?foo=1&bar")
                     profile;
-    
+
                 // For testing look for "?classic" or "?modern" in the URL to override
                 // device detection default.
                 //
@@ -518,9 +523,9 @@
                     profile = tags.desktop ? 'classic' : 'modern';
                     //profile = tags.phone ? 'modern' : 'classic';
                 }
-    
+
                 Ext.manifest = profile; // this name must match a build profile name
-    
+
                 // This function is called once the manifest is available but before
                 // any data is pulled from it.
                 //
