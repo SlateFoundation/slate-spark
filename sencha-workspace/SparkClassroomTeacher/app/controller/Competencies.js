@@ -416,7 +416,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             recordData.id = record.data.sparkpoint_id;
             recordData.sparkpoint = record.data.sparkpoint_code;
 
-            competenciesGrid.getStore().add(recordData);
+            if (competenciesGrid) {
+                competenciesGrid.getStore().add(recordData);
+            }
         }
     },
 
