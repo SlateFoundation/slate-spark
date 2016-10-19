@@ -79,6 +79,10 @@
         }
     }
 
+    &.is-credit-given {
+        background-image: $slate-pattern-diagonal;
+    }
+
     &:hover,
     &:focus {
         background-image: linear-gradient(rgba(black, .2), rgba(black, .2));

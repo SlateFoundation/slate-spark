@@ -149,7 +149,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                                 return 'is-incomplete';
                             }
 
-                            if (expected === actual) {
+                            if (Ext.isEmpty(expected) || expected === actual) {
                                 return 'is-on-pace';
                             }
 
@@ -232,7 +232,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.SparkpointsConfigWindow', {
                                 return 'is-incomplete';
                             }
 
-                            if (expected === actual) {
+                            if (Ext.isEmpty(expected) || expected === actual) {
                                 return 'is-on-pace';
                             }
 
