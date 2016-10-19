@@ -343,10 +343,10 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
                 fieldEl.dom.value = 1;
             }
 
-            if (fieldVal >= nextFieldVal || !Ext.isNumber(nextFieldVal)) {
-                nextFieldEl.dom.value = fieldVal + 1;
+            if (fieldVal > nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+                nextFieldEl.dom.value = fieldVal;
 
-                sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal + 1);
+                sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal);
             }
         }
 
