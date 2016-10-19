@@ -32,7 +32,7 @@ function *postHandler() {
         }
 
         // TODO: We could do additional validation on the timestamps here
-        record.recommended_time = record.recommended_time ? new Date(record.recommended_time) || new Date();
+        record.recommended_time = record.recommended_time ? new Date(record.recommended_time) : new Date();
         record.recommender_id = ctx.userId;
 
         return record;
