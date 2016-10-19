@@ -160,6 +160,7 @@ function *getHandler() {
 }
 
 function *patchHandler() {
+    // TODO: Audit how this works (particularly when the ssas table is updated for students/teachers)
     var ctx = this,
         sectionId = ~~ctx.query.section_id,
         studentId = ~~ctx.studentId,
@@ -218,7 +219,8 @@ function *patchHandler() {
     delete record.id;
 
     // When an entire sparkpoint is overridden, we do not update the last accessed time
-    if (activity.learn_override_time &&
+    if (ctx.isStudent &&
+        activity.learn_override_time &&
         activity.conference_override_time &&
         activity.apply_override_time &&
         activity.assess_override_time) {
@@ -245,8 +247,11 @@ function *patchHandler() {
         if (ctx.isStudent) {
              ssasRecord.last_accessed = new Date().toUTCString();
         } else {
-             ssasRecord.recommended_time = record.recommended_time || new Date().toUTCString();
-             ssasRecord.recommender_id = ctx.userId;
+            ssasRecord.recommender_id = ctx.userId;
+
+            if (record.recommended_time) {
+                ssasRecord.recommended_time = record.recommended_time;
+            }
         }
 
         try {
