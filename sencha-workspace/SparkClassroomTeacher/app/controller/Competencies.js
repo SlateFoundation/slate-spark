@@ -596,7 +596,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 'student_id': studentId,
                 'section_code': section,
                 'sparkpoint_code': sparkpoint,
-                'recommended_time': recommendedTime
+                'recommended_time': recommendedTime.getTime() // send as UTC timestamp
             });
         }
 

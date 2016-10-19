@@ -415,7 +415,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 'student_id': studentId,
                 'section_code': me.getAppCt().getSelectedSection(),
                 'sparkpoint_code': studentSparkpoint.get('sparkpoint'),
-                'recommended_time': recommendedTime
+                'recommended_time': recommendedTime.getTime() // send as UTC timestamp
             }],
             callback: function(options, success) {
                 if (!success) {
