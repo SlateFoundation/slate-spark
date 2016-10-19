@@ -14,30 +14,33 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
         renderer: function(v, r) {
             // & investigate perf of tpl inside renderer?
             var stages,
-                statusCls = function(expected, actual) {
+                statusCls = function(expected, actual, teacherOverride) {
+                    var cls = '';
+
                     if (Ext.isEmpty(expected) || Ext.isEmpty(actual)) {
                         return 'is-empty';
                     }
 
-                    // NOTE: The cell will receive "on pace" styling if the sparkpoint has not been started AND the phase overridden,
-                    // OR if it is legitimately on pace.
-                    if (actual === 'nostart-override') {
-                        return 'is-on-pace is-credit-given';
+                    if (teacherOverride) {
+                        cls = 'is-overridden';
                     }
 
-                    if (expected === actual) {
-                        return 'is-on-pace';
+                    // NOTE: The cell will receive "on pace" styling if the sparkpoint has not been started AND the phase overridden,
+                    // OR if it is legitimately on pace.
+                    if (actual === 'nostart-override' || expected === actual) {
+                        cls += ' is-on-pace';
+                        return cls;
                     }
 
                     if (expected > actual) {
-                        return 'is-ahead';
+                        cls += ' is-ahead';
                     }
 
                     if (expected < actual) {
-                        return 'is-behind';
+                        cls += ' is-behind';
                     }
 
-                    return '';
+                    return cls;
                 },
                 dataIndex = this.getDataIndex(),
                 studentId = dataIndex,
@@ -56,22 +59,22 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                 {
                     title: 'Learn and Practice',
                     shortText: 'L&amp;P',
-                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('learn_pace_target'), studentSparkpoint.get('learn_pace_actual')) : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('learn_pace_target'), studentSparkpoint.get('learn_pace_actual'), studentSparkpoint.get('learn_override_time')) : 'is-empty'
                 },
                 {
                     title: 'Conference',
                     shortText: 'C',
-                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('conference_pace_target'), studentSparkpoint.get('conference_pace_actual')) : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('conference_pace_target'), studentSparkpoint.get('conference_pace_actual'), studentSparkpoint.get('conference_override_time')) : 'is-empty'
                 },
                 {
                     title: 'Apply',
                     shortText: 'Ap',
-                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('apply_pace_target'), studentSparkpoint.get('apply_pace_actual')) : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('apply_pace_target'), studentSparkpoint.get('apply_pace_actual'), studentSparkpoint.get('apply_override_time')) : 'is-empty'
                 },
                 {
                     title: 'Assess',
                     shortText: 'As',
-                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('assess_pace_target'), studentSparkpoint.get('assess_pace_actual')) : 'is-empty'
+                    status: studentSparkpoint ? statusCls(studentSparkpoint.get('assess_pace_target'), studentSparkpoint.get('assess_pace_actual'), studentSparkpoint.get('assess_override_time')) : 'is-empty'
                 }
             ];
 

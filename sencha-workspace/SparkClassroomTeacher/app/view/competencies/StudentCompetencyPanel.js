@@ -37,7 +37,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                                 '<tr>',
                                     '<td class="cycle-col">',
                                         '<label class="phase-checkbox">',
-                                            '<input data-phase="{phase}" class="{[ values.finished ? "finished" : "not-finished" ]} {[ this.getPaceCls(values.expected, values.actual) ]}" type="checkbox"{[ values.disabled ? " disabled" : "" ]}{[ values.checked ? " checked" : "" ]}>',
+                                            '<input data-phase="{phase}" class="{[ values.finished ? "finished" : "not-finished" ]} {[ values.teacherOverride ? "is-overridden" : "" ]}" type="checkbox"{[ values.disabled ? " disabled" : "" ]}{[ values.checked ? " checked" : "" ]}>',
                                             '<span class="phase-name">{phase}</span>',
                                         '</label>',
                                         ' ',
@@ -65,11 +65,7 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
                         getPaceCls: function(expected, actual) {
                             // NOTE: The cell will receive "on pace" styling if the sparkpoint has not been started AND the phase overridden,
                             // OR if it is legitimately on pace.
-                            if (actual === 'nostart-override') {
-                                return 'is-on-pace is-credit-given';
-                            }
-
-                            if (expected === actual) {
+                            if (actual === 'nostart-override' || expected === actual) {
                                 return 'is-on-pace';
                             }
 

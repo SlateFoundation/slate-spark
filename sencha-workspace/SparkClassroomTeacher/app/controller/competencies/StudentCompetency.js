@@ -208,6 +208,13 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
             }
         }
 
+        // add/remove teacher override styling
+        if (checked) {
+            el.addCls('is-overridden');
+        } else {
+            el.removeCls('is-overridden');
+        }
+
         value = checked ? new Date() : null;
 
         record.set(fieldName, value);
@@ -307,7 +314,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: learnDisabled,
                 checked: learnChecked,
                 expected: sparkData.learn_pace_target,
-                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.learn_completed_time)
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.learn_completed_time),
+                teacherOverride: !Ext.isEmpty(sparkData.learn_override_time)
             }, {
                 phase: 'Conference',
                 status: confStatus,
@@ -315,7 +323,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: confDisabled,
                 checked: confChecked,
                 expected: sparkData.conference_pace_target,
-                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.conference_completed_time)
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.conference_completed_time),
+                teacherOverride: !Ext.isEmpty(sparkData.conference_override_time)
             }, {
                 phase: 'Apply',
                 status: applyStatus,
@@ -323,7 +332,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: applyDisabled,
                 checked: applyChecked,
                 expected: sparkData.apply_pace_target,
-                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.apply_completed_time)
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.apply_completed_time),
+                teacherOverride: !Ext.isEmpty(sparkData.apply_override_time)
             }, {
                 phase: 'Assess',
                 status: assessStatus,
@@ -331,7 +341,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
                 disabled: assessDisabled,
                 checked: assessChecked,
                 expected: sparkData.assess_pace_target,
-                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.assess_completed_time)
+                actual: me.getPhaseDuration(sectionCode, sparkData.learn_start_time, sparkData.assess_completed_time),
+                teacherOverride: !Ext.isEmpty(sparkData.assess_override_time)
             }]
         });
 
