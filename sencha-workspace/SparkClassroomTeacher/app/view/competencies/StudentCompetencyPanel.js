@@ -14,7 +14,6 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
         modal: {
             style: 'opacity: 0'
         },
-
         hideOnMaskTap: true,
 
         items: [

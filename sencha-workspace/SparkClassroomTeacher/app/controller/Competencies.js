@@ -89,6 +89,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         competenciesGrid: {
             initialize: 'onInitializeCompetenciesGrid',
+            activate: 'refreshColumns',
             itemtap: 'onCompetenciesGridItemTap'
         },
 
@@ -124,6 +125,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             },
             '#Students': {
                 load: 'onStudentStoreLoad'
+            },
+            '#SectionGoals': {
+                load: 'onSectionGoalsStoreLoad'
             }
         },
         socket: {
@@ -137,7 +141,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(studentSparkpointId, target) {
+    updateStudentSparkpoint: function(studentSparkpointId, target, column) {
         var me = this,
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
             studentSparkpoint = competencySparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId),
@@ -161,7 +165,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.studentSparkpoint = studentSparkpoint;
         me.showByTarget = target;
-        me.getApplication().fireEvent('studentsparkpointchange', studentSparkpoint, target);
+        me.getApplication().fireEvent('studentsparkpointchange', studentSparkpoint, target, column);
     },
 
     updateActiveStudentId: function(studentId) {
@@ -257,9 +261,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     },
 
     onStudentStoreLoad: function() {
-        var me = this;
+        this.refreshColumns(true);
+    },
 
-        me.refreshColumns();
+    onSectionGoalsStoreLoad: function() {
+        this.refreshColumns(true);
     },
 
     onNavCompetenciesTap: function() {
@@ -271,10 +277,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
         me.getNavBar().setSelectedButton(me.getCompetenciesNavButton());
 
-        // Prevent drawing before store load occurs
-        if (me.getCompetencySparkpointsStore().isLoaded()) {
-            me.refreshGrid();
-        }
+        me.refreshColumns();
     },
 
     onSparkConfigClick: function(dataIndex) {
@@ -350,15 +353,22 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
     onCompetenciesGridItemTap: function(grid, index, row, rec, e) {
         var me = this,
             targetEl = Ext.fly(e.target),
-            studentId = targetEl.getAttribute('data-student-id'),
-            studentSparkpointId = studentId + '_' + rec.getId();
+            studentId,
+            studentSparkpointId;
+
+        if (targetEl.hasCls('cycle-gauge-pip')) {
+            targetEl = targetEl.down('.pip-text');
+        }
 
         if (targetEl.hasCls('pip-text')) {
+            studentId = targetEl.getAttribute('data-student-id');
+            studentSparkpointId = studentId + '_' + rec.getId();
+
             if (Ext.isEmpty(studentId)) {
                 return;
             }
 
-            me.updateStudentSparkpoint(studentSparkpointId, Ext.fly(e.target));
+            me.updateStudentSparkpoint(studentSparkpointId, targetEl);
         }
 
         if (targetEl.getAttribute('action') === 'add-to-queue') {
@@ -406,7 +416,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             recordData.id = record.data.sparkpoint_id;
             recordData.sparkpoint = record.data.sparkpoint_code;
 
-            competenciesGrid.getStore().add(recordData);
+            if (competenciesGrid) {
+                competenciesGrid.getStore().add(recordData);
+            }
         }
     },
 
@@ -488,7 +500,9 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         sparkpointFilter.setHtml(sparkpointOptions);
     },
 
-    refreshColumns: function() {
+    // This method ensures that all pre-requisites of doRefreshColumns are satisfied before it is called,
+    // and throttles the call using a bufferedFunction. DO NOT handle checking pre-requisites outside of this function
+    refreshColumns: function(force) {
         var me = this,
             studentStore = this.getStudentsStore(),
             sectionGoalsStore = me.getSectionGoalsStore(),
@@ -499,6 +513,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             return;
         }
 
+        // if force is true, refresh the columns even if they are already rendered
+        if (!force && grid.query('spark-student-competency-column').length > 0) {
+            return;
+        }
+
         if (!bufferedRefreshColumns) {
             bufferedRefreshColumns = me.bufferedRefreshColumns = Ext.Function.createBuffered(me.fireEventedAction, 10, me, ['refreshcolumns', [me], 'doRefreshColumns', me]);
         }
@@ -506,6 +525,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         bufferedRefreshColumns();
     },
 
+    // This method ensures that all pre-requisites of doRefreshGrid are satisfied before it is called,
+    // and throttles the call using a bufferedFunction DO NOT handle checking pre-requisites outside of this function
     refreshGrid: function() {
         var me = this,
             competencySparkpointsStore = me.getCompetencySparkpointsStore(),
@@ -577,7 +598,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 'student_id': studentId,
                 'section_code': section,
                 'sparkpoint_code': sparkpoint,
-                'recommended_time': recommendedTime
+                'recommended_time': recommendedTime.getTime() // send as UTC timestamp
             });
         }
 

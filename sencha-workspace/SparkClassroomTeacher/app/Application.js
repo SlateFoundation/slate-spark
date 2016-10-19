@@ -69,8 +69,7 @@ Ext.define('SparkClassroomTeacher.Application', {
          */
         viewport: {
             items: {
-                xtype: 'spark-teacher-appct',
-                padding: '44 0 0 0'
+                xtype: 'spark-teacher-appct'
             }
         }
     },
