@@ -63,23 +63,33 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
             xtype: 'spark-teacher-work-learn'
         },
+
         conferenceCt: {
             selector: 'spark-teacher-work-conference',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-conference'
         },
+
         applyCt: {
             selector: 'spark-teacher-work-apply',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-apply'
         },
+
         assessCt: {
             selector: 'spark-teacher-work-assess',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-assess'
+        },
+
+        movePhaseCt: {
+            selector: 'spark-teacher-work-move-phase',
+            autoCreate: true,
+
+            xtype: 'spark-teacher-work-move-phase'
         }
     },
 
@@ -170,6 +180,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         workCt.removeAll();
         workCt.add(this.getAssessCt());
+    },
+
+    showMovePhases: function() {
+
     },
 
 
