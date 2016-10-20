@@ -309,7 +309,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     },
 
     /*
-    Ensure that subsequent phase pace values are greater than previous phase and set sparkpoint with new values
+    Ensure that subsequent phase pace values are greater than previous phase and set sparkpoint with new values.
+    Allow blank values, in which case ensure the next phase with a value is greater than previous with value.
     */
     onPaceFieldChange: function(e, el) {
         var me = this,
@@ -324,9 +325,6 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             oldPaceValue = sparkpoint.get(changedPhase.toLowerCase() + '_pace_target'),
             count, fieldEl, fieldVal, nextFieldEl, nextFieldVal;
 
-        // convert to integer, if input is blank, replace with 1
-        newPaceValue = newPaceValue === '' ? 1 : parseInt(newPaceValue, 10);
-
         if (newPaceValue === oldPaceValue) {
             return;
         }
@@ -336,14 +334,20 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         for (count = 0; count + 1 < paceFields.length; count++) {
             fieldEl = Ext.fly(paceFields[count]);
             fieldVal = parseInt(fieldEl.getValue(), 10);
-            nextFieldEl = Ext.fly(paceFields[count + 1]);
-            nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
 
             if (!Ext.isNumber(fieldVal)) {
-                fieldEl.dom.value = 1;
+                continue;
             }
 
-            if (fieldVal > nextFieldVal || !Ext.isNumber(nextFieldVal)) {
+            nextFieldEl = me.getNextNonNullField(paceFields, count);
+
+            if (!nextFieldEl) {
+                break;
+            }
+
+            nextFieldVal = parseInt(nextFieldEl.getValue(), 10);
+
+            if (fieldVal > nextFieldVal) {
                 nextFieldEl.dom.value = fieldVal;
 
                 sparkpoint.set(nextFieldEl.getAttribute('data-phase').toLowerCase() + '_pace_target', fieldVal);
@@ -351,6 +355,23 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         }
 
         me.getSparkpointsConfigWindow().setDirty(true);
+    },
+
+    getNextNonNullField: function(paceFields, count) {
+        var nextFieldEl = Ext.fly(paceFields[count + 1]),
+            nextFieldVal;
+
+        if (!nextFieldEl) {
+            return false;
+        }
+
+        nextFieldVal = nextFieldEl.getValue();
+
+        if (!Ext.isNumeric(nextFieldVal)) {
+            return this.getNextNonNullField(paceFields, count + 1);
+        }
+
+        return nextFieldEl;
     },
 
     onSortArrowClick: function(e, el) {
