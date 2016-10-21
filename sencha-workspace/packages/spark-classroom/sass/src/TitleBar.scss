@@ -6,7 +6,7 @@
 
     > .x-toolbar-inner {
         background-color: rgba(white, .8);
-        padding: 1.5em 7.5%;
+        padding: 1.5em 1.5em 1.5em 3em;
     }
 
     .spark-course-selector {
@@ -39,8 +39,9 @@
     width: 40em;
 }
 
-@media screen and (max-width: 550px) {
-    .spark-course-picker {
-        width: 90%;
-    }
+.spark-gps-selection-status {
+    color: rgba($color, .5);
+    font-size: .75em;
+    margin-bottom: .5em;
+    text-transform: uppercase;
 }
