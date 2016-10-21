@@ -20,9 +20,12 @@ Ext.define('SparkClassroom.work.Timer', {
         },
         tpl: [
             '<div class="timer-icon"></div>',
+            '<div class="timer-play-pause"></div>',
             '<tpl if="!Ext.isEmpty(values.seconds)">',
-                '<div class="timer-counter">{minutes}:{seconds:leftPad(2, "0")}</div>',
-            '</tpl>'
+                // TODO count hours
+                '<div class="timer-counter">00:{minutes:leftPad(2, "0")}:{seconds:leftPad(2, "0")}</div>',
+            '</tpl>',
+            '<div class="timer-reset"></div>'
         ]
     },
 
