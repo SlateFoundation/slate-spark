@@ -29,6 +29,16 @@
     }
 }
 
+.x-toolbar {
+    .x-field,
+    .x-form-fieldset {
+        + .x-field,
+        + .x-form-fieldset {
+            margin-top: 0;
+        }
+}
+}
+
 .composite-field {
     .x-form-fieldset-title {
         color: $field-label-color;
