@@ -262,12 +262,15 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     onMovePhase: function() {
         var me = this,
             movePhaseCt = me.getMovePhaseCt(),
-            overridePhase = movePhaseCt.getActivePhase();
+            overridePhase = movePhaseCt.getActivePhase(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
-        // override selected sparkpoint so phase is completed
-
-        // load relevant phase ct (router provider function)
-        this.showPhase(overridePhase);
+        selectedStudentSparkpoint.set(overridePhase + '_override_time', new Date());
+        selectedStudentSparkpoint.save({
+            callback: function() {
+                me.showPhase(selectedStudentSparkpoint.get('active_phase'));
+            }
+        });
     },
 
     onNavWorkTap: function() {
