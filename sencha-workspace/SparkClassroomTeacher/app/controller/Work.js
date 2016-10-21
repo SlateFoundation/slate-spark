@@ -218,7 +218,9 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             student = studentStore.getById(selectedStudentSparkpoint.get('student_id'));
 
         movePhaseCt.setStudentName(student.get('FirstName'));
-        movePhaseCt.setActivePhase(phase);
+        movePhaseCt.setActivePhase(selectedStudentSparkpoint.get('active_phase'));
+        movePhaseCt.setNextPhase(phase);
+        movePhaseCt.loadMoveText();
         workCt.add(movePhaseCt);
     },
 

@@ -20,6 +20,12 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
          */
         studentName: null,
 
+		/**
+		 * @required
+		 * @private
+		 */
+		nextPhase: null,
+
         layout: {
             type: 'vbox',
             align: 'center'
@@ -28,6 +34,11 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
         items: [{
             xtype: 'panel',
             cls: 'content-card',
+			style: 'background: white;',
+			layout: {
+				type: 'vbox',
+				align: 'center'
+			},
             items: [{
                 xtype: 'component',
                 cls: 'spark-teacher-work-move-text'
@@ -38,33 +49,26 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
         }]
     },
 
-    setActivePhase: function(phase) {
+	setNextPhase: function(phase) {
+		var me = this,
+			moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
+
+		me.nextPhase = phase;
+		moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
+	},
+
+	getNextPhase: function() {
+		return this.nextPhase;
+	},
+
+    loadMoveText: function() {
         var me = this,
-            moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
-
-        me.activePhase = phase;
-        moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
-        me.setMoveText(me.getStudentName(), phase);
-    },
-
-    setStudentName: function(name) {
-        var me = this;
-
-        me.studentName = name;
-        me.setMoveText(name, me.getActivePhase());
-    },
-
-    /**
-     * @private
-     * @param name
-     * @param phase
-     */
-    setMoveText: function(name, phase) {
-        var me = this,
-            moveText = me.down('[cls~="spark-teacher-work-move-text"]');
+            moveText = me.down('[cls~="spark-teacher-work-move-text"]'),
+			name = me.getStudentName(),
+			phase = me.getActivePhase();
 
         if (!Ext.isEmpty(name) && !Ext.isEmpty(phase)) {
-            moveText.setHtml(name + ' is currently working on <strong>' + phase.charAt(0).toUpperCase() + phase.slice(1) + '</strong>');
+            moveText.setHtml(name + ' is currently working on <span class="phase-highlight">' + phase.charAt(0).toUpperCase() + phase.slice(1) + '</span>');
         }
     }
 });
