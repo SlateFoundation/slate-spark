@@ -20,11 +20,11 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
          */
         studentName: null,
 
-		/**
-		 * @required
-		 * @private
-		 */
-		nextPhase: null,
+        /**
+         * @required
+         * @private
+         */
+        nextPhase: null,
 
         layout: {
             type: 'vbox',
@@ -34,11 +34,11 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
         items: [{
             xtype: 'panel',
             cls: 'content-card',
-			style: 'background: white;',
-			layout: {
-				type: 'vbox',
-				align: 'center'
-			},
+            style: 'background: white;',
+            layout: {
+                type: 'vbox',
+                align: 'center'
+            },
             items: [{
                 xtype: 'component',
                 cls: 'spark-teacher-work-move-text'
@@ -49,23 +49,23 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
         }]
     },
 
-	setNextPhase: function(phase) {
-		var me = this,
-			moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
+    setNextPhase: function(phase) {
+        var me = this,
+            moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
 
-		me.nextPhase = phase;
-		moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
-	},
+        me.nextPhase = phase;
+        moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
+    },
 
-	getNextPhase: function() {
-		return this.nextPhase;
-	},
+    getNextPhase: function() {
+        return this.nextPhase;
+    },
 
     loadMoveText: function() {
         var me = this,
             moveText = me.down('[cls~="spark-teacher-work-move-text"]'),
-			name = me.getStudentName(),
-			phase = me.getActivePhase();
+            name = me.getStudentName(),
+            phase = me.getActivePhase();
 
         if (!Ext.isEmpty(name) && !Ext.isEmpty(phase)) {
             moveText.setHtml(name + ' is currently working on <span class="phase-highlight">' + phase.charAt(0).toUpperCase() + phase.slice(1) + '</span>');
