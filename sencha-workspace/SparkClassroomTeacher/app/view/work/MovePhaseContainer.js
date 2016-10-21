@@ -27,22 +27,23 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
 
         items: [{
             xtype: 'panel',
+            cls: 'content-card',
             items: [{
-                xtype: 'box',
+                xtype: 'component',
                 cls: 'spark-teacher-work-move-text'
             }, {
                 xtype: 'button',
-                cls: 'spark-teacher-work-move-btn'
+                cls: 'spark-teacher-work-move-btn x-button-action'
             }]
         }]
     },
 
     setActivePhase: function(phase) {
         var me = this,
-            moveBtn = me.query('spark-teacher-work-move-btn');
+            moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
 
         me.activePhase = phase;
-        moveBtn.setText('Move to ' + phase);
+        moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
         me.setMoveText(me.getStudentName(), phase);
     },
 
@@ -60,8 +61,10 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
      */
     setMoveText: function(name, phase) {
         var me = this,
-            moveText = me.query('spark-teacher-work-move-text');
+            moveText = me.down('[cls~="spark-teacher-work-move-text"]');
 
-        moveText.setHtml(name + ' is currently working on ' + phase);
+        if (!Ext.isEmpty(name) && !Ext.isEmpty(phase)) {
+            moveText.setHtml(name + ' is currently working on <strong>' + phase.charAt(0).toUpperCase() + phase.slice(1) + '</strong>');
+        }
     }
 });
