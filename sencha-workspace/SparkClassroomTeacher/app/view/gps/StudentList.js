@@ -11,7 +11,6 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
 
     config: {
         showDismissButton: false,
-
         loadingText: null,
         cls: 'spark-gps-studentlist',
         itemCls: 'studentlist-item',
@@ -69,6 +68,6 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
             return;
         }
 
-        me.callParent(arguments);
+        return me.callParent(arguments);
     }
 });
