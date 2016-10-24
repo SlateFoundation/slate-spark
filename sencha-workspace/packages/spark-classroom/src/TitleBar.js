@@ -40,6 +40,11 @@ Ext.define('SparkClassroom.TitleBar', {
                 items: [
                     {
                         xtype: 'component',
+                        cls: 'spark-toggle-student-multiselect', // TODO: This is for testing student multiselect, and should be removed as it is a placeholder.
+                        html: 'Student Multiselect  &ensp; <input type="checkbox" name="spark-toggle-student-multiselect" />'
+                    },
+                    {
+                        xtype: 'component',
                         cls: 'spark-gps-selection-status',
                         tpl: '{n} student<tpl if="n != 1">s</tpl> selected. &ensp; <a href="#">Deselect All</a>',
                         data: { n: 0 }
