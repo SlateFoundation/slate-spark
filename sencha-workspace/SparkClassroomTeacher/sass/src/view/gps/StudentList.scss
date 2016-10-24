@@ -14,3 +14,27 @@
         background-color: rgba($base-color, .2);
     }
 }
+
+.studentlist-item.x-item-selected {
+    .gps-list-selected-icon {
+        @include appearance(none);
+        background-color: transparent;
+        @include background-image(radial-gradient(
+            center, closest-side,
+            white 75%,
+            transparent 75%
+        ));
+        border: none;
+        color: #ccc;
+        font-family: FontAwesome;
+        vertical-align: middle;
+        float: right;
+
+        &::before {
+            color: #ccc;
+            content: '\f058'; // fa-check-circle
+            font-size: 18px;
+            line-height: 1;
+        }
+    }
+}
