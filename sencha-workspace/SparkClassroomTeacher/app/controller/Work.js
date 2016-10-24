@@ -184,7 +184,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
         }
 
-        if (selectedStudentSparkpoint) {
+        if (selectedStudentSparkpoint && !Ext.isArray(selectedStudentSparkpoint)) {
             studentId = selectedStudentSparkpoint.get('student_id');
 
             feedbackStore.setFilters([{

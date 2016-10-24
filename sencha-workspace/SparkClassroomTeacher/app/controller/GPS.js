@@ -165,20 +165,26 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     // controller methods
-    syncSelectedStudentSparkpoint: function() {
+    syncSelectedStudentSparkpoint: function(activeStudent) {
         var me = this,
-            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
+            activeStudent = activeStudent || me.getAppCt().getSelectedStudentSparkpoint(),
             lists = me.getGpsCt().query('#phasesCt list'),
             multiSelect = me.getAppCt().getStudentMultiselectEnabled(),
-            listCount = lists.length, i = 0, list, selectedExists = false, studentSparkpoint;
+            listCount = lists.length, i = 0, list, selectedExists = false, studentSparkpoint, count = 0;
 
         // sync list selection
         for (; i < listCount; i++) {
             list = lists[i];
 
-            if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
+            if (activeStudent && !Ext.isArray(activeStudent) && list.getStore().indexOf(activeStudent) != -1) {
                 list.select(activeStudent, multiSelect);
                 selectedExists = true;
+            } else if (Ext.isArray(activeStudent)) {
+                for (; count < activeStudent.length; count++) {
+                    me.syncSelectedStudentSparkpoint(activeStudent[count]);
+                }
+
+                return;
             } else if (!multiSelect) {
                 list.deselectAll();
             }

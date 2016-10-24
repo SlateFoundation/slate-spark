@@ -67,7 +67,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy();
 
-        if (selectedStudentSparkpoint) {
+        if (selectedStudentSparkpoint && !Ext.isArray(selectedStudentSparkpoint)) {
             // TODO: track dirty state of extraparams?
             proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
             proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
