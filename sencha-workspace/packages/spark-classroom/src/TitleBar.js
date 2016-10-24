@@ -39,9 +39,13 @@ Ext.define('SparkClassroom.TitleBar', {
                 xtype: 'container',
                 items: [
                     {
-                        xtype: 'component',
-                        cls: 'spark-toggle-student-multiselect', // TODO: This is for testing student multiselect, and should be removed as it is a placeholder.
-                        html: 'Student Multiselect  &ensp; <input type="checkbox" name="spark-toggle-student-multiselect" />'
+                        xtype: 'checkboxfield',
+                        cls: 'spark-toggle-student-multiselect',
+                        name: 'spark-toggle-student-multiselect',
+                        labelAlign: 'left',
+                        width: 130,
+                        labelWidth: 130,
+                        label: 'Student Multiselect' // TODO: This is for testing student multiselect, and should be removed as it is a placeholder.
                     },
                     {
                         xtype: 'component',
@@ -52,6 +56,7 @@ Ext.define('SparkClassroom.TitleBar', {
                     {
                         xtype: 'container',
                         layout: 'hbox',
+                        cls: 'spark-gps-selection-operations',
                         defaults: {
                             autoSelect: false,
                             margin: '0 16 0 0'

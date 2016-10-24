@@ -10,6 +10,14 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
      * @param {SparkClassroom.model.StudentSparkpoint/null} oldSelectedStudentSparkpoint The previously selected StudentSparkpoint if any
      */
 
+    /**
+     * @event togglestudentmultiselect
+     * Fire when student multiselect has been enabled or disabled.
+     * @parem {SparkClassroomTeacher.view.AppContainer} appCt
+     * @param {Boolean} New value
+     * @param {Boolean} Old value
+     */
+
     config: {
 
         /**
@@ -17,6 +25,7 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
          */
         selectedSection: null,
         selectedStudentSparkpoint: null,
+        studentMultiselectEnabled: false,
 
         layout: 'auto',
         scrollable: 'vertical'
@@ -31,5 +40,13 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
 
     updateSelectedStudentSparkpoint: function(selectedStudentSparkpoint, oldSelectedStudentSparkpoint) {
         this.fireEvent('selectedstudentsparkpointchange', this, selectedStudentSparkpoint, oldSelectedStudentSparkpoint);
+    },
+
+    toggleStudentMultiselect: function(enable) {
+        var me = this,
+            oldVal = me.getStudentMultiselectEnabled();
+
+        me.setStudentMultiselectEnabled(enable);
+        me.fireEvent('togglestudentmultiselect', me, enable, oldVal);
     }
 });
