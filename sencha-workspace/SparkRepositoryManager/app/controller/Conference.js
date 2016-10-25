@@ -41,13 +41,6 @@ Ext.define('SparkRepositoryManager.controller.Conference', {
         'GuidingQuestions'
     ],
 
-    /**
-     * Called when the view is created
-     */
-    init: function() {
-
-    },
-
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
             store = Ext.getStore(store.split('.').pop());
@@ -80,7 +73,7 @@ Ext.define('SparkRepositoryManager.controller.Conference', {
             selection = selectionModel.getSelection()[0],
             guidingQuestionStore = me.getGuidingQuestionsStore(),
             question = selection.get('Question'),
-            descriptiveText =  (question ? '"' + question + '"' : '') || 'this guiding question?';
+            descriptiveText = (question ? '"' + question + '"' : '') || 'this guiding question?';
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
