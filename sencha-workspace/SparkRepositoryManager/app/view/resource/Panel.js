@@ -1,3 +1,4 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.resource.Panel', {
     requires: [
         'Ext.Array',
@@ -79,7 +80,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
                 grow: true
             },
 
-            filterField : {
+            filterField: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -105,14 +106,14 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
                                 try {
                                     response = JSON.parse(response.responseText);
 
-                                    if (!response.error) {
+                                    if (response.error) {
+                                        error = response.error;
+                                    } else {
                                         form.setValues({
                                             'Title': response.title
                                         })
-                                    } else {
-                                        error = response.error;
                                     }
-                                } catch(e) {
+                                } catch (e) {
                                     error = e;
                                 }
 
@@ -165,7 +166,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
         },
         {
             xtype: 'datecolumn',
-            format:'m-d-Y',
+            format: 'm-d-Y',
             text: 'Created',
             dataIndex: 'Created',
 
