@@ -8,10 +8,10 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref:      'panel',
+        ref: 'panel',
         selector: 's2m-apply-panel'
-    },{
-        ref:      'editor',
+    }, {
+        ref: 'editor',
         selector: 's2m-apply-editor'
     }],
 
@@ -75,7 +75,7 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
             selection = selectionModel.getSelection()[0],
             applyProjectsStore = me.getApplyProjectsStore(),
             title = selection.get('Title'),
-            descriptiveText =  title || 'this apply project',
+            descriptiveText = title || 'this apply project',
             editor = panel.down('s2m-apply-editor');
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
