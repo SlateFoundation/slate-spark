@@ -13,11 +13,19 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
         refs: [{
             ref: 'panel',
             selector: 's2m-resource-panel'
+        }, {
+            ref: 'alignButton',
+            selector: 's2m-resource-panel button[action=align]'
+        }, {
+            ref: 'alignButtonSeparator',
+            selector: 's2m-resource-panel tbseparator#alignButtonSeparator'
         }],
 
         control: {
             's2m-resource-panel': {
-                activate: 'onPanelActivate'
+                activate: 'onPanelActivate',
+                columnhide: 'onPanelColumnHide',
+                columnshow: 'onPanelColumnShow'
             },
             's2m-resource-panel button[action=add]': {
                 click: 'onAddClick'
@@ -124,6 +132,24 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
         }
     }
 });
