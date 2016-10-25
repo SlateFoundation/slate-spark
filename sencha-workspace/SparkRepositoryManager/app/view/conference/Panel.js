@@ -44,13 +44,24 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
                 text: 'Add Guiding Question',
                 tooltip: 'Add a new guiding question',
                 action: 'add'
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+            },
+            {
                 reference: 'alignButton',
                 text: 'Align to Standards',
                 tooltip: 'Align this guiding question to multiple standards easily using the standards picker',
                 action: 'align',
+                hidden: true,
                 disabled: true
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true,
+            },
+            {
                 reference: 'removeButton',
                 text: 'Delete Guiding Question',
                 tooltip: 'Remove the selected guiding question',
@@ -61,7 +72,8 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
