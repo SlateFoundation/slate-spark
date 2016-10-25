@@ -26,8 +26,8 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         control: {
             's2m-learn-panel': {
                 activate: 'onPanelActivate',
-                columnhide: 'onGridPanelColumnHide',
-                columnshow: 'onGridPanelColumnShow'
+                columnhide: 'onPanelColumnHide',
+                columnshow: 'onPanelColumnShow'
             },
             's2m-learn-panel button[action=add]': {
                 click: 'onAddClick'
@@ -145,7 +145,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         }
     },
 
-    onGridPanelColumnHide: function(grid, column) {
+    onPanelColumnHide: function(grid, column) {
         var me = this;
 
         if (column.getXType()==='srm-standardslistcolumn') {
@@ -154,7 +154,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         }
     },
 
-    onGridPanelColumnShow: function(grid, column) {
+    onPanelColumnShow: function(grid, column) {
         var me = this;
 
         if (column.getXType()==='srm-standardslistcolumn') {
