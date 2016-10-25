@@ -74,7 +74,8 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
