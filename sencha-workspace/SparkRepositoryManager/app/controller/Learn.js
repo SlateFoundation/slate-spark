@@ -15,11 +15,19 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         }, {
             ref: 'gridpanel',
             selector: 's2m-learn-panel gridpanel'
+        }, {
+            ref: 'alignButton',
+            selector: 's2m-learn-panel button[action=align]'
+        }, {
+            ref: 'alignButtonSeparator',
+            selector: 's2m-learn-panel tbseparator#alignButtonSeparator'
         }],
 
         control: {
             's2m-learn-panel': {
-                activate: 'onPanelActivate'
+                activate: 'onPanelActivate',
+                columnhide: 'onGridPanelColumnHide',
+                columnshow: 'onGridPanelColumnShow'
             },
             's2m-learn-panel button[action=add]': {
                 click: 'onAddClick'
@@ -134,6 +142,24 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onGridPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onGridPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
         }
     }
 });
