@@ -34,86 +34,86 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         readOnly: true,
         disabled: true,
         scrollable: false
-    },{
-        xtype:       'pagingtoolbar',
-        store:       'ApplyProjects',
-        dock:        'bottom',
+    }, {
+        xtype: 'pagingtoolbar',
+        store: 'ApplyProjects',
+        dock: 'bottom',
         displayInfo: true
     }, {
         xtype: 'toolbar',
         itemId: 'gridtoolbar',
         items: [{
-            text:    'Add Apply',
+            text: 'Add Apply',
             tooltip: 'Add a new apply',
-            action:  'add'
+            action: 'add'
         }, '-', {
-            text:     'Align to Standards',
-            tooltip:  'Align this link to multiple standards easily using the standards picker',
-            action:   'align',
+            text: 'Align to Standards',
+            tooltip: 'Align this link to multiple standards easily using the standards picker',
+            action: 'align',
             disabled: true
         }, '-', {
-            text:     'Delete Apply',
-            tooltip:  'Remove the selected apply',
-            action:   'delete',
+            text: 'Delete Apply',
+            tooltip: 'Remove the selected apply',
+            action: 'delete',
             disabled: true
         }]
     }],
 
     columns: [{
-        text:      'Apply Title',
-        flex:      2,
-        sortable:  true,
+        text: 'Apply Title',
+        flex: 2,
+        sortable: true,
         dataIndex: 'Title',
         filterField: true,
         msgTarget: 'under',
-        editor:    {
-            xtype:      'textfield',
+        editor: {
+            xtype: 'textfield',
             allowBlank: false
         }
     }, {
         xtype: 'srm-standardslistcolumn'
     }, {
-        text:      'Grade',
+        text: 'Grade',
         dataIndex: 'GradeLevel',
-        width:     60,
+        width: 60,
 
         filterField: {
-            xtype:    'combobox',
-            store:    ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+            xtype: 'combobox',
+            store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
             editable: false,
-            grow:     true
+            grow: true
         },
 
         editor: {
-            xtype:    'combobox',
-            store:    ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+            xtype: 'combobox',
+            store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
             editable: false,
-            grow:     true
+            grow: true
         }
     }, {
-        text:      'DOK',
+        text: 'DOK',
         dataIndex: 'DOK',
 
         filterField: {
-            xtype:    'combobox',
-            store:    [1, 2, 3, 4],
+            xtype: 'combobox',
+            store: [1, 2, 3, 4],
             editable: false,
-            grow:     true
+            grow: true
         },
 
         editor: {
-            xtype:    'combobox',
-            store:    [1, 2, 3, 4],
+            xtype: 'combobox',
+            store: [1, 2, 3, 4],
             editable: false,
-            grow:     true
+            grow: true
         }
     }, {
-        text:        'Created By',
-        dataIndex:   'CreatorFullName',
+        text: 'Created By',
+        dataIndex: 'CreatorFullName',
         sortable: false,
         filterField: {
-            xtype:        'combobox',
-            store:        {
+            xtype: 'combobox',
+            store: {
                 xclass: 'Ext.data.Store',
 
                 proxy: {
@@ -123,31 +123,30 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
 
                 fields: ['ID', 'FullName']
             },
-            queryMode:    'local',
+            queryMode: 'local',
             displayField: 'FullName',
-            valueField:   'ID',
-            editable:     false,
-            grow:         true
+            valueField: 'ID',
+            editable: false,
+            grow: true
         }
     }, {
-        xtype:     'datecolumn',
-        format:    'm-d-Y',
-        text:      'Created',
+        xtype: 'datecolumn',
+        format: 'm-d-Y',
+        text: 'Created',
         dataIndex: 'Created',
 
         filterField: {
-            xtype:  'datefield',
+            xtype: 'datefield',
             format: 'm-d-Y'
         }
     }],
 
     listeners: {
-
         beforeselect: function (model, record) {
-            var me          = this,
-                editor      = me.down('s2m-apply-editor'),
-                rowediting  = me.getPlugin('rowediting'),
-                isEditing   = record && rowediting.editing;
+            var me = this,
+                editor = me.down('s2m-apply-editor'),
+                rowediting = me.getPlugin('rowediting'),
+                isEditing = record && rowediting.editing;
 
             me.down('#gridtoolbar button[action="delete"]').setDisabled(!record);
             me.down('#gridtoolbar button[action="align"]').setDisabled(!record);
@@ -164,15 +163,15 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
                         }
                 });
                 return false;
-            } else {
-                rowediting.cancelEdit();
             }
+            rowediting.cancelEdit();
+            return true;
         },
 
         selectionchange: function (model, records) {
             var me = this,
                 editor = me.down('s2m-apply-editor'),
-                rowediting  = me.getPlugin('rowediting'),
+                rowediting = me.getPlugin('rowediting'),
                 rec = records ? records[0] : null;
 
             editor.setRecord(rec);
@@ -181,13 +180,13 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
     },
 
     plugins: [{
-        ptype:        'rowediting',
-        pluginId:     'rowediting',
+        ptype: 'rowediting',
+        pluginId: 'rowediting',
         clicksToEdit: 2,
         errorSummary: true,
-        autoCancel:   false
+        autoCancel: false
     }, {
-        ptype:    'saki-gms',
+        ptype: 'saki-gms',
         pluginId: 'gms'
     }]
 });
