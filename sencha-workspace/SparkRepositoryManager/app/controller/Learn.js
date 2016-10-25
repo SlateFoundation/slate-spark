@@ -79,7 +79,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         learnLinkStore = me.getLearnLinksStore(),
         title = selection.get('Title'),
         url = selection.get('URL'),
-        descriptiveText =  ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link';
+        descriptiveText = ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link'; // eslint-disable-line no-extra-parens
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
