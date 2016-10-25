@@ -45,13 +45,24 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 text: 'Add Learn',
                 tooltip: 'Add a new learn',
                 action: 'add'
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+            },
+            {
                 reference: 'alignButton',
                 text: 'Align to Standards',
                 tooltip: 'Align this link to multiple standards easily using the standards picker',
                 action: 'align',
+                hidden: true,
                 disabled: true
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true,
+            },
+            {
                 reference: 'removeButton',
                 text: 'Delete Learn',
                 tooltip: 'Remove the selected learn link',
