@@ -203,7 +203,11 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             feedbackStore.load();
 
             me.updateTabBar(selectedStudentSparkpoint);
+            return;
         }
+
+        // TODO: When in multiselect (multiple selectedStudentSparkpoint) show a simple message indicating why it is disabled/empty.
+        me.getWorkCt().removeAll();
     },
 
     onNavWorkTap: function() {
