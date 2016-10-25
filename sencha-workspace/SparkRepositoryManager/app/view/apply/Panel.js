@@ -46,12 +46,23 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
             text: 'Add Apply',
             tooltip: 'Add a new apply',
             action: 'add'
-        }, '-', {
+        },
+        {
+            xtype: 'tbseparator'
+        },
+        {
             text: 'Align to Standards',
             tooltip: 'Align this link to multiple standards easily using the standards picker',
             action: 'align',
+            hidden: true,
             disabled: true
-        }, '-', {
+        },
+        {
+            xtype: 'tbseparator',
+            itemId: 'alignButtonSeparator',
+            hidden: true,
+        },
+        {
             text: 'Delete Apply',
             tooltip: 'Remove the selected apply',
             action: 'delete',
@@ -71,7 +82,8 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
             allowBlank: false
         }
     }, {
-        xtype: 'srm-standardslistcolumn'
+        xtype: 'srm-standardslistcolumn',
+        hidden: true
     }, {
         text: 'Grade',
         dataIndex: 'GradeLevel',
