@@ -1,3 +1,4 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.learn.Panel', {
     requires: [
         'Ext.form.field.ComboBox',
@@ -87,7 +88,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 grow: true
             },
 
-            filterField : {
+            filterField: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -173,7 +174,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 grow: true
             },
 
-            renderer: function(val, col, record) {
+            renderer: function(val) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
                     returnVal = '',
                     logoURL;
@@ -261,7 +262,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         },
         {
             xtype: 'datecolumn',
-            format:'m-d-Y',
+            format: 'm-d-Y',
             text: 'Created',
             dataIndex: 'Created',
 
