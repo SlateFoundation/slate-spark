@@ -13,6 +13,12 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     }, {
         ref: 'editor',
         selector: 's2m-apply-editor'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-apply-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-apply-panel tbseparator#alignButtonSeparator'
     }],
 
     config: {
@@ -22,7 +28,9 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
                 beforeedit: 'onPanelBeforeEdit',
                 edit: 'onPanelEdit',
                 canceledit: 'onPanelCancelEdit',
-                validateedit: 'onPanelValidateEdit'
+                validateedit: 'onPanelValidateEdit',
+                columnhide: 'onPanelColumnHide',
+                columnshow: 'onPanelColumnShow'
             },
             's2m-apply-panel button[action=add]': {
                 click: 'onAddClick'
@@ -152,6 +160,23 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
     onPanelCancelEdit: function(editor, context) {
         this.getEditor().applyRecord(context.record);
         this.getEditor().setReadOnly(true);
-    }
+    },
 
+    onPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
+        }
+    }
 });
