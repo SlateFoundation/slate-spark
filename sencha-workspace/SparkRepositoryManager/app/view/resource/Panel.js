@@ -43,30 +43,43 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
         dock: 'bottom',
         displayInfo: true
     },
-                  {
-                      xtype: 'toolbar',
-                      items: [{
-                          text: 'Add Conference Resource',
-                          tooltip: 'Add a new Conference Resource',
-                          action: 'add'
-                      }, '-', {
-                          reference: 'alignButton',
-                          text: 'Align to Standards',
-                          tooltip: 'Align this Conference Resource to multiple standards easily using the standards picker',
-                          action: 'align',
-                          disabled: true
-                      }, '-', {
-                          reference: 'removeButton',
-                          text: 'Delete Conference Resource',
-                          tooltip: 'Remove the Conference Resource',
-                          action: 'delete',
-                          disabled: true
-                      }]
-                  }],
+    {
+        xtype: 'toolbar',
+        items: [
+            {
+                text: 'Add Conference Resource',
+                tooltip: 'Add a new Conference Resource',
+                action: 'add'
+            },
+            {
+                xtype: 'tbseparator'
+            },
+            {
+                reference: 'alignButton',
+                text: 'Align to Standards',
+                tooltip: 'Align this Conference Resource to multiple standards easily using the standards picker',
+                action: 'align',
+                hidden: true,
+                disabled: true
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true,
+            },
+            {
+                reference: 'removeButton',
+                text: 'Delete Conference Resource',
+                tooltip: 'Remove the Conference Resource',
+                action: 'delete',
+                disabled: true
+            }]
+    }],
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
