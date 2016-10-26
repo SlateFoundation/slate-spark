@@ -78,7 +78,7 @@ Ext.define('SparkClassroom.TitleBar', {
                 ]
             },
             {
-                xtype: 'spark-work-timer',
+                xtype: 'spark-k1-timer',
                 margin: '24 0 0'
             }
         ]
