@@ -65,13 +65,11 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
 
     // event handlers
     onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
+        var applyProjectsStore = this.getApplyProjectsStore();
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+        if (!applyProjectsStore.isLoaded() || !applyProjectsStore.isLoading()) {
+            applyProjectsStore.load();
+        }
     },
 
     onAddClick: function() {

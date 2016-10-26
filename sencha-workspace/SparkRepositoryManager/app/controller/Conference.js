@@ -57,13 +57,11 @@ Ext.define('SparkRepositoryManager.controller.Conference', {
 
     // event handlers
     onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
+        var guidingQuestionsStore = this.getGuidingQuestionsStore();
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+        if (!guidingQuestionsStore.isLoaded() || !guidingQuestionsStore.isLoading()) {
+            guidingQuestionsStore.load();
+        }
     },
 
     onAddClick: function() {

@@ -65,19 +65,18 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
     // controller templates method overrides
     init: function() {
         // TODO: Is this really necessary?  If so, find out why and comment
-        window.me = this;
+        // I see no other references to window.me.  Let's comment this out and see if it breaks anything
+        // window.me = this;
     },
 
 
     // event handlers
     onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
+        var learnLinksStore = this.getLearnLinksStore();
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+        if (!learnLinksStore.isLoaded() || !learnLinksStore.isLoading()) {
+            learnLinksStore.load();
+        }
     },
 
     onAddClick: function() {

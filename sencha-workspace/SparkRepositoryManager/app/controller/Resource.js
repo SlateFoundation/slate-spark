@@ -61,13 +61,11 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
 
     // event handlers
     onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
+        var conferenceResourcesStore = this.getConferenceResourcesStore();
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+        if (!conferenceResourcesStore.isLoaded() || !conferenceResourcesStore.isLoading()) {
+            conferenceResourcesStore.load();
+        }
     },
 
     onAddClick: function() {
