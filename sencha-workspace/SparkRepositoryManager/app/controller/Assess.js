@@ -39,13 +39,6 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
         'VendorDomains'
     ],
 
-    /**
-     * Called when the view is created
-     */
-    init: function() {
-
-    },
-
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
             store = Ext.getStore(store.split('.').pop());
