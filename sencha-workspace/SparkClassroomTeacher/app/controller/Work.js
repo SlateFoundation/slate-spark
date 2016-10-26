@@ -174,17 +174,23 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint, oldSelectedSparkpoint) {
         var me = this,
             activeTeacherTab = me.getTeacherTabbar().getActiveTab(),
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
+        // TODO: When in multiselect (multiple selectedStudentSparkpoint) show a simple message indicating why it is disabled/empty.
+        if (Ext.isArray(selectedStudentSparkpoint) || Ext.isEmpty(selectedStudentSparkpoint)) {
+            me.getWorkCt().removeAll();
+            return;
+        }
+
         if (!activeTeacherTab || activeTeacherTab.getItemId() === 'work') {
             me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
         }
 
-        if (selectedStudentSparkpoint && !Ext.isArray(selectedStudentSparkpoint)) {
+        if (selectedStudentSparkpoint) {
             studentId = selectedStudentSparkpoint.get('student_id');
 
             feedbackStore.setFilters([{
@@ -200,14 +206,12 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
                 sparkpoint: selectedStudentSparkpoint.get('sparkpoint')
             });
 
-            feedbackStore.load();
+            if (feedbackStore.isLoaded() && oldSelectedSparkpoint !== selectedStudentSparkpoint) {
+                feedbackStore.load();
+            }
 
             me.updateTabBar(selectedStudentSparkpoint);
-            return;
         }
-
-        // TODO: When in multiselect (multiple selectedStudentSparkpoint) show a simple message indicating why it is disabled/empty.
-        me.getWorkCt().removeAll();
     },
 
     onNavWorkTap: function() {

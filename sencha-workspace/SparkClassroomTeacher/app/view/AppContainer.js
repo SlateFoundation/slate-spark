@@ -31,15 +31,33 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
         scrollable: 'vertical'
     },
 
+	/**
+     * Sometimes the student sparkpoint is passed in as an array even on single selection mode, so this needs to be fixed for consistency.
+     * Also fires the event selectedstudentsparkpointchange
+     * @override
+     */
+    setSelectedStudentSparkpoint: function(sparkpoints) {
+        var me = this,
+            oldSparkpoint = me.getSelectedStudentSparkpoint();
+
+        if (Ext.isArray(sparkpoints) && sparkpoints.length === 1) {
+            me.selectedStudentSparkpoint = sparkpoints[0];
+        } else {
+            me.selectedStudentSparkpoint = sparkpoints;
+        }
+
+        me.fireEvent('selectedstudentsparkpointchange', me, me.selectedStudentSparkpoint, oldSparkpoint);
+    },
+
+    getSelectedStudentSparkpoint: function() {
+        return this.selectedStudentSparkpoint;
+    },
+
     updateSelectedSection: function(selectedSection, oldSelectedSection) {
         var me = this;
 
         me.setSelectedStudentSparkpoint(null);
         me.fireEvent('selectedsectionchange', me, selectedSection, oldSelectedSection);
-    },
-
-    updateSelectedStudentSparkpoint: function(selectedStudentSparkpoint, oldSelectedStudentSparkpoint) {
-        this.fireEvent('selectedstudentsparkpointchange', this, selectedStudentSparkpoint, oldSelectedStudentSparkpoint);
     },
 
     toggleStudentMultiselect: function(enable) {
