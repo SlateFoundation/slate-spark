@@ -27,7 +27,7 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
     control: {
         appCt: {
             selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
-        },
+        }
     },
 
 
@@ -45,13 +45,31 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
         // TODO: share code with similar function in GPS controller
         var me = this,
             activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
-            list = me.getPriorityList();
+            list = me.getPriorityList(),
+            listChanged = false,
+            count = 0;
 
-        if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
-            list.select(activeStudent);
-        } else {
-            list.deselectAll();
+        if (activeStudent) {
+            if (Ext.isArray(activeStudent)) {
+                for (; count < activeStudent.length; count++) {
+                    if (list.getStore().indexOf(activeStudent[count]) != -1) {
+                        list.select(activeStudent[count]);
+                        listChanged = true;
+                    }
+                }
+            } else if (list.getStore().indexOf(activeStudent) != -1) {
+                list.select(activeStudent)
+                listChanged = true;
+            }
+
+            if (!listChanged) {
+                list.deselectAll();
+            }
+
+            return;
         }
+
+        list.deselectAll();
     },
 
     refreshPriorities: Ext.Function.createBuffered(function() {

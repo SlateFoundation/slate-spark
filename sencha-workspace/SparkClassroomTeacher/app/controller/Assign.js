@@ -196,6 +196,11 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         this.hideOverlays();
+
+        if (appCt.getStudentMultiselectEnabled()) {
+            return;
+        }
+
         this.syncSelectedStudentSparkpoint();
     },
 

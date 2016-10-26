@@ -64,11 +64,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             store = me.getWorkAssessmentsStore(),
             proxy = store.getProxy();
 
-        if (!Ext.isEmpty(selectedStudentSparkpoint) && !Ext.isArray(selectedStudentSparkpoint)) {
+        if (appCt.getStudentMultiselectEnabled()) {
+            return;
+        }
+
+        if (!Ext.isEmpty(selectedStudentSparkpoint)) {
             proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
             proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
 
-            if (store.isLoaded() && oldSelectedSparkpoint && oldSelectedSparkpoint.getId() !== selectedStudentSparkpoint.getId()) {
+            if (store.isLoaded() && !Ext.Object.equals(selectedStudentSparkpoint, oldSelectedSparkpoint)) {
                 store.load();
             }
         }
@@ -96,11 +100,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation, modifiedFieldNames) {
         if (
-            operation == 'edit' &&
-            activeStudent === this.getAppCt().getSelectedStudentSparkpoint() &&
-            (
-                modifiedFieldNames.indexOf('assess_ready_time') != -1 ||
-                modifiedFieldNames.indexOf('assess_completed_time') != -1
+            operation == 'edit'
+            && activeStudent === this.getAppCt().getSelectedStudentSparkpoint()
+            && (
+                modifiedFieldNames.indexOf('assess_ready_time') != -1
+                || modifiedFieldNames.indexOf('assess_completed_time') != -1
             )
         ) {
             this.refreshCompleteBtn();

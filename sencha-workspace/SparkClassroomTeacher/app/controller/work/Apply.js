@@ -73,7 +73,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             store = me.getWorkAppliesStore(),
             proxy = store.getProxy();
 
-        if (!Ext.isEmpty(selectedStudentSparkpoint) && !Ext.isArray(selectedStudentSparkpoint)) {
+        if (appCt.getStudentMultiselectEnabled()) {
+            return;
+        }
+
+        if (!Ext.isEmpty(selectedStudentSparkpoint)) {
             proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
             proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
 
