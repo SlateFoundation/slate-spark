@@ -1,3 +1,4 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.resource.Panel', {
     requires: [
         'Ext.Array',
@@ -42,30 +43,43 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
         dock: 'bottom',
         displayInfo: true
     },
-                  {
-                      xtype: 'toolbar',
-                      items: [{
-                          text: 'Add Conference Resource',
-                          tooltip: 'Add a new Conference Resource',
-                          action: 'add'
-                      }, '-', {
-                          reference: 'alignButton',
-                          text: 'Align to Standards',
-                          tooltip: 'Align this Conference Resource to multiple standards easily using the standards picker',
-                          action: 'align',
-                          disabled: true
-                      }, '-', {
-                          reference: 'removeButton',
-                          text: 'Delete Conference Resource',
-                          tooltip: 'Remove the Conference Resource',
-                          action: 'delete',
-                          disabled: true
-                      }]
-                  }],
+    {
+        xtype: 'toolbar',
+        items: [
+            {
+                text: 'Add Conference Resource',
+                tooltip: 'Add a new Conference Resource',
+                action: 'add'
+            },
+            {
+                xtype: 'tbseparator'
+            },
+            {
+                reference: 'alignButton',
+                text: 'Align to Standards',
+                tooltip: 'Align this Conference Resource to multiple standards easily using the standards picker',
+                action: 'align',
+                hidden: true,
+                disabled: true
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true,
+            },
+            {
+                reference: 'removeButton',
+                text: 'Delete Conference Resource',
+                tooltip: 'Remove the Conference Resource',
+                action: 'delete',
+                disabled: true
+            }]
+    }],
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
@@ -79,7 +93,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
                 grow: true
             },
 
-            filterField : {
+            filterField: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -105,14 +119,14 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
                                 try {
                                     response = JSON.parse(response.responseText);
 
-                                    if (!response.error) {
+                                    if (response.error) {
+                                        error = response.error;
+                                    } else {
                                         form.setValues({
                                             'Title': response.title
                                         })
-                                    } else {
-                                        error = response.error;
                                     }
-                                } catch(e) {
+                                } catch (e) {
                                     error = e;
                                 }
 
@@ -165,7 +179,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
         },
         {
             xtype: 'datecolumn',
-            format:'m-d-Y',
+            format: 'm-d-Y',
             text: 'Created',
             dataIndex: 'Created',
 

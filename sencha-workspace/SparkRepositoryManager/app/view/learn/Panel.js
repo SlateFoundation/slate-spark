@@ -1,3 +1,4 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.learn.Panel', {
     requires: [
         'Ext.form.field.ComboBox',
@@ -45,13 +46,24 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 text: 'Add Learn',
                 tooltip: 'Add a new learn',
                 action: 'add'
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+            },
+            {
                 reference: 'alignButton',
                 text: 'Align to Standards',
                 tooltip: 'Align this link to multiple standards easily using the standards picker',
                 action: 'align',
+                hidden: true,
                 disabled: true
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true,
+            },
+            {
                 reference: 'removeButton',
                 text: 'Delete Learn',
                 tooltip: 'Remove the selected learn link',
@@ -62,7 +74,8 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
@@ -76,7 +89,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 grow: true
             },
 
-            filterField : {
+            filterField: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -162,7 +175,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 grow: true
             },
 
-            renderer: function(val, col, record) {
+            renderer: function(val) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
                     returnVal = '',
                     logoURL;
@@ -250,7 +263,7 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         },
         {
             xtype: 'datecolumn',
-            format:'m-d-Y',
+            format: 'm-d-Y',
             text: 'Created',
             dataIndex: 'Created',
 

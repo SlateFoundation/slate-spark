@@ -1,4 +1,15 @@
+/**
+ * The Learn controller manages the Learns section of the application where
+ * staff can add, edit and delete learns, and align learns to standards
+ *
+ * ## Responsibilities
+ * - Add learns
+ * - Delete learns
+ * - Align learns to standards
+ * - Show align button when standards column is visible
+ */
 Ext.define('SparkRepositoryManager.controller.Learn', {
+    extend: 'Ext.app.Controller',
     requires: [
         'SparkRepositoryManager.store.LearnLinks',
         'SparkRepositoryManager.store.Vendors',
@@ -6,54 +17,66 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
-    extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-learn-panel'
-        }, {
-            ref: 'gridpanel',
-            selector: 's2m-learn-panel gridpanel'
-        }],
 
-        control: {
-            's2m-learn-panel': {
-                activate: 'onPanelActivate'
-            },
-            's2m-learn-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-learn-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-learn-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
-        }
-    },
-
+    // dependencies
     stores: [
         'Vendors',
         'VendorDomains',
         'LearnLinks'
     ],
 
-    /**
-     * Called when the view is created
-     */
-    init: function() {
-        window.me = this;
+
+    // component references
+    refs: [{
+        ref: 'panel',
+        selector: 's2m-learn-panel'
+    }, {
+        ref: 'gridpanel',
+        selector: 's2m-learn-panel gridpanel'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-learn-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-learn-panel tbseparator#alignButtonSeparator'
+    }],
+
+
+    // entry points
+    control: {
+        's2m-learn-panel': {
+            activate: 'onPanelActivate',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
+        },
+        's2m-learn-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-learn-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-learn-panel button[action=align]': {
+            click: 'onAlignClick'
+        }
     },
 
-    onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+    // controller templates method overrides
+    init: function() {
+        // TODO: Is this really necessary?  If so, find out why and comment
+        // I see no other references to window.me.  Let's comment this out and see if it breaks anything
+        // window.me = this;
+    },
+
+
+    // event handlers
+    onPanelActivate: function() {
+        var learnLinksStore = this.getLearnLinksStore();
+
+        if (!learnLinksStore.isLoaded() || !learnLinksStore.isLoading()) {
+            learnLinksStore.load();
+        }
     },
 
     onAddClick: function() {
@@ -79,7 +102,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         learnLinkStore = me.getLearnLinksStore(),
         title = selection.get('Title'),
         url = selection.get('URL'),
-        descriptiveText =  ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link';
+        descriptiveText = ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link'; // eslint-disable-line no-extra-parens
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
@@ -134,6 +157,24 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
         }
     }
 });

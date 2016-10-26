@@ -1,4 +1,15 @@
+/**
+ * The Resource controller manages the Conference Resources section of the application where
+ * staff can add, edit and delete resources, and align resources to standards
+ *
+ * ## Responsibilities
+ * - Add conference resources
+ * - Delete conference resources
+ * - Align conference resources to standards
+ * - Show align button when standards column is visible
+ */
 Ext.define('SparkRepositoryManager.controller.Resource', {
+    extend: 'Ext.app.Controller',
     requires: [
         'SparkRepositoryManager.store.Vendors',
         'SparkRepositoryManager.store.VendorDomains',
@@ -7,51 +18,54 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
         'Ext.window.MessageBox'
     ],
 
-    extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-resource-panel'
-        }],
-
-        control: {
-            's2m-resource-panel': {
-                activate: 'onPanelActivate'
-            },
-            's2m-resource-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-resource-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-resource-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
-        }
-    },
-
+    // dependencies
     stores: [
         'ConferenceResources',
         'Vendors',
         'VendorDomains'
     ],
 
-    /**
-     * Called when the view is created
-     */
-    init: function() {
 
+    // component references
+    refs: [{
+        ref: 'panel',
+        selector: 's2m-resource-panel'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-resource-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-resource-panel tbseparator#alignButtonSeparator'
+    }],
+
+
+    // entry points
+    control: {
+        's2m-resource-panel': {
+            activate: 'onPanelActivate',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
+        },
+        's2m-resource-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-resource-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-resource-panel button[action=align]': {
+            click: 'onAlignClick'
+        }
     },
 
-    onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+    // event handlers
+    onPanelActivate: function() {
+        var conferenceResourcesStore = this.getConferenceResourcesStore();
+
+        if (!conferenceResourcesStore.isLoaded() || !conferenceResourcesStore.isLoading()) {
+            conferenceResourcesStore.load();
+        }
     },
 
     onAddClick: function() {
@@ -131,6 +145,24 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
         }
     }
 });

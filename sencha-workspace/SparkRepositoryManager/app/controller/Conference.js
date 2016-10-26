@@ -1,53 +1,67 @@
+/**
+ * The Conference controller manages the Conference Questions section of the application where
+ * staff can add, edit and delete questions, and align questions to standards
+ *
+ * ## Responsibilities
+ * - Add conference questions
+ * - Delete conference questions
+ * - Align conference questions to standards
+ * - Show align button when standards column is visible
+ */
 Ext.define('SparkRepositoryManager.controller.Conference', {
+    extend: 'Ext.app.Controller',
     requires: [
         'SparkRepositoryManager.store.GuidingQuestions',
         'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
 
-    extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-conference-panel'
-        }],
-
-        control: {
-            's2m-conference-panel': {
-                activate: 'onPanelActivate'
-            },
-            's2m-conference-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-conference-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-conference-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
-        }
-    },
-
+    // dependencies
     stores: [
         'GuidingQuestions'
     ],
 
-    /**
-     * Called when the view is created
-     */
-    init: function() {
 
+    // component references
+    refs: [{
+        ref: 'panel',
+        selector: 's2m-conference-panel'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-conference-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-conference-panel tbseparator#alignButtonSeparator'
+    }],
+
+
+    // entry points
+    control: {
+        's2m-conference-panel': {
+            activate: 'onPanelActivate',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
+        },
+        's2m-conference-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-conference-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-conference-panel button[action=align]': {
+            click: 'onAlignClick'
+        }
     },
 
-    onPanelActivate: function() {
-        this.stores.forEach(function(store) {
-            store = Ext.getStore(store.split('.').pop());
 
-            if (!(store.isLoaded() || store.isLoading())) {
-                store.load();
-            }
-        });
+    // event handlers
+    onPanelActivate: function() {
+        var guidingQuestionsStore = this.getGuidingQuestionsStore();
+
+        if (!guidingQuestionsStore.isLoaded() || !guidingQuestionsStore.isLoading()) {
+            guidingQuestionsStore.load();
+        }
     },
 
     onAddClick: function() {
@@ -72,7 +86,7 @@ Ext.define('SparkRepositoryManager.controller.Conference', {
             selection = selectionModel.getSelection()[0],
             guidingQuestionStore = me.getGuidingQuestionsStore(),
             question = selection.get('Question'),
-            descriptiveText =  (question ? '"' + question + '"' : '') || 'this guiding question?';
+            descriptiveText = (question ? '"' + question + '"' : '') || 'this guiding question?';
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
@@ -127,6 +141,24 @@ Ext.define('SparkRepositoryManager.controller.Conference', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
         }
     }
 });

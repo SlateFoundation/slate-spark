@@ -44,13 +44,24 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
                 text: 'Add Guiding Question',
                 tooltip: 'Add a new guiding question',
                 action: 'add'
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+            },
+            {
                 reference: 'alignButton',
                 text: 'Align to Standards',
                 tooltip: 'Align this guiding question to multiple standards easily using the standards picker',
                 action: 'align',
+                hidden: true,
                 disabled: true
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true,
+            },
+            {
                 reference: 'removeButton',
                 text: 'Delete Guiding Question',
                 tooltip: 'Remove the selected guiding question',
@@ -61,7 +72,8 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
@@ -75,7 +87,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
                 grow: true
             },
 
-            filterField : {
+            filterField: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -118,7 +130,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         },
         {
             xtype: 'datecolumn',
-            format:'m-d-Y',
+            format: 'm-d-Y',
             text: 'Created',
             dataIndex: 'Created',
 
