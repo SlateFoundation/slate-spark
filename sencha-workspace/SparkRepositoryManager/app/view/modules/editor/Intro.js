@@ -27,6 +27,14 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                             html: 'Add Sparkpoints to this module and check off any that will be evaluated.'
                         },
                         {
+                            xtype: 'combo',
+                            fieldLabel: 'Grade',
+                            store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                            labelAlign: 'top',
+                            labelSeparator: '',
+                            margin: '10 0'
+                        },
+                        {
                             xtype: 'fieldcontainer',
                             fieldLabel: 'Add a Sparkpoint',
                             labelAlign: 'top',
