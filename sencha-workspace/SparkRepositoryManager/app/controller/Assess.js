@@ -1,4 +1,14 @@
+/**
+ * The Assess controller manages the Assess section of the application where
+ * staff can add, edit and delete assessments, and align assessments to standards
+ *
+ * ## Responsibilities
+ * - Add assessments
+ * - Delete assessments
+ * - Align assessments to standards
+ */
 Ext.define('SparkRepositoryManager.controller.Assess', {
+    extend: 'Ext.app.Controller',
     requires: [
         'SparkRepositoryManager.store.Assessments',
         'SparkRepositoryManager.store.AssessmentTypes',
@@ -8,30 +18,8 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
         'Ext.window.MessageBox'
     ],
 
-    extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-assess-panel'
-        }],
-
-        control: {
-            's2m-assess-panel': {
-                activate: 'onPanelActivate'
-            },
-            's2m-assess-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-assess-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-assess-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
-        }
-    },
-
+    // dependencies
     stores: [
         'Assessments',
         'AssessmentTypes',
@@ -39,6 +27,32 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
         'VendorDomains'
     ],
 
+
+    // component references
+    refs: [{
+        ref: 'panel',
+        selector: 's2m-assess-panel'
+    }],
+
+
+    // entry points
+    control: {
+        's2m-assess-panel': {
+            activate: 'onPanelActivate'
+        },
+        's2m-assess-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-assess-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-assess-panel button[action=align]': {
+            click: 'onAlignClick'
+        }
+    },
+
+
+    // event handlers
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
             store = Ext.getStore(store.split('.').pop());
