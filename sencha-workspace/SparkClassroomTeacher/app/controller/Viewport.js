@@ -153,7 +153,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             }
 
             // show section dependant components
-            me.getNavBar().show();
+            // me.getNavBar().show();
             me.getSparkGPS().show();
             me.getTabsCt().show();
 
