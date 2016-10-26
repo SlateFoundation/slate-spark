@@ -18,6 +18,8 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
         itemHeight: 60,
         itemTpl: [
             '<header class="item-header">',
+                '<div class="item-multiselect-indicator"></div>',
+
                 '<tpl for="student.getData()">',
                     '<a class="item-origin" href="{[Slate.API.buildUrl("/people/" + values.Username)]}" target="_blank" onclick="return false;">{FullName}</a> ',
                 '</tpl>',
@@ -31,7 +33,10 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
                     '<span class="item-timestamp">',
                         '{[ this.adjustDuration(values) ]}',
                     '</span>',
+                '<tpl else>',
+                    '<span class="item-timestamp"></span>',
                 '</tpl>',
+
                 '<tpl if="showDismissButton">',
                     '<i class="fa fa-times item-remove-btn"></i>',
                 '</tpl>',
