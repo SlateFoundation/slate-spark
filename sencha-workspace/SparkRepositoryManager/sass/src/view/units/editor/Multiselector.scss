@@ -1,4 +1,4 @@
-.s2m-units-multiselector {
+.s2m-modules-multiselector {
     .x-grid-group-hd {
         border-color: $grid-row-cell-border-color;
     }
@@ -37,14 +37,14 @@
     }
 }
 
-.s2m-units-remove-cell {
+.s2m-modules-remove-cell {
     .x-grid-cell-inner {
         padding-right: 0;
     }
 }
 
-.x-grid-cell-unit-required-column,
-.x-grid-cell-unit-recommended-column {
+.x-grid-cell-module-required-column,
+.x-grid-cell-module-recommended-column {
     cursor: pointer;
 
     &:hover {
@@ -78,7 +78,7 @@
     }
 }
 
-.x-grid-cell-unit-recommended-column {
+.x-grid-cell-module-recommended-column {
     .x-grid-checkcolumn {
         &::before {
             content: '\f02e'; // fa-bookmark
@@ -92,7 +92,7 @@
     }
 }
 
-.s2m-units-multiselector-legend {
+.s2m-modules-multiselector-legend {
     padding: .5em;
     text-align: right;
 
