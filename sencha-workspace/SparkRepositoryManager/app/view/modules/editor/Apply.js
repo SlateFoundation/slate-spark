@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Apply', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.units.editor.Multiselector'
+        'SparkRepositoryManager.view.modules.editor.Multiselector'
     ],
-    xtype: 's2m-units-editor-apply',
+    xtype: 's2m-modules-editor-apply',
 
     title: 'Apply',
-    componentCls: 's2m-units-editor-apply',
+    componentCls: 's2m-modules-editor-apply',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-units-multiselector',
+            xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Apply',
                 plural: 'Applies'
@@ -19,7 +19,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Apply', {
             allowMinimum: false,
             showRequired: false,
             showRecommended: false,
-            unitHeaderItems: [
+            moduleHeaderItems: [
                 {
                     xtype: 'button',
                     text: 'Add Apply',
@@ -67,7 +67,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Apply', {
                     }
                 ]
             },
-            unitStore: {
+            moduleStore: {
                 fields: [
                     {
                         name: 'ordinal',

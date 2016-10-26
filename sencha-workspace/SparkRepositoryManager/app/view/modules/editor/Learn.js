@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Learn', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.units.editor.Multiselector'
+        'SparkRepositoryManager.view.modules.editor.Multiselector'
     ],
-    xtype: 's2m-units-editor-learn',
+    xtype: 's2m-modules-editor-learn',
 
     title: 'Learn &amp; Practice',
-    componentCls: 's2m-units-editor-learn',
+    componentCls: 's2m-modules-editor-learn',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-units-multiselector',
+            xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Learn',
                 plural: 'Learns'
@@ -19,7 +19,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Learn', {
             allowMinimum: true,
             showRequired: true,
             showRecommended: true,
-            unitHeaderItems: [
+            moduleHeaderItems: [
                 {
                     xtype: 'textfield',
                     fieldLabel: 'Min. Learns Needed',
@@ -122,7 +122,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Learn', {
                     }
                 ]
             },
-            unitStore: {
+            moduleStore: {
                 groupField: 'group',
                 fields: [
                     {

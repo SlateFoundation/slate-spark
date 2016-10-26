@@ -1,8 +1,8 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
     extend: 'Ext.Container',
-    xtype: 's2m-units-multiselector',
+    xtype: 's2m-modules-multiselector',
 
-    componentCls: 's2m-units-multiselector',
+    componentCls: 's2m-modules-multiselector',
 
     config: {
         itemType: {
@@ -10,8 +10,8 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
             plural: 'Items'
         },
         sparkpointsStore: null,
-        unitHeaderItems: null,
-        unitStore: null,
+        moduleHeaderItems: null,
+        moduleStore: null,
         showRequired: false,
         showRecommended: false
     },
@@ -57,7 +57,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                         {
                             action: 'add',
                             iconCls: 'glyph-success',
-                            tooltip: 'Add to Unit',
+                            tooltip: 'Add to Module',
                             glyph: 0xf055 // fa-plus-circle
                         }
                     ]
@@ -70,9 +70,9 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
             margin: '0 0 0 20',
             items: [
                 {
-                    itemId: 'unit-grid',
+                    itemId: 'module-grid',
                     xtype: 'grid',
-                    cls: 's2m-units-multiselector-unitgrid',
+                    cls: 's2m-modules-multiselector-modulegrid',
                     features: [{
                         ftype: 'grouping',
                         groupHeaderTpl: '{name}',
@@ -98,12 +98,12 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                                 width: 24,
                                 xtype: 'actioncolumn',
                                 align: 'right',
-                                tdCls: 's2m-units-remove-cell',
+                                tdCls: 's2m-modules-remove-cell',
                                 items: [
                                     {
                                         action: 'remove',
                                         iconCls: 'glyph-danger',
-                                        tooltip: 'Remove from Unit',
+                                        tooltip: 'Remove from Module',
                                         glyph: 0xf056 // fa-minus-circle
                                     }
                                 ]
@@ -116,7 +116,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                             {
                                 flex: 1,
                                 xtype: 'templatecolumn',
-                                itemId: 'unit-item-col',
+                                itemId: 'module-item-col',
                                 cellWrap: true,
                                 tpl: [
                                     '<tpl if="url">',
@@ -129,7 +129,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                             {
                                 width: 48,
                                 xtype: 'checkcolumn',
-                                itemId: 'unit-required-column',
+                                itemId: 'module-required-column',
                                 text: '<abbr title="Required">Req’d</abbr>',
                                 dataIndex: 'isRequired',
                                 hidden: true
@@ -137,7 +137,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                             {
                                 width: 48,
                                 xtype: 'checkcolumn',
-                                itemId: 'unit-recommended-column',
+                                itemId: 'module-recommended-column',
                                 text: '<abbr title="Recommended">Recm’d</abbr>',
                                 dataIndex: 'isRecommended',
                                 hidden: true
@@ -147,7 +147,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
                 },
                 {
                     xtype: 'component',
-                    cls: 's2m-units-multiselector-legend',
+                    cls: 's2m-modules-multiselector-legend',
                     itemId: 'legend',
                     hidden: true,
                     html: [
@@ -165,9 +165,9 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
             itemType = me.getItemType(),
             sparkpointsStore = me.getSparkpointsStore(),
             sparkpointsGrid = me.down('#sparkpoints-grid'),
-            unitStore = me.getUnitStore(),
-            unitGrid = me.down('#unit-grid'),
-            unitHeaderItems = me.getUnitHeaderItems(),
+            moduleStore = me.getModuleStore(),
+            moduleGrid = me.down('#module-grid'),
+            moduleHeaderItems = me.getModuleHeaderItems(),
             showRequired = me.getShowRequired(),
             showRecommended = me.getShowRecommended();
 
@@ -176,21 +176,21 @@ Ext.define('SparkRepositoryManager.view.units.editor.Multiselector', {
         sparkpointsGrid.setTitle(itemType.plural + ' in Sparkpoints')
         sparkpointsGrid.setStore(sparkpointsStore);
 
-        unitGrid.setTitle(itemType.plural + ' in Unit');
-        unitGrid.setStore(unitStore);
-        unitGrid.down('#unit-item-col').setText(itemType.singular);
+        moduleGrid.setTitle(itemType.plural + ' in Module');
+        moduleGrid.setStore(moduleStore);
+        moduleGrid.down('#module-item-col').setText(itemType.singular);
 
-        if (unitHeaderItems) {
-            unitGrid.getHeader().add(unitHeaderItems);
-            unitGrid.getHeader().setStyle({
+        if (moduleHeaderItems) {
+            moduleGrid.getHeader().add(moduleHeaderItems);
+            moduleGrid.getHeader().setStyle({
                 height: '38px',
                 padding: '6px 11px'
             });
         }
 
         if (showRequired || showRecommended) {
-            unitGrid.down('#unit-required-column').setVisible(showRequired);
-            unitGrid.down('#unit-recommended-column').setVisible(showRecommended);
+            moduleGrid.down('#module-required-column').setVisible(showRequired);
+            moduleGrid.down('#module-recommended-column').setVisible(showRecommended);
             me.down('#legend').show();
         }
     }

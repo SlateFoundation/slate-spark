@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Resources', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.units.editor.Multiselector'
+        'SparkRepositoryManager.view.modules.editor.Multiselector'
     ],
-    xtype: 's2m-units-editor-resources',
+    xtype: 's2m-modules-editor-resources',
 
     title: 'Conference Resources',
-    componentCls: 's2m-units-editor-resources',
+    componentCls: 's2m-modules-editor-resources',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-units-multiselector',
+            xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Resource',
                 plural: 'Resources'
@@ -19,7 +19,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Resources', {
             allowMinimum: false,
             showRequired: false,
             showRecommended: false,
-            unitHeaderItems: [
+            moduleHeaderItems: [
                 {
                     xtype: 'button',
                     text: 'Add Resource',
@@ -62,7 +62,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Resources', {
                     }
                 ]
             },
-            unitStore: {
+            moduleStore: {
                 fields: [
                     {
                         name: 'ordinal',

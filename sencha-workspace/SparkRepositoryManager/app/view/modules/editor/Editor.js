@@ -1,16 +1,16 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.units.editor.Intro',
-        'SparkRepositoryManager.view.units.editor.Learn',
-        'SparkRepositoryManager.view.units.editor.Questions',
-        'SparkRepositoryManager.view.units.editor.Resources',
-        'SparkRepositoryManager.view.units.editor.Apply',
-        'SparkRepositoryManager.view.units.editor.Assess'
+        'SparkRepositoryManager.view.modules.editor.Intro',
+        'SparkRepositoryManager.view.modules.editor.Learn',
+        'SparkRepositoryManager.view.modules.editor.Questions',
+        'SparkRepositoryManager.view.modules.editor.Resources',
+        'SparkRepositoryManager.view.modules.editor.Apply',
+        'SparkRepositoryManager.view.modules.editor.Assess'
     ],
-    xtype: 's2m-units-editor',
+    xtype: 's2m-modules-editor',
 
-    componentCls: 's2m-units-editor',
+    componentCls: 's2m-modules-editor',
 
     padding: '10 0 0',
     bodyPadding: '5 21',
@@ -22,12 +22,12 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
             items: [
                 {
                     xtype: 'button',
-                    text: 'Clone Unit'
+                    text: 'Clone Module'
                 },
                 '-',
                 {
                     xtype: 'checkbox',
-                    boxLabel: 'Share unit globally'
+                    boxLabel: 'Share module globally'
                 }
             ]
         }
@@ -38,7 +38,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
             items: [
                 {
                     xtype: 'container',
-                    cls: 's2m-units-editor-meta',
+                    cls: 's2m-modules-editor-meta',
                     margin: '10 0 20',
                     layout: {
                         type: 'hbox'
@@ -67,22 +67,22 @@ Ext.define('SparkRepositoryManager.view.units.editor.Editor', {
                     bodyPadding: '20 0',
                     items: [
                         {
-                            xtype: 's2m-units-editor-intro'
+                            xtype: 's2m-modules-editor-intro'
                         },
                         {
-                            xtype: 's2m-units-editor-learn'
+                            xtype: 's2m-modules-editor-learn'
                         },
                         {
-                            xtype: 's2m-units-editor-questions'
+                            xtype: 's2m-modules-editor-questions'
                         },
                         {
-                            xtype: 's2m-units-editor-resources'
+                            xtype: 's2m-modules-editor-resources'
                         },
                         {
-                            xtype: 's2m-units-editor-apply'
+                            xtype: 's2m-modules-editor-apply'
                         },
                         {
-                            xtype: 's2m-units-editor-assess'
+                            xtype: 's2m-modules-editor-assess'
                         }
                     ]
                 }

@@ -11,7 +11,7 @@ Ext.define('SparkRepositoryManager.view.Main', {
         'SparkRepositoryManager.view.resource.Panel',
         'SparkRepositoryManager.view.resource.Panel',
         'SparkRepositoryManager.view.sparkpoints.Panel',
-        'SparkRepositoryManager.view.units.Panel'
+        'SparkRepositoryManager.view.modules.Panel'
     ],
 
 
@@ -60,10 +60,10 @@ Ext.define('SparkRepositoryManager.view.Main', {
             title: 'Sparkpoints'
         },
         {
-            itemId: 'units',
+            itemId: 'modules',
 
-            xtype: 's2m-units-panel',
-            title: 'Units'
+            xtype: 's2m-modules-panel',
+            title: 'Modules'
         }
     ]
 });
