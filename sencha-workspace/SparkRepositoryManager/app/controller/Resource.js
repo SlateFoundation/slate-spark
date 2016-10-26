@@ -1,4 +1,15 @@
+/**
+ * The Resource controller manages the Conference Resources section of the application where
+ * staff can add, edit and delete resources, and align resources to standards
+ *
+ * ## Responsibilities
+ * - Add conference resources
+ * - Delete conference resources
+ * - Align conference resources to standards
+ * - Show align button when standards column is visible
+ */
 Ext.define('SparkRepositoryManager.controller.Resource', {
+    extend: 'Ext.app.Controller',
     requires: [
         'SparkRepositoryManager.store.Vendors',
         'SparkRepositoryManager.store.VendorDomains',
@@ -7,44 +18,48 @@ Ext.define('SparkRepositoryManager.controller.Resource', {
         'Ext.window.MessageBox'
     ],
 
-    extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-resource-panel'
-        }, {
-            ref: 'alignButton',
-            selector: 's2m-resource-panel button[action=align]'
-        }, {
-            ref: 'alignButtonSeparator',
-            selector: 's2m-resource-panel tbseparator#alignButtonSeparator'
-        }],
-
-        control: {
-            's2m-resource-panel': {
-                activate: 'onPanelActivate',
-                columnhide: 'onPanelColumnHide',
-                columnshow: 'onPanelColumnShow'
-            },
-            's2m-resource-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-resource-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-resource-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
-        }
-    },
-
+    // dependencies
     stores: [
         'ConferenceResources',
         'Vendors',
         'VendorDomains'
     ],
 
+
+    // component references
+    refs: [{
+        ref: 'panel',
+        selector: 's2m-resource-panel'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-resource-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-resource-panel tbseparator#alignButtonSeparator'
+    }],
+
+
+    // entry points
+    control: {
+        's2m-resource-panel': {
+            activate: 'onPanelActivate',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
+        },
+        's2m-resource-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-resource-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-resource-panel button[action=align]': {
+            click: 'onAlignClick'
+        }
+    },
+
+
+    // event handlers
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
             store = Ext.getStore(store.split('.').pop());

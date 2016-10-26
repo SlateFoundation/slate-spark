@@ -1,4 +1,15 @@
+/**
+ * The Learn controller manages the Learns section of the application where
+ * staff can add, edit and delete learns, and align learns to standards
+ *
+ * ## Responsibilities
+ * - Add learns
+ * - Delete learns
+ * - Align learns to standards
+ * - Show align button when standards column is visible
+ */
 Ext.define('SparkRepositoryManager.controller.Learn', {
+    extend: 'Ext.app.Controller',
     requires: [
         'SparkRepositoryManager.store.LearnLinks',
         'SparkRepositoryManager.store.Vendors',
@@ -6,54 +17,59 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
         'SparkRepositoryManager.view.StandardPicker',
         'Ext.window.MessageBox'
     ],
-    extend: 'Ext.app.Controller',
 
-    config: {
-        refs: [{
-            ref: 'panel',
-            selector: 's2m-learn-panel'
-        }, {
-            ref: 'gridpanel',
-            selector: 's2m-learn-panel gridpanel'
-        }, {
-            ref: 'alignButton',
-            selector: 's2m-learn-panel button[action=align]'
-        }, {
-            ref: 'alignButtonSeparator',
-            selector: 's2m-learn-panel tbseparator#alignButtonSeparator'
-        }],
 
-        control: {
-            's2m-learn-panel': {
-                activate: 'onPanelActivate',
-                columnhide: 'onPanelColumnHide',
-                columnshow: 'onPanelColumnShow'
-            },
-            's2m-learn-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-learn-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-learn-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
-        }
-    },
-
+    // dependencies
     stores: [
         'Vendors',
         'VendorDomains',
         'LearnLinks'
     ],
 
-    /**
-     * Called when the view is created
-     */
+
+    // component references
+    refs: [{
+        ref: 'panel',
+        selector: 's2m-learn-panel'
+    }, {
+        ref: 'gridpanel',
+        selector: 's2m-learn-panel gridpanel'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-learn-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-learn-panel tbseparator#alignButtonSeparator'
+    }],
+
+
+    // entry points
+    control: {
+        's2m-learn-panel': {
+            activate: 'onPanelActivate',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
+        },
+        's2m-learn-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-learn-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-learn-panel button[action=align]': {
+            click: 'onAlignClick'
+        }
+    },
+
+
+    // controller templates method overrides
     init: function() {
+        // TODO: Is this really necessary?  If so, find out why and comment
         window.me = this;
     },
 
+
+    // event handlers
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
             store = Ext.getStore(store.split('.').pop());

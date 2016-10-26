@@ -1,12 +1,30 @@
+/**
+ * The Apply controller manages the Applies section of the application where
+ * staff can add, edit and delete applies, and align applies to standards
+ *
+ * ## Responsibilities
+ * - Add applies
+ * - Delete applies
+ * - Align applies to standards
+ * - Show align button when standards column is visible
+ * - Handle edits in the apply panel
+ */
 Ext.define('SparkRepositoryManager.controller.Apply', {
+    extend: 'Ext.app.Controller',
     requires: [
         'Ext.window.MessageBox',
         'SparkRepositoryManager.store.ApplyProjects',
         'SparkRepositoryManager.view.StandardPicker'
     ],
 
-    extend: 'Ext.app.Controller',
 
+    // dependencies
+    stores: [
+        'ApplyProjects'
+    ],
+
+
+    // component references
     refs: [{
         ref: 'panel',
         selector: 's2m-apply-panel'
@@ -21,33 +39,31 @@ Ext.define('SparkRepositoryManager.controller.Apply', {
         selector: 's2m-apply-panel tbseparator#alignButtonSeparator'
     }],
 
-    config: {
-        control: {
-            's2m-apply-panel': {
-                activate: 'onPanelActivate',
-                beforeedit: 'onPanelBeforeEdit',
-                edit: 'onPanelEdit',
-                canceledit: 'onPanelCancelEdit',
-                validateedit: 'onPanelValidateEdit',
-                columnhide: 'onPanelColumnHide',
-                columnshow: 'onPanelColumnShow'
-            },
-            's2m-apply-panel button[action=add]': {
-                click: 'onAddClick'
-            },
-            's2m-apply-panel button[action=delete]': {
-                click: 'onDeleteClick'
-            },
-            's2m-apply-panel button[action=align]': {
-                click: 'onAlignClick'
-            }
+
+    // entry points
+    control: {
+        's2m-apply-panel': {
+            activate: 'onPanelActivate',
+            beforeedit: 'onPanelBeforeEdit',
+            edit: 'onPanelEdit',
+            canceledit: 'onPanelCancelEdit',
+            validateedit: 'onPanelValidateEdit',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
+        },
+        's2m-apply-panel button[action=add]': {
+            click: 'onAddClick'
+        },
+        's2m-apply-panel button[action=delete]': {
+            click: 'onDeleteClick'
+        },
+        's2m-apply-panel button[action=align]': {
+            click: 'onAlignClick'
         }
     },
 
-    stores: [
-        'ApplyProjects'
-    ],
 
+    // event handlers
     onPanelActivate: function() {
         this.stores.forEach(function(store) {
             store = Ext.getStore(store.split('.').pop());
