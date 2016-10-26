@@ -1,28 +1,28 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Resources', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.units.editor.Multiselector'
+        'SparkRepositoryManager.view.modules.editor.Multiselector'
     ],
-    xtype: 's2m-units-editor-resources',
+    xtype: 's2m-modules-editor-apply',
 
-    title: 'Conference Resources',
-    componentCls: 's2m-units-editor-resources',
+    title: 'Apply',
+    componentCls: 's2m-modules-editor-apply',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-units-multiselector',
+            xtype: 's2m-modules-multiselector',
             itemType: {
-                singular: 'Resource',
-                plural: 'Resources'
+                singular: 'Apply',
+                plural: 'Applies'
             },
             allowMinimum: false,
             showRequired: false,
             showRecommended: false,
-            unitHeaderItems: [
+            moduleHeaderItems: [
                 {
                     xtype: 'button',
-                    text: 'Add Resource',
+                    text: 'Add Apply',
                     glyph: 0xf067 // fa-plus
                 }
             ],
@@ -37,32 +37,37 @@ Ext.define('SparkRepositoryManager.view.units.editor.Resources', {
                 data: [
                     {
                         sparkpoint: 'SS.G6.1.2.B',
-                        title: 'ASN Resource Page for SS.G6.1.2.B',
-                        url: 'http://example.com/asn-resource'
+                        title: 'Our Baby Dragon',
+                        url: 'http://example.com/dragon'
                     },
                     {
                         sparkpoint: 'SS.G6.1.2.B',
-                        title: 'Google Search Results',
-                        url: 'http://example.com/google-results'
+                        title: 'Make Your Predictions',
+                        url: 'http://example.com/predictions'
                     },
                     {
                         sparkpoint: 'SS.G6.2.4.A',
-                        title: 'ASN Resource Page for SS.G6.2.4.A',
-                        url: 'http://example.com/asn-resource'
+                        title: 'Beak Shape Matters',
+                        url: 'http://example.com/beak-shape'
                     },
                     {
                         sparkpoint: 'SS.G6.2.4.A',
-                        title: 'Google Search Results',
-                        url: 'http://example.com/google-results'
+                        title: 'Claw Matters',
+                        url: 'http://example.com/claw-matters'
                     },
                     {
                         sparkpoint: 'SS.U.1.2.A',
-                        title: 'Google Search Results',
-                        url: 'http://example.com/google-results'
+                        title: 'Ticket to Ride',
+                        url: 'http://example.com/ticket-ride'
+                    },
+                    {
+                        sparkpoint: 'SS.U.1.2.A',
+                        title: 'Music Store Hours',
+                        url: 'http://example.com/music-store'
                     }
                 ]
             },
-            unitStore: {
+            moduleStore: {
                 fields: [
                     {
                         name: 'ordinal',
@@ -73,18 +78,18 @@ Ext.define('SparkRepositoryManager.view.units.editor.Resources', {
                 data: [
                     {
                         ordinal: 1,
-                        title: 'ASN Resource Page for SS.G6.1.2.B',
-                        url: 'http://example.com/asn-resource'
+                        title: 'Mission Matters',
+                        url: 'http://example.com/mission'
                     },
                     {
                         ordinal: 2,
-                        title: 'ASN Resource Page for SS.G6.1.2.A',
-                        url: 'http://example.com/asn-resource-2'
+                        title: 'Planet Facts',
+                        url: 'http://example.com/planets'
                     },
                     {
                         ordinal: 3,
-                        title: 'ASN Resource Page for SS.G6.3.4.E',
-                        url: 'http://example.com/asn-resource-3'
+                        title: 'The Key Points of Natural Selection',
+                        url: 'http://example.com/darwin'
                     }
                 ]
             }

@@ -1,8 +1,8 @@
-Ext.define('SparkRepositoryManager.view.units.Navigator', {
+Ext.define('SparkRepositoryManager.view.modules.Navigator', {
     extend: 'Ext.Container',
-    xtype: 's2m-units-navigator',
+    xtype: 's2m-modules-navigator',
 
-    componentCls: 's2m-units-navigator',
+    componentCls: 's2m-modules-navigator',
 
     layout: {
         type: 'vbox',
@@ -18,16 +18,16 @@ Ext.define('SparkRepositoryManager.view.units.Navigator', {
             items: [
                 {
                     xtype: 'button',
-                    cls: 's2m-units-navigator-addbtn',
-                    text: 'Add New Unit',
-                    action: 'add-new-unit',
+                    cls: 's2m-modules-navigator-addbtn',
+                    text: 'Add New Module',
+                    action: 'add-new-module',
                     scale: 'large'
                 },
                 {
                     xtype: 'textfield',
-                    cls: 's2m-units-navigator-search',
+                    cls: 's2m-modules-navigator-search',
                     margin: '10 0 0',
-                    emptyText: 'Search Units',
+                    emptyText: 'Search Modules',
                     triggers: {
                         search: {
                             cls: 'x-form-search-trigger'
@@ -50,7 +50,7 @@ Ext.define('SparkRepositoryManager.view.units.Navigator', {
                             expanded: true,
                             children: [
                                 {
-                                    text: 'Global Units',
+                                    text: 'Global Modules',
                                     cls: 's2m-treepanel-heading',
                                     expanded: true,
                                     children: [
@@ -72,7 +72,7 @@ Ext.define('SparkRepositoryManager.view.units.Navigator', {
                                     ]
                                 },
                                 {
-                                    text: 'Your Units',
+                                    text: 'Your Modules',
                                     cls: 's2m-treepanel-heading',
                                     expanded: true,
                                     children: [

@@ -1,9 +1,9 @@
-Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
+Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
     extend: 'Ext.Panel',
-    xtype: 's2m-units-editor-intro',
+    xtype: 's2m-modules-editor-intro',
 
     title: 'Intro',
-    componentCls: 's2m-units-editor-intro',
+    componentCls: 's2m-modules-editor-intro',
 
     items: [
         {
@@ -24,7 +24,15 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                                 fontSize: '1.125em',
                                 lineHeight: 4/3
                             },
-                            html: 'Add Sparkpoints to this unit and check off any that will be evaluated.'
+                            html: 'Add Sparkpoints to this module and check off any that will be evaluated.'
+                        },
+                        {
+                            xtype: 'combo',
+                            fieldLabel: 'Grade',
+                            store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                            labelAlign: 'top',
+                            labelSeparator: '',
+                            margin: '10 0'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -48,7 +56,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                                         click: function(btn) {
                                             // TODO add an actual blank item? some way to search for a sparkpoint?
                                             btn
-                                                .up('s2m-units-editor-intro')
+                                                .up('s2m-modules-editor-intro')
                                                 .down('#sparkpoint-grid')
                                                 .getStore()
                                                 .add({
@@ -70,7 +78,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                             // TODO offload to controller?
                             listeners: {
                                 click: function() {
-                                    var grid = this.up('s2m-units-editor-intro').down('#sparkpoint-grid'),
+                                    var grid = this.up('s2m-modules-editor-intro').down('#sparkpoint-grid'),
                                         selection = grid.getSelection(),
                                         store = grid.getStore();
 
@@ -85,8 +93,8 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                     itemId: 'sparkpoint-grid',
                     margin: '0 20',
                     xtype: 'grid',
-                    cls: 's2m-units-intro-list',
-                    emptyText: 'No Sparkpoints in this unit.',
+                    cls: 's2m-modules-intro-list',
+                    emptyText: 'No Sparkpoints in this module.',
                     hideHeaders: true,
                     store: {
                         fields: ['code', 'willBeEvaluated'],
@@ -110,7 +118,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                         },
                         items: [
                             {
-                                text: 'Sparkpoints in unit',
+                                text: 'Sparkpoints in module',
                                 dataIndex: 'code',
                                 flex: 1
                             },
@@ -137,7 +145,7 @@ Ext.define('SparkRepositoryManager.view.units.editor.Intro', {
                     // TODO offload to controller?
                     listeners: {
                         selectionchange: function(model, records) {
-                            this.up('s2m-units-editor-intro').down('button[action="remove-sparkpoint"]').setDisabled(!(records.length > 0));
+                            this.up('s2m-modules-editor-intro').down('button[action="remove-sparkpoint"]').setDisabled(!(records.length > 0));
                         }
                     }
                 },
