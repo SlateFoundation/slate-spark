@@ -103,7 +103,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             proxy = store.getProxy(),
             conferencingStudentsGrid = me.getConferencingStudentsGrid();
 
-        if (selectedStudentSparkpoint && !Ext.isArray(selectedStudentSparkpoint)) {
+        if (selectedStudentSparkpoint) {
             // TODO: track dirty state of extraparams?
             proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
             proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
@@ -461,11 +461,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     syncConferenceGroup: function() {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            conferenceGroup = selectedStudentSparkpoint && !Ext.isArray(selectedStudentSparkpoint) && selectedStudentSparkpoint.get('conference_group_id'),
+            conferenceGroup = selectedStudentSparkpoint && selectedStudentSparkpoint.get('conference_group_id'),
             conferencingStudentsGrid = me.getConferencingStudentsGrid(),
             conferencingStudentsStore = conferencingStudentsGrid && conferencingStudentsGrid.getStore();
 
-        if (selectedStudentSparkpoint && !Ext.isArray(selectedStudentSparkpoint) && me.getConferenceCt()) {
+        if (selectedStudentSparkpoint && me.getConferenceCt()) {
             conferencingStudentsStore.clearFilter(true);
             conferencingStudentsStore.filter('conference_group_id', conferenceGroup);
 

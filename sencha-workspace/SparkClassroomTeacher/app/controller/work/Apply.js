@@ -68,22 +68,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint, oldSelectedSparkpoint) {
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             store = me.getWorkAppliesStore(),
             proxy = store.getProxy();
 
-        if (appCt.getStudentMultiselectEnabled()) {
-            return;
-        }
-
-        if (!Ext.isEmpty(selectedStudentSparkpoint)) {
+        if (selectedStudentSparkpoint) {
+            // TODO: track dirty state of extraparams?
             proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
             proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
-
-            if (store.isLoaded() && oldSelectedSparkpoint.getId() !== selectedStudentSparkpoint.getId()) {
-                store.load();
-            }
+            store.load();
         }
 
         me.setActiveApply(null);

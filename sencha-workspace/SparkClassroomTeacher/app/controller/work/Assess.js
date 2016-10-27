@@ -58,21 +58,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint, oldSelectedSparkpoint) {
+    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             sparkpointField = me.getSparkpointField(),
             store = me.getWorkAssessmentsStore(),
             proxy = store.getProxy();
 
-        if (appCt.getStudentMultiselectEnabled()) {
-            return;
-        }
-
-        if (!Ext.isEmpty(selectedStudentSparkpoint)) {
+        if (selectedStudentSparkpoint) {
+            // TODO: track dirty state of extraparams?
             proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
             proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
 
-            if (store.isLoaded() && !Ext.Object.equals(selectedStudentSparkpoint, oldSelectedSparkpoint)) {
+            // TODO: reload store if sparkpoints param dirty
+            if (store.isLoaded()) {
                 store.load();
             }
         }
