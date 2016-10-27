@@ -41,6 +41,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             xtype: 'spark-titlebar'
         },
         sectionSelect: 'spark-titlebar #sectionSelect',
+        k1Timer: 'spark-titlebar spark-k1-timer',
 
         navBar: {
             selector: 'spark-teacher-navbar',
@@ -107,6 +108,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         SparkClassroom.timing.DurationDisplay.init(function() {
             me.renderViews();
         });
+
+        me.initTimer();
     },
 
 
@@ -186,4 +189,10 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             me.getTabsCt()
         ]);
     },
+
+    initTimer: function() {
+        var me = this;
+
+        me.getK1Timer().refresh();
+    }
 });
