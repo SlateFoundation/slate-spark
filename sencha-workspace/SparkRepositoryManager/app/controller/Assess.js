@@ -32,13 +32,21 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
     refs: [{
         ref: 'panel',
         selector: 's2m-assess-panel'
+    }, {
+        ref: 'alignButton',
+        selector: 's2m-assess-panel button[action=align]'
+    }, {
+        ref: 'alignButtonSeparator',
+        selector: 's2m-assess-panel tbseparator#alignButtonSeparator'
     }],
 
 
     // entry points
     control: {
         's2m-assess-panel': {
-            activate: 'onPanelActivate'
+            activate: 'onPanelActivate',
+            columnhide: 'onPanelColumnHide',
+            columnshow: 'onPanelColumnShow'
         },
         's2m-assess-panel button[action=add]': {
             click: 'onAddClick'
@@ -140,6 +148,24 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
         } else {
             record = panel.getSelection()[0];
             record.set('StandardIDs', standards);
+        }
+    },
+
+    onPanelColumnHide: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().hide();
+            me.getAlignButtonSeparator().hide();
+        }
+    },
+
+    onPanelColumnShow: function(grid, column) {
+        var me = this;
+
+        if (column.getXType()==='srm-standardslistcolumn') {
+            me.getAlignButton().show();
+            me.getAlignButtonSeparator().show();
         }
     }
 });

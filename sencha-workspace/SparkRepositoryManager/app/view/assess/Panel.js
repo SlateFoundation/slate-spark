@@ -47,13 +47,24 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
                 text: 'Add Assessment',
                 tooltip: 'Add a new assessment',
                 action: 'add'
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator'
+            },
+            {
                 reference: 'alignButton',
                 text: 'Align to Standards',
                 tooltip: 'Align this assessment to multiple standards easily using the standards picker',
                 action: 'align',
+                hidden: true,
                 disabled: true
-            }, '-', {
+            },
+            {
+                xtype: 'tbseparator',
+                itemId: 'alignButtonSeparator',
+                hidden: true
+            },
+            {
                 reference: 'removeButton',
                 text: 'Delete Assessment',
                 tooltip: 'Remove the selected assessment',
@@ -64,7 +75,8 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
 
     columns: [
         {
-            xtype: 'srm-standardslistcolumn'
+            xtype: 'srm-standardslistcolumn',
+            hidden: true
         },
         {
             text: 'Grade',
