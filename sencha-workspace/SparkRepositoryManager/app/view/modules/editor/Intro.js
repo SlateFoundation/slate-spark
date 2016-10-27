@@ -99,6 +99,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                     store: {
                         fields: ['code', 'willBeEvaluated'],
                         data: [
+                            /* eslint-disable */
                             { code: 'SS.G6.1.2.A', willBeEvaluated: false },
                             { code: 'SS.G6.2.4.A', willBeEvaluated: true },
                             { code: 'ELA.G6.RI.1', willBeEvaluated: false },
@@ -109,6 +110,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                             { code: 'ELA.G6.RI.5', willBeEvaluated: false },
                             { code: 'ELA.G6.RI.7', willBeEvaluated: true },
                             { code: 'ELA.G6.RI.8', willBeEvaluated: false }
+                            /* eslint-enable */
                         ]
                     },
                     columns: {
