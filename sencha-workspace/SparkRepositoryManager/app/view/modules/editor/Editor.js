@@ -50,10 +50,17 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                     },
                     items: [
                         {
-                            width: 192,
+                            xtype: 'combo',
+                            width: 180,
                             margin: '0 20 0 0',
-                            fieldLabel: 'Code',
-                            value: 'Ex: G6.U.3.4.A' // TODO remove hardcoded value
+                            fieldLabel: 'Grade',
+                            store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+                        },
+                        {
+                            xtype: 'displayfield',
+                            width: 180,
+                            margin: '0 20 0 0',
+                            fieldLabel: 'Code'
                         },
                         {
                             flex: 1,
