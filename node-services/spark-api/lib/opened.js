@@ -6,7 +6,7 @@ var generateRandomPassword = require('./password').generateRandomPassword,
     filterObjectKeys = require('./util').filterObjectKeys,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
-    util = require('util'),
+    util = require('./util'),
     defer = require('co-defer'),
     request = require('koa-request'),
     path = require('path'),
@@ -147,7 +147,7 @@ var generateRandomPassword = require('./password').generateRandomPassword,
         timeout: 2000,
         forever: true,
         pool: {
-            maxSockets: 50
+            maxSockets: 10
         }
     },
     configPath = path.resolve(__dirname, '../config/opened.json'),
@@ -402,12 +402,13 @@ function generateErrorString(err) {
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
 }
 
-function* getResources(params, resources, ctx) {
+function* getResources(params, resources, ctx, vals) {
     var url = '/resources.json',
         resourceTypes = params.resource_type ? Array.isArray(params.resource_type) ? params.resource_type : params.resource_type.split(',') : [],
         standardIds = params.standard_ids ? Array.isArray(params.standard_ids) ? params.standard_ids : params.standard_ids.split(',') : [],
         queryString = qs.stringify(filterObjectKeys(openEdParameters, params)),
-        response;
+        response,
+        recordToUpsert = util.recordToUpsert.bind(ctx);
 
     if (resourceTypes.length > 0) {
         queryString += (queryString !== '' ? '&' : '') + resourceTypes.map(function (resourceType) {
@@ -420,6 +421,8 @@ function* getResources(params, resources, ctx) {
                 return 'standard_ids[]=' + standardId;
             }).join('&');
     }
+
+    vals || (vals = new util.Values());
 
     if (queryString !== '') {
         url += '?' + queryString;
@@ -452,10 +455,18 @@ function* getResources(params, resources, ctx) {
             params.offset = (entries + offset);
             console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
             yield* getResources(params, resources, ctx);
-        } else {
-
         }
     }
+
+    var queries = resources.map(
+        resource => recordToUpsert('vendor_resources', {
+            id: resource.id,
+            resource: resource,
+            last_updated: new Date()
+        }, vals)
+    );
+
+    yield ctx.pgp.any(util.queriesToReturningCte(queries), vals.vals);
 
     console.log('OpenEd resources: ' + resources.length);
 
