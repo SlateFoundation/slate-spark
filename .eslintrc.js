@@ -24,6 +24,7 @@ module.exports = {
         ],
         "callback-return": "error",
         "camelcase": "error",
+        "comma-dangle": ["error", "never"],
         "comma-spacing": [
             "error",
             {
