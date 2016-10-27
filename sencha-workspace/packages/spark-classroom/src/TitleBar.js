@@ -36,7 +36,7 @@ Ext.define('SparkClassroom.TitleBar', {
                 xtype: 'spacer'
             },
             {
-                xtype: 'spark-work-timer',
+                xtype: 'spark-k1-timer',
                 hidden: !location.search.match(/\WenableK1(\W|$)/)
             }
         ]

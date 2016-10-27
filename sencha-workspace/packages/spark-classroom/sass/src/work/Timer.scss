@@ -52,15 +52,6 @@
             line-height: 1;
         }
 
-        &:hover {
-            color: $color;
-
-            // TODO switch this to use a class, not hover
-            &::before {
-                content: '\f04c';
-            }
-        }
-
         &:active {
             color: #999;
         }
@@ -106,6 +97,16 @@
         .timer-counter {
                     animation: spark-work-timer-blink 1s steps(3, start) infinite;
             -webkit-animation: spark-work-timer-blink 1s steps(3, start) infinite;
+        }
+    }
+
+    &.timer-running {
+        .timer-play-pause {
+            color: $color;
+
+            &::before {
+                content: '\f04c';
+            }
         }
     }
 
