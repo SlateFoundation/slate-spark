@@ -3,6 +3,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     xtype: 'spark-gps',
     cls: 'spark-gps',
     requires: [
+        'SparkClassroom.widget.SparkpointField',
         'SparkClassroomTeacher.view.gps.StudentList',
         'SparkClassroomTeacher.view.gps.Waitlist',
         'SparkClassroomTeacher.view.gps.Priorities'
@@ -11,6 +12,54 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     config: {
         selectedStudent: null,
         items: [
+            {
+                xtype: 'toolbar',
+                cls: 'spark-gps-toolbar',
+                border: 0,
+                items: [
+                    {
+                        xtype: 'button',
+                        iconCls: 'fa fa-check-circle',
+                        text: 'Select Multiple',
+                        listeners: {
+                            tap: {
+                                fn: function() {
+                                    Ext.getBody().down('.spark-gps').toggleCls('has-multiselect');
+                                    this.toggleCls('x-button-pressed'); // enableToggle is 6.0.2+
+                                }
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'spacer'
+                    },
+                    {
+                        xtype: 'component',
+                        cls: 'spark-gps-selection-status',
+                        tpl: '{n} student<tpl if="n != 1">s</tpl> selected: ',
+                        data: { n: 0 }
+                    },
+                    {
+                        margin: '0 8',
+                        xtype: 'spark-sparkpointfield',
+                        placeHolder: 'Assign Sparkpoint'
+                        // suggestionsList: {
+                        //     store: 'SparkpointsLookup'
+                        // }
+                    },
+                    {
+                        xtype: 'selectfield',
+                        placeHolder: 'Move Phase',
+                        autoSelect: false,
+                        options: [
+                            { text: 'Learn and Practice' },
+                            { text: 'Conference' },
+                            { text: 'Apply' },
+                            { text: 'Assess' }
+                        ]
+                    }
+                ]
+            },
             {
                 xtype: 'container',
                 layout: {

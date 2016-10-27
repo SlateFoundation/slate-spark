@@ -40,6 +40,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
             xtype: 'spark-titlebar'
         },
+
+        studentMultiselectToggle: 'spark-titlebar checkboxfield[cls~="spark-toggle-student-multiselect"]', // TODO: Remove and connect to official toggle for multiselect in the app.
+
         sectionSelect: 'spark-titlebar #sectionSelect',
         k1Timer: 'spark-titlebar spark-k1-timer',
 
@@ -97,6 +100,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         },
         teacherTabBar: {
             activetabchange: 'onTeacherTabChange'
+        },
+        studentMultiselectToggle: {
+            change: 'onToggleStudentMultiselect'
         }
     },
 
@@ -150,7 +156,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             }
 
             // show section dependant components
-            me.getNavBar().show();
+            // me.getNavBar().show();
             me.getSparkGPS().show();
             me.getTabsCt().show();
 
@@ -174,6 +180,9 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         this.redirectTo(value.getItemId());
     },
 
+    onToggleStudentMultiselect: function(checkbox) {
+        this.getAppCt().toggleStudentMultiselect(checkbox.isChecked());
+    },
 
     // custom controller methods
     renderViews: function() {
