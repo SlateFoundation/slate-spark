@@ -42,10 +42,7 @@ Ext.define('SparkClassroomTeacher.view.gps.StudentList', {
             '</header>',
             '<div class="item-description">',
                 '<ul class="gps-list-sparkpoints">',
-                    '<li class="gps-list-sparkpoint">',
-                        '{sparkpoint}',
-                        '<span class="gps-list-selected-icon"></span>',
-                    '</li>',
+                    '<li class="gps-list-sparkpoint">{sparkpoint}</li>',
                 '</ul>',
             '</div>',
         {
