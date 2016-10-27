@@ -25,6 +25,7 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
          */
         selectedSection: null,
         selectedStudentSparkpoint: null,
+        multiSelectedSparkpoints: null,
         studentMultiselectEnabled: false,
 
         layout: 'auto',
@@ -32,20 +33,14 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
     },
 
 	/**
-     * Sometimes the student sparkpoint is passed in as an array even on single selection mode, so this needs to be fixed for consistency.
-     * Also fires the event selectedstudentsparkpointchange
+     * Override to also fire the event selectedstudentsparkpointchange
      * @override
      */
     setSelectedStudentSparkpoint: function(sparkpoints) {
         var me = this,
             oldSparkpoint = me.getSelectedStudentSparkpoint();
 
-        if (Ext.isArray(sparkpoints) && sparkpoints.length === 1) {
-            me.selectedStudentSparkpoint = sparkpoints[0];
-        } else {
-            me.selectedStudentSparkpoint = sparkpoints;
-        }
-
+        me.selectedStudentSparkpoint = sparkpoints;
         me.fireEvent('selectedstudentsparkpointchange', me, me.selectedStudentSparkpoint, oldSparkpoint);
     },
 
@@ -53,10 +48,19 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
         return this.selectedStudentSparkpoint;
     },
 
+    updateMultiSelectedSparkpoints: function(sparkpoints) {
+        var me = this,
+            oldSparkpoints = me.getMultiSelectedSparkpoints();
+
+        me.setMultiSelectedSparkpoints(sparkpoints);
+        me.fireEvent('multiselectedsparkpointschange', me, sparkpoints, oldSparkpoints);
+    },
+
     updateSelectedSection: function(selectedSection, oldSelectedSection) {
         var me = this;
 
         me.setSelectedStudentSparkpoint(null);
+        me.setMultiSelectedSparkpoints(null);
         me.fireEvent('selectedsectionchange', me, selectedSection, oldSelectedSection);
     },
 

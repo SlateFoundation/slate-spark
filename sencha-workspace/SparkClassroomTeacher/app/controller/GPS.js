@@ -107,8 +107,12 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.syncSelectedStudentSparkpoint();
     },
 
-    onListSelectChange: function(list) {
-        this.getAppCt().setSelectedStudentSparkpoint(list.getSelections());
+    onListSelectChange: function(list, i, t, record) {
+        var me = this,
+            appCt = me.getAppCt();
+
+        appCt.setSelectedStudentSparkpoint(record);
+        appCt.setMultiSelectedSparkpoints(appCt.getStudentMultiselectEnabled() ? list.getSelections() : null);
     },
 
     onToggleStudentMultiselect: function(appCt, enable, oldVal) {
