@@ -153,7 +153,10 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             }
 
             // show section dependant components
-            // me.getNavBar().show();
+            if (!location.search.match(/\WenableK1(\W|$)/)) {
+                // don't show navbar in k1 interface'
+                me.getNavBar().show();
+            }
             me.getSparkGPS().show();
             me.getTabsCt().show();
 

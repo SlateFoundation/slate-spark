@@ -16,6 +16,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                 xtype: 'toolbar',
                 cls: 'spark-gps-toolbar',
                 border: 0,
+                hidden: !location.search.match(/\WenableK1(\W|$)/),
                 items: [
                     {
                         xtype: 'button',
