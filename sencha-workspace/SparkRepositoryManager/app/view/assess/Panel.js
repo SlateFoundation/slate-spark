@@ -1,3 +1,4 @@
+/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.assess.Panel', {
     requires: [
         'Ext.Array',
@@ -69,7 +70,6 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
             text: 'Grade',
             dataIndex: 'GradeLevel',
             width: 75,
-            filterField: true,
 
             editor: {
                 xtype: 'combobox',
@@ -78,7 +78,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
                 grow: true
             },
 
-            filterField : {
+            filterField: {
                 xtype: 'combobox',
                 store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
                 editable: false,
@@ -110,7 +110,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
                 editable: false
             },
 
-            renderer: function(val, col, record) {
+            renderer: function(val) {
                 var assessmentType = Ext.getStore('AssessmentTypes').getById(val);
 
                 if (assessmentType) {
@@ -197,7 +197,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
                 grow: true
             },
 
-            renderer: function(val, col, record) {
+            renderer: function(val) {
                 var vendorRecord = Ext.getStore('Vendors').getById(val),
                     returnVal = '',
                     logoURL;
@@ -235,7 +235,7 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
         },
         {
             xtype: 'datecolumn',
-            format:'m-d-Y',
+            format: 'm-d-Y',
             text: 'Created',
             dataIndex: 'Created',
 
