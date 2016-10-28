@@ -31,8 +31,19 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'sparkpointGrid',
             selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
-        }
+        },
 
+        // resources tab
+        {
+            ref: 'sparkpointsCombo',
+            selector: 's2m-modules-editor-resources combo[name="sparkpoints"]'
+        }, {
+            ref: 'sparkpointGrid',
+            selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
+        }, {
+            ref: 'addSparkpointButton',
+            selector: 's2m-modules-editor-resources actioncolumn[action="add"]'
+        }
 
     ],
 
@@ -52,14 +63,18 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
         's2m-modules-editor-intro button[action="add-sparkpoint"]': {
             click: 'onAddSparkpointClick'
-        }
+        },
 
+        // resources tab
+        's2m-modules-editor-resources grid#module-grid': {
+            boxready: 'onResourcesModuleGridBoxready'
+        }
     },
 
     // event handlers
     onModuleUpdate: function(container, module) {
         console.log('Module has been updated!'); // eslint-disable-line no-console
-        console.log('Module', module.getData()); // eslint-disable-line no-console
+        console.log(module.getData()); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
@@ -86,8 +101,19 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }
     },
 
+    // event handlers - Conference Resources
+    onResourcesModuleGridBoxready: function(grid) {
+        var me = this,
+            itemType = Ext.util.Format.lowercase(grid.up('s2m-modules-multiselector').itemType.plural);
 
-    // custom controller methods - Intro
+        grid.getStore().addListener({
+            datachanged: Ext.bind(me.updateSparkpointItems, me, [itemType, grid]),
+            update: Ext.bind(me.updateSparkpointItems, me, [itemType, grid])
+        });
+    },
+
+
+    // custom controller methods
     updateSparkpoints: function() {
         var me = this,
             moduleCt = me.getModuleCt(),
@@ -109,5 +135,31 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         moduleCt.setModule(module);
 
+    },
+
+    onResourcesAddSparkpointClick: function() {
+        console.log('onResourcesAddSparkpointClick'); // eslint-disable-line no-console
+    },
+
+    updateSparkpointItems: function(itemType, grid) {
+        var me = this,
+            moduleCt = me.getModuleCt(),
+            module = moduleCt.getModule(),
+            sparkpointItems = grid.getStore().getRange(),
+            sparkpointItemsLength = sparkpointItems.length,
+            moduleItems= [],
+            i = 0;
+
+        for (; i<sparkpointItemsLength; i++) {
+            moduleItems.push(sparkpointItems[i].getData());
+        }
+
+        if (module === null) {
+            module = Ext.create('SparkRepositoryManager.model.Module', {});
+        }
+
+        module.set(itemType, moduleItems);
+
+        moduleCt.setModule(module);
     }
 });
