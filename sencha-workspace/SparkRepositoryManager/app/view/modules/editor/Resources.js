@@ -1,9 +1,9 @@
 Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
     extend: 'Ext.Panel',
+    xtype: 's2m-modules-editor-resources',
     requires: [
         'SparkRepositoryManager.view.modules.editor.Multiselector'
     ],
-    xtype: 's2m-modules-editor-resources',
 
     title: 'Conference Resources',
     componentCls: 's2m-modules-editor-resources',
