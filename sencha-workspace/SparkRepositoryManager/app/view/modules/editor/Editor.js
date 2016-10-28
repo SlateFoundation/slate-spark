@@ -46,25 +46,31 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                     defaults: {
                         xtype: 'textfield',
                         labelAlign: 'top',
-                        labelSeparator: ''
+                        labelSeparator: '',
+                        margin: '0 20 0 0'
                     },
                     items: [
                         {
-                            xtype: 'combo',
-                            width: 180,
-                            margin: '0 20 0 0',
                             fieldLabel: 'Grade',
+                            xtype: 'combo',
+                            width: 60,
                             store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
                         },
                         {
-                            xtype: 'displayfield',
-                            width: 180,
-                            margin: '0 20 0 0',
-                            fieldLabel: 'Code'
+                            fieldLabel: 'Content Area',
+                            xtype: 'combo',
+                            width: 120,
+                            store: ['Math', 'ELA', 'Science']
                         },
                         {
-                            flex: 1,
+                            fieldLabel: 'Code',
+                            width: 180,
+                            readOnly: true
+                        },
+                        {
                             fieldLabel: 'Title',
+                            flex: 1,
+                            margin: 0,
                             value: 'Ex: Long form essays about American revolutionaries in North Carolina' // TODO remove
                         }
                     ]
