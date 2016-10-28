@@ -86,10 +86,12 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         // reselect active student if sparkpoint has changed
         if (
-            operation === 'edit'
-            && me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint
-            && modifiedFieldNames.indexOf('sparkpoint') !== -1
+            operation === 'edit' &&
+            me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint &&
+            modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {
+            // TODO: redo this after switching sparkpoint generates a new studentSparkpoint rather than updating existing one
+            me.getAppCt().setSelectedStudentSparkpoint(null);
             me.getAppCt().setSelectedStudentSparkpoint(selectedStudentSparkpoint);
         }
 
@@ -113,7 +115,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             lists = me.getGpsCt().query('#phasesCt list'),
             multiSelections = [];
 
-        appCt.setSelectedStudentSparkpoint(record);
+        appCt.setSelectedStudentSparkpoint(multiselect ? null : record);
 
         // Get the selections from all phase lists and combine for multiselect.
         if (multiselect) {

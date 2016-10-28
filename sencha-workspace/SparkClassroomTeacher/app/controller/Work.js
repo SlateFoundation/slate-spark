@@ -178,14 +178,16 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             activeTeacherTab = me.getTeacherTabbar().getActiveTab(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
         if (!activeTeacherTab || activeTeacherTab.getItemId() === 'work') {
-            me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
+            me.redirectTo(selectedStudentSparkpoint && !multiselect ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
         }
 
-        if (selectedStudentSparkpoint) {
+        // The work tab is disabled during student multiselect / null value
+        if (selectedStudentSparkpoint && !multiselect) {
             studentId = selectedStudentSparkpoint.get('student_id');
 
             feedbackStore.setFilters([{
@@ -219,8 +221,21 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         this.redirectTo(['work', activeTab.getItemId()]);
     },
 
-    onToggleStudentMultiselect: function() {
+    onToggleStudentMultiselect: function(appCt, enable) {
+        var me = this,
+            workCt = me.getWorkCt();
 
+        workCt.removeAll();
+
+        if (enable) {
+            me.getWorkTabbar().resetToDefault();
+            workCt.add({
+                xtype: 'component',
+                html: 'The Student Work section is disabled while Student Multiselect is enabled.'
+            });
+
+            return;
+        }
     },
 
     onSocketData: function(socket, data) {
