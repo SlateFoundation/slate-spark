@@ -25,21 +25,43 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
          */
         selectedSection: null,
         selectedStudentSparkpoint: null,
+        multiSelectedSparkpoints: null,
         studentMultiselectEnabled: false,
 
         layout: 'auto',
         scrollable: 'vertical'
     },
 
+	/**
+     * Override to also fire the event selectedstudentsparkpointchange
+     * @override
+     */
+    setSelectedStudentSparkpoint: function(sparkpoints) {
+        var me = this,
+            oldSparkpoint = me.getSelectedStudentSparkpoint();
+
+        me.selectedStudentSparkpoint = sparkpoints;
+        me.fireEvent('selectedstudentsparkpointchange', me, me.selectedStudentSparkpoint, oldSparkpoint);
+    },
+
+    getSelectedStudentSparkpoint: function() {
+        return this.selectedStudentSparkpoint;
+    },
+
+    updateMultiSelectedSparkpoints: function(sparkpoints) {
+        var me = this,
+            oldSparkpoints = me.getMultiSelectedSparkpoints();
+
+        me.setMultiSelectedSparkpoints(sparkpoints);
+        me.fireEvent('multiselectedsparkpointschange', me, sparkpoints, oldSparkpoints);
+    },
+
     updateSelectedSection: function(selectedSection, oldSelectedSection) {
         var me = this;
 
         me.setSelectedStudentSparkpoint(null);
+        me.setMultiSelectedSparkpoints(null);
         me.fireEvent('selectedsectionchange', me, selectedSection, oldSelectedSection);
-    },
-
-    updateSelectedStudentSparkpoint: function(selectedStudentSparkpoint, oldSelectedStudentSparkpoint) {
-        this.fireEvent('selectedstudentsparkpointchange', this, selectedStudentSparkpoint, oldSelectedStudentSparkpoint);
     },
 
     toggleStudentMultiselect: function(enable) {
@@ -47,6 +69,8 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
             oldVal = me.getStudentMultiselectEnabled();
 
         me.setStudentMultiselectEnabled(enable);
+        me.setSelectedStudentSparkpoint(null);
+        me.updateMultiSelectedSparkpoints(null);
         me.fireEvent('togglestudentmultiselect', me, enable, oldVal);
     }
 });

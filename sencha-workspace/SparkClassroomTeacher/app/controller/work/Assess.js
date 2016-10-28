@@ -98,11 +98,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation, modifiedFieldNames) {
         if (
-            operation == 'edit' &&
-            activeStudent === this.getAppCt().getSelectedStudentSparkpoint() &&
-            (
-                modifiedFieldNames.indexOf('assess_ready_time') != -1 ||
-                modifiedFieldNames.indexOf('assess_completed_time') != -1
+            operation == 'edit'
+            && activeStudent === this.getAppCt().getSelectedStudentSparkpoint()
+            && (
+                modifiedFieldNames.indexOf('assess_ready_time') != -1
+                || modifiedFieldNames.indexOf('assess_completed_time') != -1
             )
         ) {
             this.refreshCompleteBtn();

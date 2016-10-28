@@ -27,7 +27,7 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
     control: {
         appCt: {
             selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
-        },
+        }
     },
 
 

@@ -45,10 +45,11 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange',
+            togglestudentmultiselect: 'onToggleStudentMultiselect'
         },
         'spark-gps-studentlist': {
-            select: 'onListSelect'
+            itemtap: 'onListSelectChange' // itemtap is used to isolate the individual student being selected
         }
     },
 
@@ -85,7 +86,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         // reselect active student if sparkpoint has changed
         if (
-            operation == 'edit' &&
+            operation === 'edit' &&
             me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint &&
             modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {
@@ -106,8 +107,44 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         this.syncSelectedStudentSparkpoint();
     },
 
-    onListSelect: function(list, student) {
-        this.getAppCt().setSelectedStudentSparkpoint(student);
+    onListSelectChange: function(list, i, t, record) {
+        var me = this,
+            appCt = me.getAppCt(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
+            count = 0,
+            lists = me.getGpsCt().query('#phasesCt list'),
+            multiSelections = [];
+
+        appCt.setSelectedStudentSparkpoint(multiselect ? null : record);
+
+        // Get the selections from all phase lists and combine for multiselect.
+        if (multiselect) {
+            for (; count < lists.length; count++) {
+                multiSelections = Ext.Array.union(multiSelections, lists[count].getSelections());
+            }
+        }
+
+        appCt.setMultiSelectedSparkpoints(multiselect ? multiSelections : null);
+    },
+
+    onToggleStudentMultiselect: function(appCt, enable, oldVal) {
+        var me = this,
+            studentLists = me.getGpsCt().query('#phasesCt list'),
+            studentList,
+            count;
+
+        if (enable === oldVal) {
+            return;
+        }
+
+        for (count = 0; count < studentLists.length; count++) {
+            studentList = studentLists[count];
+            studentList.setMode(enable ? 'MULTI' : 'SINGLE');
+
+            if (!enable) {
+                studentList.deselectAll();
+            }
+        }
     },
 
     // TODO: duplicate process into blocked controller
@@ -119,13 +156,13 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             studentSparkpoint,
             updatedFields;
 
-        if (table == 'section_student_active_sparkpoint') {
+        if (table === 'section_student_active_sparkpoint') {
             if (
-                itemData.section_code == me.getAppCt().getSelectedSection() &&
+                itemData.section_code === me.getAppCt().getSelectedSection() &&
                 (
                     !(studentSparkpoint = me.getStudentSparkpointsStore().findRecord('student_id', itemData.student_id)) ||
                     (
-                        studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id &&
+                        studentSparkpoint.get('sparkpoint_id') !== itemData.sparkpoint_id &&
                         studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
                     )
                 )
@@ -133,7 +170,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 // TODO: handle this without a full refresh if possible
                 me.refreshGps();
             }
-        } else if (table == 'student_sparkpoint') {
+        } else if (table === 'student_sparkpoint') {
             studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id;
 
             if ((studentSparkpoint = me.getStudentSparkpointsStore().getById(studentSparkpointId))) {
@@ -146,7 +183,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
+            appCt = me.getAppCt(),
+            activeStudent = appCt.getSelectedStudentSparkpoint(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
             lists = me.getGpsCt().query('#phasesCt list'),
             listCount = lists.length, i = 0, list, selectedExists = false, studentSparkpoint;
 
@@ -155,9 +194,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             list = lists[i];
 
             if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
-                list.select(activeStudent);
+                list.select(activeStudent, multiselect);
                 selectedExists = true;
-            } else {
+            } else if (!multiselect) {
                 list.deselectAll();
             }
         }
@@ -171,7 +210,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 studentSparkpoint = list.getStore().findRecord('student_id', activeStudent.get('student_id'));
 
                 if (studentSparkpoint) {
-                    list.select(studentSparkpoint);
+                    list.select(studentSparkpoint, multiselect);
                     me.getAppCt().setSelectedStudentSparkpoint(studentSparkpoint);
                     break;
                 }
