@@ -35,11 +35,6 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
             useNull: true
         },
         {
-            name: "RevisionID",
-            type: "int",
-            useNull: true
-        },
-        {
             name: "Title",
             type: "string"
         },
