@@ -160,6 +160,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         }
     ],
 
+
     afterRender: function() {
         var me = this,
             itemType = me.getItemType(),
@@ -175,10 +176,16 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
 
         sparkpointsGrid.setTitle(itemType.plural + ' in Sparkpoints')
         sparkpointsGrid.setStore(sparkpointsStore);
+        sparkpointsGrid.on({
+            addclick: Ext.bind(me.addSparkpointClick, me)
+        });
 
         moduleGrid.setTitle(itemType.plural + ' in Module');
         moduleGrid.setStore(moduleStore);
         moduleGrid.down('#module-item-col').setText(itemType.singular);
+        moduleGrid.on({
+            removeclick: Ext.bind(me.removeSparkpointClick, me)
+        });
 
         if (moduleHeaderItems) {
             moduleGrid.getHeader().add(moduleHeaderItems);
@@ -193,5 +200,31 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             moduleGrid.down('#module-recommended-column').setVisible(showRecommended);
             me.down('#legend').show();
         }
+    },
+
+
+    // event handlers
+    addSparkpointClick: function(grid, rec) {
+        var me = this,
+            sparkpointsStore = me.down('#sparkpoints-grid').getStore(),
+            moduleStore = me.down('#module-grid').getStore();
+
+        moduleStore.add(rec);
+
+        sparkpointsStore.filterBy(function(sparkpointRec) {
+            return moduleStore.indexOf(sparkpointRec) === -1;
+        });
+    },
+
+    removeSparkpointClick: function(grid, rec) {
+        var me = this,
+            sparkpointsStore = me.down('#sparkpoints-grid').getStore(),
+            moduleStore = me.down('#module-grid').getStore();
+
+        moduleStore.remove(rec);
+
+        sparkpointsStore.filterBy(function(sparkpointRec) {
+            return moduleStore.indexOf(sparkpointRec) === -1;
+        });
     }
 });
