@@ -47,29 +47,67 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
 
         // intro tab
+        's2m-modules-editor-intro grid#sparkpoint-grid': {
+            boxready: 'onSparkpointGridBoxready'
+        },
         's2m-modules-editor-intro button[action="add-sparkpoint"]': {
             click: 'onAddSparkpointClick'
-        },
+        }
 
     },
 
     // event handlers
     onModuleUpdate: function(container, module) {
         console.log('Module has been updated!'); // eslint-disable-line no-console
-        console.log(module); // eslint-disable-line no-console
+        console.log('Module', module.getData()); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
         console.log('onNewModuleClick'); // eslint-disable-line no-console
     },
 
+    // event handlers - Intro
+    onSparkpointGridBoxready: function(grid) {
+        var me = this;
+
+        grid.getStore().addListener({
+            datachanged: Ext.bind(me.updateSparkpoints, me),
+            update: Ext.bind(me.updateSparkpoints, me)
+        });
+    },
+
     onAddSparkpointClick: function() {
         var me = this,
-            sparkpoint = me.getSparkpointsCombo().getValue(),
+            sparkpoint = me.getSparkpointsCombo().getSelection(),
             store = me.getSparkpointGrid().getStore();
 
         if (sparkpoint) {
-            store.add({ code: sparkpoint });
+            store.add(sparkpoint);
         }
+    },
+
+
+    // custom controller methods - Intro
+    updateSparkpoints: function() {
+        var me = this,
+            moduleCt = me.getModuleCt(),
+            module = moduleCt.getModule(),
+            sparkpoints = me.getSparkpointGrid().getStore().getRange(),
+            sparkpointsLength = sparkpoints.length,
+            moduleSparkpoints = [],
+            i = 0;
+
+        for (; i<sparkpointsLength; i++) {
+            moduleSparkpoints.push(sparkpoints[i].getData());
+        }
+
+        if (module === null) {
+            module = Ext.create('SparkRepositoryManager.model.Module', {});
+        }
+
+        module.set('sparkpoints', moduleSparkpoints);
+
+        moduleCt.setModule(module);
+
     }
 });
