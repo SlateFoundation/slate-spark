@@ -20,16 +20,9 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                 items: [
                     {
                         xtype: 'button',
+                        cls: 'spark-toggle-student-multiselect',
                         iconCls: 'fa fa-check-circle',
-                        text: 'Select Multiple',
-                        listeners: {
-                            tap: {
-                                fn: function() {
-                                    Ext.getBody().down('.spark-gps').toggleCls('has-multiselect');
-                                    this.toggleCls('x-button-pressed'); // enableToggle is 6.0.2+
-                                }
-                            }
-                        }
+                        text: 'Select Multiple'
                     },
                     {
                         xtype: 'spacer'
