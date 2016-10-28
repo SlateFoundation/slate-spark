@@ -27,6 +27,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                 '-',
                 {
                     xtype: 'checkbox',
+                    name: 'shared',
                     boxLabel: 'Share module globally'
                 }
             ]
@@ -39,6 +40,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                 {
                     xtype: 'container',
                     cls: 's2m-modules-editor-meta',
+                    itemId: 'modules-meta-info',
                     margin: '10 0 20',
                     layout: {
                         type: 'hbox'
@@ -52,12 +54,14 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                     items: [
                         {
                             fieldLabel: 'Grade',
+                            name: 'grade',
                             xtype: 'combo',
                             width: 60,
                             store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
                         },
                         {
                             fieldLabel: 'Content Area',
+                            name: 'content_area',
                             xtype: 'combo',
                             width: 120,
                             store: ['Math', 'ELA', 'Science']
@@ -69,8 +73,10 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                         },
                         {
                             fieldLabel: 'Title',
+                            name: 'title',
                             flex: 1,
                             margin: 0,
+                            checkChangeEvents: ['blur'],
                             value: 'Ex: Long form essays about American revolutionaries in North Carolina' // TODO remove
                         }
                     ]
@@ -78,6 +84,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                 {
                     xtype: 'tabpanel',
                     bodyPadding: '20 0',
+                    activeTab: 3, // TODO: remove this, for dev
                     items: [
                         {
                             xtype: 's2m-modules-editor-intro'

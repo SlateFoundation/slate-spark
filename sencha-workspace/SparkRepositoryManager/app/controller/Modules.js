@@ -38,11 +38,19 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // entry points
     control: {
+
+        // top level containers
         's2m-modules-panel': {
             moduleupdate: 'onModuleUpdate'
         },
         's2m-modules-navigator button[action="add-new-module"]': {
             click: 'onNewModuleClick'
+        },
+        '#modules-meta-info field': {
+            change: 'onModuleMetaFieldChange'
+        },
+        's2m-modules-editor checkbox[name="shared"]': {
+            change: 'onModuleMetaFieldChange'
         },
 
         // intro tab
@@ -67,6 +75,20 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     onNewModuleClick: function() {
         console.log('onNewModuleClick'); // eslint-disable-line no-console
+    },
+
+    onModuleMetaFieldChange: function(field, val) {
+        var me = this,
+            moduleCt = me.getModuleCt(),
+            module = moduleCt.getModule();
+
+        if (module === null) {
+            module = Ext.create('SparkRepositoryManager.model.Module', {});
+        }
+
+        module.set(field.getName(), val);
+
+        moduleCt.setModule(module);
     },
 
     // event handlers - Intro
