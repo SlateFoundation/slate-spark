@@ -13,13 +13,28 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
 
     // component references
-    refs: [{
-        ref: 'moduleCt',
-        selector: 's2m-modules-panel'
-    }, {
-        ref: 'moduleEditor',
-        selector: 's2m-modules-editor'
-    }],
+    refs: [
+
+        // top level containers
+        {
+            ref: 'moduleCt',
+            selector: 's2m-modules-panel'
+        }, {
+            ref: 'moduleEditor',
+            selector: 's2m-modules-editor'
+        },
+
+        // intro tab
+        {
+            ref: 'sparkpointsCombo',
+            selector: 's2m-modules-editor-intro combo[name="sparkpoints"]'
+        }, {
+            ref: 'sparkpointGrid',
+            selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
+        }
+
+
+    ],
 
 
     // entry points
@@ -29,16 +44,32 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
         's2m-modules-navigator button[action="add-new-module"]': {
             click: 'onNewModuleClick'
-        }
+        },
+
+        // intro tab
+        's2m-modules-editor-intro button[action="add-sparkpoint"]': {
+            click: 'onAddSparkpointClick'
+        },
+
     },
 
     // event handlers
-    onModuleUpdate: function(container, module, oldModule) {
-        console.log('Module has been updated!');
-        console.log(module);
+    onModuleUpdate: function(container, module) {
+        console.log('Module has been updated!'); // eslint-disable-line no-console
+        console.log(module); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
-        console.log('onNewModuleClick');
+        console.log('onNewModuleClick'); // eslint-disable-line no-console
+    },
+
+    onAddSparkpointClick: function() {
+        var me = this,
+            sparkpoint = me.getSparkpointsCombo().getValue(),
+            store = me.getSparkpointGrid().getStore();
+
+        if (sparkpoint) {
+            store.add({ code: sparkpoint });
+        }
     }
 });

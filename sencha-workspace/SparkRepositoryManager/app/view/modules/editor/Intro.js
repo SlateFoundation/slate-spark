@@ -35,28 +35,33 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                             margin: '10 0',
                             items: [
                                 {
-                                    xtype: 'combo'
+                                    name: 'sparkpoints',
+                                    xtype: 'combo',
+                                    queryMode: 'local',
+                                    displayField: 'code',
+                                    valueField: 'code',
+                                    store: {
+                                        fields: ['code'],
+                                        data: [
+                                            { code: 'SS.G6.1.2.A' },
+                                            { code: 'SS.G6.2.4.A' },
+                                            { code: 'ELA.G6.RI.1' },
+                                            { code: 'ELA.G6.RI.2' },
+                                            { code: 'ELA.G6.RI.3' },
+                                            { code: 'ELA.G6.RI.4' },
+                                            { code: 'ELA.G6.RI.6' },
+                                            { code: 'ELA.G6.RI.5' },
+                                            { code: 'ELA.G6.RI.7' },
+                                            { code: 'ELA.G6.RI.8' }
+                                        ]
+                                    }
                                 },
                                 {
                                     xtype: 'button',
                                     text: 'Add',
-                                    scale: 'small',
-                                    margin: '2 0 0 5',
                                     action: 'add-sparkpoint',
-                                    // TODO offload to controller?
-                                    listeners: {
-                                        click: function(btn) {
-                                            // TODO add an actual blank item? some way to search for a sparkpoint?
-                                            btn
-                                                .up('s2m-modules-editor-intro')
-                                                .down('#sparkpoint-grid')
-                                                .getStore()
-                                                .add({
-                                                    code: 'SS.G6.3.5.B',
-                                                    willBeEvaluated: false
-                                                });
-                                        }
-                                    }
+                                    scale: 'small',
+                                    margin: '2 0 0 5'
                                 }
                             ]
                         },
@@ -89,21 +94,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                     emptyText: 'No Sparkpoints in this module.',
                     hideHeaders: true,
                     store: {
-                        fields: ['code', 'willBeEvaluated'],
-                        data: [
-                            /* eslint-disable */
-                            { code: 'SS.G6.1.2.A', willBeEvaluated: false },
-                            { code: 'SS.G6.2.4.A', willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.1', willBeEvaluated: false },
-                            { code: 'ELA.G6.RI.2', willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.3', willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.4', willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.6', willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.5', willBeEvaluated: false },
-                            { code: 'ELA.G6.RI.7', willBeEvaluated: true },
-                            { code: 'ELA.G6.RI.8', willBeEvaluated: false }
-                            /* eslint-enable */
-                        ]
+                        fields: ['code', 'willBeEvaluated']
                     },
                     columns: {
                         defaults: {
