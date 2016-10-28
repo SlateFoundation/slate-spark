@@ -1,5 +1,6 @@
 Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
     extend: 'Ext.Panel',
+    xtype: 's2m-modules-editor',
     requires: [
         'SparkRepositoryManager.view.modules.editor.Intro',
         'SparkRepositoryManager.view.modules.editor.Learn',
@@ -8,7 +9,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
         'SparkRepositoryManager.view.modules.editor.Apply',
         'SparkRepositoryManager.view.modules.editor.Assess'
     ],
-    xtype: 's2m-modules-editor',
 
     componentCls: 's2m-modules-editor',
 
