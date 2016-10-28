@@ -104,6 +104,9 @@ function* getFuseboxResources(asnIds) {
         where.push('standardids ? $' + params.length);
     }
 
+    // HACK: Exclude bulk-loaded OpenEd content
+    where.push('NOT (vendorid = 34 AND ll.creatorid = 3) ');
+
     if (where.length) {
         query += ' WHERE ' + where.join(' AND ');
     }
