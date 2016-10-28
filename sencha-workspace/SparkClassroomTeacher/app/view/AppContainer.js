@@ -69,6 +69,8 @@ Ext.define('SparkClassroomTeacher.view.AppContainer', {
             oldVal = me.getStudentMultiselectEnabled();
 
         me.setStudentMultiselectEnabled(enable);
+        me.setSelectedStudentSparkpoint(null);
+        me.updateMultiSelectedSparkpoints(null);
         me.fireEvent('togglestudentmultiselect', me, enable, oldVal);
     }
 });

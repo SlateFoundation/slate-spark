@@ -46,7 +46,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     control: {
         appCt: {
             selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange',
-            togglestudentmultiselect: 'onToggleStudentMultiselect',
+            togglestudentmultiselect: 'onToggleStudentMultiselect'
         },
         'spark-gps-studentlist': {
             itemtap: 'onListSelectChange' // itemtap is used to isolate the individual student being selected
@@ -65,7 +65,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint, oldSelectedSparkpoint) {
+    onSelectedStudentSparkpointChange: function() {
         this.syncSelectedStudentSparkpoint();
     },
 
@@ -110,10 +110,21 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     onListSelectChange: function(list, i, t, record) {
         var me = this,
             appCt = me.getAppCt(),
-            selections = list.getSelections();
+            multiselect = appCt.getStudentMultiselectEnabled(),
+            count = 0,
+            lists = me.getGpsCt().query('#phasesCt list'),
+            multiSelections = [];
 
-        appCt.setSelectedStudentSparkpoint(Ext.Array.contains(selections, record) ? record : null);
-        appCt.setMultiSelectedSparkpoints(appCt.getStudentMultiselectEnabled() ? selections : null);
+        appCt.setSelectedStudentSparkpoint(multiselect ? null : record);
+
+        // Get the selections from all phase lists and combine for multiselect.
+        if (multiselect) {
+            for (; count < lists.length; count++) {
+                multiSelections = Ext.Array.union(multiSelections, lists[count].getSelections());
+            }
+        }
+
+        appCt.setMultiSelectedSparkpoints(multiselect ? multiSelections : null);
     },
 
     onToggleStudentMultiselect: function(appCt, enable, oldVal) {
@@ -172,7 +183,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
+            appCt = me.getAppCt(),
+            activeStudent = appCt.getSelectedStudentSparkpoint(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
             lists = me.getGpsCt().query('#phasesCt list'),
             listCount = lists.length, i = 0, list, selectedExists = false, studentSparkpoint;
 
@@ -181,9 +194,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             list = lists[i];
 
             if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
-                list.select(activeStudent);
+                list.select(activeStudent, multiselect);
                 selectedExists = true;
-            } else {
+            } else if (!multiselect) {
                 list.deselectAll();
             }
         }
@@ -197,7 +210,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 studentSparkpoint = list.getStore().findRecord('student_id', activeStudent.get('student_id'));
 
                 if (studentSparkpoint) {
-                    list.select(studentSparkpoint);
+                    list.select(studentSparkpoint, multiselect);
                     me.getAppCt().setSelectedStudentSparkpoint(studentSparkpoint);
                     break;
                 }
