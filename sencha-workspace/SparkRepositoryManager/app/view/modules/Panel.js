@@ -33,6 +33,19 @@ Ext.define('SparkRepositoryManager.view.modules.Panel', {
         }
     ],
 
+    /*
+     * update "magic method" will not be called when record values are changed,
+     * so we clone the record to force an update call.
+     * TODO: find another way
+     */
+    applyModule: function(module) {
+        var clone = module.copy();
+
+        module.destroy();
+
+        return clone;
+    },
+
     updateModule: function(module, oldModule) {
         var me = this;
 
