@@ -63,7 +63,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         // other tabs
         's2m-modules-multiselector grid#module-grid': {
-            boxready: 'onResourcesModuleGridBoxready'
+            boxready: 'onModuleGridBoxready'
         }
     },
 
@@ -91,7 +91,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         moduleCt.setModule(module);
     },
 
-    // event handlers - Intro
+    // event handlers - Intro tab
     onSparkpointGridBoxready: function(grid) {
         var me = this;
 
@@ -111,8 +111,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }
     },
 
-    // event handlers - Conference Resources
-    onResourcesModuleGridBoxready: function(grid) {
+    // event handlers - Other tabs
+    onModuleGridBoxready: function(grid) {
         var me = this,
             itemType = Ext.util.Format.lowercase(grid.up('s2m-modules-multiselector').itemType.plural);
 
