@@ -53,8 +53,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             click: 'onAddSparkpointClick'
         },
 
-        // resources tab
-        's2m-modules-editor-resources grid#module-grid': {
+        // other tabs
+        's2m-modules-multiselector grid#module-grid': {
             boxready: 'onResourcesModuleGridBoxready'
         }
     },
