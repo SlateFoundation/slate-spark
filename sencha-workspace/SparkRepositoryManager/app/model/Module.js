@@ -3,8 +3,7 @@ Ext.define('SparkRepositoryManager.model.Module', {
 
     fields: [
         {
-            name: 'id',
-            type: 'int'
+            name: 'id'
         },
         {
             name: 'title',
