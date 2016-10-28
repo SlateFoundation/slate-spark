@@ -27,12 +27,14 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
             name: 'Created',
             type: 'date',
             dateFormat: 'timestamp',
-            useNull: true
+            useNull: true,
+            persist: false
         },
         {
             name: 'CreatorID',
             type: 'int',
-            useNull: true
+            useNull: true,
+            persist: false
         },
         {
             name: 'Title',
@@ -106,7 +108,8 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
         },
         {
             name: 'CreatorFullName',
-            type: 'string'
+            type: 'string',
+            persist: false
         }
     ],
 
