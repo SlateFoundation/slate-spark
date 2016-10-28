@@ -85,7 +85,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange',
+            togglestudentmultiselect: 'onToggleStudentMultiselect'
         },
         workNavButton: {
             tap: 'onNavWorkTap'
@@ -216,6 +217,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     onWorkTabChange: function(tabbar, activeTab) {
         this.redirectTo(['work', activeTab.getItemId()]);
+    },
+
+    onToggleStudentMultiselect: function() {
+
     },
 
     onSocketData: function(socket, data) {
