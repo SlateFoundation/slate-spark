@@ -43,13 +43,26 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                     },
                     {
                         xtype: 'selectfield',
+                        name: 'phaseMoveCombo',
                         placeHolder: 'Move Phase',
                         autoSelect: false,
                         options: [
-                            { text: 'Learn and Practice' },
-                            { text: 'Conference' },
-                            { text: 'Apply' },
-                            { text: 'Assess' }
+                            {
+                                text: 'Learn and Practice',
+                                value: 'Learn'
+                            },
+                            {
+                                text: 'Conference',
+                                value: 'Conference'
+                            },
+                            {
+                                text: 'Apply',
+                                value: 'Apply'
+                            },
+                            {
+                                text: 'Assess',
+                                value: 'Asses'
+                            }
                         ]
                     }
                 ]
