@@ -41,7 +41,10 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                     displayField: 'code',
                                     valueField: 'code',
                                     store: {
-                                        fields: ['code'],
+                                        fields: ['code', {
+                                            name: 'willBeEvaluated',
+                                            defaultValue: false
+                                        }],
                                         data: [
                                             { code: 'SS.G6.1.2.A' },
                                             { code: 'SS.G6.2.4.A' },
