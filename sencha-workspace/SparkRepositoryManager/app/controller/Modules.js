@@ -31,18 +31,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'sparkpointGrid',
             selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
-        },
-
-        // resources tab
-        {
-            ref: 'sparkpointsCombo',
-            selector: 's2m-modules-editor-resources combo[name="sparkpoints"]'
-        }, {
-            ref: 'sparkpointGrid',
-            selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
-        }, {
-            ref: 'addSparkpointButton',
-            selector: 's2m-modules-editor-resources actioncolumn[action="add"]'
         }
 
     ],
