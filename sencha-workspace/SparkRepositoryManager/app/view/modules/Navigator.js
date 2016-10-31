@@ -45,6 +45,10 @@ Ext.define('SparkRepositoryManager.view.modules.Navigator', {
                 {
                     xtype: 'treepanel',
                     rootVisible: false,
+                    displayField: 'code',
+                    store: 'Modules'
+
+/*
                     store: {
                         root: {
                             expanded: true,
@@ -96,6 +100,7 @@ Ext.define('SparkRepositoryManager.view.modules.Navigator', {
                             ]
                         }
                     }
+*/
                 }
             ]
         }
