@@ -14,7 +14,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Apply',
-                plural: 'Applies'
+                plural: 'Applies',
+                field: 'applies'
             },
             allowMinimum: false,
             showRequired: false,

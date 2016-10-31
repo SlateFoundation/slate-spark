@@ -14,7 +14,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Learn',
-                plural: 'Learns'
+                plural: 'Learns',
+                field: 'learns'
             },
             allowMinimum: true,
             showRequired: true,

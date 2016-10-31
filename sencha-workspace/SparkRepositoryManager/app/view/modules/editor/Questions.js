@@ -14,7 +14,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
             xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Question',
-                plural: 'Questions'
+                plural: 'Questions',
+                field: 'conference_questions'
             },
             allowMinimum: false,
             showRequired: false,

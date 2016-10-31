@@ -14,7 +14,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
             xtype: 's2m-modules-multiselector',
             itemType: {
                 singular: 'Resource',
-                plural: 'Resources'
+                plural: 'Resources',
+                field: 'conference_resources'
             },
             allowMinimum: false,
             showRequired: false,
