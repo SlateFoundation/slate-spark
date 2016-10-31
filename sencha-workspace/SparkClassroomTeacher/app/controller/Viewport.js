@@ -14,7 +14,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.timing.DurationDisplay'
+        'SparkClassroom.timing.DurationDisplay',
+        'SparkClassroom.k1.Timer'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -103,6 +104,10 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         },
         studentMultiselectToggle: {
             tap: 'onToggleStudentMultiselect'
+        },
+        k1Timer: {
+            'datachange': 'onK1TimerDataChange',
+            'reset': 'onK1TimerReset'
         }
     },
 
@@ -189,6 +194,26 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         this.getAppCt().toggleStudentMultiselect(button.getCls().indexOf('x-button-pressed') > -1);
     },
 
+    onK1TimerDataChange: function(seconds, state) {
+        var storage = Ext.util.LocalStorage.get('k1-teacher');
+
+        storage.setItem('timerSeconds', seconds);
+        if (state === 'running') {
+            storage.setItem('timerBase', Date.now());
+        } else {
+            storage.setItem('timerBase', null);
+        }
+
+        storage.release();
+    },
+
+    onK1TimerReset: function() {
+        var storage = Ext.util.LocalStorage.get('k1-teacher');
+
+        storage.clear();
+        storage.release();
+    },
+
     // custom controller methods
     renderViews: function() {
         var me = this;
@@ -205,8 +230,30 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     },
 
     initTimer: function() {
-        var me = this;
+        var me = this,
+            timer = me.getK1Timer(),
+            storage, record, seconds, base;
 
-        me.getK1Timer().refresh();
+        if (!location.search.match(/\WenableK1(\W|$)/)) {
+            return;
+        }
+
+        storage = Ext.util.LocalStorage.get('k1-teacher');
+        seconds = storage.getItem('timerSeconds');
+        base = storage.getItem('timerBase');
+
+        if (seconds && Ext.isNumeric(seconds)) {
+            seconds = parseInt(seconds, 10);
+
+            record = new Ext.data.Record({
+                'accrued_seconds': seconds,
+                'timer_time': base ? parseInt(base, 10) : null
+            });
+
+            timer.setRecord(record);
+        }
+
+        storage.release();
+        timer.refresh();
     }
 });

@@ -36,6 +36,7 @@ Ext.define('SparkClassroom.k1.Timer', {
                     } else if (target.className.indexOf('timer-reset') > -1) {
                         me.setRecord(null);
                         me.refresh();
+                        me.fireEvent('reset');
                     }
                 }
             }
