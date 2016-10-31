@@ -40,16 +40,21 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     refs: {
         appCt: 'spark-teacher-appct',
-        gpsCt: 'spark-gps'
+        gpsCt: 'spark-gps',
+        phaseMoveCombo: 'spark-gps selectfield[name=phaseMoveCombo]'
     },
 
     control: {
         appCt: {
             selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange',
-            togglestudentmultiselect: 'onToggleStudentMultiselect'
+            togglestudentmultiselect: 'onToggleStudentMultiselect',
+
         },
         'spark-gps-studentlist': {
             itemtap: 'onListSelectChange' // itemtap is used to isolate the individual student being selected
+        },
+        phaseMoveCombo: {
+            change: 'onPhaseMoveChange'
         }
     },
 
@@ -179,6 +184,33 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
+    onPhaseMoveChange: function(field, newVal) {
+        var me = this,
+            selectedStudentSparkpoints = me.getAppCt().getMultiSelectedSparkpoints(),
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            count;
+
+        if (!newVal) {
+            return;
+        }
+
+        if (studentSparkpoint) {
+            me.doMovePhase(studentSparkpoint, newVal.data.value);
+        }
+
+        if (selectedStudentSparkpoints) {
+            for (count = 0; count < selectedStudentSparkpoints.length; count++) {
+                studentSparkpoint = selectedStudentSparkpoints[count];
+                if (!me.doMovePhase(studentSparkpoint, newVal.data.value)) {
+                    break;
+                }
+            }
+        }
+
+        field.reset();
+        return;
+    },
+
 
     // controller methods
     syncSelectedStudentSparkpoint: function() {
@@ -237,5 +269,67 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         while (listId = workaroundRefreshQueue.pop()) {
             (workaroundListCache[listId] || (workaroundListCache[listId] = gpsCt.down('#'+listId))).refresh();
         }
+    },
+
+    doMovePhase: function(studentSparkpoint, phase) {
+        var overrides,
+            error;
+
+        switch (phase) {
+            case 'Learn':
+                if (studentSparkpoint.get('learn_finish_time')) {
+                    error = 'Student has already finished learn phase.';
+                }
+                overrides = {
+                    'learn_override_time': null,
+                    'conference_override_time': null,
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                }
+                break;
+            case 'Conference':
+                if (studentSparkpoint.get('conference_finish_time')) {
+                    error = 'Student has already finished the conference phase.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': null,
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                }
+                break;
+            case 'Apply':
+                if (studentSparkpoint.get('apply_finish_time')) {
+                    error = 'Student has already finished the apply phase.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': new Date(),
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                }
+                break;
+            case 'Assess':
+                if (studentSparkpoint.get('assess_finish_time')) {
+                    error = 'Student has already finished the assess phase.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': new Date(),
+                    'apply_override_time': new Date(),
+                    'assess_override_time': null
+                }
+                break;
+            default:
+        }
+
+        if (error) {
+            Ext.Msg.alert('Can\'t move to ' + phase + ' phase.', error);
+            return false;
+        }
+
+        studentSparkpoint.set(overrides);
+        studentSparkpoint.save();
+        return true;
     }
 });
