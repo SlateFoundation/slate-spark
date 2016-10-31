@@ -1,4 +1,4 @@
-Ext.define('SparkClassroom.K1Timer', {
+Ext.define('SparkClassroom.k1.Timer', {
     extend: 'SparkClassroom.work.Timer',
     xtype: 'spark-k1-timer',
 
