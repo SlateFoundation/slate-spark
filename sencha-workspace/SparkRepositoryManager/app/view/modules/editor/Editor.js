@@ -12,6 +12,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
 
     componentCls: 's2m-modules-editor',
 
+    disabled: true,
+
     padding: '10 0 0',
     bodyPadding: '5 21',
     scrollable: true,
@@ -38,7 +40,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
             xtype: 'container',
             items: [
                 {
-                    xtype: 'container',
+                    xtype: 'form',
                     cls: 's2m-modules-editor-meta',
                     itemId: 'modules-meta-info',
                     margin: '10 0 20',
@@ -68,6 +70,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                         },
                         {
                             fieldLabel: 'Code',
+                            name: 'code',
                             width: 180,
                             readOnly: true
                         },
