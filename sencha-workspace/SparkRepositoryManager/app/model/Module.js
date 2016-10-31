@@ -69,11 +69,6 @@ Ext.define('SparkRepositoryManager.model.Module', {
             name: 'applies',
             type: 'auto',
             default: []
-        },
-        {
-            name: 'asessments',
-            type: 'auto',
-            default: []
         }
     ]
 
