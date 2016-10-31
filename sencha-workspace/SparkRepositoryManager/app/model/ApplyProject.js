@@ -14,63 +14,60 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\ApplyProject"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\ApplyProject'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
+            useNull: true,
+            persist: false
+        },
+        {
+            name: 'CreatorID',
+            type: 'int',
+            useNull: true,
+            persist: false
+        },
+        {
+            name: 'Title',
+            type: 'string'
+        },
+        {
+            name: 'Instructions',
+            type: 'string'
+        },
+        {
+            name: 'GradeLevel',
+            type: 'string',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'DOK',
+            type: 'int',
             useNull: true
         },
         {
-            name: "RevisionID",
-            type: "int",
+            name: 'Standards',
             useNull: true
         },
         {
-            name: "Title",
-            type: "string"
-        },
-        {
-            name: "Instructions",
-            type: "string"
-        },
-        {
-            name: "GradeLevel",
-            type: "string",
+            name: 'StandardIDs',
             useNull: true
         },
         {
-            name: "DOK",
-            type: "int",
+            name: 'Todos',
             useNull: true
         },
         {
-            name: "Standards",
-            useNull: true
-        },
-        {
-            name: "StandardIDs",
-            useNull: true
-        },
-        {
-            name: "Todos",
-            useNull: true
-        },
-        {
-            name: "Links",
+            name: 'Links',
             useNull: true,
 
             /*
@@ -100,18 +97,19 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
             }
         },
         {
-            name: "TimeEstimate",
-            type: "int",
+            name: 'TimeEstimate',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Metadata",
-            type: "string",
+            name: 'Metadata',
+            type: 'string',
             useNull: true
         },
         {
-            name: "CreatorFullName",
-            type: "string"
+            name: 'CreatorFullName',
+            type: 'string',
+            persist: false
         }
     ],
 
