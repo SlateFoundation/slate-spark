@@ -11,6 +11,22 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     requires: [
     ],
 
+    // mutable state
+    config: {
+
+        /**
+         * @private
+         * Tracks the current module {@link SparkRepositoryManager.model.Module}
+         */
+        module: null
+    },
+
+
+    // dependencies
+    stores: [
+        'Modules'
+    ],
+
 
     // component references
     refs: [
@@ -22,6 +38,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'moduleEditor',
             selector: 's2m-modules-editor'
+        }, {
+            ref: 'moduleMeta',
+            selector: 's2m-modules-editor form#modules-meta-info'
         },
 
         // intro tab
@@ -67,28 +86,46 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }
     },
 
+
+    // controller templates method overrides
+    init: function() {
+        var me = this;
+
+    //    if (me.getModule() === null) {
+    //        me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
+    //    }
+    },
+
+    // config handlers
+    updateModule: function(module) {
+        this.loadModule(module);
+    },
+
+
     // event handlers
     onModuleUpdate: function(container, module) {
         console.log('Module has been updated!'); // eslint-disable-line no-console
+        module.save();
         console.log(module.getData()); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
         console.log('onNewModuleClick'); // eslint-disable-line no-console
+        var me = this;
+
+        me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
+        me.getModuleEditor().setDisabled(false);
     },
 
     onModuleMetaFieldChange: function(field, val) {
         var me = this,
-            moduleCt = me.getModuleCt(),
-            module = moduleCt.getModule();
-
-        if (module === null) {
-            module = Ext.create('SparkRepositoryManager.model.Module', {});
-        }
+            module = me.getModule();
 
         module.set(field.getName(), val);
 
-        moduleCt.setModule(module);
+        module.save();
+        me.getModulesStore().sync();
+
     },
 
     // event handlers - Intro tab
@@ -114,7 +151,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     // event handlers - Other tabs
     onModuleGridBoxready: function(grid) {
         var me = this,
-            itemType = Ext.util.Format.lowercase(grid.up('s2m-modules-multiselector').itemType.plural);
+            itemType = grid.up('s2m-modules-multiselector').itemType.field;
 
         grid.getStore().addListener({
             datachanged: Ext.bind(me.updateSparkpointItems, me, [itemType, grid]),
@@ -124,10 +161,17 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
 
     // custom controller methods
+    loadModule: function(module) {
+        var me = this,
+            meta = me.getModuleMeta();
+
+        meta.loadRecord(module);
+
+    },
+
     updateSparkpoints: function() {
         var me = this,
-            moduleCt = me.getModuleCt(),
-            module = moduleCt.getModule(),
+            module = me.getModule(),
             sparkpoints = me.getSparkpointGrid().getStore().getRange(),
             sparkpointsLength = sparkpoints.length,
             moduleSparkpoints = [],
@@ -137,13 +181,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             moduleSparkpoints.push(sparkpoints[i].getData());
         }
 
-        if (module === null) {
-            module = Ext.create('SparkRepositoryManager.model.Module', {});
+        if (module !== null) {
+            module.set('sparkpoints', moduleSparkpoints);
+            module.save();
+            me.getModulesStore().sync();
         }
-
-        module.set('sparkpoints', moduleSparkpoints);
-
-        moduleCt.setModule(module);
 
     },
 
@@ -153,8 +195,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     updateSparkpointItems: function(itemType, grid) {
         var me = this,
-            moduleCt = me.getModuleCt(),
-            module = moduleCt.getModule(),
+            module = me.getModule(),
             sparkpointItems = grid.getStore().getRange(),
             sparkpointItemsLength = sparkpointItems.length,
             moduleItems= [],
@@ -164,12 +205,10 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             moduleItems.push(sparkpointItems[i].getData());
         }
 
-        if (module === null) {
-            module = Ext.create('SparkRepositoryManager.model.Module', {});
+        if (module !== null) {
+            module.set(itemType, moduleItems);
+            module.save();
+            me.getModulesStore().sync();
         }
-
-        module.set(itemType, moduleItems);
-
-        moduleCt.setModule(module);
     }
 });
