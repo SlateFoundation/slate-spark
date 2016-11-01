@@ -36,11 +36,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
         }, {
             name: 'student',
             persist: false,
-            mapping: 'student_id',
             depends: ['student_id'],
             convert: function(v, r) {
                 if (v) {
-                    return Ext.getStore('Students').getById(v);
+                    return v;
                 }
 
                 return Ext.getStore('Students').getById(r.data.student_id);
@@ -578,7 +577,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
                 return Date.now() - learnStartTime;
             }
         }, {
-            name: 'last_accesssed',
+            name: 'last_accessed',
             type: 'sparkdate'
         }, {
             name: 'recommender_id',
