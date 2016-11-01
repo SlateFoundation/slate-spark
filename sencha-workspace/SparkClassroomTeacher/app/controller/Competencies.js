@@ -699,7 +699,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             grid = me.getCompetenciesGrid(),
             studentStore = me.getStudentsStore(),
             sectionGoalsStore = me.getSectionGoalsStore(),
-            studentCompetencyColumnXType = 'spark-student-competency-column',
             currentSection = me.getAppCt().getSelectedSection(),
             studentRecs = studentStore.getRange(),
             count = 0, studentId, student, columns = [],
@@ -708,8 +707,8 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
         grid.setCurrentSection(currentSection);
         me.refreshStudentFilter();
 
-        Ext.each(grid.query(studentCompetencyColumnXType), function(column) {
-            if (column && column.xtype === studentCompetencyColumnXType) {
+        Ext.each(grid.query('spark-student-competency-column'), function(column) {
+            if (column && column.xtype === 'spark-student-competency-column') {
                 grid.removeColumn(column);
             }
         });
@@ -726,7 +725,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             }
 
             columns.push({
-                xtype: studentCompetencyColumnXType,
+                xtype: 'spark-student-competency-column',
                 dataIndex: studentId,
                 text: [
                     '<div class="text-center">',
