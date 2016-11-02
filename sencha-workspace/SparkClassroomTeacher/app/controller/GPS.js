@@ -9,6 +9,7 @@
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
     requires: [
+        'Slate.proxy.API',
         'Ext.util.DelayedTask',
         'SparkClassroom.data.field.SparkDate'
     ],
@@ -41,7 +42,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     refs: {
         appCt: 'spark-teacher-appct',
         gpsCt: 'spark-gps',
-        phaseMoveCombo: 'spark-gps selectfield[name=phaseMoveCombo]'
+        phaseMoveCombo: 'spark-gps selectfield[name=phaseMoveCombo]',
+        assignSparkpointField: 'spark-gps spark-sparkpointfield'
     },
 
     control: {
@@ -55,6 +57,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         },
         phaseMoveCombo: {
             change: 'onPhaseMoveChange'
+        },
+        assignSparkpointField: {
+            sparkpointselect: 'onAssignSparkpointSelect'
         }
     },
 
@@ -152,34 +157,31 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
-    // TODO: duplicate process into blocked controller
     onSocketData: function(socket, data) {
         var me = this,
             table = data.table,
             itemData = data.item,
-            studentSparkpointId,
-            studentSparkpoint,
-            updatedFields;
+            studentSparkpointsStore = me.getStudentSparkpointsStore(),
+            studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id,
+            studentSparkpoint = studentSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
 
         if (table === 'section_student_active_sparkpoint') {
-            if (
-                itemData.section_code === me.getAppCt().getSelectedSection() &&
-                (
-                    !(studentSparkpoint = me.getStudentSparkpointsStore().findRecord('student_id', itemData.student_id)) ||
-                    (
-                        studentSparkpoint.get('sparkpoint_id') !== itemData.sparkpoint_id &&
-                        studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
-                    )
-                )
-            ) {
-                // TODO: handle this without a full refresh if possible
-                me.refreshGps();
+            if (studentSparkpoint) {
+                studentSparkpoint.set(itemData, {
+                    dirty: false
+                });
+            } else {
+                itemData.student = Ext.getStore('Students').getById(itemData.student_id);
+                itemData.student_sparkpointid = studentSparkpointId; // eslint-disable-line camelcase
+                studentSparkpointsStore.add(itemData);
+
+                studentSparkpointsStore.filterBy(me.currentSparkpointsFilterFn, me);
             }
         } else if (table === 'student_sparkpoint') {
-            studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id;
-
-            if ((studentSparkpoint = me.getStudentSparkpointsStore().getById(studentSparkpointId))) {
-                updatedFields = studentSparkpoint.set(itemData, { dirty: false });
+            if (studentSparkpoint) {
+                studentSparkpoint.set(itemData, {
+                    dirty: false
+                });
             }
         }
     },
@@ -204,6 +206,27 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 if (!me.doMovePhase(studentSparkpoint, newVal.data.value)) {
                     break;
                 }
+            }
+        }
+
+        field.reset();
+        return;
+    },
+
+    onAssignSparkpointSelect: function(field, selectedSparkpoint) {
+        var me = this,
+            selectedStudentSparkpoints = me.getAppCt().getMultiSelectedSparkpoints(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            i;
+
+        if (selectedStudentSparkpoint) {
+            me.doAssignSparkpoint(selectedStudentSparkpoint, selectedSparkpoint);
+        }
+
+        if (selectedStudentSparkpoints) {
+            // loop through each student, find student sparkpoint and update last accessed
+            for (i = 0; i < selectedStudentSparkpoints.length; i++) {
+                me.doAssignSparkpoint(selectedStudentSparkpoints[i], selectedSparkpoint);
             }
         }
 
@@ -253,6 +276,23 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     refreshGps: Ext.Function.createBuffered(function() {
         this.getStudentSparkpointsStore().loadUpdates();
     }, 1000),
+
+    currentSparkpointsFilterFn: function(r) {
+        var activeSparkpoints = Ext.getStore('StudentSparkpoints').queryBy(function(record) {
+                return record.get('student_id') === r.get('student_id');
+            }, this).getRange(),
+            i = 0,
+            len = activeSparkpoints.length;
+
+        // we only want to keep the current (most recently accessed) sparkpoint for each student
+        for (i; i < len; i++) {
+            if (activeSparkpoints[i].get('last_accessed') > r.get('last_accessed')) {
+                return false;
+            }
+        }
+
+        return true;
+    },
 
     /**
      * @private
@@ -331,5 +371,28 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         studentSparkpoint.set(overrides);
         studentSparkpoint.save();
         return true;
+    },
+
+    doAssignSparkpoint: function(selectedStudentSparkpoint, selectedSparkpoint) {
+        var me = this,
+            studentSparkpointsStore = me.getStudentSparkpointsStore(),
+            studentId = selectedStudentSparkpoint.get('student_id'),
+            selectedSparkpointId = selectedSparkpoint.get('id'),
+            newStudentSparkpoint = studentSparkpointsStore.findRecord('student_sparkpointid', studentId + '_' + selectedSparkpointId);
+
+        if (newStudentSparkpoint) {
+            newStudentSparkpoint.set('forceActive', new Date());
+            newStudentSparkpoint.save();
+        } else {
+            Slate.API.request({
+                method: 'PATCH',
+                url: '/spark/api/work/activity',
+                jsonData: {
+                    'student_id': studentId,
+                    'sparkpoint_id': selectedSparkpointId,
+                    'forceActive': true
+                }
+            });
+        }
     }
 });

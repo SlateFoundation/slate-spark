@@ -6,22 +6,9 @@ Ext.define('SparkClassroomTeacher.store.gps.Learn', {
         source: 'StudentSparkpoints',
         filters: [{
             filterFn: function(r) {
-                var activeSparkpoints = Ext.getStore('StudentSparkpoints').queryBy(function(record) {
-                    return record.get('student_id') == r.get('student_id')
-                }, this).getRange(),
-                    i = 0,
-                    len = activeSparkpoints.length;
-
-                // first filter out records that aren't in this phase
+                // filter out records that aren't in this phase
                 if (r.get('active_phase') !== 'learn') {
                     return false;
-                }
-
-                // now we only want to keep the current (most recently accessed) sparkpoint for each student
-                for (i; i < len; i++) {
-                    if (activeSparkpoints[i].get('last_accessed') > r.get('last_accessed')) {
-                        return false;
-                    }
                 }
 
                 return true;
