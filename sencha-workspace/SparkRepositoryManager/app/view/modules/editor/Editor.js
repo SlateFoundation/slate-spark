@@ -29,6 +29,12 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                 '-',
                 {
                     xtype: 'checkbox',
+                    name: 'published',
+                    boxLabel: 'Publish module'
+                },
+                '-',
+                {
+                    xtype: 'checkbox',
                     name: 'shared',
                     boxLabel: 'Share module globally'
                 }
