@@ -17,7 +17,7 @@ Ext.define('SparkClassroom.column.StudentCompetency', {
                 statusCls = function(expected, actual, teacherOverride) {
                     var cls = '';
 
-                    if (Ext.isEmpty(expected) || Ext.isEmpty(actual)) {
+                    if (Ext.isEmpty(actual)) {
                         return 'is-empty';
                     }
 
