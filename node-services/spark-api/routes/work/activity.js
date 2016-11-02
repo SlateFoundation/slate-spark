@@ -237,7 +237,7 @@ function *patchHandler() {
         record.assessed_section_id = sectionId;
     }
 
-    if (updateSectionStudentActiveSparkpoint) {
+    if (updateSectionStudentActiveSparkpoint || activity.forceActive) {
         let ssasRecord = {
             section_id: sectionId,
             sparkpoint_id: sparkpointId,
@@ -251,6 +251,10 @@ function *patchHandler() {
 
             if (record.recommended_time) {
                 ssasRecord.recommended_time = record.recommended_time;
+            }
+
+            if (activity.forceActive) {
+                ssasRecord.last_accessed = new Date().toUTCString();
             }
         }
 
