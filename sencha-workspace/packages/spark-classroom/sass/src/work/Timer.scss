@@ -52,6 +52,10 @@
             line-height: 1;
         }
 
+        &:hover {
+            color: $color;
+        }
+
         &:active {
             color: #999;
         }
@@ -102,10 +106,8 @@
 
     &.timer-running {
         .timer-play-pause {
-            color: $color;
-
             &::before {
-                content: '\f04c';
+                content: '\f04c'; // fa-pause
             }
         }
     }
