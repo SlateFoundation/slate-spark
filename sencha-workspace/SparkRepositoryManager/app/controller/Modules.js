@@ -24,7 +24,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // dependencies
     stores: [
-        'Modules'
+        'Modules',
+        'ContentItems'
     ],
 
 
@@ -68,8 +69,13 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         '#modules-meta-info field': {
             change: 'onModuleMetaFieldChange'
         },
+
+        // editor panel
         's2m-modules-editor checkbox[name="shared"]': {
             change: 'onModuleMetaFieldChange'
+        },
+        's2m-modules-editor combo[name="content_area"]': {
+            change: 'onContentAreaChange'
         },
 
         // intro tab
@@ -91,6 +97,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     init: function() {
         var me = this;
 
+        me.getContentItemsStore().load();
+
     //    if (me.getModule() === null) {
     //        me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
     //    }
@@ -110,8 +118,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onNewModuleClick: function() {
-        console.log('onNewModuleClick'); // eslint-disable-line no-console
         var me = this;
+
+        console.log('onNewModuleClick'); // eslint-disable-line no-console
 
         me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
         me.getModuleEditor().setDisabled(false);
@@ -127,6 +136,15 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.getModulesStore().sync();
 
     },
+
+    onContentAreaChange: function(combo, val) {
+        this.getSparkpointsCombo().getStore().load({
+            params: {
+                content_area_id: val    // eslint-disable-line camelcase
+            }
+        });
+    },
+
 
     // event handlers - Intro tab
     onSparkpointGridBoxready: function(grid) {
@@ -174,10 +192,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             module = me.getModule(),
             sparkpoints = me.getSparkpointGrid().getStore().getRange(),
             sparkpointsLength = sparkpoints.length,
+            sparkpointIds = [],
             moduleSparkpoints = [],
             i = 0;
 
         for (; i<sparkpointsLength; i++) {
+            sparkpointIds.push(sparkpoints[i].get('id'));
             moduleSparkpoints.push(sparkpoints[i].getData());
         }
 
@@ -186,6 +206,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             module.save();
             me.getModulesStore().sync();
         }
+
+        me.getContentItemsStore().load({
+            params: {
+                sparkpoint_ids: sparkpointIds.join() // eslint-disable-line camelcase
+            }
+        });
 
     },
 
