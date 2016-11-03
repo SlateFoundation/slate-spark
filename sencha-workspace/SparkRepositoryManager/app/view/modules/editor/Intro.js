@@ -41,6 +41,10 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                     displayField: 'code',
                                     valueField: 'code',
                                     store: {
+                                        xclass: 'SparkRepositoryManager.store.sparkpoints.Lookup'
+                                    }
+/*
+                                    store: {
                                         fields: ['code', {
                                             name: 'willBeEvaluated',
                                             defaultValue: false
@@ -58,6 +62,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                             { code: 'ELA.G6.RI.8' }
                                         ]
                                     }
+*/
                                 },
                                 {
                                     xtype: 'button',
