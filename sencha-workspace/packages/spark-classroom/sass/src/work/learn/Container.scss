@@ -1,0 +1,9 @@
+.spark-work-learn-module-intro {
+    background-color: mix($base-color, white, 6%);
+    color: mix($color, $base-color);
+    margin-top: 1em;
+
+    &:empty {
+        display: none;
+    }
+}
