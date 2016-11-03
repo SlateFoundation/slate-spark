@@ -62,7 +62,11 @@ function* getHandler() {
             resource.fusebox_id = resource.id;
             delete resource.id;
             if (resource.metadata) {
-                resource.metadata = JSON.parse(resource.metadata);
+                try {
+                    resource.metadata = JSON.parse(resource.metadata);
+                } catch (e) {
+                    resource.metadata = null;
+                }
             }
             resource.sparkpoint_ids = (resource.standardids || [])
                 .map(id => ctx.lookup.standard.idToSparkpointId[id])
