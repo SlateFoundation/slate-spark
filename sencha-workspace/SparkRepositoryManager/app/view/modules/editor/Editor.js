@@ -7,7 +7,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
         'SparkRepositoryManager.view.modules.editor.Questions',
         'SparkRepositoryManager.view.modules.editor.Resources',
         'SparkRepositoryManager.view.modules.editor.Apply',
-        'SparkRepositoryManager.view.modules.editor.Assess'
+        'SparkRepositoryManager.view.modules.editor.Assess',
+        'SparkRepositoryManager.store.sparkpoints.ContentAreas'
     ],
 
     componentCls: 's2m-modules-editor',
@@ -71,8 +72,12 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                             fieldLabel: 'Content Area',
                             name: 'content_area',
                             xtype: 'combo',
+                            displayField: 'code',
+                            valueField: 'id',
                             width: 120,
-                            store: ['Math', 'ELA', 'Science']
+                            store: {
+                                xclass: 'SparkRepositoryManager.store.sparkpoints.ContentAreas'
+                            }
                         },
                         {
                             fieldLabel: 'Code',
@@ -93,7 +98,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                 {
                     xtype: 'tabpanel',
                     bodyPadding: '20 0',
-                    activeTab: 3, // TODO: remove this, for dev
                     items: [
                         {
                             xtype: 's2m-modules-editor-intro'
