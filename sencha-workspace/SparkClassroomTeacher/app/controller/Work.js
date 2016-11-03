@@ -26,7 +26,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         'work.learn.Container',
         'work.apply.Container',
         'work.assess.Container',
-        'work.conference.Container'
+        'work.conference.Container',
+        'work.MovePhaseContainer'
     ],
 
     stores: [
