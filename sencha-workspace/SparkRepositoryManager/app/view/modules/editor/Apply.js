@@ -29,45 +29,15 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             ],
 
             sparkpointsStore: {
-                fields: [
-                    'sparkpoint',
-                    'title',
-                    'url'
-                ],
-                groupField: 'sparkpoint',
-                data: [
-                    {
-                        sparkpoint: 'SS.G6.1.2.B',
-                        title: 'Our Baby Dragon',
-                        url: 'http://example.com/dragon'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.B',
-                        title: 'Make Your Predictions',
-                        url: 'http://example.com/predictions'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'Beak Shape Matters',
-                        url: 'http://example.com/beak-shape'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'Claw Matters',
-                        url: 'http://example.com/claw-matters'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'Ticket to Ride',
-                        url: 'http://example.com/ticket-ride'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'Music Store Hours',
-                        url: 'http://example.com/music-store'
+                type: 'chained',
+                source: 'ContentItems',
+                filters: [
+                    function(item) {
+                        return item.get('type') === 'apply';
                     }
                 ]
             },
+
             moduleStore: {
                 fields: [
                     {
@@ -76,6 +46,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
                     },
                     'title'
                 ],
+
+/*
                 data: [
                     {
                         ordinal: 1,
@@ -93,6 +65,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
                         url: 'http://example.com/darwin'
                     }
                 ]
+*/
             }
         }
     ]

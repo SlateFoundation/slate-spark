@@ -29,47 +29,11 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
             ],
 
             sparkpointsStore: {
-                fields: [
-                    'sparkpoint',
-                    'title'
-                ],
-                groupField: 'sparkpoint',
-                data: [
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'What are some practical ways to explain this?'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'How would you explain this Sparkpoint to an alien?'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'How much time do you spend each week using this skill?'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'What are some practical ways to explain this?'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'How would you explain this Sparkpoint to an alien?'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'How much time do you spend each week using this skill?'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'What are some practical ways to explain this?'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'How would you explain this Sparkpoint to an alien?'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'How much time do you spend each week using this skill?'
+                type: 'chained',
+                source: 'ContentItems',
+                filters: [
+                    function(item) {
+                        return item.get('type') === 'guiding_question';
                     }
                 ]
             }

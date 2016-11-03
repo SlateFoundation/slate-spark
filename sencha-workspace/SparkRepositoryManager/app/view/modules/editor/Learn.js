@@ -49,80 +49,15 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             ],
 
             sparkpointsStore: {
-                fields: [
-                    'sparkpoint',
-                    'title',
-                    'url'
-                ],
-                groupField: 'sparkpoint',
-                data: [
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'Genetic Drift',
-                        url: 'http://example.com/genetic'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'Learn Biology: Trophic Levels and Producer vs. Consumer',
-                        url: 'http://example.com/learn'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'Symbiosis: A surprising tale of species cooperation - David Gonzales',
-                        url: 'http://example.com/symbiosis'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.A',
-                        title: 'In Hardy-Weinberg equilibrium',
-                        url: 'http://example.com/hardy'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'Genetic Drift',
-                        url: 'http://example.com/genetic'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'Learn Biology: Trophic Levels and Producer vs. Consumer',
-                        url: 'http://example.com/learn'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'Symbiosis: A surprising tale of species cooperation - David Gonzales',
-                        url: 'http://example.com/symbiosis'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.2.4.A',
-                        title: 'In Hardy-Weinberg equilibrium',
-                        url: 'http://example.com/hardy'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'Genetic Drift',
-                        url: 'http://example.com/genetic'
-                    },
-                    {
-                        sparkpoint: 'SS.U.1.2.A',
-                        title: 'Learn Biology: Trophic Levels and Producer vs. Consumer',
-                        url: 'http://example.com/learn'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.B',
-                        title: 'Genetic Drift',
-                        url: 'http://example.com/genetic'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.B',
-                        title: 'Learn Biology: Trophic Levels and Producer vs. Consumer',
-                        url: 'http://example.com/learn'
-                    },
-                    {
-                        sparkpoint: 'SS.G6.1.2.B',
-                        title: 'Symbiosis: A surprising tale of species cooperation - David Gonzales',
-                        url: 'http://example.com/symbiosis'
+                type: 'chained',
+                source: 'ContentItems',
+                filters: [
+                    function(item) {
+                        return item.get('type') === 'learn';
                     }
                 ]
             },
+
             moduleStore: {
                 groupField: 'group',
                 fields: [
@@ -145,6 +80,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                         type: 'boolean'
                     }
                 ],
+/*
                 data: [
                     {
                         ordinal: 1,
@@ -164,6 +100,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                         url: 'http://example.com/speciation'
                     }
                 ]
+*/
             }
         }
     ]
