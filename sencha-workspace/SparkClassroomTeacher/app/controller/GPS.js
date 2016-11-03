@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             },
             '#StudentSparkpoints': {
                 update: 'onStudentSparkpointsUpdate',
-                endupdate: 'onStudentSparkpointsStoreEndUpdate'
+                endupdate: 'syncSelectedStudentSparkpoint'
             }
         },
         socket: {
@@ -45,7 +45,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+            selectedstudentsparkpointchange: 'syncSelectedStudentSparkpoint'
         },
         'spark-gps-studentlist': {
             select: 'onListSelect'
@@ -64,10 +64,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function() {
-        this.syncSelectedStudentSparkpoint();
-    },
-
     onStudentsStoreLoad: function(studentsStore, students, success) {
         var me = this;
 
@@ -102,12 +98,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
-    onStudentSparkpointsStoreEndUpdate: function() {
-        this.syncSelectedStudentSparkpoint();
-    },
-
-    onListSelect: function(list, student) {
-        this.getAppCt().setSelectedStudentSparkpoint(student);
+    onListSelect: function(list, studentSparkpoint) {
+        this.getAppCt().setSelectedStudentSparkpoint(studentSparkpoint);
     },
 
     // TODO: duplicate process into blocked controller
@@ -146,35 +138,18 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
+            currentStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             lists = me.getGpsCt().query('#phasesCt list'),
-            listCount = lists.length, i = 0, list, selectedExists = false, studentSparkpoint;
+            i, list;
 
         // sync list selection
-        for (; i < listCount; i++) {
+        for (i = 0; i < lists.length; i++) {
             list = lists[i];
 
-            if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
-                list.select(activeStudent);
-                selectedExists = true;
+            if (currentStudentSparkpoint && list.getStore().indexOf(currentStudentSparkpoint) != -1) {
+                list.select(currentStudentSparkpoint);
             } else {
                 list.deselectAll();
-            }
-        }
-
-        // If the selected student sparkpoint doesn't exist in a list then the student may have switched their current sparkpoint.
-        if (!selectedExists && activeStudent) {
-            // Try to find student's current sparkpoint
-            for (i = 0; i < listCount; i++) {
-                list = lists[i];
-
-                studentSparkpoint = list.getStore().findRecord('student_id', activeStudent.get('student_id'));
-
-                if (studentSparkpoint) {
-                    list.select(studentSparkpoint);
-                    me.getAppCt().setSelectedStudentSparkpoint(studentSparkpoint);
-                    break;
-                }
             }
         }
     },
