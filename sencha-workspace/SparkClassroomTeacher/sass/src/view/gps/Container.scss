@@ -113,31 +113,29 @@
         transition: .2s;
     }
 
-    .item-description {
-
-    }
-
     .item-icon {
         font-size: 14px;
         opacity: .4;
     }
 
     &.has-multiselect {
-        .x-list-item {
-            .x-innerhtml {
-                transform: translateX(1.6em);
+        .spark-gps-studentlist {
+            .x-list-item {
+                .x-innerhtml {
+                    transform: translateX(1.6em);
+                }
             }
-        }
 
-        .item-multiselect-indicator {
-            opacity: 1;
-            transform: none;
-        }
+            .item-multiselect-indicator {
+                opacity: 1;
+                transform: none;
+            }
 
-        .item-timestamp,
-        .item-remove-btn {
-            opacity: 0;
-            transform: translateX(1em);
+            .item-timestamp,
+            .item-remove-btn {
+                opacity: 0;
+                transform: translateX(1em);
+            }
         }
     }
 }

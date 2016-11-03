@@ -26,7 +26,7 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange',
+            selectedstudentsparkpointchange: 'syncSelectedStudentSparkpoint',
             multiselectedsparkpointschange: 'syncSelectedStudentSparkpoint'
         }
     },
@@ -35,10 +35,6 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
     // event handlers
     onStudentsLoad: function() {
         this.getGpsPrioritiesStore().load();
-    },
-
-    onSelectedStudentSparkpointChange: function() {
-        this.syncSelectedStudentSparkpoint();
     },
 
     // controller methods
