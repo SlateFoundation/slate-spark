@@ -221,7 +221,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         movePhaseCt.setStudentName(student.get('FirstName'));
         movePhaseCt.setActivePhase(selectedStudentSparkpoint.get('active_phase'));
-        movePhaseCt.setNextPhase(phase);
+        movePhaseCt.setMoveToPhase(phase);
         movePhaseCt.loadMoveText();
         workCt.add(movePhaseCt);
     },
@@ -266,10 +266,35 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     onMovePhase: function() {
         var me = this,
             movePhaseCt = me.getMovePhaseCt(),
-            overridePhase = movePhaseCt.getActivePhase(),
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+            moveTo = movePhaseCt.getMoveToPhase(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            overrides;
 
-        selectedStudentSparkpoint.set(overridePhase + '_override_time', new Date());
+        switch (moveTo) {
+            case 'conference':
+                overrides = {
+                    'learn_override_time': new Date()
+                };
+                break;
+            case 'apply':
+                overrides = {
+                    'learn_override_time': selectedStudentSparkpoint.get('learn_override_time') ? selectedStudentSparkpoint.get('learn_override_time') : new Date(),
+                    'conference_override_time': new Date()
+                };
+                break;
+            case 'assess':
+                overrides = {
+                    'learn_override_time': selectedStudentSparkpoint.get('learn_override_time') ? selectedStudentSparkpoint.get('learn_override_time') : new Date(),
+                    'conference_override_time': selectedStudentSparkpoint.get('conference_override_time') ? selectedStudentSparkpoint.get('conference_override_time') : new Date(),
+                    'apply_override_time': new Date()
+                };
+                break;
+            default:
+                overrides = {};
+                break;
+        }
+
+        selectedStudentSparkpoint.set(overrides);
         selectedStudentSparkpoint.save({
             callback: function() {
                 me.showPhase(selectedStudentSparkpoint.get('active_phase'));
