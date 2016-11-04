@@ -27,10 +27,10 @@ Ext.define('SparkRepositoryManager.store.Modules', {
 
     listeners: {
         load: function(store, records) {
-            console.log('store load!');
-            console.log(records);
+            // console.log('store load!');
+            // console.log(records);
 
-            if (!records)  {
+            if (!records) {
                 store.insert(0, {
                     id: 1,
                     code: 'ELA'
@@ -38,7 +38,7 @@ Ext.define('SparkRepositoryManager.store.Modules', {
                 store.sync();
             }
         }
-    },
+    }
 /*
     root: {
         expanded: true,
