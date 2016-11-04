@@ -33,10 +33,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             hideHeaders: true,
             disableSelection: true,
             emptyText: 'None available.',
-            store: {
-                fields: [],
-                data: []
-            },
             columns: [
                 {
                     xtype: 'templatecolumn',
