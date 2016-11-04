@@ -210,7 +210,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         moduleStore.add(rec);
 
         sparkpointsStore.filterBy(function(sparkpointRec) {
-            return moduleStore.indexOf(sparkpointRec) === -1;
+            return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
         });
     },
 
@@ -222,7 +222,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         moduleStore.remove(rec);
 
         sparkpointsStore.filterBy(function(sparkpointRec) {
-            return moduleStore.indexOf(sparkpointRec) === -1;
+            return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
         });
     }
 });
