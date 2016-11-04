@@ -97,7 +97,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     init: function() {
         var me = this;
 
-        me.getContentItemsStore().load();
+    //    me.getContentItemsStore().load({
+    //        params: {
+    //            sparkpoint_ids: 'M1000564' // eslint-disable-line camelcase
+    //        }
+    //    });
+
 
     //    if (me.getModule() === null) {
     //        me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
@@ -112,15 +117,13 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // event handlers
     onModuleUpdate: function(container, module) {
-        console.log('Module has been updated!'); // eslint-disable-line no-console
+//        console.log('Module has been updated!'); // eslint-disable-line no-console
         module.save();
-        console.log(module.getData()); // eslint-disable-line no-console
+//        console.log(module.getData()); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
         var me = this;
-
-        console.log('onNewModuleClick'); // eslint-disable-line no-console
 
         me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
         me.getModuleEditor().setDisabled(false);
