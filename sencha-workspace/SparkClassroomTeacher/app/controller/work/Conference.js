@@ -439,6 +439,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             conferenceCt = me.getConferenceCt(),
             conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
+            proxy = conferenceQuestionsStore.getProxy(),
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
         if (!conferenceCt) {
@@ -451,6 +452,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             conferenceCt.show();
 
             if (!conferenceQuestionsStore.isLoaded()) {
+                proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+                proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
+
                 conferenceQuestionsStore.load();
             }
         } else {

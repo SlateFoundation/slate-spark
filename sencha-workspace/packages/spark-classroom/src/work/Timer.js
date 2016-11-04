@@ -113,6 +113,8 @@ Ext.define('SparkClassroom.work.Timer', {
             minutes: Math.floor(seconds / 60),
             seconds: Math.floor(seconds) % 60
         });
+
+        me.fireEvent('datachange', seconds, me.getState());
     },
 
     pause: function() {

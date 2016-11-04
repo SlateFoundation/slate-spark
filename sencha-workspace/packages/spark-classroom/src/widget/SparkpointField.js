@@ -78,16 +78,25 @@ Ext.define('SparkClassroom.widget.SparkpointField', {
     },
 
     updateQuery: function(query) {
-        var loadConfig = {};
+        var loadConfig = {},
+            sparkpointSuggestionsStore = this.getSuggestionsList().getStore(),
+            extraParams;
 
         if (query) {
             loadConfig.url = '/spark/api/sparkpoints/autocomplete';
             loadConfig.params = {
                 q: query
             };
+        } else if (sparkpointSuggestionsStore
+            && (extraParams = sparkpointSuggestionsStore.getProxy().getExtraParams())
+            && !extraParams.student_id) {
+            // avoid calling /sparkpoints/suggested without student_id
+            // load empty data into store to show empty text instead
+            sparkpointSuggestionsStore.loadData([]);
+            return;
         }
 
-        this.getSuggestionsList().getStore().load(loadConfig);
+        sparkpointSuggestionsStore.load(loadConfig);
     },
 
     updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {

@@ -3,6 +3,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     xtype: 'spark-gps',
     cls: 'spark-gps',
     requires: [
+        'SparkClassroom.widget.SparkpointField',
         'SparkClassroomTeacher.view.gps.StudentList',
         'SparkClassroomTeacher.view.gps.Waitlist',
         'SparkClassroomTeacher.view.gps.Priorities'
@@ -11,6 +12,61 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
     config: {
         selectedStudent: null,
         items: [
+            {
+                xtype: 'toolbar',
+                cls: 'spark-gps-toolbar',
+                border: 0,
+                hidden: !location.search.match(/\WenableK1(\W|$)/),
+                items: [
+                    {
+                        xtype: 'button',
+                        cls: 'spark-toggle-student-multiselect',
+                        iconCls: 'fa fa-check-circle',
+                        text: 'Select Multiple'
+                    },
+                    {
+                        xtype: 'spacer'
+                    },
+                    {
+                        xtype: 'component',
+                        cls: 'spark-gps-selection-status',
+                        tpl: '{n} student<tpl if="n != 1">s</tpl> selected: ',
+                        data: { n: 0 }
+                    },
+                    {
+                        margin: '0 8',
+                        xtype: 'spark-sparkpointfield',
+                        placeHolder: 'Assign Sparkpoint'
+                        // suggestionsList: {
+                        //     store: 'SparkpointsLookup'
+                        // }
+                    },
+                    {
+                        xtype: 'selectfield',
+                        name: 'phaseMoveCombo',
+                        placeHolder: 'Move Phase',
+                        autoSelect: false,
+                        options: [
+                            {
+                                text: 'Learn and Practice',
+                                value: 'Learn'
+                            },
+                            {
+                                text: 'Conference',
+                                value: 'Conference'
+                            },
+                            {
+                                text: 'Apply',
+                                value: 'Apply'
+                            },
+                            {
+                                text: 'Assess',
+                                value: 'Asses'
+                            }
+                        ]
+                    }
+                ]
+            },
             {
                 xtype: 'container',
                 layout: {

@@ -3,7 +3,8 @@ Ext.define('SparkClassroom.TitleBar', {
     extend: 'Ext.Toolbar',
     xtype: 'spark-titlebar',
     requires: [
-        'Ext.field.Select'
+        'Ext.field.Select',
+        'SparkClassroom.work.Timer'
     ],
 
     config: {
@@ -30,6 +31,13 @@ Ext.define('SparkClassroom.TitleBar', {
                     cls: 'spark-course-picker',
                     width: null
                 }
+            },
+            {
+                xtype: 'spacer'
+            },
+            {
+                xtype: 'spark-k1-timer',
+                hidden: !location.search.match(/\WenableK1(\W|$)/)
             }
         ]
     }

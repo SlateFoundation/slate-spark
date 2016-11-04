@@ -12,10 +12,14 @@ Ext.define('SparkClassroomTeacher.store.StudentSparkpoints', {
     },
 
     config: {
-        // filter out student sparkpoints that didn't match a student in the active roster
         filters: [{
             filterFn: function(r) {
-                return r.get('student');
+                // filter out student sparkpoints that didn't match a student in the active roster
+                if (!r.get('student')) {
+                    return false;
+                }
+
+                return true;
             }
         }]
     },

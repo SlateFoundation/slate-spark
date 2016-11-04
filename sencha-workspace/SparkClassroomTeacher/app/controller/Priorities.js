@@ -26,8 +26,9 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
-        },
+            selectedstudentsparkpointchange: 'syncSelectedStudentSparkpoint',
+            multiselectedsparkpointschange: 'syncSelectedStudentSparkpoint'
+        }
     },
 
 
@@ -36,19 +37,23 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
         this.getGpsPrioritiesStore().load();
     },
 
-    onSelectedStudentSparkpointChange: function() {
-        this.syncSelectedStudentSparkpoint();
-    },
-
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         // TODO: share code with similar function in GPS controller
         var me = this,
-            activeStudent = me.getAppCt().getSelectedStudentSparkpoint(),
+            appCt = me.getAppCt(),
+            activeStudent = appCt.getSelectedStudentSparkpoint(),
+            activeStudents = appCt.getMultiSelectedSparkpoints(),
             list = me.getPriorityList();
 
         if (activeStudent && list.getStore().indexOf(activeStudent) != -1) {
             list.select(activeStudent);
+        } else if (activeStudents) {
+            // sync multiselected students
+            list.setMode('MULTI');
+            list.select(activeStudents);
+            // reset to SINGLE after selection to avoid unknown effects (Selectable is a private class)
+            list.setMode('SINGLE');
         } else {
             list.deselectAll();
         }

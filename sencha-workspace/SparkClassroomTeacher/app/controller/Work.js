@@ -26,11 +26,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         'work.learn.Container',
         'work.apply.Container',
         'work.assess.Container',
-        'work.conference.Container'
+        'work.conference.Container',
+        'work.MovePhaseContainer'
     ],
 
     stores: [
-        'work.Feedback@SparkClassroom.store'
+        'work.Feedback@SparkClassroom.store',
+        'Students@SparkClassroom.store'
     ],
 
     models: [
@@ -63,38 +65,58 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
             xtype: 'spark-teacher-work-learn'
         },
+
         conferenceCt: {
             selector: 'spark-teacher-work-conference',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-conference'
         },
+
         applyCt: {
             selector: 'spark-teacher-work-apply',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-apply'
         },
+
         assessCt: {
             selector: 'spark-teacher-work-assess',
             autoCreate: true,
 
             xtype: 'spark-teacher-work-assess'
-        }
+        },
+
+        movePhaseCt: {
+            selector: 'spark-teacher-work-move-phase',
+            autoCreate: true,
+
+            xtype: 'spark-teacher-work-move-phase'
+        },
+
+        movePhaseBtn: 'spark-teacher-work-move-phase button[cls~="spark-teacher-work-move-btn"]'
     },
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange',
+            togglestudentmultiselect: 'onToggleStudentMultiselect'
         },
+
         workNavButton: {
             tap: 'onNavWorkTap'
         },
+
         workCt: {
             activate: 'onWorkCtActivate'
         },
+
         workTabbar: {
             activetabchange: 'onWorkTabChange'
+        },
+
+        movePhaseBtn: {
+            tap: 'onMovePhase'
         }
     },
 
@@ -133,43 +155,75 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     },
 
     showLearn: function() {
-        var workCt = this.getWorkCt();
-
-        this.doShowContainer();
-        this.doHighlightTabbars('learn');
-
-        workCt.removeAll();
-        workCt.add(this.getLearnCt());
+        this.showPhase('learn');
     },
 
     showConference: function() {
-        var workCt = this.getWorkCt();
-
-        this.doShowContainer();
-        this.doHighlightTabbars('conference');
-
-        workCt.removeAll();
-        workCt.add(this.getConferenceCt());
+        this.showPhase('conference');
     },
 
     showApply: function() {
-        var workCt = this.getWorkCt();
-
-        this.doShowContainer();
-        this.doHighlightTabbars('apply');
-
-        workCt.removeAll();
-        workCt.add(this.getApplyCt());
+        this.showPhase('apply');
     },
 
     showAssess: function() {
-        var workCt = this.getWorkCt();
+        this.showPhase('assess');
+    },
 
-        this.doShowContainer();
-        this.doHighlightTabbars('assess');
+    showPhase: function(phase) {
+        var me = this,
+            workCt = me.getWorkCt(),
+            phaseCt,
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+
+        switch (phase) {
+            case 'learn':
+                phaseCt = me.getLearnCt();
+                break;
+            case 'conference':
+                phaseCt = me.getConferenceCt();
+                break;
+            case 'apply':
+                phaseCt = me.getApplyCt();
+                break;
+            case 'assess':
+                phaseCt = me.getAssessCt();
+                break;
+            default:
+                break;
+        }
+
+        me.doShowContainer();
+        me.doHighlightTabbars();
+        me.getWorkTabbar().updateActivePhase(phase);
 
         workCt.removeAll();
-        workCt.add(this.getAssessCt());
+
+        if (Ext.isEmpty(selectedStudentSparkpoint)) {
+            return;
+        }
+
+        if (me.canAccessPhase(phase)) {
+            workCt.add(phaseCt);
+            return;
+        }
+
+        me.showMovePhases(phase);
+    },
+
+    showMovePhases: function(phase) {
+        var me = this,
+            movePhaseCt = me.getMovePhaseCt(),
+            workCt = me.getWorkCt(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            studentStore = me.getStudentsStore(),
+            student = studentStore.getById(selectedStudentSparkpoint.get('student_id'));
+
+        movePhaseCt.setStudentName(student.get('FirstName'));
+        movePhaseCt.setActivePhase(selectedStudentSparkpoint.get('active_phase'));
+        movePhaseCt.setMoveToPhase(phase);
+        movePhaseCt.loadMoveText();
+        workCt.add(movePhaseCt);
     },
 
 
@@ -177,14 +231,16 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
         var me = this,
             activeTeacherTab = me.getTeacherTabbar().getActiveTab(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
             feedbackStore = me.getWorkFeedbackStore(),
             studentId;
 
         if (!activeTeacherTab || activeTeacherTab.getItemId() === 'work') {
-            me.redirectTo(selectedStudentSparkpoint ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
+            me.redirectTo(selectedStudentSparkpoint && !multiselect ? ['work', selectedStudentSparkpoint.get('active_phase')] : 'gps');
         }
 
-        if (selectedStudentSparkpoint) {
+        // The work tab is disabled during student multiselect / null value
+        if (selectedStudentSparkpoint && !multiselect) {
             studentId = selectedStudentSparkpoint.get('student_id');
 
             feedbackStore.setFilters([{
@@ -203,7 +259,47 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             feedbackStore.load();
 
             me.updateTabBar(selectedStudentSparkpoint);
+            me.showPhase(selectedStudentSparkpoint.get('active_phase'))
         }
+    },
+
+    onMovePhase: function() {
+        var me = this,
+            movePhaseCt = me.getMovePhaseCt(),
+            moveTo = movePhaseCt.getMoveToPhase(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            overrides;
+
+        switch (moveTo) {
+            case 'conference':
+                overrides = {
+                    'learn_override_time': new Date()
+                };
+                break;
+            case 'apply':
+                overrides = {
+                    'learn_override_time': selectedStudentSparkpoint.get('learn_override_time') ? selectedStudentSparkpoint.get('learn_override_time') : new Date(),
+                    'conference_override_time': new Date()
+                };
+                break;
+            case 'assess':
+                overrides = {
+                    'learn_override_time': selectedStudentSparkpoint.get('learn_override_time') ? selectedStudentSparkpoint.get('learn_override_time') : new Date(),
+                    'conference_override_time': selectedStudentSparkpoint.get('conference_override_time') ? selectedStudentSparkpoint.get('conference_override_time') : new Date(),
+                    'apply_override_time': new Date()
+                };
+                break;
+            default:
+                overrides = {};
+                break;
+        }
+
+        selectedStudentSparkpoint.set(overrides);
+        selectedStudentSparkpoint.save({
+            callback: function() {
+                me.showPhase(selectedStudentSparkpoint.get('active_phase'));
+            }
+        });
     },
 
     onNavWorkTap: function() {
@@ -216,6 +312,23 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     onWorkTabChange: function(tabbar, activeTab) {
         this.redirectTo(['work', activeTab.getItemId()]);
+    },
+
+    onToggleStudentMultiselect: function(appCt, enable) {
+        var me = this,
+            workCt = me.getWorkCt();
+
+        workCt.removeAll();
+
+        if (enable) {
+            me.getWorkTabbar().resetToDefault();
+            workCt.add({
+                xtype: 'component',
+                html: 'The Student Work section is disabled while Student Multiselect is enabled.'
+            });
+
+            return;
+        }
     },
 
     onSocketData: function(socket, data) {
@@ -268,6 +381,29 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
 
     // controller methods
+	/**
+     * @private
+     * Checks whether the student tied to the selected sparkpoint can access this phase.
+     * @return boolean
+     */
+    canAccessPhase: function(phase) {
+        var me = this,
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+
+        switch (phase) {
+            case 'learn':
+                return true;
+            case 'conference':
+                return !Ext.isEmpty(selectedStudentSparkpoint.get('learn_completed_time'));
+            case 'apply':
+                return !Ext.isEmpty(selectedStudentSparkpoint.get('conference_completed_time'));
+            case 'assess':
+                return !Ext.isEmpty(selectedStudentSparkpoint.get('apply_completed_time'));
+            default:
+                return false;
+        }
+    },
+
     /**
      * @private
      * Called by each subsection route handler to ensure container is activated

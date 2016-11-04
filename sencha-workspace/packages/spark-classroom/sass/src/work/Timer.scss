@@ -16,7 +16,7 @@
     text-align: center;
 
     .x-innerhtml {
-        align-items: stretch;
+        align-items: center;
         display: flex;
     }
 
@@ -32,6 +32,42 @@
             font-family: FontAwesome;
             font-weight: normal;
             line-height: 1;
+        }
+    }
+
+    .timer-play-pause,
+    .timer-reset {
+        color: #999;
+        cursor: pointer;
+        margin-left: .5em;
+        text-align: center;
+        width: 1em;
+
+        &::before {
+            content: '\f04b'; // fa-play
+            display: block;
+            font-size: 14px;
+            font-family: FontAwesome;
+            font-weight: normal;
+            line-height: 1;
+        }
+
+        &:active {
+            color: #999;
+        }
+    }
+
+    .timer-reset {
+        margin: 0 .5em 0 0;
+
+        &::before {
+            content: '\f0e2'; // fa-undo
+        }
+
+        &:hover {
+            &::before {
+                content: '\f0e2';
+            }
         }
     }
 
@@ -61,6 +97,16 @@
         .timer-counter {
                     animation: spark-work-timer-blink 1s steps(3, start) infinite;
             -webkit-animation: spark-work-timer-blink 1s steps(3, start) infinite;
+        }
+    }
+
+    &.timer-running {
+        .timer-play-pause {
+            color: $color;
+
+            &::before {
+                content: '\f04c';
+            }
         }
     }
 

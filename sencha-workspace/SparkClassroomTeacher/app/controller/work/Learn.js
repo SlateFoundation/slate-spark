@@ -208,6 +208,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             learnCt = me.getLearnCt(),
             scoreField = me.getMasteryCheckScoreField(),
             store = me.getWorkLearnsStore(),
+            proxy = store.getProxy(),
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
         if (!learnCt || !learnCt.hasParent()) {
@@ -224,6 +225,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             learnCt.show();
 
             if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
+                proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+                proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
+
                 store.load();
             }
         } else {

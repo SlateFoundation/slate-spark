@@ -9,6 +9,7 @@
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
     requires: [
+        'Slate.proxy.API',
         'Ext.util.DelayedTask',
         'SparkClassroom.data.field.SparkDate'
     ],
@@ -40,15 +41,24 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     refs: {
         appCt: 'spark-teacher-appct',
-        gpsCt: 'spark-gps'
+        gpsCt: 'spark-gps',
+        phaseMoveCombo: 'spark-gps selectfield[name=phaseMoveCombo]',
+        assignSparkpointField: 'spark-gps spark-sparkpointfield'
     },
 
     control: {
         appCt: {
-            selectedstudentsparkpointchange: 'syncSelectedStudentSparkpoint'
+            selectedstudentsparkpointchange: 'syncSelectedStudentSparkpoint',
+            togglestudentmultiselect: 'onToggleStudentMultiselect',
         },
         'spark-gps-studentlist': {
-            select: 'onListSelect'
+            itemtap: 'onListSelectChange' // itemtap is used to isolate the individual student being selected
+        },
+        phaseMoveCombo: {
+            change: 'onPhaseMoveChange'
+        },
+        assignSparkpointField: {
+            sparkpointselect: 'onAssignSparkpointSelect'
         }
     },
 
@@ -81,7 +91,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         // reselect active student if sparkpoint has changed
         if (
-            operation == 'edit' &&
+            operation === 'edit' &&
             me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint &&
             modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {
@@ -98,47 +108,130 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
     },
 
-    onListSelect: function(list, studentSparkpoint) {
-        this.getAppCt().setSelectedStudentSparkpoint(studentSparkpoint);
+    onListSelectChange: function(list, i, t, record) {
+        var me = this,
+            appCt = me.getAppCt(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
+            count = 0,
+            lists = me.getGpsCt().query('#phasesCt list'),
+            multiSelections = [];
+
+        appCt.setSelectedStudentSparkpoint(multiselect ? null : record);
+
+        // Get the selections from all phase lists and combine for multiselect.
+        if (multiselect) {
+            for (; count < lists.length; count++) {
+                multiSelections = Ext.Array.union(multiSelections, lists[count].getSelections());
+            }
+        }
+
+        appCt.setMultiSelectedSparkpoints(multiselect ? multiSelections : null);
     },
 
-    // TODO: duplicate process into blocked controller
+    onToggleStudentMultiselect: function(appCt, enable, oldVal) {
+        var me = this,
+            studentLists = me.getGpsCt().query('#phasesCt list'),
+            studentList,
+            count;
+
+        if (enable === oldVal) {
+            return;
+        }
+
+        for (count = 0; count < studentLists.length; count++) {
+            studentList = studentLists[count];
+            studentList.setMode(enable ? 'MULTI' : 'SINGLE');
+
+            if (!enable) {
+                studentList.deselectAll();
+            }
+        }
+    },
+
     onSocketData: function(socket, data) {
         var me = this,
             table = data.table,
             itemData = data.item,
-            studentSparkpointId,
-            studentSparkpoint,
-            updatedFields;
+            studentSparkpointsStore = me.getStudentSparkpointsStore(),
+            studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id,
+            studentSparkpoint = studentSparkpointsStore.findRecord('student_sparkpointid', studentSparkpointId);
 
-        if (table == 'section_student_active_sparkpoint') {
-            if (
-                itemData.section_code == me.getAppCt().getSelectedSection() &&
-                (
-                    !(studentSparkpoint = me.getStudentSparkpointsStore().findRecord('student_id', itemData.student_id)) ||
-                    (
-                        studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id &&
-                        studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
-                    )
-                )
-            ) {
-                // TODO: handle this without a full refresh if possible
-                me.refreshGps();
+        if (table === 'section_student_active_sparkpoint') {
+            if (studentSparkpoint) {
+                studentSparkpoint.set(itemData, {
+                    dirty: false
+                });
+            } else {
+                itemData.student = Ext.getStore('Students').getById(itemData.student_id);
+                itemData.student_sparkpointid = studentSparkpointId; // eslint-disable-line camelcase
+                studentSparkpointsStore.add(itemData);
+
+                studentSparkpointsStore.filterBy(me.currentSparkpointsFilterFn, me);
             }
-        } else if (table == 'student_sparkpoint') {
-            studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id;
-
-            if ((studentSparkpoint = me.getStudentSparkpointsStore().getById(studentSparkpointId))) {
-                updatedFields = studentSparkpoint.set(itemData, { dirty: false });
+        } else if (table === 'student_sparkpoint') {
+            if (studentSparkpoint) {
+                studentSparkpoint.set(itemData, {
+                    dirty: false
+                });
             }
         }
+    },
+
+    onPhaseMoveChange: function(field, newVal) {
+        var me = this,
+            selectedStudentSparkpoints = me.getAppCt().getMultiSelectedSparkpoints(),
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            count;
+
+        if (!newVal) {
+            return;
+        }
+
+        if (studentSparkpoint) {
+            me.doMovePhase(studentSparkpoint, newVal.data.value);
+        }
+
+        if (selectedStudentSparkpoints) {
+            for (count = 0; count < selectedStudentSparkpoints.length; count++) {
+                studentSparkpoint = selectedStudentSparkpoints[count];
+                if (!me.doMovePhase(studentSparkpoint, newVal.data.value)) {
+                    break;
+                }
+            }
+        }
+
+        field.reset();
+        return;
+    },
+
+    onAssignSparkpointSelect: function(field, selectedSparkpoint) {
+        var me = this,
+            selectedStudentSparkpoints = me.getAppCt().getMultiSelectedSparkpoints(),
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            i;
+
+        if (selectedStudentSparkpoint) {
+            me.doAssignSparkpoint(selectedStudentSparkpoint, selectedSparkpoint);
+        }
+
+        if (selectedStudentSparkpoints) {
+            // loop through each student, find student sparkpoint and update last accessed
+            for (i = 0; i < selectedStudentSparkpoints.length; i++) {
+                me.doAssignSparkpoint(selectedStudentSparkpoints[i], selectedSparkpoint);
+            }
+        }
+
+        field.reset();
+        return;
     },
 
 
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            currentStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            appCt = me.getAppCt(),
+            currentStudentSparkpoint = appCt.getSelectedStudentSparkpoint(),
+            multiselect = appCt.getStudentMultiselectEnabled(),
             lists = me.getGpsCt().query('#phasesCt list'),
             i, list;
 
@@ -146,9 +239,9 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         for (i = 0; i < lists.length; i++) {
             list = lists[i];
 
-            if (currentStudentSparkpoint && list.getStore().indexOf(currentStudentSparkpoint) != -1) {
-                list.select(currentStudentSparkpoint);
-            } else {
+            if (currentStudentSparkpoint && list.getStore().indexOf(currentStudentSparkpoint) !== -1) {
+                list.select(currentStudentSparkpoint, multiselect);
+            } else if (!multiselect) {
                 list.deselectAll();
             }
         }
@@ -157,6 +250,23 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     refreshGps: Ext.Function.createBuffered(function() {
         this.getStudentSparkpointsStore().loadUpdates();
     }, 1000),
+
+    currentSparkpointsFilterFn: function(r) {
+        var activeSparkpoints = Ext.getStore('StudentSparkpoints').queryBy(function(record) {
+                return record.get('student_id') === r.get('student_id');
+            }, this).getRange(),
+            i = 0,
+            len = activeSparkpoints.length;
+
+        // we only want to keep the current (most recently accessed) sparkpoint for each student
+        for (i; i < len; i++) {
+            if (activeSparkpoints[i].get('last_accessed') > r.get('last_accessed')) {
+                return false;
+            }
+        }
+
+        return true;
+    },
 
     /**
      * @private
@@ -172,6 +282,91 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
         while (listId = workaroundRefreshQueue.pop()) {
             (workaroundListCache[listId] || (workaroundListCache[listId] = gpsCt.down('#'+listId))).refresh();
+        }
+    },
+
+    doMovePhase: function(studentSparkpoint, phase) {
+        var overrides,
+            error;
+
+        switch (phase) {
+            case 'Learn':
+                if (studentSparkpoint.get('learn_finish_time')) {
+                    error = 'Student has already finished learn phase.';
+                }
+                overrides = {
+                    'learn_override_time': null,
+                    'conference_override_time': null,
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                }
+                break;
+            case 'Conference':
+                if (studentSparkpoint.get('conference_finish_time')) {
+                    error = 'Student has already finished the conference phase.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': null,
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                }
+                break;
+            case 'Apply':
+                if (studentSparkpoint.get('apply_finish_time')) {
+                    error = 'Student has already finished the apply phase.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': new Date(),
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                }
+                break;
+            case 'Assess':
+                if (studentSparkpoint.get('assess_finish_time')) {
+                    error = 'Student has already finished the assess phase.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': new Date(),
+                    'apply_override_time': new Date(),
+                    'assess_override_time': null
+                }
+                break;
+            default:
+        }
+
+        if (error) {
+            Ext.Msg.alert('Can\'t move to ' + phase + ' phase.', error);
+            return false;
+        }
+
+        studentSparkpoint.set(overrides);
+        studentSparkpoint.save();
+        return true;
+    },
+
+    doAssignSparkpoint: function(selectedStudentSparkpoint, selectedSparkpoint) {
+        var me = this,
+            studentSparkpointsStore = me.getStudentSparkpointsStore(),
+            studentId = selectedStudentSparkpoint.get('student_id'),
+            selectedSparkpointId = selectedSparkpoint.get('id'),
+            newStudentSparkpoint = studentSparkpointsStore.findRecord('student_sparkpointid', studentId + '_' + selectedSparkpointId);
+
+        if (newStudentSparkpoint) {
+            newStudentSparkpoint.set('forceActive', new Date());
+            newStudentSparkpoint.save();
+        } else {
+            Slate.API.request({
+                method: 'PATCH',
+                url: '/spark/api/work/activity',
+                jsonData: {
+                    'student_id': studentId,
+                    'sparkpoint_id': selectedSparkpointId,
+                    'forceActive': true
+                }
+            });
         }
     }
 });

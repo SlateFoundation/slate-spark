@@ -49,19 +49,41 @@ Ext.define('SparkClassroom.work.TabBar', {
             tab = tabs[i];
 
             if (activePhaseFound) {
-                tab.removeCls(['spark-phase-complete', 'spark-phase-active']);
+                tab.removeCls(['spark-phase-complete', 'spark-phase-active', tab.getActiveCls()]);
                 continue;
             }
 
-            if (tab.getItemId() == activePhase) {
+            if (tab.getItemId() === activePhase) {
                 activePhaseFound = true;
                 tab.addCls('spark-phase-active');
+                tab.addCls(tab.getActiveCls());
                 tab.removeCls('spark-phase-complete');
                 continue;
             }
 
             tab.addCls('spark-phase-complete');
             tab.removeCls('spark-phase-active');
+            tab.removeCls(tab.getActiveCls());
+        }
+    },
+
+	/**
+     * Resets tab.Bar to select the first item and remove extra classes for active/complete etc
+     */
+    resetToDefault: function() {
+        var tabs = this.getInnerItems(),
+            tabsLen = tabs.length,
+            i = 0, tab;
+
+        for (; i < tabsLen; i++) {
+            tab = tabs[i];
+
+            tab.removeCls('spark-phase-complete');
+            tab.removeCls('spark-phase-active');
+
+            if (i === 0) {
+                this.setActiveTab(tab);
+            }
         }
     }
 });

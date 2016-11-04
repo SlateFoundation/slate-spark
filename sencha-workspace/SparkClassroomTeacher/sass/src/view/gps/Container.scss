@@ -50,6 +50,10 @@
 
     .x-list-item {
         height: $studentlist-item-height;
+
+        .x-innerhtml {
+            transition: transform .2s;
+        }
     }
 
     .item-header {
@@ -59,9 +63,33 @@
         font-weight: 400;
     }
 
+    .item-multiselect-indicator {
+        margin-left: -2em;
+        opacity: 0;
+        transition: .2s;
+        transform: translateX(-1em);
+        width: 2em;
+
+        &::before {
+            content: '\f10c'; // fa-circle-o
+            font-family: FontAwesome;
+            font-size: 21px;
+            opacity: .5;
+        }
+    }
+
+    .x-item-selected {
+        .item-multiselect-indicator {
+            &::before {
+                content: '\f058'; // fa-check-circle
+            }
+        }
+    }
+
     .item-remove-btn {
         margin-left: .6em;
         padding: .2em;
+        transition: .2s;
     }
 
     .item-origin {
@@ -82,16 +110,41 @@
         font-size: smaller;
         margin-left: .5em;
         text-align: right;
-    }
-
-    .item-description {
-        
+        transition: .2s;
     }
 
     .item-icon {
         font-size: 14px;
         opacity: .4;
     }
+
+    &.has-multiselect {
+        .spark-gps-studentlist {
+            .x-list-item {
+                .x-innerhtml {
+                    transform: translateX(1.6em);
+                }
+            }
+
+            .item-multiselect-indicator {
+                opacity: 1;
+                transform: none;
+            }
+
+            .item-timestamp,
+            .item-remove-btn {
+                opacity: 0;
+                transform: translateX(1em);
+            }
+        }
+    }
+}
+
+.spark-gps-selection-status {
+    color: rgba(white, .8);
+    font-size: .75em;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .spark-gps-list-group {
@@ -107,5 +160,22 @@
 .spark-gps-priority-group {
     .x-list-item {
         animation: list-item-slide-in .4s forwards $ease-out-circ;
+    }
+}
+
+.spark-gps-toolbar {
+    background-color: $base-color;
+
+    .x-button,
+    .x-input-el {
+        border: 0;
+        box-shadow: 0 1px 0 rgba(black, .5);
+        color: $color;
+        min-height: 0;
+        padding: .4em .6em;
+    }
+
+    .x-button-pressing {
+        background-color: #ccc;
     }
 }

@@ -14,7 +14,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.timing.DurationDisplay'
+        'SparkClassroom.timing.DurationDisplay',
+        'SparkClassroom.k1.Timer'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -40,7 +41,11 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
             xtype: 'spark-titlebar'
         },
+
+        studentMultiselectToggle: 'spark-gps button[cls~="spark-toggle-student-multiselect"]',
+
         sectionSelect: 'spark-titlebar #sectionSelect',
+        k1Timer: 'spark-titlebar spark-k1-timer',
 
         navBar: {
             selector: 'spark-teacher-navbar',
@@ -96,6 +101,13 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         },
         teacherTabBar: {
             activetabchange: 'onTeacherTabChange'
+        },
+        studentMultiselectToggle: {
+            tap: 'onToggleStudentMultiselect'
+        },
+        k1Timer: {
+            'datachange': 'onK1TimerDataChange',
+            'reset': 'onK1TimerReset'
         }
     },
 
@@ -107,6 +119,8 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         SparkClassroom.timing.DurationDisplay.init(function() {
             me.renderViews();
         });
+
+        me.initTimer();
     },
 
 
@@ -147,7 +161,10 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             }
 
             // show section dependant components
-            me.getNavBar().show();
+            if (!location.search.match(/\WenableK1(\W|$)/)) {
+                // don't show navbar in k1 interface'
+                me.getNavBar().show();
+            }
             me.getSparkGPS().show();
             me.getTabsCt().show();
 
@@ -171,6 +188,31 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         this.redirectTo(value.getItemId());
     },
 
+    onToggleStudentMultiselect: function(button) {
+        this.getSparkGPS().toggleCls('has-multiselect');
+        button.toggleCls('x-button-pressed'); // enableToggle is 6.0.2+
+        this.getAppCt().toggleStudentMultiselect(button.getCls().indexOf('x-button-pressed') > -1);
+    },
+
+    onK1TimerDataChange: function(seconds, state) {
+        var storage = Ext.util.LocalStorage.get('k1-teacher');
+
+        storage.setItem('timerSeconds', seconds);
+        if (state === 'running') {
+            storage.setItem('timerBase', Date.now());
+        } else {
+            storage.setItem('timerBase', null);
+        }
+
+        storage.release();
+    },
+
+    onK1TimerReset: function() {
+        var storage = Ext.util.LocalStorage.get('k1-teacher');
+
+        storage.clear();
+        storage.release();
+    },
 
     // custom controller methods
     renderViews: function() {
@@ -186,4 +228,32 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             me.getTabsCt()
         ]);
     },
+
+    initTimer: function() {
+        var me = this,
+            timer = me.getK1Timer(),
+            storage, record, seconds, base;
+
+        if (!location.search.match(/\WenableK1(\W|$)/)) {
+            return;
+        }
+
+        storage = Ext.util.LocalStorage.get('k1-teacher');
+        seconds = storage.getItem('timerSeconds');
+        base = storage.getItem('timerBase');
+
+        if (seconds && Ext.isNumeric(seconds)) {
+            seconds = parseInt(seconds, 10);
+
+            record = new Ext.data.Record({
+                'accrued_seconds': seconds,
+                'timer_time': base ? parseInt(base, 10) : null
+            });
+
+            timer.setRecord(record);
+        }
+
+        storage.release();
+        timer.refresh();
+    }
 });

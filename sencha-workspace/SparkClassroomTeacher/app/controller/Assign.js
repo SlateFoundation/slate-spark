@@ -194,7 +194,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         // TODO: apply filters to stores
     },
 
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+    onSelectedStudentSparkpointChange: function() {
         this.hideOverlays();
         this.syncSelectedStudentSparkpoint();
     },
