@@ -1,6 +1,6 @@
 /**
- * This component is displayed in the Student Work as the active tab when the student has not completed a previous phase.
- * Provides the option for the teacher to move the student to the next phase.
+ * This component is displayed in the Student Work as the active tab when the student has not completed a preceding phase.
+ * Provides the option for the teacher to move the student to a subsequent phase.
  */
 Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
     extend: 'Ext.Container',
@@ -24,7 +24,7 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
          * @required
          * @private
          */
-        nextPhase: null,
+        moveToPhase: null,
 
         layout: {
             type: 'vbox',
@@ -49,16 +49,16 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
         }]
     },
 
-    setNextPhase: function(phase) {
+    setMoveToPhase: function(phase) {
         var me = this,
             moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
 
-        me.nextPhase = phase;
+        me.moveToPhase = phase;
         moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
     },
 
-    getNextPhase: function() {
-        return this.nextPhase;
+    getMoveToPhase: function() {
+        return this.moveToPhase;
     },
 
     loadMoveText: function() {
