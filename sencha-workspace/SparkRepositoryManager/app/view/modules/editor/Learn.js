@@ -51,6 +51,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             sparkpointsStore: {
                 type: 'chained',
                 source: 'ContentItems',
+                groupField: 'sparkpointGroup',
                 filters: [
                     function(item) {
                         return item.get('type') === 'learn';

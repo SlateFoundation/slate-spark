@@ -31,6 +31,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             sparkpointsStore: {
                 type: 'chained',
                 source: 'ContentItems',
+                groupField: 'sparkpointGroup',
                 filters: [
                     function(item) {
                         return item.get('type') === 'apply';
