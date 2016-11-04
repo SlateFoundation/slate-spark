@@ -82,12 +82,13 @@ Ext.define('SparkRepositoryManager.model.ContentItem', {
             name: 'sparkpoint_ids',
             type: 'auto',
             allowNull: true
+        },
+        {
+            name: 'sparkpointGroup',
+            type: 'auto',
+            allowNull: true,
+            persist: false
         }
-    ],
+    ]
 
-    proxy: {
-        // TODO: this proxy is a dev workaround to contact a different API host
-        type: 'sandbox-school',
-        url: '/spark/api/work/resources'
-    }
 });
