@@ -286,13 +286,17 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     },
 
     doMovePhase: function(studentSparkpoint, phase) {
-        var overrides,
-            error;
+        var student = studentSparkpoint.get('student'),
+            studentName = student ? student.get('FirstName') : 'Student',
+            overrides,
+            error,
+            prettyDate;
 
         switch (phase) {
             case 'Learn':
                 if (studentSparkpoint.get('learn_finish_time')) {
-                    error = 'Student has already finished learn phase.';
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('learn_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Learn & Practice phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
                 }
                 overrides = {
                     'learn_override_time': null,
@@ -303,7 +307,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 break;
             case 'Conference':
                 if (studentSparkpoint.get('conference_finish_time')) {
-                    error = 'Student has already finished the conference phase.';
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('conference_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Conference phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
                 }
                 overrides = {
                     'learn_override_time': new Date(),
@@ -314,7 +319,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 break;
             case 'Apply':
                 if (studentSparkpoint.get('apply_finish_time')) {
-                    error = 'Student has already finished the apply phase.';
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('apply_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Apply phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
                 }
                 overrides = {
                     'learn_override_time': new Date(),
@@ -325,7 +331,8 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                 break;
             case 'Assess':
                 if (studentSparkpoint.get('assess_finish_time')) {
-                    error = 'Student has already finished the assess phase.';
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('assess_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Assess phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
                 }
                 overrides = {
                     'learn_override_time': new Date(),
@@ -338,7 +345,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
 
         if (error) {
-            Ext.Msg.alert('Can\'t move to ' + phase + ' phase.', error);
+            Ext.Msg.alert('Phase Crediting Conflict', error);
             return false;
         }
 
