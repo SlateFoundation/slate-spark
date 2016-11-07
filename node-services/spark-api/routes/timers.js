@@ -22,7 +22,13 @@ function *getHandler() {
         vals = new util.Values(),
         where = util.recordToWhere(params, vals);
 
-    ctx.body = yield ctx.pgp.any(`SELECT * FROM section_timers ${where}`, vals.vals);
+    ctx.body = yield ctx.pgp.any(/* language=SQL */  `
+      SELECT section_timers.*,
+             cs."Code" AS section_code
+        FROM section_timers
+        JOIN course_sections cs ON cs."ID" = section_id
+        ${where}
+    `, vals.vals);
 }
 
 function *putHandler() {
