@@ -84,18 +84,7 @@ function *patchHandler() {
     if (modules.sucess === false) return;
 
     queries = queriesToReturningJsonCte(queries);
-    try {
-        modules = yield ctx.pgp.any(queries, vals.vals);
-    } catch (e) {
-        var error = { error: e.toString(), success: false };
-        if (ctx.isDeveloper) {
-            error.exception = e;
-            error.schema = ctx.introspection.tables.modules;
-        }
-        ctx.body = error;
-        ctx.status = 400;
-        return;
-    }
+    modules = yield ctx.pgp.any(queries, vals.vals);
 
     ctx.body = modules.map(record => {
         var module;
