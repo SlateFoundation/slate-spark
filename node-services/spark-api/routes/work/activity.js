@@ -1,7 +1,8 @@
 'use strict';
 
 var util = require('../../lib/util'),
-    codifyRecord = util.codifyRecord;
+    codifyRecord = util.codifyRecord,
+    moduleEndpoint = require('./modules/index.js');
 
 function *getHandler() {
     this.require(['section_id']);
@@ -289,13 +290,22 @@ function *patchHandler() {
         ) + ' RETURNING *;', vals.vals
     );
 
-    ctx.body = codifyRecord(result || (yield ctx.pgp.one(/*language=SQL*/ `
+    let response = codifyRecord(result || (yield ctx.pgp.one(/*language=SQL*/ `
       SELECT *
         FROM student_sparkpoint
        WHERE sparkpoint_id = $1
          AND student_id = $2`,
             [sparkpointId, studentId]
     )), ctx.lookup);
+
+    if (ctx.isStudent) {
+        let moduleTemplate = yield ctx.pgp.oneOrNone('SELECT * FROM modules WHERE sparkpoint_id = $1', sparkpointId);
+        if (moduleTemplate) {
+            response.module_template = util.codifyRecord(moduleEndpoint.recordToModel(moduleTemplate), ctx.lookup);
+        }
+    }
+
+    ctx.body = response;
 }
 
 function *deleteHandler() {
