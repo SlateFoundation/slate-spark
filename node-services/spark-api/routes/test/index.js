@@ -13,10 +13,15 @@ function *getHandler() {
                    current_setting('spark.request_id') AS request_id,
                    current_setting('spark.role') AS role,
                    current_setting('application_name') AS application_name
-        `),
-        introspection: ctx.introspection,
-        state: ctx.state
+        `)
     };
+
+    if (ctx.isDeveloper) {
+        ctx.body['*********************** BEGIN CONFIDENTIAL DATA ***********************'] = true;
+        ctx.body.state = ctx.state;
+        ctx.body['***********************  END CONFIDENTIAL DATA  ***********************'] = true;
+        ctx.body.introspection = ctx.introspection;
+    }
 }
 
 module.exports = {
