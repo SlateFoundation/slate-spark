@@ -41,7 +41,6 @@ function *patchHandler() {
     var recordToUpsert = util.recordToUpsert.bind(ctx);
     var queries = [];
     var tableColumns = Object.keys(ctx.introspection.tables.modules);
-    var errs;
 
     ctx.assert(
         Array.isArray(modules) && modules.length > 0,
@@ -53,6 +52,12 @@ function *patchHandler() {
         ctx.assert(typeof module === 'object', 400, 'module must be a json object');
         module.author_id || (module.author_id = ctx.userId);
         module.template || (module.template = {});
+
+        // Allow null "id" on creation
+        if (module.id === null) {
+            delete module.id;
+        }
+
         if (module.published === true) {
             module.published = new Date().toUTCString();
         }
