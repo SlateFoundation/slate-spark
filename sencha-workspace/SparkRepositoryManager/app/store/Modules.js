@@ -5,9 +5,20 @@ Ext.define('SparkRepositoryManager.store.Modules', {
     pageSize: 0,
     remoteFilter: false,
     remoteSort: false,
-    parentIdProperty: 'contentAreaId',
+    parentIdProperty: 'parentId',
 	nodeParam: null,
     autoSync: true,
+
+    root: {
+        expanded: true,
+        children: [{
+            id: 'Global',
+            code: 'Global Modules'
+        }, {
+            id: 'Personal',
+            code: 'Your Modules'
+        }]
+    },
 
     /**
      * Go through records after treeify runs and mark all nodes withouth children as leafs
@@ -16,6 +27,8 @@ Ext.define('SparkRepositoryManager.store.Modules', {
         var result = this.callParent(arguments),
             recordsLength = records.length,
             recordIndex = 0, record;
+
+        console.log('TREEIFY !!!!!!!!!!!!!!!!!');
 
         for (; recordIndex < recordsLength; recordIndex++) {
             record = records[recordIndex];
@@ -29,14 +42,13 @@ Ext.define('SparkRepositoryManager.store.Modules', {
         load: function(store, records) {
             // console.log('store load!');
             // console.log(records);
+            console.log('load !!!!!!!!!!!!!!!!!');
 
-            if (!records) {
                 store.insert(0, {
                     id: 1,
                     code: 'ELA'
                 });
                 store.sync();
-            }
         }
     }
 /*
