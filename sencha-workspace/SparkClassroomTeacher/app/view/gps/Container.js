@@ -61,7 +61,7 @@ Ext.define('SparkClassroomTeacher.view.gps.Container', {
                             },
                             {
                                 text: 'Assess',
-                                value: 'Asses'
+                                value: 'Assess'
                             }
                         ]
                     }
