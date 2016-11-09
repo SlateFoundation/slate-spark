@@ -13,10 +13,12 @@ Ext.define('SparkRepositoryManager.store.Modules', {
         expanded: true,
         children: [{
             id: 'Global',
-            code: 'Global Modules'
+            code: 'Global Modules',
+            expanded: true
         }, {
             id: 'Personal',
-            code: 'Your Modules'
+            code: 'Your Modules',
+            expanded: true
         }]
     },
 
@@ -27,8 +29,6 @@ Ext.define('SparkRepositoryManager.store.Modules', {
         var result = this.callParent(arguments),
             recordsLength = records.length,
             recordIndex = 0, record;
-
-        console.log('TREEIFY !!!!!!!!!!!!!!!!!');
 
         for (; recordIndex < recordsLength; recordIndex++) {
             record = records[recordIndex];
@@ -42,65 +42,15 @@ Ext.define('SparkRepositoryManager.store.Modules', {
         load: function(store, records) {
             // console.log('store load!');
             // console.log(records);
-            console.log('load !!!!!!!!!!!!!!!!!');
-
+        //    console.log('load !!!!!!!!!!!!!!!!!');
+/*
                 store.insert(0, {
                     id: 1,
                     code: 'ELA'
                 });
                 store.sync();
+*/
         }
     }
-/*
-    root: {
-        expanded: true,
-        children: [
-            {
-                ID: 1,
-                Code: 'ELA'
-            },
-            {
-                ID: 2,
-                Code: 'MATH'
-            },
-            {
-                ID: 4,
-                Code: 'SCI'
-            },
-            {
-                ID: 5,
-                Code: 'HIS'
-            },
-            {
-                ID: 9,
-                Code: 'HEALTH'
-            },
-            {
-                ID: 10,
-                Code: 'WL'
-            },
-            {
-                ID: 11,
-                Code: 'PE'
-            },
-            {
-                ID: 14,
-                Code: 'VA'
-            },
-            {
-                ID: 16,
-                Code: 'HABIT'
-            },
-            {
-                ID: 17,
-                Code: 'OLD'
-            },
-            {
-                ID: 3,
-                Code: 'MC'
-            }
-        ]
-    }
-*/
 });
 
