@@ -25,18 +25,19 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
             items: [
                 {
                     xtype: 'button',
+                    action: 'clone',
                     text: 'Clone Module'
                 },
                 '-',
                 {
-                    xtype: 'checkbox',
-                    name: 'published',
-                    boxLabel: 'Publish module'
+                    xtype: 'button',
+                    action: 'publish',
+                    text: 'Publish module'
                 },
                 '-',
                 {
                     xtype: 'checkbox',
-                    name: 'shared',
+                    name: 'global',
                     boxLabel: 'Share module globally'
                 }
             ]
@@ -90,8 +91,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                             name: 'title',
                             flex: 1,
                             margin: 0,
-                            checkChangeEvents: ['blur'],
-                            value: 'Ex: Long form essays about American revolutionaries in North Carolina' // TODO remove
+                            checkChangeEvents: ['blur']
                         }
                     ]
                 },
