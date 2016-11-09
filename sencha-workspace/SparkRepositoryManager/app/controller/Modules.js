@@ -9,16 +9,15 @@
 Ext.define('SparkRepositoryManager.controller.Modules', {
     extend: 'Ext.app.Controller',
     requires: [
+        'SparkRepositoryManager.model.Module',
+        'Ext.window.Toast'
     ],
+
 
     // mutable state
     config: {
-
-        /**
-         * @private
-         * Tracks the current module {@link SparkRepositoryManager.model.Module}
-         */
-        module: null
+        module: null,
+        suspended: false
     },
 
 
@@ -44,6 +43,15 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             selector: 's2m-modules-editor form#modules-meta-info'
         },
 
+        // editor panel
+        {
+            ref: 'publishButton',
+            selector: 's2m-modules-editor button[action="publish"]'
+        }, {
+            ref: 'globalCheckbox',
+            selector: 's2m-modules-editor checkbox[name="global"]'
+        },
+
         // intro tab
         {
             ref: 'sparkpointsCombo',
@@ -51,6 +59,21 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'sparkpointGrid',
             selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
+        },
+
+        // tabs
+        {
+            ref: 'learnsSelectorModuleGrid',
+            selector: 's2m-modules-editor-learn s2m-modules-multiselector grid#module-grid'
+        }, {
+            ref: 'questionsSelectorModuleGrid',
+            selector: 's2m-modules-editor-questions s2m-modules-multiselector grid#module-grid'
+        }, {
+            ref: 'resourcesSelectorModuleGrid',
+            selector: 's2m-modules-editor-resources s2m-modules-multiselector grid#module-grid'
+        }, {
+            ref: 'appliesSelectorModuleGrid',
+            selector: 's2m-modules-editor-apply s2m-modules-multiselector grid#module-grid'
         }
 
     ],
@@ -71,7 +94,10 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
 
         // editor panel
-        's2m-modules-editor checkbox[name="shared"]': {
+        's2m-modules-editor button[action="publish"]': {
+            click: 'onPublishButtonClick'
+        },
+        's2m-modules-editor checkbox[name="global"]': {
             change: 'onModuleMetaFieldChange'
         },
         's2m-modules-editor combo[name="content_area"]': {
@@ -85,6 +111,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         's2m-modules-editor-intro button[action="add-sparkpoint"]': {
             click: 'onAddSparkpointClick'
         },
+        's2m-modules-editor-intro textarea[name="directions"]': {
+            change: 'onModuleMetaFieldChange'
+        },
 
         // other tabs
         's2m-modules-multiselector grid#module-grid': {
@@ -95,7 +124,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // controller templates method overrides
     init: function() {
-        var me = this;
+    //    var me = this;
 
     //    me.getContentItemsStore().load({
     //        params: {
@@ -117,8 +146,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // event handlers
     onModuleUpdate: function(container, module) {
-//        console.log('Module has been updated!'); // eslint-disable-line no-console
-        module.save();
+        console.log('Module has been updated!'); // eslint-disable-line no-console
+        console.log(module); // eslint-disable-line no-console
+        // module.save();
 //        console.log(module.getData()); // eslint-disable-line no-console
     },
 
@@ -129,15 +159,26 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.getModuleEditor().setDisabled(false);
     },
 
-    onModuleMetaFieldChange: function(field, val) {
+    onPublishButtonClick: function() {
         var me = this,
             module = me.getModule();
 
-        module.set(field.getName(), val);
+        // TODO: How are we going to handle this?
+        module.set('published', new Date());
 
-        module.save();
-        me.getModulesStore().sync();
+        me.saveModule();
 
+    },
+
+    onModuleMetaFieldChange: function(field, val) {
+        var me = this,
+            fieldName = field.getName(),
+            module = me.getModule();
+
+        if (fieldName !== 'code') {
+            module.set(field.getName(), val);
+            me.saveModule();
+        }
     },
 
     onContentAreaChange: function(combo, val) {
@@ -184,10 +225,68 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     // custom controller methods
     loadModule: function(module) {
         var me = this,
-            meta = me.getModuleMeta();
+            meta = me.getModuleMeta(),
+            sparkpoints = module.get('sparkpoints') || [],
+            learns = module.get('learns') || [],
+            questions = module.get('questions') || [],
+            resources = module.get('resources') || [],
+            applies = module.get('applies') || [];
+
+        console.log('loading record'); // eslint-disable-line no-console
+
+        me.setSuspended(true);
 
         meta.loadRecord(module);
+        me.getGlobalCheckbox().setValue(module.get('global'));
 
+        me.getPublishButton().setDisabled(module.get('published'));
+
+        me.getSparkpointGrid().getStore().loadData(sparkpoints);
+
+        me.getLearnsSelectorModuleGrid().getStore().loadData(learns);
+        me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
+        me.getResourcesSelectorModuleGrid().getStore().loadData(resources);
+        me.getAppliesSelectorModuleGrid().getStore().loadData(applies);
+
+        me.setSuspended(false);
+    },
+
+    saveModule: function() {
+        var me = this,
+            module = me.getModule(),
+            err, e;
+
+        if (!me.getSuspended()) {
+
+            console.log('saving module'); // eslint-disable-line no-console
+
+            // do not send id field if this is a new record
+            module.getField('id').persist = !module.phantom;
+
+            module.save({
+                callback: function(record, operation, success) {
+                    if (success) {
+                        me.loadModule(module);
+                    } else {
+                        err = operation.error;
+
+                        if (err && err.response && err.response.responseText) {
+                            e = Ext.decode(operation.error.response.responseText, true);
+
+                            if (e && e.error && e.error.message) {
+                                Ext.toast('ERROR: ' + e.error.message);
+                            } else {
+                                Ext.toast('ERROR: unknown error');
+                            }
+
+                        } else {
+                            Ext.toast('ERROR: unknown error');
+                        }
+                    }
+                }
+            });
+
+        }
     },
 
     updateSparkpoints: function() {
@@ -206,8 +305,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         if (module !== null) {
             module.set('sparkpoints', moduleSparkpoints);
-            module.save();
-            me.getModulesStore().sync();
+            me.saveModule();
         }
 
         me.getContentItemsStore().load({
@@ -236,8 +334,24 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         if (module !== null) {
             module.set(itemType, moduleItems);
-            module.save();
-            me.getModulesStore().sync();
+            me.saveModule();
+        }
+    },
+
+    toggleFieldEvents: function(suspend) {
+        var me = this,
+            meta = me.getModuleMeta();
+
+        // TODO : no function loops
+        if (suspend) {
+            meta.getForm().getFields().each(function(item) {
+                item.suspendCheckChange++;
+            });
+        } else {
+            meta.getForm().getFields().each(function(item) {
+              item.suspendCheckChange--;
+            });
         }
     }
+
 });
