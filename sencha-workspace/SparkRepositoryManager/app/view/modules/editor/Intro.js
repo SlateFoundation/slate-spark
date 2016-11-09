@@ -191,11 +191,13 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                         },
                         {
                             xtype: 'textarea',
+                            name: 'directions',
                             fieldLabel: 'Directions',
                             labelAlign: 'top',
                             labelSeparator: '',
                             height: 160,
-                            margin: '40 0' // TODO why is extra margin needed?
+                            margin: '40 0', // TODO why is extra margin needed?
+                            checkChangeEvents: ['blur']
                         }
                     ]
                 }
