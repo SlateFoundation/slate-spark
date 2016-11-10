@@ -9,27 +9,31 @@ const util = require('../../../lib/util.js');
 // TODO: Implement temporal/revisions
 // TODO: Implement security using RLS
 
+function recordToModel(record) {
+    var module;
+
+    if (record.template) {
+        module = record.template || {};
+        delete record.template;
+    } else {
+        module = {};
+    }
+
+    for (var key in record) {
+        module[key] = record[key];
+    }
+
+    delete module.template
+
+    return module;
+}
+
 // Get all of the modules, by content area id, filtering by author_id for unpublished content, unless admin/developer
 function *getHandler() {
-    var ctx = this;
-    ctx.body = yield selectFromRequest.call(ctx, 'modules').map(record => {
-        var module;
+    var ctx = this,
+        recordToModel = recordToModel.bind(ctx);
 
-        if (record.template) {
-            module = record.template || {};
-            delete record.template;
-        } else {
-            module = {};
-        }
-
-        for(var key in record) {
-            module[key] = record[key];
-        }
-
-        delete module.template;
-
-        return module;
-    });
+    ctx.body = yield selectFromRequest.call(ctx, 'modules').map(record => { util.codifyRecord(recordToModel(record)) });
 }
 
 
@@ -61,8 +65,9 @@ function *patchHandler() {
         if (module.published === true) {
             module.published = new Date().toUTCString();
         }
-        let canWrite = (module.author_id === ctx.userId || ctx.isAdmin || ctx.isDeveloper);
-        ctx.assert(canWrite, 403, 'Only the author of a module or an administrator/developer can delete a module.');
+
+        let canWrite = (!module.id || module.author_id === ctx.userId || ctx.isAdmin || ctx.isDeveloper);
+        ctx.assert(canWrite, 403, 'Only the author of a module or an administrator/developer can PATCH modules.');
         Object
             .keys(module)
             .filter(col => !tableColumns.includes(col) && col !== 'template')
@@ -141,5 +146,6 @@ function *deleteHandler() {
 module.exports = {
     get: getHandler,
     patch: patchHandler,
-    delete: deleteHandler
+    delete: deleteHandler,
+    recordToModel: recordToModel
 };
