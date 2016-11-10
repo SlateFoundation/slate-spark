@@ -103,6 +103,17 @@ Ext.define('SparkRepositoryManager.model.Module', {
             critical: true
         },
         {
+            name: 'directions',
+            type: 'string',
+            critical: true
+        },
+        {
+            name: 'phase_start',
+            type: 'auto',
+            critical: true,
+            default: {}
+        },
+        {
             name: 'sparkpoints',
             type: 'auto',
             critical: true,
@@ -146,7 +157,7 @@ Ext.define('SparkRepositoryManager.model.Module', {
             name: 'parentId',
             persist: false,
             convert: function(val, rec) {
-                return rec.get('global') === true ? 'Global' : 'Personal';
+                return rec.get('global') === true ? 'global' : 'personal';
             }
         }
 
