@@ -89,7 +89,7 @@ Ext.define('SparkRepositoryManager.model.Module', {
             allowNull: true
         },
         {
-            name: 'content_area',
+            name: 'content_area_id',
             type: 'int',
             critical: true,
             allowNull: true

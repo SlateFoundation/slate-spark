@@ -109,7 +109,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         's2m-modules-editor checkbox[name="global"]': {
             change: 'onModuleMetaFieldChange'
         },
-        's2m-modules-editor combo[name="content_area"]': {
+        's2m-modules-editor combo[name="content_area_id"]': {
+            boxready: 'onContentAreaBoxReady',
             change: 'onContentAreaChange'
         },
 
@@ -220,6 +221,10 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         });
     },
 
+    onContentAreaBoxReady: function(combo) {
+        combo.getStore().load();
+    },
+
     onPhaseStartFieldChange: function(field, val) {
         var me = this,
             fieldName = field.getName(),
@@ -264,19 +269,19 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onAddLearnButtonClick: function() {
-        console.log('onAddLearnButtonClick');
+        console.log('onAddLearnButtonClick'); // eslint-disable-line no-console
     },
 
     onAddQuestionButtonClick: function() {
-        console.log('onAddQuestionButtonClick');
+        console.log('onAddQuestionButtonClick'); // eslint-disable-line no-console
     },
 
     onAddResourceButtonClick: function() {
-        console.log('onAddResourceButtonClick');
+        console.log('onAddResourceButtonClick'); // eslint-disable-line no-console
     },
 
     onAddApplyButtonClick: function() {
-        console.log('onAddApplyButtonClick');
+        console.log('onAddApplyButtonClick'); // eslint-disable-line no-console
     },
 
     // custom controller methods
@@ -291,7 +296,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             resources = module.get('resources') || [],
             applies = module.get('applies') || [];
 
-        console.log('loading record'); // eslint-disable-line no-console
+        console.log('loading record'); // eslint-disable-line no-console, /* TODO: remove this */
+        console.log(module); // eslint-disable-line no-console, /* TODO: remove this */
 
         me.setSuspended(true);
 

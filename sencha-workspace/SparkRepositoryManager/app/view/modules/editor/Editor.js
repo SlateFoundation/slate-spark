@@ -71,7 +71,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                         },
                         {
                             fieldLabel: 'Content Area',
-                            name: 'content_area',
+                            name: 'content_area_id',
                             xtype: 'combo',
                             displayField: 'code',
                             valueField: 'id',
