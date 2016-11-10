@@ -12,11 +12,11 @@ Ext.define('SparkRepositoryManager.store.Modules', {
     root: {
         expanded: true,
         children: [{
-            id: 'Global',
+            id: 'global',
             code: 'Global Modules',
             expanded: true
         }, {
-            id: 'Personal',
+            id: 'personal',
             code: 'Your Modules',
             expanded: true
         }]
