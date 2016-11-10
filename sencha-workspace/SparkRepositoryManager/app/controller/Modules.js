@@ -59,6 +59,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'sparkpointGrid',
             selector: 's2m-modules-editor-intro grid#sparkpoint-grid'
+        }, {
+            ref: 'phaseStartFieldContainer',
+            selector: 's2m-modules-editor-intro fieldcontainer#phase_start'
+        }, {
+            ref: 'directionsTextarea',
+            selector: 's2m-modules-editor-intro textarea[name="directions"]'
         },
 
         // tabs
@@ -89,6 +95,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         's2m-modules-navigator button[action="add-new-module"]': {
             click: 'onNewModuleClick'
         },
+        's2m-modules-navigator treepanel': {
+            select: 'onTreepanelSelect'
+        },
         '#modules-meta-info field': {
             change: 'onModuleMetaFieldChange'
         },
@@ -110,6 +119,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
         's2m-modules-editor-intro button[action="add-sparkpoint"]': {
             click: 'onAddSparkpointClick'
+        },
+        's2m-modules-editor-intro fieldcontainer#phase_start textfield': {
+            change: 'onPhaseStartFieldChange'
         },
         's2m-modules-editor-intro textarea[name="directions"]': {
             change: 'onModuleMetaFieldChange'
@@ -159,6 +171,13 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.getModuleEditor().setDisabled(false);
     },
 
+    onTreepanelSelect: function(treepanel, record) {
+        var me = this;
+
+        me.setModule(record);
+        me.getModuleEditor().setDisabled(false);
+    },
+
     onPublishButtonClick: function() {
         var me = this,
             module = me.getModule();
@@ -189,6 +208,17 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         });
     },
 
+    onPhaseStartFieldChange: function(field, val) {
+        var me = this,
+            fieldName = field.getName(),
+            module = me.getModule(),
+            phaseStart = module.get('phase_start') || {};
+
+        phaseStart[fieldName] = val;
+        module.set('phase_start', phaseStart);
+        me.saveModule();
+
+    },
 
     // event handlers - Intro tab
     onSparkpointGridBoxready: function(grid) {
@@ -226,6 +256,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     loadModule: function(module) {
         var me = this,
             meta = me.getModuleMeta(),
+            phaseStart = module.get('phase_start') || {},
+            phaseStartCnt = me.getPhaseStartFieldContainer(),
             sparkpoints = module.get('sparkpoints') || [],
             learns = module.get('learns') || [],
             questions = module.get('questions') || [],
@@ -236,19 +268,28 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         me.setSuspended(true);
 
+        // meta fields
         meta.loadRecord(module);
         me.getGlobalCheckbox().setValue(module.get('global'));
-
         me.getPublishButton().setDisabled(module.get('published'));
 
+        // intro tab
         me.getSparkpointGrid().getStore().loadData(sparkpoints);
+        me.getDirectionsTextarea().setValue(module.get('directions'));
+        phaseStartCnt.down('field[name="LP"]').setValue(phaseStart.LP);
+        phaseStartCnt.down('field[name="C"]').setValue(phaseStart.C);
+        phaseStartCnt.down('field[name="Ap"]').setValue(phaseStart.Ap);
+        phaseStartCnt.down('field[name="As"]').setValue(phaseStart.As);
+        phaseStartCnt.down('field[name="Total"]').setValue(phaseStart.Total);
 
+        // other tabs
         me.getLearnsSelectorModuleGrid().getStore().loadData(learns);
         me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
         me.getResourcesSelectorModuleGrid().getStore().loadData(resources);
         me.getAppliesSelectorModuleGrid().getStore().loadData(applies);
 
         me.setSuspended(false);
+        console.log('loaded record'); // eslint-disable-line no-console
     },
 
     saveModule: function() {
