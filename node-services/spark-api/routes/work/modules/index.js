@@ -10,30 +10,22 @@ const util = require('../../../lib/util.js');
 // TODO: Implement security using RLS
 
 function recordToModel(record) {
-    var module;
-
-    if (record.template) {
-        module = record.template || {};
-        delete record.template;
-    } else {
-        module = {};
-    }
+    var module = record.template || {};
 
     for (var key in record) {
+        if (key === 'template') continue;
         module[key] = record[key];
     }
-
-    delete module.template
 
     return module;
 }
 
 // Get all of the modules, by content area id, filtering by author_id for unpublished content, unless admin/developer
 function *getHandler() {
-    var ctx = this;
-    ctx.body = yield selectFromRequest.call(ctx, 'modules').map(record => {
-        util.codifyRecord(recordToModel(record), ctx.lookup)
-    });
+    var ctx = this,
+        modules = yield selectFromRequest.call(ctx, 'modules');
+
+    ctx.body = modules.map(record => util.codifyRecord(recordToModel(record), ctx.lookup));
 }
 
 
