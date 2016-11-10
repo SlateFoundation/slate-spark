@@ -68,9 +68,9 @@ function *patchHandler() {
         }
     } catch (e) {
         var action = paused ? 'unpause' : 'pause',
-            state = paused ? 'paused': 'unpaused';
+            state = paused ? 'a paused': 'an unpaused';
 
-        ctx.throw(400, new Error(`You can only ${action} a ${state} timer.`));
+        ctx.throw(400, new Error(`You cannot ${action} ${state} timer.`));
     }
 
     ctx.body = util.codifyRecord(timer, ctx.lookup);
