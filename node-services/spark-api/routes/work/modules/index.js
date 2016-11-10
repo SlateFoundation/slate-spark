@@ -30,9 +30,7 @@ function recordToModel(record) {
 
 // Get all of the modules, by content area id, filtering by author_id for unpublished content, unless admin/developer
 function *getHandler() {
-    var ctx = this,
-        recordToModel = recordToModel.bind(ctx);
-
+    var ctx = this;
     ctx.body = yield selectFromRequest.call(ctx, 'modules').map(record => { util.codifyRecord(recordToModel(record)) });
 }
 
