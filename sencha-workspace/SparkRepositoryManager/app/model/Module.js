@@ -1,8 +1,5 @@
 Ext.define('SparkRepositoryManager.model.Module', {
-    extend: 'Ext.data.Model',
-    requires: [
-        'SparkRepositoryManager.model.ModuleData'
-    ],
+    extend: 'Ext.data.Model'
 
     proxy: {
         // TODO: this proxy is a dev workaround to contact a different API host
