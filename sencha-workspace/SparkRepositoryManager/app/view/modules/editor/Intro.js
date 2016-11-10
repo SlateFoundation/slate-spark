@@ -154,6 +154,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                     items: [
                         {
                             xtype: 'fieldcontainer',
+                            itemId: 'phase_start',
                             fieldLabel: 'Day each phase should start',
                             labelAlign: 'top',
                             layout: 'hbox',
@@ -168,23 +169,29 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                 labelStyle: 'font-size: 1em; text-transform: none',
                                 style: {
                                     textAlign: 'center'
-                                }
+                                },
+                                checkChangeEvents: ['blur']
                             },
                             items: [
                                 {
-                                    fieldLabel: 'L&amp;P'
+                                    fieldLabel: 'L&amp;P',
+                                    name: 'LP'
                                 },
                                 {
-                                    fieldLabel: 'C'
+                                    fieldLabel: 'C',
+                                    name: 'C'
                                 },
                                 {
-                                    fieldLabel: 'Ap'
+                                    fieldLabel: 'Ap',
+                                    name: 'Ap'
                                 },
                                 {
-                                    fieldLabel: 'As'
+                                    fieldLabel: 'As',
+                                    name: 'As'
                                 },
                                 {
                                     fieldLabel: 'Total',
+                                    name: 'Total',
                                     margin: 0
                                 }
                             ]
