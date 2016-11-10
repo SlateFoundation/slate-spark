@@ -157,7 +157,8 @@ Ext.define('SparkRepositoryManager.model.Module', {
             name: 'parentId',
             persist: false,
             convert: function(val, rec) {
-                return rec.get('global') === true ? 'global' : 'personal';
+        //        return rec.get('global') === true ? 'global' : 'personal';
+                return null;
             }
         }
 
