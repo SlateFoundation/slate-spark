@@ -8,7 +8,8 @@ CREATE TABLE section_timers (
   section_id INTEGER PRIMARY KEY,
   teacher_id INTEGER,
   started TIMESTAMPTZ,
-  duration_seconds INTEGER NOT NULL DEFAULT 0 CHECK (duration_seconds >= 0)
+  duration_seconds INTEGER NOT NULL DEFAULT 0 CHECK (duration_seconds >= 0),
+  paused integer DEFAULT NULL
 );
 `
 
@@ -29,6 +30,50 @@ function *getHandler() {
         JOIN course_sections cs ON cs."ID" = section_id
         ${where}
     `, vals.vals);
+}
+
+function *patchHandler() {
+    var ctx = this,
+        timer = util.identifyRecordSync(ctx.request.body || {}, ctx.lookup),
+        sectionId = timer.section_id,
+        teacherId = timer.teacher_id || ctx.userId,
+        paused = !!timer.paused;
+
+    ctx.assert(ctx.isTeacher, 400, 'Only teachers can set timers');
+    ctx.assert(sectionId, 400, 'section_id is required');
+    ctx.assert(ctx.userId === teacherId || ctx.isDeveloper, 403, 'Only developers can set timers as another user.');
+
+    try {
+        if (paused) {
+            timer = yield ctx.pgp.one(/*language=SQL*/ `
+        UPDATE section_timers
+           SET paused = duration_seconds - EXTRACT(EPOCH FROM (current_timestamp - started))
+         WHERE section_id = $1
+           AND teacher_id = $2
+           AND paused IS NULL
+     RETURNING *`,
+                [sectionId, teacherId]
+            );
+        } else {
+            timer = yield ctx.pgp.one(/*language=SQL*/ `
+          UPDATE section_timers
+             SET paused = null,
+                 started = (current_timestamp - ((duration_seconds - paused) || ' seconds'::TEXT)::INTERVAL)
+           WHERE section_id = $1
+             AND teacher_id = $2
+             AND paused IS NOT NULL
+       RETURNING *`,
+                [sectionId, teacherId]
+            );
+        }
+    } catch (e) {
+        var action = paused ? 'unpause' : 'pause',
+            state = paused ? 'paused': 'unpaused';
+
+        ctx.throw(400, new Error(`You can only ${action} a ${state} timer.`));
+    }
+
+    ctx.body = util.codifyRecord(timer, ctx.lookup);
 }
 
 function *putHandler() {
@@ -63,5 +108,6 @@ function *putHandler() {
 
 module.exports = {
   get: getHandler,
-  put: putHandler
+  put: putHandler,
+  patch: patchHandler
 };
