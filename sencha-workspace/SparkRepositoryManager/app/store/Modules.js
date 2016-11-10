@@ -7,7 +7,7 @@ Ext.define('SparkRepositoryManager.store.Modules', {
     remoteSort: false,
     parentIdProperty: 'parentId',
 	nodeParam: null,
-    autoSync: true,
+    autoSync: false,
 
     root: {
         expanded: true,
