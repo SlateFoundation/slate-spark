@@ -51,6 +51,7 @@ function pgp(options) {
             ctx.pgp = new PgpWrapper(ctx._pgp, ctx);
 
             guc = {
+                'spark.schema': schema,
                 'spark.user_id': ctx.userId,
                 'spark.role': ctx.role,
                 'spark.request_id': requestId,
