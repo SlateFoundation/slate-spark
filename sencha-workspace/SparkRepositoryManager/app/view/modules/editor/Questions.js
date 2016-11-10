@@ -24,6 +24,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
                 {
                     xtype: 'button',
                     text: 'Add Question',
+                    action: 'add-question',
                     glyph: 0xf067 // fa-plus
                 }
             ],

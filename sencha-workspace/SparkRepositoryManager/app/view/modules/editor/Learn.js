@@ -38,6 +38,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                 {
                     xtype: 'button',
                     text: 'Add Learn',
+                    action: 'add-learn',
                     margin: '0 10 0 20',
                     glyph: 0xf067 // fa-plus
                 },

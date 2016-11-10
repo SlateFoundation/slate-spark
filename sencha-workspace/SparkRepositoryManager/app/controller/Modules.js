@@ -130,6 +130,18 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         // other tabs
         's2m-modules-multiselector grid#module-grid': {
             boxready: 'onModuleGridBoxready'
+        },
+        's2m-modules-editor-learn button[action="add-learn"]': {
+            click: 'onAddLearnButtonClick'
+        },
+        's2m-modules-editor-questions button[action="add-question"]': {
+            click: 'onAddQuestionButtonClick'
+        },
+        's2m-modules-editor-resources button[action="add-resource"]': {
+            click: 'onAddResourceButtonClick'
+        },
+        's2m-modules-editor-apply button[action="add-apply"]': {
+            click: 'onAddApplyButtonClick'
         }
     },
 
@@ -251,6 +263,21 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         });
     },
 
+    onAddLearnButtonClick: function() {
+        console.log('onAddLearnButtonClick');
+    },
+
+    onAddQuestionButtonClick: function() {
+        console.log('onAddQuestionButtonClick');
+    },
+
+    onAddResourceButtonClick: function() {
+        console.log('onAddResourceButtonClick');
+    },
+
+    onAddApplyButtonClick: function() {
+        console.log('onAddApplyButtonClick');
+    },
 
     // custom controller methods
     loadModule: function(module) {

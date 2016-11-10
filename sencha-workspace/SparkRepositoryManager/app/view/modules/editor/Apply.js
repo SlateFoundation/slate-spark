@@ -24,6 +24,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
                 {
                     xtype: 'button',
                     text: 'Add Apply',
+                    action: 'add-apply',
                     glyph: 0xf067 // fa-plus
                 }
             ],

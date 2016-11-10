@@ -24,6 +24,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
                 {
                     xtype: 'button',
                     text: 'Add Resource',
+                    action: 'add-resource',
                     glyph: 0xf067 // fa-plus
                 }
             ],
