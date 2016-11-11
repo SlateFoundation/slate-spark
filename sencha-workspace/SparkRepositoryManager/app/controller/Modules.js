@@ -546,22 +546,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }
     },
 
-    toggleFieldEvents: function(suspend) {
-        var me = this,
-            meta = me.getModuleMeta();
-
-        // TODO : no function loops
-        if (suspend) {
-            meta.getForm().getFields().each(function(item) {
-                item.suspendCheckChange++;
-            });
-        } else {
-            meta.getForm().getFields().each(function(item) {
-              item.suspendCheckChange--;
-            });
-        }
-    },
-
     // convert Emergence camelcase field names to lowercase used by spark-api
     convertFieldNames: function(obj) {
         var keys = Object.keys(obj),
