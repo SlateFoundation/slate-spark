@@ -119,6 +119,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                                 tpl: [
                                     '<tpl if="url">',
                                         '<a href="{url}" target="_blank">{title}</a>',
+                                    '<tpl elseif="question">',
+                                        '{question}',
                                     '<tpl else>',
                                         '{title}',
                                     '</tpl>'
