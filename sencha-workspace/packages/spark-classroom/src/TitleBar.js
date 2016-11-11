@@ -4,7 +4,7 @@ Ext.define('SparkClassroom.TitleBar', {
     xtype: 'spark-titlebar',
     requires: [
         'Ext.field.Select',
-        'SparkClassroom.work.Timer'
+        'SparkClassroom.k1.CountdownTimer'
     ],
 
     config: {
@@ -36,7 +36,7 @@ Ext.define('SparkClassroom.TitleBar', {
                 xtype: 'spacer'
             },
             {
-                xtype: 'spark-k1-timer',
+                xtype: 'spark-k1-countdowntimer',
                 hidden: !location.search.match(/\WenableK1(\W|$)/)
             }
         ]

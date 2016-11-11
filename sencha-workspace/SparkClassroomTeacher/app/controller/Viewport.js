@@ -15,7 +15,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     requires: [
         'Ext.MessageBox',
         'SparkClassroom.timing.DurationDisplay',
-        'SparkClassroom.k1.Timer'
+        'SparkClassroom.k1.CountdownTimer'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -182,6 +182,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     onSectionSelectChange: function(selectField, section) {
         this.getAppCt().setSelectedSection(section.get('Code'));
+        this.initTimer();
     },
 
     onTeacherTabChange: function(tabBar, value) {
@@ -232,28 +233,34 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     initTimer: function() {
         var me = this,
             timer = me.getK1Timer(),
-            storage, record, seconds, base;
+            section = this.getAppCt().getSelectedSection(),
+            record, seconds, base;
 
-        if (!location.search.match(/\WenableK1(\W|$)/)) {
+        if (!location.search.match(/\WenableK1(\W|$)/) || !section) {
             return;
         }
 
-        storage = Ext.util.LocalStorage.get('k1-teacher');
-        seconds = storage.getItem('timerSeconds');
-        base = storage.getItem('timerBase');
+        Slate.API.request({
+            method: 'GET',
+            url: '/spark/api/timers',
+            callback: function(options, success) {
+                seconds = null // storage.getItem('timerSeconds'); TODO
+                base = null // storage.getItem('timerBase');
 
-        if (seconds && Ext.isNumeric(seconds)) {
-            seconds = parseInt(seconds, 10);
+                if (seconds && Ext.isNumeric(seconds)) {
+                    seconds = parseInt(seconds, 10);
 
-            record = new Ext.data.Record({
-                'accrued_seconds': seconds,
-                'timer_time': base ? parseInt(base, 10) : null
-            });
+                    record = new Ext.data.Record({
+                        'accrued_seconds': seconds,
+                        'timer_time': base ? parseInt(base, 10) : null
+                    });
 
-            timer.setRecord(record);
-        }
+                    timer.setRecord(record);
+                }
 
-        storage.release();
-        timer.refresh();
+                timer.refresh();
+            },
+            scope: me
+        });
     }
 });
