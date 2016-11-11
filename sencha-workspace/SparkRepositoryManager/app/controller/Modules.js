@@ -23,7 +23,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // dependencies
     models: [
-        'GuidingQuestion'
+        'GuidingQuestion',
+        'ConferenceResource'
     ],
 
     stores: [
@@ -32,7 +33,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     ],
 
     views: [
-        'modules.editor.QuestionForm'
+        'modules.editor.QuestionForm',
+        'modules.editor.ResourceForm'
     ],
 
     // component references
@@ -94,6 +96,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             ref: 'questionForm',
             selector: 's2m-modules-editor-questionform',
             xtype: 's2m-modules-editor-questionform',
+            autoCreate: true
+        }, {
+            ref: 'resourceForm',
+            selector: 's2m-modules-editor-resourceform',
+            xtype: 's2m-modules-editor-resourceform',
             autoCreate: true
         }
 
@@ -160,6 +167,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
         's2m-modules-editor-resources button[action="add-resource"]': {
             click: 'onAddResourceButtonClick'
+        },
+        's2m-modules-editor-resourceform button[action="save"]': {
+            click: 'onResourceFormSaveClick'
         },
         's2m-modules-editor-apply button[action="add-apply"]': {
             click: 'onAddApplyButtonClick'
@@ -298,13 +308,17 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             win = me.getQuestionForm(),
             form = win.down('form');
 
-        console.log('onAddQuestionButtonClick'); // eslint-disable-line no-console
         form.reset();
         win.show();
     },
 
     onAddResourceButtonClick: function() {
-        console.log('onAddResourceButtonClick'); // eslint-disable-line no-console
+        var me = this,
+            win = me.getResourceForm(),
+            form = win.down('form');
+
+        form.reset();
+        win.show();
     },
 
     onAddApplyButtonClick: function() {
@@ -326,6 +340,28 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             },
             failure: function() {
                 Ext.toast('ERROR: question could not be saved');
+            }
+        });
+
+        form.reset();
+        win.close()
+    },
+
+    onResourceFormSaveClick: function() {
+        var me = this,
+            win = me.getResourceForm(),
+            form = win.down('form'),
+            vals = form.getForm().getValues(),
+            model = me.getConferenceResourceModel(),
+            record = model.create(vals),
+            store = me.getResourcesSelectorModuleGrid().getStore();
+
+        record.save({
+            success: function(rec) {
+                store.add(me.convertFieldNames(rec.getData()));
+            },
+            failure: function() {
+                Ext.toast('ERROR: resource could not be saved');
             }
         });
 
