@@ -43,6 +43,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             ref: 'moduleCt',
             selector: 's2m-modules-panel'
         }, {
+            ref: 'moduleTreepanel',
+            selector: 's2m-modules-navigator treepanel'
+        }, {
             ref: 'moduleEditor',
             selector: 's2m-modules-editor'
         }, {
@@ -199,6 +202,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
         me.getModuleEditor().setDisabled(false);
+        me.getModuleTreepanel().getSelectionModel().deselectAll();
     },
 
     onTreepanelSelect: function(treepanel, record) {
