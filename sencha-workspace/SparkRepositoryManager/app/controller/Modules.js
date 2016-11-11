@@ -24,7 +24,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     // dependencies
     models: [
         'GuidingQuestion',
-        'ConferenceResource'
+        'ConferenceResource',
+        'ApplyProject'
     ],
 
     stores: [
@@ -34,7 +35,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     views: [
         'modules.editor.QuestionForm',
-        'modules.editor.ResourceForm'
+        'modules.editor.ResourceForm',
+        'modules.editor.ApplyForm'
     ],
 
     // component references
@@ -101,6 +103,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             ref: 'resourceForm',
             selector: 's2m-modules-editor-resourceform',
             xtype: 's2m-modules-editor-resourceform',
+            autoCreate: true
+        }, {
+            ref: 'applyForm',
+            selector: 's2m-modules-editor-applyform',
+            xtype: 's2m-modules-editor-applyform',
             autoCreate: true
         }
 
@@ -173,6 +180,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
         's2m-modules-editor-apply button[action="add-apply"]': {
             click: 'onAddApplyButtonClick'
+        },
+        's2m-modules-editor-applyform button[action="save"]': {
+            click: 'onApplyFormSaveClick'
         }
     },
 
@@ -322,7 +332,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onAddApplyButtonClick: function() {
-        console.log('onAddApplyButtonClick'); // eslint-disable-line no-console
+        var me = this,
+            win = me.getApplyForm(),
+            form = win.down('form');
+
+        form.reset();
+        win.show();
     },
 
     onQuestionFormSaveClick: function() {
@@ -368,6 +383,29 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         form.reset();
         win.close()
     },
+
+    onApplyFormSaveClick: function() {
+        var me = this,
+            win = me.getApplyForm(),
+            form = win.down('form'),
+            vals = form.getForm().getValues(),
+            model = me.getApplyProjectModel(),
+            record = model.create(vals),
+            store = me.getAppliesSelectorModuleGrid().getStore();
+
+        record.save({
+            success: function(rec) {
+                store.add(me.convertFieldNames(rec.getData()));
+            },
+            failure: function() {
+                Ext.toast('ERROR: apply could not be saved');
+            }
+        });
+
+        form.reset();
+        win.close()
+    },
+
 
     // custom controller methods
     loadModule: function(module) {
