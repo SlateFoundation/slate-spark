@@ -66,6 +66,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                             fieldLabel: 'Grade',
                             name: 'grade',
                             xtype: 'combo',
+                            queryMode: 'local',
                             width: 60,
                             store: ['PK', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
                         },
@@ -73,6 +74,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                             fieldLabel: 'Content Area',
                             name: 'content_area_id',
                             xtype: 'combo',
+                            queryMode: 'local',
                             displayField: 'code',
                             valueField: 'id',
                             width: 120,
