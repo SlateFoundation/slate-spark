@@ -22,11 +22,18 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
 
     // dependencies
+    models: [
+        'GuidingQuestion'
+    ],
+
     stores: [
         'Modules',
         'ContentItems'
     ],
 
+    views: [
+        'modules.editor.QuestionForm'
+    ],
 
     // component references
     refs: [
@@ -80,6 +87,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'appliesSelectorModuleGrid',
             selector: 's2m-modules-editor-apply s2m-modules-multiselector grid#module-grid'
+        }, {
+            ref: 'questionForm',
+            selector: 's2m-modules-editor-questionform',
+            xtype: 's2m-modules-editor-questionform',
+            autoCreate: true
         }
 
     ],
@@ -132,11 +144,16 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         's2m-modules-multiselector grid#module-grid': {
             boxready: 'onModuleGridBoxready'
         },
+
+        // forms
         's2m-modules-editor-learn button[action="add-learn"]': {
             click: 'onAddLearnButtonClick'
         },
         's2m-modules-editor-questions button[action="add-question"]': {
             click: 'onAddQuestionButtonClick'
+        },
+        's2m-modules-editor-questionform button[action="save"]': {
+            click: 'onQuestionFormSaveClick'
         },
         's2m-modules-editor-resources button[action="add-resource"]': {
             click: 'onAddResourceButtonClick'
@@ -273,7 +290,13 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onAddQuestionButtonClick: function() {
+        var me = this,
+            win = me.getQuestionForm(),
+            form = win.down('form');
+
         console.log('onAddQuestionButtonClick'); // eslint-disable-line no-console
+        form.reset();
+        win.show();
     },
 
     onAddResourceButtonClick: function() {
@@ -284,6 +307,28 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         console.log('onAddApplyButtonClick'); // eslint-disable-line no-console
     },
 
+    onQuestionFormSaveClick: function() {
+        var me = this,
+            win = me.getQuestionForm(),
+            form = win.down('form'),
+            vals = form.getForm().getValues(),
+            model = me.getGuidingQuestionModel(),
+            record = model.create(vals),
+            store = me.getQuestionsSelectorModuleGrid().getStore();
+
+        record.save({
+            success: function(rec) {
+                store.add(me.convertFieldNames(rec.getData()));
+            },
+            failure: function() {
+                Ext.toast('ERROR: question could not be saved');
+            }
+        });
+
+        form.reset();
+        win.close()
+    },
+
     // custom controller methods
     loadModule: function(module) {
         var me = this,
@@ -292,12 +337,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             phaseStartCnt = me.getPhaseStartFieldContainer(),
             sparkpoints = module.get('sparkpoints') || [],
             learns = module.get('learns') || [],
-            questions = module.get('questions') || [],
-            resources = module.get('resources') || [],
+            questions = module.get('conference_questions') || [],
+            resources = module.get('conference_resources') || [],
             applies = module.get('applies') || [];
 
         console.log('loading record'); // eslint-disable-line no-console, /* TODO: remove this */
-        console.log(module); // eslint-disable-line no-console, /* TODO: remove this */
+        console.log(module.getData()); // eslint-disable-line no-console, /* TODO: remove this */
 
         me.setSuspended(true);
 
@@ -328,6 +373,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     saveModule: function() {
         var me = this,
             module = me.getModule(),
+            phantom = module.phantom,
             err, e;
 
         if (!me.getSuspended()) {
@@ -335,12 +381,15 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             console.log('saving module'); // eslint-disable-line no-console
 
             // do not send id field if this is a new record
-            module.getField('id').persist = !module.phantom;
+            module.getField('id').persist = !phantom;
 
             module.save({
                 callback: function(record, operation, success) {
                     if (success) {
                         me.loadModule(module);
+                        if (phantom) {
+                            me.getModulesStore().load();
+                        }
                     } else {
                         err = operation.error;
 
@@ -426,6 +475,22 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
               item.suspendCheckChange--;
             });
         }
+    },
+
+    // convert Emergence camelcase field names to lowercase used by spark-api
+    convertFieldNames: function(obj) {
+        var keys = Object.keys(obj),
+            keysLength = keys.length,
+            newObj = {},
+            i = 0,
+            key;
+
+        for (; i < keysLength; i++) {
+            key = keys[i];
+            newObj[key.toLowerCase()] = obj[key];
+        }
+
+        return newObj;
     }
 
 });
