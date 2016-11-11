@@ -226,10 +226,13 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onTreepanelSelect: function(treepanel, record) {
-        var me = this;
+        var me = this,
+            editor = me.getModuleEditor();
 
+        if (editor.isDisabled()) {
+            editor.setDisabled(false);
+        }
         me.setModule(record);
-        me.getModuleEditor().setDisabled(false);
     },
 
     onPublishButtonClick: function() {
@@ -263,7 +266,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onContentAreaBoxReady: function(combo) {
-        combo.getStore().load();
+        var store = combo.getStore();
+
+        if (!store.isLoaded() && !store.isLoading()) {
+            combo.getStore().load();
+        }
     },
 
     onPhaseStartFieldChange: function(field, val) {
