@@ -37,7 +37,7 @@ function *patchHandler() {
         timer = util.identifyRecordSync(ctx.request.body || {}, ctx.lookup),
         sectionId = timer.section_id,
         teacherId = timer.teacher_id || ctx.userId,
-        paused = !!timer.paused;
+        paused = typeof timer.paused === 'boolean' ? !!timer.paused : false;
 
     ctx.assert(ctx.isTeacher, 400, 'Only teachers can set timers');
     ctx.assert(sectionId, 400, 'section_id is required');
