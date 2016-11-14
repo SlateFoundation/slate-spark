@@ -196,7 +196,35 @@ function isMatchbookId(code) {
  * @returns {Boolean}
  */
 function isAsnStyleId(code) {
-    return (/^[SM][\dA-F]{7}$/).test('' + code);
+    return (/^[SML][\dA-F]{7}$/).test('' + code);
+}
+
+
+/**
+ * Returns a boolean indicating whether the given string references a Lesson Sparkpoint by sparkpoint_id or code
+ * in the following formats:
+ * - sparkpoint_id: zero-filled decimal numbers with a maximum value of 9,999,999 prefixed with L (8 characters total)
+ * - sparkpoint_code: L.(content area abbreviation).G(grade level).(Sequence Number)
+ *
+ * @alias module:util.isLessonSparkpoint
+ *
+ * @param {String} sparkpoint
+ * @returns {Boolean}
+ */
+function isLessonSparkpoint(sparkpoint) {
+    sparkpoint = '' + sparkpoint;
+
+    if (!sparkpoint.startsWith('L')) {
+        return false;
+    }
+
+    // Matches Lxxxxxxx sparkpoint id
+    if (isAsnStyleId(sparkpoint)) {
+        return true;
+    }
+
+    // Matches code: L.ELA.G8.123
+    return (/L\.(.*)\.G\d{1,2}\.\d+/).test(sparkpoint);
 }
 
 function toSparkpointId(sparkpoint) {
@@ -972,6 +1000,23 @@ function validateRecordSet(ctx, tableName, records, customRecordFn, customRecord
     return records;
 }
 
+function getArrayParam(query, key, defaultVal) {
+    query = query || {};
+    defaultVal = defaultVal || [];
+
+    var val = query[key];
+
+    if (Array.isArray(val)) {
+        return val;
+    }
+
+    if (typeof val === 'string') {
+        return val.split(',');
+    }
+
+    return defaultVal;
+}
+
 module.exports = {
     filterObjectKeys: filterObjectKeys,
     excludeObjectKeys: excludeObjectKeys,
@@ -1007,6 +1052,7 @@ module.exports = {
 
     codifyRecord: codifyRecord,
     identifyRecordSync: identifyRecordSync,
+    identifyRecordEntitySync: identifyRecordEntitySync,
     identifyRecord: identifyRecord,
     namifyRecord: namifyRecord,
 
@@ -1020,6 +1066,8 @@ module.exports = {
     recordToUpsert: recordToUpsert,
     queriesToReturningCte: queriesToReturningCte,
     queriesToReturningJsonCte: queriesToReturningJsonCte,
+
+    getArrayParam: getArrayParam,
 
     validateRecordSet: validateRecordSet,
 
