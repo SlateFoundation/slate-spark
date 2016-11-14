@@ -1,0 +1,123 @@
+@keyframes spark-work-timer-blink {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes spark-work-timer-blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+.spark-countdown-timer {
+    background-color: white;
+    border: 2px solid $active-dark-color;
+    border-radius: .5em;
+    text-align: center;
+
+    .x-innerhtml {
+        align-items: center;
+        display: flex;
+    }
+
+    .timer-icon {
+        background-color: $active-dark-color;
+        color: white;
+        padding: .0625em .25em;
+
+        &::before {
+            content: '\f017'; // fa-clock-o
+            display: block;
+            font-size: xx-large;
+            font-family: FontAwesome;
+            font-weight: normal;
+            line-height: 1;
+        }
+    }
+
+    .timer-play-pause,
+    .timer-reset {
+        color: #999;
+        cursor: pointer;
+        margin-left: .5em;
+        text-align: center;
+        width: 1em;
+
+        &::before {
+            content: '\f04b'; // fa-play
+            display: block;
+            font-size: 14px;
+            font-family: FontAwesome;
+            font-weight: normal;
+            line-height: 1;
+        }
+
+        &:active {
+            color: #999;
+        }
+    }
+
+    .timer-reset {
+        margin: 0 .5em 0 0;
+
+        &::before {
+            content: '\f0e2'; // fa-undo
+        }
+
+        &:hover {
+            &::before {
+                content: '\f0e2';
+            }
+        }
+    }
+
+    .timer-counter {
+        flex: 1;
+        font-size: 1.25em;
+        font-weight: bold;
+        line-height: 1;
+        padding: .3125em;
+        height: 30px;
+        width: 100px;
+        border: none;
+
+        font-variant-numeric: tabular-nums;
+        -moz-font-feature-settings: "tnum";
+        -ms-font-feature-settings: "tnum";
+        -webkit-font-feature-settings: "tnum";
+        font-feature-settings: "tnum";
+      }
+
+    &.timer-paused, &.timer-stopped {
+        border-color: $alert-color;
+
+        .timer-icon {
+            background-color: $alert-color;
+        }
+    }
+
+    &.timer-paused {
+        .timer-counter {
+                    animation: spark-work-timer-blink 1s steps(3, start) infinite;
+            -webkit-animation: spark-work-timer-blink 1s steps(3, start) infinite;
+        }
+    }
+
+    &.timer-running {
+        .timer-play-pause {
+            color: $color;
+
+            &::before {
+                content: '\f04c';
+            }
+        }
+    }
+
+    &.timer-idle {
+        border-color: $neutral-dark-color;
+
+        .timer-icon {
+            background-color: $neutral-dark-color;
+        }
+    }
+}

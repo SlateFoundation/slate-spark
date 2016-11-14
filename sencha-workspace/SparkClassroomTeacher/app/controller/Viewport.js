@@ -45,7 +45,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         studentMultiselectToggle: 'spark-gps button[cls~="spark-toggle-student-multiselect"]',
 
         sectionSelect: 'spark-titlebar #sectionSelect',
-        k1Timer: 'spark-titlebar spark-k1-timer',
+        k1Timer: 'spark-titlebar spark-k1-countdown-timer',
 
         navBar: {
             selector: 'spark-teacher-navbar',
@@ -240,25 +240,19 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
             return;
         }
 
+        timer.setSection(section);
+
         Slate.API.request({
             method: 'GET',
             url: '/spark/api/timers',
-            callback: function(options, success) {
-                seconds = null // storage.getItem('timerSeconds'); TODO
-                base = null // storage.getItem('timerBase');
+            success: function(response) {
+                var data = null;
 
-                if (seconds && Ext.isNumeric(seconds)) {
-                    seconds = parseInt(seconds, 10);
-
-                    record = new Ext.data.Record({
-                        'accrued_seconds': seconds,
-                        'timer_time': base ? parseInt(base, 10) : null
-                    });
-
-                    timer.setRecord(record);
+                if (response.data && response.data.length > 0) {
+                    data = response.data[0];
                 }
 
-                timer.refresh();
+                timer.setTimer(data);
             },
             scope: me
         });

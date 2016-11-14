@@ -6,7 +6,9 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     ],
 
     config: {
-        cls: 'spark-work-timer',
+        cls: 'spark-countdown-timer',
+        state: 'idle',
+        section: null,
         record: null,
         data: {
             minutes: 0,
@@ -15,9 +17,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
         tpl: [
             '<div class="timer-icon"></div>',
             '<div class="timer-play-pause"></div>',
-            '<tpl if="!Ext.isEmpty(values.seconds)">',
-                '<input type="text" class="timer-counter"></input>',
-            '</tpl>',
+            '<input type="text" class="timer-counter" value="{[values.minutes + ":" + values.seconds]}"></input>',
             '<div class="timer-reset"></div>'
         ],
 
@@ -26,24 +26,39 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 element: 'element',
                 fn: function(e, target) {
                     var me = this,
-                        rec;
+                        seconds = 0,
+                        section = me.getSection,
+                        state = me.getState(),
+                        timerTime;
+
+                    if (!section) {
+                        return;
+                    }
 
                     if (target.className.indexOf('timer-play-pause') > -1) {
-                        if (!me.getRecord()) {
-                            // initialize with a blank record
-                            rec = new Ext.data.Record({
-                                'timer_time': 0,
-                                'accrued_seconds': 0
-                            });
+                        timerTime = Ext.get(e.target).
+                                        up('.spark-countdown-timer').
+                                        down('.timer-counter').
+                                        getValue().
+                                        split(':');
 
-                            me.setRecord(rec);
+                        if (Ext.isNumeric(timerTime[0])) {
+                            seconds = parseInt(timerTime[0], 10) * 60;
                         }
 
-                        me.toggle();
+                        if (Ext.isNumeric(timerTime[1])) {
+                            seconds += parseInt(timerTime[1], 10);
+                        }
+
+                        if (state === 'idle') {
+                            me.newTimer(seconds);
+                        } else if (state === 'paused') {
+                            me.toggleTimer(false);
+                        } else if (state === 'running') {
+                            me.toggleTimer(true);
+                        }
                     } else if (target.className.indexOf('timer-reset') > -1) {
-                        me.setRecord(null);
-                        me.refresh();
-                        me.fireEvent('reset');
+                        me.resetTimer();
                     }
                 }
             }
@@ -70,7 +85,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
 
         me.refresh();
 
-        if (record) {
+        if (record && record.get('started') && !record.get('paused')) {
             refreshTask.start();
         } else {
             refreshTask.stop();
@@ -79,33 +94,155 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
         me.fireEvent('recordchange', me, record, oldRecord);
     },
 
+    applyState: function(state) {
+        if (state !== 'paused' && state !== 'stopped' && state !== 'running') {
+            state = 'idle';
+        }
+
+        return state;
+    },
+
+    updateState: function(state, oldState) {
+        var me = this;
+
+        if (oldState) {
+            me.removeCls('timer-' + oldState);
+        }
+
+        if (state) {
+            me.addCls('timer-' + state);
+        }
+
+        me.fireEvent('statechange', me, state, oldState);
+    },
+
     // timer methods
-    refresh: function() {
+    resetTimer: function() {
         var me = this,
-            record = me.getRecord(),
-            state = 'idle',
-            baseTime, seconds;
+            record = me.getRecord;
 
         if (!record) {
-            me.setData(null);
+            me.setTimer(null);
+            return;
+        }
+
+        me.newTimer(0);
+    },
+
+    setTimer: function(data) {
+        var me = this,
+            minutes, seconds;
+
+        if (!data) {
+            me.setData({
+                minutes: '00',
+                seconds: '00'
+            });
+            me.setRecord(null);
             me.setState('idle');
             return;
         }
 
-        baseTime = record.get('base_time');
-        seconds = record.get('seconds');
-
-        if (seconds) {
-            state = 'paused'
-        }
-
-        me.setState(state);
+        minutes = Math.floor(data.duration_seconds / 60);
+        seconds = data.duration_seconds % 60;
 
         me.setData({
-            minutes: Math.floor(seconds / 60),
-            seconds: Math.floor(seconds) % 60
+            minutes: minutes,
+            seconds: seconds
         });
+        me.setRecord(new Ext.data.Record(data));
 
-        me.fireEvent('datachange', seconds, me.getState());
+        if (!data.started) {
+            me.setState('idle');
+            return;
+        }
+        me.setState(data.paused ? 'paused' : 'running');
     },
+
+    refresh: function() {
+        var me = this,
+            record = me.getRecord(),
+            seconds = record.get('duration_seconds'),
+            started = record.get('started'),
+            paused = record.get('paused'),
+            minutes;
+
+        if (!record) {
+            return;
+        }
+
+        if (started) {
+            seconds -= Math.floor(Ext.Date.getElapsed(new Date(started), new Date()) / 1000);
+        }
+
+        if (paused) {
+            seconds = paused;
+        }
+
+        if (seconds < 0) {
+            me.setData({
+                minutes: '00',
+                seconds: '00'
+            });
+            me.setState('paused');
+            return;
+        }
+
+        minutes = String(Math.floor(seconds / 60));
+        seconds = String(seconds % 60);
+
+        // add leading 0 if single digit
+        if (minutes.split('').length === 1) {
+            minutes = '0' + minutes;
+        }
+        if (seconds.split('').length === 1) {
+            seconds = '0' + seconds;
+        }
+
+        me.setData({
+            minutes: minutes,
+            seconds: seconds
+        });
+        me.setState(record.get('paused') ? 'paused' : 'running');
+    },
+
+    newTimer: function(seconds) {
+        var me = this,
+            data;
+
+        if (!Ext.isNumeric(seconds)) {
+            return;
+        }
+
+        // initialize timer on the server, passing 0 for duration_seconds resets the timer
+        Slate.API.request({
+            method: 'PUT',
+            url: '/spark/api/timers',
+            jsonData: {
+                'duration_seconds': seconds,
+                'section': me.getSection(),
+            },
+            success: function(response) {
+                me.setTimer(response.data);
+            },
+            scope: me
+        });
+    },
+
+    toggleTimer: function(pause) {
+        var me = this;
+
+        Slate.API.request({
+            method: 'PATCH',
+            url: '/spark/api/timers',
+            jsonData: {
+                'section': me.getSection(),
+                'paused': pause
+            },
+            success: function(response) {
+                me.setTimer(response.data);
+            },
+            scope: me
+        });
+    }
 });
