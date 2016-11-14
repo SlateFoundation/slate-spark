@@ -93,11 +93,12 @@ function *putHandler() {
 
     if (duration === 0) {
         timer.started = null;
-        timer.paused = null;
         delete timer.duration_seconds;
     } else {
         timer.started = new Date();
     }
+
+    timer.paused = null;
 
     timer = yield ctx.pgp.one(
         util.recordToUpsert.call(ctx, 'section_timers', timer, vals) + ' RETURNING *;',
