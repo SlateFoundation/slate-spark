@@ -346,6 +346,8 @@ function requestExceptionHandler(connection, response, options) {
         } catch (e) {
             content = response.responseText;
         }
+
+        toastr.error(content, title);
     }
 }
 
