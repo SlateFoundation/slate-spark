@@ -28,8 +28,6 @@ function* getHandler() {
         openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
     });
 
-    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
-
     // TODO: 5 magic number should come from preferences
 
     learnsRequired = (yield ctx.pgp.one(/*language=SQL*/ `
@@ -243,6 +241,10 @@ function* getHandler() {
         resources: resources,
         learns_required: learnsRequired
     };
+
+    if (util.isLessonSparkpoint(sparkpointId)) {
+        ctx.body.module = yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1 LIMIT 1', sparkpointId);
+    }
 }
 
 function* patchHandler() {

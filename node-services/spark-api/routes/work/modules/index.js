@@ -58,6 +58,10 @@ function *patchHandler() {
             module.published = new Date().toUTCString();
         }
 
+        if (module.id) {
+            module.modified = new Date().toUTCString();
+        }
+
         let canWrite = (!module.id || module.author_id === ctx.userId || ctx.isAdmin || ctx.isDeveloper);
         ctx.assert(canWrite, 403, 'Only the author of a module or an administrator/developer can PATCH modules.');
         Object

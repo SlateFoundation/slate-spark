@@ -166,13 +166,13 @@ function isGtZero(str) {
  * @returns {Boolean}
  */
 function isAsnId(code) {
-    return (/^[SM][\dA-F]{7}$/).test('' + code);
+    return (/^[S][\dA-F]{7}$/).test('' + code);
 }
 
 
 /**
  * Returns a boolean indicating whether the given string contains a Matchbook ID in the following format:
- * - zero-filled decimal numbers with a maximum value of 9,999,999 prefixed with M (8 characters total)
+ * - zero-filled decimal numbers with a maximum value of 9,999,999 prefixed with M oR L (8 characters total)
  *
  * @alias module:util.isMatchbookId
  *
@@ -181,7 +181,7 @@ function isAsnId(code) {
  */
 function isMatchbookId(code) {
     // Matchbook IDs are
-    return (/^M[\dA-F]{7}$/).test('' + code);
+    return (/^[M|L][\dA-F]{7}$/).test('' + code);
 }
 
 
@@ -1030,6 +1030,7 @@ module.exports = {
     isAsnStyleId: isAsnStyleId,
     isDate: isDate,
     isString: isString,
+    isLessonSparkpoint: isLessonSparkpoint,
 
     getNumericKeys: getNumericKeys,
     getNonNumericKeys: getNonNumericKeys,

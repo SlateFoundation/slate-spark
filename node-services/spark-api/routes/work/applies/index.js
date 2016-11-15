@@ -2,7 +2,8 @@
 
 var util = require('../../../lib/util'),
     QueryBuilder = util.QueryBuilder,
-    AsnStandard = require('../../../lib/asn-standard');
+    AsnStandard = require('../../../lib/asn-standard'),
+    recordToModel = require('../modules/index.js').recordToModel;
 
 function *getHandler() {
     this.require(['sparkpoint_id', 'section_id']);
@@ -12,15 +13,25 @@ function *getHandler() {
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         sectionId = ~~this.query.section_id,
-        applies;
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
+        applies,
+        lesson;
 
-    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
-        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+    try {
+        lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+        sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id)
+    } catch (e) {
+        return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
     });
 
-    // If standardIds is empty the query below will fail because PostgreSQL will not know it's array of integers
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
-    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 400);
 
     applies = yield this.pgp.one(/*language=SQL*/
     `        
@@ -111,13 +122,16 @@ function *getHandler() {
           ), '{}':: JSON
         )
     )) AS json
-         FROM fusebox_apply_projects ap
+         FROM slate1.fusebox_apply_projects ap
     LEFT JOIN applies a ON a.resource_id = ap.id AND a.student_id = $1
     LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
         WHERE standardids ?| $3;
     `, [this.studentId, sparkpointId, standardIds, sectionId]);
 
-    ctx.body = applies.json || [];
+    ctx.body = {
+        applies: applies.json || [],
+        module: lesson
+    };
 }
 
 function *patchHandler() {
@@ -141,6 +155,7 @@ function *patchHandler() {
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
     ctx.assert(!isNaN(id), `you must pass a numeric resource_id or id`, 400);
+    ctx.assert(typeof grade === 'number');
 
     apply = {
         resource_id: id,
