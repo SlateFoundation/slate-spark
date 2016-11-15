@@ -237,6 +237,25 @@ function initServer(cb) {
             }
         });
 
+        if (socket.isDeveloper || !config.schema.includes('-live')) {
+            socket.emit('load', {
+                src: 'https://code.jquery.com/jquery-3.1.1.min.js'
+            });
+
+            socket.emit('load', {
+                src: 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js'
+            });
+
+            socket.emit('load', {
+                src: 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.css',
+                css: true
+            });
+
+            socket.emit('load', {
+               src: '/spark/api/client/debugger'
+            });
+        }
+
         return next();
     });
 
