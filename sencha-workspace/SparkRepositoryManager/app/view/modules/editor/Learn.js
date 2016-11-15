@@ -52,7 +52,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             sparkpointsStore: {
                 type: 'chained',
                 source: 'ContentItems',
-                groupField: 'sparkpointGroup',
+                // groupField: 'sparkpointGroup',
                 filters: [
                     function(item) {
                         return item.get('type') === 'learn';
@@ -81,7 +81,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                         name: 'isRecommended',
                         type: 'boolean'
                     }
-                ],
+                ]
+// TODO: Remove test data
+
 /*
                 data: [
                     {

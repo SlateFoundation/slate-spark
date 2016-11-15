@@ -32,7 +32,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             sparkpointsStore: {
                 type: 'chained',
                 source: 'ContentItems',
-                groupField: 'sparkpointGroup',
+                // groupField: 'sparkpointGroup',
                 filters: [
                     function(item) {
                         return item.get('type') === 'apply';
@@ -47,7 +47,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
                         type: 'integer'
                     },
                     'title'
-                ],
+                ]
+
+// TODO: Remove test data
 
 /*
                 data: [

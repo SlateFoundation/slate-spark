@@ -32,7 +32,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
             sparkpointsStore: {
                 type: 'chained',
                 source: 'ContentItems',
-                groupField: 'sparkpointGroup',
+                // groupField: 'sparkpointGroup',
+                remoteFilter: false,
                 filters: [
                     function(item) {
                         return item.get('type') === 'guiding_question';

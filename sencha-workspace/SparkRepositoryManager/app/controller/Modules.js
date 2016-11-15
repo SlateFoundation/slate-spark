@@ -544,6 +544,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             module.set(itemType, moduleItems);
             me.saveModule();
         }
+        //grid.getStore().group();
     },
 
     // convert Emergence camelcase field names to lowercase used by spark-api

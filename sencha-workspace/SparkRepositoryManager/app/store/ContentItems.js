@@ -18,6 +18,7 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
         }
     },
 
+/*
     listeners: {
         'load': function(store, records) {
             if (store.count()>0 && store.lastOptions && store.lastOptions.params && store.lastOptions.params.sparkpoint_ids) {
@@ -58,5 +59,6 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
             }
         }
     }
+*/
 
 });
