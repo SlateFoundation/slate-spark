@@ -18,11 +18,13 @@ function *getHandler() {
         applies,
         lesson;
 
-    try {
-        lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
-        sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id)
-    } catch (e) {
-        return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+        } catch (e) {
+            return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+        }
     }
 
     sparkpointIds.forEach(function(sparkpointId) {

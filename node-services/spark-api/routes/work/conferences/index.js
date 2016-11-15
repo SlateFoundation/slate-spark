@@ -1,20 +1,36 @@
 'use strict';
 
-var AsnStandard = require('../../../lib/asn-standard');
+var AsnStandard = require('../../../lib/asn-standard'),
+    recordToModel = require('../modules/index.js').recordToModel,
+    util = require('../../../lib/util');
 
 function* getHandler() {
     var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+        sparkpointId = this.query.sparkpoint_id,
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
-        sectionId = ctx.query.section_id,
+        sectionId = ~~this.query.section_id,
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
         result,
-        questions;
+        question,
+        lesson;
 
     ctx.require(['sparkpoint_id', 'section_id']);
 
-    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
-        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+        } catch (e) {
+            return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+        }
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
     });
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
@@ -138,9 +154,20 @@ function* getHandler() {
                  WHERE student_id = $2
                    AND sparkpoint_id = $3
                    AND section_id = $4
+           ),
+           
+           'module',
+           (
+                SELECT row_to_json(modules)
+                  FROM modules
+                 WHERE sparkpoint_id = $3
            )
         ) AS json;
     `, [standardIds, studentId, sparkpointId, sectionId]);
+
+    if (result.json.module) {
+        result.json.module = recordToModel(result.json.module);
+    }
 
     ctx.body = result.json;
 }

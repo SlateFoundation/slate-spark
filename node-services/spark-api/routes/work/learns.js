@@ -6,27 +6,40 @@ var fs = require('fs'),
     OpenEd = require('../../lib/opened'),
     util = require('../../lib/util'),
     Fusebox = require('../../lib/fusebox'),
-    AsnStandard = require('../../lib/asn-standard');
+    AsnStandard = require('../../lib/asn-standard'),
+    recordToModel = require('./modules/index.js').recordToModel;
 
 function* getHandler() {
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
-        studentId = ctx.isStudent ? ctx.userId : parseInt(ctx.query.student_id, 10),
-        sectionId = ctx.query.section_id,
         standardIds = [],
+        studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
+        sectionId = ~~ctx.query.section_id,
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
         openedIds = [],
-        playlist, opened, params, fusebox, reviews, assignments, learnsRequired;
+        lesson, playlist, opened, params, fusebox, reviews, assignments, learnsRequired;
 
     ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
     ctx.assert(studentId > 0, 'non-student users must pass a student_id in the query string', 400);
 
-    // TODO: synchronous ctx.lookup is deprecated
-    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
-        var standard = new AsnStandard(asnId);
-        standardIds = standardIds.concat(standard.asnIds);
-        openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+        } catch (e) {
+            return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+        }
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
     });
+
+    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
 
     // TODO: 5 magic number should come from preferences
 
@@ -239,12 +252,9 @@ function* getHandler() {
 
     ctx.body = {
         resources: resources,
-        learns_required: learnsRequired
+        learns_required: learnsRequired,
+        module: lesson
     };
-
-    if (util.isLessonSparkpoint(sparkpointId)) {
-        ctx.body.module = yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1 LIMIT 1', sparkpointId);
-    }
 }
 
 function* patchHandler() {

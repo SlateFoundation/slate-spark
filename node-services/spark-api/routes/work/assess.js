@@ -1,23 +1,39 @@
 'use strict';
 
 var fusebox = require('../../lib/fusebox'),
-    AsnStandard = require('../../lib/asn-standard');
+    AsnStandard = require('../../lib/asn-standard'),
+    util = require('../../lib/util'),
+    recordToModel = require('./modules/index.js').recordToModel;
 
 function *getHandler() {
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
         assessments,
-        reflection;
+        reflection,
+        lesson = null;
 
     ctx.assert(ctx.studentId, 'You must be logged in as a student, or pass a student_id to perform this action.', 400);
     ctx.assert(sparkpointId, 'sparkpoint, sparkpoint_id, or sparkpoint_code are required.', 400);
 
-    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
-        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+        } catch (e) {
+            return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+        }
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
     });
 
-    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint id: ${sparkpointId}`, 404);
+    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
 
     assessments = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
        SELECT title,
@@ -44,7 +60,8 @@ function *getHandler() {
 
     ctx.body = {
         assessments: assessments.map(fusebox.normalizeAssessment),
-        reflection: reflection ? reflection.reflection : ''
+        reflection: reflection ? reflection.reflection : '',
+        module: lesson
     };
 }
 
