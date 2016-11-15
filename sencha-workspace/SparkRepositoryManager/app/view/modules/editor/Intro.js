@@ -43,27 +43,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                     store: {
                                         xclass: 'SparkRepositoryManager.store.sparkpoints.Lookup'
                                     }
-
-/*
-                                    store: {
-                                        fields: ['code', {
-                                            name: 'willBeEvaluated',
-                                            defaultValue: false
-                                        }],
-                                        data: [
-                                            { code: 'SS.G6.1.2.A' },
-                                            { code: 'SS.G6.2.4.A' },
-                                            { code: 'ELA.G6.RI.1' },
-                                            { code: 'ELA.G6.RI.2' },
-                                            { code: 'ELA.G6.RI.3' },
-                                            { code: 'ELA.G6.RI.4' },
-                                            { code: 'ELA.G6.RI.6' },
-                                            { code: 'ELA.G6.RI.5' },
-                                            { code: 'ELA.G6.RI.7' },
-                                            { code: 'ELA.G6.RI.8' }
-                                        ]
-                                    }
-*/
                                 },
                                 {
                                     xtype: 'button',
