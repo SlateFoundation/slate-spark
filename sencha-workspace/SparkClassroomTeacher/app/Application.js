@@ -16,7 +16,9 @@ Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.SocketDomain'
+        'SparkClassroom.SocketDomain',
+        'SparkClassroom.Socket',
+        'Slate.API'
     ],
 
     /**
@@ -104,7 +106,8 @@ Ext.define('SparkClassroomTeacher.Application', {
 
     control: {
         appCt: {
-            selectedsectionchange: 'onSelectedSectionChange'
+            selectedsectionchange: 'onSelectedSectionChange',
+            selectedstudentsparkpointchange: 'onSelectedStudentSparkpointChange'
         }
     },
 
@@ -142,13 +145,43 @@ Ext.define('SparkClassroomTeacher.Application', {
         });
     },
 
+    onSelectedStudentSparkpointChange: function(appCt, studentSparkpoint, oldStudentSparkpoint) {
+        var apiHost = Slate.API.getHost();
+
+        if (oldStudentSparkpoint) {
+            SparkClassroom.Socket.emit('unsubscribe', {
+                student_id: oldStudentSparkpoint.get('student_id'),
+                sparkpoint: oldStudentSparkpoint.get('sparkpoint'),
+                host: apiHost
+            });
+        }
+
+        if (studentSparkpoint) {
+            SparkClassroom.Socket.emit('subscribe', {
+                student_id: studentSparkpoint.get('student_id'),
+                sparkpoint: studentSparkpoint.get('sparkpoint'),
+                host: apiHost
+            });
+        }
+    },
+
     onSocketReconnect: function() {
-        var selectedSection = this.getAppCt().getSelectedSection();
+        var selectedSection = this.getAppCt().getSelectedSection(),
+            selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
+            apiHost = Slate.API.getHost();
 
         if (selectedSection) {
             SparkClassroom.Socket.emit('subscribe', {
                 section: selectedSection,
-                host: Slate.API.getHost()
+                host: apiHost
+            });
+        }
+
+        if (selectedStudentSparkpoint) {
+            SparkClassroom.Socket.emit('subscribe', {
+                student_id: selectedStudentSparkpoint.get('student_id'),
+                sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
+                host: apiHost
             });
         }
     }
