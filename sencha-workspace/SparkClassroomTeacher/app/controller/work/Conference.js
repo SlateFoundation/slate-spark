@@ -246,8 +246,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onTimerStateChange: function(timer, state) {
-        var pauseBtn = this.getPauseBtn(),
-            text, disabled = false;
+        var me = this,
+            pauseBtn = me.getPauseBtn(),
+            disabled = false,
+            text;
 
         if (!pauseBtn) {
             return;
@@ -267,6 +269,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             case 'stopped':
                 text = 'Conference Finished';
                 disabled = true;
+                SparkClassroom.Socket.emit('unsubscribe', {
+                    conference_group_id: me.getAppCt().getSelectedStudentSparkpoint().get('conference_group_id')
+                });
                 break;
         }
 
@@ -371,6 +376,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     },
 
     onSocketData: function(socket, data) {
+
         var me = this,
             table = data.table,
             item = data.item,
@@ -481,6 +487,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             me.getJoinConferenceCt().setHidden(!me.getJoinConeferenceDataview().getStore().getCount());
             me.getConferencingCt().setHidden(!conferenceGroup);
             me.getTimer().setRecord(me.getWorkConferenceGroupsStore().getById(conferenceGroup) || null);
+
+            if (conferenceGroup) {
+                SparkClassroom.Socket.emit('subscribe', {
+                    conference_group_id: conferenceGroup
+                });
+            }
         }
     },
 
