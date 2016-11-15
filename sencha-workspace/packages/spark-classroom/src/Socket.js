@@ -21,8 +21,10 @@ Ext.define('SparkClassroom.Socket', {
             'staging.spark.mta.matchbooklearning.com': 'mta-staging',
             'staging.spark.merit.matchbooklearning.com': 'merit-staging',
             'spark.mta.matchbooklearning.com': 'mta-live',
-            'spark.merit.matchbooklearning.com': 'merit-live',
+            'spark.merit.matchbooklearning.com': 'merit-live'
         },
+
+        defaultSchema: 'sandbox-school',
 
         supressAlert: false,
         debug: false,
@@ -102,7 +104,7 @@ Ext.define('SparkClassroom.Socket', {
     },
 
     updateHostSchemas: function(hostSchemas) {
-        this.setSchema(hostSchemas[Slate.API.getHost() || location.host] || null);
+        this.setSchema(hostSchemas[Slate.API.getHost() || location.host] || this.getDefaultSchema());
     },
 
     updateIoSocket: function(ioSocket, oldIoSocket) {
