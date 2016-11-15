@@ -1,4 +1,4 @@
-var js = require('fs').readFileSync('/Users/jmealo/Repos/spark-api/routes/client/debugger.txt');
+var js = require('fs').readFileSync(require('path').resolve(__dirname, 'debugger.txt'));
 
 module.exports = {
     get: function*() {
