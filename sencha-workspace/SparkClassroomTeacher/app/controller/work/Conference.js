@@ -6,6 +6,9 @@
 Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+        'SparkClassroom.Socket'
+    ],
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
