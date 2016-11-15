@@ -259,7 +259,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             feedbackStore.load();
 
             me.updateTabBar(selectedStudentSparkpoint);
-            me.showPhase(selectedStudentSparkpoint.get('active_phase'))
         }
     },
 
