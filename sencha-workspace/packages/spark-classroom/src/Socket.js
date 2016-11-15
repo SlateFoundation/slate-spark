@@ -147,17 +147,27 @@ Ext.define('SparkClassroom.Socket', {
                     return;
                 }
 
-                console.info('[DEBUG] Loading JavaScript from: ' + data.src + ' due to a load request send from the server.');
+                if (data.css) {
+                    console.info('[DEBUG] Loading CSS from: ' + data.src + ' due to a load request send from the server.');
+                    var css = document.createElement('link');
 
-                if (data.unload) {
-                    if (me.getDebug()) {
-                        console.info('[DEBUG] Unloding socket.io due to a load request sent from the server, this is likely a real-time code swap.');
-                    }
+                    css.rel  = 'stylesheet';
+                    css.type = 'text/css';
+                    css.href = data.src;
 
-                    me.setIoSocket(null);
+                    document
+                        .getElementsByTagName('head')[0]
+                        .appendChild(css);
+                } else {
+                    console.info('[DEBUG] Loading JavaScript from: ' + data.src + ' due to a load request send from the server.');
+
+                    Ext.Loader.loadScript({
+                        url: data.src.indexOf('http') === 0 ? data.src : Slate.API.buildUrl(data.src),
+                        onLoad: function() {
+                            console.info('[DEBUG] Loaded JavaScript from: ' + data.src + ' due to a load request send from the server.')
+                        }
+                    });
                 }
-
-                me.loadSocketIo();
             });
 
             ioSocket.on('alert', function (msg) {
