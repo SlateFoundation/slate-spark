@@ -14,6 +14,7 @@ var config = JSON.parse(process.env.SPARK_REALTIME),
     people = {},
     refreshInterval = null,
     async = require('async'),
+    createHash  = require('crypto').createHash,
     io;
 
 // TODO: Add real logging framework
@@ -25,7 +26,32 @@ console.log = function() {
     console._log.apply(this, args);
 };
 
+function tryExclusiveLock(name, cb) {
+    var buf = createHash('sha256').update(name).digest();
+
+    pg.connect(connString, function(err, client, done) {
+        if (err) {
+            return console.error(err);
+        }
+
+        let lockQuery = `SELECT pg_try_advisory_lock(${buf.readInt32LE(0)},${buf.readInt32LE(1)});`;
+
+        client.query(lockQuery, [], function(err, result) {
+            if (!err && result && result.rows[0].pg_try_advisory_lock) {
+                console.log('Acquired lock: ' + name);
+                if (cb) return cb(done);
+            }
+
+            console.log('Failed to acquire lock: ' + name);
+
+            done();
+        });
+    });
+}
+
 function initDatabase(cb) {
+    console.log('Initializing database...');
+
     var cfg = config.postgresql;
 
     if (!cfg) {
@@ -138,6 +164,8 @@ function query(sql, values, cb) {
 }
 
 function initMiddleware(cb) {
+    console.log('Initializing middleware...');
+
     config.middleware = config.middleware || {};
 
     config.middleware.stats = config.middleware.stats || {};
@@ -154,10 +182,13 @@ function initMiddleware(cb) {
         io.use(middleware[name]);
     });
 
+    console.log('Initializing middleware... Complete');
     cb && cb(null);
 }
 
 function initServer(cb) {
+    console.log('Initializing server...');
+
     io.use(function (socket, next) {
         var stats = global.stats,
             sections = stats.sections;
@@ -247,7 +278,7 @@ function initNats(cb) {
         'fusebox_vendors'
     ];
 
-    nats.subscribe('fusebox-live' + '.>', function(msg) {
+    nats.subscribe('fusebox-live.>', function(msg) {
         if (!msg) {
             return;
         }
@@ -258,20 +289,18 @@ function initNats(cb) {
             let materializedView = msg.table.replace('s2_', 'fusebox_');
 
             if (materializedViews.indexOf(materializedView) !== -1) {
-                // TODO: All the workers will execute this, which we do not want...
-                // HACK: only one worker should refresh the materialized views... for now we select sandbox-school
-                // until this is deployed in production
-                if (config.schema === 'sandbox-school') {
+                tryExclusiveLock(`REFRESH ${materializedView}`, function (releaseLock) {
                     console.log('Attempting to refresh materialized view: ' + materializedView);
 
-                    query(`REFRESH MATERIALIZED VIEW ${materializedView};`, [], function(err) {
+                    query(`REFRESH MATERIALIZED VIEW ${materializedView};`, [], function (err) {
+                        releaseLock();
                         if (err) {
                             console.error(err);
                         } else {
                             console.log('Refreshed materialized view: ' + materializedView);
                         }
                     });
-                }
+                });
             }
         }
     });

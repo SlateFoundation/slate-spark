@@ -88,6 +88,7 @@ function ioSession(options) {
 
         socket.isStudent = socket.session.accountLevel === 'Student';
         socket.isTeacher = !socket.isStudent;
+        socket.isDeveloper = socket.session.accountLevel === 'Developer';
 
         socket.join('user:' + session.userId);
 
