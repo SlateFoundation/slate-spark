@@ -43,6 +43,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                     store: {
                                         xclass: 'SparkRepositoryManager.store.sparkpoints.Lookup'
                                     }
+
 /*
                                     store: {
                                         fields: ['code', {
@@ -102,7 +103,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                     emptyText: 'No Sparkpoints in this module.',
                     hideHeaders: true,
                     store: {
-                        fields: ['code', 'willBeEvaluated']
+                        fields: ['id', 'code', 'willBeEvaluated']
                     },
                     columns: {
                         defaults: {
