@@ -216,8 +216,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     onModuleUpdate: function(container, module) {
         console.log('Module has been updated!'); // eslint-disable-line no-console
         console.log(module); // eslint-disable-line no-console
-        // module.save();
-//        console.log(module.getData()); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
@@ -456,15 +454,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         // other tabs
         me.getLearnsSelectorModuleGrid().getStore().loadData(learns);
-
-//        console.log('loading questions'); // eslint-disable-line no-console, /* TODO: remove this */
-        console.log(questions); // eslint-disable-line no-console, /* TODO: remove this */
-
         me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
-
-//        console.log('loading resources'); // eslint-disable-line no-console, /* TODO: remove this */
-//        console.log(resources); // eslint-disable-line no-console, /* TODO: remove this */
-
         me.getResourcesSelectorModuleGrid().getStore().loadData(resources);
         me.getAppliesSelectorModuleGrid().getStore().loadData(applies);
 
@@ -523,8 +513,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             moduleSparkpoints = [],
             i = 0;
 
-        console.log('updateSparkpointsData'); // eslint-disable-line no-console, /* TODO: remove this */
-
         if (!me.getSuspended()) {
 
             for (; i<sparkpointsLength; i++) {
@@ -548,13 +536,10 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             sparkpoint,
             i = 0;
 
-        console.log('updateSparkpointsGrid'); // eslint-disable-line no-console, /* TODO: remove this */
-
         if (!me.getSuspended()) {
 
             for (; i<sparkpointsLength; i++) {
                 sparkpoint = sparkpoints[i];
-                console.log(sparkpoint); // eslint-disable-line no-console, /* TODO: remove this */
                 moduleSparkpoints.push(sparkpoint.getData());
 
                 // add sparkpoint id to array used for ContentItems store url parameter
