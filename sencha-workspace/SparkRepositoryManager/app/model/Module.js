@@ -40,21 +40,20 @@ Ext.define('SparkRepositoryManager.model.Module', {
         {
             name: 'created',
             type: 'date',
-            dateFormat: 'timestamp',
+            dateFormat: 'c',
             critical: true,
             allowNull: true
         },
         {
             name: 'modified',
             type: 'date',
-            dateFormat: 'timestamp',
+            dateFormat: 'c',
             critical: true,
             allowNull: true
         },
         {
             name: 'published',
             type: 'date',
-            // dateFormat: 'timestamp',
             dateFormat: 'c',
             critical: true,
             allowNull: true
