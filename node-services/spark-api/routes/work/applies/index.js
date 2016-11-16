@@ -157,14 +157,12 @@ function *patchHandler() {
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
     ctx.assert(!isNaN(id), `you must pass a numeric resource_id or id`, 400);
-    ctx.assert(typeof grade === 'number');
 
     apply = {
         resource_id: id,
         student_id: studentId,
         sparkpoint_id: sparkpointId
     };
-
 
     if (typeof selected === 'boolean') {
         apply.selected = selected;
