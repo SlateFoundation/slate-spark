@@ -132,6 +132,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
 
         // editor panel
+        's2m-modules-editor button[action="clone"]': {
+            click: 'onCloneButtonClick'
+        },
         's2m-modules-editor button[action="publish"]': {
             click: 'onPublishButtonClick'
         },
@@ -234,6 +237,17 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             editor.setDisabled(false);
         }
         me.setModule(record);
+    },
+
+    onCloneButtonClick: function() {
+        var me = this,
+            module = me.getModule(),
+            clone = module.copy(null);  // clone the record but no id
+
+        clone.set('published', null);
+
+        me.setModule(clone);
+        me.saveModule();
     },
 
     onPublishButtonClick: function() {
