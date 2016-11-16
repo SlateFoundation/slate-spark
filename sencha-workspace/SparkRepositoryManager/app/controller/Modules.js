@@ -458,7 +458,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.getLearnsSelectorModuleGrid().getStore().loadData(learns);
 
 //        console.log('loading questions'); // eslint-disable-line no-console, /* TODO: remove this */
-//        console.log(questions); // eslint-disable-line no-console, /* TODO: remove this */
+        console.log(questions); // eslint-disable-line no-console, /* TODO: remove this */
 
         me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
 
@@ -602,7 +602,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             i = 0;
 
         for (; i<sparkpointItemsLength; i++) {
-            moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), ['fusebox_id', 'title', 'url', 'dok']));
+            moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), ['fusebox_id', 'title', 'url', 'question', 'dok']));
         }
 
         if (module !== null) {
