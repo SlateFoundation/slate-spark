@@ -245,6 +245,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             clone = module.copy(null);  // clone the record but no id
 
         clone.set('published', null);
+        clone.set('modified', null);
+        clone.set('sparkpoint_id', null);
 
         me.setModule(clone);
         me.saveModule();
@@ -501,7 +503,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
                     if (success) {
                         me.loadModule(module);
                         if (phantom) {
-                            me.getModulesStore().load();
+                            me.getModulesStore().load({
+                                callback: Ext.bind(me.syncNavigatorSelection, me)
+                            });
                         }
                     } else {
                         err = operation.error;
@@ -653,6 +657,19 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             newObj[key] = obj[key];
         }
         return newObj;
+    },
+
+    // make sure the module that is loaded is also selected in the navigator
+    syncNavigatorSelection: function() {
+        var me = this,
+            module = this.getModule(),
+            treepanel = me.getModuleTreepanel();
+
+        if (treepanel.getSelection()[0] !== module) {
+            treepanel.getSelectionModel().select(treepanel.getStore().indexOf(module), false, false);
+        }
+
+
     }
 
 });
