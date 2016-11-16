@@ -115,7 +115,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                             dragText: 'Drag and drop to reorganize'
                         }
                     },
-                    // TODO offload to controller?
                     listeners: {
                         selectionchange: function(model, records) {
                             this.up('s2m-modules-editor-intro').down('button[action="remove-sparkpoint"]').setDisabled(!(records.length > 0));
