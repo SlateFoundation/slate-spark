@@ -565,12 +565,18 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     refreshContentItems: function(sparkpoints) {
         var me = this,
-            sparkpointsLength = sparkpoints.length,
             sparkpointIds = [],
+            sparkpointsLength,
             i = 0;
 
-        for (; i<sparkpointsLength; i++) {
-            sparkpointIds.push(sparkpoints[i].id);
+        if (sparkpoints && sparkpoints.length) {
+
+            sparkpointsLength = sparkpoints.length;
+
+            for (; i<sparkpointsLength; i++) {
+                sparkpointIds.push(sparkpoints[i].id);
+            }
+
         }
 
         me.getContentItemsStore().load({
