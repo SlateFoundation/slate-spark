@@ -162,14 +162,15 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     refresh: function() {
         var me = this,
             record = me.getRecord(),
-            seconds = record.get('duration_seconds'),
-            started = record.get('started'),
-            paused = record.get('paused'),
-            minutes;
+            seconds, started, paused, minutes;
 
         if (!record) {
             return;
         }
+
+        seconds = record.get('duration_seconds');
+        started = record.get('started');
+        paused = record.get('paused');
 
         if (started) {
             seconds -= Math.floor(Ext.Date.getElapsed(new Date(started), new Date()) / 1000);
