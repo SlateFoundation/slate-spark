@@ -169,6 +169,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         's2m-modules-editor-learn button[action="add-learn"]': {
             click: 'onAddLearnButtonClick'
         },
+        's2m-modules-editor-learn button[action="add-learn-group"]': {
+            click: 'onAddLearnGroupButtonClick'
+        },
         's2m-modules-editor-questions button[action="add-question"]': {
             click: 'onAddQuestionButtonClick'
         },
@@ -331,6 +334,31 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     onAddLearnButtonClick: function() {
         console.log('onAddLearnButtonClick'); // eslint-disable-line no-console
+    },
+
+    onAddLearnGroupButtonClick: function() {
+        var me = this,
+            grid = me.getLearnsSelectorModuleGrid(),
+            store = grid.getStore(),
+            group = 'UNNAMED GROUP';
+
+
+        console.log('onAddLearnGroupButtonClick'); // eslint-disable-line no-console
+        console.log(store.getRange()); // eslint-disable-line no-console, /* TODO: remove this */
+
+        if (store.getGroups()) {
+            console.log(store.getGroups().count()); // eslint-disable-line no-console, /* TODO: remove this */
+            group = 'Group '+ (store.getGroups().count() + 1);
+        }
+
+        console.log(group);
+        store.clearGrouping();
+        store.add({
+            group: 'test',
+            fusebox_id: -1,  // eslint-disable-line camelcase
+            title: 'dummy'
+        });
+        store.group({ property: 'group' });
     },
 
     onAddQuestionButtonClick: function() {

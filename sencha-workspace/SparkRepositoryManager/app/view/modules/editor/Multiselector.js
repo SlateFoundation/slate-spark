@@ -74,6 +74,11 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                     features: [{
                         ftype: 'grouping',
                         groupHeaderTpl: '{name}',
+                        getRowClass: function(rec) {
+                            if (rec.data.fusebox_id === -1) {
+                                return 'x-hide-display';
+                            }
+                        },
                         collapsible: false // disabled because it doesn't work TODO maybe make this work?,
                     }],
                     viewConfig: {

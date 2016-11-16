@@ -23,7 +23,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             moduleHeaderItems: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'Min. Learns Needed',
+                    fieldLabel: 'Learns Needed',
                     labelWidth: 120,
                     width: 161,
                     inputAttrTpl: 'pattern="[0-9]*"',
@@ -45,6 +45,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                 {
                     xtype: 'button',
                     text: 'Add Group',
+                    action: 'add-learn-group',
                     glyph: 0xf07b // fa-folder-open
                 }
             ],
@@ -69,7 +70,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                     },
                     {
                         name: 'group',
-                        defaultValue: 'Group 1'
+                        defaultValue: 'DefaultGroup'
                     },
                     'title',
                     'url',
