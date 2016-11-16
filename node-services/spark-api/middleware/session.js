@@ -9,8 +9,6 @@ module.exports = function *session(next) {
         headers = ctx.headers,
         session;
 
-    ctx.schema = 'sandbox-school';
-
     if (headers['x-nginx-session']) {
         try {
             session = JSON.parse(headers['x-nginx-session']);
@@ -24,6 +22,7 @@ module.exports = function *session(next) {
         ctx.role = session.accountLevel.toLowerCase();
         ctx.username = session.username;
         ctx.session = session;
+        ctx.schema = ctx.header['x-nginx-mysql-schema'] || 'sandbox-school';
 
         // TODO: isRole is an anti-pattern, hasRole is better (a developer is NOT a teacher; but has the rights of one)
         ctx.isDisabled = ctx.role === 'disabled';
