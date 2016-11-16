@@ -205,7 +205,10 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // config handlers
     updateModule: function(module) {
-        this.loadModule(module);
+        var me = this;
+
+        me.loadModule(module);
+        me.refreshContentItems(module.get('sparkpoints'));
     },
 
 
@@ -290,8 +293,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         var me = this;
 
         grid.getStore().addListener({
-            datachanged: Ext.bind(me.updateSparkpoints, me),
-            update: Ext.bind(me.updateSparkpoints, me)
+            datachanged: Ext.bind(me.onModuleSparkpointGridStoreDataChanged, me),
+            update: Ext.bind(me.onModuleSparkpointGridStoreUpdate, me)
         });
     },
 
@@ -301,6 +304,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             store = me.getSparkpointGrid().getStore();
 
         if (sparkpoint) {
+            // reduce the sparkpoint to an object containing id and code
+            sparkpoint = me.objectSkim(sparkpoint.getData(), ['id', 'code']);
+
+            // add the willBeEvaluated attribute
+            Ext.apply(sparkpoint, { willBeEvaluated: false });
+
             store.add(sparkpoint);
         }
     },
@@ -447,7 +456,15 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         // other tabs
         me.getLearnsSelectorModuleGrid().getStore().loadData(learns);
+
+//        console.log('loading questions'); // eslint-disable-line no-console, /* TODO: remove this */
+//        console.log(questions); // eslint-disable-line no-console, /* TODO: remove this */
+
         me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
+
+//        console.log('loading resources'); // eslint-disable-line no-console, /* TODO: remove this */
+//        console.log(resources); // eslint-disable-line no-console, /* TODO: remove this */
+
         me.getResourcesSelectorModuleGrid().getStore().loadData(resources);
         me.getAppliesSelectorModuleGrid().getStore().loadData(applies);
 
@@ -464,6 +481,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         if (!me.getSuspended()) {
 
             console.log('saving module'); // eslint-disable-line no-console
+            console.log(module); // eslint-disable-line no-console, /* TODO: remove this */
 
             // do not send id field if this is a new record
             module.getField('id').persist = !phantom;
@@ -497,23 +515,71 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }
     },
 
-    updateSparkpoints: function() {
+    onModuleSparkpointGridStoreUpdate: function() {
+        var me = this,
+            module = me.getModule(),
+            sparkpoints = me.getSparkpointGrid().getStore().getRange(),
+            sparkpointsLength = sparkpoints.length,
+            moduleSparkpoints = [],
+            i = 0;
+
+        console.log('updateSparkpointsData'); // eslint-disable-line no-console, /* TODO: remove this */
+
+        if (!me.getSuspended()) {
+
+            for (; i<sparkpointsLength; i++) {
+                moduleSparkpoints.push(sparkpoints[i].getData());
+            }
+
+            if (module !== null) {
+                module.set('sparkpoints', moduleSparkpoints);
+                me.saveModule();
+            }
+        }
+    },
+
+    onModuleSparkpointGridStoreDataChanged: function() {
         var me = this,
             module = me.getModule(),
             sparkpoints = me.getSparkpointGrid().getStore().getRange(),
             sparkpointsLength = sparkpoints.length,
             sparkpointIds = [],
             moduleSparkpoints = [],
+            sparkpoint,
+            i = 0;
+
+        console.log('updateSparkpointsGrid'); // eslint-disable-line no-console, /* TODO: remove this */
+
+        if (!me.getSuspended()) {
+
+            for (; i<sparkpointsLength; i++) {
+                sparkpoint = sparkpoints[i];
+                console.log(sparkpoint); // eslint-disable-line no-console, /* TODO: remove this */
+                moduleSparkpoints.push(sparkpoint.getData());
+
+                // add sparkpoint id to array used for ContentItems store url parameter
+                sparkpointIds.push(sparkpoints[i].get('id'));
+            }
+
+            if (module !== null) {
+                module.set('sparkpoints', moduleSparkpoints);
+                me.saveModule();
+            }
+
+            me.refreshContentItems(module.get('sparkpoints'));
+
+        }
+
+    },
+
+    refreshContentItems: function(sparkpoints) {
+        var me = this,
+            sparkpointsLength = sparkpoints.length,
+            sparkpointIds = [],
             i = 0;
 
         for (; i<sparkpointsLength; i++) {
-            sparkpointIds.push(sparkpoints[i].get('id'));
-            moduleSparkpoints.push(sparkpoints[i].getData());
-        }
-
-        if (module !== null) {
-            module.set('sparkpoints', moduleSparkpoints);
-            me.saveModule();
+            sparkpointIds.push(sparkpoints[i].id);
         }
 
         me.getContentItemsStore().load({
@@ -521,7 +587,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
                 sparkpoint_ids: sparkpointIds.join() // eslint-disable-line camelcase
             }
         });
-
     },
 
     onResourcesAddSparkpointClick: function() {
@@ -537,14 +602,14 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             i = 0;
 
         for (; i<sparkpointItemsLength; i++) {
-            moduleItems.push(sparkpointItems[i].getData());
+            moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), ['fusebox_id', 'title', 'url', 'dok']));
         }
 
         if (module !== null) {
             module.set(itemType, moduleItems);
             me.saveModule();
         }
-        //grid.getStore().group();
+        // grid.getStore().group();
     },
 
     // convert Emergence camelcase field names to lowercase used by spark-api
@@ -560,6 +625,20 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             newObj[key.toLowerCase()] = obj[key];
         }
 
+        return newObj;
+    },
+
+
+    // return a reduced version of the object with only the specified attributes
+    objectSkim: function(obj, attributes) {
+        var newObj = {},
+            attributesLength = attributes.length,
+            i = 0, key;
+
+        for (; i<attributesLength; i++) {
+            key = attributes[i];
+            newObj[key] = obj[key];
+        }
         return newObj;
     }
 
