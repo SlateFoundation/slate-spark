@@ -203,7 +203,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             return;
         }
 
-        if (me.canAccessPhase(phase)) {
+        // if the student can access the phase or if we are not in K1 mode, show the normal phaseCt
+        if (me.canAccessPhase(phase) || !location.search.match(/\WenableK1(\W|$)/)) {
             workCt.add(phaseCt);
             return;
         }
