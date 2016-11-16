@@ -315,9 +315,15 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     // event handlers - Other tabs
     onModuleGridBoxready: function(grid) {
         var me = this,
-            itemType = grid.up('s2m-modules-multiselector').itemType.field;
+            itemType = grid.up('s2m-modules-multiselector').itemType.field,
+            store = grid.getStore();
 
-        grid.getStore().addListener({
+        // This reloads module data in case this grid was not drawn when current module was loaded
+        if (!store.isLoaded()) {
+            me.loadModule(me.getModule());
+        }
+
+        store.addListener({
             datachanged: Ext.bind(me.updateSparkpointItems, me, [itemType, grid]),
             update: Ext.bind(me.updateSparkpointItems, me, [itemType, grid])
         });
