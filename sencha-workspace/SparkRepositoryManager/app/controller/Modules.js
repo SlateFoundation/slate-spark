@@ -190,22 +190,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
 
-    // controller templates method overrides
-    init: function() {
-    //    var me = this;
-
-    //    me.getContentItemsStore().load({
-    //        params: {
-    //            sparkpoint_ids: 'M1000564' // eslint-disable-line camelcase
-    //        }
-    //    });
-
-
-    //    if (me.getModule() === null) {
-    //        me.setModule(Ext.create('SparkRepositoryManager.model.Module', {}));
-    //    }
-    },
-
     // config handlers
     updateModule: function(module) {
         var me = this;
