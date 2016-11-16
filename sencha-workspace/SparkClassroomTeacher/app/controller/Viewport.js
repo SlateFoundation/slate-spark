@@ -15,7 +15,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     requires: [
         'Ext.MessageBox',
         'SparkClassroom.timing.DurationDisplay',
-        'SparkClassroom.k1.Timer'
+        'SparkClassroom.k1.CountdownTimer'
     ],
 
     tokenSectionRe: /^([^:]+):(.*)$/,
@@ -45,7 +45,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
         studentMultiselectToggle: 'spark-gps button[cls~="spark-toggle-student-multiselect"]',
 
         sectionSelect: 'spark-titlebar #sectionSelect',
-        k1Timer: 'spark-titlebar spark-k1-timer',
+        k1Timer: 'spark-titlebar spark-k1-countdown-timer',
 
         navBar: {
             selector: 'spark-teacher-navbar',
@@ -182,6 +182,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     onSectionSelectChange: function(selectField, section) {
         this.getAppCt().setSelectedSection(section.get('Code'));
+        this.initTimer();
     },
 
     onTeacherTabChange: function(tabBar, value) {
@@ -232,28 +233,28 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     initTimer: function() {
         var me = this,
             timer = me.getK1Timer(),
-            storage, record, seconds, base;
+            section = this.getAppCt().getSelectedSection(),
+            record, seconds, base;
 
-        if (!location.search.match(/\WenableK1(\W|$)/)) {
+        if (!location.search.match(/\WenableK1(\W|$)/) || !section) {
             return;
         }
 
-        storage = Ext.util.LocalStorage.get('k1-teacher');
-        seconds = storage.getItem('timerSeconds');
-        base = storage.getItem('timerBase');
+        timer.setSection(section);
 
-        if (seconds && Ext.isNumeric(seconds)) {
-            seconds = parseInt(seconds, 10);
+        Slate.API.request({
+            method: 'GET',
+            url: '/spark/api/timers',
+            success: function(response) {
+                var data = null;
 
-            record = new Ext.data.Record({
-                'accrued_seconds': seconds,
-                'timer_time': base ? parseInt(base, 10) : null
-            });
+                if (response.data && response.data.length > 0) {
+                    data = response.data[0];
+                }
 
-            timer.setRecord(record);
-        }
-
-        storage.release();
-        timer.refresh();
+                timer.setTimer(data);
+            },
+            scope: me
+        });
     }
 });
