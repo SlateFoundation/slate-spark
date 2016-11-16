@@ -182,7 +182,11 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
 
     onSectionSelectChange: function(selectField, section) {
         this.getAppCt().setSelectedSection(section.get('Code'));
-        this.initTimer();
+
+        if (location.search.match(/\WenableK1(\W|$)/)) {
+            this.getK1Timer().show();
+            this.initTimer();
+        }
     },
 
     onTeacherTabChange: function(tabBar, value) {

@@ -37,7 +37,7 @@ Ext.define('SparkClassroom.TitleBar', {
             },
             {
                 xtype: 'spark-k1-countdown-timer',
-                hidden: !location.search.match(/\WenableK1(\W|$)/)
+                hidden: true
             }
         ]
     }
