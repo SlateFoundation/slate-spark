@@ -587,7 +587,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             i = 0;
 
         for (; i<sparkpointItemsLength; i++) {
-            moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), ['fusebox_id', 'title', 'url', 'question', 'dok']));
+            moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), [
+                'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
+            ]));
         }
 
         if (module !== null) {
