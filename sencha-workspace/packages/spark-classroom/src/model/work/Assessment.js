@@ -21,7 +21,7 @@ Ext.define('SparkClassroom.model.work.Assessment', {
         },
         {
             name: 'title',
-            type: 'string',
+            type: 'string'
         },
         {
             name: 'url',

@@ -201,7 +201,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
 
         field.reset();
-        return;
     },
 
     onAssignSparkpointSelect: function(field, selectedSparkpoint) {
@@ -222,7 +221,6 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
         }
 
         field.reset();
-        return;
     },
 
 
@@ -303,7 +301,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                     'conference_override_time': null,
                     'apply_override_time': null,
                     'assess_override_time': null
-                }
+                };
                 break;
             case 'Conference':
                 if (studentSparkpoint.get('conference_finish_time')) {
@@ -315,7 +313,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                     'conference_override_time': null,
                     'apply_override_time': null,
                     'assess_override_time': null
-                }
+                };
                 break;
             case 'Apply':
                 if (studentSparkpoint.get('apply_finish_time')) {
@@ -327,7 +325,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                     'conference_override_time': new Date(),
                     'apply_override_time': null,
                     'assess_override_time': null
-                }
+                };
                 break;
             case 'Assess':
                 if (studentSparkpoint.get('assess_finish_time')) {
@@ -339,7 +337,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
                     'conference_override_time': new Date(),
                     'apply_override_time': new Date(),
                     'assess_override_time': null
-                }
+                };
                 break;
             default:
         }

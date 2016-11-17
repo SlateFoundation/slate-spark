@@ -226,7 +226,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                                                     fields: [
                                                         {
                                                             name: 'id',
-                                                            mapping: 'url',
+                                                            mapping: 'url'
                                                         },
                                                         {
                                                             name: 'url'
@@ -237,7 +237,7 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
                                                             convert: function(v, r) {
                                                                 return v || r.get('url').replace(/^https?:\/\//, '');
                                                             }
-                                                        },
+                                                        }
                                                     ]
                                                 },
                                                 itemTpl: '<a href="{url:htmlEncode}" title="{title:htmlEncode}" target=_blank>{title:htmlEncode}</a>'

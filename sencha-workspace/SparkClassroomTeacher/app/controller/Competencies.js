@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
          * @private
          * The target cell block element to show the studentCompetencyPopover at.
          */
-        showByTarget: null,
+        showByTarget: null
     },
 
     requires: [
@@ -618,7 +618,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
 
                 if (!success) {
                     Ext.Msg.alert('Error Adding to Queue', 'This sparkpoint could not be recommended, please try again or contact an administrator');
-                    return;
                 }
             },
             scope: me
@@ -675,7 +674,7 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
                 recordDictionary[sparkpointId] = {
                     id: sparkpointId,
                     sparkpoint: studentSparkpoint.get('sparkpoint')
-                }
+                };
 
                 recordDictionary[sparkpointId][studentId] = studentSparkpoint;
             }

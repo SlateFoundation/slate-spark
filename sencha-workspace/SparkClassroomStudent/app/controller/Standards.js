@@ -3,7 +3,7 @@ Ext.define('SparkClassroomStudent.controller.Standards', {
 
 
     routes: {
-        'standards': 'showStandards',
+        'standards': 'showStandards'
     },
 
     views: [

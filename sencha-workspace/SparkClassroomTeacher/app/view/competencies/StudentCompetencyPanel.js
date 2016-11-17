@@ -163,4 +163,4 @@ Ext.define('SparkClassroomTeacher.view.competencies.StudentCompetencyPanel', {
             }
         ]
     }
-})
+});

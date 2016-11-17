@@ -62,5 +62,5 @@ Ext.define('SparkClassroom.mixin.DockedTitle', {
                 html: countStr
             });
         }
-    },
+    }
 });

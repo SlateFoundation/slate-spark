@@ -62,7 +62,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                     }
                 }
             }
-        },
+        }
     },
 
     constructor: function() {
@@ -221,7 +221,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
             url: '/spark/api/timers',
             jsonData: {
                 'duration_seconds': seconds,
-                'section': me.getSection(),
+                'section': me.getSection()
             },
             success: function(response) {
                 me.setTimer(response.data);

@@ -4,7 +4,7 @@ Ext.define('SparkClassroom.work.Tab', {
     xtype: 'spark-work-tab',
 
     config: {
-        duration: null,
+        duration: null
     },
 
     titleTpl: [

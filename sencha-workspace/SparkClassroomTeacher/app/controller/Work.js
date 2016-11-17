@@ -326,8 +326,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
                 xtype: 'component',
                 html: 'The Student Work section is disabled while Student Multiselect is enabled.'
             });
-
-            return;
         }
     },
 

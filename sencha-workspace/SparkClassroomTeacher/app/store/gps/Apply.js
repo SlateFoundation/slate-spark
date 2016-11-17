@@ -7,11 +7,7 @@ Ext.define('SparkClassroomTeacher.store.gps.Apply', {
         filters: [{
             filterFn: function(r) {
                 // filter out records that aren't in this phase
-                if (r.get('active_phase') !== 'apply') {
-                    return false;
-                }
-
-                return true;
+                return r.get('active_phase') === 'apply';
             }
         }],
         grouper: {

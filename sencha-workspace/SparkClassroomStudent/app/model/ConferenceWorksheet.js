@@ -45,7 +45,7 @@ Ext.define('SparkClassroomStudent.model.ConferenceWorksheet', {
         {
             name: 'peer_feedback',
             type: 'string'
-        },
+        }
     ],
 
     proxy: {
