@@ -385,17 +385,11 @@ function* patchHandler() {
 
 function* launchHandler() {
     var ctx = this,
-        resourceId = ctx.params.resourceId;
-
-    var origResourceId = resourceId || this.query.resource_id,
-        resourceId = parseInt(origResourceId, 10),
+        resourceId = ~~ctx.params.resourceId,
         studentId = ctx.isStudent ? ctx.studentId : (ctx.query.student_id || ctx.userId),
         learnResource;
 
-    if (isNaN(resourceId)) {
-        res.send(500, 'Expected a numeric resource id, you passed: ' + origResourceId);
-        return next();
-    }
+    ctx.assert(resourceId, 400, `Numeric resource id required, you passed: ${ctx.params.resourceId}`);
 
     yield this.pgp.none(/*language=SQL*/ `
         INSERT INTO learn_activity (user_id, resource_id, start_status)
