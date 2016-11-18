@@ -30,7 +30,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     stores: [
         'Modules',
-        'ContentItems'
+        'ContentItems',
+        'module.LearnContent',
+        'module.QuestionContent',
+        'module.ResourceContent',
+        'module.ApplyContent'
     ],
 
     views: [
@@ -52,6 +56,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'moduleEditor',
             selector: 's2m-modules-editor'
+        }, {
+            ref: 'moduleEditorTabPanel',
+            selector: 's2m-modules-editor tabpanel'
         }, {
             ref: 'moduleMeta',
             selector: 's2m-modules-editor form#modules-meta-info'
@@ -92,6 +99,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             ref: 'resourcesSelectorModuleGrid',
             selector: 's2m-modules-editor-resources s2m-modules-multiselector grid#module-grid'
         }, {
+            ref: 'resourcesSelectorSparkpointsGrid',
+            selector: 's2m-modules-editor-resources s2m-modules-multiselector grid#sparkpoints-grid'
+        }, {
             ref: 'appliesSelectorModuleGrid',
             selector: 's2m-modules-editor-apply s2m-modules-multiselector grid#module-grid'
         }, {
@@ -115,6 +125,15 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
 
     // entry points
+    listen: {
+        store: {
+            '#ContentItems': {
+                beforeload: 'onContentItemsStoreBeforeLoad',
+                loadcomplete: 'onContentItemsStoreLoadComplete'
+            }
+        }
+    },
+
     control: {
 
         // top level containers
@@ -201,8 +220,32 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.refreshContentItems(module.get('sparkpoints'));
     },
 
+    onContentItemsStoreBeforeLoad: function() {
+        var me = this,
+            tabpanel = me.getModuleEditorTabPanel(),
+            grid = tabpanel.getActiveTab().down('#sparkpoints-grid');
 
-    // event handlers
+        if (grid) {
+            grid.getView().findFeature('grouping').disable();
+        }
+
+        me.getModuleTreepanel().disable();
+        tabpanel.disable()
+    },
+
+    onContentItemsStoreLoadComplete: function() {
+        var me = this,
+            tabpanel = me.getModuleEditorTabPanel(),
+            grid = tabpanel.getActiveTab().down('#sparkpoints-grid');
+
+        if (grid) {
+            grid.getView().findFeature('grouping').enable();
+        }
+
+        me.getModuleTreepanel().enable();
+        tabpanel.enable()
+    },
+
     onModuleUpdate: function(container, module) {
         console.log('Module has been updated!'); // eslint-disable-line no-console
         console.log(module); // eslint-disable-line no-console
