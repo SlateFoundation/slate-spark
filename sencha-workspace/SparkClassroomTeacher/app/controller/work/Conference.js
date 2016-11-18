@@ -525,7 +525,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             group.set({ members: members.getRange() }, { dirty: false });
 
             // close group if all students are ready
-            if (!members.findBy(filterReadyStudents)) {
+            if (members.length && !members.findBy(filterReadyStudents)) {
                 group.close();
             }
 
