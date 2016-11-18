@@ -137,9 +137,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     control: {
 
         // top level containers
-        's2m-modules-panel': {
-            moduleupdate: 'onModuleUpdate'
-        },
         's2m-modules-navigator button[action="add-new-module"]': {
             click: 'onNewModuleClick'
         },
@@ -244,11 +241,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         me.getModuleTreepanel().enable();
         tabpanel.enable()
-    },
-
-    onModuleUpdate: function(container, module) {
-        console.log('Module has been updated!'); // eslint-disable-line no-console
-        console.log(module); // eslint-disable-line no-console
     },
 
     onNewModuleClick: function() {
