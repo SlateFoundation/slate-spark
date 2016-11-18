@@ -217,6 +217,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.refreshContentItems(module.get('sparkpoints'));
     },
 
+
+    // event handlers - stores
     onContentItemsStoreBeforeLoad: function() {
         var me = this,
             tabpanel = me.getModuleEditorTabPanel(),
@@ -243,6 +245,57 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         tabpanel.enable()
     },
 
+    onModuleSparkpointGridStoreUpdate: function() {
+        var me = this,
+            module = me.getModule(),
+            sparkpoints = me.getSparkpointGrid().getStore().getRange(),
+            sparkpointsLength = sparkpoints.length,
+            moduleSparkpoints = [],
+            i = 0;
+
+        if (!me.getSuspended()) {
+
+            for (; i<sparkpointsLength; i++) {
+                moduleSparkpoints.push(sparkpoints[i].getData());
+            }
+
+            if (module !== null) {
+                module.set('sparkpoints', moduleSparkpoints);
+                me.saveModule();
+            }
+        }
+    },
+
+    onModuleSparkpointGridStoreDataChanged: function() {
+        var me = this,
+            module = me.getModule(),
+            sparkpoints = me.getSparkpointGrid().getStore().getRange(),
+            sparkpointsLength = sparkpoints.length,
+            sparkpointIds = [],
+            moduleSparkpoints = [],
+            sparkpoint,
+            i = 0;
+
+        if (!me.getSuspended()) {
+
+            for (; i<sparkpointsLength; i++) {
+                sparkpoint = sparkpoints[i];
+                moduleSparkpoints.push(sparkpoint.getData());
+
+                // add sparkpoint id to array used for ContentItems store url parameter
+                sparkpointIds.push(sparkpoints[i].get('id'));
+            }
+
+            if (module !== null) {
+                module.set('sparkpoints', moduleSparkpoints);
+                me.saveModule();
+            }
+
+            me.refreshContentItems(module.get('sparkpoints'));
+        }
+    },
+
+    // event handlers - navigator
     onNewModuleClick: function() {
         var me = this;
 
@@ -261,6 +314,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.setModule(record);
     },
 
+    // event handlers - editor
     onCloneButtonClick: function() {
         var me = this,
             module = me.getModule(),
@@ -282,7 +336,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         module.set('published', new Date());
 
         me.saveModule();
-
     },
 
     onModuleMetaFieldChange: function(field, val) {
@@ -312,18 +365,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }
     },
 
-    onPhaseStartFieldChange: function(field, val) {
-        var me = this,
-            fieldName = field.getName(),
-            module = me.getModule(),
-            phaseStart = module.get('phase_start') || {};
-
-        phaseStart[fieldName] = val;
-        module.set('phase_start', phaseStart);
-        me.saveModule();
-
-    },
-
     // event handlers - Intro tab
     onSparkpointGridBoxready: function(grid) {
         var me = this;
@@ -348,6 +389,17 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
             store.add(sparkpoint);
         }
+    },
+
+    onPhaseStartFieldChange: function(field, val) {
+        var me = this,
+            fieldName = field.getName(),
+            module = me.getModule(),
+            phaseStart = module.get('phase_start') || {};
+
+        phaseStart[fieldName] = val;
+        module.set('phase_start', phaseStart);
+        me.saveModule();
     },
 
     // event handlers - Other tabs
@@ -572,58 +624,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             });
 
         }
-    },
-
-    onModuleSparkpointGridStoreUpdate: function() {
-        var me = this,
-            module = me.getModule(),
-            sparkpoints = me.getSparkpointGrid().getStore().getRange(),
-            sparkpointsLength = sparkpoints.length,
-            moduleSparkpoints = [],
-            i = 0;
-
-        if (!me.getSuspended()) {
-
-            for (; i<sparkpointsLength; i++) {
-                moduleSparkpoints.push(sparkpoints[i].getData());
-            }
-
-            if (module !== null) {
-                module.set('sparkpoints', moduleSparkpoints);
-                me.saveModule();
-            }
-        }
-    },
-
-    onModuleSparkpointGridStoreDataChanged: function() {
-        var me = this,
-            module = me.getModule(),
-            sparkpoints = me.getSparkpointGrid().getStore().getRange(),
-            sparkpointsLength = sparkpoints.length,
-            sparkpointIds = [],
-            moduleSparkpoints = [],
-            sparkpoint,
-            i = 0;
-
-        if (!me.getSuspended()) {
-
-            for (; i<sparkpointsLength; i++) {
-                sparkpoint = sparkpoints[i];
-                moduleSparkpoints.push(sparkpoint.getData());
-
-                // add sparkpoint id to array used for ContentItems store url parameter
-                sparkpointIds.push(sparkpoints[i].get('id'));
-            }
-
-            if (module !== null) {
-                module.set('sparkpoints', moduleSparkpoints);
-                me.saveModule();
-            }
-
-            me.refreshContentItems(module.get('sparkpoints'));
-
-        }
-
     },
 
     refreshContentItems: function(sparkpoints) {
