@@ -76,14 +76,14 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             },
 
             moduleStore: {
-                groupField: 'group',
+                groupField: 'modulegroup',
                 fields: [
                     {
                         name: 'ordinal',
                         type: 'integer'
                     },
                     {
-                        name: 'group',
+                        name: 'modulegroup',
                         defaultValue: 'DefaultGroup'
                     },
                     'title',

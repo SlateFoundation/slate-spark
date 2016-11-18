@@ -75,9 +75,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                         ftype: 'grouping',
                         groupHeaderTpl: '{name}',
                         getRowClass: function(rec) {
-                            if (rec.data.fusebox_id === -1) {
-                                return 'x-hide-display';
-                            }
+                            // TODO : hide dummy records
+                            // return rec.get('fusebox_id') === -1 ? 'x-hide-display' : '';
+                            return '';
                         },
                         collapsible: false // disabled because it doesn't work TODO maybe make this work?,
                     }],

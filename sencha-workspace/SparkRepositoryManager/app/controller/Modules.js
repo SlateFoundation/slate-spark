@@ -377,23 +377,21 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             store = grid.getStore(),
             group = 'UNNAMED GROUP';
 
-
-        console.log('onAddLearnGroupButtonClick'); // eslint-disable-line no-console
-        console.log(store.getRange()); // eslint-disable-line no-console, /* TODO: remove this */
+        me.setSuspended(true);
 
         if (store.getGroups()) {
             console.log(store.getGroups().count()); // eslint-disable-line no-console, /* TODO: remove this */
             group = 'Group '+ (store.getGroups().count() + 1);
         }
 
-        console.log(group);
-        store.clearGrouping();
-        store.add({
-            group: 'test',
+        store.addSorted(Ext.create('Ext.data.Model', {
+            modulegroup: group,
             fusebox_id: -1,  // eslint-disable-line camelcase
-            title: 'dummy'
-        });
-        store.group({ property: 'group' });
+            title: 'dummy '+(store.count()+1)
+        }));
+        store.group({ property: 'modulegroup' });
+
+        me.setSuspended(false);
     },
 
     onAddQuestionButtonClick: function() {
