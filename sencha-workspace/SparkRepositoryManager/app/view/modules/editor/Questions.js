@@ -30,6 +30,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
             ],
 
             sparkpointsStore: {
+                xclass: 'SparkRepositoryManager.store.module.QuestionContent'
+
+/*
                 type: 'chained',
                 source: 'ContentItems',
                 groupField: 'sparkpointGroup',
@@ -49,6 +52,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
                         store.resumeEvents();
                     }
                 }
+*/
             }
         }
     ]

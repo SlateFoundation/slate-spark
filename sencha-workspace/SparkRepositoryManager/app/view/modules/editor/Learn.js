@@ -51,6 +51,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             ],
 
             sparkpointsStore: {
+                xclass: 'SparkRepositoryManager.store.module.LearnContent'
+
+/*
                 type: 'chained',
                 source: 'ContentItems',
                 groupField: 'sparkpointGroup',
@@ -69,6 +72,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                         store.resumeEvents();
                     }
                 }
+*/
             },
 
             moduleStore: {

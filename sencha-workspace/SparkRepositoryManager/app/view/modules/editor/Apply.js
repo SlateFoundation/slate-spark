@@ -30,6 +30,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             ],
 
             sparkpointsStore: {
+                xclass: 'SparkRepositoryManager.store.module.ApplyContent'
+
+/*
                 type: 'chained',
                 source: 'ContentItems',
                 groupField: 'sparkpointGroup',
@@ -48,6 +51,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
                         store.resumeEvents();
                     }
                 }
+*/
             },
 
             moduleStore: {

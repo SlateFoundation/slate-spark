@@ -30,6 +30,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
             ],
 
             sparkpointsStore: {
+                xclass: 'SparkRepositoryManager.store.module.ResourceContent'
+
+/*
                 type: 'chained',
                 source: 'ContentItems',
                 groupField: 'sparkpointGroup',
@@ -37,17 +40,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
                     function(item) {
                         return item.get('type') === 'conference_resource';
                     }
-                ],
-                listeners: {
-                    refresh: function(store) {
-                        var filters = store.getFilters().getRange();
+                ]
 
-                        store.suspendEvents();
-                        store.clearFilter(true);
-                        store.addFilter(filters);
-                        store.resumeEvents();
-                    }
-                }
+*/
             },
 
             moduleStore: {
