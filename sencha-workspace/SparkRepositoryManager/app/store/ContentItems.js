@@ -7,7 +7,7 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
 
     model: 'SparkRepositoryManager.model.ContentItem',
 
-    groupField: 'sparkpointGroup',
+//    groupField: 'sparkpointGroup',
 
     proxy: {
         // TODO: this proxy is a dev workaround to contact a different API host
@@ -18,9 +18,13 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
         }
     },
 
-/*
     listeners: {
+        'beforeload': function(store) {
+            // This data does not have identifying Ids so we must clear the data manually
+            store.data.clear();
+        },
         'load': function(store, records) {
+            // Get the list of requested sparkpoint IDs from url params so items can be grouped by sparkpoint
             if (store.count()>0 && store.lastOptions && store.lastOptions.params && store.lastOptions.params.sparkpoint_ids) {
                 this.setGroupFieldValue(records, store.lastOptions.params.sparkpoint_ids.split(','));
             }
@@ -59,6 +63,5 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
             }
         }
     }
-*/
 
 });
