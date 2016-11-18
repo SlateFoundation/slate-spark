@@ -53,12 +53,22 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             sparkpointsStore: {
                 type: 'chained',
                 source: 'ContentItems',
-                // groupField: 'sparkpointGroup',
+                groupField: 'sparkpointGroup',
                 filters: [
                     function(item) {
                         return item.get('type') === 'learn';
                     }
-                ]
+                ],
+                listeners: {
+                    refresh: function(store) {
+                        var filters = store.getFilters().getRange();
+
+                        store.suspendEvents();
+                        store.clearFilter(true);
+                        store.addFilter(filters);
+                        store.resumeEvents();
+                    }
+                }
             },
 
             moduleStore: {
