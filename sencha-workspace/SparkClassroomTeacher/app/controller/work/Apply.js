@@ -125,7 +125,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
     onGradePanelGradeChange: function(gradePanel, grade) {
         var apply = this.getActiveApply();
-        apply.set('grade', grade);
+        apply.set('grade', grade == -1 ? null : grade);
 
         if (apply.dirty) {
             apply.save();
