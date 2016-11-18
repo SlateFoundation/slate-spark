@@ -22,6 +22,7 @@ function* getHandler() {
         try {
             lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+            standardIds.push(sparkpointId);
         } catch (e) {
             return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
         }

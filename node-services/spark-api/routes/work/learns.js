@@ -28,6 +28,7 @@ function* getHandler() {
         try {
             lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+            standardIds.push(sparkpointId);
         } catch (e) {
             return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
         }
@@ -38,8 +39,6 @@ function* getHandler() {
             standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
         });
     });
-
-    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
 
     // TODO: 5 magic number should come from preferences
 
@@ -68,11 +67,7 @@ function* getHandler() {
         learnsRequired = learnsRequired.json;
     }
 
-    if (standardIds.length === 0) {
-        fusebox = [];
-    } else {
-        fusebox = yield Fusebox.getResources(standardIds);
-    }
+    fusebox = yield Fusebox.getResources(standardIds);
 
     params = {
         limit: 50,
