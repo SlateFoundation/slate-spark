@@ -102,7 +102,7 @@ function* getFuseboxResources(asnIds) {
 
     if (asnIds.length > 1) {
         params.push(asnIds);
-        where.push('standardids ?| $' + params.length);
+        where.push('standardids ?| $' + params.length + '::char(8)[]');
     } else if (asnIds.length === 1) {
         params.push(asnIds[0]);
         where.push('standardids ? $' + params.length);
