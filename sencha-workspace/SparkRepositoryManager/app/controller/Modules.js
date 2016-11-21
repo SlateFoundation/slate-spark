@@ -572,7 +572,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         phaseStartCnt.down('field[name="Total"]').setValue(phaseStart.Total);
 
         // other tabs
-        me.getLearnsSelectorModuleGrid().getStore().loadData(learns);
+        me.getLearnsSelectorModuleGrid().getStore().loadData(me.transformNestedGroupRecords(learns));
         me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
         me.getResourcesSelectorModuleGrid().getStore().loadData(resources);
         me.getAppliesSelectorModuleGrid().getStore().loadData(applies);
@@ -729,8 +729,42 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         if (treepanel.getSelection()[0] !== module) {
             treepanel.getSelectionModel().select(treepanel.getStore().indexOf(module), false, false);
         }
+    },
 
+    transformNestedGroupRecords: function(jsonData) {
+        var recs = [],
+            moduleGroups,
+            moduleGroupsLength,
+            moduleGroupName,
+            moduleGroup,
+            moduleGroupLength,
+            i, r, rec;
 
+        if (jsonData !== null && typeof jsonData === 'object' && !Array.isArray(jsonData)) {
+            moduleGroups = Object.keys(jsonData);
+            moduleGroupsLength = moduleGroups.length;
+
+            for (i=0; i<moduleGroupsLength; i++) {
+                moduleGroupName = moduleGroups[i];
+                moduleGroup = jsonData[moduleGroupName];
+
+                if (Array.isArray(moduleGroup)) {   // moduleGroup should be an array of record data objects
+                    moduleGroupLength = moduleGroup.length;
+
+                    for (r=0; r<moduleGroupLength; r++) {
+                        rec = moduleGroup[r];
+                        rec.modulegroup = moduleGroupName;   // set the modulegroup field
+                        recs.push(rec)
+                    }
+                }
+            }
+
+        } else {
+            // eslint-disable-next-line no-console
+            console.warn('invalid group data received.  Expected object, found ' + (Array.isArray(jsonData) ? 'array' : typeof jsonData));
+        }
+
+        return recs;
     }
 
 });
