@@ -656,22 +656,38 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     updateSparkpointItems: function(itemType, grid) {
         var me = this,
             module = me.getModule(),
-            sparkpointItems = grid.getStore().getRange(),
+            sparkpointItemsStore = grid.getStore(),
+            sparkpointItems = sparkpointItemsStore.getRange(),
             sparkpointItemsLength = sparkpointItems.length,
             moduleItems= [],
-            i = 0;
+            i = 0, item;
 
-        for (; i<sparkpointItemsLength; i++) {
-            moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), [
-                'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
-            ]));
+        if (sparkpointItemsStore.isGrouped()) {
+            moduleItems = {};
+
+            for (; i<sparkpointItemsLength; i++) {
+                item = sparkpointItems[i];
+
+                if (!moduleItems[item.get('modulegroup')]) {
+                    moduleItems[item.get('modulegroup')] = [];
+                }
+                moduleItems[item.get('modulegroup')].push(me.objectSkim(sparkpointItems[i].getData(), [
+                    'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
+                ]));
+            }
+
+        } else {
+            for (; i<sparkpointItemsLength; i++) {
+                moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), [
+                    'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
+                ]));
+            }
         }
 
         if (module !== null) {
             module.set(itemType, moduleItems);
             me.saveModule();
         }
-        // grid.getStore().group();
     },
 
     // convert Emergence camelcase field names to lowercase used by spark-api

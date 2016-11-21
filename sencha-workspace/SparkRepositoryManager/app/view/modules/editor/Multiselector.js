@@ -214,7 +214,14 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             sparkpointsStore = me.down('#sparkpoints-grid').getStore(),
             moduleStore = me.down('#module-grid').getStore();
 
-        moduleStore.add(rec);
+        if (moduleStore.isGrouped()) {
+            moduleStore.suspendEvents();
+            moduleStore.add(Ext.apply(rec.getData(), { modulegroup: 'DefaultGroup' }));
+            moduleStore.resumeEvents();
+            moduleStore.group(moduleStore.getGroupField());
+        } else {
+            moduleStore.add(rec.getData());
+        }
 
         sparkpointsStore.filterBy(function(sparkpointRec) {
             return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
@@ -226,7 +233,14 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             sparkpointsStore = me.down('#sparkpoints-grid').getStore(),
             moduleStore = me.down('#module-grid').getStore();
 
-        moduleStore.remove(rec);
+        if (moduleStore.isGrouped()) {
+            moduleStore.suspendEvents();
+            moduleStore.remove(rec);
+            moduleStore.resumeEvents();
+            moduleStore.group(moduleStore.getGroupField());
+        } else {
+            moduleStore.remove(rec);
+        }
 
         sparkpointsStore.filterBy(function(sparkpointRec) {
             return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
