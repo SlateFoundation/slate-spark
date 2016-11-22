@@ -12,6 +12,10 @@ Ext.define('SparkClassroom.model.work.Apply', {
             name: 'resource_id',
             type: 'int'
         },
+        {
+            name: 'sparkpoint_id',
+            critical: true
+        },
         'title',
         'instructions',
         'dok',
