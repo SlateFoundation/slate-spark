@@ -74,17 +74,18 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                     features: [{
                         ftype: 'grouping',
                         groupHeaderTpl: '{name}',
-                        getRowClass: function(rec) {
-                            // TODO : hide dummy records
-                            // return rec.get('fusebox_id') === -1 ? 'x-hide-display' : '';
-                            return '';
-                        },
                         collapsible: false // disabled because it doesn't work TODO maybe make this work?,
                     }],
                     viewConfig: {
                         plugins: {
                             ptype: 'gridviewdragdrop'
-                        }
+                        },
+                        getRowClass: function(rec) {
+                            // TODO : hide dummy records
+                            console.log('getRowClass');
+                            // return rec.get('fusebox_id') === -1 ? 'x-hidden' : '';
+                            return '';
+                        },
                     },
                     hideHeaders: true,
                     emptyText: 'None yet. Add some from the Sparkpoints to the left, <br> or from scratch using the button above.',
