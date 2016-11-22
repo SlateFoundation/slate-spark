@@ -82,8 +82,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                         },
                         getRowClass: function(rec) {
                             // TODO : hide dummy records
-                            return '';
-                            //return rec.get('fusebox_id') === -1 ? 'x-hidden' : '';
+                            // return '';
+                            return rec.get('fusebox_id') === -1 ? 'x-hidden' : '';
                         }
                     },
                     hideHeaders: true,
