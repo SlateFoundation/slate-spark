@@ -145,6 +145,11 @@ Ext.define('SparkClassroom.model.work.Apply', {
         writer: {
             type: 'json',
             allowSingle: true
+        },
+        reader: {
+            type: 'json',
+            keepRawData: true,
+            rootProperty: 'applies'
         }
     }
 });
