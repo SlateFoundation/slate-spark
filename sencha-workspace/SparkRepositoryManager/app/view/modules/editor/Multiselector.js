@@ -82,10 +82,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                         },
                         getRowClass: function(rec) {
                             // TODO : hide dummy records
-                            console.log('getRowClass');
-                            // return rec.get('fusebox_id') === -1 ? 'x-hidden' : '';
                             return '';
-                        },
+                            //return rec.get('fusebox_id') === -1 ? 'x-hidden' : '';
+                        }
                     },
                     hideHeaders: true,
                     emptyText: 'None yet. Add some from the Sparkpoints to the left, <br> or from scratch using the button above.',
@@ -192,6 +191,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         moduleGrid.on({
             removeclick: Ext.bind(me.removeSparkpointClick, me)
         });
+        moduleGrid.getView().on({
+            beforedrop: Ext.bind(me.updateGroupField, me)
+        });
 
         if (moduleHeaderItems) {
             moduleGrid.getHeader().add(moduleHeaderItems);
@@ -246,5 +248,15 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         sparkpointsStore.filterBy(function(sparkpointRec) {
             return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
         });
+    },
+
+    updateGroupField: function(node, data, overModel) {
+        var rec = data.records[0],
+            group = overModel.get('modulegroup');
+
+        console.log(' *********************** updateGroupField ****************'); // eslint-disable-line no-console, /* TODO: remove this */
+        console.log(group); // eslint-disable-line no-console, /* TODO: remove this */
+        rec.set('modulegroup', group);
     }
-});
+
+})
