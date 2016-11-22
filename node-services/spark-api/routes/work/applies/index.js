@@ -132,7 +132,10 @@ function *getHandler() {
     `, [this.studentId, sparkpointId, standardIds, sectionId]);
 
     ctx.body = {
-        applies: (applies.json || []).map(apply => apply.sparkpoint_id = sparkpointId),
+        applies: (applies.json || []).map(apply => {
+            apply.sparkpoint_id = sparkpointId;
+            return apply;
+        }),
         module: lesson
     };
 }
