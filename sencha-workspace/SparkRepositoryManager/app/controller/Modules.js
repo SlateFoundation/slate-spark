@@ -434,7 +434,6 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         me.setSuspended(true);
 
         if (groups) {
-            groupCnt = groups.count();
             groupCnt++;
             group = 'Group '+ groupCnt;
 

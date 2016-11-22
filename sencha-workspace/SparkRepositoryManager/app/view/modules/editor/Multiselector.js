@@ -219,7 +219,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
 
         if (moduleStore.isGrouped()) {
             moduleStore.suspendEvents();
-            moduleStore.add(Ext.apply(rec.getData(), { modulegroup: 'DefaultGroup' }));
+            moduleStore.add(Ext.apply(rec.getData(), { modulegroup: 'Group 1' }));
             moduleStore.resumeEvents();
             moduleStore.group(moduleStore.getGroupField());
         } else {
@@ -254,8 +254,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         var rec = data.records[0],
             group = overModel.get('modulegroup');
 
-        console.log(' *********************** updateGroupField ****************'); // eslint-disable-line no-console, /* TODO: remove this */
-        console.log(group); // eslint-disable-line no-console, /* TODO: remove this */
         rec.set('modulegroup', group);
     }
 

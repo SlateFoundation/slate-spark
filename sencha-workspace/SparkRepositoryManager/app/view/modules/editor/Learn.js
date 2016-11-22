@@ -84,7 +84,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                     },
                     {
                         name: 'modulegroup',
-                        defaultValue: 'DefaultGroup'
+                        defaultValue: 'Group 1'
                     },
                     'title',
                     'url',
