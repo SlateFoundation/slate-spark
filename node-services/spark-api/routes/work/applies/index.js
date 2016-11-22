@@ -45,6 +45,8 @@ function *getHandler() {
         ap.id,
         'title',
         ap.title,
+        'sparkpoint_id',
+        ap.sparkpoint_id,
         'instructions',
         ap.instructions,
         'dok',
