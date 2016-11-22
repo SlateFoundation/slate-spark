@@ -427,13 +427,21 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         var me = this,
             grid = me.getLearnsSelectorModuleGrid(),
             store = grid.getStore(),
-            group = 'UNNAMED GROUP';
+            groups = store.getGroups(),
+            group = 'UNNAMED GROUP',
+            groupCnt = 0;
 
         me.setSuspended(true);
 
-        if (store.getGroups()) {
-            console.log(store.getGroups().count()); // eslint-disable-line no-console, /* TODO: remove this */
-            group = 'Group '+ (store.getGroups().count() + 1);
+        if (groups) {
+            groupCnt = groups.count();
+            groupCnt++;
+            group = 'Group '+ groupCnt;
+
+            while (groups.containsKey(group)) {
+                groupCnt++;
+                group = 'Group '+ groupCnt;
+            }
         }
 
         store.addSorted(Ext.create('Ext.data.Model', {
