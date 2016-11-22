@@ -178,7 +178,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         // other tabs
         's2m-modules-multiselector grid#module-grid': {
-            boxready: 'onModuleGridBoxready'
+            boxready: 'onModuleGridBoxready',
+            groupclicked: 'onModuleGridGroupClick'
         },
 
         // forms
@@ -419,6 +420,10 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         });
     },
 
+    onModuleGridGroupClick: function(grid) {
+        console.log('---------------onModuleGridGroupClick----------------');
+    },
+
     onAddLearnButtonClick: function() {
         console.log('onAddLearnButtonClick'); // eslint-disable-line no-console
     },
@@ -446,7 +451,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         store.addSorted(Ext.create('Ext.data.Model', {
             modulegroup: group,
             fusebox_id: -1,  // eslint-disable-line camelcase
-            title: 'dummy '+(store.count()+1)
+            title: 'dummy'
         }));
         store.group({ property: 'modulegroup' });
 
@@ -678,15 +683,19 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
                 if (!moduleItems[item.get('modulegroup')]) {
                     moduleItems[item.get('modulegroup')] = [];
                 }
-                moduleItems[item.get('modulegroup')].push(me.objectSkim(sparkpointItems[i].getData(), [
-                    'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
-                ]));
+
+                if (item.get('fusebox_id') !== -1) {    // exclude dummy records needed for empty groups
+
+                    moduleItems[item.get('modulegroup')].push(me.objectSkim(sparkpointItems[i].getData(), [
+                        'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
+                    ]));
+                }
             }
 
         } else {
             for (; i<sparkpointItemsLength; i++) {
                 moduleItems.push(me.objectSkim(sparkpointItems[i].getData(), [
-                    'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
+                    'fusebox_id', 'title', 'url', 'question', 'dok'
                 ]));
             }
         }
@@ -751,17 +760,26 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             moduleGroups = Object.keys(jsonData);
             moduleGroupsLength = moduleGroups.length;
 
-            for (i=0; i<moduleGroupsLength; i++) {
+            for (i=0; i<moduleGroupsLength; i++) {  // loop through groups
                 moduleGroupName = moduleGroups[i];
                 moduleGroup = jsonData[moduleGroupName];
 
                 if (Array.isArray(moduleGroup)) {   // moduleGroup should be an array of record data objects
                     moduleGroupLength = moduleGroup.length;
 
-                    for (r=0; r<moduleGroupLength; r++) {
-                        rec = moduleGroup[r];
-                        rec.modulegroup = moduleGroupName;   // set the modulegroup field
-                        recs.push(rec)
+                    if (moduleGroupLength === 0) {
+                        // add a dummy record if this is an empty group
+                        recs.push({
+                            modulegroup: moduleGroupName,
+                            fusebox_id: -1,  // eslint-disable-line camelcase
+                            title: 'dummy'
+                        });
+                    } else {
+                        for (r=0; r<moduleGroupLength; r++) {
+                            rec = moduleGroup[r];
+                            rec.modulegroup = moduleGroupName;   // set the modulegroup field
+                            recs.push(rec)
+                        }
                     }
                 }
             }
