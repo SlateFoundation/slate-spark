@@ -45,8 +45,6 @@ function *getHandler() {
         ap.id,
         'title',
         ap.title,
-        'sparkpoint_id',
-        ap.sparkpoint_id,
         'instructions',
         ap.instructions,
         'dok',
@@ -134,7 +132,7 @@ function *getHandler() {
     `, [this.studentId, sparkpointId, standardIds, sectionId]);
 
     ctx.body = {
-        applies: applies.json || [],
+        applies: (applies.json || []).map(apply => apply.sparkpoint_id = sparkpointId),
         module: lesson
     };
 }
