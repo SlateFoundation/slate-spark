@@ -73,7 +73,7 @@ WITH mta AS (
                      FROM "mta-live".learn_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) mta_learns
              JOIN "mta-live".people mta_people
                ON mta_people."ID" = mta_learns.teacher_id
@@ -89,7 +89,7 @@ WITH mta AS (
                      FROM "mta-live".guiding_question_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) mta_gq
              JOIN "mta-live".people mta_people
                ON mta_people."ID" = mta_gq.teacher_id
@@ -105,7 +105,7 @@ WITH mta AS (
                      FROM "mta-live".conference_resource_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) mta_cr
              JOIN "mta-live".people mta_people
                ON mta_people."ID" = mta_cr.teacher_id
@@ -121,7 +121,7 @@ WITH mta AS (
                      FROM "mta-live".apply_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) mta_applies
              JOIN "mta-live".people mta_people
                ON mta_people."ID" = mta_applies.teacher_id)
@@ -139,7 +139,7 @@ WITH mta AS (
                      FROM "merit-live".learn_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) merit_learns
              JOIN "merit-live".people merit_people
                ON merit_people."ID" = merit_learns.teacher_id
@@ -155,7 +155,7 @@ WITH mta AS (
                      FROM "merit-live".guiding_question_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) merit_gq
              JOIN "merit-live".people merit_people
                ON merit_people."ID" = merit_gq.teacher_id
@@ -171,7 +171,7 @@ WITH mta AS (
                      FROM "merit-live".conference_resource_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) merit_cr
              JOIN "merit-live".people merit_people
                ON merit_people."ID" = merit_cr.teacher_id
@@ -187,7 +187,7 @@ WITH mta AS (
                      FROM "merit-live".apply_assignments
                  GROUP BY teacher_id
                  ORDER BY count DESC
-                    LIMIT 10
+                    LIMIT 20
              ) merit_applies
              JOIN "merit-live".people merit_people
                ON merit_people."ID" = merit_applies.teacher_id)
@@ -207,7 +207,7 @@ WITH mta AS (
                 FROM "mta-live".learn_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) mta_learns
+                LIMIT 20) mta_learns
             JOIN "mta-live".course_sections mta_course_sections ON mta_course_sections."ID" = mta_learns.section_id),
          'Guiding Questions',
          (SELECT json_object_agg(
@@ -220,7 +220,7 @@ WITH mta AS (
                 FROM "mta-live".guiding_question_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) mta_gq
+                LIMIT 20) mta_gq
             JOIN "mta-live".course_sections mta_course_sections ON mta_course_sections."ID" = mta_gq.section_id),
          'Conference Resources',
          (SELECT json_object_agg(
@@ -233,7 +233,7 @@ WITH mta AS (
                 FROM "mta-live".conference_resource_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) mta_cr
+                LIMIT 20) mta_cr
             JOIN "mta-live".course_sections mta_course_sections ON mta_course_sections."ID" = mta_cr.section_id),
          'Applies',
          (SELECT json_object_agg(
@@ -246,7 +246,7 @@ WITH mta AS (
                 FROM "mta-live".apply_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) mta_applies
+                LIMIT 20) mta_applies
             JOIN "mta-live".course_sections mta_course_sections ON mta_course_sections."ID" = mta_applies.section_id)
      ))),
     'Merit',
@@ -262,7 +262,7 @@ WITH mta AS (
                 FROM "merit-live".learn_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) merit_learns
+                LIMIT 20) merit_learns
             JOIN "merit-live".course_sections merit_course_sections
               ON merit_course_sections."ID" = merit_learns.section_id),
          'Guiding Questions',
@@ -276,7 +276,7 @@ WITH mta AS (
                 FROM "merit-live".guiding_question_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) merit_gq
+                LIMIT 20) merit_gq
             JOIN "merit-live".course_sections merit_course_sections ON merit_course_sections."ID" = merit_gq.section_id),
          'Conference Resources',
          (SELECT json_object_agg(
@@ -289,7 +289,7 @@ WITH mta AS (
                 FROM "merit-live".conference_resource_assignments
                 GROUP BY section_id
                 ORDER BY count DESC
-                LIMIT 10) merit_cr
+                LIMIT 20) merit_cr
             JOIN "merit-live".course_sections merit_course_sections ON merit_course_sections."ID" = merit_cr.section_id),
          'Applies',
          (SELECT json_object_agg(
@@ -302,7 +302,7 @@ WITH mta AS (
                 FROM "merit-live".apply_assignments
                 GROUP BY teacher_id
                 ORDER BY count DESC
-                LIMIT 10) merit_applies
+                LIMIT 20) merit_applies
             JOIN "merit-live".course_sections merit_course_sections
               ON merit_course_sections."ID" = merit_applies.teacher_id)
      )))
