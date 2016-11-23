@@ -36,7 +36,9 @@ function* getHandler() {
 
     sparkpointIds.forEach(function(sparkpointId) {
         (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
-            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+            let standard = new AsnStandard(asnId);
+            standardIds = standardIds.concat(standard.asnIds);
+            openedIds = openedIds.concat(standard.vendorIdentifiers.OpenEd);
         });
     });
 
