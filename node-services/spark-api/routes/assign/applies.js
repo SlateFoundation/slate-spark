@@ -1,31 +1,45 @@
 'use strict';
 
-var AsnStandard = require('../../lib/asn-standard');
+const util = require('../../lib/util');
+const AsnStandard = require('../../lib/asn-standard');
+const recordToModel = require('../work/modules/index.js').recordToModel;
 
 function* getHandler() {
+
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
-        sectionId = ctx.query.section_id,
-        result,
-        applies;
+        sectionId = ~~ctx.query.section_id,
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
+        applies,
+        lesson;
 
     ctx.require(['sparkpoint_id', 'section_id']);
 
-    // TODO: synchronous ctx.lookup is deprecated
-    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
-        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+            standardIds.push(sparkpointId);
+        } catch (e) {
+            return ctx.throw(404, e);
+        }
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
     });
 
-    // If standardIds is empty the query below will fail because PostgreSQL will not know it's array of integers
-    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
     ctx.assert(ctx.isTeacher, 'Only teachers can assign applies', 403);
 
-    result = yield this.pgp.one(/*language=SQL*/ `
+    applies = (yield this.pgp.one(/*language=SQL*/ `
         WITH fusebox_applies AS (
             SELECT *
               FROM fusebox_apply_projects
-             WHERE standardids ?| $1
+             WHERE standardids ?| $1::char(8)[]
         ),
         
         apply_assignments AS (
@@ -138,9 +152,10 @@ function* getHandler() {
             )) FROM fusebox_applies ap
             ), '[]'::JSON)
         ) AS json;
-    `, [standardIds, sparkpointId, sectionId]);
+    `, [standardIds, sparkpointId, sectionId])).json;
 
-    ctx.body = result.json;
+    applies.lesson = lesson || null;
+    ctx.body = applies;
 }
 
 module.exports = {

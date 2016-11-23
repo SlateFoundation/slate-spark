@@ -1,25 +1,40 @@
 'use strict';
 
-var AsnStandard = require('../../lib/asn-standard');
+const util = require('../../lib/util');
+const AsnStandard = require('../../lib/asn-standard');
+const recordToModel = require('../work/modules/index.js').recordToModel;
 
 function* getHandler() {
     var ctx = this,
         sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
-        sectionId = ctx.query.section_id,
-        result,
-        resources;
+        sectionId = ~~ctx.query.section_id,
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
+        resources,
+        lesson;
 
     ctx.require(['sparkpoint_id', 'section_id']);
 
-    (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function(asnId) {
-        standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+            standardIds.push(sparkpointId);
+        } catch (e) {
+            return ctx.throw(404, e);
+        }
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
     });
 
-    ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
     ctx.assert(ctx.isTeacher, 'Only teachers can assign conference resources', 403);
 
-    result = yield this.pgp.one(/*language=SQL*/ `
+    resources = (yield this.pgp.one(/*language=SQL*/ `
         WITH resources AS (
             SELECT id AS resource_id,
                    '' AS creator,
@@ -28,7 +43,7 @@ function* getHandler() {
                    url,
                    gradelevel AS "gradeLevel"
               FROM fusebox_conference_resources
-             WHERE standardids ?| $1
+             WHERE standardids ?| $1::char(8)[]
         ),
         
         resource_assignments AS (
@@ -63,9 +78,10 @@ function* getHandler() {
               ) t
             )
         ) AS json;
-    `, [standardIds, sparkpointId, sectionId]);
+    `, [standardIds, sparkpointId, sectionId])).json;
 
-    ctx.body = result.json;
+    resources.lesson = lesson || null;
+    ctx.body = resources;
 }
 
 module.exports = {

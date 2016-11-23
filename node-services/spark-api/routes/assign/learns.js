@@ -1,15 +1,43 @@
 'use strict';
 
-var util = require('../../lib/util');
+const util = require('../../lib/util');
+const AsnStandard = require('../../lib/asn-standard');
+const recordToModel = require('../work/modules/index.js').recordToModel;
 
 function *getHandler(next) {
     var ctx = this,
-        sectionId = ctx.query.section_id,
         sparkpointId = ctx.query.sparkpoint_id,
-        result;
+        standardIds = [],
+        sectionId = ~~ctx.query.section_id,
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        sparkpointIds = !isLesson ? [sparkpointId] : [],
+        result, lesson, lessonLearnAssignmentsByFuseboxId = {};
 
-    ctx.assert(sectionId, 400, 'section_id, section_code, or section must be passed as a query parameter');
-    ctx.assert(sparkpointId, 400, 'sparkpoint_id, sparkpoint_code, or sparkpoint must be passed as a query parameter');
+    ctx.require(['sparkpoint_id', 'section_id']);
+
+    if (isLesson) {
+        try {
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
+            standardIds.push(sparkpointId);
+
+            for (var group in lesson.learns) {
+                lesson.learns[group].forEach(learn => lessonLearnAssignmentsByFuseboxId[learn.fusebox_id] = learn);
+            }
+
+            console.log(lessonLearnAssignmentsByFuseboxId);
+        } catch (e) {
+            return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
+        }
+    }
+
+    sparkpointIds.forEach(function(sparkpointId) {
+        (ctx.lookup.sparkpoint.idToAsnIds[sparkpointId] || []).forEach(function (asnId) {
+            standardIds = standardIds.concat(new AsnStandard(asnId).asnIds);
+        });
+    });
+
+    ctx.assert(ctx.isTeacher, 'Only teachers can assign learns', 403);
 
     // HACK: call /work/learns to make sure that the playlist is cached/up to date
     ctx.query.student_id = ctx.userId;
@@ -92,6 +120,9 @@ function *getHandler(next) {
         resource.assignments = result.assignments[resource.resource_id] || {};
         delete resource.assignment;
 
+        // TODO: Once we fix the mismatch between fusebox_id and resource_id we need to merge in the lesson
+        // assignments here
+
         // HACK: Learning targets should appear as "required-first" unless they are set to something else
         if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
             resource.assignments.section = resource.assignments.section || 'required-first';
@@ -110,6 +141,7 @@ function *getHandler(next) {
     delete result.assignments;
     delete result.activity;
 
+    result.lesson = lesson || null;
     ctx.body = result;
 }
 
