@@ -95,6 +95,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             ref: 'learnsSelectorModuleGrid',
             selector: 's2m-modules-editor-learn s2m-modules-multiselector grid#module-grid'
         }, {
+            ref: 'learnsRequiredTextfield',
+            selector: 's2m-modules-editor-learn field[name="learns_required"]'
+        }, {
             ref: 'questionsSelectorModuleGrid',
             selector: 's2m-modules-editor-questions s2m-modules-multiselector grid#module-grid'
         }, {
@@ -184,6 +187,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         },
 
         // other tabs
+        's2m-modules-editor-learn field[name="learns_required"]': {
+            change: 'onModuleMetaFieldChange'
+        },
         's2m-modules-multiselector grid#module-grid': {
             boxready: 'onModuleGridBoxready',
             groupclicked: 'onModuleGridGroupClick'
@@ -622,6 +628,8 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         // other tabs
         me.getLearnsSelectorModuleGrid().getStore().loadData(me.transformNestedGroupRecords(learns));
+        me.getLearnsRequiredTextfield().setValue(module.get('learns_required'));
+
         me.getQuestionsSelectorModuleGrid().getStore().loadData(questions);
         me.getResourcesSelectorModuleGrid().getStore().loadData(resources);
         me.getAppliesSelectorModuleGrid().getStore().loadData(applies);

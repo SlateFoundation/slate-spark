@@ -25,6 +25,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                 {
                     xtype: 'textfield',
                     fieldLabel: 'Learns Needed',
+                    name: 'learns_required',
                     labelWidth: 120,
                     width: 161,
                     inputAttrTpl: 'pattern="[0-9]*"',
@@ -32,6 +33,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
                     maxLength: 3,
                     enforceMaxLength: true,
                     emptyText: '0',
+                    checkChangeEvents: ['blur'],
                     fieldStyle: {
                         textAlign: 'center'
                     }
