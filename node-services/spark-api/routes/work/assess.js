@@ -62,7 +62,7 @@ function *getHandler() {
     ctx.body = {
         assessments: assessments.map(fusebox.normalizeAssessment),
         reflection: reflection ? reflection.reflection : '',
-        module: lesson
+        lesson: lesson || null
     };
 }
 

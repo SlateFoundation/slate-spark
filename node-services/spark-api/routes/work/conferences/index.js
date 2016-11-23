@@ -157,7 +157,7 @@ function* getHandler() {
                    AND section_id = $4
            ),
            
-           'module',
+           'lesson',
            (
                 SELECT row_to_json(modules)
                   FROM modules
@@ -166,8 +166,8 @@ function* getHandler() {
         ) AS json;
     `, [standardIds, studentId, sparkpointId, sectionId]);
 
-    if (result.json.module) {
-        result.json.module = recordToModel(result.json.module);
+    if (result.json.lesson) {
+        result.json.lesson = recordToModel(result.json.lesson);
     }
 
     ctx.body = result.json;

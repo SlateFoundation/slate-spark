@@ -248,7 +248,7 @@ function* getHandler() {
     ctx.body = {
         resources: resources,
         learns_required: learnsRequired,
-        module: lesson
+        lesson: lesson || null
     };
 }
 

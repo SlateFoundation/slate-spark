@@ -136,7 +136,7 @@ function *getHandler() {
             apply.sparkpoint_id = sparkpointId;
             return apply;
         }),
-        module: lesson
+        lesson: lesson || null
     };
 }
 
