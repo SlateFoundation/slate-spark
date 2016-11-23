@@ -198,6 +198,18 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 me.learnsRequiredStudent = itemData.required || null;
                 me.refreshLearnProgress();
             }
+        } else if (table == 'learn_reviews' &&
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+                && itemData.student_id == selectedStudentSparkpoint.get('student_id')
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+        ) {
+
+            learn.set({
+                comment: itemData.comment,
+                rating: {
+                    user: itemData.rating
+                }
+            }, {dirty: false});
         }
     },
 
