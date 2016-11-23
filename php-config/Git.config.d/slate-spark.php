@@ -8,7 +8,6 @@ Git::$repositories['slate-spark'] = [
         'site-root/sass',
         'site-root/img',
         'site-root/spark',
-        'php-classes/Spark/Classroom',
         'php-config/Git.config.d',
         'php-config/Slate/DashboardRequestHandler.config.d',
         'php-config/Slate/UI/Navigation.config.php',
