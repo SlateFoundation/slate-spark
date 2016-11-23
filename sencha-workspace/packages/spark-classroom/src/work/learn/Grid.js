@@ -11,7 +11,8 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         'SparkClassroom.column.LearnType',
         'SparkClassroom.column.Rating',
         'SparkClassroom.column.Score',
-        'SparkClassroom.column.Attachment'
+        'SparkClassroom.column.Attachment',
+        'SparkClassroom.work.learn.ProgressBanner'
     ],
 
     config: {
@@ -24,7 +25,18 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         emptyText: 'No Learns to show for this Sparkpoint.',
         grouped: true,
         titleBar: null,
-        columns:[
+        items: [{
+            xtype: 'container',
+            layout: {
+                type: 'hbox',
+                pack: 'center'
+            },
+            items: [{
+                xtype: 'spark-work-learn-progressbanner',
+                hidden: true
+            }]
+        }],
+        columns: [
             {
                 xtype: 'spark-completed-column',
                 requireLaunched: true

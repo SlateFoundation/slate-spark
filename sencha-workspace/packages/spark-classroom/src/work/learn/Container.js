@@ -25,62 +25,10 @@ Ext.define('SparkClassroom.work.learn.Container', {
                 '<h3 class="spark-panel-title">{moduleTitle}</h3>',
                 '<p>{moduleDescription}</p>'
             ]
-        },{
+        }, {
             layout: 'accordion',
-            items: [
-                {
-                    // TODO example module learn group
-                    // just add another of these items for each group
-
-                    expanded: true,
-
-                    xtype: 'container',
-                    title: 'Module Group Name <small>Module Code</small>', // TODO if no group name available, number the groups sequentially: 'Group 1', 'Group 2'
-                    items: [
-                        {
-                            xtype: 'container',
-                            layout: {
-                                type: 'hbox',
-                                pack: 'center'
-                            },
-                            items: [
-                                {
-                                    xtype: 'spark-work-learn-progressbanner',
-                                    hidden: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'spark-work-learn-grid'
-                        }
-                    ]
-                },
-                {
-                    expanded: true,
-                    itemId: 'sparkpointCt',
-
-                    xtype: 'container',
-                    title: '[Select a Sparkpoint]',
-                    items: [
-                        {
-                            xtype: 'container',
-                            layout: {
-                                type: 'hbox',
-                                pack: 'center'
-                            },
-                            items: [
-                                {
-                                    xtype: 'spark-work-learn-progressbanner',
-                                    hidden: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'spark-work-learn-grid'
-                        }
-                    ]
-                }
-            ]
+            itemId: 'learnAccordian',
+            items: []
         }]
     },
 

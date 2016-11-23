@@ -364,6 +364,17 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
 
         // locally calculated fields
         {
+            name: 'is_lesson',
+            persist: false,
+            calculate: function(data) {
+                if (!data.sparkpoint_id || data.sparkpoint_id.indexOf('L') !== 0) {
+                    return false;
+                }
+
+                return true;
+            }
+        },
+        {
             name: 'active_phase',
             persist: false,
             depends: [

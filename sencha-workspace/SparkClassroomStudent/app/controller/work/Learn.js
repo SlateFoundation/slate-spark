@@ -13,10 +13,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     refs: {
         learnCt: 'spark-student-work-learn',
+        learnAccordian: 'spark-student-work-learn #learnAccordian',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid',
-        readyBtn: 'spark-student-work-learn #readyForConferenceBtn'
+        readyBtn: 'spark-student-work-learn #readyForConferenceBtn',
+        workCt: 'spark-student-work-ct'
     },
 
     control: {
@@ -53,9 +55,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
-            store = me.getWorkLearnsStore(),
+            learnsStore = me.getWorkLearnsStore(),
             sparkpointCt = me.getSparkpointCt(),
-            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
+            learnAccordian = me.getLearnAccordian(),
+            learnList = learnAccordian.down('list'),
+            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
+            lessonLists;
 
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
@@ -65,12 +70,36 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             return;
         }
 
-        store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-        store.load();
+        learnsStore.getProxy().setExtraParam('sparkpoint', sparkpointCode);
+        learnsStore.load();
 
         if (sparkpointCt) {
             sparkpointCt.setTitle(sparkpointCode);
         }
+
+        // TODO: set store to priority grouping or lesson grouping
+        // TODO: if lesson mode, remove all lists from learns container; else check if there is already one list bound to main store, leave alone, otherwise create one list bound to this.getWorkLearnsStore()
+        if (studentSparkpoint.get('is_lesson')) {
+            learnAccordian.removeAll();
+
+            debugger;
+
+            return;
+        } else if (learnList && learnList.getStore() === learnsStore) {
+            return;
+        }
+
+        learnAccordian.removeAll();
+        learnAccordian.add({
+            xtype: 'container',
+            expanded: true,
+            itemId: 'sparkpointCt',
+            title: '[Select a Sparkpoint]',
+            items: [{
+                xtype: 'spark-work-learn-grid'
+            }],
+            store: 'work.Learns'
+        });
     },
 
 
@@ -87,13 +116,19 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         var me = this,
             studentSparkpoint = me.getStudentSparkpoint();
 
-        me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
+        // TODO set the title when we instantiate? me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
         me.refreshLearnProgress();
     },
 
-    onLearnsStoreLoad: function() {
+    onLearnsStoreLoad: function(store, records, success) {
+        var rawData = store.getProxy().getReader().rawData || {};
+
         this.refreshLearnProgress();
         this.ensureLearnPhaseStarted();
+
+        if (success && rawData.module) { // TODO: change to lesson
+            this.getWorkCt().setLesson(rawData.module);
+        }
     },
 
     onLearnsStoreUpdate: function() {
