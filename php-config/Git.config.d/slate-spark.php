@@ -12,7 +12,7 @@ Git::$repositories['slate-spark'] = [
         'php-config/Git.config.d',
         'php-config/Slate/DashboardRequestHandler.config.d',
         'php-config/Slate/UI/Navigation.config.php',
-        'php-config/Slate/UI/Omnibar.config.php',
+        'php-config/Slate/UI/Omnibar.config.d',
         'php-config/Slate/UI/Adapters/Courses.config.d/matchbook.php',
         'html-templates/app/spark-ext.tpl',
         'html-templates/app/SparkClassroomTeacher',
