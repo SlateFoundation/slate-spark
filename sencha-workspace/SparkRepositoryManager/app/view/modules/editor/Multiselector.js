@@ -13,7 +13,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
         moduleHeaderItems: null,
         moduleStore: null,
         showRequired: false,
-        showRecommended: false
+        showRecommended: false,
+        hideHeaders: true
     },
 
     layout: {
@@ -86,7 +87,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                             return rec.get('fusebox_id') === -1 ? 'x-hidden' : '';
                         }
                     },
-                    hideHeaders: true,
+                    hideHeaders: false,
                     emptyText: 'None yet. Add some from the Sparkpoints to the left, <br> or from scratch using the button above.',
                     store: {
                         fields: [],
@@ -135,7 +136,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                                 width: 48,
                                 xtype: 'checkcolumn',
                                 itemId: 'module-required-column',
-                                text: '<abbr title="Required">Req’d</abbr>',
+                                // text: '<abbr title="Required">Req’d</abbr>',
+                                text: '<i class="fa fa-asterisk"></i>',
                                 dataIndex: 'isRequired',
                                 hidden: true
                             },
@@ -143,7 +145,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                                 width: 48,
                                 xtype: 'checkcolumn',
                                 itemId: 'module-recommended-column',
-                                text: '<abbr title="Recommended">Recm’d</abbr>',
+                                // text: '<abbr title="Recommended">Recm’d</abbr>',
+                                text: '<i class="fa fa-bookmark"></i>',
                                 dataIndex: 'isRecommended',
                                 hidden: true
                             }
@@ -175,7 +178,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             moduleGrid = me.down('#module-grid'),
             moduleHeaderItems = me.getModuleHeaderItems(),
             showRequired = me.getShowRequired(),
-            showRecommended = me.getShowRecommended();
+            showRecommended = me.getShowRecommended(),
+            hideHeaders = me.getHideHeaders();
 
         me.callParent();
 
@@ -187,7 +191,10 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
 
         moduleGrid.setTitle(itemType.plural + ' in Module');
         moduleGrid.setStore(moduleStore);
-        moduleGrid.down('#module-item-col').setText(itemType.singular);
+
+        // commenting this out.  Only learns shows the header anyway, and with the title above, the column header seems redundant
+        // moduleGrid.down('#module-item-col').setText(itemType.singular);
+
         moduleGrid.on({
             removeclick: Ext.bind(me.removeSparkpointClick, me)
         });
@@ -208,6 +215,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             moduleGrid.down('#module-recommended-column').setVisible(showRecommended);
             me.down('#legend').show();
         }
+
+        // grid header setVisible workaround, see: https://www.sencha.com/forum/showthread.php?259472-Hide-tree-grid-header-row-at-runtime
+        moduleGrid.getView().getHeaderCt().setHeight(hideHeaders ? 0 : null);
     },
 
 

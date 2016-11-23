@@ -20,6 +20,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             allowMinimum: true,
             showRequired: true,
             showRecommended: true,
+            hideHeaders: false,
             moduleHeaderItems: [
                 {
                     xtype: 'textfield',
