@@ -25,16 +25,3 @@ if (!empty($_SESSION['User'])) {
         ]
     ];
 }
-
-#Omnibar::$sources[] = Adapters\Courses::class;
-Omnibar::$sources[] = Adapters\ManageSlate::class;
-Omnibar::$sources[] = Adapters\GoogleApps::class;
-Omnibar::$sources[] = Adapters\Canvas::class;
-Omnibar::$sources[] = Tools::class;
-Omnibar::$sources[] = Adapters\User::class;
-Omnibar::$sources[] = [
-    [
-        '_label' => 'Report Issue',
-        '_href' => 'mailto:help@slate.is'
-    ]
-];
