@@ -23,6 +23,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
     // dependencies
     models: [
+        'LearnLink',
         'GuidingQuestion',
         'ConferenceResource',
         'ApplyProject'
@@ -38,6 +39,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     ],
 
     views: [
+        'modules.editor.LearnForm',
         'modules.editor.QuestionForm',
         'modules.editor.ResourceForm',
         'modules.editor.ApplyForm'
@@ -104,6 +106,11 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         }, {
             ref: 'appliesSelectorModuleGrid',
             selector: 's2m-modules-editor-apply s2m-modules-multiselector grid#module-grid'
+        }, {
+            ref: 'learnForm',
+            selector: 's2m-modules-editor-learnform',
+            xtype: 's2m-modules-editor-learnform',
+            autoCreate: true
         }, {
             ref: 'questionForm',
             selector: 's2m-modules-editor-questionform',
@@ -185,6 +192,9 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
         // forms
         's2m-modules-editor-learn button[action="add-learn"]': {
             click: 'onAddLearnButtonClick'
+        },
+        's2m-modules-editor-learnform button[action="save"]': {
+            click: 'onLearnFormSaveClick'
         },
         's2m-modules-editor-learn button[action="add-learn-group"]': {
             click: 'onAddLearnGroupButtonClick'
@@ -425,7 +435,12 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
     },
 
     onAddLearnButtonClick: function() {
-        console.log('onAddLearnButtonClick'); // eslint-disable-line no-console
+        var me = this,
+            win = me.getLearnForm(),
+            form = win.down('form');
+
+        form.reset();
+        win.show();
     },
 
     onAddLearnGroupButtonClick: function() {
@@ -483,6 +498,28 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
 
         form.reset();
         win.show();
+    },
+
+    onLearnFormSaveClick: function() {
+        var me = this,
+            win = me.getLearnForm(),
+            form = win.down('form'),
+            vals = form.getForm().getValues(),
+            model = me.getLearnLinkModel(),
+            record = model.create(vals),
+            store = me.getLearnsSelectorModuleGrid().getStore();
+
+        record.save({
+            success: function(rec) {
+                store.add(me.convertFieldNames(rec.getData()));
+            },
+            failure: function() {
+                Ext.toast('ERROR: learn could not be saved');
+            }
+        });
+
+        form.reset();
+        win.close()
     },
 
     onQuestionFormSaveClick: function() {
