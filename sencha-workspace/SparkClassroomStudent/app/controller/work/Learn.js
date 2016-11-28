@@ -60,7 +60,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnAccordian = me.getLearnAccordian(),
             learnList = learnAccordian.down('list'),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
-            lessonLists;
+            lessonLists = [],
+            group, lesson;
 
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
@@ -82,8 +83,33 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         if (studentSparkpoint.get('is_lesson')) {
             learnAccordian.removeAll();
 
-            debugger;
+            lesson = studentSparkpoint.get('module_template');
 
+            // TODO when we switch to having lessons as a flat array, need to loop through groups to create instances of sparkpointCt
+            // then, load learns store with flat array of learns, and filter on the group_id in the filterFn.
+            // note: groups should also include ungrouped learns
+            for (group in lesson.learns) {
+                if (lesson.learns.hasOwnProperty(group)) {
+                    lessonLists.push({
+                        xtype: 'container',
+                        expanded: true,
+                        itemId: 'sparkpointCt',
+                        title: '[Select a Sparkpoint]',
+                        items: [{
+                            xtype: 'spark-work-learn-grid'
+                        }],
+                        store: {
+                            xtype: 'store.chained',
+                            source: 'work.learns',
+                            filterFn: function() {
+                                // TODO filter on group id
+                            }
+                        }
+                    });
+                }
+            }
+
+            learnAccordian.add(lessonLists);
             return;
         } else if (learnList && learnList.getStore() === learnsStore) {
             return;
