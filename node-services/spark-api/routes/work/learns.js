@@ -223,8 +223,8 @@ function* getHandler() {
             resource.rating.student = parseFloat(resourceId.average_rating)|| null;
             resource.assignment = resourceId.assignment || { student: null, section: null };
 
-            // HACK: Learning targets should appear as "required-first" unless they are set to something else
-            if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
+            // Learning targets are implicitly "required-first" unless they are assigned otherwise or part of a lesson
+            if (!isLesson && resource.title.toLowerCase().indexOf('learning target') !== -1) {
                 resource.assignment.section = resource.assignment.section || 'required-first';
             }
 
@@ -235,6 +235,19 @@ function* getHandler() {
             resource.launched = resourceId.launched || false;
             resource.comment = resourceId.comment || null;
             resource.reviews = resourceId.reviews || {};
+
+            if (isLesson) {
+                let lessonResource = (lesson.learns || []).find(learn => learn.resource_id === resource.resource_id);
+
+                if (lessonResource) {
+                    let {isRequired, isRecommended} = lessonResource;
+                    resource.assignment.lesson = isRequired ? 'required' : isRecommended ? 'recommended' : null;
+                    resource.lesson_group_id = lessonResource.lesson_group_id || null;
+                }
+
+                resource.assignment.lesson || (resource.assignment.lesson = null);
+                resource.lesson_group_id || (resource.lesson_group_id = null);
+            }
         });
 
         cacheSql = /*language=SQL*/ `

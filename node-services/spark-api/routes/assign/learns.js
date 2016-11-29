@@ -20,12 +20,6 @@ function *getHandler(next) {
             lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
-
-            for (var group in lesson.learns) {
-                lesson.learns[group].forEach(learn => lessonLearnAssignmentsByFuseboxId[learn.fusebox_id] = learn);
-            }
-
-            console.log(lessonLearnAssignmentsByFuseboxId);
         } catch (e) {
             return ctx.throw(404, new Error(`Unable to find lesson template for ${sparkpointId}`));
         }
@@ -123,9 +117,22 @@ function *getHandler(next) {
         // TODO: Once we fix the mismatch between fusebox_id and resource_id we need to merge in the lesson
         // assignments here
 
-        // HACK: Learning targets should appear as "required-first" unless they are set to something else
-        if (resource.title.toLowerCase().indexOf('learning target') !== -1) {
+        // HACK: Learning targets are implicitly "required-first" unless they are otherwise assigned or part of a lesson
+        if (!isLesson && resource.title.toLowerCase().indexOf('learning target') !== -1) {
             resource.assignments.section = resource.assignments.section || 'required-first';
+        }
+
+        if (isLesson) {
+            let lessonResource = (lesson.learns || []).find(learn => learn.resource_id === resource.resource_id);
+
+            if (lessonResource) {
+                let {isRequired, isRecommended} = lessonResource;
+                resource.assignments.lesson = isRequired ? 'required' : isRecommended ? 'recommended' : null;
+                resource.lesson_group_id = lessonResource.lesson_group_id || null;
+            }
+
+            resource.assignments.lesson || (resource.assignments.lesson = null);
+            resource.lesson_group_id || (resource.lesson_group_id = null);
         }
 
         resource.activity = result.activity[resource.resource_id] || {};
