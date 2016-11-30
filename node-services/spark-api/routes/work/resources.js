@@ -57,10 +57,13 @@ function* getHandler() {
             SELECT row_to_json(guiding_questions) AS resource FROM guiding_questions
             UNION ALL
             SELECT row_to_json(assessments) AS resource FROM assessments
-        `, [standardSparkpointIds, lessonSparkpointIds])).map(function(resource) {
+        `, [standardSparkpointIds, lessonSparkpointIds]))
+        .map(function(resource) {
             resource = resource.resource;
             resource.fusebox_id = resource.id;
+
             delete resource.id;
+
             if (resource.metadata) {
                 try {
                     resource.metadata = JSON.parse(resource.metadata);
@@ -68,12 +71,15 @@ function* getHandler() {
                     resource.metadata = null;
                 }
             }
+
             resource.sparkpoint_ids = (resource.standardids || [])
                 .map(id => ctx.lookup.standard.idToSparkpointId[id])
                 .filter(val => val);
+
             resource.sparkpoints = (resource.sparkpoint_ids || [])
                 .map(id => ctx.lookup.sparkpoint.cache.idToCode[id])
                 .filter(val => val);
+
             return resource;
        });
 }

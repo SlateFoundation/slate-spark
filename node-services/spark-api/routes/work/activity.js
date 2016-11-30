@@ -2,7 +2,7 @@
 
 var util = require('../../lib/util'),
     codifyRecord = util.codifyRecord,
-    moduleEndpoint = require('./modules/index.js');
+    lessonEndpoint = require('./lessons/index.js');
 
 function *getHandler() {
     this.require(['section_id']);
@@ -299,9 +299,9 @@ function *patchHandler() {
     )), ctx.lookup);
 
     if (ctx.isStudent) {
-        let moduleTemplate = yield ctx.pgp.oneOrNone('SELECT * FROM modules WHERE sparkpoint_id = $1', sparkpointId);
-        if (moduleTemplate) {
-            response.module_template = util.codifyRecord(moduleEndpoint.recordToModel(moduleTemplate), ctx.lookup);
+        let lessonTemplate = yield ctx.pgp.oneOrNone('SELECT * FROM lessons WHERE sparkpoint_id = $1', sparkpointId);
+        if (lessonTemplate) {
+            response.lesson_template = util.codifyRecord(lessonEndpoint.recordToModel(lessonTemplate), ctx.lookup);
         }
     }
 

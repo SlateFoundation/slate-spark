@@ -3,7 +3,7 @@
 var fusebox = require('../../lib/fusebox'),
     AsnStandard = require('../../lib/asn-standard'),
     util = require('../../lib/util'),
-    recordToModel = require('./modules/index.js').recordToModel;
+    recordToModel = require('./lessons/index.js').recordToModel;
 
 function *getHandler() {
     var ctx = this,
@@ -20,7 +20,7 @@ function *getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {

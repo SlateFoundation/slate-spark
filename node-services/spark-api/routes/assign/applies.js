@@ -2,7 +2,7 @@
 
 const util = require('../../lib/util');
 const AsnStandard = require('../../lib/asn-standard');
-const recordToModel = require('../work/modules/index.js').recordToModel;
+const recordToModel = require('../work/lessons/index.js').recordToModel;
 
 function* getHandler() {
 
@@ -19,7 +19,7 @@ function* getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM modules WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
