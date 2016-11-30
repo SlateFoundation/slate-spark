@@ -718,6 +718,7 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             sparkpointItemsLength = sparkpointItems.length,
             moduleItems = [],
             moduleGroups = [],
+            groupsFieldName,
             i = 0, item;
 
         if (sparkpointItemsStore.isGrouped()) {
@@ -751,15 +752,21 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
                 }
             }
 
-            // tranform array of group names into array of group objects
+            // transform array of group names into array of group objects
             for (i=0; i<moduleGroups.length; i++) {
                 moduleGroups[i] = {
-                    group_id: i+1,                  // eslint-disable-line camelcase
-                    group_name: moduleGroups[i]     // eslint-disable-line camelcase
+                    id: i+1,                  // eslint-disable-line camelcase
+                    title: moduleGroups[i]     // eslint-disable-line camelcase
                 };
             }
 
-            module.set(itemType + '_groups', moduleGroups);
+            /*
+             * The groups field uses the singular of the fieldname so rather than write:
+             * module.set(itemType + '_groups', moduleGroups);
+             * we'll check for an ending "s" and cut it off if it exists
+             */
+            groupsFieldName = itemType.charAt(itemType.length - 1) === 's' ? itemType.slice(0, -1) : itemType;
+            module.set(groupsFieldName + '_groups', moduleGroups);
 
         } else {
             for (; i<sparkpointItemsLength; i++) {
