@@ -1,16 +1,13 @@
 /**
- * A form for adding conference applys from within the Modules interface
+ * A form for adding conference learns from within the Lessons interface
  */
-Ext.define('SparkRepositoryManager.view.modules.editor.ApplyForm', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.LearnForm', {
     extend: 'Ext.window.Window',
-    xtype: 's2m-modules-editor-applyform',
-    requires: [
-        'SparkRepositoryManager.widget.DurationField'
-    ],
+    xtype: 's2m-lessons-editor-learnform',
 
-    componentCls: 's2m-modules-editor',
+    componentCls: 's2m-lessons-editor',
 
-    title: 'Add Apply',
+    title: 'Add Learn',
 
     modal: true,
     layout: 'fit',
@@ -20,11 +17,6 @@ Ext.define('SparkRepositoryManager.view.modules.editor.ApplyForm', {
     items: [{
         xtype: 'form',
         items: [{
-            fieldLabel: 'Title',
-            name: 'Title',
-            xtype: 'textfield',
-            allowBlank: false
-        }, {
             fieldLabel: 'Grade',
             name: 'GradeLevel',
             xtype: 'combobox',
@@ -32,24 +24,22 @@ Ext.define('SparkRepositoryManager.view.modules.editor.ApplyForm', {
             editable: false,
             grow: true
         }, {
+            fieldLabel: 'Url',
+            name: 'Url',
+            xtype: 'textfield',
+            allowBlank: false
+        }, {
+            fieldLabel: 'Title',
+            name: 'Title',
+            xtype: 'textfield',
+            allowBlank: false
+        }, {
             fieldLabel: 'DOK',
             name: 'DOK',
             xtype: 'combobox',
             store: [1, 2, 3, 4],
             editable: false,
             grow: true
-        }, {
-            fieldLabel: 'Directions',
-            name: 'Directions',
-            xtype: 'textarea',
-            allowBlank: false
-        }, {
-            xtype: 'durationfield',
-            itemId: 'timeestimate-durationfield',
-            fieldLabel: 'Time Estimate',
-            labelAlign: 'top',
-            duration: 0,
-            anchor: '100%'
         }]
     }],
 

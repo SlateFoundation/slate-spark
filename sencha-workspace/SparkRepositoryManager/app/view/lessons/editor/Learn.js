@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Learn', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.modules.editor.Multiselector'
+        'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-modules-editor-learn',
+    xtype: 's2m-lessons-editor-learn',
 
     title: 'Learn &amp; Practice',
-    componentCls: 's2m-modules-editor-learn',
+    componentCls: 's2m-lessons-editor-learn',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-modules-multiselector',
+            xtype: 's2m-lessons-multiselector',
             itemType: {
                 singular: 'Learn',
                 plural: 'Learns',
@@ -21,7 +21,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             showRequired: true,
             showRecommended: true,
             hideHeaders: false,
-            moduleHeaderItems: [
+            lessonHeaderItems: [
                 {
                     xtype: 'textfield',
                     fieldLabel: 'Learns Needed',
@@ -54,7 +54,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
             ],
 
             sparkpointsStore: {
-                xclass: 'SparkRepositoryManager.store.module.LearnContent'
+                xclass: 'SparkRepositoryManager.store.lesson.LearnContent'
 
 /*
                 type: 'chained',
@@ -78,15 +78,15 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Learn', {
 */
             },
 
-            moduleStore: {
-                groupField: 'modulegroup',
+            learnStore: {
+                groupField: 'lessongroup',
                 fields: [
                     {
                         name: 'ordinal',
                         type: 'integer'
                     },
                     {
-                        name: 'modulegroup',
+                        name: 'lessongroup',
                         defaultValue: 'Group 1'
                     },
                     'title',

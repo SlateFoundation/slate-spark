@@ -1,11 +1,11 @@
 /**
- * A form for adding Conference question from within the Modules interface
+ * A form for adding Conference question from within the Lessons interface
  */
-Ext.define('SparkRepositoryManager.view.modules.editor.QuestionForm', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.QuestionForm', {
     extend: 'Ext.window.Window',
-    xtype: 's2m-modules-editor-questionform',
+    xtype: 's2m-lessons-editor-questionform',
 
-    componentCls: 's2m-modules-editor',
+    componentCls: 's2m-lessons-editor',
 
     title: 'Add Conference Question',
 

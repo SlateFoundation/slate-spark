@@ -1,4 +1,4 @@
-Ext.define('SparkRepositoryManager.store.module.LearnContent', {
+Ext.define('SparkRepositoryManager.store.lesson.LearnContent', {
     extend: 'Ext.data.ChainedStore',
 
     requires: [

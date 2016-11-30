@@ -1,11 +1,11 @@
 /**
- * A form for adding conference resources from within the Modules interface
+ * A form for adding conference resources from within the Lessons interface
  */
-Ext.define('SparkRepositoryManager.view.modules.editor.ResourceForm', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.ResourceForm', {
     extend: 'Ext.window.Window',
-    xtype: 's2m-modules-editor-resourceform',
+    xtype: 's2m-lessons-editor-resourceform',
 
-    componentCls: 's2m-modules-editor',
+    componentCls: 's2m-lessons-editor',
 
     title: 'Add Conference Resource',
 
