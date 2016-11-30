@@ -60,8 +60,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnAccordian = me.getLearnAccordian(),
             learnList = learnAccordian.down('list'),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
-            lessonLists = [],
-            group, lesson;
+            workCt = me.getWorkCt(),
+            learnLists = [],
+            groups, lesson, i;
 
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
@@ -78,38 +79,52 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             sparkpointCt.setTitle(sparkpointCode);
         }
 
-        // TODO: set store to priority grouping or lesson grouping
-        // TODO: if lesson mode, remove all lists from learns container; else check if there is already one list bound to main store, leave alone, otherwise create one list bound to this.getWorkLearnsStore()
         if (studentSparkpoint.get('is_lesson')) {
             learnAccordian.removeAll();
 
-            lesson = studentSparkpoint.get('module_template');
+            lesson = workCt.applyLesson(studentSparkpoint.get('module_template'));
+            groups = lesson.get('learn_groups');
 
-            // TODO when we switch to having lessons as a flat array, need to loop through groups to create instances of sparkpointCt
-            // then, load learns store with flat array of learns, and filter on the group_id in the filterFn.
-            // note: groups should also include ungrouped learns
-            for (group in lesson.learns) {
-                if (lesson.learns.hasOwnProperty(group)) {
-                    lessonLists.push({
-                        xtype: 'container',
-                        expanded: true,
-                        itemId: 'sparkpointCt',
-                        title: '[Select a Sparkpoint]',
-                        items: [{
-                            xtype: 'spark-work-learn-grid'
-                        }],
+            for (i = 0; i < groups.length; i++) {
+                learnLists.push({
+                    xtype: 'container',
+                    expanded: true,
+                    itemId: 'sparkpointCt',
+                    title: groups[i].title,
+                    items: [{
+                        xtype: 'spark-work-learn-grid',
+                        learnsRequired: groups[i].learns_required,
                         store: {
-                            xtype: 'store.chained',
-                            source: 'work.learns',
-                            filterFn: function() {
-                                // TODO filter on group id
-                            }
+                            type: 'chained',
+                            source: 'work.Learns',
+                            filters: [{
+                                property: 'lesson_group_id',
+                                value: groups[i].id
+                            }]
                         }
-                    });
-                }
+                    }]
+                });
             }
 
-            learnAccordian.add(lessonLists);
+            learnLists.push({
+                xtype: 'container',
+                expanded: true,
+                itemId: 'sparkpointCt',
+                title: 'Ungrouped',
+                items: [{
+                    xtype: 'spark-work-learn-grid',
+                    store: {
+                        type: 'chained',
+                        source: 'work.Learns',
+                        filters: [{
+                            property: 'lesson_group_id',
+                            value: null
+                        }]
+                    }
+                }]
+            });
+
+            learnAccordian.add(learnLists);
             return;
         } else if (learnList && learnList.getStore() === learnsStore) {
             return;
