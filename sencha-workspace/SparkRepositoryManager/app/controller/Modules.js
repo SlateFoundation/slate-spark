@@ -716,26 +716,50 @@ Ext.define('SparkRepositoryManager.controller.Modules', {
             sparkpointItemsStore = grid.getStore(),
             sparkpointItems = sparkpointItemsStore.getRange(),
             sparkpointItemsLength = sparkpointItems.length,
-            moduleItems= [],
+            moduleItems = [],
+            moduleGroups = [],
             i = 0, item;
 
         if (sparkpointItemsStore.isGrouped()) {
-            moduleItems = {};
 
             for (; i<sparkpointItemsLength; i++) {
-                item = sparkpointItems[i];
+                item = me.objectSkim(sparkpointItems[i].getData(), [
+                    'fusebox_id', 'resource_id', 'isRequired', 'isRecommended', 'modulegroup'
+                ]);
 
-                if (!moduleItems[item.get('modulegroup')]) {
-                    moduleItems[item.get('modulegroup')] = [];
+                if (moduleGroups.indexOf(item.modulegroup) === -1) {
+                    moduleGroups.push(item.modulegroup);
                 }
 
-                if (item.get('fusebox_id') !== -1) {    // exclude dummy records needed for empty groups
+                if (item.fusebox_id !== -1) {    // exclude dummy records needed for empty groups
 
-                    moduleItems[item.get('modulegroup')].push(me.objectSkim(sparkpointItems[i].getData(), [
-                        'fusebox_id', 'title', 'url', 'question', 'dok', 'isRequired', 'isRecommended'
+                    if (item.isRequired) {
+                        item.assignment = 'required';
+                    } else if (item.isRecommended) {
+                        item.assignment = 'recommended';
+                    } else {
+                        item.assignment = null;
+                    }
+
+                    // group ordering starts at 1
+                    // eslint-disable-next-line camelcase
+                    item.group_id = moduleGroups.indexOf(item.modulegroup) + 1;
+
+                    moduleItems.push(me.objectSkim(item, [
+                        'fusebox_id', 'resource_id', 'assignment', 'group_id'
                     ]));
                 }
             }
+
+            // tranform array of group names into array of group objects
+            for (i=0; i<moduleGroups.length; i++) {
+                moduleGroups[i] = {
+                    group_id: i+1,                  // eslint-disable-line camelcase
+                    group_name: moduleGroups[i]     // eslint-disable-line camelcase
+                };
+            }
+
+            module.set(itemType + '_groups', moduleGroups);
 
         } else {
             for (; i<sparkpointItemsLength; i++) {

@@ -122,6 +122,12 @@ Ext.define('SparkRepositoryManager.model.Module', {
             default: []
         },
         {
+            name: 'learns_groups',
+            type: 'auto',
+            critical: true,
+            default: []
+        },
+        {
             name: 'conference_questions',
             type: 'auto',
             critical: true,
@@ -152,7 +158,7 @@ Ext.define('SparkRepositoryManager.model.Module', {
         {
             name: 'parentId',
             persist: false,
-            convert: function(val, rec) {
+            convert: function(val) {
         //        return rec.get('global') === true ? 'global' : 'personal';
                 return null;
             }
