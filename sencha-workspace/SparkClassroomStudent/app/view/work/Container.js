@@ -11,6 +11,10 @@ Ext.define('SparkClassroomStudent.view.work.Container', {
     },
 
     applyLesson: function(lessonData, lesson) {
+        if (!lessonData) {
+            return null;
+        }
+
         if (lessonData.isModel) {
             return lessonData;
         }

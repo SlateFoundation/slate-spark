@@ -58,11 +58,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnsStore = me.getWorkLearnsStore(),
             sparkpointCt = me.getSparkpointCt(),
             learnAccordian = me.getLearnAccordian(),
-            learnList = learnAccordian.down('list'),
-            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
-            workCt = me.getWorkCt(),
-            learnLists = [],
-            groups, lesson, i;
+            learnList = learnAccordian && learnAccordian.down('list'),
+            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
@@ -80,51 +77,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
 
         if (studentSparkpoint.get('is_lesson')) {
-            learnAccordian.removeAll();
-
-            lesson = workCt.applyLesson(studentSparkpoint.get('module_template'));
-            groups = lesson.get('learn_groups');
-
-            for (i = 0; i < groups.length; i++) {
-                learnLists.push({
-                    xtype: 'container',
-                    expanded: true,
-                    itemId: 'sparkpointCt',
-                    title: groups[i].title,
-                    items: [{
-                        xtype: 'spark-work-learn-grid',
-                        learnsRequired: groups[i].learns_required,
-                        store: {
-                            type: 'chained',
-                            source: 'work.Learns',
-                            filters: [{
-                                property: 'lesson_group_id',
-                                value: groups[i].id
-                            }]
-                        }
-                    }]
-                });
-            }
-
-            learnLists.push({
-                xtype: 'container',
-                expanded: true,
-                itemId: 'sparkpointCt',
-                title: 'Ungrouped',
-                items: [{
-                    xtype: 'spark-work-learn-grid',
-                    store: {
-                        type: 'chained',
-                        source: 'work.Learns',
-                        filters: [{
-                            property: 'lesson_group_id',
-                            value: null
-                        }]
-                    }
-                }]
-            });
-
-            learnAccordian.add(learnLists);
+            this.renderLessonLists(studentSparkpoint);
             return;
         } else if (learnList && learnList.getStore() === learnsStore) {
             return;
@@ -167,8 +120,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         this.refreshLearnProgress();
         this.ensureLearnPhaseStarted();
 
-        if (success && rawData.module) { // TODO: change to lesson
-            this.getWorkCt().setLesson(rawData.module);
+        if (success && rawData.lesson) {
+            this.getWorkCt().setLesson(rawData.lesson);
         }
     },
 
@@ -252,6 +205,60 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
 
     // controller methods
+    renderLessonLists: function(studentSparkpoint) {
+        var me = this,
+            learnAccordian = me.getLearnAccordian(),
+            workCt = me.getWorkCt(),
+            learnLists = [],
+            groups, lesson, i;
+
+        learnAccordian.removeAll();
+
+        lesson = workCt.applyLesson(studentSparkpoint.get('lesson_template'));
+        groups = lesson.get('learn_groups');
+
+        for (i = 0; i < groups.length; i++) {
+            learnLists.push({
+                xtype: 'container',
+                expanded: true,
+                itemId: 'sparkpointCt',
+                title: groups[i].title,
+                items: [{
+                    xtype: 'spark-work-learn-grid',
+                    learnsRequired: groups[i].learns_required,
+                    store: {
+                        type: 'chained',
+                        source: 'work.Learns',
+                        filters: [{
+                            property: 'lesson_group_id',
+                            value: groups[i].id
+                        }]
+                    }
+                }]
+            });
+        }
+
+        learnLists.push({
+            xtype: 'container',
+            expanded: true,
+            itemId: 'sparkpointCt',
+            title: 'Ungrouped',
+            items: [{
+                xtype: 'spark-work-learn-grid',
+                store: {
+                    type: 'chained',
+                    source: 'work.Learns',
+                    filters: [{
+                        property: 'lesson_group_id',
+                        value: null
+                    }]
+                }
+            }]
+        });
+
+        learnAccordian.add(learnLists);
+    },
+
     refreshLearnProgress: function() {
         var me = this,
             progressBanner = me.getProgressBanner(),
@@ -260,10 +267,17 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             count = learns.length,
             completed = 0,
             i = 0,
-            rawData = me.getWorkLearnsStore().getProxy().getReader().rawData;
+            rawData = me.getWorkLearnsStore().getProxy().getReader().rawData,
+            studentSparkpoint = me.getStudentSparkpoint(),
+            isLesson = studentSparkpoint && studentSparkpoint.get('is_lesson');
 
         if (!progressBanner || !readyBtn) {
             // learns tab hasn't been activated yet
+            return;
+        }
+
+        if (isLesson) {
+            this.refreshLessonProgress();
             return;
         }
 
@@ -291,6 +305,14 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         } else {
             progressBanner.hide();
         }
+    },
+
+    refreshLessonProgress: function() {
+        var me = this,
+            lesson = me.getStudentSparkpoint().get('lesson_template'),
+            sparkCts = me.getLearnAccordian().query('#sparkpointCt'); // breadcrumb.. why is this not returning all sparkpointCt's that were added to the accordian?
+
+        // TODO calculate learns required for each group and whole section, then sync & show/hide each accordingly
     },
 
     syncLearnsRequired: function() {
