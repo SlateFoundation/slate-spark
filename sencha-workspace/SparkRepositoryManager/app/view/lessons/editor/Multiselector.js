@@ -11,7 +11,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Multiselector', {
         },
         sparkpointsStore: null,
         lessonHeaderItems: null,
-        learnStore: null,
+        lessonStore: null,
         showRequired: false,
         showRecommended: false,
         hideHeaders: true
