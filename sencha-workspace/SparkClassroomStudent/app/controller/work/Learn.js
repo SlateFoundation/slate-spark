@@ -52,6 +52,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     learnsRequiredSection: null,
     learnsRequiredStudent: null,
 
+    // lesson configs
+    lessonLearnsCompleted: {},
+    lessonLearnsRequired: {},
+
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
@@ -214,8 +218,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         learnAccordian.removeAll();
 
-        lesson = workCt.applyLesson(studentSparkpoint.get('lesson_template'));
-        groups = lesson.get('learn_groups');
+        workCt.setLesson(studentSparkpoint.get('lesson_template'));
+
+        lesson = workCt.getLesson();
+        groups = lesson.data.learn_groups;
 
         for (i = 0; i < groups.length; i++) {
             learnLists.push({
@@ -226,6 +232,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 items: [{
                     xtype: 'spark-work-learn-grid',
                     learnsRequired: groups[i].learns_required,
+                    groupId: groups[i].id,
                     store: {
                         type: 'chained',
                         source: 'work.Learns',
@@ -309,10 +316,31 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     refreshLessonProgress: function() {
         var me = this,
-            lesson = me.getStudentSparkpoint().get('lesson_template'),
-            sparkCts = me.getLearnAccordian().query('#sparkpointCt'); // breadcrumb.. why is this not returning all sparkpointCt's that were added to the accordian?
+            sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
+            i, j, learns, grid, completed, progressBanner;
 
-        // TODO calculate learns required for each group and whole section, then sync & show/hide each accordingly
+        for (i = 0; i <sparkCts.length; i++) {
+            grid = sparkCts[0].down('grid');
+            progressBanner = grid.down('spark-work-learn-progressbanner');
+            learns = grid && grid.getStore().getRange();
+            completed = 0;
+
+            if (learns.length) {
+                for (j = 0; j < learns.length; j++) {
+                    if (learns[j].get('completed')) {
+                        completed++;
+                    }
+                }
+
+                me.lessonLearnsRequired[grid.groupId] = grid.learnsRequired;
+                me.lessonLearnsCompleted[grid.groupId] = completed;
+
+                me.syncLearnsRequired();
+                progressBanner.show();
+            } else {
+                progressBanner.hide();
+            }
+        }
     },
 
     syncLearnsRequired: function() {
@@ -331,6 +359,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             requiredLearns = 0,
             completedRequiredLearns = 0,
             learn, learnAssignments;
+
+        if (studentSparkpoint.get('is_lesson')) {
+            me.syncLessonLearnsRequired();
+        }
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
             minimumRequired = Math.min(count, rawData.learns_required.site);
@@ -375,6 +407,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         readyBtn.setDisabled(learnFinishTime || learnsRequiredDisabled);
         readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
+    },
+
+    syncLessonLearnsRequired: function() {
+        // TODO sync learns for each group..
+        debugger;
     },
 
     ensureLearnPhaseStarted: function() {
