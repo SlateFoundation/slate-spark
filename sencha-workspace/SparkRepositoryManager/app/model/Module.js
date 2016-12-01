@@ -122,7 +122,7 @@ Ext.define('SparkRepositoryManager.model.Lesson', {
             default: []
         },
         {
-            name: 'learns_groups',
+            name: 'learn_groups',
             type: 'auto',
             critical: true,
             default: []
