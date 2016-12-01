@@ -53,8 +53,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     learnsRequiredStudent: null,
 
     // lesson configs
-    lessonLearnsCompleted: {},
-    lessonLearnsRequired: {},
+    groupedLearnsCompleted: {},
+    groupedLearnsRequired: {},
 
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
@@ -110,12 +110,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         this.refreshLearnProgress();
     },
 
-    onLearnCtActivate: function(learnCt) {
-        var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
-
-        // TODO set the title when we instantiate? me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
-        me.refreshLearnProgress();
+    onLearnCtActivate: function() {
+        this.refreshLearnProgress();
     },
 
     onLearnsStoreLoad: function(store, records, success) {
@@ -284,7 +280,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
 
         if (isLesson) {
-            this.refreshLessonProgress();
+            this.refreshGroupedProgress();
             return;
         }
 
@@ -314,13 +310,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
-    refreshLessonProgress: function() {
+    refreshGroupedProgress: function() {
         var me = this,
             sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
             i, j, learns, grid, completed, progressBanner;
 
         for (i = 0; i <sparkCts.length; i++) {
-            grid = sparkCts[0].down('grid');
+            grid = sparkCts[i].down('grid');
             progressBanner = grid.down('spark-work-learn-progressbanner');
             learns = grid && grid.getStore().getRange();
             completed = 0;
@@ -332,8 +328,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                     }
                 }
 
-                me.lessonLearnsRequired[grid.groupId] = grid.learnsRequired;
-                me.lessonLearnsCompleted[grid.groupId] = completed;
+                me.groupedLearnsRequired[grid.groupId] = grid.learnsRequired;
+                me.groupedLearnsCompleted[grid.groupId] = completed;
 
                 me.syncLearnsRequired();
                 progressBanner.show();
@@ -361,7 +357,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learn, learnAssignments;
 
         if (studentSparkpoint.get('is_lesson')) {
-            me.syncLessonLearnsRequired();
+            me.syncGroupedLearnsRequired();
         }
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
@@ -409,9 +405,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
     },
 
-    syncLessonLearnsRequired: function() {
+    syncGroupedLearnsRequired: function() {
         // TODO sync learns for each group..
-        debugger;
     },
 
     ensureLearnPhaseStarted: function() {
