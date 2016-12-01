@@ -628,7 +628,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
 
         // other tabs
         me.getLearnsSelectorLessonGrid().getStore().loadData(me.transformNestedGroupRecords(learns));
-        me.getLearnsRequiredTextfield().setValue(lesson.get('learns_required'));
+        //me.getLearnsRequiredTextfield().setValue(lesson.get('learns_required'));
 
         me.getQuestionsSelectorLessonGrid().getStore().loadData(questions);
         me.getResourcesSelectorLessonGrid().getStore().loadData(resources);
