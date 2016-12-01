@@ -1,8 +1,8 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Multiselector', {
     extend: 'Ext.Container',
-    xtype: 's2m-modules-multiselector',
+    xtype: 's2m-lessons-multiselector',
 
-    componentCls: 's2m-modules-multiselector',
+    componentCls: 's2m-lessons-multiselector',
 
     config: {
         itemType: {
@@ -10,8 +10,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             plural: 'Items'
         },
         sparkpointsStore: null,
-        moduleHeaderItems: null,
-        moduleStore: null,
+        lessonHeaderItems: null,
+        learnStore: null,
         showRequired: false,
         showRecommended: false,
         hideHeaders: true
@@ -56,7 +56,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                         {
                             action: 'add',
                             iconCls: 'glyph-success',
-                            tooltip: 'Add to Module',
+                            tooltip: 'Add to Lesson',
                             glyph: 0xf055 // fa-plus-circle
                         }
                     ]
@@ -69,9 +69,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             margin: '0 0 0 20',
             items: [
                 {
-                    itemId: 'module-grid',
+                    itemId: 'lesson-grid',
                     xtype: 'grid',
-                    cls: 's2m-modules-multiselector-modulegrid',
+                    cls: 's2m-lessons-multiselector-lessongrid',
                     features: [{
                         ftype: 'grouping',
                         groupHeaderTpl: '{name}',
@@ -102,12 +102,12 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                                 width: 24,
                                 xtype: 'actioncolumn',
                                 align: 'right',
-                                tdCls: 's2m-modules-remove-cell',
+                                tdCls: 's2m-lessons-remove-cell',
                                 items: [
                                     {
                                         action: 'remove',
                                         iconCls: 'glyph-danger',
-                                        tooltip: 'Remove from Module',
+                                        tooltip: 'Remove from Lesson',
                                         glyph: 0xf056 // fa-minus-circle
                                     }
                                 ]
@@ -120,7 +120,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                             {
                                 flex: 1,
                                 xtype: 'templatecolumn',
-                                itemId: 'module-item-col',
+                                itemId: 'lesson-item-col',
                                 cellWrap: true,
                                 tpl: [
                                     '<tpl if="url">',
@@ -135,7 +135,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                             {
                                 width: 48,
                                 xtype: 'checkcolumn',
-                                itemId: 'module-required-column',
+                                itemId: 'lesson-required-column',
                                 // text: '<abbr title="Required">Req’d</abbr>',
                                 text: '<i class="fa fa-asterisk"></i>',
                                 dataIndex: 'isRequired',
@@ -144,7 +144,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                             {
                                 width: 48,
                                 xtype: 'checkcolumn',
-                                itemId: 'module-recommended-column',
+                                itemId: 'lesson-recommended-column',
                                 // text: '<abbr title="Recommended">Recm’d</abbr>',
                                 text: '<i class="fa fa-bookmark"></i>',
                                 dataIndex: 'isRecommended',
@@ -155,7 +155,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
                 },
                 {
                     xtype: 'component',
-                    cls: 's2m-modules-multiselector-legend',
+                    cls: 's2m-lessons-multiselector-legend',
                     itemId: 'legend',
                     hidden: true,
                     html: [
@@ -174,9 +174,9 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             itemType = me.getItemType(),
             sparkpointsStore = me.getSparkpointsStore(),
             sparkpointsGrid = me.down('#sparkpoints-grid'),
-            moduleStore = me.getModuleStore(),
-            moduleGrid = me.down('#module-grid'),
-            moduleHeaderItems = me.getModuleHeaderItems(),
+            lessonStore = me.getLessonStore(),
+            lessonGrid = me.down('#lesson-grid'),
+            lessonHeaderItems = me.getlessonHeaderItems(),
             showRequired = me.getShowRequired(),
             showRecommended = me.getShowRecommended(),
             hideHeaders = me.getHideHeaders();
@@ -189,35 +189,35 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
             addclick: Ext.bind(me.addSparkpointClick, me)
         });
 
-        moduleGrid.setTitle(itemType.plural + ' in Module');
-        moduleGrid.setStore(moduleStore);
+        lessonGrid.setTitle(itemType.plural + ' in Lesson');
+        lessonGrid.setStore(lessonStore);
 
         // commenting this out.  Only learns shows the header anyway, and with the title above, the column header seems redundant
-        // moduleGrid.down('#module-item-col').setText(itemType.singular);
+        // lessonGrid.down('#lesson-item-col').setText(itemType.singular);
 
-        moduleGrid.on({
+        lessonGrid.on({
             removeclick: Ext.bind(me.removeSparkpointClick, me)
         });
-        moduleGrid.getView().on({
+        lessonGrid.getView().on({
             beforedrop: Ext.bind(me.updateGroupField, me)
         });
 
-        if (moduleHeaderItems) {
-            moduleGrid.getHeader().add(moduleHeaderItems);
-            moduleGrid.getHeader().setStyle({
+        if (lessonHeaderItems) {
+            lessonGrid.getHeader().add(lessonHeaderItems);
+            lessonGrid.getHeader().setStyle({
                 height: '38px',
                 padding: '6px 11px'
             });
         }
 
         if (showRequired || showRecommended) {
-            moduleGrid.down('#module-required-column').setVisible(showRequired);
-            moduleGrid.down('#module-recommended-column').setVisible(showRecommended);
+            lessonGrid.down('#lesson-required-column').setVisible(showRequired);
+            lessonGrid.down('#lesson-recommended-column').setVisible(showRecommended);
             me.down('#legend').show();
         }
 
         // grid header setVisible workaround, see: https://www.sencha.com/forum/showthread.php?259472-Hide-tree-grid-header-row-at-runtime
-        moduleGrid.getView().getHeaderCt().setHeight(hideHeaders ? 0 : null);
+        lessonGrid.getView().getHeaderCt().setHeight(hideHeaders ? 0 : null);
     },
 
 
@@ -225,46 +225,46 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Multiselector', {
     addSparkpointClick: function(grid, rec) {
         var me = this,
             sparkpointsStore = me.down('#sparkpoints-grid').getStore(),
-            moduleStore = me.down('#module-grid').getStore();
+            lessonStore = me.down('#lesson-grid').getStore();
 
-        if (moduleStore.isGrouped()) {
-            moduleStore.suspendEvents();
-            moduleStore.add(Ext.apply(rec.getData(), { modulegroup: 'Group 1' }));
-            moduleStore.resumeEvents();
-            moduleStore.group(moduleStore.getGroupField());
+        if (lessonStore.isGrouped()) {
+            lessonStore.suspendEvents();
+            lessonStore.add(Ext.apply(rec.getData(), { lessongroup: 'Group 1' }));
+            lessonStore.resumeEvents();
+            lessonStore.group(lessonStore.getGroupField());
         } else {
-            moduleStore.add(rec.getData());
+            lessonStore.add(rec.getData());
         }
 
         sparkpointsStore.filterBy(function(sparkpointRec) {
-            return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
+            return lessonStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
         });
     },
 
     removeSparkpointClick: function(grid, rec) {
         var me = this,
             sparkpointsStore = me.down('#sparkpoints-grid').getStore(),
-            moduleStore = me.down('#module-grid').getStore();
+            lessonStore = me.down('#lesson-grid').getStore();
 
-        if (moduleStore.isGrouped()) {
-            moduleStore.suspendEvents();
-            moduleStore.remove(rec);
-            moduleStore.resumeEvents();
-            moduleStore.group(moduleStore.getGroupField());
+        if (lessonStore.isGrouped()) {
+            lessonStore.suspendEvents();
+            lessonStore.remove(rec);
+            lessonStore.resumeEvents();
+            lessonStore.group(lessonStore.getGroupField());
         } else {
-            moduleStore.remove(rec);
+            lessonStore.remove(rec);
         }
 
         sparkpointsStore.filterBy(function(sparkpointRec) {
-            return moduleStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
+            return lessonStore.findExact('fusebox_id', sparkpointRec.get('fusebox_id')) === -1;
         });
     },
 
     updateGroupField: function(node, data, overModel) {
         var rec = data.records[0],
-            group = overModel.get('modulegroup');
+            group = overModel.get('lessongroup');
 
-        rec.set('modulegroup', group);
+        rec.set('lessongroup', group);
     }
 
 })

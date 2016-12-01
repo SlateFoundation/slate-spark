@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Resources', {
     extend: 'Ext.Panel',
-    xtype: 's2m-modules-editor-resources',
+    xtype: 's2m-lessons-editor-resources',
     requires: [
-        'SparkRepositoryManager.view.modules.editor.Multiselector'
+        'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
 
     title: 'Conference Resources',
-    componentCls: 's2m-modules-editor-resources',
+    componentCls: 's2m-lessons-editor-resources',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-modules-multiselector',
+            xtype: 's2m-lessons-multiselector',
             itemType: {
                 singular: 'Resource',
                 plural: 'Resources',
@@ -20,7 +20,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
             allowMinimum: false,
             showRequired: false,
             showRecommended: false,
-            moduleHeaderItems: [
+            lessonHeaderItems: [
                 {
                     xtype: 'button',
                     text: 'Add Resource',
@@ -30,7 +30,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
             ],
 
             sparkpointsStore: {
-                xclass: 'SparkRepositoryManager.store.module.ResourceContent'
+                xclass: 'SparkRepositoryManager.store.lesson.ResourceContent'
 
 /*
                 type: 'chained',
@@ -45,7 +45,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Resources', {
 */
             },
 
-            moduleStore: {
+            lessonStore: {
                 fields: [
                     {
                         name: 'ordinal',

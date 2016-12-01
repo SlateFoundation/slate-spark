@@ -1,4 +1,4 @@
-.s2m-modules-multiselector {
+.s2m-lessons-multiselector {
     .x-grid-group-hd {
         border-color: $grid-row-cell-border-color;
     }
@@ -37,14 +37,14 @@
     }
 }
 
-.s2m-modules-remove-cell {
+.s2m-lessons-remove-cell {
     .x-grid-cell-inner {
         padding-right: 0;
     }
 }
 
-.x-grid-cell-module-required-column,
-.x-grid-cell-module-recommended-column {
+.x-grid-cell-lesson-required-column,
+.x-grid-cell-lesson-recommended-column {
     cursor: pointer;
 
     &:hover {
@@ -78,7 +78,7 @@
     }
 }
 
-.x-grid-cell-module-recommended-column {
+.x-grid-cell-lesson-recommended-column {
     .x-grid-checkcolumn {
         &::before {
             content: '\f02e'; // fa-bookmark
@@ -92,7 +92,7 @@
     }
 }
 
-.s2m-modules-multiselector-legend {
+.s2m-lessons-multiselector-legend {
     padding: .5em;
     text-align: right;
 

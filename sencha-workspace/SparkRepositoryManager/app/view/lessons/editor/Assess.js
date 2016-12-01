@@ -1,12 +1,12 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Assess', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Assess', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.modules.editor.Multiselector'
+        'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-modules-editor-assess',
+    xtype: 's2m-lessons-editor-assess',
 
     title: 'Assess',
-    componentCls: 's2m-modules-editor-assess',
+    componentCls: 's2m-lessons-editor-assess',
 
     layout: {
         type: 'hbox',

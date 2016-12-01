@@ -1,7 +1,7 @@
-Ext.define('SparkRepositoryManager.store.Modules', {
+Ext.define('SparkRepositoryManager.store.Lessons', {
     extend: 'Ext.data.TreeStore',
 
-    model: 'SparkRepositoryManager.model.Module',
+    model: 'SparkRepositoryManager.model.Lesson',
     pageSize: 0,
     remoteFilter: false,
     remoteSort: false,
@@ -13,11 +13,11 @@ Ext.define('SparkRepositoryManager.store.Modules', {
         expanded: true,
         children: [{
             id: 'global',
-            code: 'Global Modules',
+            code: 'Global Lessons',
             expanded: true
         }, {
             id: 'personal',
-            code: 'Your Modules',
+            code: 'Your Lessons',
             expanded: true
         }]
     },

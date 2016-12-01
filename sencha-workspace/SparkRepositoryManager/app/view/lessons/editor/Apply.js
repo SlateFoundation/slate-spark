@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Apply', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.modules.editor.Multiselector'
+        'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-modules-editor-apply',
+    xtype: 's2m-lessons-editor-apply',
 
     title: 'Apply',
-    componentCls: 's2m-modules-editor-apply',
+    componentCls: 's2m-lessons-editor-apply',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-modules-multiselector',
+            xtype: 's2m-lessons-multiselector',
             itemType: {
                 singular: 'Apply',
                 plural: 'Applies',
@@ -20,7 +20,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             allowMinimum: false,
             showRequired: false,
             showRecommended: false,
-            moduleHeaderItems: [
+            lessonHeaderItems: [
                 {
                     xtype: 'button',
                     text: 'Add Apply',
@@ -30,7 +30,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
             ],
 
             sparkpointsStore: {
-                xclass: 'SparkRepositoryManager.store.module.ApplyContent'
+                xclass: 'SparkRepositoryManager.store.lesson.ApplyContent'
 
 /*
                 type: 'chained',
@@ -54,7 +54,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Apply', {
 */
             },
 
-            moduleStore: {
+            learnStore: {
                 fields: [
                     {
                         name: 'ordinal',

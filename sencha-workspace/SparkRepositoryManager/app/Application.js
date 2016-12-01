@@ -25,7 +25,7 @@ Ext.define('SparkRepositoryManager.Application', {
         'Apply',
         'Assess',
         'Sparkpoints',
-        'Modules'
+        'Lessons'
     ],
 
     init: function() {

@@ -1,4 +1,4 @@
-Ext.define('SparkRepositoryManager.store.module.ResourceContent', {
+Ext.define('SparkRepositoryManager.store.lesson.ResourceContent', {
     extend: 'Ext.data.ChainedStore',
 
     requires: [

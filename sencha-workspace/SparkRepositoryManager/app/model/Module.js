@@ -1,10 +1,10 @@
-Ext.define('SparkRepositoryManager.model.Module', {
+Ext.define('SparkRepositoryManager.model.Lesson', {
     extend: 'Ext.data.Model',
 
     proxy: {
         // TODO: this proxy is a dev workaround to contact a different API host
         type: 'sandbox-school',
-        url: '/spark/api/work/modules',
+        url: '/spark/api/work/lessons',
         reader: {
             type: 'json'
         }
@@ -65,11 +65,11 @@ Ext.define('SparkRepositoryManager.model.Module', {
             type: 'string',
             allowNull: true,
             convert: function(val, rec) {
-                return Ext.encode(rec.get('moduleData'));
+                return Ext.encode(rec.get('lessonData'));
             }
         },
         {
-            name: 'moduleData',
+            name: 'lessonData',
             type: 'auto',
             defaultValue: {},
             persist: false

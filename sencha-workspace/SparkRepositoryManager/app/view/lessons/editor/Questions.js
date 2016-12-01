@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Questions', {
     extend: 'Ext.Panel',
     requires: [
-        'SparkRepositoryManager.view.modules.editor.Multiselector'
+        'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-modules-editor-questions',
+    xtype: 's2m-lessons-editor-questions',
 
     title: 'Conference Questions',
-    componentCls: 's2m-modules-editor-questions',
+    componentCls: 's2m-lessons-editor-questions',
 
     layout: 'fit',
     items: [
         {
-            xtype: 's2m-modules-multiselector',
+            xtype: 's2m-lessons-multiselector',
             itemType: {
                 singular: 'Question',
                 plural: 'Questions',
@@ -20,7 +20,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
             allowMinimum: false,
             showRequired: false,
             showRecommended: false,
-            moduleHeaderItems: [
+            lessonHeaderItems: [
                 {
                     xtype: 'button',
                     text: 'Add Question',
@@ -30,7 +30,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Questions', {
             ],
 
             sparkpointsStore: {
-                xclass: 'SparkRepositoryManager.store.module.QuestionContent'
+                xclass: 'SparkRepositoryManager.store.lesson.QuestionContent'
 
 /*
                 type: 'chained',

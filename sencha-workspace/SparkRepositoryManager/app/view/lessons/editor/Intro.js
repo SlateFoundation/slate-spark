@@ -1,9 +1,9 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Intro', {
     extend: 'Ext.Panel',
-    xtype: 's2m-modules-editor-intro',
+    xtype: 's2m-lessons-editor-intro',
 
     title: 'Intro',
-    componentCls: 's2m-modules-editor-intro',
+    componentCls: 's2m-lessons-editor-intro',
 
     items: [
         {
@@ -24,7 +24,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                                 fontSize: '1.125em',
                                 lineHeight: 4/3
                             },
-                            html: 'Add Sparkpoints to this module and check off any that will be evaluated.'
+                            html: 'Add Sparkpoints to this lesson and check off any that will be evaluated.'
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -63,7 +63,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                             // TODO offload to controller?
                             listeners: {
                                 click: function() {
-                                    var grid = this.up('s2m-modules-editor-intro').down('#sparkpoint-grid'),
+                                    var grid = this.up('s2m-lessons-editor-intro').down('#sparkpoint-grid'),
                                         selection = grid.getSelection(),
                                         store = grid.getStore();
 
@@ -78,8 +78,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                     itemId: 'sparkpoint-grid',
                     margin: '0 20',
                     xtype: 'grid',
-                    cls: 's2m-modules-intro-list',
-                    emptyText: 'No Sparkpoints in this module.',
+                    cls: 's2m-lessons-intro-list',
+                    emptyText: 'No Sparkpoints in this lesson.',
                     hideHeaders: true,
                     store: {
                         fields: ['id', 'code', 'willBeEvaluated']
@@ -91,7 +91,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                         },
                         items: [
                             {
-                                text: 'Sparkpoints in module',
+                                text: 'Sparkpoints in lesson',
                                 dataIndex: 'code',
                                 flex: 1
                             },
@@ -117,7 +117,7 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Intro', {
                     },
                     listeners: {
                         selectionchange: function(model, records) {
-                            this.up('s2m-modules-editor-intro').down('button[action="remove-sparkpoint"]').setDisabled(!(records.length > 0));
+                            this.up('s2m-lessons-editor-intro').down('button[action="remove-sparkpoint"]').setDisabled(!(records.length > 0));
                         }
                     }
                 },

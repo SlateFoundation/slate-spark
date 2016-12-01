@@ -1,17 +1,17 @@
-Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
+Ext.define('SparkRepositoryManager.view.lessons.editor.Editor', {
     extend: 'Ext.Panel',
-    xtype: 's2m-modules-editor',
+    xtype: 's2m-lessons-editor',
     requires: [
-        'SparkRepositoryManager.view.modules.editor.Intro',
-        'SparkRepositoryManager.view.modules.editor.Learn',
-        'SparkRepositoryManager.view.modules.editor.Questions',
-        'SparkRepositoryManager.view.modules.editor.Resources',
-        'SparkRepositoryManager.view.modules.editor.Apply',
-        'SparkRepositoryManager.view.modules.editor.Assess',
+        'SparkRepositoryManager.view.lessons.editor.Intro',
+        'SparkRepositoryManager.view.lessons.editor.Learn',
+        'SparkRepositoryManager.view.lessons.editor.Questions',
+        'SparkRepositoryManager.view.lessons.editor.Resources',
+        'SparkRepositoryManager.view.lessons.editor.Apply',
+        'SparkRepositoryManager.view.lessons.editor.Assess',
         'SparkRepositoryManager.store.sparkpoints.ContentAreas'
     ],
 
-    componentCls: 's2m-modules-editor',
+    componentCls: 's2m-lessons-editor',
 
     disabled: true,
 
@@ -26,19 +26,19 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                 {
                     xtype: 'button',
                     action: 'clone',
-                    text: 'Clone Module'
+                    text: 'Clone Lesson'
                 },
                 '-',
                 {
                     xtype: 'button',
                     action: 'publish',
-                    text: 'Publish module'
+                    text: 'Publish lesson'
                 },
                 '-',
                 {
                     xtype: 'checkbox',
                     name: 'global',
-                    boxLabel: 'Share module globally'
+                    boxLabel: 'Share lesson globally'
                 }
             ]
         }
@@ -49,8 +49,8 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
             items: [
                 {
                     xtype: 'form',
-                    cls: 's2m-modules-editor-meta',
-                    itemId: 'modules-meta-info',
+                    cls: 's2m-lessons-editor-meta',
+                    itemId: 'lessons-meta-info',
                     margin: '10 0 20',
                     layout: {
                         type: 'hbox'
@@ -102,22 +102,22 @@ Ext.define('SparkRepositoryManager.view.modules.editor.Editor', {
                     bodyPadding: '20 0',
                     items: [
                         {
-                            xtype: 's2m-modules-editor-intro'
+                            xtype: 's2m-lessons-editor-intro'
                         },
                         {
-                            xtype: 's2m-modules-editor-learn'
+                            xtype: 's2m-lessons-editor-learn'
                         },
                         {
-                            xtype: 's2m-modules-editor-questions'
+                            xtype: 's2m-lessons-editor-questions'
                         },
                         {
-                            xtype: 's2m-modules-editor-resources'
+                            xtype: 's2m-lessons-editor-resources'
                         },
                         {
-                            xtype: 's2m-modules-editor-apply'
+                            xtype: 's2m-lessons-editor-apply'
                         },
                         {
-                            xtype: 's2m-modules-editor-assess'
+                            xtype: 's2m-lessons-editor-assess'
                         }
                     ]
                 }

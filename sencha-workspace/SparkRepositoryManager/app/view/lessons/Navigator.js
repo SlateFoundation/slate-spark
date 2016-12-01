@@ -1,8 +1,8 @@
-Ext.define('SparkRepositoryManager.view.modules.Navigator', {
+Ext.define('SparkRepositoryManager.view.lessons.Navigator', {
     extend: 'Ext.Container',
-    xtype: 's2m-modules-navigator',
+    xtype: 's2m-lessons-navigator',
 
-    componentCls: 's2m-modules-navigator',
+    componentCls: 's2m-lessons-navigator',
 
     layout: {
         type: 'vbox',
@@ -18,16 +18,16 @@ Ext.define('SparkRepositoryManager.view.modules.Navigator', {
             items: [
                 {
                     xtype: 'button',
-                    cls: 's2m-modules-navigator-addbtn',
-                    text: 'Add New Module',
-                    action: 'add-new-module',
+                    cls: 's2m-lessons-navigator-addbtn',
+                    text: 'Add New Lesson',
+                    action: 'add-new-lesson',
                     scale: 'large'
                 },
                 {
                     xtype: 'textfield',
-                    cls: 's2m-modules-navigator-search',
+                    cls: 's2m-lessons-navigator-search',
                     margin: '10 0 0',
-                    emptyText: 'Search Modules',
+                    emptyText: 'Search Lessons',
                     triggers: {
                         search: {
                             cls: 'x-form-search-trigger'
@@ -46,7 +46,7 @@ Ext.define('SparkRepositoryManager.view.modules.Navigator', {
                     xtype: 'treepanel',
                     rootVisible: false,
                     displayField: 'code',
-                    store: 'Modules'
+                    store: 'Lessons'
 
 /*
                     store: {
@@ -54,7 +54,7 @@ Ext.define('SparkRepositoryManager.view.modules.Navigator', {
                             expanded: true,
                             children: [
                                 {
-                                    text: 'Global Modules',
+                                    text: 'Global Lessons',
                                     cls: 's2m-treepanel-heading',
                                     expanded: true,
                                     children: [
@@ -76,7 +76,7 @@ Ext.define('SparkRepositoryManager.view.modules.Navigator', {
                                     ]
                                 },
                                 {
-                                    text: 'Your Modules',
+                                    text: 'Your Lessons',
                                     cls: 's2m-treepanel-heading',
                                     expanded: true,
                                     children: [
