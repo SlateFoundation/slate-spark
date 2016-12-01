@@ -176,7 +176,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Multiselector', {
             sparkpointsGrid = me.down('#sparkpoints-grid'),
             lessonStore = me.getLessonStore(),
             lessonGrid = me.down('#lesson-grid'),
-            lessonHeaderItems = me.getlessonHeaderItems(),
+            lessonHeaderItems = me.getLessonHeaderItems(),
             showRequired = me.getShowRequired(),
             showRecommended = me.getShowRecommended(),
             hideHeaders = me.getHideHeaders();
