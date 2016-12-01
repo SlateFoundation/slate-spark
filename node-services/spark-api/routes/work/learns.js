@@ -241,8 +241,10 @@ function* getHandler() {
 
                 if (lessonResource) {
                     let {isRequired, isRecommended} = lessonResource;
+
                     resource.assignment.lesson = isRequired ? 'required' : isRecommended ? 'recommended' : null;
-                    resource.lesson_group_id = lessonResource.lesson_group_id || null;
+                    // TODO: finalize lesson_group_id vs. group_id
+                    resource.lesson_group_id = lessonResource.lesson_group_id || lessonResource.group_id || null;
                 }
 
                 resource.assignment.lesson || (resource.assignment.lesson = null);
