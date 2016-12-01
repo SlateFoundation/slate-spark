@@ -718,6 +718,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             sparkpointItemsLength = sparkpointItems.length,
             lessonItems = [],
             lessonGroups = [],
+            groupsFieldName,
             i = 0, item;
 
         if (sparkpointItemsStore.isGrouped()) {
@@ -754,12 +755,18 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             // tranform array of group names into array of group objects
             for (i=0; i<lessonGroups.length; i++) {
                 lessonGroups[i] = {
-                    group_id: i+1,                  // eslint-disable-line camelcase
-                    group_name: lessonGroups[i]     // eslint-disable-line camelcase
+                    id: i+1,                  // eslint-disable-line camelcase
+                    title: lessonGroups[i]     // eslint-disable-line camelcase
                 };
             }
 
-            lesson.set(itemType + '_groups', lessonGroups);
+            /*
+             * The groups field uses the singular of the fieldname so rather than write:
+             * lesson.set(itemType + '_groups', lessonGroups);
+             * we'll check for an ending "s" and cut it off if it exists
+             */
+            groupsFieldName = itemType.charAt(itemType.length - 1) === 's' ? itemType.slice(0, -1) : itemType;
+            lesson.set(groupsFieldName + '_groups', lessonGroups);
 
         } else {
             for (; i<sparkpointItemsLength; i++) {
