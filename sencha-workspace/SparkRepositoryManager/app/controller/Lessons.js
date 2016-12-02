@@ -603,6 +603,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             phaseStartCnt = me.getPhaseStartFieldContainer(),
             sparkpoints = lesson.get('sparkpoints') || [],
             learns = lesson.get('learns') || [],
+            learnGroups = lesson.get('learn_groups') || [],
             questions = lesson.get('conference_questions') || [],
             resources = lesson.get('conference_resources') || [],
             applies = lesson.get('applies') || [];
@@ -627,8 +628,8 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
         phaseStartCnt.down('field[name="Total"]').setValue(phaseStart.Total);
 
         // other tabs
-        me.getLearnsSelectorLessonGrid().getStore().loadData(me.transformNestedGroupRecords(learns));
-        //me.getLearnsRequiredTextfield().setValue(lesson.get('learns_required'));
+        me.getLearnsSelectorLessonGrid().getStore().loadData(me.transformFlatGroupRecords(learns, learnGroups));
+        // me.getLearnsRequiredTextfield().setValue(lesson.get('learns_required'));
 
         me.getQuestionsSelectorLessonGrid().getStore().loadData(questions);
         me.getResourcesSelectorLessonGrid().getStore().loadData(resources);
@@ -823,49 +824,27 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
         }
     },
 
-    transformNestedGroupRecords: function(jsonData) {
-        var recs = [],
-            lessonGroups,
-            lessonGroupsLength,
-            lessonGroupName,
-            lessonGroup,
-            lessonGroupLength,
-            i, r, rec;
+    transformFlatGroupRecords: function(records, groups) {
+        var groupMap = new Ext.util.HashMap(),
+            groupsLength = groups.length,
+            recordsLength = records.length,
+            group,
+            i = 0;
 
-        if (jsonData !== null && typeof jsonData === 'object' && !Array.isArray(jsonData)) {
-            lessonGroups = Object.keys(jsonData);
-            lessonGroupsLength = lessonGroups.length;
-
-            for (i=0; i<lessonGroupsLength; i++) {  // loop through groups
-                lessonGroupName = lessonGroups[i];
-                lessonGroup = jsonData[lessonGroupName];
-
-                if (Array.isArray(lessonGroup)) {   // lessonGroup should be an array of record data objects
-                    lessonGroupLength = lessonGroup.length;
-
-                    if (lessonGroupLength === 0) {
-                        // add a dummy record if this is an empty group
-                        recs.push({
-                            lessongroup: lessonGroupName,
-                            fusebox_id: -1,  // eslint-disable-line camelcase
-                            title: 'dummy'
-                        });
-                    } else {
-                        for (r=0; r<lessonGroupLength; r++) {
-                            rec = lessonGroup[r];
-                            rec.lessongroup = lessonGroupName;   // set the lessongroup field
-                            recs.push(rec)
-                        }
-                    }
-                }
-            }
-
-        } else {
-            // eslint-disable-next-line no-console
-            console.warn('invalid group data received.  Expected object, found ' + (Array.isArray(jsonData) ? 'array' : typeof jsonData));
+        for (i; i<groupsLength; i++) {
+            group = groups[i];
+            groupMap.add(groups.id, group.title);
         }
 
-        return recs;
+        for (i=0; i<recordsLength; i++) {
+            if (records[i].group_id) {
+                if (groupMap.get(records[i].group_id)) {
+                    records[i].lessongroup = groupMap.get(records[i].group_id).title;
+                }
+            }
+        }
+
+        return records;
     }
 
 });
