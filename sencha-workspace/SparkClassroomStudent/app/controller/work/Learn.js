@@ -227,7 +227,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 title: groups[i].title,
                 items: [{
                     xtype: 'spark-work-learn-grid',
-                    learnsRequired: groups[i].learns_required,
                     groupId: groups[i].id,
                     store: {
                         type: 'chained',
@@ -248,6 +247,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             title: 'Ungrouped',
             items: [{
                 xtype: 'spark-work-learn-grid',
+                groupId: null,
                 store: {
                     type: 'chained',
                     source: 'work.Learns',
@@ -260,6 +260,21 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         });
 
         learnAccordian.add(learnLists);
+    },
+
+    getGroupData: function(groupId) {
+        var me = this,
+            lesson = me.getWorkCt().getLesson(),
+            groups = lesson && lesson.data.learn_groups,
+            i;
+
+        for (i = 0; i < groups.length; i++) {
+            if (groups[i].id === groupId) {
+                return groups[i];
+            }
+        }
+
+        return false;
     },
 
     refreshLearnProgress: function() {
@@ -313,12 +328,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     refreshGroupedProgress: function() {
         var me = this,
             sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
-            i, j, learns, grid, completed, progressBanner;
+            i, j, learns, grid, completed, progressBanner, groupData;
 
         for (i = 0; i <sparkCts.length; i++) {
             grid = sparkCts[i].down('grid');
-            progressBanner = grid.down('spark-work-learn-progressbanner');
+            progressBanner = grid && grid.down('spark-work-learn-progressbanner');
             learns = grid && grid.getStore().getRange();
+            groupData = me.getGroupData(grid && grid.groupId);
             completed = 0;
 
             if (learns.length) {
@@ -328,12 +344,14 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                     }
                 }
 
-                me.groupedLearnsRequired[grid.groupId] = grid.learnsRequired;
-                me.groupedLearnsCompleted[grid.groupId] = completed;
+                me.groupedLearnsRequired[groupData.groupId] = groupData.learnsRequired;
+                me.groupedLearnsCompleted[groupData.groupId] = completed;
 
                 me.syncLearnsRequired();
                 progressBanner.show();
-            } else {
+            }
+
+            if (!learns.length) {
                 progressBanner.hide();
             }
         }
@@ -354,10 +372,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             minimumRequired = Math.min(count, 5),
             requiredLearns = 0,
             completedRequiredLearns = 0,
+            isLesson = studentSparkpoint.get('is_lesson'),
             learn, learnAssignments;
 
-        if (studentSparkpoint.get('is_lesson')) {
+        if (isLesson) {
             me.syncGroupedLearnsRequired();
+            return;
         }
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
@@ -373,8 +393,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         for (; i < count; i++) {
             learn = learns[i];
             learnAssignments = learn.get('assignments');
-            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
-                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+            if (learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required' || learnAssignments.student == 'required') {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
                 } else {
@@ -406,7 +426,61 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     syncGroupedLearnsRequired: function() {
-        // TODO sync learns for each group..
+        var me = this,
+            sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
+            readyBtn = me.getReadyBtn(),
+            studentSparkpoint = me.getStudentSparkpoint(),
+            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
+            i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns;
+
+        for (i = 0; i <sparkCts.length; i++) {
+            grid = sparkCts[i].down('grid');
+            progressBanner = grid && grid.down('spark-work-learn-progressbanner');
+            learns = grid && grid.getStore().getRange();
+            groupData = me.getGroupData(grid && grid.groupId);
+            completedRequiredLearns = 0;
+            learnsRequiredDisabled = false;
+            requiredLearns = 0;
+
+            if (groupData && groupData.learns_required) {
+                minimumRequired = Math.min(learns.length, groupData.learns_required); // TODO check prop
+            }
+
+            for (j = 0; j < learns.length; j++) {
+                learn = learns[j];
+                learnAssignments = learn.get('assignments');
+
+                if (learnAssignments.section === 'required-first' || learnAssignments.student === 'required-first'
+                    || learnAssignments.section === 'required' || learnAssignments.student === 'required') {
+                    if (learn.get('completed')) {
+                        completedRequiredLearns++;
+                    } else {
+                        learnsRequiredDisabled = true;
+                    }
+                    requiredLearns++;
+                }
+            }
+
+            if (!progressBanner || !readyBtn) {
+                // learns tab hasn't been activated yet
+                return;
+            }
+
+            progressBanner.setData({
+                completedLearns: me.groupedLearnsCompleted[groupData.id],
+                minimumLearns: minimumRequired,
+                completedRequiredLearns: completedRequiredLearns,
+                requiredLearns: requiredLearns,
+                name: null
+            });
+
+            if (!learnsRequiredDisabled) {
+                learnsRequiredDisabled = me.learnsCompleted < minimumRequired;
+            }
+
+            readyBtn.setDisabled(learnFinishTime || learnsRequiredDisabled);
+            readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
+        }
     },
 
     ensureLearnPhaseStarted: function() {
