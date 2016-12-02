@@ -159,8 +159,8 @@ function* getHandler() {
            
            'lesson',
            (
-                SELECT row_to_json(modules)
-                  FROM modules
+                SELECT row_to_json(lessons)
+                  FROM lessons
                  WHERE sparkpoint_id = $3
            )
         ) AS json;
