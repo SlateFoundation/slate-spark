@@ -78,7 +78,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Learn', {
 */
             },
 
-            learnStore: {
+            lessonStore: {
                 groupField: 'lessongroup',
                 fields: [
                     {
