@@ -752,7 +752,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
                 }
             }
 
-            // tranform array of group names into array of group objects
+            // transform array of group names into array of group objects
             for (i=0; i<lessonGroups.length; i++) {
                 lessonGroups[i] = {
                     id: i+1,                  // eslint-disable-line camelcase
