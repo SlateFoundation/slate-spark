@@ -16,6 +16,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         learnAccordian: 'spark-student-work-learn #learnAccordian',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
+        lessonIntro: 'spark-work-learn #lessonIntro',
         learnGrid: 'spark-work-learn-grid',
         readyBtn: 'spark-student-work-learn #readyForConferenceBtn',
         workCt: 'spark-student-work-ct'
@@ -63,6 +64,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             sparkpointCt = me.getSparkpointCt(),
             learnAccordian = me.getLearnAccordian(),
             learnList = learnAccordian && learnAccordian.down('list'),
+            lessonIntro = me.getLessonIntro(),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
         me.learnsCompleted = 0;
@@ -76,15 +78,21 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         learnsStore.getProxy().setExtraParam('sparkpoint', sparkpointCode);
         learnsStore.load();
 
-        if (sparkpointCt) {
+        if (studentSparkpoint.get('is_lesson')) {
+            // switching to a lesson
+            lessonIntro.show();
+            me.renderLessonLists(studentSparkpoint);
+            return;
+        } else if (sparkpointCt && learnList && learnList.getStore() === learnsStore) {
+            // TODO is this condition right? Should be when switching from one non-lesson to another.
+            // switching to a regular sparkpoint from another regular sparkpoint
             sparkpointCt.setTitle(sparkpointCode);
+            return;
         }
 
-        if (studentSparkpoint.get('is_lesson')) {
-            this.renderLessonLists(studentSparkpoint);
-            return;
-        } else if (learnList && learnList.getStore() === learnsStore) {
-            return;
+        // switching to a regular sparkpoint
+        if (lessonIntro) {
+            lessonIntro.hide();
         }
 
         learnAccordian.removeAll();
@@ -92,7 +100,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             xtype: 'container',
             expanded: true,
             itemId: 'sparkpointCt',
-            title: '[Select a Sparkpoint]',
+            title: sparkpointCode || '[Select a Sparkpoint]',
             items: [{
                 xtype: 'spark-work-learn-grid'
             }],
@@ -217,7 +225,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         workCt.setLesson(studentSparkpoint.get('lesson_template'));
 
         lesson = workCt.getLesson();
-        groups = lesson.data.learn_groups;
+        groups = lesson && lesson.data.learn_groups;
 
         for (i = 0; i < groups.length; i++) {
             learnLists.push({
@@ -344,8 +352,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                     }
                 }
 
-                me.groupedLearnsRequired[groupData.groupId] = groupData.learnsRequired;
-                me.groupedLearnsCompleted[groupData.groupId] = completed;
+                me.groupedLearnsRequired[groupData.id] = groupData.learnsRequired;
+                me.groupedLearnsCompleted[groupData.id] = completed;
 
                 me.syncLearnsRequired();
                 progressBanner.show();
