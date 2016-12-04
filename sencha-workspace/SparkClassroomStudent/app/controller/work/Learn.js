@@ -2,16 +2,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     extend: 'Ext.app.Controller',
 
 
-    config: {
-        studentSparkpoint: null
-    },
-
-
     stores: [
         'work.Learns@SparkClassroom.store'
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         learnCt: 'spark-student-work-learn',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
@@ -20,6 +17,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         learnCt: {
             activate: 'onLearnCtActivate'
         },
@@ -29,12 +30,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-            }
-        },
         store: {
             '#work.Learns': {
                 load: 'onLearnsStoreLoad',
@@ -50,8 +45,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     learnsRequiredSection: null,
     learnsRequiredStudent: null,
 
-    // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
+    // event handlers
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
         var me = this,
             store = me.getWorkLearnsStore(),
             sparkpointCt = me.getSparkpointCt(),
@@ -73,19 +68,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
-
-    // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshLearnProgress();
     },
 
     onLearnCtActivate: function(learnCt) {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
         me.refreshLearnProgress();
@@ -109,7 +98,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         if (table == 'learn_activity') {
             if (
-                (studentSparkpoint = me.getStudentSparkpoint())
+                (studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint())
                 && studentSparkpoint.get('student_id') == itemData.user_id
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
@@ -129,7 +118,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             }
         } else if (table == 'learn_assignments_section') {
             if (
-                (studentSparkpoint = me.getStudentSparkpoint())
+                (studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint())
                 && itemData.sparkpoint_code == studentSparkpoint.get('sparkpoint')
                 && itemData.section_code == studentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
@@ -141,7 +130,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             }
         } else if (table == 'learn_assignments_student') {
             if (
-                (studentSparkpoint = me.getStudentSparkpoint())
+                (studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint())
                 && itemData.student_id == studentSparkpoint.get('student_id')
                 && itemData.sparkpoint_code == studentSparkpoint.get('sparkpoint')
                 && itemData.section_code == studentSparkpoint.get('section_code')
@@ -163,7 +152,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     onReadyBtnTap: function() {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         if (!studentSparkpoint.get('learn_completed_time')) {
             studentSparkpoint.set('learn_finish_time', new Date());
@@ -221,7 +210,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         var me = this,
             progressBanner = me.getProgressBanner(),
             readyBtn = me.getReadyBtn(),
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
             learnsStore = me.getWorkLearnsStore(),
             learns = learnsStore.getRange(),
@@ -280,7 +269,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     ensureLearnPhaseStarted: function() {
-        var studentSparkpoint = this.getStudentSparkpoint();
+        var studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint();
 
         // mark learn phase as started if any learn has been launched
         if (

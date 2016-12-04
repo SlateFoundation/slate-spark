@@ -6,7 +6,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     config: {
-        studentSparkpoint: null,
         activeApply: null,
         renderedApply: null
     },
@@ -17,6 +16,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         applyCt: 'spark-student-work-apply',
         applyPickerCt: 'spark-student-work-apply #applyPickerCt',
         appliesGrid: 'spark-student-work-apply grid#appliesGrid',
@@ -35,6 +36,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         applyCt: {
             activate: 'onApplyCtActivate'
         },
@@ -62,12 +67,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-            }
-        },
         store: {
             '#work.Applies': {
                 load: 'onAppliesStoreLoad',
@@ -81,23 +80,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
-        var me = this,
-            store = me.getWorkAppliesStore();
-
-        me.setActiveApply(null);
-        store.removeAll();
-
-        if (!studentSparkpoint) {
-            return;
-        }
-
-        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
-        store.load();
-
-        me.refreshSubmitBtn();
-    },
-
     updateActiveApply: function(apply, oldApply) {
         if (this.getApplyCt()) {
             this.setRenderedApply(apply);
@@ -110,7 +92,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     updateRenderedApply: function(apply) {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             startTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
 
         if (apply) {
@@ -146,11 +128,24 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
+        var me = this,
+            store = me.getWorkAppliesStore();
+
+        me.setActiveApply(null);
+        store.removeAll();
+
+        if (!studentSparkpoint) {
+            return;
+        }
+
+        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
+        store.load();
+
+        me.refreshSubmitBtn();
     },
 
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshSubmitBtn();
         this.refreshChooseSelectedApplyBtn();
     },
@@ -181,7 +176,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     onChooseSelectedApplyTap: function() {
         var me = this,
             apply = me.getAppliesGrid().getSelection(),
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         me.setActiveApply(apply);
 
@@ -246,7 +241,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onSubmitBtnTap: function() {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         if (!studentSparkpoint.get('apply_ready_time')) {
             studentSparkpoint.set('apply_ready_time', new Date());
@@ -291,7 +286,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     refreshChooseSelectedApplyBtn: function() {
         var me = this,
             chooseSelectedApplyBtn = me.getChooseSelectedApplyBtn(),
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             appliesGrid = me.getAppliesGrid(),
             gridSelection = appliesGrid && appliesGrid.getSelections()[0],
             applyStartTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
@@ -314,7 +309,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     refreshSubmitBtn: function() {
         var submitBtn = this.getSubmitBtn(),
-            studentSparkpoint = this.getStudentSparkpoint(),
+            studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint(),
             applyReadyTime = studentSparkpoint && studentSparkpoint.get('apply_ready_time');
 
         if (!submitBtn || !studentSparkpoint) {

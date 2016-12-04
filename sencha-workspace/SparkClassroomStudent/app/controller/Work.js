@@ -9,12 +9,6 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     ],
 
 
-    config: {
-        selectedSection: null,
-        studentSparkpoint: null
-    },
-
-
     routes: {
         'work': {
             rewrite: 'rewriteWork'
@@ -42,6 +36,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         navBar: 'spark-student-navbar',
         workNavButton: 'spark-student-navbar button#work',
 
@@ -86,6 +82,10 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         workNavButton: {
             tap: 'onNavWorkTap'
         },
@@ -98,13 +98,6 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate',
-                sectionselect: 'onSectionSelect'
-            }
-        },
         socket: {
             data: 'onSocketData'
         }
@@ -160,37 +153,25 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     },
 
 
-    // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
-        var feedbackStore = this.getWorkFeedbackStore();
+    // event handlers
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
+        var me = this,
+            feedbackStore = this.getWorkFeedbackStore();
 
         if (studentSparkpoint) {
-            this.refreshTabbar();
+            me.refreshTabbar();
 
             feedbackStore.getProxy().setExtraParams({
                 'student_id': studentSparkpoint.get('student_id'),
                 'sparkpoint': studentSparkpoint.get('sparkpoint')
             });
             feedbackStore.load();
-        }
-    },
 
-
-    // event handlers
-    onSectionSelect: function(section) {
-        this.setSelectedSection(section);
-    },
-
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        var me = this;
-
-        me.setStudentSparkpoint(studentSparkpoint);
-        if (studentSparkpoint) {
             me.redirectTo(['work', studentSparkpoint.get('active_phase')]);
         }
     },
 
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshTabbar();
     },
 
@@ -210,13 +191,13 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
     onSocketData: function(socket, data) {
         var me = this,
-            tableName = data.table,
             itemData = data.item,
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint,
             workFeedbackStore;
 
-        if (tableName === 'teacher_feedback') {
-            if (studentSparkpoint
+        if (data.table === 'teacher_feedback') {
+            if (
+                (studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint())
                 && studentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
                 && studentSparkpoint.get('student_id') === itemData.student_id
                 && (workFeedbackStore = me.getWorkFeedbackStore())
@@ -257,8 +238,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
 
     refreshTabbar: function() {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
-            sectionCode = me.getSelectedSection(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
+            sectionCode = me.getAppCt().getSelectedSectionCode(),
             workTabbar = me.getWorkTabbar();
 
         if (!workTabbar) {
