@@ -65,7 +65,7 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
             {
                 xtype: 'tbseparator',
                 itemId: 'alignButtonSeparator',
-                hidden: true,
+                hidden: true
             },
             {
                 reference: 'removeButton',
