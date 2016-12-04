@@ -1,14 +1,25 @@
-/* global SparkClassroom */
 /**
  * The main application class. An instance of this class is created by app.js when it
- * calls Ext.application(). This is the ideal place to handle application launch and
- * initialization details.
+ * calls Ext.application(). It is a special controller that is responsible for loading
+ * all other controllers and configuring the application at the top level.
+ *
+ * ## Responsibilities
+ * - Define controllers and their load order
+ * - Configure viewport
+ * - Maintain socket connection to spark-realtime backend
+ * - Present UI to reload application if HTML5 manifest cache gets updated (not currently in use)
  */
 Ext.define('SparkClassroomStudent.Application', {
     extend: 'Ext.app.Application',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.SocketDomain'
+
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
+        'SparkClassroom.SocketDomain',
+        'SparkClassroom.Socket'
     ],
 
 
