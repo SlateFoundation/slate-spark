@@ -60,7 +60,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         {
             xtype: 'tbseparator',
             itemId: 'alignButtonSeparator',
-            hidden: true,
+            hidden: true
         },
         {
             text: 'Delete Apply',
