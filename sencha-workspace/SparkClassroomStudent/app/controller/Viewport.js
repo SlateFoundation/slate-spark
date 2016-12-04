@@ -93,6 +93,9 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             '#Sections': {
                 load: 'onSectionsStoreLoad'
             }
+        },
+        socket: {
+            data: 'onSocketData'
         }
     },
 
@@ -100,7 +103,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         appCt: {
             selectedsectioncodechange: 'onSelectedSectionCodeChange',
             selectedsparkpointcodechange: 'onSelectedSparkpointCodeChange',
-            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange'
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
         },
         sectionSelect: {
             change: 'onSectionSelectChange'
@@ -156,6 +160,22 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     onSectionsStoreLoad: function() {
         this.getSectionSelect().setValue(this.getAppCt().getSelectedSectionCode());
+    },
+
+    onSocketData: function(socket, data) {
+        var me = this,
+            tableName = data.table,
+            itemData = data.item,
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
+
+        if (tableName === 'student_sparkpoint' || tableName === 'section_student_active_sparkpoint') {
+            if (studentSparkpoint
+                && studentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
+                && studentSparkpoint.get('student_id') === itemData.student_id
+            ) {
+                studentSparkpoint.set(itemData, { dirty: false });
+            }
+        }
     },
 
     onSelectedSectionCodeChange: function(appCt, sectionCode) {
@@ -230,18 +250,13 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         this.getAppCt().setSelectedSparkpointCode(sparkpoint.get('sparkpoint'))
     },
 
-    // onStudentSparkpointUpdate: function(studentSparkpoint) {
-
-    //     /* TODO enable this when local studentsparkpoint changes fire update event
-    //     if (modifiedFieldNames.indexOf('total_duration') == -1) {
-    //         return;
-    //     }
-    //     */
-
-    //     this.getTimerCmp().setData({
-    //         duration: studentSparkpoint.get('total_duration')
-    //     });
-    // },
+    onLoadedStudentSparkpointUpdate: function(appCt, studentSparkpoint, modifiedFieldNames) {
+        if (Ext.Array.contains(modifiedFieldNames, 'total_duration')) {
+            this.getTimerCmp().setData({
+                duration: studentSparkpoint.get('total_duration')
+            });
+        }
+    },
 
 
     // controller methods

@@ -55,5 +55,34 @@ Ext.define('SparkClassroomStudent.view.AppContainer', {
          * @ignore
          */
         scrollable: 'vertical'
+    },
+
+    constructor: function() {
+        var me = this;
+
+        /**
+         * This object instance approximates the API provided by stores to receive events
+         * from models that belong to them. It is attached to studentSparkpoint models
+         * by the updateLoadedStudentSparkpoint method below.
+         */
+        me.loadedStudentSparkpointEventProxy = {
+            afterEdit: function(studentSparkpoint, modifiedFieldNames) {
+                me.fireEvent('loadedstudentsparkpointupdate', me, studentSparkpoint, modifiedFieldNames);
+            }
+        };
+
+        me.callParent(arguments);
+    },
+
+    updateLoadedStudentSparkpoint: function(studentSparkpoint, oldStudentSparkpoint) {
+        var eventProxy = this.loadedStudentSparkpointEventProxy;
+
+        if (oldStudentSparkpoint) {
+            oldStudentSparkpoint.unjoin(eventProxy);
+        }
+
+        if (studentSparkpoint) {
+            studentSparkpoint.join(eventProxy);
+        }
     }
 });
