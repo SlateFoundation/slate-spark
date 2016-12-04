@@ -46,7 +46,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
                 action: 'add'
             },
             {
-                xtype: 'tbseparator',
+                xtype: 'tbseparator'
             },
             {
                 reference: 'alignButton',
@@ -59,7 +59,7 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
             {
                 xtype: 'tbseparator',
                 itemId: 'alignButtonSeparator',
-                hidden: true,
+                hidden: true
             },
             {
                 reference: 'removeButton',
