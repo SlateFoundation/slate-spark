@@ -12,6 +12,7 @@
  * - Create/load the {@link SparkClassroom.model.StudentSparkpoint StudentSparkpoint} model instance for the selected sparkpoint
  * code and push it into appCt's' {@link SparkClassroomStudent.view.AppContainer#cfg-loadedStudentSparkpoint loadedStudentSparkpoint} once
  * available
+ * - Process and apply realtime updates to the {@link SparkClassroomStudent.view.AppContainer#cfg-loadedStudentSparkpoint loadedStudentSparkpoint}
  */
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',

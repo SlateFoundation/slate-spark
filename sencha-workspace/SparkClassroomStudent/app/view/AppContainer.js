@@ -7,6 +7,14 @@ Ext.define('SparkClassroomStudent.view.AppContainer', {
     xtype: 'spark-student-appct',
 
 
+    /**
+     * @event loadedstudentsparkpointupdate
+     * Fires when fields within {@link #cfg-loadedStudentSparkpoint} are modified
+     * @param {SparkClassroomStudent.view.AppContainer} appCt
+     * @param {SparkClassroom.model.StudentSparkpoint} studentSparkpoint
+     * @param {String[]|null} modifiedFieldNames
+     */
+
     eventedConfig: {
 
         /**
@@ -57,6 +65,7 @@ Ext.define('SparkClassroomStudent.view.AppContainer', {
         scrollable: 'vertical'
     },
 
+    // @private
     constructor: function() {
         var me = this;
 
