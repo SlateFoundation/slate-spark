@@ -218,30 +218,31 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnAccordian = me.getLearnAccordian(),
             workCt = me.getWorkCt(),
             learnLists = [],
-            groups, lesson, i;
+            groups, group, lesson, i;
 
         learnAccordian.removeAll();
 
         workCt.setLesson(studentSparkpoint.get('lesson_template'));
 
         lesson = workCt.getLesson();
-        groups = lesson && lesson.data.learn_groups;
+        groups = lesson && lesson.get('learn_groups') || [];
 
         for (i = 0; i < groups.length; i++) {
+            group = groups[i];
+
             learnLists.push({
                 xtype: 'container',
                 expanded: true,
-                itemId: 'sparkpointCt',
-                title: groups[i].title,
+                title: group.title,
                 items: [{
                     xtype: 'spark-work-learn-grid',
-                    groupId: groups[i].id,
+                    groupId: group.id,
                     store: {
                         type: 'chained',
                         source: 'work.Learns',
                         filters: [{
                             property: 'lesson_group_id',
-                            value: groups[i].id
+                            value: group.id
                         }]
                     }
                 }]
@@ -251,7 +252,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         learnLists.push({
             xtype: 'container',
             expanded: true,
-            itemId: 'sparkpointCt',
             title: 'Ungrouped',
             items: [{
                 xtype: 'spark-work-learn-grid',
@@ -268,21 +268,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         });
 
         learnAccordian.add(learnLists);
-    },
-
-    getGroupData: function(groupId) {
-        var me = this,
-            lesson = me.getWorkCt().getLesson(),
-            groups = lesson && lesson.data.learn_groups,
-            i;
-
-        for (i = 0; i < groups.length; i++) {
-            if (groups[i].id === groupId) {
-                return groups[i];
-            }
-        }
-
-        return false;
     },
 
     refreshLearnProgress: function() {
@@ -335,6 +320,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     refreshGroupedProgress: function() {
         var me = this,
+            lesson = me.getWorkCt().getLesson(),
             sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
             i, j, learns, grid, completed, progressBanner, groupData;
 
@@ -342,10 +328,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             grid = sparkCts[i].down('grid');
             progressBanner = grid && grid.down('spark-work-learn-progressbanner');
             learns = grid && grid.getStore().getRange();
-            groupData = me.getGroupData(grid && grid.groupId);
+            groupData = lesson && lesson.getGroupData(grid && grid.groupId);
             completed = 0;
 
-            if (learns.length) {
+            if (learns.length && groupData) {
                 for (j = 0; j < learns.length; j++) {
                     if (learns[j].get('completed')) {
                         completed++;
@@ -357,9 +343,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
                 me.syncLearnsRequired();
                 progressBanner.show();
-            }
-
-            if (!learns.length) {
+            } else {
                 progressBanner.hide();
             }
         }
@@ -401,8 +385,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         for (; i < count; i++) {
             learn = learns[i];
             learnAssignments = learn.get('assignments');
-            if (learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
-                || learnAssignments.section == 'required' || learnAssignments.student == 'required') {
+            if (
+                learnAssignments.section === 'required-first'
+                || learnAssignments.student === 'required-first'
+                || learnAssignments.section === 'required'
+                || learnAssignments.student === 'required'
+            ) {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
                 } else {
@@ -439,13 +427,14 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             readyBtn = me.getReadyBtn(),
             studentSparkpoint = me.getStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
+            lesson = me.getWorkCt().getLesson(),
             i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns;
 
         for (i = 0; i <sparkCts.length; i++) {
             grid = sparkCts[i].down('grid');
             progressBanner = grid && grid.down('spark-work-learn-progressbanner');
             learns = grid && grid.getStore().getRange();
-            groupData = me.getGroupData(grid && grid.groupId);
+            groupData = lesson && lesson.getGroupData(grid && grid.groupId);
             completedRequiredLearns = 0;
             learnsRequiredDisabled = false;
             requiredLearns = 0;
@@ -458,8 +447,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 learn = learns[j];
                 learnAssignments = learn.get('assignments');
 
-                if (learnAssignments.section === 'required-first' || learnAssignments.student === 'required-first'
-                    || learnAssignments.section === 'required' || learnAssignments.student === 'required') {
+                if (
+                    learnAssignments.section === 'required-first'
+                    || learnAssignments.student === 'required-first'
+                    || learnAssignments.section === 'required'
+                    || learnAssignments.student === 'required'
+                ) {
                     if (learn.get('completed')) {
                         completedRequiredLearns++;
                     } else {
