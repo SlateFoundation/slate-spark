@@ -368,10 +368,10 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             persist: false,
             calculate: function(data) {
                 if (!data.sparkpoint_id || data.sparkpoint_id.charAt(0) === 'L') {
-                    return false;
+                    return true;
                 }
 
-                return true;
+                return false;
             }
         },
         {

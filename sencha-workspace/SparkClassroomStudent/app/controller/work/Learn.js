@@ -98,7 +98,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         learnAccordian.removeAll();
         learnAccordian.add({
             xtype: 'container',
-            expanded: true,
+            collapsed: true,
             itemId: 'sparkpointCt',
             title: sparkpointCode || '[Select a Sparkpoint]',
             items: [{
@@ -232,7 +232,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
             learnLists.push({
                 xtype: 'container',
-                expanded: true,
+                collapsed: true,
                 title: group.title,
                 items: [{
                     xtype: 'spark-work-learn-grid',
@@ -251,7 +251,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         learnLists.push({
             xtype: 'container',
-            expanded: true,
+            collapsed: true,
             title: 'Ungrouped',
             items: [{
                 xtype: 'spark-work-learn-grid',
