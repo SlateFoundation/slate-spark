@@ -48,7 +48,7 @@ Ext.define('SparkClassroomTeacher.controller.Help', {
             return;
         }
 
-        var me = this,
+        var me = this, // eslint-disable-line vars-on-top
             itemData = data.item,
             helpStore, doLoadHelpRequest;
 

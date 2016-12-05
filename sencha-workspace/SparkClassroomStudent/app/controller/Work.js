@@ -1,10 +1,10 @@
-/* global SparkClassroom */
 /**
  * TODO: move all work routing to main work controller
  */
 Ext.define('SparkClassroomStudent.controller.Work', {
     extend: 'Ext.app.Controller',
     requires: [
+        /* global SparkClassroom */
         'SparkClassroom.timing.DurationDisplay'
     ],
 

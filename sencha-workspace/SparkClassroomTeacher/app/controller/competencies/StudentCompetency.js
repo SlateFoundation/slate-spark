@@ -1,4 +1,3 @@
-/* global SparkClassroom */
 /**
  * Manages the floating panel that displays when you click on a spark point in the Sparkpoint Overview.
  *
@@ -8,10 +7,12 @@
  */
 Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
     extend: 'Ext.app.Controller',
-
     requires: [
-        'SparkClassroom.timing.DurationDisplay',
-        'Slate.proxy.API'
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
+        'SparkClassroom.timing.DurationDisplay'
     ],
 
 
@@ -147,9 +148,8 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         }
     },
 
-    onPhaseCheckChange: function(e, target, updateButton) {
+    onPhaseCheckChange: function(e, target, updateButton) { // eslint-disable-line complexity
         var me = this,
-            updateButton = Ext.isEmpty(updateButton), // true by default
             el = Ext.get(target),
             checked = el.is(':checked'),
             phaseName = el.getAttribute('data-phase'),
@@ -220,7 +220,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.StudentCompetency', {
         record.set(fieldName, value);
 
         // Only update button text on first call to this method (not in the chain)
-        if (!updateButton) {
+        if (!Ext.isEmpty(updateButton)) {
             return;
         }
 

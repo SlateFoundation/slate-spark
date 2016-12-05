@@ -72,7 +72,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         this.refreshLearnProgress();
     },
 
-    onLearnCtActivate: function(learnCt) {
+    onLearnCtActivate: function() {
         var me = this,
             studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
@@ -90,7 +90,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         this.ensureLearnPhaseStarted();
     },
 
-    onSocketData: function(socket, data) {
+    onSocketData: function(socket, data) { // eslint-disable-line complexity
         var me = this,
             table = data.table,
             itemData = data.item,
@@ -110,7 +110,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 learn.set({
                     launched: itemData.start_status == 'launched',
                     completed: itemData.completed
-                },{
+                }, {
                     dirty: false
                 });
 
@@ -123,7 +123,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 && itemData.section_code == studentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
-                learn.set('assignments', Ext.applyIf({section: itemData.assignment || null}, learn.get('assignments')));
+                learn.set('assignments', Ext.applyIf({ section: itemData.assignment || null }, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
@@ -136,7 +136,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
                 && itemData.section_code == studentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
-                learn.set('assignments', Ext.applyIf({student: itemData.assignment || null}, learn.get('assignments')));
+                learn.set('assignments', Ext.applyIf({ student: itemData.assignment || null }, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 me.getLearnGrid().refresh();
@@ -206,7 +206,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
     },
 
-    syncLearnsRequired: function() {
+    syncLearnsRequired: function() { // eslint-disable-line complexity
         var me = this,
             progressBanner = me.getProgressBanner(),
             readyBtn = me.getReadyBtn(),
@@ -236,8 +236,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         for (; i < count; i++) {
             learn = learns[i];
             learnAssignments = learn.get('assignments');
-            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
-                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+            if (
+                learnAssignments.section == 'required-first'
+                || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required'
+                || learnAssignments.student == 'required'
+            ) {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
                 } else {
@@ -273,9 +277,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         // mark learn phase as started if any learn has been launched
         if (
-            studentSparkpoint &&
-            !studentSparkpoint.get('learn_start_time') &&
-            this.getWorkLearnsStore().findExact('launched', true) != -1
+            studentSparkpoint
+            && !studentSparkpoint.get('learn_start_time')
+            && this.getWorkLearnsStore().findExact('launched', true) != -1
         ) {
             studentSparkpoint.set('learn_start_time', new Date());
             studentSparkpoint.save();

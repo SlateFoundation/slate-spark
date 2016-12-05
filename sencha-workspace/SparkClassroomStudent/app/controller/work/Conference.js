@@ -6,7 +6,10 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.util.DelayedTask'
+        'Ext.util.DelayedTask',
+
+        /* global Slate */
+        'Slate.API'
     ],
 
     stores: [
@@ -87,7 +90,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         // load/update questions store
         store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-        if (store.isLoaded() || (conferenceCt && conferenceCt.hasParent())) {
+        if (store.isLoaded() || (conferenceCt && conferenceCt.hasParent())) { // eslint-disable-line no-extra-parens
             store.load();
         }
 
@@ -122,7 +125,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         var conferenceCt = this.getConferenceCt();
 
         if (conferenceCt) {
-            conferenceCt.setMasked({xtype: 'loadmask', message: 'Loading Conference&hellip;'});
+            conferenceCt.setMasked({
+                xtype: 'loadmask',
+                message: 'Loading Conference&hellip;'
+            });
         }
     },
 
@@ -157,13 +163,13 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 source: 'student',
                 question: me.getQuestionInputEl().getValue()
             },
-            success: function(response) {
+            success: function() {
                 me.refreshQuestions();
             }
         });
     },
 
-    onWorksheetFieldChange: function(field, value) {
+    onWorksheetFieldChange: function() {
         this.writeWorksheetTask.delay(1000);
     },
 
@@ -177,7 +183,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
     },
 
-    onSocketData: function(socket, data) {
+    onSocketData: function(socket, data) { // eslint-disable-line complexity
         var me = this,
             itemData = data.item,
             questionsStore,
@@ -190,13 +196,13 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
             studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
             if (
-                studentSparkpoint &&
-                questionsStore.isLoaded() &&
-                studentSparkpoint.get('student_id') == itemData.student_id &&
-                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
+                studentSparkpoint
+                && questionsStore.isLoaded()
+                && studentSparkpoint.get('student_id') == itemData.student_id
+                && studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
             ) {
                 // capture question input
-                if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputEl = me.getQuestionInputEl()) { // eslint-disable-line no-cond-assign
                     questionInputValue = questionInputEl.getValue();
                     questionInputFocused = questionInputEl.dom === document.activeElement;
                 }
@@ -205,13 +211,12 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 me.refreshQuestions();
 
                 // restore question input
-                if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputEl = me.getQuestionInputEl()) { // eslint-disable-line no-cond-assign
                     if (questionInputValue) {
                         questionInputEl.dom.value = questionInputValue;
                     }
 
                     if (questionInputFocused) {
-                        console.log('restoring focus');
                         questionInputEl.focus();
                     }
                 }
@@ -221,9 +226,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (resource) {
                 if (itemData.assignment) {
-                    resource.set('assignments', { section: (resource.data.assignments.section || null), student: 'required' });
+                    resource.set('assignments', {
+                        section: resource.data.assignments.section || null,
+                        student: 'required'
+                    });
                 } else {
-                    resource.set('assignments', { section: (resource.data.assignments.section || null) });
+                    resource.set('assignments', {
+                        section: resource.data.assignments.section || null
+                    });
                 }
 
                 me.refreshResources();
@@ -233,9 +243,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (resource) {
                 if (itemData.assignment) {
-                    resource.set('assignments', { section: 'required', student: (resource.data.assignments.student || null) });
+                    resource.set('assignments', {
+                        section: 'required',
+                        student: resource.data.assignments.student || null
+                    });
                 } else {
-                    resource.set('assignments', { student: (resource.data.assignments.student || null) });
+                    resource.set('assignments', {
+                        student: resource.data.assignments.student || null
+                    });
                 }
 
                 me.refreshResources();
@@ -245,9 +260,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (question) {
                 if (itemData.assignment) {
-                    question.set('assignments', { section: (question.data.assignments.section || null), student: 'required' });
+                    question.set('assignments', {
+                        section: question.data.assignments.section || null,
+                        student: 'required'
+                    });
                 } else {
-                    question.set('assignments', { section: (question.data.assignments.section || null) });
+                    question.set('assignments', {
+                        section: question.data.assignments.section || null
+                    });
                 }
 
                 me.refreshQuestions();
@@ -257,9 +277,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (question) {
                 if (itemData.assignment) {
-                    question.set('assignments', { section: 'required', student: (question.data.assignments.student || null) });
+                    question.set('assignments', {
+                        section: 'required',
+                        student: question.data.assignments.student || null
+                    });
                 } else {
-                    question.set('assignments', { student: (question.data.assignments.student || null) });
+                    question.set('assignments', {
+                        student: question.data.assignments.student || null
+                    });
                 }
 
                 me.refreshQuestions();

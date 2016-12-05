@@ -89,9 +89,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             scoreField;
 
         if (
-            operation == 'edit' &&
-            studentSparkpoint === me.getAppCt().getSelectedStudentSparkpoint() &&
-            modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
+            operation == 'edit'
+            && studentSparkpoint === me.getAppCt().getSelectedStudentSparkpoint()
+            && modifiedFieldNames.indexOf('learn_mastery_check_score') != -1
         ) {
             scoreField = me.getMasteryCheckScoreField();
 
@@ -126,7 +126,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
 
         Ext.getStore('work.Feedback').add({
-            student_id: selectedStudentSparkpoint.get('student_id'),
+            'student_id': selectedStudentSparkpoint.get('student_id'),
             sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
             phase: 'learn',
             message: message
@@ -135,7 +135,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         feedbackMessageField.reset();
     },
 
-    onSocketData: function(socket, data) {
+    onSocketData: function(socket, data) { // eslint-disable-line complexity
         var me = this,
             table = data.table,
             itemData = data.item,
@@ -156,7 +156,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 learn.set({
                     launched: itemData.start_status == 'launched',
                     completed: itemData.completed
-                },{
+                }, {
                     dirty: false
                 });
             }
@@ -167,7 +167,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 && itemData.section_code == selectedStudentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
-                learn.set('assignments', Ext.applyIf({section: itemData.assignment || null}, learn.get('assignments')));
+                learn.set('assignments', Ext.applyIf({ section: itemData.assignment || null }, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 if (learnGrid) {
@@ -182,7 +182,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 && itemData.section_code == selectedStudentSparkpoint.get('section_code')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
             ) {
-                learn.set('assignments', Ext.applyIf({student: itemData.assignment || null}, learn.get('assignments')));
+                learn.set('assignments', Ext.applyIf({ student: itemData.assignment || null }, learn.get('assignments')));
 
                 // TODO: remove this #hack when underlying #framework-bug gets fixed
                 if (learnGrid) {
@@ -198,8 +198,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 me.learnsRequiredStudent = itemData.required || null;
                 me.refreshLearnProgress();
             }
-        } else if (table == 'learn_reviews' &&
-                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+        } else if (table == 'learn_reviews'
+                && (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
                 && itemData.student_id == selectedStudentSparkpoint.get('student_id')
                 && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
         ) {
@@ -209,7 +209,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 rating: {
                     user: itemData.rating
                 }
-            }, {dirty: false});
+            }, { dirty: false });
         }
     },
 
@@ -257,7 +257,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
     },
 
-    refreshLearnProgress: function() {
+    refreshLearnProgress: function() { // eslint-disable-line complexity
         var me = this,
             progressBanner = me.getProgressBanner(),
             learnsStore = me.getWorkLearnsStore(),
@@ -294,8 +294,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 completed++;
             }
 
-            if ((learnAssignments.section == 'required-first' || learnAssignments.student == 'required-first'
-                || learnAssignments.section == 'required' || learnAssignments.student == 'required')) {
+            if (
+                learnAssignments.section == 'required-first'
+                || learnAssignments.student == 'required-first'
+                || learnAssignments.section == 'required'
+                || learnAssignments.student == 'required'
+            ) {
                 if (learn.get('completed')) {
                     completedRequiredLearns++;
                 }

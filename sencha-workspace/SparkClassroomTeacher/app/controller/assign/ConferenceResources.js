@@ -10,6 +10,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
+
+        /* global Slate */
         'Slate.API'
     ],
 
@@ -62,7 +64,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
         resourcesStore.getProxy().setExtraParam('sparkpoint', sparkpoint);
 
         // load store if it's loaded already or the grid is visible
-        if (resourcesStore.isLoaded() || (resourcesCt && resourcesCt.hasParent())) {
+        if (resourcesStore.isLoaded() || (resourcesCt && resourcesCt.hasParent())) { // eslint-disable-line no-extra-parens
             // TODO put load in here?
         }
 
@@ -82,7 +84,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
         this.syncSelectedSparkpoint();
     },
 
-    onFlagTap: function(assignmentsCell, flagId, record, parentRecord, flagEl) {
+    onFlagTap: function(assignmentsCell, flagId, record, parentRecord) {
         var me = this,
             popupHostColumn = me.getPopupHostColumn(),
             section = me.getAppCt().getSelectedSection(),
@@ -123,15 +125,15 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
                 studentDeletes.push({
                     sparkpoint: sparkpoint,
                     section: section,
-                    student_id: assignmentKey,
-                    resource_id: resourceId,
+                    'student_id': assignmentKey,
+                    'resource_id': resourceId,
                     assignment: null
                 });
             }
 
             // if there are any student-level assignments, offer to erase them so there are no exceptions to this flag
             if (studentDeletes.length) {
-                return Ext.Msg.confirm(
+                Ext.Msg.confirm(
                     'Erase student-level assignments',
                     'Do you want to erase all student-level assignments for this resource so that the section-level assignment is effective for all students?',
                     function(buttonId) {
@@ -142,14 +144,15 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
                         studentDeletes.push({
                             sparkpoint: sparkpoint,
                             section: section,
-                            student_id: null,
-                            resource_id: resourceId,
+                            'student_id': null,
+                            'resource_id': resourceId,
                             assignment: null
                         });
 
                         me.writeAssignments(studentDeletes);
                     }
                 );
+                return;
             }
 
             // otherwise, erase the section-level assignment
@@ -168,8 +171,8 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
         me.writeAssignments({
             sparkpoint: sparkpoint,
             section: section,
-            student_id: parentRecord ? record.get('student').getId() : null,
-            resource_id: resourceId,
+            'student_id': parentRecord ? record.get('student').getId() : null,
+            'resource_id': resourceId,
             assignment: flagId
         });
     },
@@ -189,7 +192,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
             return;
         }
 
-        var me = this,
+        var me = this, // eslint-disable-line vars-on-top
             resourcesStore = me.getAssignConferenceResourcesStore(),
             itemData = data.item,
             studentId = itemData.student_id,
@@ -212,26 +215,26 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
 
             // update `student` assignments in student-level store if open
             if (
-                (popupHostColumn = me.getPopupHostColumn()) &&
-                (popup = popupHostColumn.getPopup()) &&
-                (popupStudent = popup.getGrid().getStore().getById(studentId))
+                (popupHostColumn = me.getPopupHostColumn())
+                && (popup = popupHostColumn.getPopup())
+                && (popupStudent = popup.getGrid().getStore().getById(studentId))
             ) {
-                popupStudent.set('assignments', Ext.applyIf({student: assignment}, popupStudent.get('assignments')));
+                popupStudent.set('assignments', Ext.applyIf({ student: assignment }, popupStudent.get('assignments')));
             }
         } else {
             assignments.section = assignment;
 
             // update `seciton` assignment student-level store if open
             if (
-                (popupHostColumn = me.getPopupHostColumn()) &&
-                (popup = popupHostColumn.getPopup())
+                (popupHostColumn = me.getPopupHostColumn())
+                && (popup = popupHostColumn.getPopup())
             ) {
                 popupStore = popup.getGrid().getStore();
                 popupStudentsCount = popupStore.getCount();
 
                 for (; i < popupStudentsCount; i++) {
                     popupStudent = popupStore.getAt(i);
-                    popupStudent.set('assignments', Ext.applyIf({section: assignment}, popupStudent.get('assignments')));
+                    popupStudent.set('assignments', Ext.applyIf({ section: assignment }, popupStudent.get('assignments')));
                 }
             }
         }
@@ -264,7 +267,7 @@ Ext.define('SparkClassroomTeacher.controller.assign.ConferenceResources', {
             method: 'POST',
             url: '/spark/api/assignments/conference_resources',
             jsonData: assignmentsData,
-            success: function(response) {
+            success: function() {
                 // do nothing cause realtime will handle it
             },
             failure: function(response) {

@@ -1,4 +1,3 @@
-/* global SparkClassroom */
 /**
  * The Work controller handles activating the top-level
  * "Work" tab and manages navigation between its immediate
@@ -17,6 +16,7 @@
 Ext.define('SparkClassroomTeacher.controller.Work', {
     extend: 'Ext.app.Controller',
     requires: [
+        /* global SparkClassroom */
         'SparkClassroom.timing.DurationDisplay'
     ],
 

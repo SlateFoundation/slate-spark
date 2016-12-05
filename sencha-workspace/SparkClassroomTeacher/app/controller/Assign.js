@@ -30,7 +30,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         'assign.Assessments'
     ],
 
-    refs:{
+    refs: {
         appCt: 'spark-teacher-appct',
         navBar: 'spark-navbar',
         assignNavButton: 'spark-navbar button#assign',
@@ -113,7 +113,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
 
     // route handlers
-    rewriteShowContainer: function(token, args, route) {
+    rewriteShowContainer: function() {
         var assignTabBar = this.getAssignTabbar(),
             assignTabId, activeAssignTab, selectedStudentSparkpoint;
 
@@ -122,7 +122,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
             && (activeAssignTab = assignTabBar.getActiveTab())
         ) {
             assignTabId = activeAssignTab.getItemId();
-        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {
+        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) { // eslint-disable-line no-cond-assign
             assignTabId = selectedStudentSparkpoint.get('active_phase');
 
             if (assignTabId == 'conference') {
@@ -190,7 +190,7 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
 
 
     // event handlers
-    onSelectedSectionChange: function(appCt, selectedSection, oldSelectedSection) {
+    onSelectedSectionChange: function() {
         // TODO: apply filters to stores
     },
 
