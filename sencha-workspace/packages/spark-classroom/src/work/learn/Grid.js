@@ -17,26 +17,19 @@ Ext.define('SparkClassroom.work.learn.Grid', {
     ],
 
     config: {
+        progressBanner: true,
+
         allowToggleComplete: true,
 
         plugins: [
             'gridflex',
             'gridheight'
         ],
+
         emptyText: 'No Learns to show for this Sparkpoint.',
         grouped: true,
         titleBar: null,
-        items: [{
-            xtype: 'container',
-            layout: {
-                type: 'hbox',
-                pack: 'center'
-            },
-            items: [{
-                xtype: 'spark-work-learn-progressbanner',
-                hidden: true
-            }]
-        }],
+
         columns: [
             {
                 xtype: 'spark-completed-column',
@@ -67,6 +60,34 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         ],
 
         store: 'work.Learns'
+    },
+
+    applyProgressBanner: function(config, oldProgressBanner) {
+        if (config === true) {
+            config = {};
+        }
+
+        return Ext.factory(config, SparkClassroom.work.learn.ProgressBanner, oldProgressBanner);
+    },
+
+    updateProgressBanner: function(progressBanner, oldProgressBanner) {
+        var container = this.container;
+
+        if (oldProgressBanner) {
+            container.remove(oldProgressBanner.getParent());
+        }
+
+        if (progressBanner) {
+            container.insertFirst({
+                docked: 'top',
+                xtype: 'container',
+                layout: {
+                    type: 'hbox',
+                    pack: 'center'
+                },
+                items: progressBanner
+            });
+        }
     },
 
     updateAllowToggleComplete: function(allowToggleComplete) {
