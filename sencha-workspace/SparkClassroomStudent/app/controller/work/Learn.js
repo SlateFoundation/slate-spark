@@ -13,7 +13,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     refs: {
         learnCt: 'spark-student-work-learn',
-        learnAccordian: 'spark-student-work-learn #learnAccordian',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
         lessonIntro: 'spark-work-learn #lessonIntro',
@@ -215,12 +214,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     // controller methods
     renderLessonLists: function(studentSparkpoint) {
         var me = this,
-            learnAccordian = me.getLearnAccordian(),
+            learnCt = me.getLearnCt(),
             workCt = me.getWorkCt(),
             learnLists = [],
             groups, group, lesson, i;
 
-        learnAccordian.removeAll();
+        learnCt.removeAll();
 
         workCt.setLesson(studentSparkpoint.get('lesson_template'));
 
@@ -231,43 +230,33 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             group = groups[i];
 
             learnLists.push({
-                xtype: 'container',
-                expanded: true,
                 title: group.title,
-                items: [{
-                    xtype: 'spark-work-learn-grid',
-                    groupId: group.id,
-                    store: {
-                        type: 'chained',
-                        source: 'work.Learns',
-                        filters: [{
-                            property: 'lesson_group_id',
-                            value: group.id
-                        }]
-                    }
-                }]
-            });
-        }
-
-        learnLists.push({
-            xtype: 'container',
-            expanded: true,
-            title: 'Ungrouped',
-            items: [{
-                xtype: 'spark-work-learn-grid',
-                groupId: null,
+                groupId: group.id,
                 store: {
                     type: 'chained',
                     source: 'work.Learns',
                     filters: [{
                         property: 'lesson_group_id',
-                        value: null
+                        value: group.id
                     }]
                 }
-            }]
+            });
+        }
+
+        learnLists.push({
+            title: 'Ungrouped',
+            groupId: null,
+            store: {
+                type: 'chained',
+                source: 'work.Learns',
+                filters: [{
+                    property: 'lesson_group_id',
+                    value: null
+                }]
+            }
         });
 
-        learnAccordian.add(learnLists);
+        learnCt.add(learnLists);
     },
 
     refreshLearnProgress: function() {

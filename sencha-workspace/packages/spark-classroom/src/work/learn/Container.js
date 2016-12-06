@@ -10,9 +10,20 @@ Ext.define('SparkClassroom.work.learn.Container', {
     config: {
         allowToggleComplete: true,
 
-        items: [{
-            // TODO wire up this example module info box
+        layout: {
+            type: 'accordion',
+            allowMultipleExpandedItems: true
+        },
+        itemId: 'learnAccordian',
+        defaultType: 'spark-work-learn-grid',
+        defaults: {
+            expanded: true
+        },
 
+        items: [{
+            docked: 'top',
+
+            // TODO wire up this example module info box
             xtype: 'component',
             itemId: 'lessonIntro',
             cls: 'spark-panel spark-work-learn-module-intro',
@@ -25,10 +36,6 @@ Ext.define('SparkClassroom.work.learn.Container', {
                 '<h3 class="spark-panel-title">{moduleTitle}</h3>',
                 '<p>{moduleDescription}</p>'
             ]
-        }, {
-            layout: 'accordion',
-            itemId: 'learnAccordian',
-            items: []
         }]
     },
 
