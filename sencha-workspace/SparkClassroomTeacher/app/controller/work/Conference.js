@@ -5,8 +5,11 @@
  */
 Ext.define('SparkClassroomTeacher.controller.work.Conference', {
     extend: 'Ext.app.Controller',
-
     requires: [
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
         'SparkClassroom.Socket'
     ],
 
@@ -148,7 +151,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         }
     },
 
-    onConferenceQuestionsStoreLoad: function(questionsStore, questions) {
+    onConferenceQuestionsStoreLoad: function(questionsStore) {
         var me = this,
             rawData = questionsStore.getProxy().getReader().rawData || {},
             worksheetData = rawData.worksheet;
@@ -175,10 +178,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         }
 
         if (
-            activeStudent === me.getAppCt().getSelectedStudentSparkpoint() &&
-            (
-                modifiedFieldNames.indexOf('conference_start_time') != -1 ||
-                modifiedFieldNames.indexOf('conference_group_id') != -1
+            activeStudent === me.getAppCt().getSelectedStudentSparkpoint()
+            && (
+                modifiedFieldNames.indexOf('conference_start_time') != -1
+                || modifiedFieldNames.indexOf('conference_group_id') != -1
             )
         ) {
             me.syncConferenceGroup();
@@ -201,12 +204,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             method: 'POST',
             url: '/spark/api/work/conferences/questions',
             jsonData: {
-                student_id: selectedStudentSparkpoint.get('student_id'),
+                'student_id': selectedStudentSparkpoint.get('student_id'),
                 sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
                 source: 'teacher',
                 question: me.getQuestionInputEl().getValue()
             },
-            success: function(response) {
+            success: function() {
                 me.refreshQuestions();
             }
         });
@@ -216,15 +219,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             group = me.getWorkConferenceGroupModel().create({
-                section_code: me.getAppCt().getSelectedSection(),
-                timer_time: new Date()
+                'section_code': me.getAppCt().getSelectedSection(),
+                'timer_time': new Date()
             });
 
         group.save({
-            callback: function(group, operation, success) {
+            callback: function(savedGroup, operation, success) {
                 if (success) {
-                    me.getWorkConferenceGroupsStore().add(group);
-                    selectedStudentSparkpoint.saveConferenceGroup(group.getId());
+                    me.getWorkConferenceGroupsStore().add(savedGroup);
+                    selectedStudentSparkpoint.saveConferenceGroup(savedGroup.getId());
                     me.syncConferenceGroup();
                 } else {
                     Ext.Logger.warn('Failed to create conference group');
@@ -273,9 +276,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 text = 'Conference Finished';
                 disabled = true;
                 SparkClassroom.Socket.emit('unsubscribe', {
-                    conference_group_id: me.getAppCt().getSelectedStudentSparkpoint().get('conference_group_id')
+                    'conference_group_id': me.getAppCt().getSelectedStudentSparkpoint().get('conference_group_id')
                 });
                 break;
+            default:
+                Ext.Logger.error('unhandled timer state: '+state);
         }
 
         pauseBtn.setText(text);
@@ -337,7 +342,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         for (; i < studentsLength; i++) {
             student = students[i];
             feedbackStore.add({
-                student_id: student.getId(),
+                'student_id': student.getId(),
                 sparkpoint: student.get('sparkpoint'),
                 phase: 'conference',
                 message: message
@@ -354,15 +359,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             studentsGrid = this.getConferencingStudentsGrid(),
             selectedStudents = studentsGrid.getSelections(),
             selectedStudentsLength = selectedStudents.length,
-            i = 0, student,
+            i = 0, selectedStudent,
             unreadyStudentIndex, group;
 
         for (; i < selectedStudentsLength; i++) {
-            student = selectedStudents[i];
+            selectedStudent = selectedStudents[i];
 
-            if (!student.get('conference_completed_time')) {
-                student.set('conference_finish_time', now);
-                student.save();
+            if (!selectedStudent.get('conference_completed_time')) {
+                selectedStudent.set('conference_finish_time', now);
+                selectedStudent.save();
             }
         }
 
@@ -371,14 +376,14 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         });
 
         if (
-            unreadyStudentIndex == -1 &&
-            (group = this.getWorkConferenceGroupsStore().getById(student.get('conference_group_id')))
+            unreadyStudentIndex == -1
+            && (group = this.getWorkConferenceGroupsStore().getById(selectedStudent.get('conference_group_id')))
         ) {
             group.close();
         }
     },
 
-    onSocketData: function(socket, data) {
+    onSocketData: function(socket, data) { // eslint-disable-line complexity
 
         var me = this,
             table = data.table,
@@ -393,13 +398,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
             questionsStore = me.getWorkConferenceQuestionsStore();
 
             if (
-                selectedStudentSparkpoint &&
-                questionsStore.isLoaded() &&
-                item.student_id == selectedStudentSparkpoint.get('student_id') &&
-                item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')
+                selectedStudentSparkpoint
+                && questionsStore.isLoaded()
+                && item.student_id == selectedStudentSparkpoint.get('student_id')
+                && item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')
             ) {
                 // capture question input
-                if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputEl = me.getQuestionInputEl()) { // eslint-disable-line no-cond-assign
                     questionInputValue = questionInputEl.getValue();
                     questionInputFocused = questionInputEl.dom === document.activeElement;
                 }
@@ -408,7 +413,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
                 me.refreshQuestions();
 
                 // restore question input
-                if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputEl = me.getQuestionInputEl()) { // eslint-disable-line no-cond-assign
                     if (questionInputValue) {
                         questionInputEl.dom.value = questionInputValue;
                     }
@@ -434,7 +439,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
         } else if (table == 'conference_groups') {
             groupsStore = me.getWorkConferenceGroupsStore();
 
-            if (group = groupsStore.getById(item.id)) {
+            if (group = groupsStore.getById(item.id)) { // eslint-disable-line no-cond-assign
                 group.set(item, { dirty: false });
             } else if (item.section_code == me.getAppCt().getSelectedSection()) {
                 groupsStore.add(item);
@@ -493,7 +498,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Conference', {
 
             if (conferenceGroup) {
                 SparkClassroom.Socket.emit('subscribe', {
-                    conference_group_id: conferenceGroup
+                    'conference_group_id': conferenceGroup
                 });
             }
         }

@@ -58,6 +58,7 @@ Ext.define('SparkClassroomTeacher.Application', {
     ],
 
     config: {
+
         /**
          * @inheritdoc
          * @private
@@ -144,7 +145,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         if (oldStudentSparkpoint) {
             SparkClassroom.Socket.emit('unsubscribe', {
-                student_id: oldStudentSparkpoint.get('student_id'),
+                'student_id': oldStudentSparkpoint.get('student_id'),
                 sparkpoint: oldStudentSparkpoint.get('sparkpoint'),
                 host: apiHost
             });
@@ -152,7 +153,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         if (studentSparkpoint) {
             SparkClassroom.Socket.emit('subscribe', {
-                student_id: studentSparkpoint.get('student_id'),
+                'student_id': studentSparkpoint.get('student_id'),
                 sparkpoint: studentSparkpoint.get('sparkpoint'),
                 host: apiHost
             });
@@ -173,7 +174,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         if (selectedStudentSparkpoint) {
             SparkClassroom.Socket.emit('subscribe', {
-                student_id: selectedStudentSparkpoint.get('student_id'),
+                'student_id': selectedStudentSparkpoint.get('student_id'),
                 sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
                 host: apiHost
             });

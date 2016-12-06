@@ -47,6 +47,7 @@ Ext.define('SparkClassroomStudent.Application', {
     ],
 
     config: {
+
         /**
          * @inheritdoc
          * @private

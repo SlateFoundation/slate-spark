@@ -1,5 +1,9 @@
 Ext.define('SparkClassroomStudent.controller.work.Assess', {
     extend: 'Ext.app.Controller',
+    requires: [
+        /* global Slate */
+        'Slate.API'
+    ],
 
 
     stores: [
@@ -55,7 +59,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
-        if (store.isLoaded() || (assessCt && assessCt.hasParent())) {
+        if (store.isLoaded() || (assessCt && assessCt.hasParent())) { // eslint-disable-line no-extra-parens
             store.load();
         }
 
@@ -66,7 +70,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
         this.refreshSubmitBtn();
     },
 
-    onAssessCtActivate: function(learnCt) {
+    onAssessCtActivate: function() {
         var me = this,
             assessmentsStore = me.getWorkAssessmentsStore();
 

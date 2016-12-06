@@ -62,7 +62,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
 
     // config handlers
-    updateActiveApply: function(apply) {
+    updateActiveApply: function() {
         this.syncActiveApply();
     },
 
@@ -85,10 +85,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         me.syncReadyState();
     },
 
-    onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation, modifiedFieldNames) {
+    onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, activeStudent, operation) {
         if (
-            operation == 'edit' &&
-            activeStudent === this.getAppCt().getSelectedStudentSparkpoint()
+            operation == 'edit'
+            && activeStudent === this.getAppCt().getSelectedStudentSparkpoint()
         ) {
             this.syncReadyState();
         }
@@ -114,7 +114,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
         }
 
         Ext.getStore('work.Feedback').add({
-            student_id: selectedStudentSparkpoint.get('student_id'),
+            'student_id': selectedStudentSparkpoint.get('student_id'),
             sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
             phase: 'apply',
             message: message
@@ -125,6 +125,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
 
     onGradePanelGradeChange: function(gradePanel, grade) {
         var apply = this.getActiveApply();
+
         apply.set('grade', grade == -1 ? null : grade);
 
         if (apply.dirty) {
@@ -153,9 +154,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
             if (
-                selectedStudentSparkpoint &&
-                item.user_id == selectedStudentSparkpoint.get('student_id') &&
-                (task = me.getWorkApplyTasksStore().getById(item.id))
+                selectedStudentSparkpoint
+                && item.user_id == selectedStudentSparkpoint.get('student_id')
+                && (task = me.getWorkApplyTasksStore().getById(item.id))
             ) {
                 task.set(item, { dirty: false });
             }
@@ -164,10 +165,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Apply', {
             appliesStore = me.getWorkAppliesStore();
 
             if (
-                selectedStudentSparkpoint &&
-                item.student_id == selectedStudentSparkpoint.get('student_id') &&
-                item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
-                (apply = appliesStore.getById(item.resource_id))
+                selectedStudentSparkpoint
+                && item.student_id == selectedStudentSparkpoint.get('student_id')
+                && item.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')
+                && (apply = appliesStore.getById(item.resource_id))
             ) {
                 modifiedFieldNames = apply.set({
                     reflection: item.reflection,
