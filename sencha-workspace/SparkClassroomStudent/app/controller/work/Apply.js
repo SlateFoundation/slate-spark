@@ -1,12 +1,14 @@
 Ext.define('SparkClassroomStudent.controller.work.Apply', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.field.Url' // TODO: remove when attach link window is build
+        'Ext.field.Url', // TODO: remove when attach link window is build
+
+        /* global Slate */
+        'Slate.API'
     ],
 
 
     config: {
-        studentSparkpoint: null,
         activeApply: null,
         renderedApply: null
     },
@@ -17,6 +19,8 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         applyCt: 'spark-student-work-apply',
         applyPickerCt: 'spark-student-work-apply #applyPickerCt',
         appliesGrid: 'spark-student-work-apply grid#appliesGrid',
@@ -35,6 +39,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         applyCt: {
             activate: 'onApplyCtActivate'
         },
@@ -62,12 +70,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-            }
-        },
         store: {
             '#work.Applies': {
                 load: 'onAppliesStoreLoad',
@@ -81,23 +83,6 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
-        var me = this,
-            store = me.getWorkAppliesStore();
-
-        me.setActiveApply(null);
-        store.removeAll();
-
-        if (!studentSparkpoint) {
-            return;
-        }
-
-        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
-        store.load();
-
-        me.refreshSubmitBtn();
-    },
-
     updateActiveApply: function(apply, oldApply) {
         if (this.getApplyCt()) {
             this.setRenderedApply(apply);
@@ -110,7 +95,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     updateRenderedApply: function(apply) {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             startTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
 
         if (apply) {
@@ -146,11 +131,24 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
 
     // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
+        var me = this,
+            store = me.getWorkAppliesStore();
+
+        me.setActiveApply(null);
+        store.removeAll();
+
+        if (!studentSparkpoint) {
+            return;
+        }
+
+        store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
+        store.load();
+
+        me.refreshSubmitBtn();
     },
 
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshSubmitBtn();
         this.refreshChooseSelectedApplyBtn();
     },
@@ -162,11 +160,11 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         me.refreshSubmitBtn();
     },
 
-    onAppliesStoreLoad: function(appliesStore) {
+    onAppliesStoreLoad: function() {
         this.filterApplies();
     },
 
-    onAppliesStoreUpdate: function(appliesStore) {
+    onAppliesStoreUpdate: function() {
         this.filterApplies();
     },
 
@@ -181,7 +179,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     onChooseSelectedApplyTap: function() {
         var me = this,
             apply = me.getAppliesGrid().getSelection(),
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         me.setActiveApply(apply);
 
@@ -207,7 +205,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     },
 
     onAttachFileBtnTap: function() {
-        //console.log('onAttachFileButtonTap');
+        // console.log('onAttachFileButtonTap');
     },
 
     onAttachLinkBtnTap: function() {
@@ -218,7 +216,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
         Ext.Msg.show({
             title: 'Attach link',
             message: 'Paste the link you wish to attach',
-            buttons  : Ext.MessageBox.OKCANCEL,
+            buttons: Ext.MessageBox.OKCANCEL,
             prompt: {
                 xtype: 'urlfield',
                 placeHolder: 'http://...'
@@ -246,7 +244,7 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
 
     onSubmitBtnTap: function() {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         if (!studentSparkpoint.get('apply_ready_time')) {
             studentSparkpoint.set('apply_ready_time', new Date());
@@ -267,9 +265,14 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             if (apply) {
                 // we're only getting data back for student level assignments so much preserve previous section data
                 if (itemData.assignment) {
-                    apply.set('assignments', { section: (apply.data.assignments.section || null), student: 'required' });
+                    apply.set('assignments', {
+                        section: apply.data.assignments.section || null,
+                        student: 'required'
+                    });
                 } else {
-                    apply.set('assignments', { section: (apply.data.assignments.section || null) });
+                    apply.set('assignments', {
+                        section: apply.data.assignments.section || null
+                    });
                 }
             }
         } else if (table == 'apply_assignments_section') {
@@ -278,9 +281,14 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             if (apply) {
                 // we're only getting data back for section level assignments so much preserve previous student data
                 if (itemData.assignment) {
-                    apply.set('assignments', { section: 'required', student: (apply.data.assignments.student || null) });
+                    apply.set('assignments', {
+                        section: 'required',
+                        student: apply.data.assignments.student || null
+                    });
                 } else {
-                    apply.set('assignments', { student: (apply.data.assignments.student || null) });
+                    apply.set('assignments', {
+                        student: apply.data.assignments.student || null
+                    });
                 }
             }
         }
@@ -291,30 +299,33 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
     refreshChooseSelectedApplyBtn: function() {
         var me = this,
             chooseSelectedApplyBtn = me.getChooseSelectedApplyBtn(),
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             appliesGrid = me.getAppliesGrid(),
             gridSelection = appliesGrid && appliesGrid.getSelections()[0],
-            applyStartTime = studentSparkpoint && studentSparkpoint.get('apply_start_time');
+            applyStartTime = studentSparkpoint && studentSparkpoint.get('apply_start_time'),
+            chooseText;
 
         if (!chooseSelectedApplyBtn || !studentSparkpoint) {
             return;
         }
 
+        if (applyStartTime) {
+            if (gridSelection && gridSelection.getId() === studentSparkpoint.get('selected_apply_resource_id')) {
+                chooseText = 'Return to Selected Apply &rarr;';
+            } else {
+                chooseText = 'Switch to Selected Apply &rarr;';
+            }
+        } else {
+            chooseText = chooseSelectedApplyBtn.config.text;
+        }
+
         chooseSelectedApplyBtn.setDisabled(!gridSelection);
-        chooseSelectedApplyBtn.setText(
-            applyStartTime ?
-            (
-                gridSelection && gridSelection.getId() === studentSparkpoint.get('selected_apply_resource_id') ?
-                'Return to Selected Apply &rarr;' :
-                'Switch to Selected Apply &rarr;'
-            ) :
-            chooseSelectedApplyBtn.config.text
-        );
+        chooseSelectedApplyBtn.setText(chooseText);
     },
 
     refreshSubmitBtn: function() {
         var submitBtn = this.getSubmitBtn(),
-            studentSparkpoint = this.getStudentSparkpoint(),
+            studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint(),
             applyReadyTime = studentSparkpoint && studentSparkpoint.get('apply_ready_time');
 
         if (!submitBtn || !studentSparkpoint) {
@@ -332,7 +343,10 @@ Ext.define('SparkClassroomStudent.controller.work.Apply', {
             appliesGrid = me.getAppliesGrid();
 
         if (appliesStore.query('effective_assignment', 'required').getCount()) {
-            filters.push({property: 'effective_assignment', value: 'required'});
+            filters.push({
+                property: 'effective_assignment',
+                value: 'required'
+            });
         }
 
         appliesStore.clearFilter(true);

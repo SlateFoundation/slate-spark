@@ -9,9 +9,10 @@
 Ext.define('SparkClassroomTeacher.controller.GPS', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Slate.proxy.API',
         'Ext.util.DelayedTask',
-        'SparkClassroom.data.field.SparkDate'
+
+        /* global Slate */
+        'Slate.API'
     ],
 
 
@@ -49,7 +50,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
     control: {
         appCt: {
             selectedstudentsparkpointchange: 'syncSelectedStudentSparkpoint',
-            togglestudentmultiselect: 'onToggleStudentMultiselect',
+            togglestudentmultiselect: 'onToggleStudentMultiselect'
         },
         'spark-gps-studentlist': {
             itemtap: 'onListSelectChange' // itemtap is used to isolate the individual student being selected
@@ -86,18 +87,19 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
 
     onStudentSparkpointsUpdate: function(store, selectedStudentSparkpoint, operation, modifiedFieldNames) {
         var me = this,
+            appCt = me.getAppCt(),
             workaroundRefreshQueue = me.workaroundRefreshQueue,
             listId;
 
         // reselect active student if sparkpoint has changed
         if (
-            operation === 'edit' &&
-            me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint &&
-            modifiedFieldNames.indexOf('sparkpoint') !== -1
+            operation === 'edit'
+            && me.getAppCt().getSelectedStudentSparkpoint() === selectedStudentSparkpoint
+            && modifiedFieldNames.indexOf('sparkpoint') !== -1
         ) {
             // TODO: redo this after switching sparkpoint generates a new studentSparkpoint rather than updating existing one
-            me.getAppCt().setSelectedStudentSparkpoint(null);
-            me.getAppCt().setSelectedStudentSparkpoint(selectedStudentSparkpoint);
+            appCt.setSelectedStudentSparkpoint(null);
+            appCt.setSelectedStudentSparkpoint(selectedStudentSparkpoint);
         }
 
         // populate workaround queue
@@ -278,7 +280,7 @@ Ext.define('SparkClassroomTeacher.controller.GPS', {
             workaroundRefreshQueue = me.workaroundRefreshQueue,
             listId;
 
-        while (listId = workaroundRefreshQueue.pop()) {
+        while (listId = workaroundRefreshQueue.pop()) { // eslint-disable-line no-cond-assign
             (workaroundListCache[listId] || (workaroundListCache[listId] = gpsCt.down('#'+listId))).refresh();
         }
     },

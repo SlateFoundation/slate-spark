@@ -9,6 +9,10 @@
  */
 Ext.define('SparkClassroomTeacher.controller.Competencies', {
     extend: 'Ext.app.Controller',
+    requires: [
+        /* global Slate */
+        'Slate.API'
+    ],
 
 
     // mutable state
@@ -32,10 +36,6 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
          */
         showByTarget: null
     },
-
-    requires: [
-        'Slate.proxy.API'
-    ],
 
     views: [
         'competencies.Container'
@@ -155,11 +155,11 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             existingSparkpoint = competencySparkpointsStore.findRecord('sparkpoint_id', sparkpointId);
 
             studentSparkpoint = competencySparkpointsStore.add({
-                student_id: studentId,
-                sparkpoint_id: sparkpointId,
-                student_sparkpointid: studentSparkpointId,
+                'student_id': studentId,
+                'sparkpoint_id': sparkpointId,
+                'student_sparkpointid': studentSparkpointId,
                 sparkpoint: existingSparkpoint.get('sparkpoint'),
-                section_id: existingSparkpoint.get('section_id')
+                'section_id': existingSparkpoint.get('section_id')
             })[0];
         }
 
@@ -341,10 +341,10 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             method: 'POST',
             url: '/spark/api/sparkpoints/section/goals',
             jsonData: [{
-                student_id: me.currentDataIndex,
-                section_code: sectionCode,
+                'student_id': me.currentDataIndex,
+                'section_code': sectionCode,
                 goal: sectionGoal,
-                term_id: 1 // TODO change this once the UI is aware of term_id
+                'term_id': 1 // TODO change this once the UI is aware of term_id
             }],
             failure: onFailure.bind(me)
         });
@@ -574,14 +574,14 @@ Ext.define('SparkClassroomTeacher.controller.Competencies', {
             sectionGoalsStore = me.getSectionGoalsStore();
 
         sectionGoalsStore.getProxy().setExtraParams({
-            section_id: currentSection
+            'section_id': currentSection
         });
 
         sectionGoalsStore.load();
     },
 
     addToQueue: function(nextUp) {
-         var me = this,
+        var me = this,
             sparkpoint = me.getAddToQueuePopover().getSparkpoint(),
             studentStore = me.getStudentsStore(),
             students = studentStore.getRange(),

@@ -1,3 +1,7 @@
+/**
+ * Contains data and makes calculations about an individual student's progress
+ * within a given sparkpoint
+ */
 Ext.define('SparkClassroom.model.StudentSparkpoint', {
     extend: 'Ext.data.Model',
     requires: [

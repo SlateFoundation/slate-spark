@@ -1,6 +1,3 @@
-/* global Ext */
-/* global Slate */
-/* global SparkClassroom */
 /**
  * The main application class. An instance of this class is created by app.js when it
  * calls Ext.application(). It is a special controller that is responsible for loading
@@ -16,17 +13,14 @@ Ext.define('SparkClassroomTeacher.Application', {
     extend: 'Ext.app.Application',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.SocketDomain',
-        'SparkClassroom.Socket',
-        'Slate.API'
-    ],
 
-    /**
-     * @event sectionselect
-     * Fires when the user selects a course section.
-     * @param {String} section The code for the newly selected section
-     * @param {String/null} oldSection The code for the previously selected section if any
-     */
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
+        'SparkClassroom.SocketDomain',
+        'SparkClassroom.Socket'
+    ],
 
 
     name: 'SparkClassroomTeacher',
@@ -64,6 +58,7 @@ Ext.define('SparkClassroomTeacher.Application', {
     ],
 
     config: {
+
         /**
          * @inheritdoc
          * @private
@@ -150,7 +145,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         if (oldStudentSparkpoint) {
             SparkClassroom.Socket.emit('unsubscribe', {
-                student_id: oldStudentSparkpoint.get('student_id'),
+                'student_id': oldStudentSparkpoint.get('student_id'),
                 sparkpoint: oldStudentSparkpoint.get('sparkpoint'),
                 host: apiHost
             });
@@ -158,7 +153,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         if (studentSparkpoint) {
             SparkClassroom.Socket.emit('subscribe', {
-                student_id: studentSparkpoint.get('student_id'),
+                'student_id': studentSparkpoint.get('student_id'),
                 sparkpoint: studentSparkpoint.get('sparkpoint'),
                 host: apiHost
             });
@@ -179,7 +174,7 @@ Ext.define('SparkClassroomTeacher.Application', {
 
         if (selectedStudentSparkpoint) {
             SparkClassroom.Socket.emit('subscribe', {
-                student_id: selectedStudentSparkpoint.get('student_id'),
+                'student_id': selectedStudentSparkpoint.get('student_id'),
                 sparkpoint: selectedStudentSparkpoint.get('sparkpoint'),
                 host: apiHost
             });

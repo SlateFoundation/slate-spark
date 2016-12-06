@@ -1,4 +1,3 @@
-/* global SparkClassroom Slate */
 /**
  * Manages the window for configuring Sparkpoints for a specific student.
  *
@@ -10,6 +9,10 @@
 Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
     extend: 'Ext.app.Controller',
     requires: [
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
         'SparkClassroom.timing.DurationDisplay'
     ],
 
@@ -55,7 +58,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             '#': {
                 activestudentidchange: 'initializeStudent'
             }
-        },
+        }
     },
 
     control: {
@@ -84,7 +87,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
         me.getSparkpointsConfigWindow().show();
     },
 
-    loadDataIntoView: function() {
+    loadDataIntoView: function() { // eslint-disable-line complexity
         var me = this,
             sparkpointField,
             studentStore = me.getStudentsStore(),
@@ -406,7 +409,7 @@ Ext.define('SparkClassroomTeacher.controller.competencies.SparkpointsConfig', {
             if (sortableSparkpoint === sparkpoint) {
                 minutes = sortDirection === 'down' ? minutes + 1 : minutes - 1;
             } else if (sortableSparkpoint === neighborSparkpoint) {
-               minutes = sortDirection === 'down' ? minutes - 1 : minutes + 1;
+                minutes = sortDirection === 'down' ? minutes - 1 : minutes + 1;
             }
 
             sortableSparkpoint.set('recommended_time', Ext.Date.add(new Date(), Ext.Date.MINUTE, minutes));

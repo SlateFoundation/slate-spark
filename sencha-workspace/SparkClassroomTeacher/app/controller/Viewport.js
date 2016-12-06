@@ -1,4 +1,3 @@
-/* global SparkClassroom */
 /**
  * The Viewport controller is the first controller loaded in the application. It manages
  * the top-level framing and navigation.
@@ -14,6 +13,11 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
         'Ext.MessageBox',
+
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
         'SparkClassroom.timing.DurationDisplay',
         'SparkClassroom.k1.CountdownTimer'
     ],
@@ -237,8 +241,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
     initTimer: function() {
         var me = this,
             timer = me.getK1Timer(),
-            section = this.getAppCt().getSelectedSection(),
-            record, seconds, base;
+            section = this.getAppCt().getSelectedSection();
 
         if (!location.search.match(/\WenableK1(\W|$)/) || !section) {
             return;

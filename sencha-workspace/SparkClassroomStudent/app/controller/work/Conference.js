@@ -6,12 +6,11 @@
 Ext.define('SparkClassroomStudent.controller.work.Conference', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Ext.util.DelayedTask'
-    ],
+        'Ext.util.DelayedTask',
 
-    config: {
-        studentSparkpoint: null
-    },
+        /* global Slate */
+        'Slate.API'
+    ],
 
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
@@ -23,6 +22,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         conferenceCt: 'spark-student-work-conference',
         sparkpointCt: 'spark-student-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
@@ -32,6 +33,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         conferenceCt: {
             activate: 'onConferenceCtActivate'
         },
@@ -47,12 +52,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-            }
-        },
         store: {
             '#work.ConferenceQuestions': {
                 beforeload: 'onConferenceQuestionsStoreBeforeLoad',
@@ -73,8 +72,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
 
-    // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint, oldStudentSparkpoint) {
+    // event handlers
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
         var me = this,
             store = me.getWorkConferenceQuestionsStore(),
             conferenceCt = me.getConferenceCt(),
@@ -91,7 +90,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         // load/update questions store
         store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-        if (store.isLoaded() || (conferenceCt && conferenceCt.hasParent())) {
+        if (store.isLoaded() || (conferenceCt && conferenceCt.hasParent())) { // eslint-disable-line no-extra-parens
             store.load();
         }
 
@@ -104,19 +103,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         me.refreshRequestBtn();
     },
 
-    // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshRequestBtn();
     },
 
     onConferenceCtActivate: function() {
         var me = this,
             conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
 
@@ -131,7 +125,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         var conferenceCt = this.getConferenceCt();
 
         if (conferenceCt) {
-            conferenceCt.setMasked({xtype: 'loadmask', message: 'Loading Conference&hellip;'});
+            conferenceCt.setMasked({
+                xtype: 'loadmask',
+                message: 'Loading Conference&hellip;'
+            });
         }
     },
 
@@ -156,7 +153,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     onQuestionSubmit: function() {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         Slate.API.request({
             method: 'POST',
@@ -166,18 +163,18 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 source: 'student',
                 question: me.getQuestionInputEl().getValue()
             },
-            success: function(response) {
+            success: function() {
                 me.refreshQuestions();
             }
         });
     },
 
-    onWorksheetFieldChange: function(field, value) {
+    onWorksheetFieldChange: function() {
         this.writeWorksheetTask.delay(1000);
     },
 
     onRequestBtnTap: function() {
-        var studentSparkpoint = this.getStudentSparkpoint();
+        var studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint();
 
         if (!studentSparkpoint.get('conference_start_time')) {
             studentSparkpoint.set('conference_start_time', new Date());
@@ -186,7 +183,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         }
     },
 
-    onSocketData: function(socket, data) {
+    onSocketData: function(socket, data) { // eslint-disable-line complexity
         var me = this,
             itemData = data.item,
             questionsStore,
@@ -196,16 +193,16 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         if (data.table == 'conference_questions') {
             questionsStore = me.getWorkConferenceQuestionsStore();
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
             if (
-                studentSparkpoint &&
-                questionsStore.isLoaded() &&
-                studentSparkpoint.get('student_id') == itemData.student_id &&
-                studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
+                studentSparkpoint
+                && questionsStore.isLoaded()
+                && studentSparkpoint.get('student_id') == itemData.student_id
+                && studentSparkpoint.get('sparkpoint_id') == itemData.sparkpoint_id
             ) {
                 // capture question input
-                if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputEl = me.getQuestionInputEl()) { // eslint-disable-line no-cond-assign
                     questionInputValue = questionInputEl.getValue();
                     questionInputFocused = questionInputEl.dom === document.activeElement;
                 }
@@ -214,13 +211,12 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
                 me.refreshQuestions();
 
                 // restore question input
-                if (questionInputEl = me.getQuestionInputEl()) {
+                if (questionInputEl = me.getQuestionInputEl()) { // eslint-disable-line no-cond-assign
                     if (questionInputValue) {
                         questionInputEl.dom.value = questionInputValue;
                     }
 
                     if (questionInputFocused) {
-                        console.log('restoring focus');
                         questionInputEl.focus();
                     }
                 }
@@ -230,9 +226,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (resource) {
                 if (itemData.assignment) {
-                    resource.set('assignments', { section: (resource.data.assignments.section || null), student: 'required' });
+                    resource.set('assignments', {
+                        section: resource.data.assignments.section || null,
+                        student: 'required'
+                    });
                 } else {
-                    resource.set('assignments', { section: (resource.data.assignments.section || null) });
+                    resource.set('assignments', {
+                        section: resource.data.assignments.section || null
+                    });
                 }
 
                 me.refreshResources();
@@ -242,9 +243,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (resource) {
                 if (itemData.assignment) {
-                    resource.set('assignments', { section: 'required', student: (resource.data.assignments.student || null) });
+                    resource.set('assignments', {
+                        section: 'required',
+                        student: resource.data.assignments.student || null
+                    });
                 } else {
-                    resource.set('assignments', { student: (resource.data.assignments.student || null) });
+                    resource.set('assignments', {
+                        student: resource.data.assignments.student || null
+                    });
                 }
 
                 me.refreshResources();
@@ -254,9 +260,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (question) {
                 if (itemData.assignment) {
-                    question.set('assignments', { section: (question.data.assignments.section || null), student: 'required' });
+                    question.set('assignments', {
+                        section: question.data.assignments.section || null,
+                        student: 'required'
+                    });
                 } else {
-                    question.set('assignments', { section: (question.data.assignments.section || null) });
+                    question.set('assignments', {
+                        section: question.data.assignments.section || null
+                    });
                 }
 
                 me.refreshQuestions();
@@ -266,9 +277,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
             if (question) {
                 if (itemData.assignment) {
-                    question.set('assignments', { section: 'required', student: (question.data.assignments.student || null) });
+                    question.set('assignments', {
+                        section: 'required',
+                        student: question.data.assignments.student || null
+                    });
                 } else {
-                    question.set('assignments', { student: (question.data.assignments.student || null) });
+                    question.set('assignments', {
+                        student: question.data.assignments.student || null
+                    });
                 }
 
                 me.refreshQuestions();
@@ -337,7 +353,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     refreshRequestBtn: function() {
         var requestBtn = this.getRequestBtn(),
-            studentSparkpoint = this.getStudentSparkpoint(),
+            studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint(),
             conferenceStartTime = studentSparkpoint && studentSparkpoint.get('conference_start_time');
 
         if (!requestBtn || !studentSparkpoint) {

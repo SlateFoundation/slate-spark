@@ -1,10 +1,9 @@
 Ext.define('SparkClassroomStudent.controller.work.Assess', {
     extend: 'Ext.app.Controller',
-
-
-    config: {
-        studentSparkpoint: null
-    },
+    requires: [
+        /* global Slate */
+        'Slate.API'
+    ],
 
 
     stores: [
@@ -12,6 +11,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         assessCt: 'spark-student-work-assess',
         illuminateLauncher: 'spark-student-work-assess #illuminateLauncher',
         reflectionField: 'spark-student-work-assess #reflectionField',
@@ -19,6 +20,10 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         assessCt: {
             activate: 'onAssessCtActivate'
         },
@@ -34,12 +39,6 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-            }
-        },
         store: {
             '#work.Assessments': {
                 load: 'onAssessmentsStoreLoad'
@@ -48,8 +47,8 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     },
 
 
-    // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint) {
+    // event handlers
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
         var me = this,
             store = me.getWorkAssessmentsStore(),
             assessCt = me.getAssessCt();
@@ -60,28 +59,22 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
 
         store.getProxy().setExtraParam('sparkpoint', studentSparkpoint.get('sparkpoint'));
 
-        if (store.isLoaded() || (assessCt && assessCt.hasParent())) {
+        if (store.isLoaded() || (assessCt && assessCt.hasParent())) { // eslint-disable-line no-extra-parens
             store.load();
         }
 
         me.refreshSubmitBtn();
     },
 
-
-    // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshSubmitBtn();
     },
 
-    onAssessCtActivate: function(learnCt) {
+    onAssessCtActivate: function() {
         var me = this,
             assessmentsStore = me.getWorkAssessmentsStore();
 
-        if (me.getStudentSparkpoint() && !assessmentsStore.isLoaded()) {
+        if (me.getAppCt().getLoadedStudentSparkpoint() && !assessmentsStore.isLoaded()) {
             assessmentsStore.load();
         }
 
@@ -95,7 +88,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     },
 
     onIlluminateLaunchClick: function(launcher, ev) {
-        var studentSparkpoint = this.getStudentSparkpoint();
+        var studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint();
 
         // TODO: disable/enable the button automatically
         if (!studentSparkpoint.get('apply_completed_time')) {
@@ -117,7 +110,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     },
 
     onSubmitBtnTap: function() {
-        var studentSparkpoint = this.getStudentSparkpoint();
+        var studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint();
 
         // TODO: disable/enable the button automatically
         if (!studentSparkpoint.get('assess_start_time')) {
@@ -136,7 +129,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
     // controller methods
     refreshSubmitBtn: function() {
         var submitBtn = this.getSubmitBtn(),
-            studentSparkpoint = this.getStudentSparkpoint(),
+            studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint(),
             assessReadyTime = studentSparkpoint && studentSparkpoint.get('assess_ready_time');
 
         if (!submitBtn || !studentSparkpoint) {
@@ -154,7 +147,7 @@ Ext.define('SparkClassroomStudent.controller.work.Assess', {
             method: 'PATCH',
             url: '/spark/api/work/assess',
             urlParams: {
-                sparkpoint: me.getStudentSparkpoint().get('sparkpoint')
+                sparkpoint: me.getAppCt().getLoadedStudentSparkpoint().get('sparkpoint')
             },
             jsonData: {
                 reflection: this.getReflectionField().getValue()

@@ -1,5 +1,9 @@
 Ext.define('SparkClassroomTeacher.controller.Priorities', {
     extend: 'Ext.app.Controller',
+    requires: [
+        /* global SparkClassroom */
+        'SparkClassroom.data.field.SparkDate'
+    ],
 
 
     // entry points
@@ -75,17 +79,16 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
             table = data.table,
             itemData = data.item,
             studentSparkpointId,
-            studentSparkpoint,
-            updatedFields;
+            studentSparkpoint;
 
         if (table == 'section_student_active_sparkpoint') {
             if (
-                itemData.section_code == me.getAppCt().getSelectedSection() &&
-                (
-                    !(studentSparkpoint = me.getGpsPrioritiesStore().findRecord('student_id', itemData.student_id)) ||
-                    (
-                        studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id &&
-                        studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
+                itemData.section_code == me.getAppCt().getSelectedSection()
+                && (
+                    !(studentSparkpoint = me.getGpsPrioritiesStore().findRecord('student_id', itemData.student_id))
+                    || ( // eslint-disable-line no-extra-parens
+                        studentSparkpoint.get('sparkpoint_id') != itemData.sparkpoint_id
+                        && studentSparkpoint.get('last_accessed') < SparkClassroom.data.field.SparkDate.prototype.convert(itemData.last_accessed)
                     )
                 )
             ) {
@@ -95,8 +98,8 @@ Ext.define('SparkClassroomTeacher.controller.Priorities', {
         } else if (table == 'student_sparkpoint') {
             studentSparkpointId = itemData.student_id + '_' + itemData.sparkpoint_id;
 
-            if ((studentSparkpoint = me.getGpsPrioritiesStore().getById(studentSparkpointId))) {
-                updatedFields = studentSparkpoint.set(itemData, { dirty: false });
+            if (studentSparkpoint = me.getGpsPrioritiesStore().getById(studentSparkpointId)) { // eslint-disable-line no-cond-assign
+                studentSparkpoint.set(itemData, { dirty: false });
             }
         }
     }

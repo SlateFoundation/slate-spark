@@ -1,8 +1,10 @@
 Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     extend: 'Ext.app.Controller',
     requires: [
-        'Slate.API',
-        'Ext.MessageBox'
+        'Ext.MessageBox',
+
+        /* global Slate */
+        'Slate.API'
     ],
 
 
@@ -113,15 +115,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         this.getReflectionCt().setData(assessStore.getProxy().getReader().rawData);
     },
 
-    onSparkpointFieldChange: function(sparkpointField, sparkpoint) {
+    onSparkpointFieldChange: function() {
         this.refreshSuggestBtn();
     },
 
     onSuggestBtnTap: function() {
         var me = this,
-        selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-        sparkpointField = me.getSparkpointField(),
-        recommendedSparkpoint = sparkpointField.getSelectedSparkpoint();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            sparkpointField = me.getSparkpointField(),
+            recommendedSparkpoint = sparkpointField.getSelectedSparkpoint();
 
         if (!recommendedSparkpoint) {
             return;
@@ -168,16 +170,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             return;
         }
 
-        var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
+        var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(), // eslint-disable-line vars-on-top
             itemData = data.item,
             reflectionCt;
 
         if (
-            data.table == 'assessses' &&
-            selectedStudentSparkpoint &&
-            itemData.student_id == selectedStudentSparkpoint.get('student_id') &&
-            itemData.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id') &&
-            (reflectionCt = this.getReflectionCt())
+            data.table == 'assessses'
+            && selectedStudentSparkpoint
+            && itemData.student_id == selectedStudentSparkpoint.get('student_id')
+            && itemData.sparkpoint_id == selectedStudentSparkpoint.get('sparkpoint_id')
+            && (reflectionCt = this.getReflectionCt())
         ) {
             reflectionCt.setData(itemData);
         }
@@ -232,7 +234,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             suggestBtn = me.getSuggestBtn(),
             selectedSparkpoint = me.getSparkpointField().getSelectedSparkpoint();
 
-        suggestBtn.setDisabled(selectedSparkpoint ? false : true);
+        suggestBtn.setDisabled(!selectedSparkpoint);
     },
 
     refreshCompleteBtn: function() {

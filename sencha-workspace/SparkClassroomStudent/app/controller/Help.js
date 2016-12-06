@@ -2,20 +2,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     extend: 'Ext.app.Controller',
 
 
-    // custom configs
-    config: {
-        studentSparkpoint: null,
-        selectedSection: null
-    },
-
-
     // entry points
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad'
-            }
-        },
         store: {
             '#Students': {
                 load: 'onStudentsLoad'
@@ -56,6 +44,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         navBar: 'spark-student-navbar',
         helpNavButton: 'spark-student-navbar button#help',
 
@@ -78,12 +68,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
 
 
     // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
     onStudentsLoad: function() {
-        Ext.getStore('HelpRequests').load();
+        this.getHelpRequestsStore().load();
     },
 
     onStoreAdd: function() {
@@ -99,8 +85,8 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             return;
         }
 
-        var me = this,
-            studentSparkpoint = me.getStudentSparkpoint(),
+        var me = this, // eslint-disable-line vars-on-top
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             itemData = data.item,
             helpStore, doLoadHelpRequest;
 
@@ -108,7 +94,7 @@ Ext.define('SparkClassroomStudent.controller.Help', {
             return;
         }
 
-        helpStore = Ext.getStore('HelpRequests');
+        helpStore = me.getHelpRequestsStore();
 
         doLoadHelpRequest = function() {
             var helpRequest = helpStore.getById(itemData.id);
@@ -135,15 +121,15 @@ Ext.define('SparkClassroomStudent.controller.Help', {
         this.getSubmitButton().setDisabled(!requestTypeField.getGroupValue());
     },
 
-    onSubmitHelpRequestTap: function(btn) {
+    onSubmitHelpRequestTap: function() {
         var me = this;
 
-         me.getHelpRequestsStore().add({
-            request_type: me.getFirstHelpRadio().getGroupValue(),
-            student_id: me.getStudentSparkpoint().get('student_id')
-         });
+        me.getHelpRequestsStore().add({
+            'request_type': me.getFirstHelpRadio().getGroupValue(),
+            'student_id': me.getAppCt().getLoadedStudentSparkpoint().get('student_id')
+        });
 
-         me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
+        me.getHelpCt().down('radiofield{isChecked()}').setChecked(false);
     },
 
     onDeleteTap: function(list, item) {
@@ -153,9 +139,9 @@ Ext.define('SparkClassroomStudent.controller.Help', {
 
     // controller methods
     syncHelpRequests: function() {
-        var studentSparkpoint = this.getStudentSparkpoint(),
+        var studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint(),
             studentId = studentSparkpoint && studentSparkpoint.get('student_id'), // studentSparkpoint might not be loaded yet
-            helpRequests = Ext.getStore('HelpRequests').getRange(),
+            helpRequests = this.getHelpRequestsStore().getRange(),
             helpRequestsLength = helpRequests.length,
             i = 0, helpRequest;
 
