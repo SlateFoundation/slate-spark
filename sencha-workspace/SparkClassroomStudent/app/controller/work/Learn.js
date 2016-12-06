@@ -252,7 +252,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             completed = 0,
             i = 0,
             rawData = me.getWorkLearnsStore().getProxy().getReader().rawData,
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             isLesson = studentSparkpoint && studentSparkpoint.get('is_lesson');
 
         if (!progressBanner || !readyBtn) {
@@ -368,7 +368,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnCt = me.getLearnCt(),
             learnGrids = learnCt && learnCt.getInnerItems() || [],
             readyBtn = me.getReadyBtn(),
-            studentSparkpoint = me.getStudentSparkpoint(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
             lesson = me.getWorkCt().getLesson(),
             i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns, groupedLearnsCompleted;
