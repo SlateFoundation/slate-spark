@@ -8,8 +8,6 @@ Ext.define('SparkClassroom.work.learn.Container', {
     ],
 
     config: {
-        itemId: 'learn',
-
         allowToggleComplete: true,
 
         items: [{
