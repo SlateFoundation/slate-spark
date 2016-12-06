@@ -1,10 +1,11 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroom.work.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-grid',
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
+
+        /* global SparkClassroom */
         'SparkClassroom.column.Completed',
         'SparkClassroom.column.LearnLink',
         'SparkClassroom.column.DOK',
