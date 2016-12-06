@@ -1,14 +1,25 @@
-/* global SparkClassroom */
 /**
  * The main application class. An instance of this class is created by app.js when it
- * calls Ext.application(). This is the ideal place to handle application launch and
- * initialization details.
+ * calls Ext.application(). It is a special controller that is responsible for loading
+ * all other controllers and configuring the application at the top level.
+ *
+ * ## Responsibilities
+ * - Define controllers and their load order
+ * - Configure viewport
+ * - Maintain socket connection to spark-realtime backend
+ * - Present UI to reload application if HTML5 manifest cache gets updated (not currently in use)
  */
 Ext.define('SparkClassroomStudent.Application', {
     extend: 'Ext.app.Application',
     requires: [
         'Ext.MessageBox',
-        'SparkClassroom.SocketDomain'
+
+        /* global Slate */
+        'Slate.API',
+
+        /* global SparkClassroom */
+        'SparkClassroom.SocketDomain',
+        'SparkClassroom.Socket'
     ],
 
 
@@ -31,26 +42,28 @@ Ext.define('SparkClassroomStudent.Application', {
         'Help'
     ],
 
-    config: {
-        activeSection: null,
+    views: [
+        'AppContainer'
+    ],
 
+    config: {
+        /**
+         * @inheritdoc
+         * @private
+         * Preconfigure the viewport to start with a top-level scrollable container for the main UI components
+         */
         viewport: {
             items: {
-                itemId: 'appCt',
-
-                xtype: 'container',
-                layout: 'auto',
-                scrollable: 'vertical'
+                xtype: 'spark-student-appct'
             }
         }
     },
 
+    refs: {
+        appCt: 'spark-student-appct'
+    },
+
     listen: {
-        controller: {
-            '#': {
-                sectionselect: 'onSectionSelect'
-            }
-        },
         socket: {
             reconnect: 'onSocketReconnect'
 
@@ -74,6 +87,12 @@ Ext.define('SparkClassroomStudent.Application', {
         }
     },
 
+    control: {
+        appCt: {
+            selectedsectioncodechange: 'onSelectedSectionCodeChange'
+        }
+    },
+
 
     // template methods
     onAppUpdate: function () {
@@ -87,39 +106,33 @@ Ext.define('SparkClassroomStudent.Application', {
     },
 
 
-    // config handlers
-    updateActiveSection: function(section, oldSection) {
+    // event handers
+    onSelectedSectionCodeChange: function(appCt, sectionCode, oldSectionCode) {
         var apiHost = Slate.API.getHost();
 
         Slate.API.setExtraParams({
-            section: section
+            section: sectionCode
         });
 
-        if (oldSection) {
+        if (oldSectionCode) {
             SparkClassroom.Socket.emit('unsubscribe', {
-                section: oldSection,
+                section: oldSectionCode,
                 host: apiHost
             });
         }
 
         SparkClassroom.Socket.emit('subscribe', {
-            section: section,
+            section: sectionCode,
             host: apiHost
         });
     },
 
-
-    // event handers
-    onSectionSelect: function(section) {
-        this.setActiveSection(section);
-    },
-
     onSocketReconnect: function() {
-        var section = this.getActiveSection();
+        var selectedSectionCode = this.getAppCt().getSelectedSectionCode();
 
-        if (section) {
+        if (selectedSectionCode) {
             SparkClassroom.Socket.emit('subscribe', {
-                section: section,
+                section: selectedSectionCode,
                 host: Slate.API.getHost()
             });
         }

@@ -9,10 +9,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         'Ext.util.DelayedTask'
     ],
 
-    config: {
-        studentSparkpoint: null
-    },
-
     stores: [
         'work.ConferenceQuestions@SparkClassroom.store',
         'work.ConferenceResources@SparkClassroom.store'
@@ -23,6 +19,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     ],
 
     refs: {
+        appCt: 'spark-student-appct',
+
         conferenceCt: 'spark-student-work-conference',
         sparkpointCt: 'spark-student-work-conference #sparkpointCt',
         questionsList: 'spark-worklist#questions',
@@ -32,6 +30,10 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     control: {
+        appCt: {
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
         conferenceCt: {
             activate: 'onConferenceCtActivate'
         },
@@ -47,12 +49,6 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     listen: {
-        controller: {
-            '#': {
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate'
-            }
-        },
         store: {
             '#work.ConferenceQuestions': {
                 beforeload: 'onConferenceQuestionsStoreBeforeLoad',
@@ -73,8 +69,8 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
 
-    // config handlers
-    updateStudentSparkpoint: function(studentSparkpoint, oldStudentSparkpoint) {
+    // event handlers
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
         var me = this,
             store = me.getWorkConferenceQuestionsStore(),
             conferenceCt = me.getConferenceCt(),
@@ -104,19 +100,14 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
         me.refreshRequestBtn();
     },
 
-    // event handlers
-    onStudentSparkpointLoad: function(studentSparkpoint) {
-        this.setStudentSparkpoint(studentSparkpoint);
-    },
-
-    onStudentSparkpointUpdate: function() {
+    onLoadedStudentSparkpointUpdate: function() {
         this.refreshRequestBtn();
     },
 
     onConferenceCtActivate: function() {
         var me = this,
             conferenceQuestionsStore = me.getWorkConferenceQuestionsStore(),
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
 
@@ -156,7 +147,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     onQuestionSubmit: function() {
         var me = this,
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
         Slate.API.request({
             method: 'POST',
@@ -177,7 +168,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
     },
 
     onRequestBtnTap: function() {
-        var studentSparkpoint = this.getStudentSparkpoint();
+        var studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint();
 
         if (!studentSparkpoint.get('conference_start_time')) {
             studentSparkpoint.set('conference_start_time', new Date());
@@ -196,7 +187,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
         if (data.table == 'conference_questions') {
             questionsStore = me.getWorkConferenceQuestionsStore();
-            studentSparkpoint = me.getStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
 
             if (
                 studentSparkpoint &&
@@ -337,7 +328,7 @@ Ext.define('SparkClassroomStudent.controller.work.Conference', {
 
     refreshRequestBtn: function() {
         var requestBtn = this.getRequestBtn(),
-            studentSparkpoint = this.getStudentSparkpoint(),
+            studentSparkpoint = this.getAppCt().getLoadedStudentSparkpoint(),
             conferenceStartTime = studentSparkpoint && studentSparkpoint.get('conference_start_time');
 
         if (!requestBtn || !studentSparkpoint) {

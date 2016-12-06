@@ -1,17 +1,28 @@
-/* global SparkClassroom */
+/**
+ * Populates the top-level application viewport with its top-level
+ * components and manages the top-level navigation and state of the application.
+ *
+ * ## Responsibilities
+ * - Push new values to appCt's {@link SparkClassroomStudent.view.AppContainer#cfg-selectedSectionCode selectedSectionCode}
+ * and {@link SparkClassroomStudent.view.AppContainer#cfg-selectedSparkpointCode selectedSparkpointCode} based on user
+ * navigation and UI interactions
+ * - Respond to appCt's {@link SparkClassroomStudent.view.AppContainer#event-selectedsectioncodechange selectedsectioncodechange} and
+ * {@link SparkClassroomStudent.view.AppContainer#event-selectedsparkpointcodechange selectedsparkpointcodechange} to ensure that
+ * all top-level navigation UI and navigation route reflect new selections
+ * - Create/load the {@link SparkClassroom.model.StudentSparkpoint StudentSparkpoint} model instance for the selected sparkpoint
+ * code and push it into appCt's' {@link SparkClassroomStudent.view.AppContainer#cfg-loadedStudentSparkpoint loadedStudentSparkpoint} once
+ * available
+ * - Process and apply realtime updates to the {@link SparkClassroomStudent.view.AppContainer#cfg-loadedStudentSparkpoint loadedStudentSparkpoint}
+ */
 Ext.define('SparkClassroomStudent.controller.Viewport', {
     extend: 'Ext.app.Controller',
     requires: [
+        /* global SparkClassroom */
         'SparkClassroom.timing.DurationDisplay'
     ],
 
-    tokenPrefixRe: /^([^:]+)(:([^:]+))?::(.*)$/,
 
-    config: {
-        selectedSection: null,
-        selectedSparkpoint: null,
-        studentSparkpoint: null
-    },
+    tokenPrefixRe: /^([^:]+)(:([^:]+))?::(.*)$/,
 
     views: [
         'TitleBar@SparkClassroom',
@@ -31,7 +42,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     ],
 
     refs: {
-        appCt: 'viewport > #appCt',
+        appCt: 'spark-student-appct',
 
         sparkTitleBar: {
             selector: 'spark-titlebar',
@@ -67,22 +78,11 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
 
-    control: {
-        sectionSelect: {
-            change: 'onSectionSelectChange'
-        },
-        sparkpointSelect: {
-            sparkpointselect: 'onSparkpointSelectChange'
-        }
-    },
-
     listen: {
         controller: {
             '#': {
                 beforeredirect: 'onBeforeRedirect',
                 beforeroute: 'onBeforeRoute',
-                studentsparkpointload: 'onStudentSparkpointLoad',
-                studentsparkpointupdate: 'onStudentSparkpointUpdate',
                 // <debug>
                 unmatchedroute: function(token) {
                     Ext.log.warn('Unmatched token: ' + token);
@@ -94,6 +94,24 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             '#Sections': {
                 load: 'onSectionsStoreLoad'
             }
+        },
+        socket: {
+            data: 'onSocketData'
+        }
+    },
+
+    control: {
+        appCt: {
+            selectedsectioncodechange: 'onSelectedSectionCodeChange',
+            selectedsparkpointcodechange: 'onSelectedSparkpointCodeChange',
+            loadedstudentsparkpointchange: 'onLoadedStudentSparkpointChange',
+            loadedstudentsparkpointupdate: 'onLoadedStudentSparkpointUpdate'
+        },
+        sectionSelect: {
+            change: 'onSectionSelectChange'
+        },
+        sparkpointSelect: {
+            sparkpointselect: 'onSparkpointSelectChange'
         }
     },
 
@@ -114,65 +132,11 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
     },
 
 
-    // config handlers
-    updateSelectedSection: function(section, oldSection) {
-        var me = this,
-            studentsStore = me.getStudentsStore();
-
-        me.setSelectedSparkpoint(null);
-
-        if (section) {
-            studentsStore.getProxy().setUrl('/sections/' + section + '/students');
-            studentsStore.load();
-        }
-
-        me.getApplication().fireEvent('sectionselect', section, oldSection);
-
-        // called buffered sync method
-        me.syncSelections();
-    },
-
-    updateSelectedSparkpoint: function(sparkpoint, oldSparkpoint) {
-        var me = this,
-            tabsCt = me.getTabsCt(),
-            studentSparkpoint = me.getStudentSparkpointModel().create();
-
-        me.getApplication().fireEvent('sparkpointselect', sparkpoint, oldSparkpoint);
-
-        if (!sparkpoint) {
-            me.setStudentSparkpoint(null);
-            return;
-        }
-
-        // mark empty studentSparkpoint model as committed so uninitialized fields aren't considered dirty
-        studentSparkpoint.commit();
-
-        studentSparkpoint.set('sparkpoint', sparkpoint);
-
-        tabsCt.setMasked({
-            xtype: 'loadmask',
-            message: 'Opening Sparkpoint&hellip;'
-        });
-        studentSparkpoint.save({
-            success: function() {
-                tabsCt.setMasked(false);
-                me.setStudentSparkpoint(studentSparkpoint);
-            }
-        });
-
-        // call buffered sync method
-        me.syncSelections();
-    },
-
-    updateStudentSparkpoint: function(studentSparkpoint, oldStudentSparkpoint) {
-        this.getApplication().fireEvent('studentsparkpointload', studentSparkpoint, oldStudentSparkpoint);
-    },
-
-
     // event handlers
     onBeforeRedirect: function(token, resume) {
-        var sectionCode = this.getSelectedSection(),
-            sparkpointCode = this.getSelectedSparkpoint();
+        var appCt = this.getAppCt(),
+            sectionCode = appCt.getSelectedSectionCode(),
+            sparkpointCode = appCt.getSelectedSparkpointCode();
 
         if (sectionCode) {
             resume(sectionCode + (sparkpointCode ? ':' + sparkpointCode : '') + '::' + token);
@@ -183,26 +147,92 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
 
     onBeforeRoute: function(token, resume) {
         var me = this,
+            appCt = me.getAppCt(),
             prefixMatch = token && me.tokenPrefixRe.exec(token);
 
         if (prefixMatch) {
-            me.setSelectedSection(prefixMatch[1] || null);
-            me.setSelectedSparkpoint(prefixMatch[3] || null);
+            appCt.setSelectedSectionCode(prefixMatch[1] || null);
+            appCt.setSelectedSparkpointCode(prefixMatch[3] || null);
             resume(prefixMatch[4]);
             return false;
         }
         return true;
     },
 
-    onStudentSparkpointLoad: function(studentSparkpoint) {
+    onSectionsStoreLoad: function() {
+        this.getSectionSelect().setValue(this.getAppCt().getSelectedSectionCode());
+    },
+
+    onSocketData: function(socket, data) {
         var me = this,
-            timerCmp = me.getTimerCmp(),
-            sectionCode = me.getSelectedSection();
+            tableName = data.table,
+            itemData = data.item,
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
+
+        if (tableName === 'student_sparkpoint' || tableName === 'section_student_active_sparkpoint') {
+            if (studentSparkpoint
+                && studentSparkpoint.get('sparkpoint_id') === itemData.sparkpoint_id
+                && studentSparkpoint.get('student_id') === itemData.student_id
+            ) {
+                studentSparkpoint.set(itemData, { dirty: false });
+            }
+        }
+    },
+
+    onSelectedSectionCodeChange: function(appCt, sectionCode) {
+        var me = this,
+            studentsStore = me.getStudentsStore();
+
+        me.getAppCt().setSelectedSparkpointCode(null);
+
+        if (sectionCode) {
+            studentsStore.getProxy().setUrl('/sections/' + sectionCode + '/students');
+            studentsStore.load();
+        }
+
+        // called buffered sync method
+        me.syncSelections();
+    },
+
+    onSelectedSparkpointCodeChange: function(appCt, sparkpointCode) {
+        var me = this,
+            tabsCt = me.getTabsCt(),
+            studentSparkpoint = me.getStudentSparkpointModel().create();
+
+        if (!sparkpointCode) {
+            appCt.setLoadedStudentSparkpoint(null);
+            return;
+        }
+
+        // mark empty studentSparkpoint model as committed so uninitialized fields aren't considered dirty
+        studentSparkpoint.commit();
+
+        studentSparkpoint.set('sparkpoint', sparkpointCode);
+
+        tabsCt.setMasked({
+            xtype: 'loadmask',
+            message: 'Opening Sparkpoint&hellip;'
+        });
+
+        studentSparkpoint.save({
+            success: function() {
+                tabsCt.setMasked(false);
+                appCt.setLoadedStudentSparkpoint(studentSparkpoint);
+            }
+        });
+
+        // call buffered sync method
+        me.syncSelections();
+    },
+
+    onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
+        var me = this,
+            timerCmp = me.getTimerCmp();
 
         if (studentSparkpoint) {
             if (studentSparkpoint.get('total_duration') > 0) {
                 timerCmp.setHtml(
-                    SparkClassroom.timing.DurationDisplay.calculateDuration(sectionCode, studentSparkpoint.get('learn_start_time'))
+                    SparkClassroom.timing.DurationDisplay.calculateDuration(appCt.getSelectedSectionCode(), studentSparkpoint.get('learn_start_time'))
                 );
             } else {
                 timerCmp.setHtml('Not Started');
@@ -213,29 +243,20 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         }
     },
 
-    onStudentSparkpointUpdate: function(studentSparkpoint) {
-
-        /* TODO enable this when local studentsparkpoint changes fire update event
-        if (modifiedFieldNames.indexOf('total_duration') == -1) {
-            return;
-        }
-        */
-
-        this.getTimerCmp().setData({
-            duration: studentSparkpoint.get('total_duration')
-        });
-    },
-
-    onSectionsStoreLoad: function() {
-        this.getSectionSelect().setValue(this.getSelectedSection());
-    },
-
     onSectionSelectChange: function(select, section) {
-        this.setSelectedSection(section.get('Code'));
+        this.getAppCt().setSelectedSectionCode(section.get('Code'));
     },
 
     onSparkpointSelectChange: function(sparkpointSelector, sparkpoint) {
-        this.setSelectedSparkpoint(sparkpoint.get('sparkpoint'));
+        this.getAppCt().setSelectedSparkpointCode(sparkpoint.get('sparkpoint'))
+    },
+
+    onLoadedStudentSparkpointUpdate: function(appCt, studentSparkpoint, modifiedFieldNames) {
+        if (Ext.Array.contains(modifiedFieldNames, 'total_duration')) {
+            this.getTimerCmp().setData({
+                duration: studentSparkpoint.get('total_duration')
+            });
+        }
     },
 
 
@@ -244,8 +265,8 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
         var me = this,
             appCt = me.getAppCt(),
             sparkpointsLookupStore = me.getSparkpointsLookupStore(),
-            sectionCode = me.getSelectedSection(),
-            sparkpointCode = me.getSelectedSparkpoint(),
+            sectionCode = appCt.getSelectedSectionCode(),
+            sparkpointCode = appCt.getSelectedSparkpointCode(),
             token = Ext.util.History.getToken(),
             prefixMatch = token && this.tokenPrefixRe.exec(token),
             finishSync = function() {
@@ -270,7 +291,7 @@ Ext.define('SparkClassroomStudent.controller.Viewport', {
             sparkpointsLookupStore.load({
                 callback: function(sparkpoints, operation, success) {
                     if (success && (latestCurrentSparkpoint = sparkpointsLookupStore.getAt(0))) {
-                        me.setSelectedSparkpoint(latestCurrentSparkpoint.get('sparkpoint'));
+                        appCt.setSelectedSparkpointCode(latestCurrentSparkpoint.get('sparkpoint'));
                     } else {
                         finishSync();
                     }
