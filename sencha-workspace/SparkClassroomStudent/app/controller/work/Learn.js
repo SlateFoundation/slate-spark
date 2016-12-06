@@ -60,9 +60,8 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
             learnsStore = me.getWorkLearnsStore(),
-            sparkpointCt = me.getSparkpointCt(),
-            learnAccordian = me.getLearnAccordian(),
-            learnList = learnAccordian && learnAccordian.down('list'),
+            learnCt = me.getLearnCt(),
+            learnList = learnCt && learnCt.down('list'),
             lessonIntro = me.getLessonIntro(),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
 
@@ -82,10 +81,9 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             lessonIntro.show();
             me.renderLessonLists(studentSparkpoint);
             return;
-        } else if (sparkpointCt && learnList && learnList.getStore() === learnsStore) {
-            // TODO is this condition right? Should be when switching from one non-lesson to another.
+        } else if (learnCt && learnList && learnList.getStore() === learnsStore) {
             // switching to a regular sparkpoint from another regular sparkpoint
-            sparkpointCt.setTitle(sparkpointCode);
+            learnList.setTitle(sparkpointCode);
             return;
         }
 
@@ -94,17 +92,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             lessonIntro.hide();
         }
 
-        learnAccordian.removeAll();
-        learnAccordian.add({
-            xtype: 'container',
-            expanded: true,
-            itemId: 'sparkpointCt',
+        learnCt.removeAll();
+        learnCt.add([{
             title: sparkpointCode || '[Select a Sparkpoint]',
-            items: [{
-                xtype: 'spark-work-learn-grid'
-            }],
             store: 'work.Learns'
-        });
+        }]);
     },
 
 
@@ -310,11 +302,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     refreshGroupedProgress: function() {
         var me = this,
             lesson = me.getWorkCt().getLesson(),
-            sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
+            learnCt = me.getLearnCt(),
+            learnGrids = learnCt && learnCt.getInnerItems() || [],
             i, j, learns, grid, completed, progressBanner, groupData;
 
-        for (i = 0; i <sparkCts.length; i++) {
-            grid = sparkCts[i].down('grid');
+        for (i = 0; i <learnGrids.length; i++) {
+            grid = learnGrids[i];
             progressBanner = grid && grid.down('spark-work-learn-progressbanner');
             learns = grid && grid.getStore().getRange();
             groupData = lesson && lesson.getGroupData(grid && grid.groupId);
@@ -412,15 +405,16 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
     syncGroupedLearnsRequired: function() {
         var me = this,
-            sparkCts = me.getLearnAccordian().getInnerItems(), // TODO - kinda hacky... querying for sparkpointCt only gives us one of the x number of sparkpointCt's. For some reason they are being added to innerItems and not items.
+            learnCt = me.getLearnCt(),
+            learnGrids = learnCt && learnCt.getInnerItems() || [],
             readyBtn = me.getReadyBtn(),
             studentSparkpoint = me.getStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
             lesson = me.getWorkCt().getLesson(),
             i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns;
 
-        for (i = 0; i <sparkCts.length; i++) {
-            grid = sparkCts[i].down('grid');
+        for (i = 0; i <learnGrids.length; i++) {
+            grid = learnGrids[i];
             progressBanner = grid && grid.down('spark-work-learn-progressbanner');
             learns = grid && grid.getStore().getRange();
             groupData = lesson && lesson.getGroupData(grid && grid.groupId);
