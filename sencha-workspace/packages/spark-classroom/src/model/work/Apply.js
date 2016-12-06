@@ -12,6 +12,10 @@ Ext.define('SparkClassroom.model.work.Apply', {
             name: 'resource_id',
             type: 'int'
         },
+        {
+            name: 'sparkpoint_id',
+            critical: true
+        },
         'title',
         'instructions',
         'dok',
@@ -145,6 +149,11 @@ Ext.define('SparkClassroom.model.work.Apply', {
         writer: {
             type: 'json',
             allowSingle: true
+        },
+        reader: {
+            type: 'json',
+            keepRawData: true,
+            rootProperty: 'applies'
         }
     }
 });

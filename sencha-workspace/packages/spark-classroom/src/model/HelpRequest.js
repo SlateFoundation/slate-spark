@@ -86,9 +86,9 @@ Ext.define('SparkClassroom.model.HelpRequest', {
             convert: function (v, r) {
                 switch (r.get('request_type')) {
                     case 'question-general':
-                        return 'General Question'
+                        return 'General Question';
                     case 'question-academic':
-                        return 'Academic Question'
+                        return 'Academic Question';
                     case 'question-technology':
                         return 'Tech Question';
                     case 'nurse':

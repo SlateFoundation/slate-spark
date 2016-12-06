@@ -164,26 +164,15 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     },
 
     onSocketData: function(socket, data) {
-        if (data.table != 'assesses' && data.table != 'learn_reviews') {
+        if (data.table != 'assesses') {
             return;
         }
 
         var selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
             itemData = data.item,
-            reflectionCt,
-            assessLearnsGrid, learnRecord, learnData;
+            reflectionCt;
 
-        if ( //update ratings/comments
-            data.table == 'learn_reviews' &&
-            (assessLearnsGrid = this.getAssessCt().down('spark-work-assess-learnsgrid')) &&
-            (learnRecord = assessLearnsGrid.getStore().getById(itemData.resource_id))
-        ) {
-            learnData = {
-                comment: itemData.comment,
-                student_rating: itemData.rating
-            };
-            learnRecord.set(learnData, {dirty: false});
-        } else if (
+        if (
             data.table == 'assessses' &&
             selectedStudentSparkpoint &&
             itemData.student_id == selectedStudentSparkpoint.get('student_id') &&

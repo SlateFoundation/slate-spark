@@ -198,6 +198,18 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
                 me.learnsRequiredStudent = itemData.required || null;
                 me.refreshLearnProgress();
             }
+        } else if (table == 'learn_reviews' &&
+                (selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint())
+                && itemData.student_id == selectedStudentSparkpoint.get('student_id')
+                && (learn = me.getWorkLearnsStore().getById(itemData.resource_id))
+        ) {
+
+            learn.set({
+                comment: itemData.comment,
+                rating: {
+                    user: itemData.rating
+                }
+            }, {dirty: false});
         }
     },
 
@@ -208,7 +220,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             learnCt = me.getLearnCt(),
             scoreField = me.getMasteryCheckScoreField(),
             store = me.getWorkLearnsStore(),
-            proxy = store.getProxy(),
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
         if (!learnCt || !learnCt.hasParent()) {
@@ -225,9 +236,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             learnCt.show();
 
             if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
-                proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-                proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
-
                 store.load();
             }
         } else {
