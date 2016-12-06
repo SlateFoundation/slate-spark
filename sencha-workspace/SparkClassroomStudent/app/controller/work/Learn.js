@@ -52,10 +52,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     learnsRequiredSection: null,
     learnsRequiredStudent: null,
 
-    // lesson configs
-    groupedLearnsCompleted: {},
-    groupedLearnsRequired: {},
-
     // config handlers
     updateStudentSparkpoint: function(studentSparkpoint) {
         var me = this,
@@ -276,7 +272,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         }
 
         if (isLesson) {
-            this.refreshGroupedProgress();
+            me.syncGroupedLearnsRequired();
             return;
         }
 
@@ -303,38 +299,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             progressBanner.show();
         } else {
             progressBanner.hide();
-        }
-    },
-
-    refreshGroupedProgress: function() {
-        var me = this,
-            lesson = me.getWorkCt().getLesson(),
-            learnCt = me.getLearnCt(),
-            learnGrids = learnCt && learnCt.getInnerItems() || [],
-            i, j, learns, grid, completed, progressBanner, groupData;
-
-        for (i = 0; i <learnGrids.length; i++) {
-            grid = learnGrids[i];
-            progressBanner = grid && grid.down('spark-work-learn-progressbanner');
-            learns = grid && grid.getStore().getRange();
-            groupData = lesson && lesson.getGroupData(grid && grid.groupId);
-            completed = 0;
-
-            if (learns.length && groupData) {
-                for (j = 0; j < learns.length; j++) {
-                    if (learns[j].get('completed')) {
-                        completed++;
-                    }
-                }
-
-                me.groupedLearnsRequired[groupData.id] = groupData.learnsRequired;
-                me.groupedLearnsCompleted[groupData.id] = completed;
-
-                me.syncLearnsRequired();
-                progressBanner.show();
-            } else {
-                progressBanner.hide();
-            }
         }
     },
 
@@ -418,7 +382,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             studentSparkpoint = me.getStudentSparkpoint(),
             learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
             lesson = me.getWorkCt().getLesson(),
-            i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns;
+            i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns, groupedLearnsCompleted;
 
         for (i = 0; i <learnGrids.length; i++) {
             grid = learnGrids[i];
@@ -428,6 +392,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             completedRequiredLearns = 0;
             learnsRequiredDisabled = false;
             requiredLearns = 0;
+            groupedLearnsCompleted = 0;
+
+            if (learns.length && groupData) {
+                progressBanner.show();
+            } else {
+                progressBanner.hide();
+            }
 
             if (groupData && groupData.learns_required) {
                 minimumRequired = Math.min(learns.length, groupData.learns_required); // TODO check prop
@@ -436,6 +407,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             for (j = 0; j < learns.length; j++) {
                 learn = learns[j];
                 learnAssignments = learn.get('assignments');
+
+                if (learns[j].get('completed')) {
+                    groupedLearnsCompleted++;
+                }
 
                 if (
                     learnAssignments.section === 'required-first'
@@ -458,7 +433,7 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             }
 
             progressBanner.setData({
-                completedLearns: me.groupedLearnsCompleted[groupData.id],
+                completedLearns: groupedLearnsCompleted,
                 minimumLearns: minimumRequired,
                 completedRequiredLearns: completedRequiredLearns,
                 requiredLearns: requiredLearns,
