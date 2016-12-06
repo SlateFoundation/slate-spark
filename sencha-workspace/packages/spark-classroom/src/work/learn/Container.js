@@ -22,19 +22,13 @@ Ext.define('SparkClassroom.work.learn.Container', {
 
         items: [{
             docked: 'top',
-
-            // TODO wire up this example module info box
             xtype: 'component',
             itemId: 'lessonIntro',
             cls: 'spark-panel spark-work-learn-module-intro',
             hidden: true,
-            data: {
-                moduleTitle: 'Module Title <small>Module Code</small>',
-                moduleDescription: 'This is a description or intro to the module, written by the instructor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer accumsan libero purus, eget tincidunt nisi sagittis aliquet.'
-            },
             tpl: [
-                '<h3 class="spark-panel-title">{moduleTitle}</h3>',
-                '<p>{moduleDescription}</p>'
+                '<h3 class="spark-panel-title">{title}</h3>',
+                '<p>{directions}</p>'
             ]
         }]
     },

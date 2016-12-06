@@ -61,9 +61,11 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         var me = this,
             learnsStore = me.getWorkLearnsStore(),
             learnCt = me.getLearnCt(),
+            workCt = me.getWorkCt(),
             learnList = learnCt && learnCt.down('list'),
             lessonIntro = me.getLessonIntro(),
-            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
+            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
+            lesson;
 
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
@@ -78,6 +80,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         if (studentSparkpoint.get('is_lesson')) {
             // switching to a lesson
+            workCt.setLesson(studentSparkpoint.get('lesson_template'));
+
+            lesson = workCt.getLesson();
+            lessonIntro.setData({
+                title: lesson && lesson.get('title'),
+                directions: lesson && lesson.get('directions')
+            });
             lessonIntro.show();
             me.renderLessonLists(studentSparkpoint);
             return;
@@ -204,18 +213,16 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
 
     // controller methods
-    renderLessonLists: function(studentSparkpoint) {
+    renderLessonLists: function() {
         var me = this,
             learnCt = me.getLearnCt(),
             workCt = me.getWorkCt(),
             learnLists = [],
-            groups, group, lesson, i;
+            lesson = workCt.getLesson(),
+            groups, group, i;
 
         learnCt.removeAll();
 
-        workCt.setLesson(studentSparkpoint.get('lesson_template'));
-
-        lesson = workCt.getLesson();
         groups = lesson && lesson.get('learn_groups') || [];
 
         for (i = 0; i < groups.length; i++) {
