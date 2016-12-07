@@ -7,6 +7,11 @@ Ext.define('SparkClassroom.model.work.Lesson', {
 
     idProperty: 'id',
 
+    fields: [{
+        name: 'learn_groups',
+        defaultValue: []
+    }],
+
     getGroupData: function(id) {
         var me = this,
             groups = me.get('learn_groups'),

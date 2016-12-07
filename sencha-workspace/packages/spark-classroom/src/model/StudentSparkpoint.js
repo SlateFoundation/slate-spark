@@ -371,11 +371,7 @@ Ext.define('SparkClassroom.model.StudentSparkpoint', {
             name: 'is_lesson',
             persist: false,
             calculate: function(data) {
-                if (!data.sparkpoint_id || data.sparkpoint_id.charAt(0) === 'L') {
-                    return true;
-                }
-
-                return false;
+                return !data.sparkpoint_id || data.sparkpoint_id.charAt(0) === 'L';
             }
         },
         {
