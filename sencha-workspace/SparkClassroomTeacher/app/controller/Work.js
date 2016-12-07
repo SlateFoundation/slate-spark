@@ -385,21 +385,11 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * @return boolean
      */
     canAccessPhase: function(phase) {
-        var me = this,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
-
-        switch (phase) {
-            case 'learn':
-                return true;
-            case 'conference':
-                return !Ext.isEmpty(selectedStudentSparkpoint.get('learn_completed_time'));
-            case 'apply':
-                return !Ext.isEmpty(selectedStudentSparkpoint.get('conference_completed_time'));
-            case 'assess':
-                return !Ext.isEmpty(selectedStudentSparkpoint.get('apply_completed_time'));
-            default:
-                return false;
+        if (phase === 'learn') {
+            return true;
         }
+
+        return false;
     },
 
     /**
