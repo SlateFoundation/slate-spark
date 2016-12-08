@@ -140,14 +140,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     // route handlers
     rewriteShowWork: function() {
         var workTabBar = this.getWorkTabbar(),
-            workTabId, activeWorkTab, selectedStudentSparkpoint;
+            activeWorkTab = workTabBar && workTabBar.getActiveTab(),
+            selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
+            workTabId;
 
-        if (
-            workTabBar
-            && (activeWorkTab = workTabBar.getActiveTab())
-        ) {
+        if (activeWorkTab) {
             workTabId = activeWorkTab.getItemId();
-        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {  // eslint-disable-line no-cond-assign
+        } else if (selectedStudentSparkpoint) {
             workTabId = selectedStudentSparkpoint.get('active_phase');
         }
 
@@ -195,7 +194,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         me.doShowContainer();
         me.doHighlightTabbars();
-        me.getWorkTabbar().updateActivePhase(phase);
 
         workCt.removeAll();
 
@@ -458,9 +456,21 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             workTabbar = me.getWorkTabbar(),
             teacherTabbar = me.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#work'),
-            assignTab = workTabbar.down('#'+ section);
+            assignTab = workTabbar.down('#'+ section),
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+
+        if (!studentSparkpoint) {
+            return;
+        }
 
         workTabbar.setActiveTab(assignTab);
+        workTabbar.setCompletedPhases({
+            learn: !Ext.isEmpty(studentSparkpoint.get('learn_completed_time')),
+            conference: !Ext.isEmpty(studentSparkpoint.get('conference_completed_time')),
+            apply: !Ext.isEmpty(studentSparkpoint.get('apply_completed_time')),
+            assess: !Ext.isEmpty(studentSparkpoint.get('assess_completed_time'))
+        });
+
         teacherTabbar.setActiveTab(teacherTab);
     },
 
@@ -478,6 +488,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         if (!workTabbar) {
             return;
         }
+
+        me.doHighlightTabbars(sectionCode);
 
         /**
          * Duration calculations:

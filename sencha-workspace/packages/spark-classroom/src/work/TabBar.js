@@ -9,6 +9,7 @@ Ext.define('SparkClassroom.work.TabBar', {
 
     config: {
         activePhase: null,
+        completedPhases: {},
 
         cls: 'spark-work-tabbar',
 
@@ -18,7 +19,6 @@ Ext.define('SparkClassroom.work.TabBar', {
             {
                 itemId: 'learn',
 
-                // TODO: left icons
                 title: 'Learn &amp; Practice'
             },
             {
@@ -42,28 +42,35 @@ Ext.define('SparkClassroom.work.TabBar', {
     updateActivePhase: function(activePhase) {
         var tabs = this.getInnerItems(),
             tabsLen = tabs.length,
-            i = 0, tab,
-            activePhaseFound = false;
+            i = 0, tab;
 
         for (; i < tabsLen; i++) {
             tab = tabs[i];
 
-            if (activePhaseFound) {
-                tab.removeCls(['spark-phase-complete', 'spark-phase-active', tab.getActiveCls()]);
-                continue;
-            }
-
             if (tab.getItemId() === activePhase) {
-                activePhaseFound = true;
                 tab.addCls('spark-phase-active');
-                tab.addCls(tab.getActiveCls());
-                tab.removeCls('spark-phase-complete');
-                continue;
+            } else {
+                tab.removeCls('spark-phase-active');
             }
+        }
+    },
 
-            tab.addCls('spark-phase-complete');
-            tab.removeCls('spark-phase-active');
-            tab.removeCls(tab.getActiveCls());
+    updateCompletedPhases: function(phases) {
+        var me = this,
+            tabs = me.getInnerItems(),
+            i, tab, itemId;
+
+        for (i = 0; i < tabs.length; i++) {
+            tab = tabs[i];
+            itemId = tab.getItemId();
+
+            if (Ext.isObject(phases)
+                && phases[itemId]
+            ) {
+                tab.addCls('spark-phase-complete');
+            } else {
+                tab.removeCls('spark-phase-complete');
+            }
         }
     },
 
