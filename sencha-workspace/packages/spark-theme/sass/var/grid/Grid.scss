@@ -1,13 +1,7 @@
 // these are listed in the "global" class in Sencha's docs, for some reason
-
-$grid-column-background-color:  dynamic(transparent);
-$grid-column-font-size:         dynamic(.9em);
-$grid-column-font-weight:       dynamic(bold);
-$grid-column-padding:           dynamic(.5em 1em);
-
-$grid-group-header-font-size:   dynamic(.75em);
-$grid-group-header-font-weight: dynamic(bold); 
-$grid-group-header-padding:     dynamic(.5em 1.25em);
+$rowheader-font-size:           dynamic(.75em);
+$rowheader-font-weight:         dynamic(bold);
+$rowheader-padding:             dynamic(.5em 1.25em);
 
 
 // custom values
