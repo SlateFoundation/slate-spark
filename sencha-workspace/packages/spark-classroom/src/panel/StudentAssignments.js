@@ -2,8 +2,7 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
     extend: 'Ext.Panel',
     xtype: 'spark-studentassignmentspanel',
     requires: [
-        'Ext.grid.Grid',
-        'Jarvus.plugin.GridFlex'
+        'Ext.grid.Grid'
     ],
     uses: [
         'SparkClassroom.column.Assignments'
@@ -37,9 +36,6 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
                     ],
                     trackRemoved: false
                 },
-                plugins: [
-                    'gridflex'
-                ],
                 columns: [
                     {
                         dataIndex: 'student',

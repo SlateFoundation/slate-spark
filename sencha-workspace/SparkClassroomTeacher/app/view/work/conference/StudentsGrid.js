@@ -5,14 +5,12 @@ Ext.define('SparkClassroomTeacher.view.work.conference.StudentsGrid', {
         'Ext.data.ChainedStore',
         'Ext.grid.cell.Widget',
         'Ext.field.Number',
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight'
     ],
 
 
     config: {
         plugins: [
-            'gridflex',
             'gridheight'
         ],
         titleBar: null,

@@ -2,7 +2,6 @@ Ext.define('SparkClassroom.standards.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-standards-grid',
     requires: [
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.standards.CycleColumn',
         'Ext.app.ViewModel'
@@ -11,7 +10,6 @@ Ext.define('SparkClassroom.standards.Grid', {
     config: {
         cls: 'spark-standards-grid',
         plugins: [
-            'gridflex',
             'gridheight'
         ],
         titleBar: null,

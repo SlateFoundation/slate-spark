@@ -3,8 +3,7 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
     xtype: 'spark-studentlearnsrequiredpanel',
     requires: [
         'Ext.grid.Grid',
-        'Ext.app.ViewModel',
-        'Jarvus.plugin.GridFlex'
+        'Ext.app.ViewModel'
     ],
 
     manageBorders: false, // manageBorders adds a class that leaks down to the grid and hides the bottom border on its header
@@ -31,9 +30,6 @@ Ext.define('SparkClassroom.panel.StudentLearnsRequired', {
                     ],
                     trackRemoved: false
                 },
-                plugins: [
-                    'gridflex'
-                ],
                 itemConfig: {
                     viewModel: true
                 },

@@ -2,7 +2,6 @@ Ext.define('SparkClassroom.work.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-grid',
     requires: [
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
 
         /* global SparkClassroom */
@@ -22,7 +21,6 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         allowToggleComplete: true,
 
         plugins: [
-            'gridflex',
             'gridheight'
         ],
 

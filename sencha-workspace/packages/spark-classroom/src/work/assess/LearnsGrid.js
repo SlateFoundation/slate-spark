@@ -4,7 +4,6 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
     xtype: 'spark-work-assess-learnsgrid',
     requires: [
         'Ext.data.ChainedStore',
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Link',
         'SparkClassroom.column.StudentRating',
@@ -13,7 +12,6 @@ Ext.define('SparkClassroom.work.assess.LearnsGrid', {
 
     config: {
         plugins: [
-            'gridflex',
             'gridheight'
         ],
         titleBar: null,

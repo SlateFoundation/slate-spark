@@ -4,7 +4,6 @@ Ext.define('SparkClassroom.work.assess.AppliesGrid', {
     xtype: 'spark-work-assess-appliesgrid',
     requires: [
         'Ext.data.ChainedStore',
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.StudentRating',
         'SparkClassroom.column.StudentComment'
@@ -12,7 +11,6 @@ Ext.define('SparkClassroom.work.assess.AppliesGrid', {
 
     config: {
         plugins: [
-            'gridflex',
             'gridheight'
         ],
         titleBar: null,

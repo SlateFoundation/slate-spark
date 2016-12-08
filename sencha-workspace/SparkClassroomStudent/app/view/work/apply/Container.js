@@ -3,7 +3,6 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
     xtype: 'spark-student-work-apply',
     requires: [
         'Ext.data.ChainedStore',
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'Jarvus.form.GooglePicker',
         'SparkClassroom.work.apply.TasksGrid',
@@ -27,7 +26,6 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
 
                         xtype: 'grid',
                         plugins: [
-                            'gridflex',
                             'gridheight'
                         ],
                         titleBar: false,

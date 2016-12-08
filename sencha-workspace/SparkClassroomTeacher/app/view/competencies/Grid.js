@@ -3,7 +3,6 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
     xtype: 'spark-competencies-grid',
     requires: [
         'Jarvus.plugin.GridHeight',
-        'Jarvus.plugin.GridFlex',
         'SparkClassroom.column.Sparkpoints',
         'SparkClassroom.column.Title',
         'SparkClassroom.column.StudentCompetency'
@@ -16,8 +15,6 @@ Ext.define('SparkClassroomTeacher.view.competencies.Grid', {
             {
                 type: 'gridheight',
                 enableHorizontalScroll: true
-            }, {
-                type: 'gridflex'
             }
         ],
         titleBar: null,

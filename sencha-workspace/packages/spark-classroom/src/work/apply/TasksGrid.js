@@ -3,7 +3,6 @@ Ext.define('SparkClassroom.work.apply.TasksGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-apply-tasksgrid',
     requires: [
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.store.Tasks',
         'SparkClassroom.column.Completed',
@@ -14,7 +13,6 @@ Ext.define('SparkClassroom.work.apply.TasksGrid', {
         allowToggleComplete: false,
 
         plugins: [
-            'gridflex',
             'gridheight'
         ],
         titleBar: false,

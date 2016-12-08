@@ -2,7 +2,6 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-assign-apply-grid',
     requires: [
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         // 'Ext.grid.plugin.PagingToolbar',
         // 'SparkClassroom.column.Sparkpoints',
@@ -15,7 +14,6 @@ Ext.define('SparkClassroomTeacher.view.assign.apply.Grid', {
 
     config: {
         plugins: [
-            'gridflex',
             'gridheight'
             // 'gridpagingtoolbar'
         ],

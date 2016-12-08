@@ -3,7 +3,6 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-assess-assessmentsgrid',
     requires: [
-        'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
         'SparkClassroom.column.Link',
         'SparkClassroom.column.Completed',
@@ -12,7 +11,6 @@ Ext.define('SparkClassroom.work.assess.AssessmentsGrid', {
 
     config: {
         plugins: [
-            'gridflex',
             'gridheight'
         ],
         titleBar: null,

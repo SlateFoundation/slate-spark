@@ -248,7 +248,6 @@
     "requires": [
         "jarvus-touch-accordion",
         "slate-core-data",
-        "jarvus-gridflex",
         "jarvus-gridheight",
         "jarvus-fuzzytime",
         "jarvus-googlepicker"
