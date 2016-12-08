@@ -191,8 +191,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             change: 'onLessonMetaFieldChange'
         },
         's2m-lessons-multiselector grid#lesson-grid': {
-            boxready: 'onLessonGridBoxready',
-            groupclicked: 'onLessonGridGroupClick'
+            boxready: 'onLessonGridBoxready'
         },
 
         // forms
@@ -434,10 +433,6 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             datachanged: Ext.bind(me.updateSparkpointItems, me, [itemType, grid]),
             update: Ext.bind(me.updateSparkpointItems, me, [itemType, grid])
         });
-    },
-
-    onLessonGridGroupClick: function(grid) {
-        console.log('---------------onLessonGridGroupClick----------------');
     },
 
     onAddLearnButtonClick: function() {
