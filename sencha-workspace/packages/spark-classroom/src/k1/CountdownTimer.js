@@ -95,7 +95,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     },
 
     applyState: function(state) {
-        if (state !== 'paused' && state !== 'stopped' && state !== 'running') {
+        if (state !== 'paused' && state !== 'stopped' && state !== 'running' && state != 'complete') {
             state = 'idle';
         }
 
@@ -185,7 +185,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 minutes: '00',
                 seconds: '00'
             });
-            me.setState('paused');
+            me.setState('complete');
             return;
         }
 
@@ -208,8 +208,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     },
 
     newTimer: function(seconds) {
-        var me = this,
-            data;
+        var me = this;
 
         if (!Ext.isNumeric(seconds)) {
             return;

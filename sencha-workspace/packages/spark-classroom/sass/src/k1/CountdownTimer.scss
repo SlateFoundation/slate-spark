@@ -88,7 +88,7 @@
         font-feature-settings: "tnum";
       }
 
-    &.timer-paused, &.timer-stopped {
+    &.timer-paused, &.timer-stopped, &.timer-complete {
         border-color: $alert-color;
 
         .timer-icon {
@@ -96,7 +96,7 @@
         }
     }
 
-    &.timer-paused {
+    &.timer-paused, &.timer-complete {
         .timer-counter {
                     animation: spark-work-timer-blink 1s steps(3, start) infinite;
             -webkit-animation: spark-work-timer-blink 1s steps(3, start) infinite;
@@ -118,6 +118,12 @@
 
         .timer-icon {
             background-color: $neutral-dark-color;
+        }
+    }
+
+    &.timer-complete {
+        .timer-play-pause {
+            display: none;
         }
     }
 }
