@@ -249,7 +249,6 @@
         "jarvus-touch-accordion",
         "slate-core-data",
         "jarvus-gridheight",
-        "jarvus-fuzzytime",
-        "jarvus-googlepicker"
+        "jarvus-fuzzytime"
     ]
 }

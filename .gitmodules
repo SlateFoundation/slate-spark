@@ -30,9 +30,6 @@
 	path = sencha-workspace/packages.remote/jarvus-fuzzytime
 	url = https://github.com/JarvusInnovations/jarvus-fuzzytime.git
 	branch = master
-[submodule "jarvus-googlepicker"]
-	path = sencha-workspace/packages.remote/jarvus-googlepicker
-	url = https://github.com/JarvusInnovations/jarvus-googlepicker.git
 [submodule "sencha-workspace/ext-6.2.0.981"]
 	path = sencha-workspace/ext
 	url = https://github.com/JarvusInnovations/extjs.git

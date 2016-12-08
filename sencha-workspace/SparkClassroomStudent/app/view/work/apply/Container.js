@@ -4,7 +4,6 @@ Ext.define('SparkClassroomStudent.view.work.apply.Container', {
     requires: [
         'Ext.data.ChainedStore',
         'Jarvus.plugin.GridHeight',
-        'Jarvus.form.GooglePicker',
         'SparkClassroom.work.apply.TasksGrid',
         'SparkClassroom.widget.Panel',
         'SparkClassroom.widget.SimpleHeading',
