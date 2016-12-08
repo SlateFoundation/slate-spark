@@ -51,10 +51,13 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
 
     setMoveToPhase: function(phase) {
         var me = this,
-            moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]');
+            moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]'),
+            activePhase = me.getActivePhase();
 
         me.moveToPhase = phase;
         moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
+
+        moveBtn.setDisabled(phase === activePhase);
     },
 
     getMoveToPhase: function() {
