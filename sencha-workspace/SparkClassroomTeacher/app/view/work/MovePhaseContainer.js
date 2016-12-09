@@ -56,9 +56,7 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
             moveBtn = me.down('button#moveToPhaseBtn'),
             activePhase = me.getActivePhase();
 
-        me.setMoveToPhase(phase);
         moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
-
         moveBtn.setDisabled(phase === activePhase);
     },
 
