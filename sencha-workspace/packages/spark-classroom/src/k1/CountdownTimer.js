@@ -122,14 +122,14 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
             record = me.getRecord;
 
         if (!record) {
-            me.setTimer(null);
+            me.loadTimerData(null);
             return;
         }
 
         me.newTimer(0);
     },
 
-    setTimer: function(data) {
+    loadTimerData: function(data) {
         var me = this,
             minutes, seconds;
 
@@ -223,7 +223,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 'section': me.getSection()
             },
             success: function(response) {
-                me.setTimer(response.data);
+                me.loadTimerData(response.data);
             },
             scope: me
         });
@@ -240,7 +240,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 'paused': pause
             },
             success: function(response) {
-                me.setTimer(response.data);
+                me.loadTimerData(response.data);
             },
             scope: me
         });
