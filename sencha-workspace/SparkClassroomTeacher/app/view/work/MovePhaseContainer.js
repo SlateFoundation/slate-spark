@@ -41,9 +41,11 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
             },
             items: [{
                 xtype: 'component',
+                itemId: 'moveToPhaseText',
                 cls: 'spark-teacher-work-move-text'
             }, {
                 xtype: 'button',
+                itemId: 'moveToPhaseBtn',
                 cls: 'spark-teacher-work-move-btn x-button-action'
             }]
         }]
@@ -51,22 +53,18 @@ Ext.define('SparkClassroomTeacher.view.work.MovePhaseContainer', {
 
     updateMoveToPhase: function(phase) {
         var me = this,
-            moveBtn = me.down('button[cls~="spark-teacher-work-move-btn"]'),
+            moveBtn = me.down('button#moveToPhaseBtn'),
             activePhase = me.getActivePhase();
 
-        me.moveToPhase = phase;
+        me.setMoveToPhase(phase);
         moveBtn.setText('Move to ' + phase.charAt(0).toUpperCase() + phase.slice(1));
 
         moveBtn.setDisabled(phase === activePhase);
     },
 
-    getMoveToPhase: function() {
-        return this.moveToPhase;
-    },
-
     loadMoveText: function() {
         var me = this,
-            moveText = me.down('[cls~="spark-teacher-work-move-text"]'),
+            moveText = me.down('component#moveToPhaseText'),
             name = me.getStudentName(),
             phase = me.getActivePhase();
 
