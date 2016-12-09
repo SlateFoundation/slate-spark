@@ -140,14 +140,13 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     // route handlers
     rewriteShowWork: function() {
         var workTabBar = this.getWorkTabbar(),
-            workTabId, activeWorkTab, selectedStudentSparkpoint;
+            activeWorkTab = workTabBar && workTabBar.getActiveTab(),
+            selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
+            workTabId;
 
-        if (
-            workTabBar
-            && (activeWorkTab = workTabBar.getActiveTab())
-        ) {
+        if (activeWorkTab) {
             workTabId = activeWorkTab.getItemId();
-        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {  // eslint-disable-line no-cond-assign
+        } else if (selectedStudentSparkpoint) {
             workTabId = selectedStudentSparkpoint.get('active_phase');
         }
 
@@ -172,9 +171,14 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     showPhase: function(phase) {
         var me = this,
-            workCt = me.getWorkCt(),
-            phaseCt,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            phaseCt, workCt;
+
+        if (!selectedStudentSparkpoint) {
+            return;
+        }
+
+        workCt = me.getWorkCt();
 
         switch (phase) {
             case 'learn':
@@ -195,7 +199,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         me.doShowContainer();
         me.doHighlightTabbars();
-        me.getWorkTabbar().updateActivePhase(phase);
 
         workCt.removeAll();
 
@@ -262,6 +265,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
             feedbackStore.load();
 
+            me.showPhase(selectedStudentSparkpoint.get('active_phase'));
             me.updateTabBar(selectedStudentSparkpoint);
         }
     },
@@ -453,14 +457,26 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(section) {
+    doHighlightTabbars: function(phase) {
         var me = this,
             workTabbar = me.getWorkTabbar(),
             teacherTabbar = me.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#work'),
-            assignTab = workTabbar.down('#'+ section);
+            assignTab = workTabbar.down('#'+ phase),
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+
+        if (!studentSparkpoint) {
+            return;
+        }
 
         workTabbar.setActiveTab(assignTab);
+        workTabbar.setCompletedPhases({
+            learn: !Ext.isEmpty(studentSparkpoint.get('learn_completed_time')),
+            conference: !Ext.isEmpty(studentSparkpoint.get('conference_completed_time')),
+            apply: !Ext.isEmpty(studentSparkpoint.get('apply_completed_time')),
+            assess: !Ext.isEmpty(studentSparkpoint.get('assess_completed_time'))
+        });
+
         teacherTabbar.setActiveTab(teacherTab);
     },
 
@@ -473,7 +489,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             applyStartTime = studentSparkpoint.get('apply_start_time'),
             assessStartTime = studentSparkpoint.get('assess_start_time'),
             workTabbar = me.getWorkTabbar(),
-            timing = SparkClassroom.timing.DurationDisplay;
+            timing = SparkClassroom.timing.DurationDisplay,
+            phase = studentSparkpoint.get('active_phase');
 
         if (!workTabbar) {
             return;
@@ -504,6 +521,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             && (timing.calculateDuration(sectionCode, assessStartTime, studentSparkpoint.get('assess_completed_time') || now) || '0d')
         );
 
-        workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
+        workTabbar.setActivePhase(phase);
+        me.doHighlightTabbars(phase);
     }
 });
