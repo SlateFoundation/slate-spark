@@ -230,7 +230,13 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     },
 
     toggleTimer: function(pause) {
-        var me = this;
+        var me = this,
+            data = me.getData();
+
+        // don't make this call if the timer has 0 minutes/seconds to avoid a 400 error, just let the timer reach the 'completed' state
+        if (data && data.minutes === '00' && data.seconds === '00') {
+            return;
+        }
 
         Slate.API.request({
             method: 'PATCH',
