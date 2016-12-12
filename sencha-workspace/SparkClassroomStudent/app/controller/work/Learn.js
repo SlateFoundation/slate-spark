@@ -53,7 +53,6 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             learnsStore = me.getWorkLearnsStore(),
             learnCt = me.getLearnCt(),
             workCt = me.getWorkCt(),
-            learnList = learnCt && learnCt.down('list'),
             lessonIntro = me.getLessonIntro(),
             sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
             lesson;
@@ -80,23 +79,18 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             });
             lessonIntro.show();
             me.renderLessonLists(studentSparkpoint);
-            return;
-        } else if (learnCt && learnList && learnList.getStore() === learnsStore) {
-            // switching to a regular sparkpoint from another regular sparkpoint
-            learnList.setTitle(sparkpointCode);
-            return;
-        }
+        } else {
+            // switching to a regular sparkpoint
+            if (lessonIntro) {
+                lessonIntro.hide();
+            }
 
-        // switching to a regular sparkpoint
-        if (lessonIntro) {
-            lessonIntro.hide();
+            learnCt.removeAll();
+            learnCt.add([{
+                title: sparkpointCode || '[Select a Sparkpoint]',
+                store: 'work.Learns'
+            }]);
         }
-
-        learnCt.removeAll();
-        learnCt.add([{
-            title: sparkpointCode || '[Select a Sparkpoint]',
-            store: 'work.Learns'
-        }]);
     },
 
     onLoadedStudentSparkpointUpdate: function() {

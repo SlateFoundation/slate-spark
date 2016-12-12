@@ -11,7 +11,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     refs: {
         appCt: 'spark-teacher-appct',
+        workCt: 'spark-teacher-work-ct',
         learnCt: 'spark-teacher-work-learn',
+        lessonIntro: 'spark-teacher-work-learn #lessonIntro',
         sparkpointCt: 'spark-teacher-work-learn #sparkpointCt',
         progressBanner: 'spark-teacher-work-learn-sidebar spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid',
@@ -67,21 +69,19 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy();
 
-        if (selectedStudentSparkpoint) {
-            // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
-
-            if (store.isLoaded()) {
-                store.load();
-            }
+        if (!selectedStudentSparkpoint) {
+            return;
         }
+
+        proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+        proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
+        store.load();
 
         me.syncSelectedStudentSparkpoint();
     },
 
     onLearnCtActivate: function() {
-        this.syncSelectedStudentSparkpoint();
+        this.refreshLearnProgress();
     },
 
     onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, studentSparkpoint, operation, modifiedFieldNames) {
@@ -217,30 +217,83 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
+            workCt = me.getWorkCt(),
             learnCt = me.getLearnCt(),
             scoreField = me.getMasteryCheckScoreField(),
-            store = me.getWorkLearnsStore(),
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
-        if (!learnCt || !learnCt.hasParent()) {
+        if (!learnCt) {
             return;
         }
 
-        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (selectedStudentSparkpoint) {
-            me.getSparkpointCt().setTitle(selectedStudentSparkpoint.get('sparkpoint'));
-
-            scoreField.setValue(selectedStudentSparkpoint.get('learn_mastery_check_score'));
-            scoreField.resetOriginalValue();
-
-            learnCt.show();
-
-            if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
-                store.load();
-            }
-        } else {
+        if (!studentSparkpoint) {
             learnCt.hide();
+            return;
         }
+
+        if (studentSparkpoint.get('is_lesson')) {
+            // switching to a lesson
+            workCt.setLesson(studentSparkpoint.get('lesson_template'));
+
+            me.renderLessonLists(studentSparkpoint);
+        } else {
+            // switching to a regular sparkpoint
+            learnCt.removeAll();
+            learnCt.add([{
+                title: studentSparkpoint.get('sparkpoint'),
+                store: 'work.Learns',
+                progressBanner: false
+            }]);
+        }
+        scoreField.setValue(studentSparkpoint.get('learn_mastery_check_score'));
+        scoreField.resetOriginalValue();
+
+        learnCt.show();
+    },
+
+    renderLessonLists: function() {
+        var me = this,
+            learnCt = me.getLearnCt(),
+            workCt = me.getWorkCt(),
+            learnLists = [],
+            lesson = workCt.getLesson(),
+            groups, group, i;
+
+        learnCt.removeAll();
+
+        groups = lesson && lesson.get('learn_groups') || [];
+
+        for (i = 0; i < groups.length; i++) {
+            group = groups[i];
+
+            learnLists.push({
+                title: group.title,
+                groupId: group.id,
+                store: {
+                    type: 'chained',
+                    source: 'work.Learns',
+                    filters: [{
+                        property: 'lesson_group_id',
+                        value: group.id
+                    }]
+                }
+            });
+        }
+
+        learnLists.push({
+            title: 'Ungrouped',
+            groupId: null,
+            store: {
+                type: 'chained',
+                source: 'work.Learns',
+                filters: [{
+                    property: 'lesson_group_id',
+                    value: null
+                }]
+            }
+        });
+
+        learnCt.add(learnLists);
     },
 
     setLearnsRequired: function() {
@@ -265,7 +318,24 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             requiredLearns = 0,
             completedRequiredLearns = 0,
             i = 0,
-            learn, learnAssignments;
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            workCt = me.getWorkCt(),
+            isLesson = studentSparkpoint && studentSparkpoint.get('is_lesson'),
+            lessonIntro = me.getLessonIntro(),
+            lesson, learn, learnAssignments;
+
+        if (isLesson) {
+            lesson = workCt && workCt.getLesson();
+
+            lessonIntro.setData({
+                title: lesson && lesson.get('title'),
+                directions: lesson && lesson.get('directions')
+            });
+            lessonIntro.show();
+
+            progressBanner.hide();
+            return;
+        }
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
             minimumRequired = Math.min(count, rawData.learns_required.site);
@@ -281,6 +351,12 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             // learns tab hasn't been activated yet
             return;
         }
+
+        if (lessonIntro) {
+            lessonIntro.hide();
+        }
+
+        progressBanner.show();
 
         for (; i < count; i++) {
             learn = learns[i];
