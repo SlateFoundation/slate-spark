@@ -39,6 +39,10 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                 margin: '0 16 0 0',
             },
             {
+                xtype: 'list', // TODO this list will only be visible for lessons, to allow teacher to select which sparkpoints a student wil be given credit for
+                hidden: true
+            },
+            {
                 itemId: 'completeBtn',
 
                 text: 'Mark Standard Complete',
