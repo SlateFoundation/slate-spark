@@ -130,28 +130,38 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         'work': {
             rewrite: 'rewriteShowWork'
         },
-        'work/learn': 'showLearn',
-        'work/conference': 'showConference',
-        'work/apply': 'showApply',
-        'work/assess': 'showAssess'
+        'work/learn': {
+            action: 'showLearn'
+        },
+        'work/conference': {
+            action: 'showConference'
+        },
+        'work/apply': {
+            action: 'showApply'
+        },
+        'work/assess': {
+            action: 'showAssess'
+        }
     },
 
 
     // route handlers
     rewriteShowWork: function() {
         var workTabBar = this.getWorkTabbar(),
-            workTabId, activeWorkTab, selectedStudentSparkpoint;
+            studentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
+            route = '',
+            activeWorkTab;
 
         if (
             workTabBar
             && (activeWorkTab = workTabBar.getActiveTab())
         ) {
-            workTabId = activeWorkTab.getItemId();
-        } else if (selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint()) {  // eslint-disable-line no-cond-assign
-            workTabId = selectedStudentSparkpoint.get('active_phase');
+            route = 'work/' + activeWorkTab.getItemId();
+        } else if (studentSparkpoint) {
+            route = 'work/' + studentSparkpoint.get('active_phase');
         }
 
-        return 'work/' + (workTabId || 'learn');
+        return route;
     },
 
     showLearn: function() {

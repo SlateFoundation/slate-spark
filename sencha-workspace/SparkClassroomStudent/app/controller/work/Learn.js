@@ -102,19 +102,22 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     onLearnsStoreLoad: function(store, records, success) {
-        var rawData = store.getProxy().getReader().rawData || {};
-
-        this.refreshLearnProgress();
-        this.ensureLearnPhaseStarted();
+        var me = this,
+            rawData = store.getProxy().getReader().rawData || {};
 
         if (success && rawData.lesson) {
-            this.getWorkCt().setLesson(rawData.lesson);
+            me.getWorkCt().setLesson(rawData.lesson);
         }
+
+        me.refreshLearnProgress();
+        me.ensureLearnPhaseStarted();
     },
 
     onLearnsStoreUpdate: function() {
-        this.refreshLearnProgress();
-        this.ensureLearnPhaseStarted();
+        var me = this;
+
+        me.refreshLearnProgress();
+        me.ensureLearnPhaseStarted();
     },
 
     onSocketData: function(socket, data) { // eslint-disable-line complexity

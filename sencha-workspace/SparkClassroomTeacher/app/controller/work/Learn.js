@@ -102,9 +102,16 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
     },
 
-    onLearnsStoreLoad: function() {
-        this.setLearnsRequired();
-        this.refreshLearnProgress();
+    onLearnsStoreLoad: function(store, recs, success) {
+        var me = this,
+            rawData = store.getProxy().getReader().rawData;
+
+        if (success && rawData.lesson) {
+            me.getWorkCt().setLesson(rawData.lesson);
+        }
+
+        me.setLearnsRequired();
+        me.refreshLearnProgress();
     },
 
     onLearnsStoreUpdate: function() {
