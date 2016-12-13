@@ -341,6 +341,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             lessonIntro.show();
 
             progressBanner.hide();
+
+            me.syncGroupedLearnsRequired();
             return;
         }
 
@@ -395,6 +397,70 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         });
 
         progressBanner.show();
+    },
+
+    syncGroupedLearnsRequired: function() {
+        var me = this,
+            learnCt = me.getLearnCt(),
+            learnGrids = learnCt && learnCt.getInnerItems() || [],
+            lesson = me.getWorkCt().getLesson(),
+            i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns, groupedLearnsCompleted;
+
+        for (i = 0; i <learnGrids.length; i++) {
+            grid = learnGrids[i];
+            progressBanner = grid && grid.down('spark-work-learn-progressbanner');
+            learns = grid && grid.getStore().getRange();
+            groupData = lesson && lesson.getGroupData(grid && grid.groupId);
+            completedRequiredLearns = 0;
+            learnsRequiredDisabled = false;
+            requiredLearns = 0;
+            groupedLearnsCompleted = 0;
+
+            if (!progressBanner) {
+                continue;
+            }
+
+            if (learns.length && groupData) {
+                progressBanner.show();
+            } else {
+                progressBanner.hide();
+            }
+
+            if (groupData && groupData.learns_required) {
+                minimumRequired = Math.min(learns.length, groupData.learns_required); // TODO check prop
+            }
+
+            for (j = 0; j < learns.length; j++) {
+                learn = learns[j];
+                learnAssignments = learn.get('assignments');
+
+                if (learns[j].get('completed')) {
+                    groupedLearnsCompleted++;
+                }
+
+                if (
+                    learnAssignments.section === 'required-first'
+                    || learnAssignments.student === 'required-first'
+                    || learnAssignments.section === 'required'
+                    || learnAssignments.student === 'required'
+                ) {
+                    if (learn.get('completed')) {
+                        completedRequiredLearns++;
+                    } else {
+                        learnsRequiredDisabled = true;
+                    }
+                    requiredLearns++;
+                }
+            }
+
+            progressBanner.setData({
+                completedLearns: groupedLearnsCompleted,
+                minimumLearns: minimumRequired,
+                completedRequiredLearns: completedRequiredLearns,
+                requiredLearns: requiredLearns,
+                name: null
+            });
+        }
     },
 
     writeMasteryCheckScore: function() {
