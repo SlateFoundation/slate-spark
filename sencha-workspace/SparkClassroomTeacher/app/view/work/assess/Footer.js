@@ -16,11 +16,13 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
             {
                 text: 'Assign Learns',
                 margin: '0 16 0 0',
-                disabled: true
+                disabled: true,
+                hidden: true
             },
             {
                 text: 'Schedule Interaction',
-                disabled: true
+                disabled: true,
+                hidden: true
             },
             {
                 xtype: 'component',
