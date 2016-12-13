@@ -9,7 +9,8 @@ function *getHandler() {
 
     var ctx = this,
         sectionId = ctx.query.section_id,
-        status = ctx.query.status || 'active';
+        status = ctx.query.status || 'active',
+        activity;
 
     ctx.assert(ctx.isTeacher, 'Only teachers can access the activity endpoint.', 403);
     ctx.assert(status === 'all' || status === 'active', 'status is implied active, valid values are all/active', 400);
@@ -17,7 +18,7 @@ function *getHandler() {
     ctx.set('Cache-control', 'private, must-revalidate;');
 
     if (status === 'active') {
-        ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+        activity = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -64,7 +65,16 @@ function *getHandler() {
                
                assessed_section_id,
                
-               code AS sparkpoint
+               code AS sparkpoint,
+               
+              (CASE WHEN substring(t.sparkpoint_id FROM 1 FOR 1) = 'L'
+                     THEN (
+                        SELECT row_to_json(lessons)
+                          FROM lessons
+                         WHERE lessons.sparkpoint_id = t.sparkpoint_id
+                     )
+                     ELSE null
+                END) AS lesson_template
           FROM (
             SELECT student_id,
                    sparkpoint_id,
@@ -88,7 +98,7 @@ function *getHandler() {
             [sectionId]
         );
     } else {
-        ctx.body = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+        activity = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -127,7 +137,15 @@ function *getHandler() {
                apply_pace_target,
                assess_pace_target,
                assessed_section_id,
-               rn::INTEGER AS student_sequence
+               rn::INTEGER AS student_sequence,
+               (CASE WHEN substring(t.sparkpoint_id FROM  1 FOR 1) = 'L'
+                     THEN (
+                        SELECT row_to_json(lessons)
+                          FROM lessons
+                         WHERE lessons.sparkpoint_id = t.sparkpoint_id
+                     )
+                     ELSE null
+                END) AS lesson_template
           FROM (
             SELECT student_id,
                    sparkpoint_id,
@@ -158,6 +176,16 @@ function *getHandler() {
             [sectionId]
         );
     }
+
+    ctx.body = activity.map(record => {
+        if (record.lesson_template) {
+            record.lesson_template = util.codifyRecord(lessonEndpoint.recordToModel(record.lesson_template), ctx.lookup);
+        } else {
+            delete record.lesson_template;
+        }
+
+        return record;
+    });
 }
 
 function *patchHandler() {
