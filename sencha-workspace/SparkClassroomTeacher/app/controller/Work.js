@@ -244,6 +244,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             activeTeacherTab = me.getTeacherTabbar().getActiveTab(),
             multiselect = appCt.getStudentMultiselectEnabled(),
             feedbackStore = me.getWorkFeedbackStore(),
+            workCt = me.getWorkCt(),
             studentId;
 
         if (!activeTeacherTab || activeTeacherTab.getItemId() === 'work') {
@@ -253,6 +254,10 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         // The work tab is disabled during student multiselect / null value
         if (selectedStudentSparkpoint && !multiselect) {
             studentId = selectedStudentSparkpoint.get('student_id');
+
+            if (workCt && selectedStudentSparkpoint.get('is_lesson')) {
+                workCt.setLesson(selectedStudentSparkpoint.get('lesson_template'));
+            }
 
             feedbackStore.setFilters([{
                 property: 'student_id',

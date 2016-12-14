@@ -102,13 +102,8 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         }
     },
 
-    onLearnsStoreLoad: function(store, recs, success) {
-        var me = this,
-            rawData = store.getProxy().getReader().rawData;
-
-        if (success && rawData.lesson) {
-            me.getWorkCt().setLesson(rawData.lesson);
-        }
+    onLearnsStoreLoad: function() {
+        var me = this;
 
         me.setLearnsRequired();
         me.refreshLearnProgress();
@@ -240,7 +235,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
         if (studentSparkpoint.get('is_lesson')) {
             // switching to a lesson
-            workCt.setLesson(studentSparkpoint.get('lesson_template'));
+            // handle in work controller.. workCt.setLesson(studentSparkpoint.get('lesson_template'));
 
             me.renderLessonLists(studentSparkpoint);
         } else {

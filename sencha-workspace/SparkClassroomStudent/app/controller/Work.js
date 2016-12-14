@@ -156,9 +156,14 @@ Ext.define('SparkClassroomStudent.controller.Work', {
     // event handlers
     onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
         var me = this,
-            feedbackStore = this.getWorkFeedbackStore();
+            feedbackStore = this.getWorkFeedbackStore(),
+            workCt = me.getWorkCt();
 
         if (studentSparkpoint) {
+            if (workCt && studentSparkpoint.get('is_lesson')) {
+                workCt.setLesson(studentSparkpoint.get('lesson_template'));
+            }
+
             me.refreshTabbar();
 
             feedbackStore.getProxy().setExtraParams({
