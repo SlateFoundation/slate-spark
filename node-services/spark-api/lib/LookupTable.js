@@ -62,10 +62,14 @@ function LookupTable(options) {
 
                 co(function*() {
                     if (self.onCacheBust) {
-                        if (self.onCacheBust.constructor.name === 'GeneratorFunction') {
-                            yield self.onCacheBust.apply(self, [event]);
-                        } else {
-                            self.onCacheBust.apply(self, [event]);
+                        try {
+                            if (self.onCacheBust.constructor.name === 'GeneratorFunction') {
+                                yield self.onCacheBust.apply(self, [event]);
+                            } else if (typeof self.onCacheBust === 'function') {
+                                self.onCacheBust.apply(self, [event]);
+                            }
+                        } catch (e) {
+                            console.error(`onCacheBust handler failed for: ${self.schema}.${self.tableName}`, e);
                         }
                     }
 
