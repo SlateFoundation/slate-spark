@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-var suggestionCache = {};
+var autocompleteCache = {};
 
 function* getHandler() {
     var ctx = this,
@@ -22,11 +22,10 @@ function* getHandler() {
         .replace(/\./g, '\\.')
         .replace(/\-/g, '\\-');
 
-    // TODO: invalidate cache when sparkpoints and standards tables change
-    result = suggestionCache[input];
+    result = autocompleteCache[input];
 
     if (!result) {
-        result = suggestionCache[input] = yield ctx.pgp.manyOrNone(`
+        result = autocompleteCache[input] = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
         WITH standards_fts AS (
             SELECT sparkpoints.id,
                    sparkpoints.code,
@@ -57,7 +56,7 @@ function* getHandler() {
                      similarity(code, $1) AS match
                 FROM sparkpoints sp
               WHERE code ~* $2
-            LIMIT 10),
+          ),
           standards_code AS (
               SELECT sp.id,
                      sp.code,
@@ -66,7 +65,7 @@ function* getHandler() {
                 FROM standards
                 JOIN sparkpoints sp ON standards.asn_id = sp.metadata->>'asn_id'
               WHERE standards.code ~* $2
-            LIMIT 10)
+          )
 
         SELECT id, code, student_title FROM (
           (SELECT * FROM standards_fts)
@@ -76,9 +75,9 @@ function* getHandler() {
           (SELECT * FROM sparkpoints_code)
           UNION DISTINCT
           (SELECT * FROM standards_code)
-          ORDER BY match DESC
-          LIMIT 10
-        ) results;`,
+        ) t
+        ORDER BY (code = $1 OR id = $1) DESC, match DESC
+        LIMIT 10;`,
             [ input, patternSafeInput ]
         );
     }
@@ -87,5 +86,10 @@ function* getHandler() {
 }
 
 module.exports = {
-    get: getHandler
+    get: getHandler,
+    // TODO: If we keep the in-process lookup/caching, listen for an event here instead of exposing a function
+    bustCache: function() {
+        console.log(`/sparkpoints/autocomplete: Purging ${Object.keys(autocompleteCache).length} cache entries.`);
+        autocompleteCache = {};
+    }
 };
