@@ -65,7 +65,7 @@ function LookupTable(options) {
                         try {
                             if (self.onCacheBust.constructor.name === 'GeneratorFunction') {
                                 yield self.onCacheBust.apply(self, [event]);
-                            } else if (typeof self.onCacheBust === 'function') {
+                            } else {
                                 self.onCacheBust.apply(self, [event]);
                             }
                         } catch (e) {
