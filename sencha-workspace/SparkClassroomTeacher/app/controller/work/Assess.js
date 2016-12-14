@@ -18,11 +18,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     refs: {
         appCt: 'spark-teacher-appct',
+        workCt: 'spark-teacher-work-ct',
         assessCt: 'spark-teacher-work-assess',
         reflectionCt: 'spark-teacher-work-assess #reflectionCt',
         sparkpointField: 'spark-teacher-work-assess  spark-sparkpointfield',
         suggestBtn: 'spark-teacher-work-assess #suggestBtn',
-        completeBtn: 'spark-teacher-work-assess #completeBtn'
+        completeBtn: 'spark-teacher-work-assess #completeBtn',
+        sparkpointSelectList: 'spark-teacher-work-assess-footer #sparkpointSelectList'
     },
 
     control: {
@@ -153,6 +155,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             completeBtnDirty = false;
 
+        if (selectedStudentSparkpoint && selectedStudentSparkpoint.get('is_lesson')) {
+            // TODO set selected finish times
+        }
+
         if (!selectedStudentSparkpoint.get('assess_completed_time')) {
             selectedStudentSparkpoint.set('assess_finish_time', new Date());
             selectedStudentSparkpoint.save();
@@ -191,11 +197,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             assessCt = me.getAssessCt(),
+            workCt = me.getWorkCt(),
+            list = me.getSparkpointSelectList(),
             assessmentsStore = me.getWorkAssessmentsStore(),
             learnsStore = Ext.getStore('work.Learns'),
-            // appliesStore = Ext.getStore('work.Applies'),
             sparkpointField = me.getSparkpointField(),
-            sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
+            sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore(),
+            lesson;
 
         if (!assessCt) {
             return;
@@ -204,26 +212,25 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
         if (selectedStudentSparkpoint) {
             assessCt.show();
 
-            if (!assessmentsStore.isLoaded()) { // TODO: OR extraParamsDirty
-                assessmentsStore.load();
-            }
-
-            if (!learnsStore.isLoaded()) { // TODO: OR extraParamsDirty
-                learnsStore.load();
-            }
-
-            // if (!appliesStore.isLoaded() && !appliesStore.isLoading()) { // TODO: OR extraParamsDirty
-            //     appliesStore.load();
-            // }
+            assessmentsStore.load();
+            learnsStore.load();
 
             sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-
-            if (sparkpointSuggestionsStore.isLoaded()) {
-                sparkpointSuggestionsStore.load();
-            }
+            sparkpointSuggestionsStore.load();
 
             me.refreshSuggestBtn();
             me.refreshCompleteBtn();
+
+            if (selectedStudentSparkpoint.get('is_lesson')) {
+                lesson = workCt && workCt.getLesson();
+
+                list.show();
+                list.getStore().loadData(lesson && lesson.get('sparkpoints'));
+
+                // TODO modify button
+            } else {
+                list.hide();
+            }
         } else {
             assessCt.hide();
         }
