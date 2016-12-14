@@ -6,7 +6,6 @@ var nats = require('nats'),
     natsCfg = require('../config/nats.json'),
     cachingEnabled = require('../config/caching.json').lookup,
     nc = nats.connect(natsCfg),
-    bustSuggestionCache = require('../routes/sparkpoints').bustSuggestionCache,
     util = require('util'),
     cachePath = require('path').join(__dirname, '..', '/cache/lookup.json'),
     LookupTable = require('./LookupTable'),
@@ -34,7 +33,7 @@ var nats = require('nats'),
 
                 this.idToAsnIds = idToAsnIds.json;
             },
-            onCacheBust: bustSuggestionCache
+            onCacheBust: require('../routes/sparkpoints/autocomplete').bustCache
         },
 
         sparkpoint: {
@@ -61,7 +60,7 @@ var nats = require('nats'),
                     }
                 });
             },
-            onCacheBust: bustSuggestionCache
+            onCacheBust: require('../routes/sparkpoints/autocomplete').bustCache
         },
     },
     perSchool = {
@@ -139,7 +138,7 @@ try {
     console.log('Lookup cache miss');
 }
 
-module.exports = function* (next) {
+module.exports = function* lookup (next) {
     var ctx = this;
 
     // Initialize global/shared lookup tables

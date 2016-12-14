@@ -95,15 +95,6 @@ function* getHandler() {
     ctx.body = results || [];
 }
 
-function bustSuggestionCache() {
-    console.log('Busting spark point suggestion cache...');
-
-    for (var prop in suggestionCache) {
-        delete suggestionCache[prop];
-    }
-}
-
 module.exports = {
-    get: getHandler,
-    bustSuggestionCache: bustSuggestionCache
+    get: getHandler
 };
