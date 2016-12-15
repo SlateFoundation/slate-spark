@@ -7,6 +7,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
     ],
 
     config: {
+        cls: 'assess-footer',
         layout: 'hbox',
         defaults: {
             xtype: 'button',
@@ -46,7 +47,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                     xtype: 'component',
                     docked: 'top',
                     padding: '9.6px 14.4px',
-                    html: '<input class="select-all-checkbox" type="checkbox"><span>Select All</span>'
+                    html: '<div class="select-all select-indicator"></div><span>Select All</span>'
                 },
                 {
                     xtype: 'list',
@@ -54,7 +55,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                     allowDeselect: true,
                     mode: 'MULTI',
                     hidden: true,
-                    itemTpl: '<input type="checkbox">{code}',
+                    itemTpl: '<div class="select-indicator"></div>{code}',
                     store: {
                         fields: [{
                             name: 'code',
@@ -68,18 +69,6 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                             name: 'willBeEvaluated',
                             type: 'bool'
                         }]
-                    },
-                    listeners: {
-                        selectionchange: function(list, recs, eOpts) {
-                            var i, item;
-
-                            for (i = 0; i < recs.length; i++) {
-                                debugger;
-                                item = list.getItem(recs[i]); // TODO why is getItem not defined??? http://docs.sencha.com/extjs/6.0.1/modern/src/List.js-1.html#Ext.dataview.List-method-getItem
-
-                                // toggle checkbox
-                            }
-                        }
                     }
                 }]
             },
@@ -95,7 +84,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                 element: 'element',
                 fn: 'onElementClick',
                 delegate: [
-                    '.select-all-checkbox'
+                    '.select-all'
                 ]
             }
         }
@@ -103,13 +92,16 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
 
     onElementClick: function(evt) {
         var me = this,
-            list = me.query('#sparkpointSelectList')[0];
+            list = me.query('#sparkpointSelectList')[0],
+            target = Ext.fly(evt.getTarget());
 
-        if (evt.getTarget('.select-all-checkbox')) {
-            if (evt.getTarget().checked) {
-                list.selectAll();
-            } else {
+        if (target.hasCls('select-all')) {
+            if (target.hasCls('selected')) {
+                target.removeCls('selected');
                 list.deselectAll();
+            } else {
+                target.addCls('selected');
+                list.selectAll();
             }
         }
     }
