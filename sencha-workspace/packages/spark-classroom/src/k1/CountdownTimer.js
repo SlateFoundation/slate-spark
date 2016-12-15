@@ -95,7 +95,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     },
 
     applyState: function(state) {
-        if (state !== 'paused' && state !== 'stopped' && state !== 'running') {
+        if (state !== 'paused' && state !== 'stopped' && state !== 'running' && state != 'complete') {
             state = 'idle';
         }
 
@@ -122,14 +122,14 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
             record = me.getRecord;
 
         if (!record) {
-            me.setTimer(null);
+            me.loadTimerData(null);
             return;
         }
 
         me.newTimer(0);
     },
 
-    setTimer: function(data) {
+    loadTimerData: function(data) {
         var me = this,
             minutes, seconds;
 
@@ -185,7 +185,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 minutes: '00',
                 seconds: '00'
             });
-            me.setState('paused');
+            me.setState('complete');
             return;
         }
 
@@ -208,8 +208,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
     },
 
     newTimer: function(seconds) {
-        var me = this,
-            data;
+        var me = this;
 
         if (!Ext.isNumeric(seconds)) {
             return;
@@ -224,14 +223,20 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 'section': me.getSection()
             },
             success: function(response) {
-                me.setTimer(response.data);
+                me.loadTimerData(response.data);
             },
             scope: me
         });
     },
 
     toggleTimer: function(pause) {
-        var me = this;
+        var me = this,
+            data = me.getData();
+
+        // don't make this call if the timer has 0 minutes/seconds to avoid a 400 error, just let the timer reach the 'completed' state
+        if (data && data.minutes === '00' && data.seconds === '00') {
+            return;
+        }
 
         Slate.API.request({
             method: 'PATCH',
@@ -241,7 +246,7 @@ Ext.define('SparkClassroom.k1.CountdownTimer', {
                 'paused': pause
             },
             success: function(response) {
-                me.setTimer(response.data);
+                me.loadTimerData(response.data);
             },
             scope: me
         });

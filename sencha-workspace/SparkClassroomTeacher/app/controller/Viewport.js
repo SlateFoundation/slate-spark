@@ -259,7 +259,7 @@ Ext.define('SparkClassroomTeacher.controller.Viewport', {
                     data = response.data[0];
                 }
 
-                timer.setTimer(data);
+                timer.loadTimerData(data);
             },
             scope: me
         });

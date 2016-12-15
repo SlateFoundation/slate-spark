@@ -148,20 +148,17 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
     // route handlers
     rewriteShowWork: function() {
         var workTabBar = this.getWorkTabbar(),
-            studentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
-            route = '',
-            activeWorkTab;
+            activeWorkTab = workTabBar && workTabBar.getActiveTab(),
+            selectedStudentSparkpoint = this.getAppCt().getSelectedStudentSparkpoint(),
+            workTabId;
 
-        if (
-            workTabBar
-            && (activeWorkTab = workTabBar.getActiveTab())
-        ) {
-            route = 'work/' + activeWorkTab.getItemId();
-        } else if (studentSparkpoint) {
-            route = 'work/' + studentSparkpoint.get('active_phase');
+        if (activeWorkTab) {
+            workTabId = activeWorkTab.getItemId();
+        } else if (selectedStudentSparkpoint) {
+            workTabId = selectedStudentSparkpoint.get('active_phase');
         }
 
-        return route;
+        return 'work/' + workTabId;
     },
 
     showLearn: function() {
@@ -182,9 +179,14 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
     showPhase: function(phase) {
         var me = this,
-            workCt = me.getWorkCt(),
-            phaseCt,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            phaseCt, workCt;
+
+        if (!selectedStudentSparkpoint) {
+            return;
+        }
+
+        workCt = me.getWorkCt();
 
         switch (phase) {
             case 'learn':
@@ -205,7 +207,6 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
         me.doShowContainer();
         me.doHighlightTabbars();
-        me.getWorkTabbar().updateActivePhase(phase);
 
         workCt.removeAll();
 
@@ -214,12 +215,15 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         }
 
         // if the student can access the phase or if we are not in K1 mode, show the normal phaseCt
-        if (me.canAccessPhase(phase) || !location.search.match(/\WenableK1(\W|$)/)) {
-            workCt.add(phaseCt);
-            return;
-        }
+        if (location.search.match(/\WenableK1(\W|$)/)) {
+            me.showMovePhases(phase);
 
-        me.showMovePhases(phase);
+            if (me.canAccessPhase(phase)) {
+                workCt.add(phaseCt);
+            }
+        } else {
+            workCt.add(phaseCt);
+        }
     },
 
     showMovePhases: function(phase) {
@@ -274,6 +278,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
 
             feedbackStore.load();
 
+            me.showPhase(selectedStudentSparkpoint.get('active_phase'));
             me.updateTabBar(selectedStudentSparkpoint);
         }
     },
@@ -282,39 +287,78 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
         var me = this,
             movePhaseCt = me.getMovePhaseCt(),
             moveTo = movePhaseCt.getMoveToPhase(),
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            overrides;
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            student = studentSparkpoint.get('student'),
+            studentName = student ? student.get('FirstName') : 'Student',
+            overrides,
+            error,
+            prettyDate;
 
         switch (moveTo) {
-            case 'conference':
+            case 'learn':
+                if (studentSparkpoint.get('learn_finish_time')) {
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('learn_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Learn & Practice phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
+                }
                 overrides = {
-                    'learn_override_time': new Date()
+                    'learn_override_time': null,
+                    'conference_override_time': null,
+                    'apply_override_time': null,
+                    'assess_override_time': null
+                };
+                break;
+            case 'conference':
+                if (studentSparkpoint.get('conference_finish_time')) {
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('conference_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Conference phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
+                }
+                overrides = {
+                    'learn_override_time': new Date(),
+                    'conference_override_time': null,
+                    'apply_override_time': null,
+                    'assess_override_time': null
                 };
                 break;
             case 'apply':
+                if (studentSparkpoint.get('apply_finish_time')) {
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('apply_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Apply phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
+                }
                 overrides = {
-                    'learn_override_time': selectedStudentSparkpoint.get('learn_override_time') ? selectedStudentSparkpoint.get('learn_override_time') : new Date(),
-                    'conference_override_time': new Date()
+                    'learn_override_time': new Date(),
+                    'conference_override_time': new Date(),
+                    'apply_override_time': null,
+                    'assess_override_time': null
                 };
                 break;
             case 'assess':
+                if (studentSparkpoint.get('assess_finish_time')) {
+                    prettyDate = Ext.Date.format(studentSparkpoint.get('assess_finish_time'), 'm/d/Y');
+                    error = studentName + ' completed the Assess phase for this Sparkpoint on ' + prettyDate + '. Please select a phase that has not been completed or was credited by a teacher.';
+                }
                 overrides = {
-                    'learn_override_time': selectedStudentSparkpoint.get('learn_override_time') ? selectedStudentSparkpoint.get('learn_override_time') : new Date(),
-                    'conference_override_time': selectedStudentSparkpoint.get('conference_override_time') ? selectedStudentSparkpoint.get('conference_override_time') : new Date(),
-                    'apply_override_time': new Date()
+                    'learn_override_time': new Date(),
+                    'conference_override_time': new Date(),
+                    'apply_override_time': new Date(),
+                    'assess_override_time': null
                 };
                 break;
             default:
-                overrides = {};
-                break;
         }
 
-        selectedStudentSparkpoint.set(overrides);
-        selectedStudentSparkpoint.save({
+        if (error) {
+            Ext.Msg.alert('Phase Crediting Conflict', error);
+            return false;
+        }
+
+        studentSparkpoint.set(overrides);
+        studentSparkpoint.save({
             callback: function() {
-                me.showPhase(selectedStudentSparkpoint.get('active_phase'));
+                me.showPhase(studentSparkpoint.get('active_phase'));
             }
         });
+
+        return true;
     },
 
     onNavWorkTap: function() {
@@ -400,21 +444,11 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * @return boolean
      */
     canAccessPhase: function(phase) {
-        var me = this,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
-
-        switch (phase) {
-            case 'learn':
-                return true;
-            case 'conference':
-                return !Ext.isEmpty(selectedStudentSparkpoint.get('learn_completed_time'));
-            case 'apply':
-                return !Ext.isEmpty(selectedStudentSparkpoint.get('conference_completed_time'));
-            case 'assess':
-                return !Ext.isEmpty(selectedStudentSparkpoint.get('apply_completed_time'));
-            default:
-                return false;
+        if (phase === 'learn') {
+            return true;
         }
+
+        return false;
     },
 
     /**
@@ -436,14 +470,26 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
      * Called by each subsection route handler to highlight the proper tab in the teacher
      * tabbar and the assign tabbar
      */
-    doHighlightTabbars: function(section) {
+    doHighlightTabbars: function(phase) {
         var me = this,
             workTabbar = me.getWorkTabbar(),
             teacherTabbar = me.getTeacherTabbar(),
             teacherTab = teacherTabbar.down('#work'),
-            assignTab = workTabbar.down('#'+ section);
+            assignTab = workTabbar.down('#'+ phase),
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+
+        if (!studentSparkpoint) {
+            return;
+        }
 
         workTabbar.setActiveTab(assignTab);
+        workTabbar.setCompletedPhases({
+            learn: !Ext.isEmpty(studentSparkpoint.get('learn_completed_time')),
+            conference: !Ext.isEmpty(studentSparkpoint.get('conference_completed_time')),
+            apply: !Ext.isEmpty(studentSparkpoint.get('apply_completed_time')),
+            assess: !Ext.isEmpty(studentSparkpoint.get('assess_completed_time'))
+        });
+
         teacherTabbar.setActiveTab(teacherTab);
     },
 
@@ -456,7 +502,8 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             applyStartTime = studentSparkpoint.get('apply_start_time'),
             assessStartTime = studentSparkpoint.get('assess_start_time'),
             workTabbar = me.getWorkTabbar(),
-            timing = SparkClassroom.timing.DurationDisplay;
+            timing = SparkClassroom.timing.DurationDisplay,
+            phase = studentSparkpoint.get('active_phase');
 
         if (!workTabbar) {
             return;
@@ -487,6 +534,7 @@ Ext.define('SparkClassroomTeacher.controller.Work', {
             && (timing.calculateDuration(sectionCode, assessStartTime, studentSparkpoint.get('assess_completed_time') || now) || '0d')
         );
 
-        workTabbar.setActivePhase(studentSparkpoint.get('active_phase'));
+        workTabbar.setActivePhase(phase);
+        me.doHighlightTabbars(phase);
     }
 });

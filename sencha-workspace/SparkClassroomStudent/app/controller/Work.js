@@ -235,10 +235,22 @@ Ext.define('SparkClassroomStudent.controller.Work', {
      * tabbar and the assign tabbar
      */
     doHighlightTabbars: function(section) {
-        var workTabbar = this.getWorkTabbar(),
-            assignTab = workTabbar.down('#' + section);
+        var me = this,
+            workTabbar = me.getWorkTabbar(),
+            assignTab = workTabbar.down('#' + section),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
+
+        if (!studentSparkpoint) {
+            return;
+        }
 
         workTabbar.setActiveTab(assignTab);
+        workTabbar.setCompletedPhases({
+            learn: !Ext.isEmpty(studentSparkpoint.get('learn_completed_time')),
+            conference: !Ext.isEmpty(studentSparkpoint.get('conference_completed_time')),
+            apply: !Ext.isEmpty(studentSparkpoint.get('apply_completed_time')),
+            assess: !Ext.isEmpty(studentSparkpoint.get('assess_completed_time'))
+        });
     },
 
     refreshTabbar: function() {
@@ -250,6 +262,8 @@ Ext.define('SparkClassroomStudent.controller.Work', {
         if (!workTabbar) {
             return;
         }
+
+        me.doHighlightTabbars(sectionCode);
 
         me.getLearnTab().setDuration(
             SparkClassroom.timing.DurationDisplay.calculateDuration(
