@@ -219,7 +219,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            workCt = me.getWorkCt(),
             learnCt = me.getLearnCt(),
             scoreField = me.getMasteryCheckScoreField(),
             studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
@@ -235,8 +234,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
         if (studentSparkpoint.get('is_lesson')) {
             // switching to a lesson
-            // handle in work controller.. workCt.setLesson(studentSparkpoint.get('lesson_template'));
-
             me.renderLessonLists(studentSparkpoint);
         } else {
             // switching to a regular sparkpoint
