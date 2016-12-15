@@ -153,10 +153,18 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     onCompleteBtnTap: function() {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            completeBtnDirty = false;
+            completeBtnDirty = false,
+            list = me.getSparkpointSelectList(),
+            selection = list && list.getSelections();
 
         if (selectedStudentSparkpoint && selectedStudentSparkpoint.get('is_lesson')) {
-            // TODO set selected finish times
+            if (!selection || selection.length === 0) {
+                Ext.Msg.alert('No Selection', 'Please select at least one sparkpoint to mark complete for this lesson.');
+                return;
+            }
+
+            // TODO loop through selections, set assess_finish??? (should this be override time?) time if no completed time and save
+            return;
         }
 
         if (!selectedStudentSparkpoint.get('assess_completed_time')) {
@@ -203,6 +211,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             learnsStore = Ext.getStore('work.Learns'),
             sparkpointField = me.getSparkpointField(),
             sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore(),
+            completeBtn = me.getCompleteBtn(),
             lesson;
 
         if (!assessCt) {
@@ -227,8 +236,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
                 list.show();
                 list.getStore().loadData(lesson && lesson.get('sparkpoints'));
 
-                // TODO modify button
+                completeBtn.setText('Mark Selected Complete');
+
+                completeBtn.enable(); // TODO remove
             } else {
+                completeBtn.setText('Mark Standard Complete');
                 list.hide();
             }
         } else {
