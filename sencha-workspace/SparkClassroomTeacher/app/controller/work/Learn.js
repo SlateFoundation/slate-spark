@@ -326,6 +326,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             lessonIntro = me.getLessonIntro(),
             lesson, learn, learnAssignments;
 
+        if (!progressBanner) {
+            // learns tab has not been activated yet
+            return;
+        }
+
         if (isLesson) {
             lesson = workCt && workCt.getLesson();
 
@@ -349,11 +354,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             minimumRequired = Math.min(count, me.learnsRequiredStudent);
         } else if (me.learnsRequiredSection !== null) {
             minimumRequired = Math.min(count, me.learnsRequiredSection);
-        }
-
-        if (!progressBanner) {
-            // learns tab hasn't been activated yet
-            return;
         }
 
         if (lessonIntro) {

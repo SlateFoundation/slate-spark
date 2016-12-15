@@ -62,22 +62,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+    onSelectedStudentSparkpointChange: function() {
         var me = this,
             sparkpointField = me.getSparkpointField(),
-            store = me.getWorkAssessmentsStore(),
-            proxy = store.getProxy();
-
-        if (selectedStudentSparkpoint) {
-            // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
-
-            // TODO: reload store if sparkpoints param dirty
-            if (store.isLoaded()) {
-                store.load();
-            }
-        }
+            assessCt = me.getAssessCt();
 
         if (sparkpointField) {
             sparkpointField.getSuggestionsList().hide();
@@ -85,7 +73,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             sparkpointField.setQuery(null);
         }
 
-        me.syncSelectedStudentSparkpoint();
+        if (!assessCt) {
+            return;
+        }
+
+        assessCt.show();
     },
 
     onAssessCtActivate: function() {
@@ -203,9 +195,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            assessCt = me.getAssessCt(),
+            appCt = me.getAppCt(),
+            selectedStudentSparkpoint = appCt.getSelectedStudentSparkpoint(),
             workCt = me.getWorkCt(),
+            assessCt = me.getAssessCt(),
             list = me.getSparkpointSelectList(),
             assessmentsStore = me.getWorkAssessmentsStore(),
             learnsStore = Ext.getStore('work.Learns'),
@@ -214,14 +207,17 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             completeBtn = me.getCompleteBtn(),
             lesson;
 
-        if (!assessCt) {
-            return;
-        }
-
         if (selectedStudentSparkpoint) {
-            assessCt.show();
-
+            assessmentsStore.getProxy().setExtraParams({
+                'student_id': selectedStudentSparkpoint.get('student_id'),
+                'sparkpoint': selectedStudentSparkpoint.get('sparkpoint')
+            });
             assessmentsStore.load();
+
+            learnsStore.getProxy().setExtraParams({
+                'student_id': selectedStudentSparkpoint.get('student_id'),
+                'sparkpoint': selectedStudentSparkpoint.get('sparkpoint')
+            });
             learnsStore.load();
 
             sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
