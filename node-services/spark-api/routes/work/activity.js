@@ -251,12 +251,10 @@ function *patchHandler() {
 
     // When finishing a lesson, we must create dummy student_sparkpoint records for the assessed sparkpoints
     if (isLesson && record.assess_finish_time) {
-        // TODO: This should happen in a trigger or a transaction
-
         let assessedSparkpointIds = activity.assessed_sparkpoint_ids;
         let lessonCode = ctx.lookup.sparkpoint.cache.idToCode[sparkpointId];
 
-        ctx.assert(Array.isArray(assessedSparkpointIds),
+        ctx.assert(Array.isArray(assessedSparkpointIds) && assessedSparkpointIds.length > 0,
             'assessed_sparkpoint_ids required: When marking a lesson complete you must send an array of sparkpoint_ids.',
             400
         );
