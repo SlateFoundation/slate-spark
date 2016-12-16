@@ -147,15 +147,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
             completeBtnDirty = false,
             list = me.getSparkpointSelectList(),
-            selection = list && list.getSelections();
+            selections = list && list.getSelections(),
+            i;
 
         if (selectedStudentSparkpoint && selectedStudentSparkpoint.get('is_lesson')) {
-            if (!selection || selection.length === 0) {
+            if (!selections || selections.length === 0) {
                 Ext.Msg.alert('No Selection', 'Please select at least one sparkpoint to mark complete for this lesson.');
                 return;
             }
 
-            // TODO loop through selections, set assess_finish??? (should this be override time?) time if no completed time and save
+            for (i = 0; i < selections.length; i++) {
+                // create sparkpoint record
+
+                // set assess_finish_time (or override_time?)
+
+                // save
+            }
             return;
         }
 

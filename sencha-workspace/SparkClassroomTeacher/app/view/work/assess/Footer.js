@@ -3,7 +3,8 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
     xtype: 'spark-teacher-work-assess-footer',
     requires: [
         'SparkClassroom.widget.SparkpointField',
-        'SparkClassroom.store.SparkpointsLookup'
+        'SparkClassroom.store.SparkpointsLookup',
+        'SparkClassroom.model.StudentSparkpoint'
     ],
 
     config: {
@@ -57,18 +58,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                     hidden: true,
                     itemTpl: '<div class="select-indicator"></div>{code}',
                     store: {
-                        fields: [{
-                            name: 'code',
-                            type: 'string'
-                        },
-                        {
-                            name: 'id',
-                            type: 'string'
-                        },
-                        {
-                            name: 'willBeEvaluated',
-                            type: 'bool'
-                        }]
+                        model: 'SparkClassroom.model.StudentSparkpoint'
                     }
                 }]
             },
