@@ -271,8 +271,9 @@ function *patchHandler() {
                 conference_override_teacher_id: ctx.userId,
                 apply_override_teacher_id: ctx.userId,
                 assess_override_teacher_id: ctx.userId,
-                override_reason: `Assessed as part of lesson: ${lessonCode} (${sparkpointId})`,
-                assessed_section_id: sectionId,
+                override_reason: `Assessed as part of lesson: ${lessonCode} (${sparkpointId}) in Section #${sectionId}`,
+                // TODO: We are not setting this as it could blow out existing work
+                // assessed_section_id: sectionId,
                 lesson_sparkpoint_id: sparkpointId
             };
             
