@@ -196,13 +196,15 @@ function *patchHandler() {
         sparkpointId = ctx.query.sparkpoint_id,
         updateSectionStudentActiveSparkpoint = true,
         recordToUpsert = util.recordToUpsert.bind(ctx),
+        isLesson = util.isLessonSparkpoint(sparkpointId),
+        studentSparkpointRecords = [],
         activity = ctx.request.body,
         vals = new util.Values(),
         record = {},
         errors,
         now = new Date();
 
-    ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)');
+    ctx.assert(!Array.isArray(activity), 'PATCH accepts a single object; not an array (batchActions: false)', 400);
     ctx.require(['section_id', 'sparkpoint_id']);
     ctx.assert(studentId, `student_id is required for non-students. You are logged in as a: ${ctx.role}`, 400);
 
@@ -211,21 +213,26 @@ function *patchHandler() {
         let val = activity[key];
 
         if (key.includes('_time')) {
-            // Allow *_override_time to be blanked by passing a null value
-            if (val === null && key.includes('override_time')) {
-                record[key] = null;
-                record[key.replace('_time', '_teacher_id')] = null;
-            } else if (activity[key] === true || activity[key] === 'now') {
+            if (val === true || val === 'now') {
                 record[key] = now;
-                record[key.replace('_time', '_teacher_id')] = ctx.userId;
             } else {
-                val = parseInt(activity[key], 10);
+                val = parseInt(val, 10);
 
                 ctx.assert(!isNaN(val),
                     `${key} should be a UTC timestamp, "now", or true you provided: ${activity[key]}`, 400
                 );
 
                 record[key] = (val === null) ? null : new Date(val * 1000).toUTCString();
+            }
+
+            if (key.includes('override_time')) {
+                // Allow *_override_time to be blanked by passing a null value
+                if (val === null) {
+                    record[key] = null;
+                    record[key.replace('_time', '_teacher_id')] = null;
+                } else {
+                    record[key.replace('_time', '_teacher_id')] = ctx.userId;
+                }
             }
         } else if (key.includes('_mastery_check_score')) {
             let val = parseInt(activity[key], 10);
@@ -240,6 +247,39 @@ function *patchHandler() {
         } else if (key in ctx.introspection.tables.student_sparkpoint) {
             record[key] = val;
         }
+    }
+
+    // When finishing a lesson, we must create dummy student_sparkpoint records for the assessed sparkpoints
+    if (isLesson && record.assess_finish_time) {
+        // TODO: This should happen in a trigger or a transaction
+
+        let assessedSparkpointIds = activity.assessed_sparkpoint_ids;
+        let lessonCode = ctx.lookup.sparkpoint.cache.idToCode[sparkpointId];
+
+        ctx.assert(Array.isArray(assessedSparkpointIds),
+            'assessed_sparkpoint_ids required: When marking a lesson complete you must send an array of sparkpoint_ids.',
+            400
+        );
+
+        studentSparkpointRecords = assessedSparkpointIds.map(assessedSparkpointId => {
+            let record = {
+                sparkpoint_id: assessedSparkpointId,
+                student_id: studentId,
+                learn_override_time: now,
+                apply_override_time: now,
+                conference_override_time: now,
+                assess_override_time: now,
+                learn_override_teacher_id: ctx.userId,
+                conference_override_teacher_id: ctx.userId,
+                apply_override_teacher_id: ctx.userId,
+                assess_override_teacher_id: ctx.userId,
+                override_reason: `Assessed as part of lesson: ${lessonCode} (${sparkpointId})`,
+                assessed_section_id: sectionId,
+                lesson_sparkpoint_id: sparkpointId
+            };
+            
+            return record;
+        });
     }
 
     // We will set this explicitly later
@@ -309,14 +349,25 @@ function *patchHandler() {
 
     ctx.assert(!errors, errors && errors.join('\n'), 400);
 
-    let result = yield ctx.pgp.oneOrNone(
-        recordToUpsert(
-            'student_sparkpoint',
-            record,
-            vals,
-            ['sparkpoint_id', 'student_id']
-        ) + ' RETURNING *;', vals.vals
+    studentSparkpointRecords.unshift(record);
+
+    vals = new util.Values();
+
+    let results = yield ctx.pgp.any(
+        util.queriesToReturningCte(
+            studentSparkpointRecords.map(record => {
+                return recordToUpsert(
+                    'student_sparkpoint',
+                    record,
+                    vals,
+                    ['sparkpoint_id', 'student_id']
+                )
+            })
+        ),
+        vals.vals
     );
+
+    let result = results.shift();
 
     let response = codifyRecord(result || (yield ctx.pgp.one(/*language=SQL*/ `
       SELECT *
