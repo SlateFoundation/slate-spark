@@ -21,9 +21,10 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Grid', {
             'gridflex',
             'gridheight'
         ],
-        titleBar: null,
+        cls: 'teacher-assign-learns-grid',
         store: 'assign.Learns',
-        columns:[
+        emptyText: 'No Learns available for this Sparkpoint.',
+        columns: [
             // {
             //     xtype: 'spark-sparkpoints-column'
             // },

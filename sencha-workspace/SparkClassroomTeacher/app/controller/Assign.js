@@ -194,9 +194,19 @@ Ext.define('SparkClassroomTeacher.controller.Assign', {
         // TODO: apply filters to stores
     },
 
-    onSelectedStudentSparkpointChange: function() {
-        this.hideOverlays();
-        this.syncSelectedStudentSparkpoint();
+    onSelectedStudentSparkpointChange: function(appCt, studentSparkpoint) {
+        var me = this,
+            assignCt = me.getAssignCt();
+
+        if (assignCt
+            && studentSparkpoint
+            && studentSparkpoint.get('is_lesson')
+        ) {
+            assignCt.setLesson(studentSparkpoint.get('lesson_template'));
+        }
+
+        me.hideOverlays();
+        me.syncSelectedStudentSparkpoint();
     },
 
     onNavAssignTap: function() {

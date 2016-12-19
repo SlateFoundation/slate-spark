@@ -274,19 +274,78 @@ Ext.define('SparkClassroomTeacher.controller.assign.Learns', {
     // controller methods
     syncSelectedSparkpoint: function() {
         var me = this,
+            appCt = me.getAppCt(),
             learnsCt = me.getLearnsCt(),
-            sparkpoint = me.getAssignCt().getSelectedSparkpoint();
+            studentSparkpoint = appCt && appCt.getSelectedStudentSparkpoint();
 
         if (!learnsCt || !learnsCt.hasParent()) {
             return;
         }
 
-        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (sparkpoint) {
+        if (studentSparkpoint) {
+            if (studentSparkpoint.get('is_lesson')) {
+                // switching to a lesson
+                me.renderLessonLists(studentSparkpoint);
+            } else {
+                // switching to a regular sparkpoint
+                learnsCt.removeAll();
+                learnsCt.add([{
+                    titleBar: null,
+                    store: 'assign.Learns'
+                }]);
+            }
+
             learnsCt.show();
         } else {
             learnsCt.hide();
         }
+    },
+
+    renderLessonLists: function() {
+        var me = this,
+            learnsCt = me.getLearnsCt(),
+            assignCt = me.getAssignCt(),
+            learnLists = [],
+            lesson = assignCt.getLesson(),
+            groups, group, i;
+
+        learnsCt.removeAll();
+
+        groups = lesson && lesson.get('learn_groups') || [];
+
+        for (i = 0; i < groups.length; i++) {
+            group = groups[i];
+
+            learnLists.push({
+                title: group.title,
+                emptyText: 'No Learns available for this group.',
+                groupId: group.id,
+                store: {
+                    type: 'chained',
+                    source: 'assign.Learns',
+                    filters: [{
+                        property: 'lesson_group_id',
+                        value: group.id
+                    }]
+                }
+            });
+        }
+
+        learnLists.push({
+            title: 'Ungrouped',
+            emptyText: 'No Learns available for this group.',
+            groupId: null,
+            store: {
+                type: 'chained',
+                source: 'assign.Learns',
+                filters: [{
+                    property: 'lesson_group_id',
+                    value: null
+                }]
+            }
+        });
+
+        learnsCt.add(learnLists);
     },
 
     writeAssignments: function(assignmentsData) {

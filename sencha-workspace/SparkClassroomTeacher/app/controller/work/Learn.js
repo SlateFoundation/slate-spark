@@ -267,6 +267,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
             learnLists.push({
                 title: group.title,
+                emptyText: 'No Learns available for this group.',
                 groupId: group.id,
                 store: {
                     type: 'chained',
@@ -281,6 +282,7 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
         learnLists.push({
             title: 'Ungrouped',
+            emptyText: 'No Learns available for this group.',
             groupId: null,
             store: {
                 type: 'chained',
