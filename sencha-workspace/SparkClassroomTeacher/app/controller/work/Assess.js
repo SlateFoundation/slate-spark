@@ -148,25 +148,41 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             completeBtnDirty = false,
             list = me.getSparkpointSelectList(),
             selections = list && list.getSelections(),
+            assessdSparkpointIds = [],
             i;
 
-        if (selectedStudentSparkpoint && selectedStudentSparkpoint.get('is_lesson')) {
-            if (!selections || selections.length === 0) {
+        if (selectedStudentSparkpoint
+            && !selectedStudentSparkpoint.get('assess_completed_time')
+            && selectedStudentSparkpoint.get('is_lesson')
+        ) {
+            // lesson sparkpoint
+            if (!selections
+                || selections.length === 0
+            ) {
                 Ext.Msg.alert('No Selection', 'Please select at least one sparkpoint to mark complete for this lesson.');
                 return;
             }
 
             for (i = 0; i < selections.length; i++) {
-                // create sparkpoint record
-
-                // set assess_finish_time (or override_time?)
-
-                // save
+                assessdSparkpointIds.push(selections[i].get('id'));
             }
-            return;
-        }
 
-        if (!selectedStudentSparkpoint.get('assess_completed_time')) {
+            Slate.API.request({
+                method: 'PATCH',
+                url: '/spark/api/work/activity',
+                jsonData: {
+                    'student_id': selectedStudentSparkpoint.get('student_id'),
+                    'sparkpoint_id': selectedStudentSparkpoint.get('sparkpoint_id'),
+                    'assess_finish_time': new Date(),
+                    'assessed_sparkpoint_ids': assessdSparkpointIds
+                }
+            });
+
+            completeBtnDirty = true;
+        } else if (selectedStudentSparkpoint
+            && !selectedStudentSparkpoint.get('assess_completed_time')
+        ) {
+            // normal sparkpoint
             selectedStudentSparkpoint.set('assess_finish_time', new Date());
             selectedStudentSparkpoint.save();
 
