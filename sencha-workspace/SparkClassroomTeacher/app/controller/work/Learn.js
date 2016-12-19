@@ -81,7 +81,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onLearnCtActivate: function() {
-        this.refreshLearnProgress();
+        var me = this;
+
+        me.syncSelectedStudentSparkpoint();
+        me.refreshLearnProgress();
     },
 
     onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, studentSparkpoint, operation, modifiedFieldNames) {
