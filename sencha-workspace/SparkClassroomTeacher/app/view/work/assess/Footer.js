@@ -3,8 +3,7 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
     xtype: 'spark-teacher-work-assess-footer',
     requires: [
         'SparkClassroom.widget.SparkpointField',
-        'SparkClassroom.store.SparkpointsLookup',
-        'SparkClassroom.model.StudentSparkpoint'
+        'SparkClassroom.store.SparkpointsLookup'
     ],
 
     config: {
@@ -56,9 +55,38 @@ Ext.define('SparkClassroomTeacher.view.work.assess.Footer', {
                     allowDeselect: true,
                     mode: 'MULTI',
                     hidden: true,
-                    itemTpl: '<div class="select-indicator"></div>{code}',
+                    itemTpl: '<div class="select-indicator" data-id="{id}"></div>{code}',
                     store: {
-                        model: 'SparkClassroom.model.StudentSparkpoint'
+                        fields: [{
+                            name: 'code',
+                            type: 'string'
+                        },
+                        {
+                            name: 'id',
+                            type: 'string'
+                        },
+                        {
+                            name: 'willBeEvaluated',
+                            type: 'bool'
+                        }]
+                    },
+                    listeners: {
+                        refresh: function(list) {
+                            var recs = list.getStore().getRange(),
+                                record, i;
+
+                            if (!recs || recs.length === 0) {
+                                return;
+                            }
+
+                            for (i = 0; i < recs.length; i++) {
+                                record = recs[i];
+
+                                if (record.get('willBeEvaluated') && !list.isSelected(record)) {
+                                    list.select(record, true);
+                                }
+                            }
+                        }
                     }
                 }]
             },
