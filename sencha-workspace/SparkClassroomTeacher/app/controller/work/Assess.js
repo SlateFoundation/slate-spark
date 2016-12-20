@@ -256,8 +256,6 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
                 list.getStore().loadData(lesson && lesson.get('sparkpoints'));
 
                 completeBtn.setText('Mark Selected Complete');
-
-                completeBtn.enable(); // TODO remove
             } else {
                 completeBtn.setText('Mark Standard Complete');
                 list.hide();
