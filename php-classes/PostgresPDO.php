@@ -11,9 +11,9 @@ class PostgresPDO
     public static $host = 'localhost';
     public static $port = 5432;
     public static $database = 'spark';
-    public static $username = 'spark';
-    public static $password = 'SparkPoint2015';
-    public static $application_name = 'spark-repository-manager';
+    public static $username = 'fusebox';
+    public static $password;
+    public static $application_name = 'spark-fusebox';
 
     protected static $connection;
     public static function getConnection()
