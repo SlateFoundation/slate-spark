@@ -45,7 +45,7 @@ if (!$recordId = array_shift(Site::$pathStack)) {
             }
 
             foreach (['source_sparkpoint_id', 'target_sparkpoint_id'] AS $field) {
-                if (!empty($requestData[$field]) && preg_match('/^M[\dA-F]{7}$/', $requestData[$field])) {
+                if (!empty($requestData[$field]) && preg_match("/^[SM][\\dA-F]{7}$/u", $requestData[$field])) {
                     $set[$field] = $requestData[$field];
                 } else {
                     JSON::error($field . ' required', 400);

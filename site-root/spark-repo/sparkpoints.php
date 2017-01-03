@@ -75,12 +75,12 @@ if (!$sparkpointId = array_shift(Site::$pathStack)) {
         foreach (JSON::getRequestData() AS $requestData) {
             $set = [];
 
-            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+            if (empty($requestData['id']) || !preg_match("/^[SM][\\dA-F]{7}$/u", $requestData['id'])) {
                 JSON::error('id required', 400);
             }
 
             foreach (['code', 'abbreviation', 'teacher_title', 'student_title', 'teacher_description', 'student_description', 'editor_memo'] AS $optionalField) {
-                if (!empty($requestData[$optionalField])) {
+                if (array_key_exists($optionalField, $requestData)) {
                     $set[$optionalField] = $requestData[$optionalField];
                 }
             }
@@ -99,12 +99,12 @@ if (!$sparkpointId = array_shift(Site::$pathStack)) {
         $sparkpoints = [];
 
         foreach (JSON::getRequestData() AS $requestData) {
-            if (empty($requestData['id']) || !is_int($requestData['id'])) {
+            if (empty($requestData['id']) || !preg_match("/^[SM][\\dA-F]{7}$/u", $requestData['id'])) {
                 JSON::error('id required', 400);
             }
 
             PostgresPDO::delete('sparkpoint_standard_alignments', ['sparkpoint_id' => $requestData['id']]);
-            PostgresPDO::delete('sparkpoints_edges', $requestData['id'] . ' IN (source_sparkpoint_id, target_sparkpoint_id)');
+            PostgresPDO::delete('sparkpoints_edges', "'" . $requestData['id'] . "' IN (source_sparkpoint_id, target_sparkpoint_id)");
 
             $sparkpoints[] = PostgresPDO::delete('sparkpoints', ['id' => $requestData['id']], '*');
         }
