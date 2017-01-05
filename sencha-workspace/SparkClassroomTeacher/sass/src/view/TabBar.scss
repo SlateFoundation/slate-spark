@@ -7,6 +7,9 @@
 
 
     .x-tabbar-inner {
+        min-height: 0;
+        padding: 0;
+
         > .x-tab { // override vendor specificity
             margin: 0;
         }

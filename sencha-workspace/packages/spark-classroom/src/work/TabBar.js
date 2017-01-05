@@ -15,6 +15,11 @@ Ext.define('SparkClassroom.work.TabBar', {
 
         defaultType: 'spark-work-tab',
 
+        layout: {
+            type: 'hbox',
+            align: 'end'
+        },
+
         items: [
             {
                 itemId: 'learn',

@@ -14,13 +14,20 @@
         border: none;
         padding: 0;
 
-        .x-input-el {
+        .x-input {
             background: none;
             border: none;
+        }
+
+        .x-input-el {
             font-family: $heading-font-family;
-            font-size: xx-large;
+            font-size: 2 * $font-size;
             min-height: 0;
             padding: 0;
+        }
+
+        .x-icon-el {
+            font-size: 1.25 * $font-size;
         }
     }
 

@@ -6,6 +6,11 @@
     font-weight: bold;
     padding: 0 .9em 0 7.5%;
 
+    .x-toolbar-inner {
+        min-height: 0;
+        padding: 0;
+    }
+
     .x-toolbar-inner > .x-button {
         background-color: $base-color;
         border: 1px solid $base-light-color;
@@ -26,6 +31,10 @@
             border-color: $base-color;
             color: $color;
         }
+    }
+
+    .x-disabled {
+        pointer-events: none;
     }
 }
 

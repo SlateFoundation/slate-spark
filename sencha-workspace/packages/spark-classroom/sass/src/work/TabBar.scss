@@ -1,12 +1,13 @@
 .spark-work-tabbar {
     background: none;
-    box-shadow: 0 2px 4px rgba(black, .2);
+    box-shadow: 0 3px 4px -1px rgba(black, .2);
     height: 3.1875em;
     margin: .5em 0 2em;
     padding: 0;
 
     .x-tabbar-inner {
-        @include st-box-align(end);
+        height: 100%;
+        padding: 0;
 
         > .x-tab {
             margin: 0;
