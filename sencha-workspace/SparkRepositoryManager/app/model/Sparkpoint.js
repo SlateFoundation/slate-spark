@@ -32,6 +32,7 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
 			include: 'sparkpoints_edges_complete'
 		},
         writer: {
+            type: 'api',
             allowSingle: false
         }
     },

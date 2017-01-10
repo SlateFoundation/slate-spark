@@ -16,6 +16,7 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
 			include: 'other_sparkpoint'
 		},
         writer: {
+            type: 'api',
             allowSingle: false
         }
 	},

@@ -15,6 +15,7 @@ Ext.define('SparkRepositoryManager.model.SparkpointAlignment', {
 			include: 'standard'
 		},
         writer: {
+            type: 'api',
             allowSingle: false
         }
 	},

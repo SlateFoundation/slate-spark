@@ -14,6 +14,7 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
         type: 'spark-api',
         url: '/spark-repo/content-areas',
         writer: {
+            type: 'api',
             allowSingle: false
         }
     },

@@ -28,6 +28,7 @@ Ext.define('SparkRepositoryManager.model.Standard', {
         type: 'spark-api',
         url: '/spark-repo/standards',
         writer: {
+            type: 'api',
             allowSingle: false
         }
     },

@@ -67,7 +67,7 @@
     "requires": [
         "jarvus-hotfixes",
         "saki-grid-multisearch-5",
-        "ext-ux",
+        "ux",
         "emergence-apikit",
         "jarvus-lazydata",
         "jarvus-ext-searchfield",

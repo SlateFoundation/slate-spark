@@ -2,6 +2,9 @@
 Ext.define('SparkRepositoryManager.proxy.SandboxSchool', {
     extend: 'Jarvus.proxy.API',
     alias: 'proxy.sandbox-school',
+    requires: [
+        'SparkRepositoryManager.SandboxSchoolAPI'
+    ],
 
     connection: 'SparkRepositoryManager.SandboxSchoolAPI',
 

@@ -1,5 +1,8 @@
 Ext.define('SparkRepositoryManager.model.Lesson', {
     extend: 'Ext.data.Model',
+    requires: [
+        'SparkRepositoryManager.proxy.SandboxSchool'
+    ],
 
     proxy: {
         // TODO: this proxy is a dev workaround to contact a different API host

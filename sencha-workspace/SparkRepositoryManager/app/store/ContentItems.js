@@ -1,8 +1,8 @@
 Ext.define('SparkRepositoryManager.store.ContentItems', {
     extend: 'Ext.data.Store',
-
     requires: [
-        'SparkRepositoryManager.model.ContentItem'
+        'SparkRepositoryManager.model.ContentItem',
+        'SparkRepositoryManager.proxy.SandboxSchool'
     ],
 
     model: 'SparkRepositoryManager.model.ContentItem',
