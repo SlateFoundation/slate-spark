@@ -20,7 +20,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
     },
 
     loadSparkpoint: function(sparkpoint) {
-        var sparkpoint_edges,
+        var sparkpointEdges,
             dependencies = [],
             dependents = [],
             relation,
@@ -31,10 +31,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             i = 0;
 
         if (sparkpoint) {
-            sparkpoint_edges = sparkpoint.get('sparkpoints_edges');
+            sparkpointEdges = sparkpoint.get('sparkpoints_edges');
 
-            for (i; i < sparkpoint_edges.length; i++) {
-                relation = sparkpoint_edges[i];
+            for (i; i < sparkpointEdges.length; i++) {
+                relation = sparkpointEdges[i];
                 if (relation.rel_type === 'dependency') {
                     if (relation.id === relation.target_sparkpoint_id) {
                         dependencies.push(relation);
@@ -118,6 +118,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             titleBB,
             titleWidth,
             titleHeight,
+            mask,
             i = 0;
 
         sprites = Ext.create('Ext.draw.CompositeSprite', {
@@ -185,7 +186,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             rect.height = rectBB.height;
 
             // create mask sprite for interactions
-            var mask = surface.add({
+            mask = surface.add({
                 type: 'rect',
                 attr: rect.attr
             });
@@ -209,7 +210,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
 
             codeX = 2;
             codeY = codeBB.height / 2;
-            me.TRANSLATE(sprites, codeX, codeY);
+            me.TRANSLATE(sprites, codeX, codeY); // eslint-disable-line new-cap
 
             sprites.add(title);
             sprites.add(rect);
@@ -220,7 +221,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             }
 
             // center the cell vertically
-            me.TRANSLATE(sprites, 0, (rectHeight - rectBB.height) / 2);
+            me.TRANSLATE(sprites, 0, (rectHeight - rectBB.height) / 2); // eslint-disable-line new-cap
 
             mask.on({
                 click: function() {
@@ -236,12 +237,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
     },
 
     // http://phpjs.org/functions/wordwrap/
-    wordwrap: function(str, int_width, str_break, cut) {
-        var m = arguments.length >= 2 ? arguments[1] : 75;
-        var b = arguments.length >= 3 ? arguments[2] : '\n';
-        var c = arguments.length >= 4 ? arguments[3] : false;
-
-        var i, j, l, s, r;
+    wordwrap: function(str) {
+        var m = arguments.length >= 2 ? arguments[1] : 75,
+            b = arguments.length >= 3 ? arguments[2] : '\n',
+            c = arguments.length >= 4 ? arguments[3] : false,
+            i, j, l, s, r;
 
         str = String(str);
 
@@ -253,8 +253,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
         .length; ++i < l; r[i] += s) {
             for (s = r[i], r[i] = ''; s.length > m; r[i] += s.slice(0, j) + ((s = s.slice(j))
           .length ? b : '')) {
-                j = c == 2 || (j = s.slice(0, m + 1)
-            .match(/\S*(\s)?$/))[1] ? m : j.input.length - j[0].length || c == 1 && m || j.input.length + (j = s.slice(
+                j = c === 2 || (j = s.slice(0, m + 1)
+            .match(/\S*(\s)?$/))[1] ? m : j.input.length - j[0].length || c === 1 && m || j.input.length + (j = s.slice(
               m)
             .match(/^\S*/))[0].length;
             }

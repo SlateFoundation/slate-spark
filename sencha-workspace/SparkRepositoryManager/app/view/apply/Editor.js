@@ -96,7 +96,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             labelAlign: 'top',
             emptyText: 'Type your todo here. When you are done typing, press tab to enter another.',
 
-            onReplicate: function (newField, lastField, cloneField) {
+            onReplicate: function (newField, lastField) {
                 if (lastField && lastField.isDirty()) {
                     window.setTimeout(function() {
                         newField.focus();
@@ -122,7 +122,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
                 record = applyEditor.getRecord(),
                 field = Ext.get(t).component;
 
-            if (!editingPlugin.editing && gridPanel.getSelection()[0] == record) {
+            if (!editingPlugin.editing && gridPanel.getSelection()[0] === record) {
                 editingPlugin.startEdit(record);
 
                 if (field) {
@@ -177,7 +177,10 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             rec = me.getRecord(),
             instructions = me.down('#instructions-textarea').getValue(),
             timeEstimate = me.down('#timeestimate-durationfield').getValue(),
-            todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues(),
+            todos = me.down('#todos-fieldset')
+                .down('textarea')
+                .getPlugin('fieldreplicator')
+                .getValues(),
             links = me.down('#links-fieldset').getValues();
 
         if (rec.get('Instructions') !== instructions) {
@@ -203,7 +206,10 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             rec = me.getRecord(),
             instructions = me.down('#instructions-textarea').getValue(),
             timeEstimate = me.down('#timeestimate-durationfield').getValue(),
-            todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues(),
+            todos = me.down('#todos-fieldset')
+                .down('textarea')
+                .getPlugin('fieldreplicator')
+                .getValues(),
             links = me.down('#links-fieldset');
 
         if (rec && (rec.get('Instructions') !== instructions

@@ -54,14 +54,16 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
             },
             edges: {
                 color: '#00737e',
-                arrow_height: 8
+                'arrow_height': 8
             }
         },
         dag: {
             nodes: {
-                '1': { code: 'Select a sparkpoint',
-                    teacher_title: '',
-                    dependencies_count: 0 }
+                '1': {
+                    code: 'Select a sparkpoint',
+                    'teacher_title': '',
+                    'dependencies_count': 0
+                }
             },
             edges: []
         },

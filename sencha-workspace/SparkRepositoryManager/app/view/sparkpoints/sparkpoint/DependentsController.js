@@ -30,7 +30,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
             sparkpoint = treePanel.getRootNode().get('target_sparkpoint');
 
         Ext.Msg.confirm('Deleting Dependent', 'Are you sure you want to delete this dependent?', function(btn) {
-            if (btn != 'yes') {
+            if (btn !== 'yes') {
                 return;
             }
 
@@ -53,7 +53,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
             );
 
         queryPlan.combo.getStore().filterBy(function(sparkpoint) {
-            return excludeSparkpointIds.indexOf(sparkpoint.getId()) == -1;
+            return excludeSparkpointIds.indexOf(sparkpoint.getId()) === -1;
         });
     },
 
@@ -62,7 +62,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
     },
 
     onComboSpecialKey: function(combo, e) {
-        if (e.getKey() == e.ENTER) {
+        if (e.getKey() === e.ENTER) {
             this.addRecord();
         }
     },
@@ -79,9 +79,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
             thisSparkpoint = treeRootNode.get('target_sparkpoint'),
             otherSparkpoint = lookupCombo.getSelectedRecord(),
             edge = otherSparkpoint && Ext.create('SparkRepositoryManager.model.SparkpointEdge', {
-                rel_type: 'dependency',
-                target_sparkpoint_id: thisSparkpoint.getId(),
-                source_sparkpoint_id: otherSparkpoint.getId()
+                'rel_type': 'dependency',
+                'target_sparkpoint_id': thisSparkpoint.getId(),
+                'source_sparkpoint_id': otherSparkpoint.getId()
             });
 
         if (!edge) {
@@ -91,7 +91,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
         treePanel.mask('Saving…');
         edge.save({
             params: {
-                sparkpoint_id: thisSparkpoint.getId()
+                'sparkpoint_id': thisSparkpoint.getId()
             },
             success: function() {
                 treeRootNode.appendChild(edge);
@@ -99,9 +99,10 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
                 treePanel.unmask();
                 thisSparkpoint.set('dependents_count', thisSparkpoint.get('dependents_count') + 1);
             },
-            failure: function(edge, operation) {
+            failure: function(savedEdge, operation) {
+                // TODO: test if decoding JSON here is necessary, apikit should be handling it
                 var response = operation.getError().response,
-                    responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
+                    responseData = response.getResponseHeader('Content-Type') === 'application/json' && Ext.decode(response.responseText, true),
                     message = responseData && responseData.message || 'An unknown failure occured, please try again later or contact your technical support';
 
                 Ext.Msg.alert('Failed to save dependent', message.replace(/.*ERROR:\s*/, ''));

@@ -37,21 +37,6 @@ Ext.define('SparkRepositoryManager.store.Lessons', {
         }
 
         return result;
-    },
-
-    listeners: {
-        load: function(store, records) {
-            // console.log('store load!');
-            // console.log(records);
-        //    console.log('load !!!!!!!!!!!!!!!!!');
-/*
-                store.insert(0, {
-                    id: 1,
-                    code: 'ELA'
-                });
-                store.sync();
-*/
-        }
     }
 });
 

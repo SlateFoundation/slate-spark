@@ -65,9 +65,8 @@ Ext.define('SparkRepositoryManager.plugin.FieldReplicator', {
         // If a field before the final one was blanked out, remove it
         if (isEmpty && !isLastInGroup) {
             Ext.Function.defer(field.destroy, 10, field); // delay to allow tab key to move focus first
-        }
         // If the field is the last in the list and has a value, add a cloned field after it
-        else if (!isEmpty && isLastInGroup) {
+        } else if (!isEmpty && isLastInGroup) {
             this.replicate(field);
         }
     },
@@ -114,7 +113,7 @@ Ext.define('SparkRepositoryManager.plugin.FieldReplicator', {
             ownerCt = cloneField.ownerCt;
 
             ownerCt.items.each(function(field) {
-                if (field.replicatorId && field != cloneField) {
+                if (field.replicatorId && field !== cloneField) {
                     ownerCt.remove(field);
                 }
             });

@@ -81,8 +81,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
         var me = this,
             sparkpoint = me.getSparkpoint(),
             alignment = standard && Ext.create('SparkRepositoryManager.model.SparkpointAlignment', {
-                asn_id: standard.getId(),
-                sparkpoint_id: sparkpoint.getId()
+                'asn_id': standard.getId(),
+                'sparkpoint_id': sparkpoint.getId()
             });
 
         if (!alignment) {
@@ -99,8 +99,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
                 Ext.callback(callback, scope, [alignment, true]);
             },
             failure: function(edge, operation) {
+                // TODO: test if decoding JSON here is necessary, apikit should be handling it
                 var response = operation.getError().response,
-                    responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
+                    responseData = response.getResponseHeader('Content-Type') === 'application/json' && Ext.decode(response.responseText, true),
                     message = responseData && responseData.message || 'An unknown failure occured, please try again later or contact your technical support';
 
                 Ext.Msg.alert('Failed to save alignment', message.replace(/.*ERROR:\s*/, ''));

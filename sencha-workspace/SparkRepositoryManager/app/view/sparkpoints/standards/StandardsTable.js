@@ -99,7 +99,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
         this.callParent(arguments);
     },
 
-    onFilterChange: function(store, filterNodes) {
+    onFilterChange: function() {
         this.autoExpand();
     },
 

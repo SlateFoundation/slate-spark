@@ -70,7 +70,7 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     ],
 
     validators: {
-        content_area_id: {
+        'content_area_id': {
             type: 'range',
             min: 1
         },
@@ -78,7 +78,7 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
             type: 'length',
             min: 1
         },
-        teacher_title: {
+        'teacher_title': {
             type: 'length',
             min: 2
         }

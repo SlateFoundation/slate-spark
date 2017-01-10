@@ -3,10 +3,12 @@ Ext.define('SparkRepositoryManager.widget.PostfixField', {
     xtype: 'srm-postfixfield',
 
 
-    setValue: function (v) {
+    setValue: function () {
+        var val;
+
         this.callParent(arguments);
 
-        var val = this.getValue();
+        val = this.getValue();
 
         if (!Ext.isEmpty(val)) {
 
@@ -37,9 +39,9 @@ Ext.define('SparkRepositoryManager.widget.PostfixField', {
     removeFormat: function (v) {
         if (Ext.isEmpty(v)) {
             return '';
-        } else {
-            return v.toString().replace(' ' + this.postfix, '');
         }
+
+        return v.toString().replace(' ' + this.postfix, '');
     },
 
     parseValue: function (v) {

@@ -10,7 +10,7 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
     insertColumnEditor: function(column) {
         var floatingButtons = this.getFloatingButtons(),
             field = column.field,
-            _syncButtons = function() {
+            doSyncButtons = function() {
                 if (floatingButtons.rendered) {
                     floatingButtons.setButtonPosition(floatingButtons.position);
                 }
@@ -19,15 +19,15 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         this.callParent(arguments);
 
         if (field) {
-            field.on('autosize', _syncButtons);
+            field.on('autosize', doSyncButtons);
         }
     },
 
     loadRecord: function(record) {
-        var me     = this,
-            form   = me.getForm(),
+        var me = this,
+            form = me.getForm(),
             fields = form.getFields(),
-            items  = fields.items,
+            items = fields.items,
             length = items.length,
             i, displayFields,
             isValid, item;
@@ -42,9 +42,7 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         form.loadRecord(record);
 
         for (i = 0; i < length; i++) {
-            /**********************************************************
-             HACK: all fields were marked as dirty except displayFields
-             **********************************************************/
+            // HACK: all fields were marked as dirty except displayFields
             items[i].originalValue = items[i].getValue();
             items[i].resumeEvents();
         }
@@ -56,9 +54,7 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         }
 
         isValid = form.isValid();
-        /*********************************************************
-         HACK: Do not show validation errors when loading a record
-         *********************************************************/
+        // HACK: Do not show validation errors when loading a record
         if (me.errorSummary) {
             me.hideToolTip();
         }
@@ -98,7 +94,7 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
             // The tip will realign itself based upon its new offset
             tip.show();
             tip.setX((window.innerWidth - 250) / 2);
-            tip.setY(buttons.el.getTop() + (buttons.getHeight() * 1.5));
+            tip.setY(buttons.el.getTop() + buttons.getHeight() * 1.5);
 
             me.hiddenTip = false;
         } else {
@@ -126,7 +122,7 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
             grid.add(tip);
 
             // Layout may change the grid's positioning.
-           me.mon(grid, {
+            me.mon(grid, {
                 afterlayout: me.onGridLayout,
                 scope: me
             });
@@ -136,10 +132,10 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
     },
 
     getErrors: function() {
-        var me        = this,
-            errors    = [],
-            fields    = me.query('>[isFormField]'),
-            length    = fields.length,
+        var me = this,
+            errors = [],
+            fields = me.query('>[isFormField]'),
+            length = fields.length,
             i, fieldErrors, field;
 
         if (me.isDirty()) {
@@ -156,6 +152,8 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         if (!errors.length && !me.autoCancel && me.isDirty()) {
             return '<ul class="' + Ext.baseCSSPrefix + 'list-plain">' + me.createErrorListItem(me.dirtyText) + '</ul>';
         }
+
+        return null;
     },
 
     showToolTip: function() {
@@ -180,8 +178,8 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
         var me = this,
             floatingButtons = me.getFloatingButtons(),
             scrollingView = me.scrollingView,
-            overflow = me.getScrollDelta() - (scrollingView.getScrollable().getSize().y -
-                scrollingView.getScrollY() - me.scrollingViewEl.dom.clientHeight);
+            overflow = me.getScrollDelta() - (scrollingView.getScrollable().getSize().y
+                - scrollingView.getScrollY() - me.scrollingViewEl.dom.clientHeight);
 
         if (overflow > 0) {
             if (!me._buttonsOnTop) {
@@ -189,14 +187,13 @@ Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
                 me._buttonsOnTop = true;
             }
             scrollDelta = 0;
-        } else if (me._buttonsOnTop !== false) {
+        } else if (me._buttonsOnTop) {
+            // Ensure button Y position is synced with Editor height even if button
+            // orientation doesn't change
+            floatingButtons.setButtonPosition(floatingButtons.position);
+        } else {
             floatingButtons.setButtonPosition('bottom');
             me._buttonsOnTop = false;
-        }
-        // Ensure button Y position is synced with Editor height even if button
-        // orientation doesn't change
-        else {
-            floatingButtons.setButtonPosition(floatingButtons.position);
         }
 
         return scrollDelta;

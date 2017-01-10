@@ -29,7 +29,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsControl
             sparkpoint = gridPanel.getSparkpoint();
 
         Ext.Msg.confirm('Deleting Alignment', 'Are you sure you want to delete this alignment?', function(btn) {
-            if (btn != 'yes') {
+            if (btn !== 'yes') {
                 return;
             }
 
@@ -48,7 +48,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsControl
             excludeAsnIds = alignmentsStore.collect('asn_id');
 
         queryPlan.combo.getStore().filterBy(function(standard) {
-            return excludeAsnIds.indexOf(standard.getId()) == -1;
+            return excludeAsnIds.indexOf(standard.getId()) === -1;
         });
     },
 
@@ -57,7 +57,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsControl
     },
 
     onComboSpecialKey: function(lookupCombo, ev) {
-        if (ev.getKey() == ev.ENTER) {
+        if (ev.getKey() === ev.ENTER) {
             this.doCreateAlignmentFromCombo();
         }
     },

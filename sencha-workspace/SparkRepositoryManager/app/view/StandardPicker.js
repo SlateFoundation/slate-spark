@@ -86,9 +86,5 @@ Ext.define('SparkRepositoryManager.view.StandardPicker', {
 
     listeners: {
         activate: 'onPanelActivate'
-    },
-
-    updateRecord: function(record) {
-        //
     }
 });

@@ -218,7 +218,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         Ext.resumeLayouts(true);
     },
 
-    onSparkpointTableBeforeDeselect: function(sparkpointTable) {
+    onSparkpointTableBeforeDeselect: function() {
         if (this.getSparkpointForm().isDirty()) {
             Ext.Msg.alert('Unsaved changes', '<p>You have unsaved changes in the sparkpoint editor.</p><p>Please save or discard them before moving to another sparkpoint</p>');
             return false;
@@ -401,7 +401,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpoint = this.getMainPanel().getSelectedSparkpoint();
 
         Ext.Msg.confirm('Deleting Sparkpoint', 'Are you sure you want to delete this sparkpoint and all its connections?', function(btn) {
-            if (btn != 'yes') {
+            if (btn !== 'yes') {
                 return;
             }
 
@@ -420,7 +420,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             recordsLen = records.length,
             i = 0, record, contentArea;
 
-        if (operation.getAction() == 'create') {
+        if (operation.getAction() === 'create') {
             for (; i < recordsLen; i++) {
                 record = records[i];
                 contentArea = contentAreasStore.getById(record.get('content_area_id'));
@@ -433,7 +433,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         var sparkpointForm = this.getSparkpointForm(),
             loadedSparkpoint = sparkpointForm.getRecord();
 
-        if (operation == 'commit' && sparkpoint === loadedSparkpoint) {
+        if (operation === 'commit' && sparkpoint === loadedSparkpoint) {
             // re-load record after commit to reset form dirty tracking and load any server-modified values
             sparkpointForm.loadRecord(sparkpoint);
         }

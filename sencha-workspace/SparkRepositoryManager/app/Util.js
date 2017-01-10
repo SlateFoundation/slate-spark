@@ -45,7 +45,10 @@ Ext.define('SparkRepositoryManager.Util', {
         }
 
         if (hostname) {
-            hostname = hostname.split('.').slice(0, -1).join('').split('');
+            hostname = hostname.split('.')
+                .slice(0, -1)
+                .join('')
+                .split('');
             pattern += (pattern ? '|' : '') + hostname.join('\\s*');
         }
 
@@ -64,13 +67,28 @@ Ext.define('SparkRepositoryManager.Util', {
         title = title || document.querySelectorAll('title')[0].textContent;
         hostname = hostname || location.hostname;
 
-        var re = new RegExp(hostname.split('.').join('').split('').join('\\s*'), 'i'),
+        var re = new RegExp( // eslint-disable-line vars-on-top
+                hostname
+                    .split('.')
+                    .join('')
+                    .split('')
+                    .join('\\s*'),
+                'i'
+            ),
             // check with TLD in place (jarv.us)
             name = title.match(re);
 
         if (!name) {
             // check without TLD
-            re = new RegExp(hostname.split('.').slice(0, -1).join('').split('').join('\\s*'), 'i');
+            re = new RegExp(
+                hostname
+                    .split('.')
+                    .slice(0, -1)
+                    .join('')
+                    .split('')
+                    .join('\\s*'),
+                'i'
+            );
             name = title.match(re);
         }
 
@@ -128,7 +146,7 @@ Ext.define('SparkRepositoryManager.Util', {
                 return;
             }
 
-            var title = response.title,
+            var title = response.title, // eslint-disable-line vars-on-top
                 vendor = vendorsStore.findRecord('ID', form.getFieldValues().VendorID),
                 newVendor,
                 newVendorDomain;
@@ -149,10 +167,10 @@ Ext.define('SparkRepositoryManager.Util', {
                 });
 
                 newVendor.save({
-                    success: function(vendor) {
+                    success: function(savedVendor) {
                         var newVendorId = vendor.get('ID');
 
-                        vendorsStore.add(vendor);
+                        vendorsStore.add(savedVendor);
 
                         newVendorDomain = new SparkRepositoryManager.model.VendorDomain({
                             VendorID: newVendorId,
@@ -161,8 +179,8 @@ Ext.define('SparkRepositoryManager.Util', {
                         });
 
                         newVendorDomain.save({
-                            success: function(vendorDomain) {
-                                vendorDomainsStore.add(vendorDomain);
+                            success: function(savedVendorDomain) {
+                                vendorDomainsStore.add(savedVendorDomain);
 
                                 form.setValues({
                                     VendorID: newVendorId
