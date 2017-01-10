@@ -18,14 +18,16 @@ Ext.define('SparkRepositoryManager.column.StandardsList', {
         xtype: 'spark-standardfield'
     },
 
-    defaultRenderer: function(value, metaData, record) {
+    defaultRenderer: function(value) {
         if (Ext.isEmpty(value)) {
             return '';
         }
 
-        var store = Ext.getStore('StandardCodes');
+        var store = Ext.getStore('StandardCodes'); // eslint-disable-line vars-on-top
+
         return value.map(function(id) {
             var record = store.getById(id);
+
             return record && record.get('code') || '[' + id + ']';
         }).join(', ');
     }

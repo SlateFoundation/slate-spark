@@ -145,9 +145,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
     },
 
     onContentAreaBeforeSelect: function(rowModel, record) {
-        if (record.phantom) {
-            return false;
-        }
+        return !record.phantom;
     },
 
     onContentAreaSelectionChange: function(selModel, contentAreas) {
@@ -220,11 +218,13 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         Ext.resumeLayouts(true);
     },
 
-    onSparkpointTableBeforeDeselect: function(sparkpointTable, sparkpoint) {
+    onSparkpointTableBeforeDeselect: function(sparkpointTable) {
         if (this.getSparkpointForm().isDirty()) {
             Ext.Msg.alert('Unsaved changes', '<p>You have unsaved changes in the sparkpoint editor.</p><p>Please save or discard them before moving to another sparkpoint</p>');
             return false;
         }
+
+        return true;
     },
 
     onSparkpointTableSelectionChange: function(selModel, sparkpoints) {
@@ -236,9 +236,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
         if (count > 1) {
             main.setSelectedSparkpoint(null);
             panel.mask(count + ' sparkpoints have been selected, drag to another content area to move them','loadmask-no-animation');
-        }
-        else
-        {
+        } else {
             main.setSelectedSparkpoint(sparkpoints[0] || null);
             if (panel.isMasked()) {
                 panel.unmask();
@@ -261,12 +259,12 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
             me.getDependenciesTable().setRootNode({
                 expanded: true,
-                source_sparkpoint: sparkpoint
+                'source_sparkpoint': sparkpoint
             });
 
             me.getDependentsTable().setRootNode({
                 expanded: true,
-                target_sparkpoint: sparkpoint
+                'target_sparkpoint': sparkpoint
             });
 
             me.getSparkpointsEdgesStore().filter([{
@@ -286,9 +284,11 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             sparkpoint = me.getSparkpointsTable().getSelection()[0];
 
         if (!sparkpoint) {
-            Ext.Msg.alert('Graph','Please select a sparkpoint before switching to graph');
+            Ext.Msg.alert('Graph', 'Please select a sparkpoint before switching to graph');
             return false;
         }
+
+        return true;
     },
 
     onSparkpointsGraphActivate: function() {
@@ -330,14 +330,14 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             var sourceId = edge.get('source_sparkpoint_id'),
                 targetId = edge.get('target_sparkpoint_id');
 
-            if (edge.get('rel_type') != 'dependency') {
+            if (edge.get('rel_type') !== 'dependency') {
                 return;
             }
 
-            if (sparkpointId == sourceId) {
-                dependenciesNodes.push(Ext.applyIf({leaf: true}, edge.getData()));
-            } else if (sparkpointId == targetId) {
-                dependentsNodes.push(Ext.applyIf({leaf: true}, edge.getData()));
+            if (sparkpointId === sourceId) {
+                dependenciesNodes.push(Ext.applyIf({ leaf: true }, edge.getData()));
+            } else if (sparkpointId === targetId) {
+                dependentsNodes.push(Ext.applyIf({ leaf: true }, edge.getData()));
             }
         });
 
@@ -365,7 +365,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
             contentArea = this.getContentAreasTable().getSelection()[0];
 
         if (!codeField.getValue() && abbreviation) {
-            codeField.setValue( (contentArea ? contentArea.get('code') + '.' : '') + abbreviation);
+            codeField.setValue((contentArea ? contentArea.get('code') + '.' : '') + abbreviation);
         }
     },
 
@@ -522,7 +522,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                                || queryRe.test(node.get('title'));
                     }
 
-                    var children = node.childNodes,
+                    var children = node.childNodes, // eslint-disable-line vars-on-top
                         len = children && children.length,
                         i = 0;
 
@@ -531,6 +531,8 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
                             return true;
                         }
                     }
+
+                    return false;
                 }
             });
         } else {

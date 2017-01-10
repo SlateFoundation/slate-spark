@@ -162,7 +162,7 @@ Ext.define('SparkRepositoryManager.model.Lesson', {
         {
             name: 'parentId',
             persist: false,
-            convert: function(val) {
+            convert: function() {
         //        return rec.get('global') === true ? 'global' : 'personal';
                 return null;
             }

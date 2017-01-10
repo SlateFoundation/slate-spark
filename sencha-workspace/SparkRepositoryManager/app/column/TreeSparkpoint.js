@@ -9,7 +9,7 @@ Ext.define('SparkRepositoryManager.column.TreeSparkpoint', {
 
     text: 'Sparkpoint',
     abbreviate: true,
-    defaultRenderer: function(v) {
+    defaultRenderer: function() {
         return SparkRepositoryManager.column.Sparkpoint.prototype.defaultRenderer.apply(this, arguments);
     }
 });

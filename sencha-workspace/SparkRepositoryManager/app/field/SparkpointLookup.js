@@ -1,4 +1,4 @@
- Ext.define('SparkRepositoryManager.field.SparkpointLookup', {
+Ext.define('SparkRepositoryManager.field.SparkpointLookup', {
     extend: 'Ext.form.field.ComboBox',
     xtype: 'srm-field-sparkpointlookup',
     requires: [
@@ -17,4 +17,4 @@
     valueField: 'code',
     forceSelecton: true,
     typeAhead: true
- });
+});

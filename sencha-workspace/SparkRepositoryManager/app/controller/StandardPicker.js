@@ -98,7 +98,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
         }
     },
 
-    onBeforeTagFieldSelect: function(combo, record, index, eOpts) {
+    onBeforeTagFieldSelect: function(combo, record) {
         var node = Ext.getStore('StandardsTree').getRoot().findChild('id', record.getId(), true);
 
         if (typeof node.get('checked') == 'boolean') {
@@ -108,7 +108,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
         node.parentNode.expand();
     },
 
-    onBeforeTagFieldDeselect: function(combo, record, index, eOpts) {
+    onBeforeTagFieldDeselect: function(combo, record) {
         var node = Ext.getStore('StandardsTree').getRoot().findChild('id', record.getId(), true);
 
         if (typeof node.get('checked') == 'boolean') {

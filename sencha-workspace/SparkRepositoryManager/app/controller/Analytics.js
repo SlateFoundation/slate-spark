@@ -13,7 +13,8 @@ Ext.define('SparkRepositoryManager.controller.Analytics', {
 
     init: function() {
         if (!window.ga) {
-            if (location.hostname == 'sparkpoint.matchbooklearning.com') {
+            if (location.hostname === 'sparkpoint.matchbooklearning.com') {
+                /* eslint-disable */
                 (function (i, s, o, g, r, a, m) {
                     i['GoogleAnalyticsObject'] = r;
                     i[r] = i[r] || function () {
@@ -25,6 +26,7 @@ Ext.define('SparkRepositoryManager.controller.Analytics', {
                     a.src = g;
                     m.parentNode.insertBefore(a, m)
                 })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+                /* eslint-disable */
             } else {
                 window.ga = function() {
                     console.info('ga(%o)', arguments);
@@ -43,9 +45,9 @@ Ext.define('SparkRepositoryManager.controller.Analytics', {
         Ext.Error.handle = function (err) {
             ga('send', 'exception', {
                 'exDescription': err.msg,
-                'exFatal':       true,
-                'appName':       err.sourceClass,
-                'appVersion':    err.sourceMethod
+                'exFatal': true,
+                'appName': err.sourceClass,
+                'appVersion': err.sourceMethod
             });
         };
     },

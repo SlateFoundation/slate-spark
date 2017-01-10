@@ -20,5 +20,4 @@ Ext.define('SparkRepositoryManager.column.GradeLevel', {
         editable: false,
         grow: true
     }
-
 });

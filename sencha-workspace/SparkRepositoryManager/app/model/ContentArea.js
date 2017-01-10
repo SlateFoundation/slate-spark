@@ -20,10 +20,23 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
 
     fields: [
         'id',
-        { name: 'code', defaultValue: '' },
-        // { name: 'teacher_title', defaultValue: '' },
-        { name: 'student_title', defaultValue: '' },
-        { name: 'sparkpoints_count', defaultValue: 0, persist: false },
+        {
+            name: 'code',
+            defaultValue: ''
+        },
+        // {
+        //     name: 'teacher_title',
+        //     defaultValue: ''
+        // },
+        {
+            name: 'student_title',
+            defaultValue: ''
+        },
+        {
+            name: 'sparkpoints_count',
+            defaultValue: 0,
+            persist: false
+        },
 
         // override tree metafields with custom configs
         {
@@ -41,6 +54,6 @@ Ext.define('SparkRepositoryManager.model.ContentArea', {
     ],
 
     validators: {
-        student_title: 'presence'
+        'student_title': 'presence'
     }
 });

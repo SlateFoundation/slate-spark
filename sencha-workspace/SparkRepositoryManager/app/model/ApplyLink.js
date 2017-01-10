@@ -58,8 +58,8 @@ Ext.define('SparkRepositoryManager.model.ApplyLink', {
                 var JSON = {};
 
                 try {
-                    JSON  = JSON.parse(value);
-                } catch(e) {
+                    JSON = JSON.parse(value);
+                } catch (e) {
                     // Empty catch
                 }
 

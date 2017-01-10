@@ -9,27 +9,27 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
 
     tooltipTpl: [
         '<dl>',
-            '<tpl if="abbreviation">',
-                '<dt>Abbreviation</dt>',
-                '<dt>{abbreviation}</dt>',
-            '</tpl>',
-            '<tpl if="teacher_title">',
-                '<dt>Teacher Title</dt>',
-                '<dt>{teacher_title}</dt>',
-            '</tpl>',
-            '<tpl if="teacher_description">',
-                '<dt>Teacher Description</dt>',
-                '<dt>{teacher_description}</dt>',
-            '</tpl>',
+        '   <tpl if="abbreviation">',
+        '       <dt>Abbreviation</dt>',
+        '       <dt>{abbreviation}</dt>',
+        '   </tpl>',
+        '   <tpl if="teacher_title">',
+        '       <dt>Teacher Title</dt>',
+        '       <dt>{teacher_title}</dt>',
+        '   </tpl>',
+        '   <tpl if="teacher_description">',
+        '       <dt>Teacher Description</dt>',
+        '       <dt>{teacher_description}</dt>',
+        '   </tpl>',
         '</dl>'
     ],
 
     proxy: {
         type: 'spark-api',
         url: '/spark-repo/sparkpoints',
-		extraParams: {
-			include: 'sparkpoints_edges_complete'
-		},
+        extraParams: {
+            include: 'sparkpoints_edges_complete'
+        },
         writer: {
             type: 'api',
             allowSingle: false
@@ -39,8 +39,14 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     fields: [
         'id',
         'content_area_id',
-        { name: 'abbreviation', defaultValue: '' },
-        { name: 'code', defaultValue: '' },
+        {
+            name: 'abbreviation',
+            defaultValue: ''
+        },
+        {
+            name: 'code',
+            defaultValue: ''
+        },
         { name: 'teacher_title', defaultValue: '' },
         { name: 'student_title', defaultValue: '' },
         { name: 'teacher_description', defaultValue: '' },

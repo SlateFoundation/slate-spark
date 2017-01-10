@@ -68,7 +68,7 @@ Ext.define('SparkRepositoryManager.controller.Viewport', {
             // remove filters for fields not present in the new model
             fieldsMap = incomingTab.getStore().getModel().getFieldsMap();
             newFilters = Ext.Array.filter(lastFilters, function(filter) {
-                return (filter.getProperty() in fieldsMap);
+                return filter.getProperty() in fieldsMap;
             });
 
             // setFilters with an empty array doesn't seem to clear the filters list, so handle separately
@@ -81,7 +81,7 @@ Ext.define('SparkRepositoryManager.controller.Viewport', {
         }
     },
 
-    onTabChange: function(mainView, incomingTab, outgoingTab) {
+    onTabChange: function(mainView, incomingTab) {
         Ext.util.History.add(incomingTab.getItemId());
     }
 });

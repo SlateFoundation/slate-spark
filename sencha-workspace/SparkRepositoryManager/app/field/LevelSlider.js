@@ -7,17 +7,17 @@
  *          margin-top: 18px;
  *      }
  */
- Ext.define('SparkRepositoryManager.field.LevelSlider', {
+Ext.define('SparkRepositoryManager.field.LevelSlider', {
     extend: 'Ext.slider.Multi',
     xtype: 'srm-field-levelslider',
 
 
     useTips: false,
-    values: [-1,12],
+    values: [-1, 12],
     increment: 1,
     minValue: -1,
     maxValue: 12,
-    displayValues: ['P','K','1','2','3','4','5','6','7','8','9','10','11','12'],
+    displayValues: ['P', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
 
     listeners: {
         change: function(me, value, thumb) {
@@ -34,7 +34,7 @@
 
         me.callParent(arguments);
 
-        for (i; i<thumbsLength; i++){
+        for (i; i < thumbsLength; i++) {
             thumb = thumbs[i];
 
             thumb.labelEl = thumb.el.appendChild({
@@ -46,7 +46,7 @@
 
     getLabel: function(val) {
         var me = this,
-            pos = ((val - me.minValue) / me.increment);
+            pos = (val - me.minValue) / me.increment;
 
         return me.displayValues[pos] || val;
     }
