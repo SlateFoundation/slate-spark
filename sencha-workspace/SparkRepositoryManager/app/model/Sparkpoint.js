@@ -29,10 +29,6 @@ Ext.define('SparkRepositoryManager.model.Sparkpoint', {
         url: '/spark-repo/sparkpoints',
         extraParams: {
             include: 'sparkpoints_edges_complete'
-        },
-        writer: {
-            type: 'api',
-            allowSingle: false
         }
     },
 

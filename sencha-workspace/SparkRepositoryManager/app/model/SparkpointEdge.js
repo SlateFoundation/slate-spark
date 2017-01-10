@@ -13,10 +13,6 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
         url: '/spark-repo/sparkpoint-edges',
         extraParams: {
             include: 'other_sparkpoint'
-        },
-        writer: {
-            type: 'api',
-            allowSingle: false
         }
     },
 

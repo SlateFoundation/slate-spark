@@ -13,10 +13,6 @@ Ext.define('SparkRepositoryManager.model.SparkpointAlignment', {
         url: '/spark-repo/sparkpoint-alignments',
         extraParams: {
             include: 'standard'
-        },
-        writer: {
-            type: 'api',
-            allowSingle: false
         }
     },
 

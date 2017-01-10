@@ -25,11 +25,7 @@ Ext.define('SparkRepositoryManager.model.Standard', {
 
     proxy: {
         type: 'spark-api',
-        url: '/spark-repo/standards',
-        writer: {
-            type: 'api',
-            allowSingle: false
-        }
+        url: '/spark-repo/standards'
     },
 
     idProperty: 'asn_id',
