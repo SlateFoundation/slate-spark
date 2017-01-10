@@ -20,7 +20,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
     store: 'StandardDocuments',
 
     features: [{
-        ftype:'grouping',
+        ftype: 'grouping',
         groupHeaderTpl: '{name}'
     }],
 
@@ -30,17 +30,17 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         text: 'Subject',
         dataIndex: 'subject',
         hidden: true
-    },{
+    }, {
         flex: 1,
 
         text: 'Document',
         dataIndex: 'title'
-    },{
+    }, {
         width: 70,
 
         text: 'Body',
         dataIndex: 'jurisdiction'
-    },{
+    }, {
         width: 100,
 
         xtype: 'numbercolumn',
@@ -48,7 +48,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         dataIndex: 'standards_count',
         format: '0,000',
         align: 'right'
-    },{
+    }, {
         width: 80,
 
         xtype: 'numbercolumn',
@@ -57,7 +57,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.DocumentsTable', {
         format: '0,000',
         align: 'right',
         hidden: true
-    },{
+    }, {
         text: 'Grades',
         dataIndex: 'grades',
         hidden: true

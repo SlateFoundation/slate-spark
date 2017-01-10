@@ -50,7 +50,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
         root.visitPreOrder('', function (child) {
             var checked;
 
-            if (typeof child.get('checked') == 'boolean') {
+            if (typeof child.get('checked') === 'boolean') {
                 checked = selectedStandards[child.getId()] || false;
 
                 child.set('checked', checked);
@@ -59,6 +59,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
                     child.parentNode.expand();
                 }
             } else {
+
                 /*
                  * TODO: this shouldn't be necessary.  Top level nodes are occasionally picking up a "checked"
                  * attribute.  This resets them, but would be better to find the source.

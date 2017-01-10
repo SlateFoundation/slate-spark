@@ -101,7 +101,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
     onBeforeTagFieldSelect: function(combo, record) {
         var node = Ext.getStore('StandardsTree').getRoot().findChild('id', record.getId(), true);
 
-        if (typeof node.get('checked') == 'boolean') {
+        if (typeof node.get('checked') === 'boolean') {
             node.set('checked', true);
         }
 
@@ -111,7 +111,7 @@ Ext.define('SparkRepositoryManager.controller.StandardPicker', {
     onBeforeTagFieldDeselect: function(combo, record) {
         var node = Ext.getStore('StandardsTree').getRoot().findChild('id', record.getId(), true);
 
-        if (typeof node.get('checked') == 'boolean') {
+        if (typeof node.get('checked') === 'boolean') {
             node.set('checked', false);
         }
 

@@ -42,11 +42,11 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Multiselector', {
                     cellWrap: true,
                     tpl: [
                         '<tpl if="url">',
-                            '<a href="{url}" target="_blank">{title}</a>',
+                        '<a href="{url}" target="_blank">{title}</a>',
                         '<tpl elseif="question">',
-                            '{question}',
+                        '{question}',
                         '<tpl else>',
-                            '{title}',
+                        '{title}',
                         '</tpl>'
                     ]
                 },
@@ -125,11 +125,11 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Multiselector', {
                                 cellWrap: true,
                                 tpl: [
                                     '<tpl if="url">',
-                                        '<a href="{url}" target="_blank">{title}</a>',
+                                    '<a href="{url}" target="_blank">{title}</a>',
                                     '<tpl elseif="question">',
-                                        '{question}',
+                                    '{question}',
                                     '<tpl else>',
-                                        '{title}',
+                                    '{title}',
                                     '</tpl>'
                                 ]
                             },

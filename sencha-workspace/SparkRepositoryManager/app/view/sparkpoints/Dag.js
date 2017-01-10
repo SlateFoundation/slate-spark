@@ -33,9 +33,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
         if (sparkpoint) {
             sparkpoint_edges = sparkpoint.get('sparkpoints_edges');
 
-            for (i; i<sparkpoint_edges.length; i++) {
+            for (i; i < sparkpoint_edges.length; i++) {
                 relation = sparkpoint_edges[i];
-                if (relation.rel_type==='dependency') {
+                if (relation.rel_type === 'dependency') {
                     if (relation.id === relation.target_sparkpoint_id) {
                         dependencies.push(relation);
                     } else if (relation.id === relation.source_sparkpoint_id) {
@@ -44,18 +44,18 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
                 }
             }
 
-            root = dependencies.length +1;
+            root = dependencies.length + 1;
 
-            for (i=1; i<=dependencies.length; i++) {
-                nodes[i] = dependencies[i-1];
-                edges.push([i,root]);
+            for (i = 1; i <= dependencies.length; i++) {
+                nodes[i] = dependencies[i - 1];
+                edges.push([i, root]);
             }
 
-            nodes[root] = Ext.apply(sparkpoint.getData(),{highlighted:1});
+            nodes[root] = Ext.apply(sparkpoint.getData(), { highlighted: 1 });
 
-            for (i=1; i<=dependents.length; i++) {
-                nodes[root+i] = dependents[i-1];
-                edges.push([root,root+i]);
+            for (i = 1; i <= dependents.length; i++) {
+                nodes[root + i] = dependents[i - 1];
+                edges.push([root, root + i]);
             }
 
             dag = {
@@ -79,7 +79,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
         this.center();
     },
 
-    eraseAll : function() {
+    eraseAll: function() {
         this.getSurface().removeAll();
         this.allShapes = null;
     },
@@ -95,7 +95,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
      * Returns: a shape
      *
      */
-    buildNode : function(surface, node, x, settings) {
+    buildNode: function(surface, node, x, settings) {
         var me = this,
             nodSettings = node.highlighted ? settings.highlightedNodes : settings.nodes,
             rectWidth = nodSettings.rect.width,
@@ -132,10 +132,9 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
                 y: rectHeight / 2
             });
 
-            dummy.setAttributes( settings.dummyNodes, true );
-            sprites.add( dummy );
-        }
-        else {
+            dummy.setAttributes(settings.dummyNodes, true);
+            sprites.add(dummy);
+        } else {
             // build a rectangle around the code
             rect = surface.add({
                 type: 'rect',
@@ -151,7 +150,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
                 text: node.code
             });
 
-            rect.setAttributes( nodSettings.rect, true );
+            rect.setAttributes(nodSettings.rect, true);
             code.setAttributes(nodSettings.code, true);
 
             codeBB = code.getBBox();
@@ -161,8 +160,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             title = surface.add({
                 type: 'text',
                 x: x + nodSettings.title.marginWidth,
-                y: codeHeight+nodSettings.title.marginHeight,
-                text: me.wordwrap(node.teacher_title,50,"\n" )
+                y: codeHeight + nodSettings.title.marginHeight,
+                text: me.wordwrap(node.teacher_title, 50, '\n')
             });
 
             title.setAttributes(nodSettings.title, true);
@@ -171,14 +170,14 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             titleWidth = titleBB.width + 2 * nodSettings.title.marginWidth + rect.attr['stroke-width'];
             titleHeight = titleBB.height + 2 * nodSettings.title.marginHeight + rect.attr['stroke-width'];
 
-            dotHeight = ( dotCount > 0) ? nodSettings.dot.radius*2 : 0;
+            dotHeight = dotCount > 0 ? nodSettings.dot.radius * 2 : 0;
 
             // check if we need to resize the rectangle
-            if (Math.max(codeWidth,titleWidth) > rectWidth) {
-                rect.setAttributes( {width: Math.max(codeWidth,titleWidth)}, true );
+            if (Math.max(codeWidth, titleWidth) > rectWidth) {
+                rect.setAttributes({ width: Math.max(codeWidth, titleWidth) }, true);
             }
-            if ((codeHeight+titleHeight+dotHeight) > rectHeight) {
-                rect.setAttributes( {height: codeHeight+titleHeight+dotHeight}, true );
+            if (codeHeight + titleHeight + dotHeight > rectHeight) {
+                rect.setAttributes({ height: codeHeight + titleHeight + dotHeight }, true);
             }
 
             rectBB = rect.getBBox();
@@ -191,13 +190,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
                 attr: rect.attr
             });
 
-            mask.setAttributes({opacity: 0});
+            mask.setAttributes({ opacity: 0 });
 
-            for (i =0; i <= dotCount-1; i++) {
+            for (i = 0; i <= dotCount - 1; i++) {
                 dotStart = x + nodSettings.dot.marginWidth + nodSettings.dot.radius;
                 dots[i] = surface.add({
                     type: 'circle',
-                    x: dotStart + (i*((nodSettings.dot.radius*2)+nodSettings.dot.marginWidth)),
+                    x: dotStart + i * (nodSettings.dot.radius * 2 + nodSettings.dot.marginWidth),
                     y: rectBB.height - (nodSettings.dot.radius + nodSettings.dot.marginHeight),
                     radius: nodSettings.dot.radius,
                     fill: nodSettings.dot.fill,
@@ -209,19 +208,19 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
             sprites.add(code);
 
             codeX = 2;
-            codeY = codeBB.height/2;
+            codeY = codeBB.height / 2;
             me.TRANSLATE(sprites, codeX, codeY);
 
             sprites.add(title);
             sprites.add(rect);
             sprites.add(mask);
 
-            for (i =0; i <= dotCount-1; i++) {
+            for (i = 0; i <= dotCount - 1; i++) {
                 sprites.add(dots[i]);
             }
 
             // center the cell vertically
-            me.TRANSLATE(sprites, 0, (rectHeight-rectBB.height)/2);
+            me.TRANSLATE(sprites, 0, (rectHeight - rectBB.height) / 2);
 
             mask.on({
                 click: function() {
@@ -238,30 +237,30 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
 
     // http://phpjs.org/functions/wordwrap/
     wordwrap: function(str, int_width, str_break, cut) {
-      var m = ((arguments.length >= 2) ? arguments[1] : 75);
-      var b = ((arguments.length >= 3) ? arguments[2] : '\n');
-      var c = ((arguments.length >= 4) ? arguments[3] : false);
+        var m = arguments.length >= 2 ? arguments[1] : 75;
+        var b = arguments.length >= 3 ? arguments[2] : '\n';
+        var c = arguments.length >= 4 ? arguments[3] : false;
 
-      var i, j, l, s, r;
+        var i, j, l, s, r;
 
-      str += '';
+        str = String(str);
 
-      if (m < 1) {
-        return str;
-      }
+        if (m < 1) {
+            return str;
+        }
 
-      for (i = -1, l = (r = str.split(/\r\n|\n|\r/))
+        for (i = -1, l = (r = str.split(/\r\n|\n|\r/))
         .length; ++i < l; r[i] += s) {
-        for (s = r[i], r[i] = ''; s.length > m; r[i] += s.slice(0, j) + ((s = s.slice(j))
+            for (s = r[i], r[i] = ''; s.length > m; r[i] += s.slice(0, j) + ((s = s.slice(j))
           .length ? b : '')) {
-          j = c == 2 || (j = s.slice(0, m + 1)
+                j = c == 2 || (j = s.slice(0, m + 1)
             .match(/\S*(\s)?$/))[1] ? m : j.input.length - j[0].length || c == 1 && m || j.input.length + (j = s.slice(
               m)
             .match(/^\S*/))[0].length;
+            }
         }
-      }
 
-      return r.join('\n');
+        return r.join('\n');
     }
 
 });

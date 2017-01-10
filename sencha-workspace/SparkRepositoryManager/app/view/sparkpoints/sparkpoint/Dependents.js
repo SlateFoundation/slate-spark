@@ -36,7 +36,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
         xtype: 'srm-treesparkpointcolumn',
         dataIndex: 'other_sparkpoint_code',
         abbreviate: false
-    },{
+    }, {
         width: 24,
 
         xtype: 'actioncolumn',
@@ -59,7 +59,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
             flex: 1,
 
             xtype: 'srm-field-sparkpointlookup'
-        },{
+        }, {
             reference: 'addButton',
 
             xtype: 'button',

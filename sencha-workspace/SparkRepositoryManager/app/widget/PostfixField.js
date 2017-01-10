@@ -25,11 +25,9 @@ Ext.define('SparkRepositoryManager.widget.PostfixField', {
                     }
                     this.setValue(val);
                 }
-            } else {
-                if (val === -1) {
-                    this.setValue(0);
-                    val = 0;
-                }
+            } else if (val === -1) {
+                this.setValue(0);
+                val = 0;
             }
 
             this.setRawValue(val + ' ' + this.postfix);
@@ -54,6 +52,7 @@ Ext.define('SparkRepositoryManager.widget.PostfixField', {
 
     getSubmitData: function () {
         var returnObject = {};
+
         returnObject[this.name] = this.removeFormat(this.callParent(arguments)[this.name]);
 
         return returnObject;

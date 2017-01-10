@@ -24,7 +24,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsControl
         }
     },
 
-    onDeleteClick: function(grid,rec) {
+    onDeleteClick: function(grid, rec) {
         var gridPanel = this.getView(),
             sparkpoint = gridPanel.getSparkpoint();
 

@@ -52,8 +52,8 @@ Ext.define('SparkRepositoryManager.view.StandardPicker', {
                         if (el.classList.contains('x-tagfield-item-close')) {
                             previousSibling = Ext.getStore('StandardsTree').findRecord('standardCode', el.previousSibling.textContent);
 
-                            if(previousSibling) {
-                                if (typeof previousSibling.get('checked') == 'boolean') {
+                            if (previousSibling) {
+                                if (typeof previousSibling.get('checked') === 'boolean') {
                                     previousSibling.set('checked', false);
                                 }
                             }

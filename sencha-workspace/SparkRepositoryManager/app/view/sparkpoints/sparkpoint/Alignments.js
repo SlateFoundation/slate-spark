@@ -30,7 +30,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
         flex: 1,
 
         xtype: 'srm-standardcolumn'
-    },{
+    }, {
         width: 24,
 
         xtype: 'actioncolumn',
@@ -53,7 +53,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
             flex: 1,
 
             xtype: 'srm-field-standardlookup'
-        },{
+        }, {
             reference: 'addButton',
 
             xtype: 'button',
@@ -101,7 +101,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
             failure: function(edge, operation) {
                 var response = operation.getError().response,
                     responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
-                    message = (responseData && responseData.message) || 'An unknown failure occured, please try again later or contact your technical support';
+                    message = responseData && responseData.message || 'An unknown failure occured, please try again later or contact your technical support';
 
                 Ext.Msg.alert('Failed to save alignment', message.replace(/.*ERROR:\s*/, ''));
                 me.unmask();

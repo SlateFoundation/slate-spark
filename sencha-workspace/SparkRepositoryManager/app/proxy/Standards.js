@@ -10,7 +10,7 @@ Ext.define('SparkRepositoryManager.proxy.Standards', {
 
         if (node) {
             delete params[idParam];
-            return '/spark-repo/standards-documents/'+node.getId()+'/children';
+            return '/spark-repo/standards-documents/' + node.getId() + '/children';
         }
 
         return this.callParent(arguments);

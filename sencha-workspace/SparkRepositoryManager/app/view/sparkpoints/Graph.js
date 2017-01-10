@@ -59,14 +59,16 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
         },
         dag: {
             nodes: {
-                '1': {code: 'Select a sparkpoint', teacher_title: '', dependencies_count: 0 }
+                '1': { code: 'Select a sparkpoint',
+                    teacher_title: '',
+                    dependencies_count: 0 }
             },
             edges: []
         },
 
         computeLayout: 'maxupordown'
-        //computeLayout: 'topdown'
-        //computeLayout: 'bottomup'
+        // computeLayout: 'topdown'
+        // computeLayout: 'bottomup'
 
     }]
 });

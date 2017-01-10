@@ -24,6 +24,7 @@ Ext.define('SparkRepositoryManager.model.SparkpointAlignment', {
         'id',
         'asn_id',
         'sparkpoint_id',
-        { name: 'standard', persist: false }
+        { name: 'standard',
+            persist: false }
     ]
 });

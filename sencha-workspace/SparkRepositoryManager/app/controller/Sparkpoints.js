@@ -235,7 +235,7 @@ Ext.define('SparkRepositoryManager.controller.Sparkpoints', {
 
         if (count > 1) {
             main.setSelectedSparkpoint(null);
-            panel.mask(count + ' sparkpoints have been selected, drag to another content area to move them','loadmask-no-animation');
+            panel.mask(count + ' sparkpoints have been selected, drag to another content area to move them', 'loadmask-no-animation');
         } else {
             main.setSelectedSparkpoint(sparkpoints[0] || null);
             if (panel.isMasked()) {

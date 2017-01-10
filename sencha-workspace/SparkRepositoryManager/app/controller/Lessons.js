@@ -271,7 +271,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
 
         if (!me.getSuspended()) {
 
-            for (; i<sparkpointsLength; i++) {
+            for (; i < sparkpointsLength; i++) {
                 lessonSparkpoints.push(sparkpoints[i].getData());
             }
 
@@ -294,7 +294,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
 
         if (!me.getSuspended()) {
 
-            for (; i<sparkpointsLength; i++) {
+            for (; i < sparkpointsLength; i++) {
                 sparkpoint = sparkpoints[i];
                 lessonSparkpoints.push(sparkpoint.getData());
 
@@ -456,11 +456,11 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
 
         if (groups) {
             groupCnt++;
-            group = 'Group '+ groupCnt;
+            group = 'Group ' + groupCnt;
 
             while (groups.containsKey(group)) {
                 groupCnt++;
-                group = 'Group '+ groupCnt;
+                group = 'Group ' + groupCnt;
             }
         }
 
@@ -689,7 +689,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
 
             sparkpointsLength = sparkpoints.length;
 
-            for (; i<sparkpointsLength; i++) {
+            for (; i < sparkpointsLength; i++) {
                 sparkpointIds.push(sparkpoints[i].id);
             }
 
@@ -719,7 +719,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
 
         if (sparkpointItemsStore.isGrouped()) {
 
-            for (; i<sparkpointItemsLength; i++) {
+            for (; i < sparkpointItemsLength; i++) {
                 item = me.objectSkim(sparkpointItems[i].getData(), [
                     'fusebox_id', 'resource_id', 'isRequired', 'isRecommended', 'lessongroup'
                 ]);
@@ -749,9 +749,9 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             }
 
             // transform array of group names into array of group objects
-            for (i=0; i<lessonGroups.length; i++) {
+            for (i = 0; i < lessonGroups.length; i++) {
                 lessonGroups[i] = {
-                    id: i+1,                  // eslint-disable-line camelcase
+                    id: i + 1,                  // eslint-disable-line camelcase
                     title: lessonGroups[i]     // eslint-disable-line camelcase
                 };
             }
@@ -765,7 +765,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             lesson.set(groupsFieldName + '_groups', lessonGroups);
 
         } else {
-            for (; i<sparkpointItemsLength; i++) {
+            for (; i < sparkpointItemsLength; i++) {
                 lessonItems.push(me.objectSkim(sparkpointItems[i].getData(), [
                     'fusebox_id', 'title', 'url', 'question', 'dok'
                 ]));
@@ -801,7 +801,7 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             attributesLength = attributes.length,
             i = 0, key;
 
-        for (; i<attributesLength; i++) {
+        for (; i < attributesLength; i++) {
             key = attributes[i];
             newObj[key] = obj[key];
         }
@@ -826,12 +826,12 @@ Ext.define('SparkRepositoryManager.controller.Lessons', {
             group,
             i = 0;
 
-        for (i; i<groupsLength; i++) {
+        for (i; i < groupsLength; i++) {
             group = groups[i];
             groupMap.add(groups.id, group.title);
         }
 
-        for (i=0; i<recordsLength; i++) {
+        for (i = 0; i < recordsLength; i++) {
             if (records[i].group_id) {
                 if (groupMap.get(records[i].group_id)) {
                     records[i].lessongroup = groupMap.get(records[i].group_id).title;

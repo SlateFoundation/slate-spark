@@ -25,7 +25,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
         }
     },
 
-    onDeleteClick: function(grid,rec) {
+    onDeleteClick: function(grid, rec) {
         var treePanel = this.getView(),
             sparkpoint = treePanel.getRootNode().get('target_sparkpoint');
 
@@ -102,7 +102,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
             failure: function(edge, operation) {
                 var response = operation.getError().response,
                     responseData = response.getResponseHeader('Content-Type') == 'application/json' && Ext.decode(response.responseText, true),
-                    message = (responseData && responseData.message) || 'An unknown failure occured, please try again later or contact your technical support';
+                    message = responseData && responseData.message || 'An unknown failure occured, please try again later or contact your technical support';
 
                 Ext.Msg.alert('Failed to save dependent', message.replace(/.*ERROR:\s*/, ''));
                 treePanel.unmask();

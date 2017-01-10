@@ -35,24 +35,24 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
 
     columns: [{
         xtype: 'srm-statementtreecolumn'
-    },{
+    }, {
         text: 'Code',
         dataIndex: 'alt_code',
         width: 100,
         renderer: function(v, metaData, record) {
             return v || record.get('code');
         }
-    },{
+    }, {
         text: 'ASN ID',
         dataIndex: 'asn_id',
         hidden: true
-    },{
+    }, {
         width: 50,
 
         text: '&uarr;',
         dataIndex: 'alignments_count',
         tooltip: '# of sparkpoints aligned to this standard'
-    },{
+    }, {
         width: 40,
 
         xtype: 'actioncolumn',
@@ -84,7 +84,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.standards.StandardsTable', {
 
             xtype: 'jarvus-searchfield',
             emptyText: 'Search all standards…'
-        },{
+        }, {
             xtype: 'checkboxfield',
             boxLabel: 'Unmapped only',
             disabled: true // TODO: implement

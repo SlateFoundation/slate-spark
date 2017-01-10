@@ -82,7 +82,7 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
                 if (Ext.isArray(value)) {
                     count = value.length;
                     if (Ext.isString(value[0])) {
-                        for (i; i<count; i++) {
+                        for (i; i < count; i++) {
                             links.push({
                                 title: null,
                                 url: value[i]

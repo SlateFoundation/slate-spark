@@ -23,7 +23,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Intro', {
                             styleHtmlContent: true,
                             style: {
                                 fontSize: '1.125em',
-                                lineHeight: 4/3
+                                lineHeight: 4 / 3
                             },
                             html: 'Add Sparkpoints to this lesson and check off any that will be evaluated.'
                         },

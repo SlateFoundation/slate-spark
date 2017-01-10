@@ -95,14 +95,14 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
 
     onDeleteClick: function() {
         var me = this,
-        panel = me.getPanel(),
-        rowEditing = panel.getPlugin('rowediting'),
-        selectionModel = panel.getSelectionModel(),
-        selection = selectionModel.getSelection()[0],
-        learnLinkStore = me.getLearnLinksStore(),
-        title = selection.get('Title'),
-        url = selection.get('URL'),
-        descriptiveText = ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link'; // eslint-disable-line no-extra-parens
+            panel = me.getPanel(),
+            rowEditing = panel.getPlugin('rowediting'),
+            selectionModel = panel.getSelectionModel(),
+            selection = selectionModel.getSelection()[0],
+            learnLinkStore = me.getLearnLinksStore(),
+            title = selection.get('Title'),
+            url = selection.get('URL'),
+            descriptiveText = ((title && url) ? title + '(' + url + ')' : title || url) || 'this learn link'; // eslint-disable-line no-extra-parens
 
         Ext.Msg.confirm('Are you sure?', 'Are you sure that you want to delete ' + descriptiveText + '?', function(response) {
             if (response === 'yes') {
@@ -163,7 +163,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
     onPanelColumnHide: function(grid, column) {
         var me = this;
 
-        if (column.getXType()==='srm-standardslistcolumn') {
+        if (column.getXType() === 'srm-standardslistcolumn') {
             me.getAlignButton().hide();
             me.getAlignButtonSeparator().hide();
         }
@@ -172,7 +172,7 @@ Ext.define('SparkRepositoryManager.controller.Learn', {
     onPanelColumnShow: function(grid, column) {
         var me = this;
 
-        if (column.getXType()==='srm-standardslistcolumn') {
+        if (column.getXType() === 'srm-standardslistcolumn') {
             me.getAlignButton().show();
             me.getAlignButtonSeparator().show();
         }

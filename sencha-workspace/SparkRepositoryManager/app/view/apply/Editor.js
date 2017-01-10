@@ -133,10 +133,10 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
     },
 
     applyRecord: function(rec) {
-        var me              = this,
+        var me = this,
             detailsFieldset = me.down('#details-fieldset'),
-            linksFieldset   = me.down('#links-fieldset'),
-            todosFieldset   = me.down('#todos-fieldset'),
+            linksFieldset = me.down('#links-fieldset'),
+            todosFieldset = me.down('#todos-fieldset'),
             links = [],
             todos = [],
             title = 'Project Details';
@@ -206,11 +206,10 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             todos = me.down('#todos-fieldset').down('textarea').getPlugin('fieldreplicator').getValues(),
             links = me.down('#links-fieldset');
 
-        if (rec && ((rec.get('Instructions') !== instructions) ||
-            (rec.get('TimeEstimate') !== timeEstimate) ||
-            (JSON.stringify(rec.get('Todos')) !== JSON.stringify(todos)) ||
-            links.isDirty()))
-        {
+        if (rec && (rec.get('Instructions') !== instructions
+            || rec.get('TimeEstimate') !== timeEstimate
+            || JSON.stringify(rec.get('Todos')) !== JSON.stringify(todos)
+            || links.isDirty())) {
             return true;
         }
         return false;

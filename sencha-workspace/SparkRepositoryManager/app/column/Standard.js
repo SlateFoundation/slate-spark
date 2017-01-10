@@ -9,7 +9,7 @@ Ext.define('SparkRepositoryManager.column.Standard', {
 
     text: 'Standard',
     defaultRenderer: function(value, metaData, record) {
-        var standardData = (record instanceof SparkRepositoryManager.model.Standard) ? record.getData() : record.get('standard');
+        var standardData = record instanceof SparkRepositoryManager.model.Standard ? record.getData() : record.get('standard');
 
         if (!standardData) {
             return '[Unavailable]';

@@ -173,7 +173,7 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
                             rowediting.cancelEdit();
                             me.getSelectionModel().select(record);
                         }
-                });
+                    });
                 return false;
             }
             rowediting.cancelEdit();

@@ -28,7 +28,7 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
             var me = this;
 
             // Get the list of requested sparkpoint IDs from url params so items can be grouped by sparkpoint
-            if (store.count()>0 && store.lastOptions && store.lastOptions.params && store.lastOptions.params.sparkpoint_ids) {
+            if (store.count() > 0 && store.lastOptions && store.lastOptions.params && store.lastOptions.params.sparkpoint_ids) {
                 this.setGroupFieldValue(records, store.lastOptions.params.sparkpoint_ids.split(','));
             }
 
@@ -52,7 +52,7 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
         for (; i < sparkpointIdsLength; i++) {
             sparkpointId = sparkpointIds[i];
 
-            for (r=0; r < recordsLength; r++) {
+            for (r = 0; r < recordsLength; r++) {
                 rec = records[r];
 
                 recordSparkpointIds = records[r].get('sparkpoint_ids');

@@ -38,26 +38,26 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
 
             xtype: 'srm-sparkpoints-documentstable',
             width: 450
-        },{
+        }, {
             region: 'center',
 
             xtype: 'srm-sparkpoints-standardstable'
         }]
-    },{
+    }, {
         region: 'west',
         split: true,
 
         xtype: 'srm-sparkpoints-contentareastable',
         width: 300,
         collapsible: true
-    },{
+    }, {
         region: 'east',
         split: true,
         collapsible: true,
 
         xtype: 'srm-sparkpoints-sparkpointpanel',
         width: 400
-    },{
+    }, {
         region: 'center',
 
         xtype: 'srm-sparkpoints-contentareapanel'

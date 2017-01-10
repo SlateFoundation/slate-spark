@@ -154,7 +154,7 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
     onPanelColumnHide: function(grid, column) {
         var me = this;
 
-        if (column.getXType()==='srm-standardslistcolumn') {
+        if (column.getXType() === 'srm-standardslistcolumn') {
             me.getAlignButton().hide();
             me.getAlignButtonSeparator().hide();
         }
@@ -163,7 +163,7 @@ Ext.define('SparkRepositoryManager.controller.Assess', {
     onPanelColumnShow: function(grid, column) {
         var me = this;
 
-        if (column.getXType()==='srm-standardslistcolumn') {
+        if (column.getXType() === 'srm-standardslistcolumn') {
             me.getAlignButton().show();
             me.getAlignButtonSeparator().show();
         }

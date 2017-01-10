@@ -8,17 +8,17 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
 
     identifier: 'negative',
 
-	proxy: {
-		type: 'spark-api',
-		url: '/spark-repo/sparkpoint-edges',
-		extraParams: {
-			include: 'other_sparkpoint'
-		},
+    proxy: {
+        type: 'spark-api',
+        url: '/spark-repo/sparkpoint-edges',
+        extraParams: {
+            include: 'other_sparkpoint'
+        },
         writer: {
             type: 'api',
             allowSingle: false
         }
-	},
+    },
 
     fields: [
         'id',
@@ -26,11 +26,15 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
         'source_sparkpoint_id',
         'rel_type',
         'metadata',
-        { name: 'other_sparkpoint', persist: false },
-        { name: 'other_sparkpoint_code', mapping: 'other_sparkpoint.code' },
+        { name: 'other_sparkpoint',
+            persist: false },
+        { name: 'other_sparkpoint_code',
+            mapping: 'other_sparkpoint.code' },
 
         // prevent tree meta-fields from being written to server
-        { name: 'parentId', persist: false },
-        { name: 'leaf', persist: false }
+        { name: 'parentId',
+            persist: false },
+        { name: 'leaf',
+            persist: false }
     ]
 });

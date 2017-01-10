@@ -75,7 +75,7 @@ Ext.define('SparkRepositoryManager.widget.DurationField', {
     setValue: function(duration) {
         var me = this,
             hours = duration ? Math.floor(duration / 60) : 0,
-            minutes = duration ? duration - (hours * 60) : 0;
+            minutes = duration ? duration - hours * 60 : 0;
 
         me.hourField.setValue(hours);
         me.minuteField.setValue(minutes);
@@ -86,6 +86,6 @@ Ext.define('SparkRepositoryManager.widget.DurationField', {
             hours = me.hourField.getValue(),
             minutes = me.minuteField.getValue();
 
-        return (hours * 60) + minutes;
+        return hours * 60 + minutes;
     }
 });

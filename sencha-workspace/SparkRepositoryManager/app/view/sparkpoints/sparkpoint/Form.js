@@ -27,7 +27,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
         labelWidth: 50,
         name: 'abbreviation',
         allowBlank: false
-    },{
+    }, {
         xtype: 'textfield',
         fieldLabel: 'Code',
         labelWidth: 50,
@@ -47,13 +47,13 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
     //         name: 'power',
     //         inputValue: true
     //     }]
-    },{
+    }, {
         // TODO: move to own panel below grids maybe?
         xtype: 'textarea',
         fieldLabel: 'Editor Memo',
         labelAlign: 'top',
         name: 'editor_memo'
-    },{
+    }, {
         xtype: 'tabpanel',
         defaults: {
             bodyPadding: 10,
@@ -76,11 +76,11 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
                 allowBlank: false,
                 regex: /^[^\r\n]+$/,
                 regexText: 'Title cannot contain line breaks'
-            },{
+            }, {
                 fieldLabel: 'Teacher Description',
                 name: 'teacher_description'
             }]
-        },{
+        }, {
             title: 'For students',
             items: [{
                 fieldLabel: 'Student Title',
@@ -88,7 +88,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Form', {
                 allowBlank: false,
                 regex: /^[^\r\n]+$/,
                 regexText: 'Title cannot contain line breaks'
-            },{
+            }, {
                 fieldLabel: 'Student Description',
                 name: 'student_description'
             }]
