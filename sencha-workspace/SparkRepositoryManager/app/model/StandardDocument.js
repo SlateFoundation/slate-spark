@@ -1,6 +1,6 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.StandardDocument', {
     extend: 'Ext.data.Model',
+
 
     idProperty: 'asn_id',
     fields: [

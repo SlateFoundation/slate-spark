@@ -5,6 +5,7 @@
         'SparkRepositoryManager.store.sparkpoints.Lookup'
     ],
 
+
     store: {
         type: 'sparkpoints-lookup'
     },

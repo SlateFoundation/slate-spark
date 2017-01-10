@@ -2,6 +2,7 @@ Ext.define('SparkRepositoryManager.column.GradeLevel', {
     extend: 'Ext.grid.column.Column',
     xtype: 'srm-gradelevelcolumn',
 
+
     text: 'Grade',
     dataIndex: 'GradeLevel',
     width: 75,

@@ -2,6 +2,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Multiselector', {
     extend: 'Ext.Container',
     xtype: 's2m-lessons-multiselector',
 
+
     componentCls: 's2m-lessons-multiselector',
 
     config: {

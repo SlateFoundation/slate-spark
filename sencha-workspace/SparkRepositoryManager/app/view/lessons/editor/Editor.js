@@ -11,6 +11,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Editor', {
         'SparkRepositoryManager.store.sparkpoints.ContentAreas'
     ],
 
+
     componentCls: 's2m-lessons-editor',
 
     disabled: true,

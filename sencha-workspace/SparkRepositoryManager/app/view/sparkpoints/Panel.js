@@ -8,6 +8,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Panel', {
         'SparkRepositoryManager.view.sparkpoints.standards.StandardsTable'
     ],
 
+
     config: {
         selectedContentArea: null,
         selectedSparkpoint: null,

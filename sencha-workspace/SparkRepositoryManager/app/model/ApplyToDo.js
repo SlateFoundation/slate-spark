@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.ApplyToDo', {
     extend: 'Ext.data.Model',
     requires: [
@@ -14,42 +12,42 @@ Ext.define('SparkRepositoryManager.model.ApplyToDo', {
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\ApplyToDo"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\ApplyToDo'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "RevisionID",
-            type: "int",
+            name: 'RevisionID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "ApplyProjectID",
-            type: "int"
+            name: 'ApplyProjectID',
+            type: 'int'
         },
         {
-            name: "Order",
-            type: "int"
+            name: 'Order',
+            type: 'int'
         },
         {
-            name: "Text",
-            type: "string"
+            name: 'Text',
+            type: 'string'
         }
     ],
 

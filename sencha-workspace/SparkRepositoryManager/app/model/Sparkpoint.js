@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.Sparkpoint', {
     extend: 'Ext.data.Model',
     requires: [

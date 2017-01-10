@@ -2,6 +2,7 @@ Ext.define('SparkRepositoryManager.column.Standard', {
     extend: 'Ext.grid.column.Column',
     xtype: 'srm-standardcolumn',
     requires: [
+        /* global SparkRepositoryManager */
         'SparkRepositoryManager.model.Standard'
     ],
 

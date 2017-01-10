@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.Assessment', {
     extend: 'Ext.data.Model',
     requires: [
@@ -8,86 +6,87 @@ Ext.define('SparkRepositoryManager.model.Assessment', {
         'Ext.data.validator.Presence'
     ],
 
+
     // model config
     idProperty: 'ID',
     identifier: 'negative',
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\Assessment"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\Assessment'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "AssessmentTypeID",
-            type: "int",
+            name: 'AssessmentTypeID',
+            type: 'int',
             defaultValue: 1
         },
         {
-            name: "Standards",
+            name: 'Standards',
             useNull: true
         },
         {
-            name: "StandardIDs",
+            name: 'StandardIDs',
             useNull: true
         },
         {
-            name: "GradeLevel",
-            type: "string",
+            name: 'GradeLevel',
+            type: 'string',
             useNull: true
         },
         {
-            name: "Title",
-            type: "string"
+            name: 'Title',
+            type: 'string'
         },
         {
-            name: "URL",
-            type: "string"
+            name: 'URL',
+            type: 'string'
         },
         {
-            name: "VendorID",
-            type: "int",
+            name: 'VendorID',
+            type: 'int',
             useNull: true,
             defaultValue: 4
         },
 
         {
-            name: "RemoteAuthorName",
+            name: 'RemoteAuthorName',
             useNull: true,
-            type: "string"
+            type: 'string'
         },
 
         {
-            name: "RemoteAuthorIdentifier",
+            name: 'RemoteAuthorIdentifier',
             useNull: true,
-            type: "string"
+            type: 'string'
         },
 
         {
-            name: "Metadata",
+            name: 'Metadata',
             useNull: true,
-            type: "string"
+            type: 'string'
         },
 
         {
-            name: "CreatorFullName",
-            type: "string"
+            name: 'CreatorFullName',
+            type: 'string'
         }
     ],
 

@@ -5,6 +5,7 @@
         'SparkRepositoryManager.store.standards.Lookup'
     ],
 
+
     store: {
         type: 'standards-lookup'
     },

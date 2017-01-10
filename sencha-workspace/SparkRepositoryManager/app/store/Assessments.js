@@ -1,20 +1,18 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.store.Assessments', {
     extend: 'Ext.data.Store',
-
     requires: [
         'SparkRepositoryManager.model.Assessment'
     ],
+
 
     model: 'SparkRepositoryManager.model.Assessment',
 
     autoSync: true,
 
-    sorters:[
+    sorters: [
         {
-            property:'Created',
-            direction:'DESC'
+            property: 'Created',
+            direction: 'DESC'
         }
     ],
 

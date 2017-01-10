@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.AssessmentType', {
     extend: 'Ext.data.Model',
     requires: [
@@ -14,33 +12,33 @@ Ext.define('SparkRepositoryManager.model.AssessmentType', {
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\AssessmentType"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\AssessmentType'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Name",
-            type: "string"
+            name: 'Name',
+            type: 'string'
         },
         {
-            name: "Description",
-            type: "string"
+            name: 'Description',
+            type: 'string'
         }
     ],
 

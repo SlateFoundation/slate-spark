@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 /**
  * Content Navigation Panel, an extension of Ext Panel with a vbox layout containing
  * a tree panel, with a formpanel/searchfield docked to top of container.
@@ -18,6 +17,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.ContentAreasTable', {
         'Jarvus.ext.form.field.Search',
         'SparkRepositoryManager.model.ContentArea'
     ],
+
 
     title: 'Content Areas',
 

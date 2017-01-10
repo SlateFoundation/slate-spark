@@ -1,11 +1,9 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.store.ConferenceResources', {
     extend: 'Ext.data.Store',
-
     requires: [
         'SparkRepositoryManager.model.ConferenceResource'
     ],
+
 
     model: 'SparkRepositoryManager.model.ConferenceResource',
 
@@ -13,14 +11,14 @@ Ext.define('SparkRepositoryManager.store.ConferenceResources', {
 
     pageSize: 25,
 
-    sorters:[
+    sorters: [
         {
-            property:'Created',
-            direction:'DESC'
+            property: 'Created',
+            direction: 'DESC'
         },
         {
-            property:'Creator',
-            direction:'DESC'
+            property: 'Creator',
+            direction: 'DESC'
         }
     ],
 

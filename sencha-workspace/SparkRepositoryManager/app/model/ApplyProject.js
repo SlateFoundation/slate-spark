@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.ApplyProject', {
     extend: 'Ext.data.Model',
     requires: [
@@ -7,6 +5,7 @@ Ext.define('SparkRepositoryManager.model.ApplyProject', {
         'Ext.data.identifier.Negative',
         'Ext.data.validator.Presence'
     ],
+
 
     // model config
     idProperty: 'ID',

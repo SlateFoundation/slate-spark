@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.SparkpointAlignment', {
     extend: 'Ext.data.Model',
     requires: [
@@ -6,19 +5,20 @@ Ext.define('SparkRepositoryManager.model.SparkpointAlignment', {
         'Ext.data.identifier.Negative'
     ],
 
+
     identifier: 'negative',
 
-	proxy: {
-		type: 'spark-api',
-		url: '/spark-repo/sparkpoint-alignments',
-		extraParams: {
-			include: 'standard'
-		},
+    proxy: {
+        type: 'spark-api',
+        url: '/spark-repo/sparkpoint-alignments',
+        extraParams: {
+            include: 'standard'
+        },
         writer: {
             type: 'api',
             allowSingle: false
         }
-	},
+    },
 
     fields: [
         'id',

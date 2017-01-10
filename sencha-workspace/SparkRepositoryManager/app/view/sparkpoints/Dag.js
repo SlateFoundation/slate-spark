@@ -1,6 +1,6 @@
 Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
     extend: 'Jarvus.draw.DagContainer',
-    xtype:    'srm-sparkpoints-dag',
+    xtype: 'srm-sparkpoints-dag',
     requires: [
         'Jarvus.draw.DagContainer',
         'Jarvus.draw.layout.MaxUpOrDown',
@@ -8,7 +8,8 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Dag', {
         'Jarvus.draw.layout.BottomUp'
     ],
 
-    constructor: function(options){
+
+    constructor: function(options) {
         Ext.Object.merge(this, options);
         Ext.applyIf(this.settings.highlightedNodes, this.settings.nodes);
         Ext.applyIf(this.settings.highlightedNodes.code, this.settings.nodes.code);

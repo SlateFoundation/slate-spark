@@ -1,9 +1,10 @@
 Ext.define('SparkRepositoryManager.view.lessons.editor.Learn', {
     extend: 'Ext.Panel',
+    xtype: 's2m-lessons-editor-learn',
     requires: [
         'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-lessons-editor-learn',
+
 
     title: 'Learn &amp; Practice',
     componentCls: 's2m-lessons-editor-learn',

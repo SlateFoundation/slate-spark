@@ -1,6 +1,10 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.store.StandardDocuments', {
     extend: 'Ext.data.Store',
+    requires: [
+        /* global SparkRepositoryManager */
+        'SparkRepositoryManager.model.StandardDocument'
+    ],
+
 
     model: 'SparkRepositoryManager.model.StandardDocument',
     grouper: {

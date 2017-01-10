@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
     extend: 'Ext.data.Model',
     requires: [
@@ -29,7 +28,7 @@ Ext.define('SparkRepositoryManager.model.SparkpointEdge', {
         'metadata',
         { name: 'other_sparkpoint', persist: false },
         { name: 'other_sparkpoint_code', mapping: 'other_sparkpoint.code' },
-        
+
         // prevent tree meta-fields from being written to server
         { name: 'parentId', persist: false },
         { name: 'leaf', persist: false }

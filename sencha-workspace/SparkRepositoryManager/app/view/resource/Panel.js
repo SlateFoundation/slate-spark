@@ -1,5 +1,6 @@
-/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.resource.Panel', {
+    extend: 'Ext.grid.Panel',
+    xtype: 's2m-resource-panel',
     requires: [
         'Ext.Array',
         'Ext.XTemplate',
@@ -16,13 +17,13 @@ Ext.define('SparkRepositoryManager.view.resource.Panel', {
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
+
+        /* global SparkRepositoryManager */
+        'SparkRepositoryManager.API',
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.column.StandardsList'
     ],
 
-    extend: 'Ext.grid.Panel',
-
-    xtype: 's2m-resource-panel',
 
     store: 'ConferenceResources',
 

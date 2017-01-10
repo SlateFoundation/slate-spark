@@ -6,14 +6,15 @@
         'Ext.layout.container.VBox'
     ],
 
-    title:       'Links',
+
+    title: 'Links',
 
     config: {
         originalValues: []
     },
 
-    flex:        1,
-    scrollable:  true,
+    flex: 1,
+    scrollable: true,
 
 
     layout: {

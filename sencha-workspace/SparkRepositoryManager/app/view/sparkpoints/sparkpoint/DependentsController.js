@@ -10,6 +10,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.DependentsControl
         'SparkRepositoryManager.model.SparkpointEdge'
     ],
 
+
     control: {
         '#': {
             deleteclick: 'onDeleteClick'

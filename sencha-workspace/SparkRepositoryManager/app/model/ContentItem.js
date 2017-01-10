@@ -6,6 +6,7 @@ Ext.define('SparkRepositoryManager.model.ContentItem', {
         'Ext.data.identifier.Negative'
     ],
 
+
     // model config
     idProperty: 'id',
     identifier: 'negative',

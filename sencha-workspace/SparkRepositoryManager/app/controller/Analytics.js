@@ -1,6 +1,7 @@
 Ext.define('SparkRepositoryManager.controller.Analytics', {
     extend: 'Ext.app.Controller',
 
+
     control: {
         'spark-main': {
             tabchange: 'onMainTabChange'

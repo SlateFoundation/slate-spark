@@ -1,12 +1,11 @@
 Ext.define('SparkRepositoryManager.store.lesson.LearnContent', {
     extend: 'Ext.data.ChainedStore',
-
     requires: [
         'SparkRepositoryManager.store.ContentItems'
     ],
 
-    source: 'ContentItems',
 
+    source: 'ContentItems',
     groupField: 'sparkpointGroup',
 
     filters: [

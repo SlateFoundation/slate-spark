@@ -8,6 +8,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.ApplyForm', {
         'SparkRepositoryManager.widget.DurationField'
     ],
 
+
     componentCls: 's2m-lessons-editor',
 
     title: 'Add Apply',
@@ -44,7 +45,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.ApplyForm', {
             xtype: 'textarea',
             allowBlank: false
         }, {
-            xtype: 'durationfield',
+            xtype: 'srm-durationfield',
             itemId: 'timeestimate-durationfield',
             fieldLabel: 'Time Estimate',
             labelAlign: 'top',

@@ -1,11 +1,11 @@
-/* global Ext */
-/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.column.Sparkpoint', {
     extend: 'Ext.grid.column.Column',
     xtype: 'srm-sparkpointcolumn',
     requires: [
+        /* global SparkRepositoryManager */
         'SparkRepositoryManager.model.Sparkpoint'
     ],
+
 
     text: 'Sparkpoint',
     abbreviate: true,

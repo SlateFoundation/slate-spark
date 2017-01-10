@@ -5,6 +5,7 @@ Ext.define('SparkRepositoryManager.widget.StandardField', {
         'Ext.data.ChainedStore'
     ],
 
+
     lazyAutoLoad: false,
     store: {
         type: 'chained',
@@ -16,7 +17,7 @@ Ext.define('SparkRepositoryManager.widget.StandardField', {
     filterPickList: true,
     forceSelection: true,
     selectOnFocus: false,
-    multiSelect:  true,
+    multiSelect: true,
     anyMatch: true,
     stacked: true,
     triggerAction: 'query'

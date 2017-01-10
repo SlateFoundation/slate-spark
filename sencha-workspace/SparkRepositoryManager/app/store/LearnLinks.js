@@ -1,11 +1,9 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.store.LearnLinks', {
     extend: 'Ext.data.Store',
-
     requires: [
         'SparkRepositoryManager.model.LearnLink'
     ],
+
 
     model: 'SparkRepositoryManager.model.LearnLink',
 
@@ -13,10 +11,10 @@ Ext.define('SparkRepositoryManager.store.LearnLinks', {
 
     pageSize: 25,
 
-    sorters:[
+    sorters: [
         {
-            property:'Created',
-            direction:'DESC'
+            property: 'Created',
+            direction: 'DESC'
         }
     ],
 

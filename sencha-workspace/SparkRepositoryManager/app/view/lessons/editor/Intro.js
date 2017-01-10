@@ -2,6 +2,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Intro', {
     extend: 'Ext.Panel',
     xtype: 's2m-lessons-editor-intro',
 
+
     title: 'Intro',
     componentCls: 's2m-lessons-editor-intro',
 

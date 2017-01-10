@@ -1,4 +1,6 @@
 Ext.define('SparkRepositoryManager.view.conference.Panel', {
+    extend: 'Ext.grid.Panel',
+    xtype: 's2m-conference-panel',
     requires: [
         'Ext.form.field.ComboBox',
         'Ext.form.field.Date',
@@ -13,9 +15,6 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         'SparkRepositoryManager.column.StandardsList'
     ],
 
-    extend: 'Ext.grid.Panel',
-
-    xtype: 's2m-conference-panel',
 
     store: 'GuidingQuestions',
 
@@ -32,12 +31,13 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         this.getReferences().alignButton.setDisabled(selections.length === 0);
     },
 
-    dockedItems: [{
-        xtype: 'pagingtoolbar',
-        store: 'GuidingQuestions',
-        dock: 'bottom',
-        displayInfo: true
-    },
+    dockedItems: [
+        {
+            xtype: 'pagingtoolbar',
+            store: 'GuidingQuestions',
+            dock: 'bottom',
+            displayInfo: true
+        },
         {
             xtype: 'toolbar',
             items: [{
@@ -68,7 +68,8 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
                 action: 'delete',
                 disabled: true
             }]
-        }],
+        }
+    ],
 
     columns: [
         {

@@ -5,6 +5,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.ResourceForm', {
     extend: 'Ext.window.Window',
     xtype: 's2m-lessons-editor-resourceform',
 
+
     componentCls: 's2m-lessons-editor',
 
     title: 'Add Conference Resource',

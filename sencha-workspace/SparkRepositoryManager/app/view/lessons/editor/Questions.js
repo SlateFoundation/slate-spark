@@ -1,9 +1,10 @@
 Ext.define('SparkRepositoryManager.view.lessons.editor.Questions', {
     extend: 'Ext.Panel',
+    xtype: 's2m-lessons-editor-questions',
     requires: [
         'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-lessons-editor-questions',
+
 
     title: 'Conference Questions',
     componentCls: 's2m-lessons-editor-questions',

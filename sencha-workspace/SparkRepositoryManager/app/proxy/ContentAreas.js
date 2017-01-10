@@ -1,7 +1,7 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.proxy.ContentAreas', {
     extend: 'Jarvus.proxy.Postgrest',
     alias: 'proxy.spark-contentareas',
+
 
     getParams: function(operation) {
         var params = this.callParent(arguments),

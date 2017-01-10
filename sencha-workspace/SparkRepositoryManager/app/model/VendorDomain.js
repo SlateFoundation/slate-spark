@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.VendorDomain', {
     extend: 'Ext.data.Model',
     requires: [
@@ -14,37 +12,37 @@ Ext.define('SparkRepositoryManager.model.VendorDomain', {
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\VendorDomain"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\VendorDomain'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "VendorID",
-            type: "int"
+            name: 'VendorID',
+            type: 'int'
         },
         {
-            name: "Domain",
-            type: "string"
+            name: 'Domain',
+            type: 'string'
         },
         {
-            name: "ContextClass",
-            type: "string"
+            name: 'ContextClass',
+            type: 'string'
         }
     ],
 

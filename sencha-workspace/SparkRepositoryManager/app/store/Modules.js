@@ -1,12 +1,13 @@
 Ext.define('SparkRepositoryManager.store.Lessons', {
     extend: 'Ext.data.TreeStore',
 
+
     model: 'SparkRepositoryManager.model.Lesson',
     pageSize: 0,
     remoteFilter: false,
     remoteSort: false,
     parentIdProperty: 'parentId',
-	nodeParam: null,
+    nodeParam: null,
     autoSync: false,
 
     root: {

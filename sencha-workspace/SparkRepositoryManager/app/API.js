@@ -1,13 +1,13 @@
-/*jslint browser: true ,undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.API', {
     extend: 'Emergence.util.AbstractAPI',
     singleton: true,
 
+
     getMetadata: function (url, extended, cb) {
-        if (typeof extended !== 'function') {
-            extended = !!extended;
-        } else {
+        if (typeof extended === 'function') {
             cb = extended;
+        } else {
+            extended = Boolean(extended);
         }
 
         this.request({
@@ -26,6 +26,6 @@ Ext.define('SparkRepositoryManager.API', {
     // allow API host to be overridden via apiHost param
     if (pageParams.apiHost) {
         API.setHost(pageParams.apiHost);
-        API.setUseSSL(!!pageParams.apiSSL);
+        API.setUseSSL(Boolean(pageParams.apiSSL));
     }
 });

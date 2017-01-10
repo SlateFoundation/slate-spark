@@ -1,4 +1,6 @@
 Ext.define('SparkRepositoryManager.view.apply.Editor', {
+    extend: 'Ext.panel.Panel',
+    xtype: 's2m-apply-editor',
     requires: [
         'Ext.Array',
         'Ext.ComponentQuery',
@@ -17,12 +19,10 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
         'SparkRepositoryManager.widget.DurationField',
         'SparkRepositoryManager.field.ApplyLinks'
     ],
-    extend:   'Ext.panel.Panel',
 
-    xtype: 's2m-apply-editor',
 
     config: {
-        layout:     {
+        layout: {
             type: 'vbox',
             align: 'stretch'
         },
@@ -37,9 +37,9 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
 
         itemId: 'details-fieldset',
 
-        title:      'Project Details',
-        layout:     'anchor',
-        flex:       1,
+        title: 'Project Details',
+        layout: 'anchor',
+        flex: 1,
         scrollable: true,
 
         items: [{
@@ -54,7 +54,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             anchor: '100%'
 
         }, {
-            xtype: 'durationfield',
+            xtype: 'srm-durationfield',
             itemId: 'timeestimate-durationfield',
 
             readOnly: this.readOnly,
@@ -62,7 +62,7 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             fieldLabel: 'Time Estimate',
             labelAlign: 'top',
 
-            duration:   0,
+            duration: 0,
 
             anchor: '100%'
 
@@ -72,8 +72,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
 
         id: 'todos-fieldset',
 
-        title:      'Todos',
-        flex:       1,
+        title: 'Todos',
+        flex: 1,
         scrollable: true,
         layout: {
             type: 'vbox',
@@ -93,8 +93,8 @@ Ext.define('SparkRepositoryManager.view.apply.Editor', {
             },
 
             triggerAction: 'all',
-            labelAlign:    'top',
-            emptyText:     'Type your todo here. When you are done typing, press tab to enter another.',
+            labelAlign: 'top',
+            emptyText: 'Type your todo here. When you are done typing, press tab to enter another.',
 
             onReplicate: function (newField, lastField, cloneField) {
                 if (lastField && lastField.isDirty()) {

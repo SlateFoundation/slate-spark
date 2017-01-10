@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.ApplyLink', {
     extend: 'Ext.data.Model',
     requires: [
@@ -14,47 +12,47 @@ Ext.define('SparkRepositoryManager.model.ApplyLink', {
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\ApplyLink"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\ApplyLink'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "RevisionID",
-            type: "int",
+            name: 'RevisionID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Title",
-            type: "string"
+            name: 'Title',
+            type: 'string'
         },
         {
-            name: "URL",
-            type: "string"
+            name: 'URL',
+            type: 'string'
         },
         {
-            name: "VendorID",
-            type: "int",
+            name: 'VendorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Metadata",
-            type: "string",
+            name: 'Metadata',
+            type: 'string',
             useNull: true,
             convert: function (value) {
                 var JSON = {};

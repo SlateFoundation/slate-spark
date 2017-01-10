@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.model.LearnLink', {
     extend: 'Ext.data.Model',
     requires: [
@@ -7,80 +6,81 @@ Ext.define('SparkRepositoryManager.model.LearnLink', {
         'Ext.data.validator.Presence'
     ],
 
+
     // model config
     idProperty: 'ID',
     identifier: 'negative',
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\LearnLink"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\LearnLink'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "RevisionID",
-            type: "int",
+            name: 'RevisionID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Title",
-            type: "string"
+            name: 'Title',
+            type: 'string'
         },
         {
-            name: "URL",
-            type: "string"
+            name: 'URL',
+            type: 'string'
         },
         {
-            name: "VendorID",
-            type: "int",
+            name: 'VendorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "GradeLevel",
-            type: "string",
+            name: 'GradeLevel',
+            type: 'string',
             useNull: true
         },
         {
-            name: "DOK",
-            type: "int",
+            name: 'DOK',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Standards",
+            name: 'Standards',
             useNull: true
         },
         {
-            name: "StandardIDs",
+            name: 'StandardIDs',
             useNull: true
         },
         {
-            name: "Type",
+            name: 'Type',
             useNull: true,
-            type: "string"
+            type: 'string'
         },
         {
-            name: "Metadata",
+            name: 'Metadata',
             useNull: true
         },
         {
-            name: "CreatorFullName",
-            type: "string"
+            name: 'CreatorFullName',
+            type: 'string'
         }
     ],
 

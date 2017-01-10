@@ -1,8 +1,7 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.proxy.StandardSets', {
     extend: 'Ext.data.proxy.Rest',
     alias: 'proxy.spark-standardsets',
+
 
     headers: {
         'Api-Key': 'K8HZDs8vghUHeH6k6DFKLqHj'

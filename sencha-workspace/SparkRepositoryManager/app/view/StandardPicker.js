@@ -1,4 +1,6 @@
 Ext.define('SparkRepositoryManager.view.StandardPicker', {
+    extend: 'Ext.window.Window',
+    xtype: 'spark-standardpicker',
     requires: [
         'Ext.Array',
         'Ext.form.field.Tag',
@@ -9,8 +11,6 @@ Ext.define('SparkRepositoryManager.view.StandardPicker', {
         'SparkRepositoryManager.store.StandardsTree'
     ],
 
-    extend: 'Ext.window.Window',
-    xtype: 'spark-standardpicker',
 
     controller: 'StandardPicker',
 

@@ -1,9 +1,10 @@
 Ext.define('SparkRepositoryManager.view.lessons.editor.Apply', {
     extend: 'Ext.Panel',
+    xtype: 's2m-lessons-editor-apply',
     requires: [
         'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
-    xtype: 's2m-lessons-editor-apply',
+
 
     title: 'Apply',
     componentCls: 's2m-lessons-editor-apply',

@@ -11,6 +11,7 @@
     extend: 'Ext.slider.Multi',
     xtype: 'srm-field-levelslider',
 
+
     useTips: false,
     values: [-1,12],
     increment: 1,

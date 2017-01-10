@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.model.GuidingQuestion', {
     extend: 'Ext.data.Model',
     requires: [
@@ -15,46 +13,46 @@ Ext.define('SparkRepositoryManager.model.GuidingQuestion', {
 
     fields: [
         {
-            name: "ID",
-            type: "int",
+            name: 'ID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Class",
-            type: "string",
-            defaultValue: "Spark2\\GuidingQuestion"
+            name: 'Class',
+            type: 'string',
+            defaultValue: 'Spark2\\GuidingQuestion'
         },
         {
-            name: "Created",
-            type: "date",
-            dateFormat: "timestamp",
+            name: 'Created',
+            type: 'date',
+            dateFormat: 'timestamp',
             useNull: true
         },
         {
-            name: "CreatorID",
-            type: "int",
+            name: 'CreatorID',
+            type: 'int',
             useNull: true
         },
         {
-            name: "Question",
-            type: "string"
+            name: 'Question',
+            type: 'string'
         },
         {
-            name: "Standards",
+            name: 'Standards',
             useNull: true
         },
         {
-            name: "StandardIDs",
+            name: 'StandardIDs',
             useNull: true
         },
         {
-            name: "GradeLevel",
-            type: "string",
+            name: 'GradeLevel',
+            type: 'string',
             useNull: true
         },
         {
-            name: "CreatorFullName",
-            type: "string"
+            name: 'CreatorFullName',
+            type: 'string'
         }
     ],
 

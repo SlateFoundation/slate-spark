@@ -1,5 +1,6 @@
-/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.learn.Panel', {
+    extend: 'Ext.grid.Panel',
+    xtype: 's2m-learn-panel',
     requires: [
         'Ext.form.field.ComboBox',
         'Ext.form.field.Date',
@@ -10,14 +11,13 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
+
+        /* global SparkRepositoryManager */
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.Util',
         'SparkRepositoryManager.column.StandardsList'
     ],
 
-    extend: 'Ext.grid.Panel',
-
-    xtype: 's2m-learn-panel',
 
     store: 'LearnLinks',
 
@@ -34,12 +34,13 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
     },
 
     // TODO: Move to common code
-    dockedItems: [{
-        xtype: 'pagingtoolbar',
-        store: 'LearnLinks',
-        dock: 'bottom',
-        displayInfo: true
-    },
+    dockedItems: [
+        {
+            xtype: 'pagingtoolbar',
+            store: 'LearnLinks',
+            dock: 'bottom',
+            displayInfo: true
+        },
         {
             xtype: 'toolbar',
             items: [{
@@ -70,7 +71,8 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
                 action: 'delete',
                 disabled: true
             }]
-    }],
+        }
+    ],
 
     columns: [
         {

@@ -1,9 +1,9 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.store.DocumentStandards', {
     extend: 'Ext.data.TreeStore',
     requires: [
         'SparkRepositoryManager.proxy.Standards'
     ],
+
 
     model: 'SparkRepositoryManager.model.Standard',
     pageSize: 0,

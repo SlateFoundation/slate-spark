@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.store.sparkpoints.ContentAreas', {
     extend: 'Ext.data.TreeStore',
 
@@ -8,7 +7,7 @@ Ext.define('SparkRepositoryManager.store.sparkpoints.ContentAreas', {
     remoteFilter: false,
     remoteSort: false,
     parentIdProperty: 'parentId',
-	nodeParam: null,
+    nodeParam: null,
     autoSync: true,
 
     /**

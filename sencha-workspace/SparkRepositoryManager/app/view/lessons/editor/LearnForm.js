@@ -5,6 +5,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.LearnForm', {
     extend: 'Ext.window.Window',
     xtype: 's2m-lessons-editor-learnform',
 
+
     componentCls: 's2m-lessons-editor',
 
     title: 'Add Learn',

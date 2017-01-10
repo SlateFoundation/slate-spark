@@ -1,6 +1,6 @@
 Ext.define('SparkRepositoryManager.widget.DurationField', {
     extend: 'Ext.form.FieldContainer',
-
+    xtype: 'srm-durationfield',
     requires: [
         'SparkRepositoryManager.widget.PostfixField',
         'Ext.form.FieldContainer',
@@ -8,9 +8,6 @@ Ext.define('SparkRepositoryManager.widget.DurationField', {
         'Ext.layout.container.HBox'
     ],
 
-    xtype: 's2m.durationfield',
-
-    alias: 'widget.durationfield',
 
     initComponent: function() {
         var me = this,

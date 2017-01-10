@@ -1,13 +1,12 @@
 Ext.define('SparkRepositoryManager.controller.StandardPicker', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.StandardPicker',
     requires: [
         'SparkRepositoryManager.store.StandardsTree',
         'Ext.data.ArrayStore',
         'Ext.Array'
     ],
 
-    extend: 'Ext.app.ViewController',
-
-    alias: 'controller.StandardPicker',
 
     config: {
         control: {

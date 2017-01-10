@@ -5,6 +5,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.QuestionForm', {
     extend: 'Ext.window.Window',
     xtype: 's2m-lessons-editor-questionform',
 
+
     componentCls: 's2m-lessons-editor',
 
     title: 'Add Conference Question',

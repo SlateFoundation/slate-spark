@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 /**
  * Standards Grid, an extension of Ext.grid.Panel
  */

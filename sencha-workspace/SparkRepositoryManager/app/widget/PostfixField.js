@@ -1,9 +1,7 @@
 Ext.define('SparkRepositoryManager.widget.PostfixField', {
     extend: 'Ext.form.field.Number',
+    xtype: 'srm-postfixfield',
 
-    xtype: 's2m.postfixfield',
-
-    alias: 'widget.postfixfield',
 
     setValue: function (v) {
         this.callParent(arguments);

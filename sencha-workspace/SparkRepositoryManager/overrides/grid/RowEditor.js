@@ -1,10 +1,10 @@
 Ext.define('SparkRepositoryManager.overrides.grid.RowEditor', {
     override: 'Ext.grid.RowEditor',
-
     requires: [
         'Ext.tip.ToolTip',
         'Ext.form.Panel'
     ],
+
 
     // TODO: test if this can be removed in framework > 5.1.1.451, seems like it was worked on
     insertColumnEditor: function(column) {

@@ -1,14 +1,15 @@
-/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.Util', {
-    'singleton': true,
-
-    'requires': [
+    singleton: true,
+    requires: [
         'Ext.Object',
+        'Ext.window.MessageBox',
+
+        /* global SparkRepositoryManager */
         'SparkRepositoryManager.API',
         'SparkRepositoryManager.model.Vendor',
-        'SparkRepositoryManager.model.VendorDomain',
-        'Ext.window.MessageBox'
+        'SparkRepositoryManager.model.VendorDomain'
     ],
+
 
     parseURL: function(url) {
         var returnVal = {};

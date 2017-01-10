@@ -7,7 +7,7 @@ Ext.application({
     name: 'SparkRepositoryManager',
 
     extend: 'SparkRepositoryManager.Application'
-	
+
     //-------------------------------------------------------------------------
     // Most customizations should be made to SparkRepositoryManager.Application. If you need to
     // customize this file, doing so below this section reduces the likelihood

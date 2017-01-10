@@ -7,6 +7,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Alignments', {
         'SparkRepositoryManager.column.Standard'
     ],
 
+
     controller: 'srm-sparkpoints-sparkpointalignments',
 
     config: {

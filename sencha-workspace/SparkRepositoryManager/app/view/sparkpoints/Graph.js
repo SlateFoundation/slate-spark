@@ -3,36 +3,37 @@
  * - Eliminate double-bagging component in container
  */
 Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
-    extend:   'Ext.container.Container',
-    xtype:    'srm-sparkpoints-graph',
+    extend: 'Ext.container.Container',
+    xtype: 'srm-sparkpoints-graph',
     requires: [
         'SparkRepositoryManager.view.sparkpoints.Dag'
     ],
 
-    title:  'Graph',
+
+    title: 'Graph',
     layout: 'fit',
     padding: 20,
 
     items: [{
-        xtype:    'srm-sparkpoints-dag',
+        xtype: 'srm-sparkpoints-dag',
         // TODO: settings -> config?
         settings: {
             nodes: {
                 code: {
-                    marginWidth:  8,
+                    marginWidth: 8,
                     marginHeight: 10
                 },
                 title: {
-                    marginWidth:  8,
+                    marginWidth: 8,
                     marginHeight: 5
                 },
-                rect:  {
+                rect: {
                     height: 50,
                     width: 50,
                     stroke: '#00a1b1',
                     'stroke-width': 2
                 },
-                dot:  {
+                dot: {
                     radius: 6,
                     fill: '#00737e',
                     marginHeight: 5,
@@ -56,7 +57,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.Graph', {
                 arrow_height: 8
             }
         },
-        dag:      {
+        dag: {
             nodes: {
                 '1': {code: 'Select a sparkpoint', teacher_title: '', dependencies_count: 0 }
             },

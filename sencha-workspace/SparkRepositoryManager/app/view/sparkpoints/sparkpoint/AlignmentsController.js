@@ -9,6 +9,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.AlignmentsControl
         'SparkRepositoryManager.model.SparkpointAlignment'
     ],
 
+
     control: {
         '#': {
             deleteclick: 'onDeleteClick'

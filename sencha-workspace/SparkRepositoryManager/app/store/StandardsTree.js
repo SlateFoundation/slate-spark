@@ -28,7 +28,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
         var root = this.getRoot(),
             checked = [];
 
-        root.cascadeBy(function(rec){
+        root.cascadeBy(function(rec) {
             if (rec.get('checked')) {
                 checked.push(rec);
             }
@@ -69,7 +69,7 @@ Ext.define('SparkRepositoryManager.store.StandardsTree', {
     },
 
     listeners: {
-        load: function(me, records, success, eOpts) {
+        load: function(me, records, success) {
             var standardCodes = [];
 
             if (success) {

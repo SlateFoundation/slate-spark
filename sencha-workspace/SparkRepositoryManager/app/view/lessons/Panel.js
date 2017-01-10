@@ -15,6 +15,7 @@ Ext.define('SparkRepositoryManager.view.lessons.Panel', {
         'SparkRepositoryManager.view.lessons.editor.Editor'
     ],
 
+
     config: {
         lesson: null
     },

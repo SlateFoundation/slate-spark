@@ -1,5 +1,6 @@
-/* global SparkRepositoryManager */
 Ext.define('SparkRepositoryManager.view.assess.Panel', {
+    extend: 'Ext.grid.Panel',
+    xtype: 's2m-assess-panel',
     requires: [
         'Ext.Array',
         'Ext.XTemplate',
@@ -13,14 +14,13 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
+
+        /* global SparkRepositoryManager */
         'SparkRepositoryManager.proxy.Records',
         'SparkRepositoryManager.Util',
         'SparkRepositoryManager.column.StandardsList'
     ],
 
-    extend: 'Ext.grid.Panel',
-
-    xtype: 's2m-assess-panel',
 
     store: 'Assessments',
 
@@ -35,12 +35,13 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
         this.getReferences().alignButton.setDisabled(selections.length === 0);
     },
 
-    dockedItems: [{
-        xtype: 'pagingtoolbar',
-        store: 'Assessments',
-        dock: 'bottom',
-        displayInfo: true
-    },
+    dockedItems: [
+        {
+            xtype: 'pagingtoolbar',
+            store: 'Assessments',
+            dock: 'bottom',
+            displayInfo: true
+        },
         {
             xtype: 'toolbar',
             items: [{
@@ -71,7 +72,8 @@ Ext.define('SparkRepositoryManager.view.assess.Panel', {
                 action: 'delete',
                 disabled: true
             }]
-    }],
+        }
+    ],
 
     columns: [
         {

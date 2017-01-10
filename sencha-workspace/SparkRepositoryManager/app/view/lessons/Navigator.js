@@ -2,6 +2,7 @@ Ext.define('SparkRepositoryManager.view.lessons.Navigator', {
     extend: 'Ext.Container',
     xtype: 's2m-lessons-navigator',
 
+
     componentCls: 's2m-lessons-navigator',
 
     layout: {

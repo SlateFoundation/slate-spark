@@ -5,9 +5,10 @@ Ext.define('SparkRepositoryManager.store.ContentItems', {
         'SparkRepositoryManager.proxy.SandboxSchool'
     ],
 
+
     model: 'SparkRepositoryManager.model.ContentItem',
 
-    //groupField: 'sparkpointGroup',
+    // groupField: 'sparkpointGroup',
 
     proxy: {
         // TODO: this proxy is a dev workaround to contact a different API host

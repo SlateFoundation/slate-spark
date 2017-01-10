@@ -6,6 +6,7 @@ Ext.define('SparkRepositoryManager.proxy.SandboxSchool', {
         'SparkRepositoryManager.SandboxSchoolAPI'
     ],
 
+
     connection: 'SparkRepositoryManager.SandboxSchoolAPI',
 
     getMethod: function(request) {

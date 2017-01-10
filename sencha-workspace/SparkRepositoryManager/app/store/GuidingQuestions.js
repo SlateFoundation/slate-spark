@@ -1,11 +1,9 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-
 Ext.define('SparkRepositoryManager.store.GuidingQuestions', {
     extend: 'Ext.data.Store',
-
     requires: [
         'SparkRepositoryManager.model.GuidingQuestion'
     ],
+
 
     model: 'SparkRepositoryManager.model.GuidingQuestion',
 
@@ -13,14 +11,14 @@ Ext.define('SparkRepositoryManager.store.GuidingQuestions', {
 
     pageSize: 25,
 
-    sorters:[
+    sorters: [
         {
-            property:'Created',
-            direction:'DESC'
+            property: 'Created',
+            direction: 'DESC'
         },
         {
-            property:'Creator',
-            direction:'DESC'
+            property: 'Creator',
+            direction: 'DESC'
         }
     ],
 

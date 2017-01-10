@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
     extend: 'Ext.tree.Panel',
     xtype: 'srm-sparkpoints-sparkpointdependents',
@@ -8,6 +7,7 @@ Ext.define('SparkRepositoryManager.view.sparkpoints.sparkpoint.Dependents', {
         'SparkRepositoryManager.field.SparkpointLookup',
         'SparkRepositoryManager.model.SparkpointEdge'
     ],
+
 
     controller: 'srm-sparkpoints-sparkpointdependents',
 

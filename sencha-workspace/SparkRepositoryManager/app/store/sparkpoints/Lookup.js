@@ -1,17 +1,17 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 Ext.define('SparkRepositoryManager.store.sparkpoints.Lookup', {
     extend: 'Ext.data.Store',
-	alias: 'store.sparkpoints-lookup',
-	requires: [
-		'SparkRepositoryManager.proxy.API'
-	],
+    alias: 'store.sparkpoints-lookup',
+    requires: [
+        'SparkRepositoryManager.proxy.API'
+    ],
 
-	model: 'SparkRepositoryManager.model.Sparkpoint',
-	proxy: {
-		type: 'spark-api',
-		url: '/spark-repo/sparkpoints',
-		headers: {
-			Prefer: 'return=minimal'
-		}
-	}
+
+    model: 'SparkRepositoryManager.model.Sparkpoint',
+    proxy: {
+        type: 'spark-api',
+        url: '/spark-repo/sparkpoints',
+        headers: {
+            Prefer: 'return=minimal'
+        }
+    }
 });

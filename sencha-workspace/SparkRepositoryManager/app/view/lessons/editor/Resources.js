@@ -5,6 +5,7 @@ Ext.define('SparkRepositoryManager.view.lessons.editor.Resources', {
         'SparkRepositoryManager.view.lessons.editor.Multiselector'
     ],
 
+
     title: 'Conference Resources',
     componentCls: 's2m-lessons-editor-resources',
 

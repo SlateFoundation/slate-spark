@@ -1,4 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
 /**
  * Standards Navigation Panel, an extension of Ext Panel with a vbox layout containing a tree panel
  *
