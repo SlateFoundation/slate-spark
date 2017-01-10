@@ -24,6 +24,7 @@ module.exports = {
         ],
         "callback-return": "error",
         "camelcase": "error",
+        "comma-dangle": ["error", "never"],
         "comma-spacing": [
             "error",
             {
@@ -44,10 +45,10 @@ module.exports = {
         "consistent-this": "off",
         "curly": "error",
         "default-case": "error",
-        "dot-location": "error",
+        "dot-location": ["error", "property"],
         "dot-notation": "error",
         "eol-last": "off",
-        "eqeqeq": "off",
+        "eqeqeq": "warn",
         "func-names": "off",
         "func-style": "error",
         "generator-star-spacing": "error",
