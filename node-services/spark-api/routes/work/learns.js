@@ -424,6 +424,9 @@ function* launchHandler() {
             }
 
             url = (url + '&oauth_access_token=' + accessToken).replace('http://staging.opened.com/', 'https://www.opened.com/');
+        } else if (url.includes('learnzillion.com')) {
+            // Temporary fix for LearnZillion
+            url = url.replace('/lessons/', '/lesson_plans/');
         }
         
         ctx.redirect(url);
