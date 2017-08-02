@@ -20,7 +20,7 @@ Ext.define('SparkClassroomTeacher.view.work.learn.Container', {
             docked: 'right',
 
             xtype: 'spark-teacher-work-learn-sidebar'
-        },{
+        }, {
             xtype: 'spark-feedbackview',
 
             store: {

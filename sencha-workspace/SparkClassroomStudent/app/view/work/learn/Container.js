@@ -10,33 +10,39 @@ Ext.define('SparkClassroomStudent.view.work.learn.Container', {
     initialize: function () {
         this.callParent(arguments);
 
-        this.add([{
-            xtype: 'container',
-            layout: {
-                type: 'hbox',
-                pack: 'end'
-            },
-            items: [
-                {
-                    itemId: 'readyForConferenceBtn',
+        this.add([
+            {
+                docked: 'bottom',
 
-                    xtype: 'button',
-                    disabled: true,
-                    ui: 'action',
-                    text: 'Ready for Conference'
+                xtype: 'spark-feedbackview',
+                store: {
+                    type: 'chained',
+                    source: 'work.Feedback',
+                    filters: [{
+                        property: 'phase',
+                        value: 'learn'
+                    }]
                 }
-            ]
-        },{
-            xtype: 'spark-feedbackview',
+            },
+            {
+                docked: 'bottom',
 
-            store: {
-                type: 'chained',
-                source: 'work.Feedback',
-                filters: [{
-                    property: 'phase',
-                    value: 'learn'
-                }]
+                xtype: 'container',
+                layout: {
+                    type: 'hbox',
+                    pack: 'end'
+                },
+                items: [
+                    {
+                        itemId: 'readyForConferenceBtn',
+
+                        xtype: 'button',
+                        disabled: true,
+                        ui: 'action',
+                        text: 'Ready for Conference'
+                    }
+                ]
             }
-        }]);
+        ]);
     }
 });

@@ -18,11 +18,13 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
     refs: {
         appCt: 'spark-teacher-appct',
+        workCt: 'spark-teacher-work-ct',
         assessCt: 'spark-teacher-work-assess',
         reflectionCt: 'spark-teacher-work-assess #reflectionCt',
         sparkpointField: 'spark-teacher-work-assess  spark-sparkpointfield',
         suggestBtn: 'spark-teacher-work-assess #suggestBtn',
-        completeBtn: 'spark-teacher-work-assess #completeBtn'
+        completeBtn: 'spark-teacher-work-assess #completeBtn',
+        sparkpointSelectList: 'spark-teacher-work-assess-footer #sparkpointSelectList'
     },
 
     control: {
@@ -60,22 +62,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
 
 
     // event handlers
-    onSelectedStudentSparkpointChange: function(appCt, selectedStudentSparkpoint) {
+    onSelectedStudentSparkpointChange: function() {
         var me = this,
             sparkpointField = me.getSparkpointField(),
-            store = me.getWorkAssessmentsStore(),
-            proxy = store.getProxy();
-
-        if (selectedStudentSparkpoint) {
-            // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
-
-            // TODO: reload store if sparkpoints param dirty
-            if (store.isLoaded()) {
-                store.load();
-            }
-        }
+            assessCt = me.getAssessCt();
 
         if (sparkpointField) {
             sparkpointField.getSuggestionsList().hide();
@@ -83,7 +73,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
             sparkpointField.setQuery(null);
         }
 
-        me.syncSelectedStudentSparkpoint();
+        if (!assessCt) {
+            return;
+        }
+
+        assessCt.show();
     },
 
     onAssessCtActivate: function() {
@@ -151,9 +145,44 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     onCompleteBtnTap: function() {
         var me = this,
             selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
-            completeBtnDirty = false;
+            completeBtnDirty = false,
+            list = me.getSparkpointSelectList(),
+            selections = list && list.getSelections(),
+            assessdSparkpointIds = [],
+            i;
 
-        if (!selectedStudentSparkpoint.get('assess_completed_time')) {
+        if (selectedStudentSparkpoint
+            && !selectedStudentSparkpoint.get('assess_completed_time')
+            && selectedStudentSparkpoint.get('is_lesson')
+        ) {
+            // lesson sparkpoint
+            if (!selections
+                || selections.length === 0
+            ) {
+                Ext.Msg.alert('No Selection', 'Please select at least one sparkpoint to mark complete for this lesson.');
+                return;
+            }
+
+            for (i = 0; i < selections.length; i++) {
+                assessdSparkpointIds.push(selections[i].get('id'));
+            }
+
+            Slate.API.request({
+                method: 'PATCH',
+                url: '/spark/api/work/activity',
+                jsonData: {
+                    'student_id': selectedStudentSparkpoint.get('student_id'),
+                    'sparkpoint_id': selectedStudentSparkpoint.get('sparkpoint_id'),
+                    'assess_finish_time': new Date(),
+                    'assessed_sparkpoint_ids': assessdSparkpointIds
+                }
+            });
+
+            completeBtnDirty = true;
+        } else if (selectedStudentSparkpoint
+            && !selectedStudentSparkpoint.get('assess_completed_time')
+        ) {
+            // normal sparkpoint
             selectedStudentSparkpoint.set('assess_finish_time', new Date());
             selectedStudentSparkpoint.save();
 
@@ -189,41 +218,48 @@ Ext.define('SparkClassroomTeacher.controller.work.Assess', {
     // controller methods
     syncSelectedStudentSparkpoint: function() {
         var me = this,
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            appCt = me.getAppCt(),
+            selectedStudentSparkpoint = appCt.getSelectedStudentSparkpoint(),
+            workCt = me.getWorkCt(),
             assessCt = me.getAssessCt(),
+            list = me.getSparkpointSelectList(),
             assessmentsStore = me.getWorkAssessmentsStore(),
             learnsStore = Ext.getStore('work.Learns'),
-            // appliesStore = Ext.getStore('work.Applies'),
             sparkpointField = me.getSparkpointField(),
-            sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore();
-
-        if (!assessCt) {
-            return;
-        }
+            sparkpointSuggestionsStore = sparkpointField && sparkpointField.getSuggestionsList().getStore(),
+            completeBtn = me.getCompleteBtn(),
+            lesson;
 
         if (selectedStudentSparkpoint) {
-            assessCt.show();
+            assessmentsStore.getProxy().setExtraParams({
+                'student_id': selectedStudentSparkpoint.get('student_id'),
+                'sparkpoint': selectedStudentSparkpoint.get('sparkpoint')
+            });
+            assessmentsStore.load();
 
-            if (!assessmentsStore.isLoaded()) { // TODO: OR extraParamsDirty
-                assessmentsStore.load();
-            }
-
-            if (!learnsStore.isLoaded()) { // TODO: OR extraParamsDirty
-                learnsStore.load();
-            }
-
-            // if (!appliesStore.isLoaded() && !appliesStore.isLoading()) { // TODO: OR extraParamsDirty
-            //     appliesStore.load();
-            // }
+            learnsStore.getProxy().setExtraParams({
+                'student_id': selectedStudentSparkpoint.get('student_id'),
+                'sparkpoint': selectedStudentSparkpoint.get('sparkpoint')
+            });
+            learnsStore.load();
 
             sparkpointSuggestionsStore.getProxy().setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-
-            if (sparkpointSuggestionsStore.isLoaded()) {
-                sparkpointSuggestionsStore.load();
-            }
+            sparkpointSuggestionsStore.load();
 
             me.refreshSuggestBtn();
             me.refreshCompleteBtn();
+
+            if (selectedStudentSparkpoint.get('is_lesson')) {
+                lesson = workCt && workCt.getLesson();
+
+                list.show();
+                list.getStore().loadData(lesson && lesson.get('sparkpoints'));
+
+                completeBtn.setText('Mark Selected Complete');
+            } else {
+                completeBtn.setText('Mark Standard Complete');
+                list.hide();
+            }
         } else {
             assessCt.hide();
         }

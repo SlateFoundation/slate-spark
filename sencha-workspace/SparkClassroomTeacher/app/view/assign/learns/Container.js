@@ -12,10 +12,8 @@ Ext.define('SparkClassroomTeacher.view.assign.learns.Container', {
     config: {
         title: 'Learn &amp; Practice',
         margin: '0 -24', // flush with viewport
+        defaultType: 'spark-teacher-assign-learns-grid',
         items: [
-            {
-                xtype: 'spark-teacher-assign-learns-grid'
-            },
             {
                 docked: 'top',
 

@@ -2,51 +2,33 @@ Ext.define('SparkClassroomTeacher.view.work.Container', {
     extend: 'SparkClassroom.work.Container',
     xtype: 'spark-teacher-work-ct',
     requires: [
-        'Ext.tab.Bar'
+        'Ext.tab.Bar',
+        'SparkClassroom.model.work.Lesson'
     ],
 
-    // config: {
-    //     title: 'Student Work',
-    //     students: [
-    //         {FirstName: 'Anthony', LastName: 'Harley', student_id: 1},
-    //         {FirstName: 'Chris', LastName: 'Alfano', student_id: 2}
-    //     ]
-    // },
 
-    // initialize: function() {
+    config: {
+        lesson: null
+    },
 
-    //     this.callParent(arguments);
+    applyLesson: function(lessonData, lesson) {
+        if (!lessonData) {
+            return null;
+        }
 
-    //     // TODO: add other teacher-only decoration here with this.down('foo').add/insert
-    // },
+        if (lessonData.isModel) {
+            return lessonData;
+        }
 
-    // updateStudents: function(students) {
-    //     var studentTabs = Ext.Array.map(students, function(student) {
-    //         return {
-    //             // TODO: when student becomes a model, use a calculated field for FullName instead
-    //             title: student.FirstName + ' ' + student.LastName.substr(0,1) + '.',
-    //             student_id: student.student_id
-    //         }
-    //     });
+        if (lesson && lessonData.id === lesson.getId()) {
+            lesson.set(lessonData, { dirty: false });
+            return lesson;
+        }
 
+        return Ext.create('SparkClassroom.model.work.Lesson', lessonData);
+    },
 
-    //     if (students.length == 1) {
-    //         // single student mode, remove students list if it exists
-    //         if (this.studentsBar) {
-
-    //         }
-    //     } else {
-    //         // multi student mode, inject students tabbar with
-    //         this.studentsBar = this.insert(
-    //             0,
-    //             {
-    //                 xtype: 'tabbar',
-    //                 cls: 'students-tabbar',
-    //                 tabType: 'studentTab',
-    //                 docked: 'top',
-    //                 items: studentTabs
-    //             }
-    //          );
-    //     }
-    // }
+    updateLesson: function(lesson, oldLesson) {
+        this.fireEvent('lessonchange', this, lesson, oldLesson);
+    }
 });

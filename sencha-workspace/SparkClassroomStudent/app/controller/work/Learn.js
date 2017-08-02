@@ -12,8 +12,10 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
         learnCt: 'spark-student-work-learn',
         sparkpointCt: 'spark-student-work-learn #sparkpointCt',
         progressBanner: 'spark-work-learn-progressbanner',
+        lessonIntro: 'spark-work-learn #lessonIntro',
         learnGrid: 'spark-work-learn-grid',
-        readyBtn: 'spark-student-work-learn #readyForConferenceBtn'
+        readyBtn: 'spark-student-work-learn #readyForConferenceBtn',
+        workCt: 'spark-student-work-ct'
     },
 
     control: {
@@ -48,9 +50,12 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     // event handlers
     onLoadedStudentSparkpointChange: function(appCt, studentSparkpoint) {
         var me = this,
-            store = me.getWorkLearnsStore(),
-            sparkpointCt = me.getSparkpointCt(),
-            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint');
+            learnsStore = me.getWorkLearnsStore(),
+            learnCt = me.getLearnCt(),
+            workCt = me.getWorkCt(),
+            lessonIntro = me.getLessonIntro(),
+            sparkpointCode = studentSparkpoint && studentSparkpoint.get('sparkpoint'),
+            lesson;
 
         me.learnsCompleted = 0;
         me.learnsRequiredSection = null;
@@ -60,11 +65,30 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             return;
         }
 
-        store.getProxy().setExtraParam('sparkpoint', sparkpointCode);
-        store.load();
+        learnsStore.getProxy().setExtraParam('sparkpoint', sparkpointCode);
+        learnsStore.load();
 
-        if (sparkpointCt) {
-            sparkpointCt.setTitle(sparkpointCode);
+        if (studentSparkpoint.get('is_lesson')) {
+            // switching to a lesson
+            lesson = workCt.getLesson();
+
+            lessonIntro.setData({
+                title: lesson && lesson.get('title'),
+                directions: lesson && lesson.get('directions')
+            });
+            lessonIntro.show();
+            me.renderLessonLists(studentSparkpoint);
+        } else {
+            // switching to a regular sparkpoint
+            if (lessonIntro) {
+                lessonIntro.hide();
+            }
+
+            learnCt.removeAll();
+            learnCt.add([{
+                title: sparkpointCode || '[Select a Sparkpoint]',
+                store: 'work.Learns'
+            }]);
         }
     },
 
@@ -73,21 +97,21 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
     },
 
     onLearnCtActivate: function() {
-        var me = this,
-            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint();
-
-        me.getSparkpointCt().setTitle(studentSparkpoint ? studentSparkpoint.get('sparkpoint') : 'Loading&hellip;');
-        me.refreshLearnProgress();
+        this.refreshLearnProgress();
     },
 
     onLearnsStoreLoad: function() {
-        this.refreshLearnProgress();
-        this.ensureLearnPhaseStarted();
+        var me = this;
+
+        me.refreshLearnProgress();
+        me.ensureLearnPhaseStarted();
     },
 
     onLearnsStoreUpdate: function() {
-        this.refreshLearnProgress();
-        this.ensureLearnPhaseStarted();
+        var me = this;
+
+        me.refreshLearnProgress();
+        me.ensureLearnPhaseStarted();
     },
 
     onSocketData: function(socket, data) { // eslint-disable-line complexity
@@ -165,6 +189,51 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
 
     // controller methods
+    renderLessonLists: function() {
+        var me = this,
+            learnCt = me.getLearnCt(),
+            workCt = me.getWorkCt(),
+            learnLists = [],
+            lesson = workCt.getLesson(),
+            groups, group, i;
+
+        learnCt.removeAll();
+
+        groups = lesson && lesson.get('learn_groups') || [];
+
+        for (i = 0; i < groups.length; i++) {
+            group = groups[i];
+
+            learnLists.push({
+                title: group.title,
+                groupId: group.id,
+                store: {
+                    type: 'chained',
+                    source: 'work.Learns',
+                    filters: [{
+                        property: 'lesson_group_id',
+                        value: group.id
+                    }]
+                }
+            });
+        }
+
+        learnLists.push({
+            title: 'Ungrouped',
+            groupId: null,
+            store: {
+                type: 'chained',
+                source: 'work.Learns',
+                filters: [{
+                    property: 'lesson_group_id',
+                    value: null
+                }]
+            }
+        });
+
+        learnCt.add(learnLists);
+    },
+
     refreshLearnProgress: function() {
         var me = this,
             progressBanner = me.getProgressBanner(),
@@ -173,10 +242,17 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             count = learns.length,
             completed = 0,
             i = 0,
-            rawData = me.getWorkLearnsStore().getProxy().getReader().rawData;
+            rawData = me.getWorkLearnsStore().getProxy().getReader().rawData,
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
+            isLesson = studentSparkpoint && studentSparkpoint.get('is_lesson');
 
         if (!progressBanner || !readyBtn) {
             // learns tab hasn't been activated yet
+            return;
+        }
+
+        if (isLesson) {
+            me.syncGroupedLearnsRequired();
             return;
         }
 
@@ -221,7 +297,13 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
             minimumRequired = Math.min(count, 5),
             requiredLearns = 0,
             completedRequiredLearns = 0,
+            isLesson = studentSparkpoint.get('is_lesson'),
             learn, learnAssignments;
+
+        if (isLesson) {
+            me.syncGroupedLearnsRequired();
+            return;
+        }
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
             minimumRequired = Math.min(count, rawData.learns_required.site);
@@ -270,6 +352,81 @@ Ext.define('SparkClassroomStudent.controller.work.Learn', {
 
         readyBtn.setDisabled(learnFinishTime || learnsRequiredDisabled);
         readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
+    },
+
+    syncGroupedLearnsRequired: function() {
+        var me = this,
+            learnCt = me.getLearnCt(),
+            learnGrids = learnCt && learnCt.getInnerItems() || [],
+            readyBtn = me.getReadyBtn(),
+            studentSparkpoint = me.getAppCt().getLoadedStudentSparkpoint(),
+            learnFinishTime = studentSparkpoint && studentSparkpoint.get('learn_completed_time'),
+            lesson = me.getWorkCt().getLesson(),
+            i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns, groupedLearnsCompleted;
+
+        for (i = 0; i <learnGrids.length; i++) {
+            grid = learnGrids[i];
+            progressBanner = grid && grid.down('spark-work-learn-progressbanner');
+            learns = grid && grid.getStore().getRange();
+            groupData = lesson && lesson.getGroupData(grid && grid.groupId);
+            completedRequiredLearns = 0;
+            learnsRequiredDisabled = false;
+            requiredLearns = 0;
+            groupedLearnsCompleted = 0;
+
+            if (learns.length && groupData) {
+                progressBanner.show();
+            } else {
+                progressBanner.hide();
+            }
+
+            if (groupData && groupData.learns_required) {
+                minimumRequired = Math.min(learns.length, groupData.learns_required); // TODO check prop
+            }
+
+            for (j = 0; j < learns.length; j++) {
+                learn = learns[j];
+                learnAssignments = learn.get('assignments');
+
+                if (learns[j].get('completed')) {
+                    groupedLearnsCompleted++;
+                }
+
+                if (
+                    learnAssignments.section === 'required-first'
+                    || learnAssignments.student === 'required-first'
+                    || learnAssignments.section === 'required'
+                    || learnAssignments.student === 'required'
+                ) {
+                    if (learn.get('completed')) {
+                        completedRequiredLearns++;
+                    } else {
+                        learnsRequiredDisabled = true;
+                    }
+                    requiredLearns++;
+                }
+            }
+
+            if (!progressBanner || !readyBtn) {
+                // learns tab hasn't been activated yet
+                return;
+            }
+
+            progressBanner.setData({
+                completedLearns: groupedLearnsCompleted,
+                minimumLearns: minimumRequired,
+                completedRequiredLearns: completedRequiredLearns,
+                requiredLearns: requiredLearns,
+                name: null
+            });
+
+            if (!learnsRequiredDisabled) {
+                learnsRequiredDisabled = me.learnsCompleted < minimumRequired;
+            }
+
+            readyBtn.setDisabled(learnFinishTime || learnsRequiredDisabled);
+            readyBtn.setText(learnFinishTime ? 'Conference Started': readyBtn.config.text);
+        }
     },
 
     ensureLearnPhaseStarted: function() {

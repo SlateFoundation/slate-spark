@@ -11,7 +11,9 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
 
     refs: {
         appCt: 'spark-teacher-appct',
+        workCt: 'spark-teacher-work-ct',
         learnCt: 'spark-teacher-work-learn',
+        lessonIntro: 'spark-teacher-work-learn #lessonIntro',
         sparkpointCt: 'spark-teacher-work-learn #sparkpointCt',
         progressBanner: 'spark-teacher-work-learn-sidebar spark-work-learn-progressbanner',
         learnGrid: 'spark-work-learn-grid',
@@ -67,21 +69,22 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             store = me.getWorkLearnsStore(),
             proxy = store.getProxy();
 
-        if (selectedStudentSparkpoint) {
-            // TODO: track dirty state of extraparams?
-            proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
-            proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
-
-            if (store.isLoaded()) {
-                store.load();
-            }
+        if (!selectedStudentSparkpoint) {
+            return;
         }
+
+        proxy.setExtraParam('student_id', selectedStudentSparkpoint.get('student_id'));
+        proxy.setExtraParam('sparkpoint', selectedStudentSparkpoint.get('sparkpoint'));
+        store.load();
 
         me.syncSelectedStudentSparkpoint();
     },
 
     onLearnCtActivate: function() {
-        this.syncSelectedStudentSparkpoint();
+        var me = this;
+
+        me.syncSelectedStudentSparkpoint();
+        me.refreshLearnProgress();
     },
 
     onStudentSparkpointsStoreUpdate: function(studentSparkpointsStore, studentSparkpoint, operation, modifiedFieldNames) {
@@ -103,8 +106,10 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
     },
 
     onLearnsStoreLoad: function() {
-        this.setLearnsRequired();
-        this.refreshLearnProgress();
+        var me = this;
+
+        me.setLearnsRequired();
+        me.refreshLearnProgress();
     },
 
     onLearnsStoreUpdate: function() {
@@ -219,28 +224,80 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         var me = this,
             learnCt = me.getLearnCt(),
             scoreField = me.getMasteryCheckScoreField(),
-            store = me.getWorkLearnsStore(),
-            selectedStudentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint();
 
-        if (!learnCt || !learnCt.hasParent()) {
+        if (!learnCt) {
             return;
         }
 
-        // TODO: get current sparkpoint from a better place when we move to supporting multiple sparkpoints
-        if (selectedStudentSparkpoint) {
-            me.getSparkpointCt().setTitle(selectedStudentSparkpoint.get('sparkpoint'));
-
-            scoreField.setValue(selectedStudentSparkpoint.get('learn_mastery_check_score'));
-            scoreField.resetOriginalValue();
-
-            learnCt.show();
-
-            if (!store.isLoaded() && !store.isLoading()) { // TODO: OR extraParamsDirty
-                store.load();
-            }
-        } else {
+        if (!studentSparkpoint) {
             learnCt.hide();
+            return;
         }
+
+        if (studentSparkpoint.get('is_lesson')) {
+            // switching to a lesson
+            me.renderLessonLists(studentSparkpoint);
+        } else {
+            // switching to a regular sparkpoint
+            learnCt.removeAll();
+            learnCt.add([{
+                title: studentSparkpoint.get('sparkpoint'),
+                store: 'work.Learns',
+                progressBanner: false
+            }]);
+        }
+        scoreField.setValue(studentSparkpoint.get('learn_mastery_check_score'));
+        scoreField.resetOriginalValue();
+
+        learnCt.show();
+    },
+
+    renderLessonLists: function() {
+        var me = this,
+            learnCt = me.getLearnCt(),
+            workCt = me.getWorkCt(),
+            learnLists = [],
+            lesson = workCt.getLesson(),
+            groups, group, i;
+
+        learnCt.removeAll();
+
+        groups = lesson && lesson.get('learn_groups') || [];
+
+        for (i = 0; i < groups.length; i++) {
+            group = groups[i];
+
+            learnLists.push({
+                title: group.title,
+                emptyText: 'No Learns available for this group.',
+                groupId: group.id,
+                store: {
+                    type: 'chained',
+                    source: 'work.Learns',
+                    filters: [{
+                        property: 'lesson_group_id',
+                        value: group.id
+                    }]
+                }
+            });
+        }
+
+        learnLists.push({
+            title: 'Ungrouped',
+            emptyText: 'No Learns available for this group.',
+            groupId: null,
+            store: {
+                type: 'chained',
+                source: 'work.Learns',
+                filters: [{
+                    property: 'lesson_group_id',
+                    value: null
+                }]
+            }
+        });
+
+        learnCt.add(learnLists);
     },
 
     setLearnsRequired: function() {
@@ -265,7 +322,31 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             requiredLearns = 0,
             completedRequiredLearns = 0,
             i = 0,
-            learn, learnAssignments;
+            studentSparkpoint = me.getAppCt().getSelectedStudentSparkpoint(),
+            workCt = me.getWorkCt(),
+            isLesson = studentSparkpoint && studentSparkpoint.get('is_lesson'),
+            lessonIntro = me.getLessonIntro(),
+            lesson, learn, learnAssignments;
+
+        if (!progressBanner) {
+            // learns tab has not been activated yet
+            return;
+        }
+
+        if (isLesson) {
+            lesson = workCt && workCt.getLesson();
+
+            lessonIntro.setData({
+                title: lesson && lesson.get('title'),
+                directions: lesson && lesson.get('directions')
+            });
+            lessonIntro.show();
+
+            progressBanner.hide();
+
+            me.syncGroupedLearnsRequired();
+            return;
+        }
 
         if (rawData && rawData.learns_required && rawData.learns_required.site) {
             minimumRequired = Math.min(count, rawData.learns_required.site);
@@ -277,10 +358,11 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
             minimumRequired = Math.min(count, me.learnsRequiredSection);
         }
 
-        if (!progressBanner) {
-            // learns tab hasn't been activated yet
-            return;
+        if (lessonIntro) {
+            lessonIntro.hide();
         }
+
+        progressBanner.show();
 
         for (; i < count; i++) {
             learn = learns[i];
@@ -312,6 +394,70 @@ Ext.define('SparkClassroomTeacher.controller.work.Learn', {
         });
 
         progressBanner.show();
+    },
+
+    syncGroupedLearnsRequired: function() {
+        var me = this,
+            learnCt = me.getLearnCt(),
+            learnGrids = learnCt && learnCt.getInnerItems() || [],
+            lesson = me.getWorkCt().getLesson(),
+            i, j, learns, grid, progressBanner, groupData, minimumRequired, learn, learnAssignments, completedRequiredLearns, learnsRequiredDisabled, requiredLearns, groupedLearnsCompleted;
+
+        for (i = 0; i <learnGrids.length; i++) {
+            grid = learnGrids[i];
+            progressBanner = grid && grid.down('spark-work-learn-progressbanner');
+            learns = grid && grid.getStore().getRange();
+            groupData = lesson && lesson.getGroupData(grid && grid.groupId);
+            completedRequiredLearns = 0;
+            learnsRequiredDisabled = false;
+            requiredLearns = 0;
+            groupedLearnsCompleted = 0;
+
+            if (!progressBanner) {
+                continue;
+            }
+
+            if (learns.length && groupData) {
+                progressBanner.show();
+            } else {
+                progressBanner.hide();
+            }
+
+            if (groupData && groupData.learns_required) {
+                minimumRequired = Math.min(learns.length, groupData.learns_required); // TODO check prop
+            }
+
+            for (j = 0; j < learns.length; j++) {
+                learn = learns[j];
+                learnAssignments = learn.get('assignments');
+
+                if (learns[j].get('completed')) {
+                    groupedLearnsCompleted++;
+                }
+
+                if (
+                    learnAssignments.section === 'required-first'
+                    || learnAssignments.student === 'required-first'
+                    || learnAssignments.section === 'required'
+                    || learnAssignments.student === 'required'
+                ) {
+                    if (learn.get('completed')) {
+                        completedRequiredLearns++;
+                    } else {
+                        learnsRequiredDisabled = true;
+                    }
+                    requiredLearns++;
+                }
+            }
+
+            progressBanner.setData({
+                completedLearns: groupedLearnsCompleted,
+                minimumLearns: minimumRequired,
+                completedRequiredLearns: completedRequiredLearns,
+                requiredLearns: requiredLearns,
+                name: null
+            });
+        }
     },
 
     writeMasteryCheckScore: function() {

@@ -8,38 +8,27 @@ Ext.define('SparkClassroom.work.learn.Container', {
     ],
 
     config: {
-        itemId: 'learn',
-
         allowToggleComplete: true,
 
-        items: [{
-            layout: 'accordion',
-            items: [
-                {
-                    expanded: true,
-                    itemId: 'sparkpointCt',
+        layout: {
+            type: 'accordion',
+            allowMultipleExpandedItems: true
+        },
+        itemId: 'learnAccordian',
+        defaultType: 'spark-work-learn-grid',
+        defaults: {
+            expanded: true
+        },
 
-                    xtype: 'container',
-                    title: '[Select a Sparkpoint]',
-                    items: [
-                        {
-                            xtype: 'container',
-                            layout: {
-                                type: 'hbox',
-                                pack: 'center'
-                            },
-                            items: [
-                                {
-                                    xtype: 'spark-work-learn-progressbanner',
-                                    hidden: true
-                                }
-                            ]
-                        },
-                        {
-                            xtype: 'spark-work-learn-grid'
-                        }
-                    ]
-                }
+        items: [{
+            docked: 'top',
+            xtype: 'component',
+            itemId: 'lessonIntro',
+            cls: 'spark-panel spark-work-learn-module-intro',
+            hidden: true,
+            tpl: [
+                '<h3 class="spark-panel-title">{title}</h3>',
+                '<p>{directions}</p>'
             ]
         }]
     },

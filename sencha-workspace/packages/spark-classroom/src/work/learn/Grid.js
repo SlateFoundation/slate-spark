@@ -1,30 +1,36 @@
-/*jslint browser: true, undef: true, laxcomma:true *//*global Ext*/
 Ext.define('SparkClassroom.work.learn.Grid', {
     extend: 'Ext.grid.Grid',
     xtype: 'spark-work-learn-grid',
     requires: [
         'Jarvus.plugin.GridFlex',
         'Jarvus.plugin.GridHeight',
+
+        /* global SparkClassroom */
         'SparkClassroom.column.Completed',
         'SparkClassroom.column.LearnLink',
         'SparkClassroom.column.DOK',
         'SparkClassroom.column.LearnType',
         'SparkClassroom.column.Rating',
         'SparkClassroom.column.Score',
-        'SparkClassroom.column.Attachment'
+        'SparkClassroom.column.Attachment',
+        'SparkClassroom.work.learn.ProgressBanner'
     ],
 
     config: {
+        progressBanner: true,
+
         allowToggleComplete: true,
 
         plugins: [
             'gridflex',
             'gridheight'
         ],
+
         emptyText: 'No Learns to show for this Sparkpoint.',
         grouped: true,
         titleBar: null,
-        columns:[
+
+        columns: [
             {
                 xtype: 'spark-completed-column',
                 requireLaunched: true
@@ -54,6 +60,34 @@ Ext.define('SparkClassroom.work.learn.Grid', {
         ],
 
         store: 'work.Learns'
+    },
+
+    applyProgressBanner: function(config, oldProgressBanner) {
+        if (config === true) {
+            config = {};
+        }
+
+        return Ext.factory(config, SparkClassroom.work.learn.ProgressBanner, oldProgressBanner);
+    },
+
+    updateProgressBanner: function(progressBanner, oldProgressBanner) {
+        var container = this.container;
+
+        if (oldProgressBanner) {
+            container.remove(oldProgressBanner.getParent());
+        }
+
+        if (progressBanner) {
+            container.insertFirst({
+                docked: 'top',
+                xtype: 'container',
+                layout: {
+                    type: 'hbox',
+                    pack: 'center'
+                },
+                items: progressBanner
+            });
+        }
     },
 
     updateAllowToggleComplete: function(allowToggleComplete) {
