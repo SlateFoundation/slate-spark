@@ -1,11 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="SparkClassroomStudent" default=".help">
-    <!--
-    The build-impl.xml file imported here contains the guts of the build process. It is
-    a great idea to read that file to understand how the process works, but it is best to
-    limit your changes to this file.
-    -->
-    <import file="${basedir}/.sencha/app/build-impl.xml"/>
+
+    <!-- Find and load Sencha Cmd ant tasks -->
+    <script language="javascript">
+        <![CDATA[
+            var dir = project.getProperty("basedir"),
+                cmdDir = project.getProperty("cmd.dir"),
+                cmdLoaded = project.getReference("senchaloader");
+
+            if (!cmdLoaded) {
+                function echo(message, file) {
+                    var e = project.createTask("echo");
+                    e.setMessage(message);
+                    if (file) {
+                        e.setFile(file);
+                    }
+                    e.execute();
+                };
+
+                if (!cmdDir) {
+
+                    function exec(args) {
+                        var process = java.lang.Runtime.getRuntime().exec(args),
+                            input = new java.io.BufferedReader(new java.io.InputStreamReader(process.getInputStream())),
+                            headerFound = false,
+                            line;
+
+                        while (line = input.readLine()) {
+                            line = line + '';
+                            java.lang.System.out.println(line);
+                            if (line.indexOf("Sencha Cmd") > -1) {
+                                headerFound = true;
+                            }
+                            else if (headerFound && !cmdDir) {
+                                cmdDir = line;
+                                project.setProperty("cmd.dir", cmdDir);
+                            }
+                        }
+                        process.waitFor();
+                        return !!cmdDir;
+                    }
+
+                    if (!exec(["sencha", "which"])) {
+                        var tmpFile = "tmp.sh";
+                        echo("source ~/.bash_profile; sencha " + whichArgs.join(" "), tmpFile);
+                        exec(["/bin/sh", tmpFile]);
+                        new java.io.File(tmpFile)['delete'](); 
+                    }
+                }
+            }
+
+            if (cmdDir && !project.getTargets().containsKey("init-cmd")) {
+                var importDir = project.getProperty("build-impl.dir") || 
+                                (cmdDir + "/ant/build/app/build-impl.xml");
+                var importTask = project.createTask("import");
+
+                importTask.setOwningTarget(self.getOwningTarget());
+                importTask.setLocation(self.getLocation());
+                importTask.setFile(importDir);
+                importTask.execute();
+            }
+        ]]>
+    </script>
 
     <!--
     The following targets can be provided to inject logic before and/or after key steps
@@ -38,36 +94,5 @@
             <target name="-before-build"/>
             <target name="-after-build"/>
     -->
-
-    <target name="-before-init">
-        <if>
-            <isset property="build.compression.closure.jar"/>
-            <then>
-                <property name="build.compression" value=""/>
-                <property name="enable.resource.compression" value=""/>
-            </then>
-        </if>
-    </target>
-
-    <target name="-after-build">
-        <if>
-            <isset property="build.compression.closure.jar"/>
-            <then>
-                <move file="${build.dir}/app.js" tofile="${build.dir}/app.debug.js"></move>
-
-                <echo>Compressing with closure ${build.dir}/app.js</echo>
-                <java jar="${build.compression.closure.jar}" fork="true" failonerror="true">
-                    <sysproperty key="DEBUG" value="true"/>
-                    <arg value="--warning_level=QUIET"/>
-                    <arg value="--js=${build.dir}/app.debug.js"/>
-                    <arg value="--create_source_map=${build.dir}/app.js.map"/>
-                    <arg value="--source_map_format=V3"/>
-                    <arg value="--source_map_location_mapping=${build.dir}|."/>
-                    <arg value="--js_output_file=${build.dir}/app.js"/>
-                </java>
-                <echo file="${build.dir}/app.js" append="true">//# sourceMappingURL=app.js.map</echo>
-            </then>
-        </if>
-    </target>
 
 </project>
