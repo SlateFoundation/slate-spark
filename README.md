@@ -29,3 +29,11 @@ to run a basic local server at [http://localhost:1841](http://localhost:1841).
 ### Connecting to a server
 You can connect to any remote slate-cbl instance that has CORS enabled by appending the query
 parameter `apiHost` when loading the page.
+
+## Building with habitat
+
+1. `HAB_ORIGIN=slate hab studio enter`
+2. `build sencha-workspace/SparkClassroomStudent`
+3. `build sencha-workspace/SparkClassroomTeacher`
+4. `build sencha-workspace/SparkDashboardStudent`
+5. `build sencha-workspace/SparkDashboardTeacher`
