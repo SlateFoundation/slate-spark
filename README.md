@@ -1,7 +1,6 @@
-spark-classroom
-=========
-Provides extensions for Slate and UI applications for Spark
+# slate-spark
 
+Provides extensions for Slate and UI applications for Spark
 
 ## In this repository
 - `sencha-workspace/spark-classroom`: Sencha CMD package containing shared client-side code
@@ -9,11 +8,9 @@ Provides extensions for Slate and UI applications for Spark
   - `sencha-workspace/SparkClassroomTeacher`: Realtime UI for teachers to use during class
   - `sencha-workspace/SparkClassroomStudent`: Realtime UI for students to use during class
 
-
 ## Technologies used
 - Sencha CMD 6.x
 - [Sencha Ext JS 6 Modern](http://docs.sencha.com/extjs/6.0/)
-
 
 ## Getting started with client-side UI application development
 1. [Install latest 6.x Sencha CMD](https://www.sencha.com/products/extjs/cmd-download/)
