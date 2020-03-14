@@ -83,7 +83,7 @@ if [ -d /hab/svc/postgresql11/data ]; then
 fi
 
 if hab svc status > /dev/null 2>&1; then
-    hab svc load core/postgresql11
+    hab svc load --force core/postgresql11
 else
     export HAB_STUDIO_SUP=false
     sup-run core/postgresql11
@@ -106,6 +106,7 @@ until hab pkg exec core/busybox-static nc -z localhost 9123; do
     echo -n ".";
     sleep .1;
 done;
+sleep 1
 echo
 
 
@@ -119,19 +120,18 @@ update-site
 echo
 echo "--> Spark studio ready!"
 echo
-echo "    * Use 'build-classroom-student' to build SparkClassroomStudent for testing"
+echo "    * Use 'update-site' to rebuild entire site after changing any sources"
+echo "    * Use 'psql' to open PostgreSQL shell"
+echo "    * Use 'mysql' to open MySQL shell"
+
+echo "    * Use 'build-classroom-student' to set up SparkClassroomStudent Sencha app for live development"
 build-classroom-student() {
     build-app SparkClassroomStudent
 }
 
-echo "    * Use 'build-classroom-teacher' to build SparkClassroomTeacher for testing"
+echo "    * Use 'build-classroom-teacher' to set up SparkClassroomTeacher Sencha app for live development"
 build-classroom-teacher() {
     build-app SparkClassroomTeacher
-}
-
-echo "    * Use 'reload-nginx' to signal nginx to reload config"
-reload-nginx() {
-    hab pkg exec core/busybox-static killall -HUP nginx
 }
 
 # echo "    * Use 'build-dashboard-student' to build SparkDashboardStudent for testing"
@@ -144,12 +144,17 @@ reload-nginx() {
 #     build-app SparkDashboardTeacher
 # }
 
-echo "    * Use 'build-all' to build all apps for testing"
+echo "    * Use 'build-all' to set up all Sencha apps for live development"
 build-all() {
     build-classroom-student
     build-classroom-teacher
     # build-dashboard-student
     # build-dashboard-teacher
+}
+
+echo "    * Use 'reload-nginx' to reload nginx after editing ${SRC_DIR}/node-services/*.nginx.conf"
+reload-nginx() {
+    hab pkg exec core/busybox-static killall -HUP nginx
 }
 
 
