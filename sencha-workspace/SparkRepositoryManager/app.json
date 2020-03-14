@@ -147,7 +147,8 @@
          */
         "var": [
             "sass/var/all.scss",
-            "sass/var"
+            "sass/var",
+            "resources/slate-frame/sass/_variables-all.scss"
         ],
 
         /**
