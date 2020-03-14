@@ -1,0 +1,27 @@
+[hololens]
+package = "holo/lens-sencha-app"
+
+[hololens.sencha]
+app = "SparkClassroomStudent"
+
+[hololens.input]
+root = "sencha-workspace"
+files = [
+    "SparkClassroomStudent/**",
+    "packages/jarvus-routing/**",
+    "packages/spark-theme/**",
+    "packages/spark-classroom/**",
+    "packages/slate-core-data/**",
+    "packages/emergence-apikit/**",
+    "packages/jarvus-apikit/**",
+    "packages/jarvus-touch-accordion/**",
+    "packages/jarvus-gridheight/**",
+    "packages/jarvus-fuzzytime/**",
+    "packages/jarvus-hotfixes/**",
+    "ext/**",
+    "workspace.json",
+]
+
+[hololens.output]
+root = "webapp-builds/SparkClassroomStudent"
+merge = "replace"
