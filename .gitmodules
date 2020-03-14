@@ -1,43 +1,43 @@
-[submodule "sencha-workspace/packages/jarvus-touch-accordion"]
-	path = sencha-workspace/packages/jarvus-touch-accordion
+[submodule "jarvus-touch-accordion"]
+	path = sencha-workspace/packages.remote/jarvus-touch-accordion
 	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
 	branch = master
-[submodule "sencha-workspace/packages/jarvus-apikit"]
-	path = sencha-workspace/packages/jarvus-apikit
+[submodule "jarvus-apikit"]
+	path = sencha-workspace/packages.remote/jarvus-apikit
 	url = https://github.com/JarvusInnovations/jarvus-apikit.git
 	branch = master
-[submodule "sencha-workspace/packages/emergence-apikit"]
-	path = sencha-workspace/packages/emergence-apikit
+[submodule "emergence-apikit"]
+	path = sencha-workspace/packages.remote/emergence-apikit
 	url = https://github.com/JarvusInnovations/emergence-apikit.git
 	branch = master
-[submodule "sencha-workspace/packages/slate-core-data"]
-	path = sencha-workspace/packages/slate-core-data
+[submodule "slate-core-data"]
+	path = sencha-workspace/packages.remote/slate-core-data
 	url = https://github.com/SlateFoundation/slate-core-data.git
 	branch = master
-[submodule "sencha-workspace/packages/jarvus-hotfixes"]
-	path = sencha-workspace/packages/jarvus-hotfixes
+[submodule "jarvus-hotfixes"]
+	path = sencha-workspace/packages.remote/jarvus-hotfixes
 	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
 	branch = ext/6/0/0/640
-[submodule "sencha-workspace/packages/jarvus-gridflex"]
-	path = sencha-workspace/packages/jarvus-gridflex
+[submodule "jarvus-gridflex"]
+	path = sencha-workspace/packages.remote/jarvus-gridflex
 	url = https://github.com/JarvusInnovations/jarvus-gridflex.git
 	branch = ext/6/0/0/640
-[submodule "sencha-workspace/packages/jarvus-routing"]
-	path = sencha-workspace/packages/jarvus-routing
+[submodule "jarvus-routing"]
+	path = sencha-workspace/packages.remote/jarvus-routing
 	url = https://github.com/JarvusInnovations/jarvus-routing.git
 	branch = ext/6/0/0/640
-[submodule "sencha-workspace/packages/jarvus-gridheight"]
-	path = sencha-workspace/packages/jarvus-gridheight
+[submodule "jarvus-gridheight"]
+	path = sencha-workspace/packages.remote/jarvus-gridheight
 	url = https://github.com/JarvusInnovations/jarvus-gridheight.git
 	branch = ext/6/0/0/640
-[submodule "sencha-workspace/packages/jarvus-fuzzytime"]
-	path = sencha-workspace/packages/jarvus-fuzzytime
+[submodule "jarvus-fuzzytime"]
+	path = sencha-workspace/packages.remote/jarvus-fuzzytime
 	url = https://github.com/JarvusInnovations/jarvus-fuzzytime.git
 	branch = master
-[submodule "sencha-workspace/packages/jarvus-googlepicker"]
-	path = sencha-workspace/packages/jarvus-googlepicker
+[submodule "jarvus-googlepicker"]
+	path = sencha-workspace/packages.remote/jarvus-googlepicker
 	url = https://github.com/JarvusInnovations/jarvus-googlepicker.git
 [submodule "sencha-workspace/ext-6.2.0.981"]
-	path = sencha-workspace/ext-6.2.0.981
+	path = sencha-workspace/ext
 	url = https://github.com/JarvusInnovations/extjs.git
 	branch = workspace/6.2

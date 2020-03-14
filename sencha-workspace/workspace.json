@@ -1,15 +1,5 @@
 {
     /**
-     *  An array of the paths to all the applications present in this workspace
-     */
-    "apps": [
-        "SparkClassroomStudent",
-        "SparkClassroomTeacher",
-        "SparkDashboardStudent",
-        "SparkDashboardTeacher"
-    ],
-
-    /**
      * An object containing key value pair framework descriptors.
      *
      * The value should be an object containing "path" the path inside the workspace where the framework
@@ -32,8 +22,8 @@
      */
     "frameworks": {
         "ext": {
-            "path":"ext-6.0.0.640",
-            "version":"6.0.0.640"
+            "path":"ext",
+            "version":"6.2.0.981"
         }
     },
 
@@ -52,11 +42,15 @@
          * This folder contains all local packages.
          * If a comma-separated string is used as value the first path will be used as the path to generate new packages.
          */
-        "dir": "${workspace.dir}/packages/local,${workspace.dir}/packages",
+        "dir": "${workspace.dir}/packages",
 
         /**
          * This folder contains all extracted (remote) packages.
          */
-        "extract": "${workspace.dir}/packages/remote"
+        "extract": "${workspace.dir}/packages.remote"
+    },
+
+    "cmd": {
+        "version": "6.5.2.15"
     }
 }
