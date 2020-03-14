@@ -54,6 +54,8 @@ Ext.define('SparkClassroomStudent.Application', {
          * Preconfigure the viewport to start with a top-level scrollable container for the main UI components
          */
         viewport: {
+            id: 'slateapp-viewport',
+            cls: ['site', 'wrapper'],
             items: {
                 xtype: 'spark-student-appct'
             }
