@@ -1,8 +1,9 @@
-$list-item-border-color:                transparent;
-$list-item-padding:                     dynamic(0.6em 0.9em);
-$list-item-pressed-background-color:    dynamic(mix($neutral-light-color, $active-color, 90%));
-$list-item-selected-background-color:   dynamic(mix($neutral-light-color, $active-color, 80%));
+$listitem-border-color:                 transparent;
+$listitem-padding:                      dynamic(0.6em 0.9em);
+$listitem-pressed-background-color:     dynamic(mix($neutral-light-color, $active-color, 90%));
+$listitem-selected-background-color:    dynamic(mix($neutral-light-color, $active-color, 80%));
 
-$list-group-header-background-color:    dynamic(#e1e1e1);
-$list-group-header-font-size:           dynamic(10px);
-$list-group-header-padding:             dynamic(0);
+$itemheader-background-color:           dynamic(#e5e5e5);
+$itemheader-border-width:               dyanmic(0);
+$itemheader-font-size:                  dynamic(10px);
+$itemheader-padding:                    dynamic(0);

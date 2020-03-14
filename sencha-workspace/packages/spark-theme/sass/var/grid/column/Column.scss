@@ -1,3 +1,8 @@
-$grid-column-sort-asc-icon:     dynamic($fa-var-caret-up);
-$grid-column-sort-desc-icon:    dynamic($fa-var-caret-down);
-$grid-column-sort-icon-color:   dynamic($alert-color);
+$gridcolumn-sort-asc-icon:     dynamic($fa-var-caret-up);
+$gridcolumn-sort-desc-icon:    dynamic($fa-var-caret-down);
+$gridcolumn-sort-icon-color:   dynamic($alert-color);
+
+$gridcolumn-background-color:  dynamic(transparent);
+$gridcolumn-font-size:         dynamic(.9em);
+$gridcolumn-font-weight:       dynamic(bold);
+$gridcolumn-padding:           dynamic(.5em 1em);
