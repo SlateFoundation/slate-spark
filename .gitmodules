@@ -1,3 +1,18 @@
+[submodule "sencha-workspace/ext-6.2.0.981"]
+	path = sencha-workspace/ext
+	url = https://github.com/JarvusInnovations/extjs.git
+	branch = workspace/6.2
+
+[submodule "jarvus-hotfixes"]
+	path = sencha-workspace/packages.remote/jarvus-hotfixes
+	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
+	branch = ext/6/2/0/981
+
+[submodule "slate-core-data"]
+	path = sencha-workspace/packages.remote/slate-core-data
+	url = https://github.com/SlateFoundation/slate-core-data.git
+	branch = master
+
 [submodule "jarvus-touch-accordion"]
 	path = sencha-workspace/packages.remote/jarvus-touch-accordion
 	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
@@ -6,18 +21,6 @@
 	path = sencha-workspace/packages.remote/jarvus-apikit
 	url = https://github.com/JarvusInnovations/jarvus-apikit.git
 	branch = master
-[submodule "emergence-apikit"]
-	path = sencha-workspace/packages.remote/emergence-apikit
-	url = https://github.com/JarvusInnovations/emergence-apikit.git
-	branch = master
-[submodule "slate-core-data"]
-	path = sencha-workspace/packages.remote/slate-core-data
-	url = https://github.com/SlateFoundation/slate-core-data.git
-	branch = master
-[submodule "jarvus-hotfixes"]
-	path = sencha-workspace/packages.remote/jarvus-hotfixes
-	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
-	branch = ext/6/2/0/981
 [submodule "jarvus-routing"]
 	path = sencha-workspace/packages.remote/jarvus-routing
 	url = https://github.com/JarvusInnovations/jarvus-routing.git
@@ -30,7 +33,8 @@
 	path = sencha-workspace/packages.remote/jarvus-fuzzytime
 	url = https://github.com/JarvusInnovations/jarvus-fuzzytime.git
 	branch = master
-[submodule "sencha-workspace/ext-6.2.0.981"]
-	path = sencha-workspace/ext
-	url = https://github.com/JarvusInnovations/extjs.git
-	branch = workspace/6.2
+
+[submodule "emergence-apikit"]
+	path = sencha-workspace/packages.remote/emergence-apikit
+	url = https://github.com/JarvusInnovations/emergence-apikit.git
+	branch = master
