@@ -1,0 +1,56 @@
+# spark-fe1
+10.128.174.108 spark-fe1
+10.128.174.108 spark-fe1.nyc2
+10.128.174.108 spark-fe1.private
+10.128.174.108 spark-fe1.node.consul
+
+# spark-fe2
+10.128.175.115 spark-fe2
+10.128.175.115 spark-fe2.nyc2
+10.128.175.115 spark-fe2.private
+10.128.175.115 spark-fe2.node.consul
+
+# spark-vpn
+10.128.177.129 spark-vpn
+10.128.177.129 spark-vpn.nyc2
+10.128.177.129 spark-vpn.private
+10.128.177.129 spark-vpn.node.consul
+
+# spark-slate1
+10.128.6.96 spark-slate1
+10.128.6.96 spark-slate1.nyc2
+10.128.6.96 spark-slate1.private
+10.128.6.96 spark-slate1.node.consul
+
+# spark-slate2
+10.128.109.167 spark-slate2
+10.128.109.167 spark-slate2.nyc2
+10.128.109.167 spark-slate2.private
+10.128.109.167 spark-slate2.node.consul
+
+# spark-api1
+127.0.0.1 spark-api1
+127.0.0.1 spark-api1.nyc2
+127.0.0.1 spark-api1.private
+127.0.0.1 spark-api1.node.consul
+
+# spark-api2
+10.128.19.211 spark-api2
+10.128.19.211 spark-api2.nyc2
+10.128.19.211 spark-api2.private
+10.128.19.211 spark-api2.node.consul
+
+# spark-api3.matchbooklearning.com
+10.136.15.234 spark-api3.matchbooklearning.com
+10.136.15.234 spark-api3.matchbooklearning.com.nyc1
+10.136.15.234 spark-api3.matchbooklearning.com.private
+10.136.15.234 spark-api3.matchbooklearning.com.node.consul
+
+# spark-api4
+10.128.16.106 spark-api4
+10.128.16.106 spark-api4.nyc2
+10.128.16.106 spark-api4.private
+10.128.16.106 spark-api4.node.consul
+
+127.0.0.1 localhost
+
