@@ -21,7 +21,7 @@ hab pkg install core/busybox-static
 # install node and node-services deps
 echo
 echo "--> Installing node + gyp dependencies..."
-hab pkg install --binlink core/node core/python core/make core/gcc
+hab pkg install --binlink core/node8 core/python core/make core/gcc core/git core/openssh
 
 # for node_service_path in "${SRC_DIR}/node-services"/*/; do
 #     pushd "${node_service_path}" > /dev/null
