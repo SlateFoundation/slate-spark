@@ -16,22 +16,22 @@ build-classroom-teacher() {
     build-app SparkClassroomTeacher
 }
 
-echo "    * Use 'build-dashboard-student' to build SparkDashboardStudent for testing"
-build-dashboard-student() {
-    build-app SparkDashboardStudent
-}
+# echo "    * Use 'build-dashboard-student' to build SparkDashboardStudent for testing"
+# build-dashboard-student() {
+#     build-app SparkDashboardStudent
+# }
 
-echo "    * Use 'build-dashboard-teacher' to build SparkDashboardTeacher for testing"
-build-dashboard-teacher() {
-    build-app SparkDashboardTeacher
-}
+# echo "    * Use 'build-dashboard-teacher' to build SparkDashboardTeacher for testing"
+# build-dashboard-teacher() {
+#     build-app SparkDashboardTeacher
+# }
 
 echo "    * Use 'build-all' to build all apps for testing"
 build-all() {
     build-classroom-student
     build-classroom-teacher
-    build-dashboard-student
-    build-dashboard-teacher
+    # build-dashboard-student
+    # build-dashboard-teacher
 }
 
 
