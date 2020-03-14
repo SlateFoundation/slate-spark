@@ -16,7 +16,7 @@ Ext.define('SparkClassroom.store.Sections', {
             limitParam: false,
             startParam: false,
             extraParams: {
-                enrolled_user: 'current'
+                enrolled_user: '*current'
             }
         }
     }
