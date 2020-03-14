@@ -1,0 +1,34 @@
+.spark-learn-progressbanner {
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba($color, .2);
+    margin: 1em auto;
+    padding: 1em;
+    text-align: center;
+
+    .progressbanner-pips {
+        display: block;
+        text-align: center;
+    }
+
+    .progressbanner-pip {
+        color: $neutral-color;
+        display: inline-block;
+        margin: 0 .25em;
+
+        &::before {
+            content: $fa-var-lightbulb-o;
+            font-family: FontAwesome;
+            font-size: xx-large;
+            line-height: 1;
+        }
+
+        &.is-complete {
+            color: $active-color;
+        }
+    }
+
+    strong {
+        color: $alert-color;
+        font-weight: bold;
+    }
+}

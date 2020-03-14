@@ -1,0 +1,48 @@
+.spark-column-studentrating {
+    text-align: center;
+}
+
+.spark-cell-studentrating {
+    text-align: center;
+
+    .x-grid-cell-inner {
+        padding: .3em;
+    }
+}
+
+button.spark-studentrating-like,
+button.spark-studentrating-dislike {
+    color: rgba($neutral-dark-color, .5);
+    padding: .125em .375em;
+    transition: 250ms $ease-out-circ;
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.is-selected {
+        color: $spark-studentrating-like-color;
+        transform: scale(1.25);
+    }
+
+    &:active {
+        transition-duration: 150ms;
+        transform: scale(1.125);
+    }
+
+    &.is-selected {
+        transform: scale(1.5);
+    }
+
+    &:disabled {
+        opacity: 1;
+    }
+}
+
+button.spark-studentrating-dislike {
+    &:hover,
+    &:focus,
+    &:active,
+    &.is-selected {
+        color: $spark-studentrating-dislike-color;
+    }
+}

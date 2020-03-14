@@ -1,0 +1,24 @@
+.spark-grid-column-filter {
+    background-color: #eee;
+    margin: 0;
+    padding: 0 .5625em;
+
+    .x-input-el {
+        background: transparent;
+        border: none;
+        font-size: small;
+        overflow: hidden;
+        padding-right: 1.25em;
+        text-overflow: ellipsis;
+    }
+
+    .x-field-mask::after {
+        content: '\f107'; // fa-angle-down
+        font-size: 1em;
+        right: 0;
+    }
+
+    + .spark-grid-column-filter {
+        margin: 0; // x-field counter
+    }
+}

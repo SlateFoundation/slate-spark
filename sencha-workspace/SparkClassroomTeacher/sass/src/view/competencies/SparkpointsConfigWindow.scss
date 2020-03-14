@@ -1,0 +1,226 @@
+.spark-sparkpointsconfig-window {
+    background-color: #f5f5f5;
+    max-width: none;
+
+    .x-msgbox-inner {
+        padding: 1em 0;
+    }
+
+    table {
+        margin: 0;
+        table-layout: fixed;
+    }
+
+    td, th {
+        background-color: transparent;
+        padding: $font-size/4 $font-size/2;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+
+        button {
+            color: #ccc;
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                color: $base-color;
+            }
+
+            &:active {
+                color: darken($base-color, 10);
+            }
+        }
+
+        &:first-child {
+            padding-left: $font-size * 1.5;
+        }
+
+        &:last-child {
+            padding-right: $font-size * 1.5;
+        }
+    }
+
+    th {
+        border: none;
+        font-size: .8125em;
+        text-align: left;
+    }
+
+    thead {
+        th {
+            font-size: 1em;
+            font-weight: bold;
+            padding-bottom: 0;
+        }
+    }
+
+    tr:hover {
+        button {
+            color: #666;
+        }
+    }
+
+    .phase-cell {
+        width: $font-size * 6;
+    }
+
+    .sparkpoint-col {
+        text-align: left;
+        width: 25%;
+    }
+
+    .remove-col {
+        width: $font-size * 2.5;
+    }
+
+    .remove-cell {
+        padding: 0;
+    }
+
+    .field-control {
+        padding: .25em .5em;
+    }
+
+    .remove-cell {
+        button {
+            width: 100%;
+
+            &:hover,
+            &:focus {
+                color: $alert-color;
+            }
+
+            &:active {
+                color: darken($alert-color, 10);
+            }
+        }
+    }
+
+    .group-header {
+        td, th {
+            @include background-image(linear-gradient(
+                top,
+                transparent 20%,
+                #ddd 20%,
+                #ddd 80%,
+                transparent 80%
+            ));
+            border-width: 1px 0;
+            color: #666;
+            font-weight: bold;
+            padding-left: 2em;
+            padding-top: .75em;
+            padding-bottom: .75em;
+            text-align: center;
+        }
+    }
+
+    .group-title {
+        text-transform: uppercase;
+    }
+
+    .completion-checkbox {
+        @include appearance(none);
+        background-color: transparent;
+        @include background-image(radial-gradient(
+            center, closest-side,
+            white 75%,
+            transparent 75%
+        ));
+        border: none;
+        color: darken($base-color, 10);
+        cursor: pointer;
+        font-family: FontAwesome;
+        margin-top: -.25em;
+        vertical-align: middle;
+
+        &::before {
+            content: '\f10c'; // fa-circle-o
+            font-size: 21px;
+            line-height: 1;
+        }
+
+        &:checked {
+            background-color: transparent;
+
+            &::before {
+                color: darken($base-color, 10);
+                content: '\f058'; // fa-check-circle
+                font-size: 21px;
+                line-height: 1;
+            }
+        }
+
+        &:hover {
+            color: $base-color;
+        }
+
+        &:active {
+            opacity: .5;
+        }
+
+        &:disabled {
+            background: none;
+            cursor: default;
+
+            &::before {
+                color: #ccc;
+            }
+        }
+    }
+
+    .expected-completion {
+        width: 3em;
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+
+    .actual-completion {
+        color: white;
+        font-size: .75em;
+        font-weight: bold;
+        letter-spacing: .01em;
+        margin: 2px auto 0.5em auto;
+        padding: 2px;
+        text-align: center;
+        text-shadow: 0 1px 1px rgba(black, .2);
+        text-transform: uppercase;
+        width: $font-size * 4.5;
+        &.is-on-pace { background-color: $pace-on-color; }
+        &.is-behind { background-color: $pace-behind-color; }
+        &.is-ahead { background-color: $pace-ahead-color; }
+
+        .is-incomplete,
+        &:empty {
+            visibility: hidden;
+        }
+    }
+
+    .is-credit-given {
+        .completion-checkbox {
+            &::before {
+                content: '\f05d'; // fa-check-circle-o
+            }
+        }
+
+        .actual-completion {
+            background-image: $slate-pattern-diagonal;
+        }
+    }
+
+    .reorder-cell {
+        button {
+            width: 50%;
+
+            &:disabled,
+            &.is-disabled {
+                visibility: hidden;
+            }
+        }
+    }
+}

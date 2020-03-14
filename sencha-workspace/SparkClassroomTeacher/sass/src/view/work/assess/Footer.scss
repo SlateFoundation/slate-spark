@@ -1,0 +1,33 @@
+.assess-footer {
+    .sparkpoint-select-list {
+        .select-indicator {
+            display: inline-block;
+            width: 2em;
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &::before {
+                content: '\f10c'; // fa-circle-o
+                font-family: FontAwesome;
+                font-size: 21px;
+                opacity: .5;
+            }
+
+            &.selected {
+                &::before {
+                    content: '\f058'; // fa-check-circle
+                }
+            }
+        }
+
+        .x-item-selected, {
+            .select-indicator {
+                &::before {
+                    content: '\f058'; // fa-check-circle
+                }
+            }
+        }
+    }
+}

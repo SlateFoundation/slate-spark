@@ -1,0 +1,57 @@
+.spark-waitlist {
+    border-left: 1px solid #ccc;
+
+    .x-list-item {
+        > .x-innerhtml {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            font-size: .85em;
+            padding: .5em 1.125em;
+        }
+    }
+
+    .item-delete-btn {
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 1px;
+        visibility: hidden;
+    }
+
+    .x-list-item:hover .item-delete-btn {
+        visibility: visible;
+    }
+}
+
+.spark-waitlist-title {
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+    padding: .5em 1em;
+}
+
+.spark-waitlist-name {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.spark-waitlist-time {
+    color: $highlight-color;
+    margin-right: .5em;
+    text-align: right;
+    width: 3em;
+}
+
+.spark-waitlist-x {
+    color: $alert-color;
+    font-weight: bold;
+    margin-right: .5em;
+    text-align: center;
+    width: 2em;
+}

@@ -1,0 +1,120 @@
+.spark-work-tabbar {
+    background: none;
+    box-shadow: 0 2px 4px rgba(black, .2);
+    height: 3.1875em;
+    margin: .5em 0 2em;
+    padding: 0;
+
+    .x-tabbar-inner {
+        @include st-box-align(end);
+
+        > .x-tab {
+            margin: 0;
+        }
+    }
+
+    .x-tab {
+        background-color: $neutral-color;
+        border: none;
+        color: $color;
+        cursor: pointer;
+        @include st-box-flex(1);
+        font-size: large;
+        padding: .8em;
+        position: relative;
+        @include transition(.2s);
+
+        + .x-tab {
+            border-left: 1px solid #bbb;
+        }
+
+        &.spark-phase-active {
+            background-color: mix($neutral-dark-color, $alert-color);
+            border-color: mix($neutral-dark-color, $alert-color);
+            color: white;
+
+            &::before {
+                content: '\f111'; // fa-circle
+                font-family: FontAwesome;
+                font-size: 11px;
+                margin-left: 4px;
+                position: absolute;
+            }
+        }
+
+        &.spark-phase-complete,
+        &.spark-phase-active {
+            &::before {
+                margin-top: 1px;
+            }
+
+            .spark-tab-timer {
+                display: block;
+            }
+        }
+
+        &.spark-phase-complete {
+            background-color: $neutral-dark-color;
+            color: white;
+
+            &::before {
+                color: $active-color;
+                content: '\f058'; // fa-check-circle
+                font-family: FontAwesome;
+                font-size: 21px;
+                position: absolute;
+            }
+        }
+
+        &.spark-phase-credit-given {
+            &::before {
+                content: '\f05d'; // fa-check-circle-o
+            }
+        }
+
+        &.x-tab-active {
+            background-color: $alert-color;
+            border-color: $alert-color;
+            border-radius: .5em .5em 0 0;
+            padding: 1.2em .8em;
+            color: white;
+
+            .spark-tab-timer {
+                color: white;
+            }
+
+            + .x-tab {
+                border-color: transparent;
+            }
+
+            &::before {
+                color: white;
+            }
+        }
+
+        &.x-item-disabled {
+            background-color: darken($neutral-color, 3);
+            color: darken($neutral-color, 15);
+            opacity: 1;
+        }
+
+        &.spark-phase-complete, &.spark-phase-active {
+            .spark-tab-timer {
+                display: block;
+                display: flex;
+            }
+        }
+    }
+
+    .spark-tab-timer {
+        align-items: center;
+        border-left: 1px solid rgba(white, .3);
+        bottom: 0;
+        display: none;
+        font-size: small;
+        padding: 1.2em .6em;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}

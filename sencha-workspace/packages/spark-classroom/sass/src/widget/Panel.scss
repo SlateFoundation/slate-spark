@@ -1,0 +1,11 @@
+.spark-panel {
+    @extend .content-card;
+
+    &.dark {
+        background-color: #eee;
+    }
+}
+
+.spark-panel-title {
+    @extend .x-form-fieldset-title;
+}

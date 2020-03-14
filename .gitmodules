@@ -1,0 +1,47 @@
+[submodule "sencha-workspace/packages/spark-theme"]
+	path = sencha-workspace/packages/spark-theme
+	url = git@github.com:JarvusInnovations/spark-theme.git
+	branch = develop
+[submodule "sencha-workspace/packages/jarvus-touch-accordion"]
+	path = sencha-workspace/packages/jarvus-touch-accordion
+	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
+	branch = master
+[submodule "sencha-workspace/packages/jarvus-apikit"]
+	path = sencha-workspace/packages/jarvus-apikit
+	url = https://github.com/JarvusInnovations/jarvus-apikit.git
+	branch = master
+[submodule "sencha-workspace/packages/emergence-apikit"]
+	path = sencha-workspace/packages/emergence-apikit
+	url = https://github.com/JarvusInnovations/emergence-apikit.git
+	branch = master
+[submodule "sencha-workspace/packages/slate-core-data"]
+	path = sencha-workspace/packages/slate-core-data
+	url = https://github.com/SlateFoundation/slate-core-data.git
+	branch = master
+[submodule "sencha-workspace/packages/jarvus-hotfixes"]
+	path = sencha-workspace/packages/jarvus-hotfixes
+	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
+	branch = ext/6/0/0/640
+[submodule "sencha-workspace/packages/jarvus-gridflex"]
+	path = sencha-workspace/packages/jarvus-gridflex
+	url = https://github.com/JarvusInnovations/jarvus-gridflex.git
+	branch = ext/6/0/0/640
+[submodule "sencha-workspace/packages/jarvus-routing"]
+	path = sencha-workspace/packages/jarvus-routing
+	url = https://github.com/JarvusInnovations/jarvus-routing.git
+	branch = ext/6/0/0/640
+[submodule "sencha-workspace/packages/jarvus-gridheight"]
+	path = sencha-workspace/packages/jarvus-gridheight
+	url = https://github.com/JarvusInnovations/jarvus-gridheight.git
+	branch = ext/6/0/0/640
+[submodule "sencha-workspace/packages/jarvus-fuzzytime"]
+	path = sencha-workspace/packages/jarvus-fuzzytime
+	url = https://github.com/JarvusInnovations/jarvus-fuzzytime.git
+	branch = master
+[submodule "sencha-workspace/packages/jarvus-googlepicker"]
+	path = sencha-workspace/packages/jarvus-googlepicker
+	url = https://github.com/JarvusInnovations/jarvus-googlepicker.git
+[submodule "sencha-workspace/ext-6.2.0.981"]
+	path = sencha-workspace/ext-6.2.0.981
+	url = https://github.com/JarvusInnovations/extjs.git
+	branch = workspace/6.2

@@ -1,0 +1,14 @@
+.x-field-triggerable {
+    > .x-component-outer {
+        @include st-box;
+    }
+
+    .x-field-input {
+        @include st-box-flex(1);
+        margin-right: .5em;
+    }
+
+    .menu-trigger > i {
+        vertical-align: -.375em;
+    }
+}

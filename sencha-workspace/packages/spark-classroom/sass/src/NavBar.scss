@@ -1,0 +1,87 @@
+.spark-navbar {
+    background-color: $base-color;
+    border: 1px solid $base-dark-color;
+    border-width: 1px 0;
+    color: $light-color;
+    font-weight: bold;
+    padding: 0 .9em 0 7.5%;
+
+    .x-toolbar-inner > .x-button {
+        background-color: $base-color;
+        border: 1px solid $base-light-color;
+        border-radius: 0;
+        border-width: 0 1px;
+        box-shadow: none;
+        color: white;
+        cursor: pointer;
+        font-size: medium;
+        font-weight: bold;
+        margin: 0 0 0 -1px;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.is-selected {
+            background-color: $base-light-color;
+            border-color: $base-color;
+            color: $color;
+        }
+    }
+}
+
+.spark-navbar-sparkpoint-selector {
+    color: $color;
+
+    .x-input-el {
+        background-color: tint($base-color, 90%);
+        border: none;
+        font-size: 1em;
+        min-height: 0;
+        padding: .4em;
+    }
+}
+
+.spark-navbar-sparkpoint-selector-list {
+    box-shadow: 0 .25em 1em rgba(black, .25);
+
+    .sparkpoint-recommended {
+        &::before {
+            color: mix($color, $active-color, 20%);
+            content: 'Recommended';
+            font-size: small;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    }
+
+    .sparkpoint-completed-date {
+        color: $highlight-color;
+        font-size: small;
+        margin-left: .25em;
+
+        &::after {
+            color: lighten($highlight-color, 20);
+            content: $fa-var-check;
+            font-family: FontAwesome;
+            margin-right: .25em;
+        }
+    }
+
+    .sparkpoint-title {
+        color: $highlight-color;
+        display: block;
+        font-size: small;
+        line-height: (4/3);
+    }
+}
+
+.spark-navbar-timer {
+    background-color: rgba($color, .3);
+    border-radius: 1em;
+    font-size: small;
+    letter-spacing: .05em;
+    line-height: 1;
+    margin-left: 1em;
+    padding: .4em .8em;
+    text-transform: uppercase;
+}

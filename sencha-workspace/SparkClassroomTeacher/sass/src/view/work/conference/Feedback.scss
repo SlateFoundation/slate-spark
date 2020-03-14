@@ -1,0 +1,61 @@
+.or-separator {
+    @include background-image(linear-gradient( #ccc, #ccc ));
+    background-position: center;
+    background-repeat: no-repeat;
+    @include background-size(61.8% 1px);
+    color: $highlight-color;
+    font-size: smaller;
+    letter-spacing: 1px;
+    padding: 1.5em;
+    text-transform: uppercase;
+    text-align: center;
+
+    .text {
+        background-color: #f5f5f5;
+        padding: .5em;
+    }
+}
+
+.spark-conference-listing {
+    align-items: center;
+    background-color: #eee;
+    display: flex;
+    overflow: hidden;
+    padding: .75em 1.5em;
+
+    & + & {
+        margin-top: .75em;
+    }
+
+    &:hover {
+        background-color: #e5e5e5;
+    }
+}
+
+.spark-conference-member-list {
+    flex: 1;
+}
+
+.sidebar-grid {
+    .x-grid-column {
+        border-bottom: 1px solid #ccc;
+        padding-left: .5em;
+        padding-right: .5em;
+
+        &:first-child {
+            padding-left: 1.75em;
+        }
+
+        &:last-child {
+            border-right: 0;
+        }
+    }
+
+    .x-grid-cell {
+        &:first-child {
+            .x-grid-cell-inner {
+                padding-left: 1.5em;
+            }
+        }
+    }
+}

@@ -1,0 +1,99 @@
+.cycle-gauge {
+    align-items: stretch;
+    text-align: center;
+}
+
+.cycle-gauge-pip {
+    border: 1px solid #ccc;
+    border-width: 1px 1px 0;
+    cursor: pointer;
+    position: relative;
+
+    + .cycle-gauge-pip,
+    &:first-child {
+        border-left: 0;
+    }
+
+    &:last-child {
+        border-right: 0;
+    }
+
+    .x-grid-item-last & {
+        border-bottom-width: 1px;
+    }
+
+    .x-grid-cell & {
+        padding: .6em 0;
+    }
+
+    .pip-text {
+        border: none;
+        color: white;
+        display: block;
+        font-size: .8em;
+        font-weight: bold;
+        letter-spacing: .01em;
+        text-shadow: 0 1px 1px rgba(black, .5);
+        visibility: hidden;
+    }
+
+    $pip-complete-color: $active-dark-color;
+
+    &::before {
+        color: white;
+        font-family: FontAwesome;
+        font-size: 14px;
+        left: 50%;
+        margin-top: (1em/32);
+        opacity: .6;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        -webkit-font-smoothing: none;
+    }
+
+    &.is-ahead {
+        background-color: $pace-ahead-color;
+
+        &::before {
+            content: '\f067'; // fa-plus
+        }
+    }
+
+    &.is-on-pace {
+        background-color: $pace-on-color;
+    }
+
+    &.is-behind {
+        background-color: $pace-behind-color;
+
+        &::before {
+            content: '\f068'; // fa-minus
+        }
+    }
+
+    &.is-empty {
+        .pip-text {
+            color: $color;
+            text-shadow: none;
+        }
+    }
+
+    &.is-overridden {
+        background-image: $slate-pattern-diagonal;
+    }
+
+    &:hover,
+    &:focus {
+        background-image: linear-gradient(rgba(black, .2), rgba(black, .2));
+        box-shadow: inset 0 0 0 1px white;
+
+        &::before {
+            visibility: hidden;
+        }
+
+        .pip-text {
+            visibility: visible;
+        }
+    }
+}

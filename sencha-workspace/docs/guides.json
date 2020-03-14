@@ -1,0 +1,210 @@
+[
+    {
+        "title": "Spark Overview",
+        "items": [
+            {
+                "name": "overview_introduction",
+                "url": "guides/overview/introduction",
+                "title": "Introduction",
+                "description": "Outline of the Spark learning process and the major software components that implement it"
+            },
+            {
+                "name": "overview_sparkpoints",
+                "url": "guides/overview/sparkpoints",
+                "title": "Sparkpoints"
+            },
+            {
+                "title": "Network",
+                "description": "The machines hosting Spark",
+                "items": [
+                    {
+                        "title": "spark-fe",
+                        "name": "network_fe",
+                        "url": "guides/overview/network/spark-fe"
+                    },
+                    {
+                        "title": "spark-slate",
+                        "name": "network_emergence",
+                        "url": "guides/overview/network/spark-slate"
+                    },
+                    {
+                        "title": "spark-api",
+                        "name": "network_api",
+                        "url": "guides/overview/network/spark-api"
+                    }
+                ]
+            },
+            {
+                "title": "Repositories",
+                "description": "The source code behind Spark",
+                "items": [
+                    {
+                        "title": "spark-classroom-student",
+                        "name": "repositories_classroomstudent",
+                        "url": "guides/overview/repositories/spark-classroom-student"
+                    },
+                    {
+                        "title": "spark-classroom-teacher",
+                        "name": "repositories_classroomteacher",
+                        "url": "guides/overview/repositories/spark-classroom-teacher"
+                    },
+                    {
+                        "title": "spark-classroom",
+                        "name": "repositories_classroom",
+                        "url": "guides/overview/repositories/spark-classroom"
+                    },
+                    {
+                        "title": "spark-theme",
+                        "name": "repositories_theme",
+                        "url": "guides/overview/repositories/spark-theme"
+                    },
+                    {
+                        "title": "slate-spark",
+                        "name": "repositories_slate",
+                        "url": "guides/overview/repositories/slate-spark"
+                    },
+                    {
+                        "title": "spark-api",
+                        "name": "repositories_api",
+                        "url": "guides/overview/repositories/spark-api"
+                    },
+                    {
+                        "title": "spark-realtime",
+                        "name": "repositories_realtime",
+                        "url": "guides/overview/repositories/spark-realtime"
+                    },
+                    {
+                        "title": "spark-ops",
+                        "name": "repositories_ops",
+                        "url": "guides/overview/repositories/spark-ops"
+                    },
+                    {
+                        "title": "spark-repository-manager",
+                        "name": "repositories_fusebox",
+                        "url": "guides/overview/repositories/spark-repository-manager"
+                    },
+                    {
+                        "title": "spark-narratives",
+                        "name": "repositories_narratives",
+                        "url": "guides/overview/repositories/spark-narratives"
+                    },
+                    {
+                        "title": "spark-docs",
+                        "name": "repositories_docs",
+                        "url": "guides/overview/repositories/spark-docs"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Spark Backend",
+        "items": [
+            {
+                "name": "backend_loadbalancer",
+                "url": "guides/backend/load_balaancer",
+                "title": "Frontend Load Balancer"
+            },
+            {
+                "name": "backend_api",
+                "url": "guides/backend/api",
+                "title": "Spark API"
+            },
+            {
+                "name": "backend_realtime",
+                "url": "guides/backend/realtime",
+                "title": "Spark Real-time"
+            },
+            {
+                "title": "Slate",
+                "items": [
+                    {
+                        "name": "slate_navigation",
+                        "url": "guides/slate/navigation",
+                        "title": "Site navigation"
+                    },
+                    {
+                        "name": "slate_omnibar",
+                        "url": "guides/slate/omnibar",
+                        "title": "Omnibar"
+                    },
+                    {
+                        "name": "slate_dashboard",
+                        "url": "guides/slate/dashboard",
+                        "title": "Dashboard"
+                    },
+                    {
+                        "name": "slate_section-home",
+                        "url": "guides/slate/section_homepage",
+                        "title": "Section Homepage"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Spark Classroom",
+        "items": [
+            {
+                "name": "classroom_overview",
+                "url": "guides/classroom/overview",
+                "title": "Overview"
+            },
+            {
+                "name": "classroom_develop",
+                "url": "guides/classroom/develop",
+                "title": "Developing Locally"
+            },
+            {
+                "name": "classroom_deploy_sandbox",
+                "url": "guides/classroom/deploy-sandbox",
+                "title": "Deploying to Sandbox"
+            },
+            {
+                "name": "classroom_release",
+                "url": "guides/classroom/release",
+                "title": "Releasing a New Version"
+            },
+            {
+                "name": "classroom_deploy_production",
+                "url": "guides/classroom/deploy-production",
+                "title": "Deploying to Production"
+            },
+            {
+                "name": "classroom_roadmap",
+                "url": "guides/classroom/roadmap",
+                "title": "Roadmap and Known Issues"
+            }
+        ]
+    },
+    {
+        "title": "Spark Fusebox",
+        "items": [
+            {
+                "name": "fusebox_overview",
+                "url": "guides/fusebox/overview",
+                "title": "Overview"
+            },
+            {
+                "name": "fusebox_develop",
+                "url": "guides/fusebox/develop",
+                "title": "Developing Locally"
+            },
+            {
+                "name": "fusebox_deploy_sandbox",
+                "url": "guides/fusebox/deploy-sandbox",
+                "title": "Deploying to Sandbox"
+            },
+            {
+                "name": "fusebox_deploy_production",
+                "url": "guides/fusebox/deploy-production",
+                "title": "Deploying to Production"
+            },
+            {
+                "name": "fusebox_roadmap",
+                "url": "guides/fusebox/roadmap",
+                "title": "Roadmap and Known Issues"
+            }
+        ]
+    }
+]

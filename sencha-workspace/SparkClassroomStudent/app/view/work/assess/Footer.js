@@ -1,0 +1,20 @@
+Ext.define('SparkClassroomStudent.view.work.assess.Footer', {
+    extend: 'Ext.Container',
+    xtype: 'spark-student-work-assess-footer',
+
+    config: {
+        layout: {
+            type: 'hbox',
+            pack: 'end'
+        },
+        items: [
+            {
+                itemId: 'submitBtn',
+
+                xtype: 'button',
+                ui: 'action',
+                text: 'Submit for Grading'
+            }
+        ]
+    }
+});
