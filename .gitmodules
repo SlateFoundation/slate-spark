@@ -10,8 +10,8 @@
 
 [submodule "slate-core-data"]
 	path = sencha-workspace/packages.remote/slate-core-data
-	url = https://github.com/SlateFoundation/slate-core-data.git
-	branch = master
+	url = https://github.com/SlateFoundation/slate.git
+	branch = subpackages/extjs-core-data/v2
 
 [submodule "jarvus-touch-accordion"]
 	path = sencha-workspace/packages.remote/jarvus-touch-accordion
