@@ -9,7 +9,7 @@ Provides extensions for Slate and UI applications for Spark
 1. Launch studio:
 
     ```bash
-    HAB_DOCKER_OPTS="--name slate-spark-studio -p 8080:80 -p 8081:7081 -p 8036:3306 -p 8056:5432" \
+    HAB_DOCKER_OPTS="--name slate-spark-studio -p 8080:80 -p 8081:7081 -p 8036:3306 -p 8054:5432" \
         hab studio enter -D
     ```
 
