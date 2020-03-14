@@ -1,0 +1,9 @@
+$listitem-border-color:                 transparent;
+$listitem-padding:                      dynamic(0.6em 0.9em);
+$listitem-pressed-background-color:     dynamic(mix($neutral-light-color, $active-color, 90%));
+$listitem-selected-background-color:    dynamic(mix($neutral-light-color, $active-color, 80%));
+
+$itemheader-background-color:           dynamic(#e5e5e5);
+$itemheader-border-width:               dyanmic(0);
+$itemheader-font-size:                  dynamic(10px);
+$itemheader-padding:                    dynamic(0);

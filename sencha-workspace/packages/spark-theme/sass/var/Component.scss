@@ -1,0 +1,35 @@
+// main blue:   #01a1b1
+// light blue:  #98d7d9
+// dark green:  #a3a610
+// light green: #c3d601
+// dark gray:   #3e3e3e
+// mb red:      #e31c24;
+
+$base-color:            dynamic(#01a1b1);
+$base-light-color:      dynamic(#98d7d9);
+$active-color:          dynamic(#c3d601);
+$active-dark-color:     dynamic(#a3a610);
+$color:                 dynamic(#3d3d3d);
+$alert-color:           dynamic(#e31c24);
+$highlight-color:       dynamic(#888);
+$neutral-dark-color:    dynamic(#777);
+$placeholder-color:     dynamic(rgba($color, .3));
+// $light-color:           dynamic(#f0f0f0);
+$font-family:           dynamic('Lato', 'Open Sans', 'Helvetica Neue', helvetica, arial, sans-serif);
+$font-size:             dynamic(16px);
+$font-weight-normal:    dynamic(400);
+$font-weight-bold:      dynamic(500);
+// $font-size-big:         dynamic(100%);
+
+$heading-font-family:   dynamic('Sanchez', 'Rockwell', 'Georgia', serif);
+
+$card-shadow:           0 1px 4px rgba(black, .2);
+
+// easing functions by matthewlein.com/ceaser
+$ease-in-circ:          cubic-bezier(0.600, 0.040, 0.980, 0.335);
+$ease-out-circ:         cubic-bezier(0.075, 0.820, 0.165, 1.000);
+$ease-in-out-circ:      cubic-bezier(0.785, 0.135, 0.150, 0.860);
+
+$ease-in-back:          cubic-bezier(0.600, -0.280, 0.735, 0.045);
+$ease-out-back:         cubic-bezier(0.175, 0.885, 0.320, 1.275);
+$ease-in-out-back:      cubic-bezier(0.680, -0.550, 0.265, 1.550);

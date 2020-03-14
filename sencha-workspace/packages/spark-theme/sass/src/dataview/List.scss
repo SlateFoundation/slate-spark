@@ -1,0 +1,33 @@
+.x-list {
+    background-color: white;
+
+    .item-remove-btn {
+        color: $alert-color;
+        cursor: pointer;
+        opacity: .4;
+
+        &:hover,
+        &:focus {
+            opacity: 1;
+        }
+    }
+}
+
+.x-itemheader {
+    border: 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    .x-innerhtml {
+        padding: 0.6em 1.5em;
+
+        &:empty {
+            display: none;
+        }
+    }
+}
+
+.x-list-emptytext {
+    @extend .x-grid-emptytext;
+}

@@ -1,0 +1,73 @@
+.x-grid {
+    background-color: #f9f9f9;
+    box-shadow: $card-shadow;
+    margin-bottom: 1.5em;
+}
+
+.x-grid-header {
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.x-grid-column {
+    small {
+        color: $highlight-color;
+    }
+}
+
+.x-grid-emptytext {
+    color: $grid-emptytext-color;
+    font-style: $grid-emptytext-style;
+    line-height: $grid-emptytext-line-height;
+    padding: $grid-emptytext-padding;
+    text-align: $grid-emptytext-align;
+}
+
+.spark-grid-row-image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    float: left;
+    height: 32px;
+    margin-right: .75em;
+    margin-top: .1875em;
+    overflow: hidden;
+    text-indent: 33px;
+    white-space: nowrap;
+    width: 32px;
+
+    &.small {
+        height: 16px;
+        margin-right: .375em;
+        text-indent: 17px;
+        width: 16px;
+    }
+}
+
+.spark-grid-row-title {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spark-grid-row-detail {
+    color: $highlight-color;
+    font-size: .9em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal; // wrap normal text; cut off e.g., long URLs
+}
+
+.spark-token-item {
+    background-color: $active-color;
+    border-radius: .125em;
+    display: inline-block;
+    margin: 0 .5em .5em 0;
+    padding: .25em .5em;
+    white-space: nowrap;
+}
+
+.spark-cell-nowrap {
+    &, & * {
+        white-space: nowrap;
+    }
+}

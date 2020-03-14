@@ -1,0 +1,21 @@
+.x-button {
+    box-shadow: inset 0 -1px 0 rgba(black, .2);
+    cursor: pointer;
+
+    .fa {
+        font-size: 14px;
+        margin-right: ($font-size * .25);
+    }
+
+    &.x-button-plain {
+        box-shadow: none;
+    }
+}
+
+button.plain {
+	background: none;
+	border: 0;
+	box-shadow: 0;
+	margin: 0;
+	padding: 0;
+}

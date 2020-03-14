@@ -1,0 +1,3 @@
+$expandtrigger-icon-color: dynamic($color);
+$expandtrigger-icon-font-size: dynamic(.8em);
+$expandtrigger-icon: dynamic($fa-var-chevron-down $expandtrigger-icon-font-size $font-icon-font-family);

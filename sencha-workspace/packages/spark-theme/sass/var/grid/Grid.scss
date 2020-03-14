@@ -1,0 +1,13 @@
+// these are listed in the "global" class in Sencha's docs, for some reason
+$rowheader-font-size:           dynamic(.75em);
+$rowheader-font-weight:         dynamic(bold);
+$rowheader-padding:             dynamic(.5em 1.25em);
+
+
+// custom values
+
+$grid-emptytext-align:          dynamic(center);
+$grid-emptytext-color:          dynamic($highlight-color);
+$grid-emptytext-line-height:    dynamic(1.125);
+$grid-emptytext-padding:        dynamic(1.75em);
+$grid-emptytext-style:          dynamic(italic);

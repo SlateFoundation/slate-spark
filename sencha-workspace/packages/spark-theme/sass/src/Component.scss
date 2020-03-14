@@ -1,0 +1,362 @@
+html,
+body {
+    font-family: $font-family;
+}
+
+.slate-omnibar {
+    .inner {
+        padding: 0 1em;
+        width: 100%;
+    }
+
+    .omnibar-menu {
+        padding: 1.5em 3em;
+        width: 100%;
+    }
+}
+
+.visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    position: absolute;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    width: 1px;
+}
+
+.x-dock > .x-dock-body {
+    // to stop clipping drop shadows, etc. might cause issues...?
+    overflow: visible;
+}
+
+// TODO below: misc to be organized
+
+.x-html {
+    ol {
+        margin-left: 1.5em;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family;
+}
+
+a {
+    color: $base-color;
+
+    &:hover,
+    &:focus {
+        color: darken($base-color, 10);
+    }
+
+    &:visited {
+        color: mix($base-color, #999);
+    }
+}
+
+::-webkit-input-placeholder {
+   color: $placeholder-color;
+}
+
+::-moz-placeholder {
+   color: $placeholder-color;
+}
+
+:-ms-input-placeholder {
+   color: $placeholder-color;
+}
+
+.text-active {
+    color: darken($active-color, 10) !important;
+}
+
+.text-alert {
+    color: $alert-color !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.spark-view-headline {
+    font-family: $heading-font-family;
+    font-size: x-large;
+    margin-bottom: 1em;
+    padding-top: .375em;
+
+    + .spark-view-prompt {
+        margin-top: -1.25em;
+    }
+}
+
+.page-wrap {
+    padding: 1.5em 7.5%;
+}
+
+.content-card {
+    background-color: #f9f9f9;
+    box-shadow: $card-shadow;
+    margin-bottom: 1.5em;
+    padding: 1.5em 2.125em;
+
+    &.narrow {
+        padding: 1.5em;
+    }
+
+    &.flush {
+        padding: 0;
+    }
+}
+
+.content-card-inline {
+    @extend .content-card;
+    display: inline-block;
+    padding: .75em 1.5em;
+}
+
+.content-card-separator {
+    border: 1px dashed #ccc;
+    border-width: 1px 0 0;
+    margin: 2em 0 1.5em;
+}
+
+.flex-ct {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.inline-flex-fullwidth-ct {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 100%;
+}
+
+.flex-1 {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+}
+
+.sidebar-col {
+    margin-left: 1.5em;
+    width: 18em;
+
+    .kv-list {
+        margin: 1.5em 0; //  2.125em;
+    }
+
+    &.is-wide {
+        width: 27em;
+    }
+}
+
+.dated-list {
+
+}
+
+.link-list {
+    margin-bottom: 1.5em;
+}
+
+.link-list-item {
+    line-height: 1;
+
+    a {
+        @include ellipsis;
+        display: block;
+        font-size: .9em;
+        padding: .75em 0;
+    }
+
+    + .link-list-item a {
+        border-top: 1px dashed #ccc;
+    }
+
+    .has-checkboxes & {
+        &::before {
+            content: '\f096';
+            cursor: pointer;
+            float: right;
+            font-family: FontAwesome;
+            margin-left: .5em;
+            margin-top: .625em;
+            width: 1em;
+        }
+
+        &.x-item-selected::before {
+            content: '\f046';
+        }
+    }
+}
+
+.dated-list-item {
+    & + & {
+        border-top: 1px dashed #ccc;
+        margin-top: 1.5em;
+        padding-top: 1.5em;
+    }
+}
+
+.dated-list-date {
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.spark-qna {
+
+}
+
+.spark-qna-item {
+    ol, ul {
+        margin-left: 1.5em;
+    }
+
+    ol li {
+        list-style: decimal;
+    }
+
+    ul li {
+        list-style: disc;
+    }
+}
+
+.spark-qna-q {
+    color: $field-label-color;
+    font-size: $field-label-font-size;
+    font-weight: $field-label-font-weight;
+}
+
+.spark-qna-a {
+    margin: .25em 0 1.5em;
+}
+
+.number-line-picker {
+    position: relative;
+
+    .number-line-track,
+    .number-line-track-filler {
+        background-color: #ccc;
+        border-radius: 1em;
+        height: 4px;
+        left: 0;
+        margin-top: -2px;
+        position: absolute;
+        top: 50%;
+        width: 100%;
+    }
+
+    .number-line-track-filler {
+        background-color: $base-color;
+        width: 0;
+    }
+
+    .number-line-items {
+        display: flex;
+        list-style: none;
+        margin: 0%;
+        padding: 0;
+    }
+
+    .number-line-item {
+        flex: 1;
+    }
+
+    .number-line-target {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 1.5em;
+        color: $color;
+        display: block;
+        font-size: small;
+        font-weight: bold;
+        height: 1.75em;
+        line-height: 1;
+        margin: auto;
+        padding: .375em;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        width: 1.75em;
+
+        &:hover,
+        &:focus {
+            background-color: mix($base-color, white, 7%);
+            border-color: $base-color;
+        }
+
+        &.is-filled {
+            background-color: $base-color;
+            border-color: white;
+            box-shadow: 0 0 0 1px white;
+            color: white;
+
+            &:hover,
+            &:focus {
+                background-color: darken($base-color, 7);
+                border-color: white;
+            }
+        }
+    }
+}
+
+select.field-control {
+    -webkit-appearance: none;
+    background: white no-repeat right .5em center;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 2"><polygon fill="#666" points="0,0 4,0 2,2"></polygon></svg>');
+    background-size: 10px;
+    padding: 0 1.375em 0 .5em;
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    background-color: white;
+    border: 1px solid rgba(black, .6);
+    border-radius: .125em;
+    cursor: pointer;
+    height: 1.25em;
+    position: relative;
+    vertical-align: -.25em;
+    width: 1.25em;
+
+    &:checked {
+        background-color: $base-color;
+        border-color: transparent;
+
+        &::before {
+            color: white;
+            content: '\f00c'; // fa-check
+            display: block;
+            font-family: FontAwesome;
+            font-size: 14px;
+            line-height: 18px;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+        }
+    }
+
+    &:active {
+        background-color: mix(white, $base-color);
+    }
+
+    &:disabled {
+        background-color: rgba(black, .1);
+        border-color: rgba(black, .1);
+
+        &:checked {
+            border-color: transparent;
+        }
+
+        &::before {
+            color: rgba(black, .2);
+        }
+    }
+}

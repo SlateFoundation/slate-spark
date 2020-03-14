@@ -1,0 +1,14 @@
+.x-field-radio {
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        .x-field-mask::after {
+            color: darken($color, 10);
+        }
+    }
+
+    &:active {
+        opacity: .8;
+    }
+}
