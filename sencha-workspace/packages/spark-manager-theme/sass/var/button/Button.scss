@@ -1,0 +1,17 @@
+/*
+$button-default-base-color:             #2ea0b3 !default;
+$button-default-base-color-disabled:    lighten($neutral-color, 24) !default;
+$button-default-base-color-over:        lighten($button-default-base-color, 4) !default;
+$button-default-border-color:           $button-default-base-color !default;
+$button-default-color:                  white !default;
+$button-default-color-diabled:          white !default;
+*/
+
+/*
+$button-toolbar-background-color:           $button-default-base-color !default;
+$button-toolbar-background-color-disabled:  $button-default-base-color-disabled !default;
+$button-toolbar-background-color-over:      $button-default-base-color-over !default;
+$button-toolbar-color:                      $button-default-color !default;
+*/
+
+$button-toolbar-background-color-pressed:   #ccc;

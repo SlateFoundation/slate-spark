@@ -1,0 +1,34 @@
+[hololens]
+package = "holo/lens-sencha-app"
+
+[hololens.sencha]
+app = "SparkRepositoryManager"
+
+[hololens.input]
+root = "sencha-workspace"
+files = [
+    "SparkRepositoryManager/**",
+
+    # local trees
+    "packages/spark-manager-theme/**",
+
+    # local sources
+    "packages/jarvus-draw-dag/**",
+    "packages/jarvus-postgrest-apikit/**",
+
+    # upstream trees
+    "packages/slate-theme/**",
+    "packages/emergence-apikit/**",
+    "packages/jarvus-ext-actionevents/**",
+    "packages/jarvus-ext-searchfield/**",
+    "packages/jarvus-ext-glyphs/**",
+    "packages/jarvus-lazydata/**",
+    "packages/jarvus-apikit/**",
+    "packages/jarvus-hotfixes/**",
+    "ext/**",
+    "workspace.json",
+]
+
+[hololens.output]
+root = "webapp-builds/SparkRepositoryManager"
+merge = "replace"

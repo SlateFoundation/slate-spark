@@ -1,0 +1,33 @@
+.statementtree-inner-treecolumn {
+    display: flex;
+    align-items: stretch;
+
+	.x-tree-elbow,
+	.x-tree-icon {
+	    background-repeat: no-repeat;
+	    flex-shrink: 0;
+	    height: auto;
+	    margin: 0;
+	}
+
+    .x-tree-elbow:first-child {
+        display: none;
+    }
+
+    .x-tree-icon {
+        background-position-y: top;
+    }
+
+    .x-tree-expander {
+        background-position-y: -2px !important;
+    }
+
+	.x-tree-elbow {
+	    width: 24px;
+	}
+
+	.x-tree-node-text {
+	    flex-grow: 1;
+	    padding-left: 8px;
+	}
+}

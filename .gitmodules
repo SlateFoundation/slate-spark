@@ -12,10 +12,37 @@
 	path = sencha-workspace/packages.remote/slate-core-data
 	url = https://github.com/SlateFoundation/slate.git
 	branch = subpackages/extjs-core-data/v2
+[submodule "slate-theme"]
+	path = sencha-workspace/packages.remote/slate-theme
+	url = https://github.com/SlateFoundation/slate.git
+	branch = subpackages/extjs-theme/v2
 
 [submodule "jarvus-touch-accordion"]
 	path = sencha-workspace/packages.remote/jarvus-touch-accordion
 	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
+[submodule "jarvus-lazydata"]
+	path = sencha-workspace/packages.remote/jarvus-lazydata
+	url = https://github.com/JarvusInnovations/jarvus-lazydata.git
+	branch = ext/6/2/0/981
+[submodule "jarvus-ext-searchfield"]
+	path = sencha-workspace/packages.remote/jarvus-ext-searchfield
+	url = https://github.com/JarvusInnovations/jarvus-ext-searchfield.git
+	branch = master
+[submodule "jarvus-draw-dag"]
+	path = sencha-workspace/packages.remote/jarvus-draw-dag
+	url = https://github.com/JarvusInnovations/jarvus-draw-dag.git
+	branch = master
+[submodule "jarvus-ext-actionevents"]
+	path = sencha-workspace/packages.remote/jarvus-ext-actionevents
+	url = https://github.com/JarvusInnovations/jarvus-ext-actionevents.git
+	branch = ext/6/2/0/981
+[submodule "jarvus-ext-glyphs"]
+	path = sencha-workspace/packages.remote/jarvus-ext-glyphs
+	url = https://github.com/JarvusInnovations/jarvus-ext-glyphs.git
+	branch = ext/6/2/0/981
+[submodule "jarvus-postgrest-apikit"]
+	path = sencha-workspace/packages.remote/jarvus-postgrest-apikit
+	url = https://github.com/JarvusInnovations/jarvus-postgrest-apikit.git
 	branch = master
 [submodule "jarvus-apikit"]
 	path = sencha-workspace/packages.remote/jarvus-apikit
