@@ -97,6 +97,10 @@ else
 fi
 
 
+# start nats service
+hab svc load core/gnatsd
+
+
 # start emergence services
 echo
 echo "--> Launching emergence services in the background..."
