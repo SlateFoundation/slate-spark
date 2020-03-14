@@ -45,8 +45,7 @@ init-user-config --force nginx "
 
     [default_server]
     snippet = '''
-    include ${SRC_DIR}/node-services/spark-api.nginx.conf;
-    include ${SRC_DIR}/node-services/spark-realtime.nginx.conf;
+    include ${SRC_DIR}/node-services/*.nginx.conf;
     '''
 "
 
