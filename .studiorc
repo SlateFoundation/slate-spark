@@ -1,11 +1,124 @@
 #!/bin/bash
+
+
+# detect source directory relative to this script
+echo
+echo "--> Detecting source directory..."
+if [ -z "${SRC_DIR}" ]; then
+    SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+    SRC_DIR="${SRC_DIR:-/src}"
+fi
+echo "    SRC_DIR=${SRC_DIR}"
+echo
+
+
+# install busybox
+echo
+echo "--> Installing busybox..."
+hab pkg install core/busybox-static
+
+
+# install node and node-services deps
+echo
+echo "--> Installing node + gyp dependencies..."
+hab pkg install --binlink core/node core/python core/make core/gcc
+
+# for node_service_path in "${SRC_DIR}/node-services"/*/; do
+#     pushd "${node_service_path}" > /dev/null
+#     echo
+#     echo "--> Installing npm modules for ${node_service_path}..."
+#     npm install
+#     popd
+# done
+
+
+# install studio bundles
 hab pkg install emergence/studio chakijs/studio
 source "$(hab pkg path emergence/studio)/studio.sh"
 source "$(hab pkg path chakijs/studio)/studio.sh"
 
 
-# declare shortcuts for this repository's applications
+# append nginx config
+init-user-config --force nginx "
+    [http.listen]
+    port = 80
 
+    [default_server]
+    snippet = '''
+    include ${SRC_DIR}/node-services/spark-api.nginx.conf;
+    include ${SRC_DIR}/node-services/spark-realtime.nginx.conf;
+    '''
+"
+
+
+
+# configure environment for Supervisor postgres instance
+export PGHOST="127.0.0.1"
+export PGPORT="5432"
+export PGDATABASE="postgres"
+export PGUSER="admin"
+export PGPASSWORD="admin"
+
+init-user-config postgresql11 "
+max_connections = 10
+"
+
+
+# set up postgres
+export DB_CONNECTION="pgsql"
+export DB_HOST="${PGHOST}"
+export DB_PORT="${PGPORT}"
+export DB_DATABASE="spark"
+export DB_USERNAME="${PGUSER}"
+export DB_PASSWORD="${PGPASSWORD}"
+
+
+# start supervisor or load postgres into existing
+echo
+echo "--> Launching local PostgreSQL service in the background..."
+hab pkg install --binlink core/postgresql11
+
+if [ -d /hab/svc/postgresql11/data ]; then
+    chown hab:hab -R /hab/svc/postgresql11/data
+fi
+
+if hab svc status > /dev/null 2>&1; then
+    hab svc load core/postgresql11
+else
+    export HAB_STUDIO_SUP=false
+    sup-run core/postgresql11
+
+    echo "Waiting for supervisor..."
+    until hab svc status 2>/dev/null >/dev/null; do
+        echo -n ".";
+        sleep .1;
+    done;
+    echo
+fi
+
+
+# start emergence services
+echo
+echo "--> Launching emergence services in the background..."
+start-all
+echo "Waiting for runtime..."
+until hab pkg exec core/busybox-static nc -z localhost 9123; do
+    echo -n ".";
+    sleep .1;
+done;
+echo
+
+
+# load site
+echo
+echo "--> Loading emergence site from ${EMERGENCE_REPO}..."
+update-site
+
+
+# declare shortcuts for this repository's applications
+echo
+echo "--> Spark studio ready!"
+echo
 echo "    * Use 'build-classroom-student' to build SparkClassroomStudent for testing"
 build-classroom-student() {
     build-app SparkClassroomStudent
@@ -14,6 +127,11 @@ build-classroom-student() {
 echo "    * Use 'build-classroom-teacher' to build SparkClassroomTeacher for testing"
 build-classroom-teacher() {
     build-app SparkClassroomTeacher
+}
+
+echo "    * Use 'reload-nginx' to signal nginx to reload config"
+reload-nginx() {
+    hab pkg exec core/busybox-static killall -HUP nginx
 }
 
 # echo "    * Use 'build-dashboard-student' to build SparkDashboardStudent for testing"
