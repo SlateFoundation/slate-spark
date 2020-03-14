@@ -1,7 +1,7 @@
 Ext.define('SparkClassroom.column.Completed', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-completed-column',
-    requires: [
+    uses: [
         // TODO: FIXME: HACK: we need to require this unrelated component because it's SCSS defines .assign-control-frame, the CSS for "checkboxes" needs to be refactored and put under etc/ or assigned to a common ancestor component
         'SparkClassroom.column.Assignments'
     ],

@@ -2,7 +2,9 @@ Ext.define('SparkClassroom.column.Assignments', {
     extend: 'Ext.grid.column.Column',
     xtype: 'spark-column-assignments',
     requires: [
-        'Ext.util.Format',
+        'Ext.util.Format'
+    ],
+    uses: [
         'SparkClassroom.panel.StudentAssignments'
     ],
 

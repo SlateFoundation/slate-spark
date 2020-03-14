@@ -2,9 +2,7 @@ Ext.define('SparkClassroom.panel.StudentAssignments', {
     extend: 'Ext.Panel',
     xtype: 'spark-studentassignmentspanel',
     requires: [
-        'Ext.grid.Grid'
-    ],
-    uses: [
+        'Ext.grid.Grid',
         'SparkClassroom.column.Assignments'
     ],
 
