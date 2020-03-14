@@ -11,7 +11,6 @@ files = [
 
     # local trees
     "packages/spark-manager-theme/**",
-    "packages/saki-grid-multisearch-5/**",
 
     # local sources
     "packages/jarvus-draw-dag/**",

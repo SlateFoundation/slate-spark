@@ -8,7 +8,6 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         'Ext.form.field.TextArea',
         'Ext.grid.column.Date',
         'Ext.grid.plugin.RowEditing',
-        'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'SparkRepositoryManager.proxy.Records',
@@ -153,8 +152,5 @@ Ext.define('SparkRepositoryManager.view.conference.Panel', {
         clicksToMoveEditor: 2,
         autoCancel: false,
         errorSummary: true
-    }, {
-        ptype: 'saki-gms',
-        pluginId: 'gms'
     }]
 });

@@ -18,7 +18,6 @@
      */
     "requires": [
         "jarvus-hotfixes",
-        "saki-grid-multisearch-5",
         "ux",
         "emergence-apikit",
         "jarvus-lazydata",

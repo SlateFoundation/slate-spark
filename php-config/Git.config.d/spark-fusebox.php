@@ -13,7 +13,6 @@ Git::$repositories['spark-fusebox'] = [
         'php-classes/PostgresPDO.php', // TODO: move into a namespace and merge upstream
         'php-config/Git.config.d/spark-fusebox.php',
         'sencha-workspace/SparkRepositoryManager',
-        'sencha-workspace/packages/saki-grid-multisearch-5',
         'sencha-workspace/packages/spark-manager-theme',
         'site-root/spark2',
         'site-root/spark-repo',

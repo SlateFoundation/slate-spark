@@ -8,7 +8,6 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         'Ext.form.field.Text',
         'Ext.grid.column.Date',
         'Ext.grid.plugin.RowEditing',
-        'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
 
@@ -287,8 +286,5 @@ Ext.define('SparkRepositoryManager.view.learn.Panel', {
         clicksToMoveEditor: 2,
         autoCancel: false,
         errorSummary: true
-    }, {
-        ptype: 'saki-gms',
-        pluginId: 'gms'
     }]
 });

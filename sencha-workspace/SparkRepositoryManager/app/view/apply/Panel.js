@@ -10,7 +10,6 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         'Ext.grid.plugin.RowEditing',
         'Ext.layout.container.Fit',
         'Ext.layout.container.HBox',
-        'Ext.saki.grid.MultiSearch',
         'Ext.toolbar.Paging',
         'Ext.toolbar.Separator',
         'Ext.toolbar.Toolbar',
@@ -197,8 +196,5 @@ Ext.define('SparkRepositoryManager.view.apply.Panel', {
         clicksToEdit: 2,
         errorSummary: true,
         autoCancel: false
-    }, {
-        ptype: 'saki-gms',
-        pluginId: 'gms'
     }]
 });
