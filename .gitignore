@@ -1,8 +1,1 @@
-/sencha-workspace/build/
-
-/sencha-workspace/Spark*/bootstrap.*
-/sencha-workspace/Spark*/sass/example/bootstrap.*
-
 .DS_Store
-.idea/
-sencha-error-*.log
