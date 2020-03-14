@@ -49,7 +49,6 @@
      * Fashion build configuration properties.
      */
     "fashion": {
-        "missingParameters": "error",
         "inliner": {
             /**
              * Disable resource inliner. Production builds enable this by default.
