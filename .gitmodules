@@ -1,43 +1,47 @@
-[submodule "sencha-workspace/packages/emergence-apikit"]
-	path = sencha-workspace/packages/emergence-apikit
-	url = https://github.com/JarvusInnovations/emergence-apikit.git
-[submodule "sencha-workspace/packages/jarvus-apikit"]
-	path = sencha-workspace/packages/jarvus-apikit
-	url = https://github.com/JarvusInnovations/jarvus-apikit.git
-[submodule "sencha-workspace/packages/jarvus-lazydata"]
-	path = sencha-workspace/packages/jarvus-lazydata
-	url = https://github.com/JarvusInnovations/jarvus-lazydata.git
-	branch = ext/5/1/1/451
-[submodule "sencha-workspace/packages/jarvus-ext-searchfield"]
-	path = sencha-workspace/packages/jarvus-ext-searchfield
-	url = https://github.com/JarvusInnovations/jarvus-ext-searchfield.git
-[submodule "sencha-workspace/packages/jarvus-draw-dag"]
-	path = sencha-workspace/packages/jarvus-draw-dag
-	url = https://github.com/JarvusInnovations/jarvus-draw-dag.git
-[submodule "sencha-workspace/packages/slate-theme"]
-	path = sencha-workspace/packages/slate-theme
-	url = https://github.com/SlateFoundation/slate-theme.git
-	branch = releases/v2
-[submodule "sencha-workspace/packages/jarvus-hotfixes"]
-	path = sencha-workspace/packages/jarvus-hotfixes
-	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
-	branch = ext/5/1/1/451
-[submodule "sencha-workspace/packages/jarvus-ext-actionevents"]
-	path = sencha-workspace/packages/jarvus-ext-actionevents
-	url = https://github.com/JarvusInnovations/jarvus-ext-actionevents.git
-[submodule "sencha-workspace/packages/jarvus-ext-glyphs"]
-	path = sencha-workspace/packages/jarvus-ext-glyphs
-	url = https://github.com/JarvusInnovations/jarvus-ext-glyphs.git
-[submodule "sencha-workspace/packages/jarvus-postgrest-apikit"]
-	path = sencha-workspace/packages/jarvus-postgrest-apikit
-	url = git@github.com:JarvusInnovations/jarvus-postgrest-apikit.git
-[submodule "ext-5.1.1.451"]
-	path = sencha-workspace/ext-5.1.1.451
+[submodule "sencha-workspace/ext-6.2.0.981"]
+	path = sencha-workspace/ext
 	url = https://github.com/JarvusInnovations/extjs.git
-	branch = 5.1.1.451
-[submodule "ext-6.0.1.250"]
-	path = sencha-workspace/ext-6.0.1.250
-	url = https://github.com/JarvusInnovations/extjs.git
-	branch = 6.0.1.250
+	branch = workspace/6.2
+
 [submodule "jarvus-hotfixes"]
-	branch = ext/6/0/1/250
+	path = sencha-workspace/packages.remote/jarvus-hotfixes
+	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
+	branch = ext/6/2/0/981
+
+[submodule "slate-theme"]
+	path = sencha-workspace/packages.remote/slate-theme
+	url = https://github.com/SlateFoundation/slate.git
+	branch = subpackages/extjs-theme/v2
+
+[submodule "jarvus-lazydata"]
+	path = sencha-workspace/packages.remote/jarvus-lazydata
+	url = https://github.com/JarvusInnovations/jarvus-lazydata.git
+	branch = ext/6/2/0/981
+[submodule "jarvus-ext-searchfield"]
+	path = sencha-workspace/packages.remote/jarvus-ext-searchfield
+	url = https://github.com/JarvusInnovations/jarvus-ext-searchfield.git
+	branch = master
+[submodule "jarvus-draw-dag"]
+	path = sencha-workspace/packages.remote/jarvus-draw-dag
+	url = https://github.com/JarvusInnovations/jarvus-draw-dag.git
+	branch = master
+[submodule "jarvus-ext-actionevents"]
+	path = sencha-workspace/packages.remote/jarvus-ext-actionevents
+	url = https://github.com/JarvusInnovations/jarvus-ext-actionevents.git
+	branch = ext/6/2/0/981
+[submodule "jarvus-ext-glyphs"]
+	path = sencha-workspace/packages.remote/jarvus-ext-glyphs
+	url = https://github.com/JarvusInnovations/jarvus-ext-glyphs.git
+	branch = ext/6/2/0/981
+[submodule "jarvus-postgrest-apikit"]
+	path = sencha-workspace/packages.remote/jarvus-postgrest-apikit
+	url = https://github.com/JarvusInnovations/jarvus-postgrest-apikit.git
+	branch = master
+[submodule "jarvus-apikit"]
+	path = sencha-workspace/packages.remote/jarvus-apikit
+	url = https://github.com/JarvusInnovations/jarvus-apikit.git
+	branch = master
+[submodule "emergence-apikit"]
+	path = sencha-workspace/packages.remote/emergence-apikit
+	url = https://github.com/JarvusInnovations/emergence-apikit.git
+	branch = master
