@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# install studio bundles
+hab pkg install emergence/studio chakijs/studio
+source "$(hab pkg path emergence/studio)/studio.sh"
+source "$(hab pkg path chakijs/studio)/studio.sh"
