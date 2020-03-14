@@ -24,7 +24,7 @@ Then run a web server from `sencha-workspace` or higher in your file tree and na
 to run a basic local server at [http://localhost:1841](http://localhost:1841).
 
 ### Connecting to a server
-You can connect to any remote slate-cbl instance that has CORS enabled by appending the query
+You can connect to any remote slate-spark instance that has CORS enabled by appending the query
 parameter `apiHost` when loading the page.
 
 ## Building with habitat
