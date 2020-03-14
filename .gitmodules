@@ -17,7 +17,7 @@
 [submodule "jarvus-hotfixes"]
 	path = sencha-workspace/packages.remote/jarvus-hotfixes
 	url = https://github.com/JarvusInnovations/sencha-hotfixes.git
-	branch = ext/6/0/0/640
+	branch = ext/6/2/0/981
 [submodule "jarvus-routing"]
 	path = sencha-workspace/packages.remote/jarvus-routing
 	url = https://github.com/JarvusInnovations/jarvus-routing.git
