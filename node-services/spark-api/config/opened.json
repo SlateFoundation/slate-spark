@@ -1,0 +1,5 @@
+{
+  "opened_client_id": "25f74f522c9057064ae3ef9a4432a00cfae87edd5bc42baadb7ac1f6de73773a",
+  "opened_client_secret": "ddadba4be0a6f905c366c275d888147f677c49a1c2a2f9ca50bf7e9bc2095a5f",
+  "pg_conn_string": "postgres://spark:SparkPoint2015@10.240.103.217/spark"
+}

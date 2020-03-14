@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error - {{status}}</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <style>
+        body {
+            padding: 50px 80px;
+            font: 14px "Helvetica Neue", Helvetica, sans-serif;
+        }
+
+        h1, h2 {
+            margin: 0;
+            padding: 10px 0;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        h2 {
+            font-size: 1.2em;
+            font-weight: 200;
+            color: #aaa;
+        }
+
+        pre {
+            font-size: .8em;
+        }
+
+        textarea {
+            position: absolute;
+            left: -10000px;
+            top: -10000px;
+        }
+
+        /* Credit:  http://www.codechewing.com/library/mac-terminal-shell-css-html/ */
+        .shell-wrap {
+            margin-top: 30px;
+            width: 960px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .shell-top-bar {
+            text-align: center;
+            color: #525252;
+            padding: 5px 0;
+            margin: 0;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+            font-size: 0.85em;
+            border: 1px solid #CCCCCC;
+            border-bottom: none;
+
+            -webkit-border-top-left-radius: 3px;
+            -webkit-border-top-right-radius: 3px;
+            -moz-border-radius-topleft: 3px;
+            -moz-border-radius-topright: 3px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+
+            background: #f7f7f7; /* Old browsers */
+            background: -moz-linear-gradient(top,  #f7f7f7 0%, #B8B8B8 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#B8B8B8)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  #f7f7f7 0%,#B8B8B8 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  #f7f7f7 0%,#B8B8B8 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  #f7f7f7 0%,#B8B8B8 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  #f7f7f7 0%,#B8B8B8 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#B8B8B8',GradientType=0 ); /* IE6-9 */
+        }
+
+        .shell-body {
+            margin: 0;
+            padding: 5px;
+            list-style: none;
+            background: #141414;
+            color: #45D40C;
+            font: 0.8em 'Andale Mono', Consolas, 'Courier New';
+            line-height: 1.6em;
+
+            -webkit-border-bottom-right-radius: 3px;
+            -webkit-border-bottom-left-radius: 3px;
+            -moz-border-radius-bottomright: 3px;
+            -moz-border-radius-bottomleft: 3px;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+
+        .shell-body li:before {
+            content: '$';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .shell-body li {
+            word-wrap: break-word;
+            position: relative;
+            padding: 0 0 0 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="error">
+    <h1>HTTP {{status}}</h1>
+    <h2>Message:</h2>
+      <pre><code>{{error}}</code></pre>
+    <h2>Stack:</h2>
+      <pre><code>{{stack}}</code></pre>
+    <h2>Request (Over-the-wire):</h2>
+    <pre><code>{{JSON.stringify(ctx, null, "    ")}}</code></pre>
+    <h2>Request (Effective):</h2>
+    <pre><code>{{JSON.stringify(ctx, null, "    ")}}</code></pre>
+    <h2>Request (Object):</h2>
+    <pre><code>{{JSON.stringify(ctx, null, "    ")}}</code></pre>
+</div>
+
+<div class="shell-wrap">
+    <p class="shell-top-bar">Curl Command</p>
+    <ul class="shell-body">
+        <li>{{ctx.toCurl()}}</li>
+    </ul>
+</div>
+
+<!-- Hidden text area to copy text to clipboard -->
+<textarea></textarea>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(function() {
+        var $shellWrap = $('.shell-wrap'),
+            $textarea = $('textarea');
+
+        $shellWrap.hover(function() {
+            var $this = $(this),
+                $topbar = $this.children('.shell-top-bar');
+
+            $this.data('orig-text', $topbar.text().trim());
+            $topbar.text('Click to copy');
+        }, function() {
+            var $this = $(this),
+                $topbar = $this.children('.shell-top-bar');
+            $topbar.text($this.data('orig-text'));
+        }).click(function() {
+            try {
+                var $this = $(this),
+                    code = [];
+
+                $this.find('.shell-body > li').each(function() {
+                    code.push(this.textContent.trim());
+                });
+
+                $textarea.val(code.join('\r\n'));
+                $textarea.select();
+
+                if(!document.execCommand('copy')) {
+                    throw new Error("copy command not supported");
+                }
+                $this.children('.shell-top-bar').text('Copied to clipboard!');
+            } catch(ex) {
+                $this.children('.shell-top-bar').text('Copying to clipboard failed :(');
+            }
+        });
+    });
+</script>
+</body>
+</html>

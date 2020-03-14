@@ -1,0 +1,17 @@
+{
+  "postgresql": {
+    "sharedConnection": {
+      "host": "10.240.103.217",
+      "username": "spark",
+      "password": "SparkPoint2015",
+      "database": "spark"
+    },
+    "knex": {
+      "pool": {
+        "acquireTimeout": 2000,
+        "pingTimeout": 2000,
+        "requestTimeout": 10000
+      }
+    }
+  }
+}

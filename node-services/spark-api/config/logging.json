@@ -1,0 +1,13 @@
+{
+  "log_directory": "/var/log/spark-api",
+  "json_filename": "requests.json",
+  "json_log_body": true,
+  "text_filename": "requests.log",
+  "stdout_format": "text",
+  "stdout_sql": true,
+  "stdout_request_body": true,
+  "git_branch": true,
+  "git_commit": true,
+  "curl_trace_filename": "curl.trace",
+  "error_log_filename": "errors.json"
+}
