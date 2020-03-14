@@ -1,0 +1,1394 @@
+# Force SSL
+server {
+    server_name *.matchbooklearning.com spark.merit.matchbooklearning.com staging.spark.merit.matchbooklearning.com orr.matchbooklearning.com staging.mta.matchbooklearning.com fusebox.matchbooklearning.com repo.spark1.slatepowered.net spark-skeleton.matchbooklearning.com skeleton.spark1.slatepowered.net;
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+	return 301 https://$host$request_uri;
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+    #     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+
+	listen 443  ssl http2;
+
+	ssl    on;
+	ssl_certificate    /usr/local/openresty/nginx/conf/ssl/spark.merit.matchbooklearning.com.crt;
+	ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/spark.merit.matchbooklearning.com.key;
+
+	server_name spark.merit.matchbooklearning.com www.spark.merit.matchbooklearning.com;
+
+     location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:8091/socket.io;
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+           more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+           more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+           more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:9090/;
+    }
+
+    location / {
+        proxy_buffering    off;
+        proxy_buffer_size  128k;
+        proxy_buffers 100  128k;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-slate1.node.consul/;
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/staging.spark.merit.matchbooklearning.com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/staging.spark.merit.matchbooklearning.com.key;
+
+    server_name staging.spark.merit.matchbooklearning.com www.staging.spark.merit.matchbooklearning.com;
+     #location / {
+#	root /usr/share/nginx/html;
+ #    }
+
+  #   location ~ /.well-known {
+   #             allow all;
+    #    }
+
+     location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:8092/socket.io;
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+           more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+           more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+           more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:9090/;
+    }
+
+    location / {
+        proxy_buffering    off;
+        proxy_buffer_size  128k;
+        proxy_buffers 100  128k;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-slate2.node.consul/;
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+	listen 443  ssl http2;
+
+	ssl    on;
+	ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+	ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+	server_name orr.matchbooklearning.com www.orr.matchbooklearning.com;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:8093/socket.io;
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:9090/;
+    }
+
+    location / {
+        proxy_buffering    off;
+        proxy_buffer_size  128k;
+        proxy_buffers 100  128k;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-slate1.node.consul/;
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    #ssl    on;
+    #ssl_certificate    /usr/local/openresty/nginx/conf/ssl/staging.mta.matchbooklearning.com.crt;
+    #ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/staging.mta.matchbooklearning.com.key;
+
+    server_name staging.mta.matchbooklearning.com www.staging.mta.matchbooklearning.com;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:8094/socket.io;
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:9090/;
+    }
+
+    location / {
+        proxy_buffering    off;
+        proxy_buffer_size  128k;
+        proxy_buffers 100  128k;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-slate2.node.consul/;
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+	listen 443  ssl http2;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    server_name *.matchbooklearning.com;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:8090/socket.io;
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:9090/;
+    }
+
+    location / {
+	    proxy_buffering    off;
+        proxy_buffer_size  128k;
+        proxy_buffers 100  128k;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-slate2.node.consul/;
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    server_name api.matchbooklearning.com;
+
+    location /api {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_buffering    off;
+        proxy_buffer_size  128k;
+        proxy_buffers 100  128k;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:9090/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location /content {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        # access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        rewrite  ^/content/(.*)  /$1 break;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:8080/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location /conferences {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:9090/conferences;
+        #proxy_cache my-cache;
+        #proxy_cache_valid  200 302  10m;
+        #proxy_cache_valid  404      1m;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location /postgrest {
+        rewrite  ^/postgrest/(.*)  /$1 break;
+        proxy_pass_request_headers on;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        rewrite_by_lua '
+            local args = ngx.req.get_uri_args()
+            args.root = nil
+            args.node = nil
+            ngx.req.set_uri_args(args)
+        ';
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    server_name sparkpoint.matchbooklearning.com;
+
+    listen 443  ssl http2;
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:8090/socket.io;
+    }
+
+    location /spark/api/ {
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api1.node.consul:9090/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location / {
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://sparkpoint.slatepowered.net/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    server_name sandbox-school.matchbooklearning.com;
+    client_max_body_size 32M;
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:8090/socket.io;
+    }
+
+    location /spark/api/ {
+
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+       if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:9090/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location / {
+        proxy_buffering off;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://spark-slate2.node.consul/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    server_name fusebox-staging.matchbooklearning.com www.fusebox-staging.matchbooklearning.com;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location / {
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://spark-slate2.node.consul/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    server_name fusebox.matchbooklearning.com www.fusebox.matchbooklearning.com;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location / {
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://spark-slate1.node.consul/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+server {
+
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+    listen 443  ssl http2;
+
+    server_name fusebox-dev.matchbooklearning.com www.fusebox-dev.matchbooklearning.com;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location / {
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://192.168.246.9/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:8090/socket.io;
+    }
+
+    location /spark/api/ {
+
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+       if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:9083/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+server {
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+#     allow 76.99.19.203/32; allow 73.188.175.202/32; allow 73.233.176.181/32; deny all;
+    listen 443  ssl http2;
+
+    server_name spark-skeleton.matchbooklearning.com www.spark-skeleton.matchbooklearning.com;
+    
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth_no_403.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:8090/socket.io;
+    }
+
+    location /spark/api/ {
+
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+       if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://spark-api2.node.consul:9090/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location / {
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://spark-slate2.node.consul/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+server {
+    listen 443 ssl http2;
+location /nginx_status {
+        stub_status on;
+        allow 127.0.0.1;
+        deny all;
+    }
+    server_name jmealo-vpn.matchbooklearning.com;
+
+    ssl    on;
+    ssl_certificate    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.crt;
+    ssl_certificate_key    /usr/local/openresty/nginx/conf/ssl/STAR_matchbooklearning_com.key;
+
+    location /socket.io {
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://192.168.246.2:8090/socket.io;
+    }
+
+    location /spark/api/ {
+
+        if ($request_method = 'OPTIONS') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+            more_set_headers 'Access-Control-Max-Age' 1728000;
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+
+        if ($request_method = 'POST') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'GET') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'PUT') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        if ($request_method = 'DELETE') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+           more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+       if ($request_method = 'PATCH') {
+            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
+            more_set_headers 'Access-Control-Allow-Credentials: true';
+            more_set_headers 'Access-Control-Allow-Methods: $http_access_control_request_method';
+            more_set_headers 'Access-Control-Allow-Headers: $http_access_control_request_headers';
+        }
+
+        access_by_lua_file '/usr/local/openresty/nginx/conf/auth.lua';
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Nginx-Mysql-Schema "sandbox-school";
+        proxy_pass http://192.168.246.2:9090/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+
+    location / {
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   600;
+        proxy_read_timeout   600;
+        proxy_pass http://10.128.109.167/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name sparkorr.com www.sparkorr.com; 
+    return 301 https://orr.matchbooklearning.com$request_uri;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name fusebox.sparkorr.com;
+    return 301 https://fusebox.matchbooklearning.com$request_uri;
+}
+
+server {
+   listen 443 ssl;
+   
+   server_name sparkorr.com www.sparkorr.com;
+   ssl on;
+
+   ssl_certificate /etc/letsencrypt/live/sparkorr.com/fullchain.pem;
+   ssl_certificate_key /etc/letsencrypt/live/sparkorr.com/privkey.pem;
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+
+# ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK'; 
+return 301 https://orr.matchbooklearning.com$request_uri;
+}
+
+server {
+   listen 443 ssl;
+
+   server_name fusebox.sparkorr.com;
+   ssl on;
+
+   ssl_certificate /etc/letsencrypt/live/sparkorr.com/fullchain.pem;
+   ssl_certificate_key /etc/letsencrypt/live/sparkorr.com/privkey.pem;
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+
+# ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:EC$
+return 301 https://fusebox.matchbooklearning.com$request_uri;
+}

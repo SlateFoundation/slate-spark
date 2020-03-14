@@ -1,0 +1,9 @@
+server {
+        listen 9999;
+        location ~ ^/cache/(.*) {
+                content_by_lua_file /usr/local/openresty/nginx/conf/cache.lua;
+                add_header Content-Type text/plain;
+        }
+}
+
+
