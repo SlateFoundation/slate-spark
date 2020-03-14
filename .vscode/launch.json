@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch SparkClassroomStudent",
+            "type": "chrome",
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/sencha-workspace",
+            "url": "http://localhost:7081/SparkClassroomStudent/?cache=1&apiHost=localhost:7080"
+        },
+        {
+            "name": "Launch SparkClassroomTeacher",
+            "type": "chrome",
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/sencha-workspace",
+            "url": "http://localhost:7081/SparkClassroomTeacher/?cache=1&apiHost=localhost:7080"
+        },
+        {
+            "name": "Attach to Chrome",
+            "type": "chrome",
+            "request": "attach",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}/sencha-workspace",
+            "url": "http://localhost:7081"
+        }
+    ]
+}
