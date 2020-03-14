@@ -1,7 +1,3 @@
-[submodule "sencha-workspace/packages/spark-theme"]
-	path = sencha-workspace/packages/spark-theme
-	url = git@github.com:JarvusInnovations/spark-theme.git
-	branch = develop
 [submodule "sencha-workspace/packages/jarvus-touch-accordion"]
 	path = sencha-workspace/packages/jarvus-touch-accordion
 	url = https://github.com/JarvusInnovations/jarvus-touch-accordion.git
