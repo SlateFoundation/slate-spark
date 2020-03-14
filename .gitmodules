@@ -41,7 +41,7 @@
 [submodule "sencha-workspace/packages/jarvus-googlepicker"]
 	path = sencha-workspace/packages/jarvus-googlepicker
 	url = https://github.com/JarvusInnovations/jarvus-googlepicker.git
-[submodule "ext-6.0.0.640"]
-	path = sencha-workspace/ext-6.0.0.640
+[submodule "sencha-workspace/ext-6.2.0.981"]
+	path = sencha-workspace/ext-6.2.0.981
 	url = https://github.com/JarvusInnovations/extjs.git
-	branch = 6.0.0.640
+	branch = workspace/6.2
