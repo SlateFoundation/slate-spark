@@ -43,6 +43,7 @@ Ext.define('SparkRepositoryManager.controller.Viewport', {
             var viewport = me.getViewport(),
                 mainView = viewport.add({
                     xtype: 'spark-main',
+                    cls: ['site', 'wrapper'],
                     activeTab: Ext.util.History.getToken()
                 });
 
