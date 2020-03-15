@@ -14,6 +14,7 @@ Provides extensions for Slate and UI applications for Spark
     ```
 
     The `HAB_DOCKER_OPTS` environment variable used here controls what options `hab` passed to Docker when creating a container for this studio environment. In the above example, we're naming the container `slate-spark-studio` and opening ports 8080 (emergence http) 8081 (static http) 8036 (mysql) and 8054 (postgres). If you're familiar with Docker's command line options, these can be tweaked or added to however you see fit.
+
 1. Load a sample database (optional):
 
     ```bash
@@ -23,7 +24,11 @@ Provides extensions for Slate and UI applications for Spark
     cat /src/.data/slate-fixtures/*.sql | load-sql -
     ```
 
+## Key Access Points
 
+- Fusebox: http://localhost:8080/webapps/SparkRepositoryManager
+- Teacher Classroom: http://localhost:8080/spark/classroom/teacher
+- Student Classroom: http://localhost:8080/spark/classroom/student
 
 ## In this repository
 
