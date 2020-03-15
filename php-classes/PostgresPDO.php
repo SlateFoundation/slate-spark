@@ -8,12 +8,12 @@
 
 class PostgresPDO
 {
-    public static $host = 'localhost';
+    public static $host = '127.0.0.1';
     public static $port = 5432;
-    public static $database = 'spark';
-    public static $username = 'fusebox';
-    public static $password;
-    public static $application_name = 'spark-fusebox';
+    public static $database = 'postgres';
+    public static $username = 'admin';
+    public static $password = 'admin';
+    public static $application_name = 'slate-spark';
 
     protected static $connection;
     public static function getConnection()
