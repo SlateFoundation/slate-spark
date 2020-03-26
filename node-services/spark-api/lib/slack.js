@@ -1,4 +1,4 @@
-var request = require('koa-request');
+const got = require('got');
 
 function postErrorToSlack(error, ctx, details, broadcast) {
     delete ctx.request.headers['x-nginx-session'];
@@ -39,7 +39,7 @@ function postErrorToSlack(error, ctx, details, broadcast) {
         text.push('*Details:*\n```' + JSON.stringify(details, null, '    ') + '```');
     }
 
-    return request({
+    return got({
         method: 'POST',
         url: 'https://hooks.slack.com/services/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',
         json: true,
