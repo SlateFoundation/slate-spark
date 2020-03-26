@@ -1,14 +1,12 @@
 'use strict';
 
-function *getHandler() {
-    var ctx = this;
-
+async function getHandler(ctx, next) {
     ctx.body = {
         session: ctx.session,
         headers: ctx.headers,
         query: ctx.query,
         body: ctx.body,
-        guc: yield ctx.pgp.any(`
+        guc: await ctx.pgp.any(`
             SELECT current_setting('spark.user_id') AS user_id,
                    current_setting('spark.request_id') AS request_id,
                    current_setting('spark.role') AS role,

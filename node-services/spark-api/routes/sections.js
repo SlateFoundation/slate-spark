@@ -12,10 +12,10 @@ var subdomainBySchema = {
     'merit-staging': 'staging.spark.merit'
 };
 
-function* getHandler() {
+async function getHandler(ctx, next) {
     var ctx = this;
     
-    let sections = yield request({
+    let sections = await request({
         url: `https://${subdomainBySchema[ctx.schema]}.matchbooklearning.com/${ctx.path}?format=json`,
         headers: {
             cookie: `${ctx.schema}-s=${ctx.cookies.get('session_id')};`

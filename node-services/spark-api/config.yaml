@@ -5,7 +5,3 @@ default:
   logs:
     dir: /tmp
     level: debug
-test:
-  server:
-    port: 9090
-    cluster: false

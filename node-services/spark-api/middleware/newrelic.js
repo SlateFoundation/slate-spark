@@ -1,11 +1,8 @@
 'use strict';
 
 module.exports = function (newrelic) {
-    return function *(next) {
-        var ctx = this;
-
+    return async function newrelicMiddleware (ctx, next) {
         newrelic.setControllerName(ctx.url.split(/[?#]/)[0], ctx.method);
-        
-        yield next;
+        await next();
     };
 };

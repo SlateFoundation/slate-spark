@@ -4,9 +4,8 @@ const util = require('../../lib/util');
 const AsnStandard = require('../../lib/asn-standard');
 const recordToModel = require('../work/lessons/index.js').recordToModel;
 
-function *getHandler(next) {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function getHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         sectionId = ~~ctx.query.section_id,
         isLesson = util.isLessonSparkpoint(sparkpointId),
@@ -17,7 +16,7 @@ function *getHandler(next) {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -35,10 +34,10 @@ function *getHandler(next) {
 
     // HACK: call /work/learns to make sure that the playlist is cached/up to date
     ctx.query.student_id = ctx.userId;
-    yield require('../work/learns').get.call(ctx, next);
+    await require('../work/learns').get.call(ctx, next);
     delete ctx.query.student_id;
 
-    result = (yield ctx.pgp.one(/*language=SQL*/ `
+    result = (await ctx.pgp.one(/*language=SQL*/ `
         WITH playlist_cache AS (
             SELECT playlist
               FROM learn_playlist_cache

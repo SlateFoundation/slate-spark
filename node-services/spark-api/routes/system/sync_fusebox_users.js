@@ -1,8 +1,7 @@
 'use strict';
 
-function *postHandler() {
-    var ctx = this,
-        slateCfg = ctx.app.context.config.slate,
+async function postHandler(ctx, next) {
+    var slateCfg = ctx.app.context.config.slate,
         missingUsersBySchema = {},
         productionInstances = slateCfg
             .instances
@@ -19,7 +18,7 @@ function *postHandler() {
         let pgp = ctx.app.context.pgp[schema];
 
         if (pgp) {
-            missingUsersBySchema[schema] = yield ctx.pgp.any(/*language=SQL*/ `
+            missingUsersBySchema[schema] = await ctx.pgp.any(/*language=SQL*/ `
                 WITH production_users AS (
                     SELECT p.*,
                            cp."Data" AS "Email"

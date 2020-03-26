@@ -1,8 +1,7 @@
 'use strict';
 
-function* getHandler() {
-    var ctx = this,
-        currentLimit = parseInt(ctx.query.current, 10) || 5,
+async function getHandler(ctx, next) {
+    var currentLimit = parseInt(ctx.query.current, 10) || 5,
         queuedLimit = parseInt(ctx.query.queued, 10) || 5,
         pastLimit = parseInt(ctx.query.past, 10) || 5,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
@@ -12,7 +11,7 @@ function* getHandler() {
     ctx.assert(sectionId > 0, 'section_id is required', 400);
     ctx.assert(studentId > 0, 'Non-student users must provide a student_id', 400);
 
-    results = yield ctx.pgp.any(/*language=SQL*/ `
+    results = await ctx.pgp.any(/*language=SQL*/ `
         WITH past AS (
             SELECT ss.*,
     

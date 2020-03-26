@@ -1,4 +1,6 @@
 {
   "servers": [
+    "nats://localhost:4242"
   ]
 }
+

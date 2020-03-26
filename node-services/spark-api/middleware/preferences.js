@@ -60,20 +60,21 @@ function generateScopedPreferenceQuery (scope) {
 }
 
 module.exports = function preferenceMiddlewareInit(options) {
-    return function* (next) {
-        var ctx = this,
-            scope = ctx.state.scope = {
+    return async function preferenceMiddleware(ctx, next) {
+        var scope = ctx.state.scope = {
                 user_id: ctx.userId || 0,
                 section_id: ctx.query.section_id || 0,
                 sparkpoint_id: ctx.query.sparkpoint_id || '0'
             };
 
         var start = process.hrtime();
-        ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+        //ctx.state.preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+        // TODO: ^^
+        ctx.state.preferences = {}
         ctx.set('X-Preferences-Took-How-Long', process.hrtime(start)[1] / NANOSECONDS_IN_MS);
 
-        ctx.setPreferences = function* setPreferences(preferences = {}, scope = ctx.state.scope, sticky = false) {
-            yield ctx.pgp.one(/*language=SQL*/ `
+        ctx.setPreferences = async function setPreferences(preferences = {}, scope = ctx.state.scope, sticky = false) {
+            await ctx.pgp.one(/*language=SQL*/ `
                 INSERT INTO preferences VALUES
                 (\${section_id}, \${sparkpoint_id}, \${user_id}, \${preferences}::JSONB, \${sticky})
                   ON CONFLICT (section_id, sparkpoint_id, user_id, sticky)
@@ -89,13 +90,13 @@ module.exports = function preferenceMiddlewareInit(options) {
             });
 
             try {
-                let preferences = (yield ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
+                let preferences = (await ctx.pgp.one(generateScopedPreferenceQuery(scope), scope)).json;
                 ctx.state.preferences = preferences;
             } catch (e) {
                 console.error('Set preferences failed to reload effective preferences for scope: ', scope, e);
             }
         };
 
-        yield next;
+       await next();
     };
 };

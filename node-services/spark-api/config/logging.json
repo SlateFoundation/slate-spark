@@ -1,5 +1,5 @@
 {
-  "log_directory": "/var/log/spark-api",
+  "log_directory": "./logs",
   "json_filename": "requests.json",
   "json_log_body": true,
   "text_filename": "requests.log",

@@ -21,11 +21,10 @@ CREATE INDEX IF NOT EXISTS help_requests_section_open_time ON help_requests (ope
 */
 
 
-function *getHandler() {
-    var ctx = this,
-        helpRequests;
+async function getHandler(ctx, next) {
+    var helpRequests;
     
-    helpRequests = yield util.selectFromRequest.call(ctx, 'help_requests');
+    helpRequests = await util.selectFromRequest.call(ctx, 'help_requests');
 
    ctx.body = helpRequests.map(function(helpRequest) {
         helpRequest.can_delete = ctx.isTeacher || helpRequest.student_id === ctx.userId;
@@ -33,9 +32,8 @@ function *getHandler() {
     });
 }
 
-function sqlGenerator(records, vals) {
-    var ctx = this,
-        tableName = 'help_requests',
+function sqlGenerator(ctx, records, vals) {
+    var tableName = 'help_requests',
         validator = ctx.validation[tableName],
         errors = [],
         sqlStatements = [],
@@ -99,9 +97,8 @@ function sqlGenerator(records, vals) {
     };
 }
 
-function *postHandler() {
-    var ctx = this,
-        body = ctx.request.body,
+async function postHandler(ctx, next) {
+    var body = ctx.request.body,
         query,
         returnArray = Array.isArray(body);
 
@@ -114,7 +111,7 @@ function *postHandler() {
         body = [body];
     }
 
-    query = sqlGenerator.call(ctx, body);
+    query = sqlGenerator(ctx, body);
 
     if (query.errors.length > 0) {
         ctx.status = 400;
@@ -133,9 +130,9 @@ function *postHandler() {
     }
 
     if (!returnArray) {
-        ctx.body = aclDecorator(yield ctx.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
+        ctx.body = aclDecorator(await ctx.pgp.one(query.sql[0] + ' RETURNING *;', query.vals.vals));
     } else {
-        ctx.body = (yield ctx.pgp.any(util.queriesToReturningCte(query.sql), query.vals.vals)).map(aclDecorator);
+        ctx.body = (await ctx.pgp.any(util.queriesToReturningCte(query.sql), query.vals.vals)).map(aclDecorator);
     }
 }
 

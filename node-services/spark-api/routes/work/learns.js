@@ -1,6 +1,6 @@
 'use strict';
 
-var fs = require('fs'),
+var fs = require('fs').promises,
     path = require('path'),
     async = require('async'),
     OpenEd = require('../../lib/opened'),
@@ -9,9 +9,8 @@ var fs = require('fs'),
     AsnStandard = require('../../lib/asn-standard'),
     recordToModel = require('./lessons/index.js').recordToModel;
 
-function* getHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function getHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         sectionId = ~~ctx.query.section_id,
@@ -26,7 +25,7 @@ function* getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -44,7 +43,7 @@ function* getHandler() {
 
     // TODO: 5 magic number should come from preferences
 
-    learnsRequired = (yield ctx.pgp.one(/*language=SQL*/ `
+    learnsRequired = (await ctx.pgp.one(/*language=SQL*/ `
     
     WITH learns_required AS (
         SELECT required,
@@ -69,7 +68,7 @@ function* getHandler() {
         learnsRequired = learnsRequired.json;
     }
 
-    fusebox = yield Fusebox.getResources(standardIds);
+    fusebox = await Fusebox.getResources(standardIds);
 
     params = {
         limit: 50,
@@ -84,7 +83,7 @@ function* getHandler() {
         opened = [];
     } else {
         try {
-            opened = yield OpenEd.getResources(params, null, ctx);
+            opened = await OpenEd.getResources(params, null, ctx);
         } catch (e) {
             console.error('OPENED: ', e);
             opened = [];
@@ -211,7 +210,7 @@ function* getHandler() {
                LEFT JOIN ratings
                       ON ratings.resource_id = lr.id`;
 
-        resourceIdentifiers = yield ctx.pgp.manyOrNone(
+        resourceIdentifiers = await ctx.pgp.manyOrNone(
             sql,
             [studentId, sparkpointId, sectionId].concat(Object.keys(urlResourceMap)));
 
@@ -256,7 +255,7 @@ function* getHandler() {
                     SET playlist = $4,
                         last_updated = current_timestamp;`;
 
-        yield ctx.pgp.none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]);
+        await ctx.pgp.none(cacheSql, [studentId, sectionId, sparkpointId, JSON.stringify(resources)]);
     }
 
     ctx.body = {
@@ -266,9 +265,8 @@ function* getHandler() {
     };
 }
 
-function* patchHandler() {
-    var resources = this.request.body,
-        ctx = this,
+async function patchHandler(ctx, next) {
+    var resources = ctx.request.body,
         validationErrors,
         statements,
         vals = new util.Values(),
@@ -277,7 +275,7 @@ function* patchHandler() {
         learnReviewRecords = [];
 
     if (!Array.isArray(resources) || resources.length === 0) {
-        return this.throw('Body should be an array of one or more learns.', 400);
+        return ctx.throw('Body should be an array of one or more learns.', 400);
     }
 
     // Prepare incoming "learn_activity" and "learn_review" record(s) for validation and transactional UPSERT
@@ -383,35 +381,34 @@ function* patchHandler() {
         };
     }
 
-    yield this.pgp.task(function*(pgp) {
+    await ctx.pgp.task(async function(pgp) {
         ctx.body = {
             success: true,
             // TODO: HACK: || [] ... not sure why we need this, investigate
-            records: ((yield pgp.any(util.queriesToReturningJsonCte(statements), vals.vals)) || []).map(record => record.json)
+            records: ((await pgp.any(util.queriesToReturningJsonCte(statements), vals.vals)) || []).map(record => record.json)
         };
     });
 }
 
-function* launchHandler() {
-    var ctx = this,
-        resourceId = ~~ctx.params.resourceId,
+async function launchHandler(ctx, next) {
+    var resourceId = ~~ctx.params.resourceId,
         studentId = ctx.isStudent ? ctx.studentId : (ctx.query.student_id || ctx.userId),
         learnResource;
 
     ctx.assert(resourceId, 400, `Numeric resource id required, you passed: ${ctx.params.resourceId}`);
 
-    yield this.pgp.none(/*language=SQL*/ `
+    await ctx.pgp.none(/*language=SQL*/ `
         INSERT INTO learn_activity (user_id, resource_id, start_status)
              VALUES ($1, $2, $3)
         ON CONFLICT (resource_id, user_id) DO NOTHING;`, [studentId, resourceId, 'launched']);
 
-    learnResource = yield this.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
+    learnResource = await ctx.pgp.one('SELECT url FROM learn_resources WHERE id = $1', resourceId);
 
     if (learnResource.url) {
         let url = learnResource.url;
 
         if (url.includes('opened.com')) {
-            let accessToken = yield OpenEd.getUserAccessToken(ctx);
+            let accessToken = await OpenEd.getUserAccessToken(ctx);
 
             if(!url.includes('student_view=true')) {
                 if (ctx.isStudent) {
@@ -432,14 +429,13 @@ function* launchHandler() {
         ctx.redirect(url);
     } else {
         // TODO: add javascript to refresh 3 times then close the page or take you back to the playlist...
-        this.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
+        ctx.throw('Failed to launch learning resource due to an unknown error. Try refreshing this ' +
             ' page. If you continue to receive this error please tell your teacher.', 500);
     }
 }
 
-function* summaryHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function summaryHandler() {
+    var sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.userId : parseInt(ctx.query.student_id, 10),
         sectionId = ctx.query.section_id;
 
@@ -447,7 +443,7 @@ function* summaryHandler() {
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
     ctx.assert(studentId > 0, 'a student_id must be passed in the query string', 400);
 
-    ctx.body = yield ctx.pgp.one(/*language=SQL*/ `
+    ctx.body = await ctx.pgp.one(/*language=SQL*/ `
         WITH assignments AS (
                SELECT resource_id,
                  json_object_agg(
@@ -502,15 +498,14 @@ function* summaryHandler() {
     );
 }
 
-function* sectionHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function sectionHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         sectionId = ctx.query.section_id;
 
     ctx.assert(sparkpointId, 'a sparkpoint must be passed in the query string', 400);
     ctx.assert(sectionId, 'a section must be passed in the query string', 400);
 
-    ctx.body = (yield ctx.pgp.one(/*language=SQL*/ `
+    ctx.body = (await ctx.pgp.one(/*language=SQL*/ `
         WITH learn_assignments AS (
                SELECT resource_id,
                  json_object_agg(

@@ -4,9 +4,8 @@ const util = require('../../lib/util');
 const AsnStandard = require('../../lib/asn-standard');
 const recordToModel = require('../work/lessons/index.js').recordToModel;
 
-function* getHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function getHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         sectionId = ~~ctx.query.section_id,
         isLesson = util.isLessonSparkpoint(sparkpointId),
@@ -18,7 +17,7 @@ function* getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -34,7 +33,7 @@ function* getHandler() {
 
     ctx.assert(ctx.isTeacher, 'Only teachers can assign guiding questions', 403);
 
-    questions = (yield this.pgp.one(/*language=SQL*/ `
+    questions = (await ctx.pgp.one(/*language=SQL*/ `
         WITH questions AS (
             SELECT id AS resource_id,
                    '' AS creator,

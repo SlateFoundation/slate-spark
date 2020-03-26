@@ -1,7 +1,7 @@
 'use strict';
 
-function *getHandler() {
-    this.body = { ok: true };
+async function getHandler(ctx, next) {
+    ctx.body = { ok: true };
 }
 
 module.exports = {

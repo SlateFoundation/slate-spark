@@ -2,78 +2,41 @@
   "slack": {
     "webhookUrl": "https://hooks.slack.com/services/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"
   },
-
   "workers": [
     {
-      "port": 8090,
-      "schema": "sandbox-school",
-      "nats": "nats://10.240.103.217:4222",
-      "ignore": [
-        "sessions",
-        "learn_playlist_cache"
-      ],
-      "broadcast": true
-    },
-
-    {
       "port": 8091,
-      "schema": "merit-live",
-      "nats": "nats://10.240.103.217:4222",
+      "schema": "sandbox-school",
+      "nats": "nats://localhost:4242",
       "ignore": [
         "sessions",
         "learn_playlist_cache"
       ],
-      "broadcast": true
-    },
-
-    {
-      "port": 8092,
-      "schema": "merit-staging",
-      "nats": "nats://10.240.103.217:4222",
-      "ignore": [
-        "sessions",
-        "learn_playlist_cache"
-      ],
-      "broadcast": true
-    },
-    {
-      "port": 8093,
-      "schema": "mta-live",
-      "nats": "nats://10.240.103.217:4222",
-      "ignore": [
-        "sessions",
-        "learn_playlist_cache"
-      ],
-      "broadcast": true
-    },
-
-    {
-      "port": 8094,
-      "schema": "mta-staging",
-      "nats": "nats://spark:VRK5wReendhh1cmMZJoZm0F0y22E3@10.128.161.19:4222",
-      "ignore": [
-        "sessions",
-        "learn_playlist_cache"
-      ],
-      "broadcast": true
+      "postgresql": {
+        "database": "spark",
+        "host": "localhost",
+        "username": "admin",
+        "password": "admin"
+      },
+      "broadcast": true,
+      "section_broadcast": false,
+      "refresh_fusebox": false,
+      "middleware": {
+        "load_order": [
+          "session",
+          "stats"
+        ],
+        "session": {
+          "sessionHeaderName": "x-nginx-session",
+          "requiredKeys": [
+            "userId",
+            "firstName",
+            "lastName",
+            "email"
+          ]
+        }
+      }
     }
-  ],
-
-  "middleware": {
-
-    "load_order": [
-      "session",
-      "stats"
-    ],
-
-    "session": {
-      "sessionHeaderName": "x-nginx-session",
-      "requiredKeys": [
-        "userId",
-        "firstName",
-        "lastName",
-        "email"
-      ]
-    }
-  }
+  ]
 }
+
+

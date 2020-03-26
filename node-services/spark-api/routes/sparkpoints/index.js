@@ -1,14 +1,13 @@
 'use strict';
 
-function *getHandler() {
-    var ctx = this,
-        sectionId = ~~ctx.query.section_id,
+async function getHandler(ctx, next) {
+    var sectionId = ~~ctx.query.section_id,
         studentId = ~~ctx.query.student_id,
         studentWhere = (studentId > 0) ? 'AND ssas.student_id = $2' : '';
 
     ctx.assert(sectionId > 0, 'section_id is required', 400);
 
-    ctx.body = yield ctx.pgp.any(/*language=SQL*/ `
+    ctx.body = await ctx.pgp.any(/*language=SQL*/ `
        -- noinspection JSLint
        SELECT sp.code AS sparkpoint_code,
               sp.student_title,

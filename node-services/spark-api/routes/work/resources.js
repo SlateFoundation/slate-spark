@@ -1,14 +1,13 @@
 'use strict';
 
-function* getHandler() {
-    var ctx = this,
-        sparkpointIds = (ctx.query.sparkpoint_ids || '').split(','),
+async function getHandler(ctx, next) {
+    var sparkpointIds = (ctx.query.sparkpoint_ids || '').split(','),
         standardSparkpointIds = sparkpointIds.filter(id => id.startsWith('M')) || [],
         lessonSparkpointIds = sparkpointIds.filter(id => id.startsWith('L')) || [];
 
         ctx.assert(sparkpointIds.length > 0, 'sparkpoint_ids must be comma delimited list of one or more sparkpoint_ids');
 
-        ctx.body = (yield ctx.pgp.any(/* language=SQL */ `
+        ctx.body = (await ctx.pgp.any(/* language=SQL */ `
             WITH asn_ids AS (
               SELECT array_agg(asn_id)::char(8)[] || $2::char(8)[] AS asn_ids
                 FROM public.sparkpoint_standard_alignments

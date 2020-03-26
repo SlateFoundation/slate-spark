@@ -1,9 +1,7 @@
 'use strict';
 
-module.exports = function* (next) {
-    var ctx = this;
-
-    yield next;
+module.exports = async function debuggingMiddleware(ctx, next) {
+    await next();
 
     // For developers: send x-nginx-* request headers in the response for debugging purposes (also see: /test)
     if (ctx.isDeveloper) {

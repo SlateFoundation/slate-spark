@@ -2,7 +2,7 @@
 
 var cachedLookups = null;
 
-function* getHandler() {
+async function getHandler(ctx, next) {
     var ctx = this;
 
     if (!cachedLookups) {

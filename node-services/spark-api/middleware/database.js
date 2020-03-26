@@ -4,8 +4,7 @@ var promise = require('bluebird'),
     monitor = require('pg-monitor'),
     options = {
         promiseLib: promise,
-        noLocking: true,
-        capTX: true
+        noLocking: true
     },
     Pgp = require('pg-promise')(options),
     pgpConnections = {},
@@ -35,12 +34,11 @@ function initializePgp(config, slateConfig, globalConfig) {
 }
 
 function pgp(options) {
-    return function *pgp(next) {
-        var ctx = this,
-            appContext = ctx.app.context,
+    return async function databaseMiddleware(ctx, next) {
+        var appContext = ctx.app.context,
             // TODO: We should pass the schema and request id so that we're able to work locally without a load
             // balancer and/or change header names
-            schema = ctx.header['x-nginx-mysql-schema'],
+            schema = 'sandbox-school',
             requestId = ctx.headers['x-nginx-request-id'],
             guc;
 
@@ -79,7 +77,8 @@ function pgp(options) {
                 appContext.introspection = {};
 
                 let pgp = pgpConnections[schema];
-                let introspection = yield* introspectDatabase.call(ctx, pgp);
+                // TODO: what does yield* do again ;)?
+                let introspection = await introspectDatabase.call(ctx, pgp);
 
                 appContext.introspection[schema] = introspection;
 
@@ -109,11 +108,11 @@ function pgp(options) {
             }).join('');
         };
 
-        yield next;
+        await next();
     };
 }
 
-function* introspectDatabase(pgp) {
+async function introspectDatabase(pgp) {
     // TODO: In order to allow "overriding" tables at a school-level we need to make sure that introspection uses
     // the same search_order as postgresql.
     var ctx = this,
@@ -133,7 +132,7 @@ function* introspectDatabase(pgp) {
     }
 
     if (!introspection.json) {
-        introspection = yield pgp.one(/*language=SQL*/ `
+        introspection = await pgp.one(/*language=SQL*/ `
             WITH spark_tables AS (
               SELECT DISTINCT ON (table_name) table_name,
                                  table_schema
@@ -149,7 +148,7 @@ function* introspectDatabase(pgp) {
                       FROM pg_type
                       JOIN pg_enum
                         ON pg_enum.enumtypid = pg_type.oid
-                  GROUP BY typname, oid
+                  GROUP BY typname, pg_type.oid
                 ), allowed_values AS (
                     SELECT typname,
                            json_agg(pg_enum.enumlabel)

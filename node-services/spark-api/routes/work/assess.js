@@ -5,9 +5,8 @@ var fusebox = require('../../lib/fusebox'),
     util = require('../../lib/util'),
     recordToModel = require('./lessons/index.js').recordToModel;
 
-function *getHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function getHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         isLesson = util.isLessonSparkpoint(sparkpointId),
         sparkpointIds = !isLesson ? [sparkpointId] : [],
@@ -20,7 +19,7 @@ function *getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -36,7 +35,7 @@ function *getHandler() {
 
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
 
-    assessments = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+    assessments = await ctx.pgp.manyOrNone(/*language=SQL*/ `
        SELECT title,
               url,
               vendorid,
@@ -51,12 +50,12 @@ function *getHandler() {
         [standardIds]
     );
 
-    reflection = yield ctx.pgp.oneOrNone(/*language=SQL*/ `
+    reflection = await ctx.pgp.oneOrNone(/*language=SQL*/ `
       SELECT reflection
         FROM assesses
        WHERE sparkpoint_id = $1
          AND student_id = $2;`,
-        [sparkpointId, this.studentId]
+        [sparkpointId, ctx.studentId]
     );
 
     ctx.body = {
@@ -66,15 +65,14 @@ function *getHandler() {
     };
 }
 
-function *patchHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function patchHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         reflection = ctx.query.reflection;
 
     ctx.assert(ctx.studentId, 'You must be logged in as a student, or pass a student_id to perform this action.', 400);
     ctx.require(['sparkpoint_id', 'reflection']);
 
-    ctx.body = yield ctx.pgp.one(/*language=SQL*/ `
+    ctx.body = await ctx.pgp.one(/*language=SQL*/ `
             INSERT INTO assesses
                  VALUES ($1, $2, $3) ON CONFLICT (student_id, sparkpoint_id) DO UPDATE
                     SET reflection = $3

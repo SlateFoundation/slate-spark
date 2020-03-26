@@ -1,9 +1,9 @@
 {
   "postgresql": {
     "sharedConnection": {
-      "host": "10.240.103.217",
+      "host": "localhost",
       "username": "spark",
-      "password": "SparkPoint2015",
+      "password": "spark",
       "database": "spark"
     },
     "knex": {
@@ -15,3 +15,4 @@
     }
   }
 }
+

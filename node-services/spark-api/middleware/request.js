@@ -4,11 +4,10 @@ var util = require('./../lib/util');
 
 // This should be loaded AFTER session
 
-module.exports = function *parseRequest(next) {
-    var ctx = this,
-        body = ctx.request.body,
+module.exports = async function requestMiddleware(ctx, next) {
+    var body = ctx.request.body,
         query = ctx.request.query,
-        loggingConf = this.app.context.config.logging || {};
+        loggingConf = ctx.app.context.config.logging || {};
 
     // TODO: why can't we do this in the logging middleware?
     ctx.original || (ctx.original = {});
@@ -39,7 +38,7 @@ module.exports = function *parseRequest(next) {
     if (sparkpoint && !util.isMatchbookId(sparkpoint)) {
         let sparkpoint = query.sparkpoint || query.sparkpoint_code;
 
-        query.sparkpoint_id = yield ctx.lookup.sparkpoint.codeToId(sparkpoint);
+        query.sparkpoint_id = await ctx.lookup.sparkpoint.codeToId(sparkpoint);
 
         if (!query.sparkpoint_id) {
             return ctx.throw(404, new Error(`${query.sparkpoint} is an invalid sparkpoint`), 404);
@@ -52,13 +51,13 @@ module.exports = function *parseRequest(next) {
     if (util.isGtZero(query.section_id)) {
         query.section_id = parseInt(query.section_id, 10);
 
-        let section_code = yield ctx.lookup.section.idToCode(query.section_id);
+        let section_code = await ctx.lookup.section.idToCode(query.section_id);
 
         if (!section_code) {
             return ctx.throw(404, `section_id ${query.section_id} could not be found`);
         }
     } else if (query.section_code || query.section) {
-        let section_id = yield ctx.lookup.section.codeToId(query.section_code || query.section);
+        let section_id = await ctx.lookup.section.codeToId(query.section_code || query.section);
 
         if (!section_id) {
             return ctx.throw(404, `section_code ${query.section_code || query.section} could not be found`);
@@ -88,5 +87,5 @@ module.exports = function *parseRequest(next) {
         }
     };
 
-    yield next;
+    await next();
 };

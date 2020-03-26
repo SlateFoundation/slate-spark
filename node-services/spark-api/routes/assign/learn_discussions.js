@@ -3,10 +3,9 @@
 const util = require('../../lib/util');
 
 // HTTP 200: Get discussion(s)
-function *getHandler() {
-    var ctx = this
-    
-    ctx.body = (yield ctx.pgp.one(/*language=SQL*/
+async function getHandler(ctx, next) {
+
+    ctx.body = (await ctx.pgp.one(/*language=SQL*/
         `SELECT (CASE
                      WHEN EXISTS (SELECT 1 FROM learn_resources WHERE id = $1)
                      THEN (SELECT coalesce(json_agg(learn_discussions), '[]'::JSON) FROM learn_discussions WHERE resource_id = $1)
@@ -21,9 +20,8 @@ function *getHandler() {
 }
 
 // HTTP 200: Update an existing discussion
-function *patchHandler() {
-    var ctx = this,
-        discussion = ctx.request.body,
+async function patchHandler(ctx, next) {
+    var discussion = ctx.request.body,
         updatedRecord;
 
     ctx.assert(typeof discussion.id === 'number', 'id is required');
@@ -34,7 +32,7 @@ function *patchHandler() {
         console.warn(`TAMPERING EVIDENT: ${ctx.userId} passed a different author_id: ${discussion.body.author_id}`);
     }
 
-    updatedRecord = yield ctx.pgp.oneOrNone(/*language=SQL*/ `
+    updatedRecord = await ctx.pgp.oneOrNone(/*language=SQL*/ `
         UPDATE learn_discussions
            SET body = $1
          WHERE id = $2
@@ -48,16 +46,13 @@ function *patchHandler() {
 }
 
 // HTTP 201: Delete an existing discussion
-function *deleteHandler() {
-    var ctx = this;
-
+async function deleteHandler(ctx, next) {
     ctx.throw('Not implemented', 501);
 }
 
 // HTTP 204: Create a new discussion
-function *postHandler() {
-    var ctx = this,
-        body = ctx.request.body,
+async function postHandler(ctx, next) {
+    var body = ctx.request.body,
         recordToInsert = util.recordToInsert.bind(ctx),
         vals = new util.Values(),
         record;
@@ -81,7 +76,7 @@ function *postHandler() {
         author_id: ctx.userId
     };
 
-    ctx.body = yield ctx.pgp.one(recordToInsert('learn_discussions', record, vals) + ' RETURNING * ', vals.vals);
+    ctx.body = await ctx.pgp.one(recordToInsert('learn_discussions', record, vals) + ' RETURNING * ', vals.vals);
 }
 
 module.exports = {

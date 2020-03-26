@@ -36,9 +36,9 @@ module.exports = function OpenEd(config) {
 
     var options = initializeOpenEd(config);
 
-    return function* (next) {
-        this.set('opened-ran', true);
-        this.set('opened-options', JSON.stringify(options));
-        yield next;
+    return async function openedMiddleware(ctx, next) {
+        ctx.set('opened-ran', true);
+        ctx.set('opened-options', JSON.stringify(options));
+        await next();
     };
 };

@@ -4,10 +4,9 @@ const util = require('../../lib/util');
 const AsnStandard = require('../../lib/asn-standard');
 const recordToModel = require('../work/lessons/index.js').recordToModel;
 
-function* getHandler() {
+async function getHandler(ctx, next) {
 
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         sectionId = ~~ctx.query.section_id,
         isLesson = util.isLessonSparkpoint(sparkpointId),
@@ -19,7 +18,7 @@ function* getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -35,7 +34,7 @@ function* getHandler() {
 
     ctx.assert(ctx.isTeacher, 'Only teachers can assign applies', 403);
 
-    applies = (yield this.pgp.one(/*language=SQL*/ `
+    applies = (await ctx.pgp.one(/*language=SQL*/ `
         WITH fusebox_applies AS (
             SELECT *
               FROM fusebox_apply_projects

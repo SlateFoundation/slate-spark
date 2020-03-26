@@ -24,16 +24,15 @@
 var util = require('../../lib/util');
 
 
-function *getHandler() {
-    var ctx = this,
-        teacherFeedback;
+async function getHandler(ctx, next) {
+    var teacherFeedback;
 
     // TODO: use RLS for this
     if (ctx.isStudent) {
         ctx.query.student_id = ctx.studentId;
     }
 
-    teacherFeedback = yield util.selectFromRequest.call(ctx, 'teacher_feedback');
+    teacherFeedback = await util.selectFromRequest.call(ctx, 'teacher_feedback');
 
     ctx.body = teacherFeedback.map(function (teacherFeedback) {
         return util.namifyRecord(util.codifyRecord(teacherFeedback, ctx.lookup), ctx.lookup);
@@ -41,9 +40,8 @@ function *getHandler() {
 }
 
 
-function *patchHandler() {
-    var ctx = this,
-        teacherFeedback = ctx.request.body,
+async function patchHandler(ctx, next) {
+    var teacherFeedback = ctx.request.body,
         vals = new util.Values(),
         recordToInsert = util.recordToInsert.bind(ctx),
         records,
@@ -64,7 +62,7 @@ function *patchHandler() {
 
     sql = util.queriesToReturningCte(records.map(record => recordToInsert('teacher_feedback', record, vals)));
 
-    ctx.body = yield ctx.pgp.any(sql, vals.vals);
+    ctx.body = await ctx.pgp.any(sql, vals.vals);
 }
 
 

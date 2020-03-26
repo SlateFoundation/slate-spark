@@ -3,9 +3,8 @@
 const _ = require('lodash');
 var autocompleteCache = {};
 
-function* getHandler() {
-    var ctx = this,
-        input = ctx.params.input,
+async function getHandler(ctx, next) {
+    var input = ctx.params.input,
         result,
         patternSafeInput;
 
@@ -25,7 +24,7 @@ function* getHandler() {
     result = autocompleteCache[input];
 
     if (!result) {
-        result = autocompleteCache[input] = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+        result = autocompleteCache[input] = await ctx.pgp.manyOrNone(/*language=SQL*/ `
         WITH standards_fts AS (
             SELECT sparkpoints.id,
                    sparkpoints.code,

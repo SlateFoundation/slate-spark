@@ -1,7 +1,7 @@
 'use strict';
 
 var mkdirp = require('mkdirp-then'),
-    fs = require('co-fs'),
+    fs = require('fs').promises,
     dirCreated = false,
     logToFile,
     jsonHandle,
@@ -10,14 +10,13 @@ var mkdirp = require('mkdirp-then'),
     errorHandle,
     path = require('path');
 
-module.exports = function *logger(next) {
-    var start = new Date,
-        config = this.app.context.config.logging,
+module.exports = async function loggingMiddleware(ctx, next) {
+    var start = new Date(),
+        config = ctx.app.context.config.logging,
         logDirectory = config.log_directory,
         error,
         textLogString,
-        jsonLogString,
-        ctx = this;
+        jsonLogString;
 
     if (config.stdout_format === 'json' && config.stdout_sql) {
         console.error('stdout_sql cannot be true when the stdout_format is set to JSON; disabling stdout_sql.');
@@ -26,7 +25,7 @@ module.exports = function *logger(next) {
 
     if (!dirCreated && logToFile !== false) {
         try {
-            let stats = yield fs.stat(logDirectory);
+            let stats = await fs.stat(logDirectory);
 
             if (stats.isDirectory()) {
                 dirCreated = true;
@@ -37,8 +36,8 @@ module.exports = function *logger(next) {
             if (err.code === 'ENOENT') {
                 // Directory does not exist
                 try {
-                    yield mkdirp(logDirectory);
-                    yield fs.chown(logDirectory, process.geteuid(), process.getegid());
+                    await mkdirp(logDirectory);
+                    await fs.chown(logDirectory, process.geteuid(), process.getegid());
                     dirCreated = true;
                 } catch (e) {
                     error = e;
@@ -47,7 +46,7 @@ module.exports = function *logger(next) {
             } else if (err.code === 'EACCE') {
                 // Directory is not writable
                 try {
-                    yield fs.chown(logDirectory, process.geteuid(), process.getegid());
+                    await fs.chown(logDirectory, process.geteuid(), process.getegid());
                     dirCreated = true;
                 } catch (e) {
                     error = e;
@@ -107,7 +106,7 @@ module.exports = function *logger(next) {
                     writeHeader = false;
 
                 try {
-                    let stats = yield fs.stat(blueprintPath);
+                    let stats = await fs.stat(blueprintPath);
 
                     if (!stats.isFile()) {
                         writeHeader = true;
@@ -138,12 +137,12 @@ module.exports = function *logger(next) {
     }
 
     ctx.log = {
-      method: this.method,
-      path: this.path,
+      method: ctx.method,
+      path: ctx.path,
       ts: start
     };
 
-    yield next;
+    await next();
 
     if (config.stdout_request_body && config.stdout_format === 'json') {
         ctx.log.request_body = {
@@ -152,7 +151,7 @@ module.exports = function *logger(next) {
         };
     }
 
-    var ms = new Date - start;
+    var ms = new Date() - start;
 
     ctx.log.duration = ms;
     ctx.log.user = {

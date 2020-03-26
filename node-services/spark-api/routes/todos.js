@@ -1,10 +1,9 @@
-function* patchHandler() {
+async function patchHandler(ctx, next) {
     var ids = [],
         completes = [],
         todos = [],
         query = [],
-        body = this.request.body,
-        ctx = this;
+        body = ctx.request.body;
 
     if (!Array.isArray(body)) {
         return this.throw('Request body should be an array of todos', 400);
@@ -24,13 +23,13 @@ function* patchHandler() {
         return this.throw('Request body should be an array of one or more todos', 400);
     }
 
-    this.body = yield this.pgp.any(query.join('\n'));
+    ctx.body = await ctx.pgp.any(query.join('\n'));
 }
 
-function* getHandler() {
+async function getHandler(ctx, next) {
     var query = 'SELECT * FROM todos WHERE user_id = $1',
-        vals = [this.studentId],
-        completed = this.query.completed ? this.query.completed.toString() : null;
+        vals = [ctx.studentId],
+        completed = ctx.query.completed ? ctx.query.completed.toString() : null;
 
     if (completed) {
         completed = completed === 'true';
@@ -38,7 +37,7 @@ function* getHandler() {
         vals.push(completed);
     }
 
-    this.body = yield this.pgp.manyOrNone(query, vals);
+    ctx.body = await ctx.pgp.manyOrNone(query, vals);
 }
 
 module.exports = {

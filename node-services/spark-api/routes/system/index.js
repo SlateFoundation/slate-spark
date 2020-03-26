@@ -1,6 +1,6 @@
 'use strict';
 
-function *getHandler() {
+async function getHandler(ctx, next) {
     var ctx = this;
     ctx.type = 'html';
     ctx.body = `<form action="/spark/api/system/sync_fusebox_users" method="POST">

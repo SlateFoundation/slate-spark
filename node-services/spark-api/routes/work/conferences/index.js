@@ -4,12 +4,11 @@ var AsnStandard = require('../../../lib/asn-standard'),
     recordToModel = require('../lessons/index.js').recordToModel,
     util = require('../../../lib/util');
 
-function* getHandler() {
-    var ctx = this,
-        sparkpointId = this.query.sparkpoint_id,
+async function getHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
-        sectionId = ~~this.query.section_id,
+        sectionId = ~~ctx.query.section_id,
         isLesson = util.isLessonSparkpoint(sparkpointId),
         sparkpointIds = !isLesson ? [sparkpointId] : [],
         result,
@@ -20,7 +19,7 @@ function* getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -37,7 +36,7 @@ function* getHandler() {
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
     ctx.assert(standardIds.length > 0, `No academic standards are associated with sparkpoint: ${sparkpointId}`, 404);
 
-    result = yield this.pgp.one(
+    result = await ctx.pgp.one(
         //language=SQL
         `
         WITH fusebox_questions AS (

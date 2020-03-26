@@ -3,9 +3,8 @@
 const identifyRecordSync = require('../../lib/util').identifyRecordSync;
 const util = require('../../lib/util');
 
-function *postHandler() {
-    var ctx = this,
-        suggestions = ctx.request.body,
+async function postHandler(ctx, next) {
+    var suggestions = ctx.request.body,
         records,
         copyColumns = ['recommended_time', 'student_id', 'sparkpoint_id', 'section_id'],
         vals = new util.Values(),
@@ -38,7 +37,7 @@ function *postHandler() {
         return record;
     });
 
-    records = yield ctx.pgp.any(util.queriesToReturningCte(
+    records = await ctx.pgp.any(util.queriesToReturningCte(
         records.map(record => recordToUpsert(
             'section_student_active_sparkpoint', record, vals, ['section_id', 'sparkpoint_id', 'student_id']), vals
         )

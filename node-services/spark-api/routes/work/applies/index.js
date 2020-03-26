@@ -5,14 +5,13 @@ var util = require('../../../lib/util'),
     AsnStandard = require('../../../lib/asn-standard'),
     recordToModel = require('../lessons/index.js').recordToModel;
 
-function *getHandler() {
-    this.require(['sparkpoint_id', 'section_id']);
+async function getHandler(ctx, next) {
+    ctx.require(['sparkpoint_id', 'section_id']);
 
-    var ctx = this,
-        sparkpointId = this.query.sparkpoint_id,
+    var sparkpointId = ctx.query.sparkpoint_id,
         standardIds = [],
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
-        sectionId = ~~this.query.section_id,
+        sectionId = ~~ctx.query.section_id,
         isLesson = util.isLessonSparkpoint(sparkpointId),
         sparkpointIds = !isLesson ? [sparkpointId] : [],
         applies,
@@ -20,7 +19,7 @@ function *getHandler() {
 
     if (isLesson) {
         try {
-            lesson = recordToModel(yield ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
+            lesson = recordToModel(await ctx.pgp.one('SELECT * FROM lessons WHERE sparkpoint_id = $1', [sparkpointId]));
             sparkpointIds = lesson.sparkpoints.map(sparkpoint => sparkpoint.id).concat(sparkpointId);
             standardIds.push(sparkpointId);
         } catch (e) {
@@ -36,7 +35,7 @@ function *getHandler() {
 
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
 
-    applies = yield this.pgp.one(/*language=SQL*/
+    applies = await ctx.pgp.one(/*language=SQL*/
     `        
     SELECT json_agg(json_build_object(
         'id',
@@ -129,7 +128,7 @@ function *getHandler() {
     LEFT JOIN applies a ON a.resource_id = ap.id AND a.student_id = $1
     LEFT JOIN apply_reviews ar ON ar.student_id = $1 AND ar.apply_id = ap.id
         WHERE standardids ?| $3;
-    `, [this.studentId, sparkpointId, standardIds, sectionId]);
+    `, [ctx.studentId, sparkpointId, standardIds, sectionId]);
 
     ctx.body = {
         applies: (applies.json || []).map(apply => {
@@ -140,11 +139,10 @@ function *getHandler() {
     };
 }
 
-function *patchHandler() {
-    this.require(['sparkpoint_id']);
+async function patchHandler(ctx, next) {
+    ctx.require(['sparkpoint_id']);
 
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+    var sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         selected = ctx.query.selected,
         id = parseInt(ctx.query.id, 10) || parseInt(ctx.query.resource_id, 10),
@@ -208,7 +206,7 @@ function *patchHandler() {
         let values = _.getValues('applies');
         let columns = Object.keys(_.pop('applies').columns);
 
-        apply = yield ctx.pgp.one(`
+        apply = await ctx.pgp.one(`
             INSERT INTO applies (${columns})
                          VALUES (${values}) ON CONFLICT (resource_id, student_id, sparkpoint_id) DO UPDATE SET ${set}
             RETURNING *;`, _.values
@@ -219,7 +217,7 @@ function *patchHandler() {
     // Deselect other applies for student/sparkpoint and update the student_sparkpoint table
     if (selected !== undefined) {
         if (selected) {
-            yield ctx.pgp.none(/*language=SQL*/ `
+            await ctx.pgp.none(/*language=SQL*/ `
             UPDATE applies
                SET selected = false
              WHERE selected = true
@@ -229,7 +227,7 @@ function *patchHandler() {
                 [id, sparkpointId, studentId]
             );
 
-            yield ctx.pgp.none(/*language=SQL*/ `
+            await ctx.pgp.none(/*language=SQL*/ `
             UPDATE student_sparkpoint
                SET selected_apply_id = $1,
                    selected_apply_resource_id = $2
@@ -239,7 +237,7 @@ function *patchHandler() {
                 [apply.id, apply.resource_id, studentId, sparkpointId]
             );
         } else {
-            yield ctx.pgp.none(/*language=SQL*/ `
+            await ctx.pgp.none(/*language=SQL*/ `
             UPDATE student_sparkpoint
                SET selected_apply_id = NULL,
                    selected_apply_resource_id = NULL
@@ -260,7 +258,7 @@ function *patchHandler() {
         let values = _.getValues('apply_reviews');
         let columns = Object.keys(_.pop('apply_reviews').columns);
 
-        apply = yield ctx.pgp.one(`
+        apply = await ctx.pgp.one(`
             INSERT INTO apply_reviews (${columns})
                          VALUES (${values}) ON CONFLICT (apply_id, student_id) DO UPDATE SET ${set}
             RETURNING *;`, _.values
@@ -268,7 +266,7 @@ function *patchHandler() {
     }
 
     // Selects todos from todos table, if they don't exist populate them from the fusebox and return them
-    todos = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+    todos = await ctx.pgp.manyOrNone(/*language=SQL*/ `
         WITH existing_user_todos AS (
           SELECT id,
                  todo,

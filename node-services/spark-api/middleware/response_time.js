@@ -1,11 +1,10 @@
 'use strict';
 
-module.exports = function *responseTime(next) {
-    var ctx = this,
-        start = new Date,
+module.exports = async function responseTimeMiddleware(ctx, next) {
+    var start = new Date,
         ms;
 
-    yield next;
+    await next();
 
     ms = new Date - start;
 

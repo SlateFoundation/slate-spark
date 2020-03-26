@@ -1,8 +1,7 @@
 var util = require('../../../lib/util');
 
-function *postHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function postHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         id = parseInt(ctx.query.id, 10),
         submission = ctx.request.body;
 
@@ -18,7 +17,7 @@ function *postHandler() {
     // TODO: submissions are a candidate for time sortable UUIDs
     delete submission.id;
 
-    ctx.body = yield ctx.pgp.one(`
+    ctx.body = await ctx.pgp.one(`
             INSERT INTO applies (sparkpoint_id, student_id, resource_id, submissions)
                          VALUES ($1, $2, $3, jsonb_build_array($4::JSONB)) ON CONFLICT (resource_id, student_id, sparkpoint_id) DO UPDATE SET
                                 submissions = jsonb_array_push_unique($4::JSONB, applies.submissions)
@@ -27,9 +26,8 @@ function *postHandler() {
     );
 }
 
-function *deleteHandler() {
-    var ctx = this,
-        sparkpointId, id, submission, url;
+async function deleteHandler(ctx, next) {
+    var sparkpointId, id, submission, url;
 
     ctx.require(['sparkpoint_id', 'id', 'url']);
 
@@ -45,7 +43,7 @@ function *deleteHandler() {
         id: id
     };
 
-    ctx.body = yield this.pgp.one(/*language=SQL*/ `
+    ctx.body = await ctx.pgp.one(/*language=SQL*/ `
             UPDATE applies
                SET submissions = jsonb_remove_array_element($4::JSONB, submissions)
              WHERE sparkpoint_id = $1

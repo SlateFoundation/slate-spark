@@ -45,8 +45,11 @@ var ical = require('ical'),
         console.warn(`WARNING: Missing daysOff calendar url for: ${instanceKey}`);
     }
 
-    defer.setInterval(getInstanceCalendars(instanceKey), refreshInterval);
-    defer.setImmediate(getInstanceCalendars(instanceKey));
+    setInterval(async function() {
+        await getInstanceCalendars(instanceKey);
+    }, refreshInterval);
+
+    getInstanceCalendars(instanceKey);
 });
 
 // Returns a "thunk" for the callback-based ical module
@@ -84,7 +87,7 @@ function eventsToDaysOff(events) {
 }
 
 // Refreshes all calendars associated with a slate instance
-function* getInstanceCalendars(instanceKey) {
+async function getInstanceCalendars(instanceKey) {
     console.log(`Timing: Updating google calendars for: ${instanceKey}`);
 
     var instanceCalendarUrls = calendarUrlsByInstanceGradeRange[instanceKey];
@@ -93,7 +96,7 @@ function* getInstanceCalendars(instanceKey) {
 
     for (var gradeRange in instanceCalendarUrls) {
         let url = instanceCalendarUrls[gradeRange];
-        eventsByCalendarUrl[url] = (yield getIcalThunk(url));
+        eventsByCalendarUrl[url] = (await getIcalThunk(url));
         daysOffByCalendarUrl[url] = eventsToDaysOff(eventsByCalendarUrl[url]);
         daysOffByInstanceGradeRange[instanceKey][gradeRange] = daysOffByCalendarUrl[url];
     }
@@ -103,10 +106,9 @@ function* getInstanceCalendars(instanceKey) {
     return daysOffByInstanceGradeRange[instanceKey];
 }
 
-function *getHandler() {
-    var ctx = this,
-        instanceKey = ctx.schema,
-        calendars = daysOffByInstanceGradeRange[instanceKey] || (yield getInstanceCalendars(instanceKey)),
+async function getHandler(ctx, next) {
+    var nstanceKey = ctx.schema,
+        calendars = daysOffByInstanceGradeRange[instanceKey] || (await getInstanceCalendars(instanceKey)),
         daysOffByGrade = `unpackGradeRanges(${JSON.stringify(calendars)})`,
         clientCode = code.replace('/* INJECT daysOffByGrade */', `daysOffByGrade = ${daysOffByGrade};`),
         maxAgeInMs = expirationByInstanceKey[instanceKey] - new Date().getTime();

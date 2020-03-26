@@ -21,16 +21,13 @@ function recordToModel(record) {
 }
 
 // Get all of the lessons, by content area id, filtering by author_id for unpublished content, unless admin/developer
-function *getHandler() {
-    var ctx = this,
-        lessons = yield selectFromRequest.call(ctx, 'lessons');
-
+async function getHandler(ctx, next) {
+    var lessons = await selectFromRequest.call(ctx, 'lessons');
     ctx.body = lessons.map(record => util.codifyRecord(recordToModel(record), ctx.lookup));
 }
 
 
-function *patchHandler() {
-    var ctx = this;
+async function patchHandler(ctx, next) {
     var reqBody = ctx.request.body
     var lessons = Array.isArray(reqBody) ? reqBody : typeof reqBody === 'object' ? [reqBody] : null;
     var vals = new Values();
@@ -85,7 +82,7 @@ function *patchHandler() {
     if (lessons.sucess === false) return;
 
     queries = queriesToReturningJsonCte(queries);
-    lessons = yield ctx.pgp.any(queries, vals.vals);
+    lessons = await ctx.pgp.any(queries, vals.vals);
 
     ctx.body = lessons.map(record => {
         var lesson;
@@ -105,15 +102,14 @@ function *patchHandler() {
     });
 }
 
-function *deleteHandler() {
-    var ctx = this;
+async function deleteHandler(ctx, next) {
     var lessonId = ~~ctx.query.id;
     var lesson, canDelete;
 
     ctx.assert(lessonId, 400, 'id must be set to the numeric id of the lesson');
 
     try {
-        lesson = yield ctx.pgp.one(
+        lesson = await ctx.pgp.one(
             'SELECT * FROM lessons WHERE id = $1 LIMIT 1',
             [lessonId]
         );
@@ -128,7 +124,7 @@ function *deleteHandler() {
     ctx.assert(canDelete, 403, 'Only the author of a lesson or an administrator/developer can delete a lesson.');
 
     try {
-        yield ctx.pgp.one(
+        await ctx.pgp.one(
             'DELETE FROM lessons WHERE id = $1',
             [lessonId]
         );

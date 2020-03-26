@@ -3,10 +3,8 @@
 var util = require('../../lib/util'),
     Values = util.Values;
 
-function *getHandler() {
-    var ctx = this,
-        results = yield util.selectFromRequest.call(ctx, 'learns_required');
-
+async function getHandler(ctx, next) {
+    var results = await util.selectFromRequest.call(ctx, 'learns_required');
     ctx.body = results.map(util.codifyRecord.bind(ctx));
 }
 
@@ -14,9 +12,8 @@ function recordToSelect(record, tableName, vals) {
     return `SELECT * FROM learns_required ${util.recordToWhere(record, vals)}`;
 }
 
-function *sqlGenerator(entity, records, vals) {
-    var ctx = this,
-        validator = ctx.validation.learns_required,
+async function sqlGenerator(ctx, entity, records, vals) {
+    var validator = ctx.validation.learns_required,
         errors = [],
         sqlStatements = [],
         vals = vals || new Values();
@@ -36,7 +33,7 @@ function *sqlGenerator(entity, records, vals) {
         let record = records[x];
 
         try {
-            yield util.identifyRecord(record, ctx.lookup);
+            await util.identifyRecord(record, ctx.lookup);
         } catch (e) {
             ctx.throw(400, e);
         }
@@ -81,9 +78,8 @@ function *sqlGenerator(entity, records, vals) {
     };
 }
 
-function *patchHandler(entity) {
-    var ctx = this,
-        body = ctx.request.body,
+async function patchHandler(entity) {
+    var body = ctx.request.body,
         query,
         error;
 
@@ -99,7 +95,7 @@ function *patchHandler(entity) {
         `${ctx.method} request body must be a non-empty array of learns required.`
     );
 
-    query = yield sqlGenerator.call(ctx, entity, body);
+    query = await sqlGenerator(ctx, entity, body);
 
     if (query.errors.length > 0) {
         ctx.status = 400;
@@ -112,7 +108,7 @@ function *patchHandler(entity) {
     query.sql.unshift('BEGIN');
     query.sql.push('COMMIT');
 
-    yield ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
+    await ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
         .catch(function(e) {
             error = { message: e.toString() };
             Object.assign(error, e);

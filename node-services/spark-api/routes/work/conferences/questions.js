@@ -1,8 +1,7 @@
 'use strict';
 
-function* postHandler() {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function postHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         question = ctx.query.question,
         record;
@@ -10,7 +9,7 @@ function* postHandler() {
     ctx.require(['sparkpoint_id', 'question']);
     ctx.assert(studentId > 0, 'Non-student users must pass a student_id', 400);
 
-    record = yield ctx.pgp.one(`
+    record = await ctx.pgp.one(`
         INSERT INTO conference_questions
                     (student_id, sparkpoint_id, source, question)
              VALUES ($1, $2, $3, $4)
@@ -23,7 +22,7 @@ function* postHandler() {
             question
         ]);
 
-    record.sparkpoint = yield ctx.lookup.sparkpoint.idToCode(record.sparkpoint_id);
+    record.sparkpoint = await ctx.lookup.sparkpoint.idToCode(record.sparkpoint_id);
 
     ctx.body = record;
 }

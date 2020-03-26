@@ -13,9 +13,8 @@ CREATE TABLE section_timers (
 );
 `
 
-function *getHandler() {
-    var ctx = this,
-        sectionId = ctx.query.section_id,
+async function getHandler(ctx, next) {
+    var sectionId = ctx.query.section_id,
         params = Object.assign(
             ctx.isStudent ? { section_id: sectionId } : { teacher_id: ctx.userId },
             ctx.query
@@ -23,7 +22,7 @@ function *getHandler() {
         vals = new util.Values(),
         where = util.recordToWhere(params, vals);
 
-    ctx.body = yield ctx.pgp.any(/* language=SQL */  `
+    ctx.body = await ctx.pgp.any(/* language=SQL */  `
       SELECT section_timers.*,
              cs."Code" AS section_code
         FROM section_timers
@@ -32,9 +31,8 @@ function *getHandler() {
     `, vals.vals);
 }
 
-function *patchHandler() {
-    var ctx = this,
-        timer = util.identifyRecordSync(ctx.request.body || {}, ctx.lookup),
+async function patchHandler(ctx, next) {
+    var timer = util.identifyRecordSync(ctx.request.body || {}, ctx.lookup),
         sectionId = timer.section_id,
         teacherId = timer.teacher_id || ctx.userId,
         paused = typeof timer.paused === 'boolean' ? !!timer.paused : false;
@@ -45,7 +43,7 @@ function *patchHandler() {
 
     try {
         if (paused) {
-            timer = yield ctx.pgp.one(/*language=SQL*/ `
+            timer = await ctx.pgp.one(/*language=SQL*/ `
         UPDATE section_timers
            SET paused = duration_seconds - EXTRACT(EPOCH FROM (current_timestamp - started))
          WHERE section_id = $1
@@ -55,7 +53,7 @@ function *patchHandler() {
                 [sectionId, teacherId]
             );
         } else {
-            timer = yield ctx.pgp.one(/*language=SQL*/ `
+            timer = await ctx.pgp.one(/*language=SQL*/ `
           UPDATE section_timers
              SET paused = null,
                  started = (current_timestamp - ((duration_seconds - paused) || ' seconds'::TEXT)::INTERVAL)
@@ -76,9 +74,8 @@ function *patchHandler() {
     ctx.body = util.codifyRecord(timer, ctx.lookup);
 }
 
-function *putHandler() {
-    var ctx = this,
-        timer = util.identifyRecordSync(ctx.request.body || {}, ctx.lookup),
+async function putHandler(ctx, next) {
+    var timer = util.identifyRecordSync(ctx.request.body || {}, ctx.lookup),
         duration = parseInt(timer.duration_seconds, 10),
         sectionId = timer.section_id,
         teacherId = timer.teacher_id || ctx.userId,
@@ -100,7 +97,7 @@ function *putHandler() {
 
     timer.paused = null;
 
-    timer = yield ctx.pgp.one(
+    timer = await ctx.pgp.one(
         util.recordToUpsert.call(ctx, 'section_timers', timer, vals) + ' RETURNING *;',
         vals.vals
     );

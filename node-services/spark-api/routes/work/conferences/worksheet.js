@@ -1,8 +1,7 @@
 'use strict';
 
-function* patchHandler(req, res, next) {
-    var ctx = this,
-        sparkpointId = ctx.query.sparkpoint_id,
+async function patchHandler(ctx, next) {
+    var sparkpointId = ctx.query.sparkpoint_id,
         studentId = ctx.isStudent ? ctx.studentId : ~~ctx.query.student_id,
         sectionId = ctx.query.section_id,
         body = ctx.request.body,
@@ -37,7 +36,7 @@ function* patchHandler(req, res, next) {
         }
     });
 
-    record = yield ctx.pgp.one(/*language=SQL*/ `
+    record = await ctx.pgp.one(/*language=SQL*/ `
         INSERT INTO conference_worksheets
                     (student_id, sparkpoint_id, section_id, worksheet)
              VALUES ($1, $2, $3, $4) ON CONFLICT (student_id, sparkpoint_id, section_id) DO UPDATE SET worksheet = $4
@@ -53,7 +52,7 @@ function* patchHandler(req, res, next) {
 
     record = record.worksheet;
     record.student_id = studentId;
-    record.sparkpoint = yield ctx.lookup.sparkpoint.idToCode(sparkpointId);
+    record.sparkpoint = await ctx.lookup.sparkpoint.idToCode(sparkpointId);
 
     ctx.body = record;
 }

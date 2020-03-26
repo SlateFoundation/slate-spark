@@ -12,13 +12,12 @@ const util = require('../../../lib/util');
  );
  */
 
-function *getHandler() {
-    var ctx = this,
-        sectionId = ~~ctx.query.section_id;
+async function getHandler(ctx, next) {
+    var sectionId = ~~ctx.query.section_id;
 
     ctx.assert(sectionId > 0, 'section_id is required', 400);
 
-    ctx.body = yield ctx.pgp.any(/*language=SQL*/ `
+    ctx.body = await ctx.pgp.any(/*language=SQL*/ `
       SELECT tsssg.*,
              terms."Title" AS term_title,
              terms."Handle" AS term_code,
@@ -30,9 +29,8 @@ function *getHandler() {
     `, [sectionId]);
 }
 
-function *postHandler() {
-    var ctx = this,
-        tableName = 'term_section_student_sparkpoint_goals',
+async function postHandler(ctx, next) {
+    var tableName = 'term_section_student_sparkpoint_goals',
         goals = ctx.request.body,
         vals = new util.Values(),
         recordToUpsert = util.recordToUpsert.bind(ctx),
@@ -58,7 +56,7 @@ function *postHandler() {
         goals.map(record => recordToUpsert(tableName, record, vals, ['term_id', 'section_id', 'student_id']))
     );
 
-    yield ctx.pgp.any(sql, vals.vals);
+    await ctx.pgp.any(sql, vals.vals);
 
     ctx.body = {
         success: true

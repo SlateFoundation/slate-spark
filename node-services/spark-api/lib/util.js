@@ -30,7 +30,7 @@ var k12 = require('k-12'),
  * rnd([true, false])
  *
  * @example
- * // returns 'pizza' (1:2) 'chicken fingers' (1:4) or 'cheese streak' (1:4)
+ * // returns 'pizza' (1:2) 'chicken fingers' (1:4) or 'cheese steak' (1:4)
  * rnd({'pizza': .5, 'chicken fingers': .25, 'cheese steak': .25})
  *
  * @alias module:util.rnd
@@ -429,7 +429,7 @@ function generateSet(keys, placeholders, constraintKeys) {
         }).join(', ');
 }
 
-function* groupQueries(queries, values, records, ctx, excludeKeys) {
+async function groupQueries(queries, values, records, ctx, excludeKeys) {
     var cteQuery = [],
         selectQuery = ['SELECT result FROM ('],
         results;
@@ -450,7 +450,7 @@ function* groupQueries(queries, values, records, ctx, excludeKeys) {
 
     selectQuery.push(') s ORDER BY sort_order;');
 
-    results = yield ctx.pgp.tx(function () {
+    results = await ctx.pgp.tx(function () {
         return this.batch([this.any(cteQuery.join('\n') + '\n' + selectQuery.join('\n'), values)]).catch(function (error) {
             ctx.throw(500, error.getErrors().pop());
         });
@@ -504,13 +504,7 @@ function validateNumericKeys(obj) {
     }
 }
 
-function* identifyRecord(record, lookup) {
-    yield identifyRecordEntity(record, 'sparkpoint', lookup);
-    yield identifyRecordEntity(record, 'section', lookup);
-    yield identifyRecordEntity(record, 'term', lookup);
-}
-
-function* identifyRecordEntity(record, entity, lookup) {
+async function identifyRecordEntity(record, entity, lookup) {
     var targetKey = entity + '_id',
         keys = [entity, entity + '_code', targetKey],
         key, passedValue;
@@ -538,14 +532,20 @@ function* identifyRecordEntity(record, entity, lookup) {
     }
 
     if (key === entity + '_id') {
-        if (yield lookup.idToCode(passedValue)) {
+        if (await lookup.idToCode(passedValue)) {
             record[targetKey] = passedValue;
         }
     } else {
-        record[targetKey] = yield lookup.codeToId(passedValue);
+        record[targetKey] = await lookup.codeToId(passedValue);
     }
 
     return record;
+}
+
+async function identifyRecord(record, lookup) {
+    await identifyRecordEntity(record, 'sparkpoint', lookup);
+    await identifyRecordEntity(record, 'section', lookup);
+    await identifyRecordEntity(record, 'term', lookup);
 }
 
 function identifyRecordEntitySync(record, entity, lookup) {

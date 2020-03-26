@@ -4,11 +4,10 @@ var util = require('../../lib/util'),
     codifyRecord = util.codifyRecord,
     lessonEndpoint = require('./lessons/index.js');
 
-function *getHandler() {
-    this.require(['section_id']);
+async function getHandler(ctx, next) {
+    ctx.require(['section_id']);
 
-    var ctx = this,
-        sectionId = ctx.query.section_id,
+    var sectionId = ctx.query.section_id,
         status = ctx.query.status || 'active',
         activity;
 
@@ -18,7 +17,7 @@ function *getHandler() {
     ctx.set('Cache-control', 'private, must-revalidate;');
 
     if (status === 'active') {
-        activity = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+        activity = await ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -98,7 +97,7 @@ function *getHandler() {
             [sectionId]
         );
     } else {
-        activity = yield ctx.pgp.manyOrNone(/*language=SQL*/ `
+        activity = await ctx.pgp.manyOrNone(/*language=SQL*/ `
         SELECT t.last_accessed,
                t.section_id,
                t.section_code,
@@ -188,10 +187,9 @@ function *getHandler() {
     });
 }
 
-function *patchHandler() {
+async function patchHandler(ctx, next) {
     // TODO: Audit how this works (particularly when the ssas table is updated for students/teachers)
-    var ctx = this,
-        sectionId = ~~ctx.query.section_id,
+    var sectionId = ~~ctx.query.section_id,
         studentId = ~~ctx.studentId,
         sparkpointId = ctx.query.sparkpoint_id,
         updateSectionStudentActiveSparkpoint = true,
@@ -327,7 +325,7 @@ function *patchHandler() {
         }
 
         try {
-            yield ctx.pgp.any(recordToUpsert(
+            await ctx.pgp.any(recordToUpsert(
                 'section_student_active_sparkpoint',
                 ssasRecord,
                 vals,
@@ -352,7 +350,7 @@ function *patchHandler() {
 
     vals = new util.Values();
 
-    let results = yield ctx.pgp.any(
+    let results = await ctx.pgp.any(
         util.queriesToReturningCte(
             studentSparkpointRecords.map(record => {
                 return recordToUpsert(
@@ -368,7 +366,7 @@ function *patchHandler() {
 
     let result = results.shift();
 
-    let response = codifyRecord(result || (yield ctx.pgp.one(/*language=SQL*/ `
+    let response = codifyRecord(result || (await ctx.pgp.one(/*language=SQL*/ `
       SELECT *
         FROM student_sparkpoint
        WHERE sparkpoint_id = $1
@@ -377,7 +375,7 @@ function *patchHandler() {
     )), ctx.lookup);
 
     if (ctx.isStudent) {
-        let lessonTemplate = yield ctx.pgp.oneOrNone('SELECT * FROM lessons WHERE sparkpoint_id = $1', sparkpointId);
+        let lessonTemplate = await ctx.pgp.oneOrNone('SELECT * FROM lessons WHERE sparkpoint_id = $1', sparkpointId);
         if (lessonTemplate) {
             response.lesson_template = util.codifyRecord(lessonEndpoint.recordToModel(lessonTemplate), ctx.lookup);
         }
@@ -386,9 +384,8 @@ function *patchHandler() {
     ctx.body = response;
 }
 
-function *deleteHandler() {
-    var ctx = this,
-        sectionId = ~~ctx.query.section_id,
+async function deleteHandler(ctx, next) {
+    var sectionId = ~~ctx.query.section_id,
         studentId = ~~ctx.query.student_id,
         sparkpointId = ctx.query.sparkpoint_id;
 
@@ -397,7 +394,7 @@ function *deleteHandler() {
     ctx.assert(sparkpointId, 'sparkpoint_id is required', 400);
     ctx.assert(ctx.isTeacher, 'Only teachers can delete activity records', 403);
 
-    yield ctx.pgp.none(/*language=SQL*/ `
+    await ctx.pgp.none(/*language=SQL*/ `
       DELETE FROM section_student_active_sparkpoint
             WHERE section_id = $1
               AND student_id = $2

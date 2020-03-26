@@ -5,15 +5,14 @@ var util = require('../../lib/util'),
     Values = util.Values,
     entityTypes = ['learns', 'conference_resources', 'guiding_questions', 'applies', 'assessments'];
 
-function *getHandler() {
-    var ctx = this,
-        entity = ctx.params.entity,
+async function getHandler(ctx, next) {
+    var entity = ctx.params.entity,
         tableName = `${pluralize.singular(entity)}_assignments`,
         results;
 
     ctx.assert(entityTypes.indexOf(entity) !== -1, 404, `You can only assign: ${entityTypes.join(', ')} not ${entity}`);
 
-    results = yield util.selectFromRequest.call(ctx, tableName);
+    results = await util.selectFromRequest.call(ctx, tableName);
 
     ctx.body = results.map(util.codifyRecord.bind(ctx));
 }
@@ -22,13 +21,12 @@ function recordToSelect(record, tableName, vals) {
     return `SELECT * FROM ${tableName} ${util.recordToWhere(record, vals)}`;
 }
 
-function *sqlGenerator(entity, records, vals) {
+async function sqlGenerator(ctx, entity, records, vals) {
     var tableName = `${pluralize.singular(entity)}_assignments`,
-        validator = this.validation[tableName],
+        validator = ctx.validation[tableName],
         errors = [],
         sqlStatements = [],
-        vals = vals || new Values(),
-        ctx = this;
+        vals = vals || new Values();
 
     function recordToInsert(record, vals) {
         var keys = Object.keys(record),
@@ -45,7 +43,7 @@ function *sqlGenerator(entity, records, vals) {
         let record = records[x];
 
         try {
-            yield util.identifyRecord(record, ctx.lookup);
+            await util.identifyRecord(record, ctx.lookup);
         } catch (e) {
             ctx.throw(400, e);
         }
@@ -90,9 +88,8 @@ function *sqlGenerator(entity, records, vals) {
     };
 }
 
-function *patchHandler() {
-    var ctx = this,
-        entity = ctx.params.entity,
+async function patchHandler(ctx, next) {
+    var entity = ctx.params.entity,
         body = ctx.request.body,
         query,
         error;
@@ -103,15 +100,15 @@ function *patchHandler() {
         body = [body];
     }
 
-    ctx.assert(this.isTeacher, 403,
-        `Only teachers can assign ${entity}; you are logged in as a: ${this.session.accountLevel}`
+    ctx.assert(ctx.isTeacher, 403,
+        `Only teachers can assign ${entity}; you are logged in as a: ${ctx.session.accountLevel}`
     );
 
     ctx.assert(Array.isArray(body) && body.length > 0, 400,
         `${ctx.method} request body must be a non-empty array of ${entity} assignments.`
     );
 
-    query = yield sqlGenerator.call(ctx, entity, body);
+    query = await sqlGenerator(ctx, entity, body);
 
     if (query.errors.length > 0) {
         ctx.status = 400;
@@ -124,7 +121,7 @@ function *patchHandler() {
     query.sql.unshift('BEGIN');
     query.sql.push('COMMIT');
 
-    yield ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
+    await ctx.pgp.none(query.sql.join(';\n') + ';', query.vals.vals)
         .catch(function(e) {
             error = { message: e.toString() };
             Object.assign(error, e);

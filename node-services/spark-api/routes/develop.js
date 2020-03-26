@@ -13,20 +13,18 @@ var subdomainBySchema = {
 
 const uuid = require('node-uuid');
 
-function* getHandler() {
-    var ctx = this;
-
+async function getHandler(ctx, next) {
     if (PRODUCTION) {
         ctx.throw(new Error('Development is not supported in PRODUCTION mode... yet'), 500);
     }
 
-    let {schema, user, username} = ctx.query;
+    let {schema, user, username} = ctx.request.query;
 
     user || (user = username);
 
     if (user && schema) {
         if (!ctx.pgpConnections || !ctx.pgpConnections[schema] || !schema) {
-            ctx.throw(new Error(`Could not find ${schema} schema, try one of these: ${Object.keys(ctx.pgpConnections)}`), 404);
+            ctx.throw(new Error(`Could not find ${schema} schema, try one of these: ${Object.keys(ctx.pgpConnections || {})}`), 404);
         }
 
         ctx.cookies.set('user', user);
@@ -34,7 +32,7 @@ function* getHandler() {
 
         ctx.pgp = ctx.pgpConnections[schema];
 
-        let session = yield ctx.pgp.one(`
+        let session = await ctx.pgp.one(`
         SELECT
             p."FirstName" AS "firstName",
             p."LastName" AS "lastName",
@@ -49,7 +47,7 @@ function* getHandler() {
 
         let sessionId = uuid.v1();
 
-        yield ctx.pgp.none(`
+        await ctx.pgp.none(`
             INSERT INTO fdw_sessions ("Class", "Handle", "PersonID") VALUES ('UserSession', $1, $2);
         `, [sessionId, session.userId]);
 

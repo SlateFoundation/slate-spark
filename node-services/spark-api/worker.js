@@ -10,7 +10,7 @@ if (PRODUCTION) {
 }
 
 var koa = require('koa'),
-    app = koa(),
+    app = new koa(),
     requireDirectory = require('require-directory'),
 
     config = requireDirectory(module, './config'),
@@ -18,7 +18,8 @@ var koa = require('koa'),
     routes = requireDirectory(module, './routes'),
 
     jsonBody = require('koa-json-body'),
-    router = require('koa-router')(),
+    Router = require('koa-router'),
+    router = new Router(),
     error = require('koa-error'),
     json = require('koa-json'),
     cluster = require('cluster'),
@@ -33,14 +34,12 @@ if (PRODUCTION) {
     app.use(middleware.newrelic(newrelic));
 } else {
     // Strip /spark/api from paths while in development mode
-    app.use(function*(next) {
-        var ctx = this;
-
-        if (ctx.path.substr(0, 10) === '/spark/api') {
+    app.use(async function(ctx, next) {
+        if (ctx.path.startsWith('/spark/api')) {
             ctx.path = ctx.path.substr(10);
         }
 
-        yield next;
+        await next();
     });
 }
 
@@ -57,7 +56,8 @@ app
     .use(conditional())
     .use(middleware.response_time)
     .use(error({
-        template: __dirname + '/config/error.html'
+        template: __dirname + '/config/error.html',
+        engine: 'swig'
     }))
     .use(middleware.process)
     .use(middleware.session)
@@ -80,10 +80,6 @@ if (PRODUCTION) {
     app.use(json());
 }
 
-function* notImplementedHandler() {
-    ctx.throw(405, `${ctx.method} not implemented.`);
-}
-
 // TODO: I hate to have rolled my own auto-router...
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;
@@ -95,34 +91,10 @@ iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
 
     // If the route module exports an HTTP method, we'll route to it
     if (urlPath && methods.includes(key)) {
+        console.log(key.toUpperCase(), urlPath);
         router[key](urlPath, obj[key]);
     }
 });
-
-var methodsForPath = {};
-
-// HACK: make sure 405s work
-iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
-    var urlPath;
-
-    // If the route module exports autoRoute: false, we won't setup auto routes to it
-    if (typeof obj === 'object' && obj.autoRoute !== false) {
-        urlPath = '/' + path.filter(key => key !== 'index').join('/');
-    }
-
-    // If the route module exports an HTTP method, we'll route to it
-    if (urlPath && methods.includes(key)) {
-        methodsForPath[urlPath] || (methodsForPath[urlPath] = {});
-        methodsForPath[urlPath][key] = true;
-    }
-});
-
-for (var path in methodsForPath) {
-    var pathMethods = methodsForPath[path];
-    methods
-        .filter(method => pathMethods[method] === true)
-        .forEach(method => router[method](path, notImplementedHandler));
-}
 
 // Custom routes
 router.get('/work/learns/launch/:resourceId', routes.work.learns.launch);
@@ -152,26 +124,29 @@ app
     .use(router.routes())
     .use(router.allowedMethods());
 
+
 if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
-    let co = require('co');
-    let git = require('git-promise');
+    (async function() {
+        var git = require('git-promise');
 
-    app.context.git = {
-        branch: 'unknown',
-        commit: 'unknown'
-    };
+        app.context.git = {
+            branch: 'unknown',
+            commit: 'unknown'
+        };
 
-    co(function*() {
-        if (config.logging.git_branch) {
-            app.context.git.branch = (yield git('rev-parse --abbrev-ref HEAD', {cwd: __dirname})).trim();
+        try {
+            if (config.logging.git_branch) {
+                let branch = (await git('rev-parse --abbrev-ref HEAD', {cwd: __dirname})).trim();
+                if (branch) app.context.git.branch = branch;
+            }
+            if (config.logging.git_commit) {
+                let commit =  (await git('rev-parse --short HEAD', {cwd: __dirname})).trim();
+                if (commit) app.context.git.commit = commit;
+            }
+        } catch (e) {
+            console.warn('Unable to determine git_branch/git_commit, using defaults...');
         }
-
-        if (config.logging.git_commit) {
-            app.context.git.commit = (yield git('rev-parse --short HEAD', {cwd: __dirname})).trim();
-        }
-    }).catch(function(e) {
-        console.warn('Unable to determine git_branch/git_commit, using defaults...');
-    });
+    })();
 }
 
 if (PRODUCTION) {
@@ -189,17 +164,18 @@ if (PRODUCTION) {
     });
 }
 
-app.port = 9090;
+app.port = 8090;
 
 // Setup koa-cluster
 if (cluster.isMaster) {
     app.listen(app.port);
 } else {
-    app.use(function* () {
-        if (this.req.checkContinue) {
-            this.res.writeContinue();
+    // TODO: koa-cluster doesn't seem to have been updated?
+    app.use(async function(ctx, next) {
+        if (ctx.req.checkContinue) {
+            ctx.res.writeContinue();
         }
 
-        yield;
+        await next();
     });
 }

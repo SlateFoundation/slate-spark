@@ -2,11 +2,11 @@
 
 var util = require('../../lib/util');
 
-function *getHandler() {
-    var id = util.isGteZero(this.query.id) ? this.query.id : null,
-        sectionId = this.query.section_id,
-        limit = util.isGtZero(this.query.limit) ? this.query.limit : 50,
-        offset = util.isGteZero(this.query.offset) ? this.query.offset : 0,
+async function getHandler(ctx, next) {
+    var id = util.isGteZero(ctx.query.id) ? ctx.query.id : null,
+        sectionId = ctx.query.section_id,
+        limit = util.isGtZero(ctx.query.limit) ? ctx.query.limit : 50,
+        offset = util.isGteZero(ctx.query.offset) ? ctx.query.offset : 0,
         query;
 
     if (id) {
@@ -15,7 +15,7 @@ function *getHandler() {
           FROM conference_groups
          WHERE id = $1`;
 
-        this.body = yield this.pgp.any(query, id);
+        ctx.body = await ctx.pgp.any(query, id);
     } else {
         query = /*language=SQL*/ `
              SELECT *
@@ -44,13 +44,12 @@ function *getHandler() {
                LIMIT $3
            `;
 
-        this.body = yield this.pgp.any(query, [sectionId, offset, limit]);
+        ctx.body = await ctx.pgp.any(query, [sectionId, offset, limit]);
     }
 }
 
-function *patchHandler() {
-    var ctx = this,
-        conferenceGroups = ctx.request.body,
+async function patchHandler(ctx, next) {
+    var conferenceGroups = ctx.request.body,
         recordToInsert = util.recordToInsert.bind(ctx),
         vals = new util.Values(),
         sql,
@@ -73,7 +72,7 @@ function *patchHandler() {
         for (let prop in group) {
             let val = group[prop];
 
-            if (prop.slice(-5) === '_time') {
+            if (prop.endsWith('_time')) {
                 if (val === null) {
                     group[prop] = null;
                 } else {
@@ -103,7 +102,7 @@ function *patchHandler() {
         return recordToInsert('conference_groups', group, vals);
     }));
 
-    results = yield ctx.pgp.any(sql, vals.vals);
+    results = await ctx.pgp.any(sql, vals.vals);
 
     ctx.body = results.map(group => util.codifyRecord(group, ctx.lookup));
 }
