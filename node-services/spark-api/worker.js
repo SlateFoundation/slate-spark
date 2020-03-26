@@ -70,17 +70,18 @@ app
     .use(lookup)
     .use(middleware.request)
     .use(middleware.debugging)
-    .use(middleware.preferences());
+    .use(middleware.preferences())
+    .use(etag());
 
 if (PRODUCTION) {
     // In production calculate ETags
-    app.use(etag());
+    // app.use(etag());
 } else {
     // In development pretty-print responses
     app.use(json());
 }
 
-// TODO: I hate to have rolled my own auto-router...
+// Auto-route the /routes directory
 iterator.forAll(Object.assign({}, routes), function (path, key, obj) {
     var urlPath;
 
@@ -125,6 +126,7 @@ app
     .use(router.allowedMethods());
 
 
+// Optionally expose git branch or commit as HTTP headers
 if (Object.keys(config.logging || {}).some(key => key.substr(0,4) === 'git_')) {
     (async function() {
         var git = require('git-promise');
