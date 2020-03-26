@@ -1,13 +1,13 @@
 'use strict';
 
 var xkpasswd = require('xkpasswd'),
-    request = require('koa-request');
+    got = require('got');
 
-function* generateRandomPassword() {
+async function generateRandomPassword() {
     var password;
 
     try {
-        password = (yield request({url: 'http://www.dinopass.com/password/simple'})).body;
+        password = (await got('http://www.dinopass.com/password/simple')).body;
     } catch (e) {
         console.warn('Error generating random password using dinopass:', e);
     }

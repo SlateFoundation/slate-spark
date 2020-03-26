@@ -1,6 +1,6 @@
 'use strict';
 
-var request = require('koa-request');
+const got = require('got');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
@@ -15,7 +15,7 @@ var subdomainBySchema = {
 async function getHandler(ctx, next) {
     var ctx = this;
     
-    let sections = await request({
+    let sections = await got({
         url: `https://${subdomainBySchema[ctx.schema]}.matchbooklearning.com/${ctx.path}?format=json`,
         headers: {
             cookie: `${ctx.schema}-s=${ctx.cookies.get('session_id')};`

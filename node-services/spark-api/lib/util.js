@@ -1072,8 +1072,6 @@ module.exports = {
 
     validateRecordSet: validateRecordSet,
 
-    bind: require('co-bind'),
-
     arrayToGradeRange: k12.arrayToGradeRange,
     gradeRangeToArray: k12.gradeRangeToArray
 };

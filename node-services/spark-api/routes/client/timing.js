@@ -2,7 +2,6 @@
 
 var ical = require('ical'),
     timing = require('../../lib/timing'),
-    defer = require('co-defer'),
     gradeRangeToArray = require('../../lib/util').gradeRangeToArray,
 
     // Get shared code as strings for code generation

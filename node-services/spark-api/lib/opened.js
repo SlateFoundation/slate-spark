@@ -7,8 +7,7 @@ var generateRandomPassword = require('./password').generateRandomPassword,
     isGteZero = require('./util').isGteZero,
     qs = require('querystring'),
     util = require('util'),
-    defer = require('co-defer'),
-    request = require('koa-request'),
+    got = require('got'),
     path = require('path'),
     fs = require('fs'),
 
@@ -186,9 +185,10 @@ if (configError) {
     throw new Error(`OpenEd: ${configPath}: ${configError}`);
 }
 
-defer.setImmediate(getAccessToken);
+// TODO: Fix this
+// setImmediate(getAccessToken);
 
-function* getAccessToken(ctx) {
+async function getAccessToken(ctx) {
     // HACK: use hard coded account credentials
     if (ctx && ctx.state && ctx.state.preferences) {
         if (ctx.isStudent && ctx.state.preferences.student_opened_token) {
@@ -226,11 +226,11 @@ function* getAccessToken(ctx) {
     // clear existing token
     delete clientOptions.headers.authorization;
 
-    clientOptions.uri = openEdClientBaseUrl + '/oauth/get_token';
+    let url = openEdClientBaseUrl + '/oauth/get_token';
     clientOptions.body = params;
     clientOptions.method = 'POST';
 
-    token = yield request(clientOptions);
+    token = await got(url, clientOptions);
 
     if (token.statusCode >= 400 || // HTTP error
         typeof token.body !== 'object' || // empty body
@@ -245,7 +245,7 @@ function* getAccessToken(ctx) {
     }
 
     delete clientOptions.body;
-    delete clientOptions.uri;
+    delete clientOptions.url;
     delete clientOptions.method;
 
     token = token.body;
@@ -402,7 +402,7 @@ function generateErrorString(err) {
     return '(HTTP ' + err.statusCode + ') - ' + errMsg;
 }
 
-function* getResources(params, resources, ctx) {
+async function getResources(params, resources, ctx) {
     var url = '/resources.json',
         resourceTypes = params.resource_type ? Array.isArray(params.resource_type) ? params.resource_type : params.resource_type.split(',') : [],
         standardIds = params.standard_ids ? Array.isArray(params.standard_ids) ? params.standard_ids : params.standard_ids.split(',') : [],
@@ -425,11 +425,9 @@ function* getResources(params, resources, ctx) {
         url += '?' + queryString;
     }
 
-    yield getAccessToken(ctx);
+    await getAccessToken(ctx);;
 
-    clientOptions.uri = openEdClientBaseUrl + url;
-
-    response = yield request(clientOptions);
+    response = await got(openEdClientBaseUrl + url, clientOptions);
 
     if (response.statusCode >= 400 || // HTTP error
         typeof response.body !== 'object' || // empty body
@@ -451,7 +449,7 @@ function* getResources(params, resources, ctx) {
         if ((entries + offset) < total_entries) {
             params.offset = (entries + offset);
             console.log(`OPENED: Retrieving paged resources ${entries + offset}/${total_entries}`);
-            yield* getResources(params, resources, ctx);
+            await getResources(params, resources, ctx);
         } else {
 
         }
@@ -474,28 +472,27 @@ function* getResources(params, resources, ctx) {
  { email: [ 'has already been taken' ],
  username: [ 'has already been taken' ] } }
  */
-function* createUser(user, ctx) {
+async function createUser(user, ctx) {
     var url = '/users',
         params = user,
         response;
 
     params.client_id = openEdClientId;
 
-    yield getAccessToken();
+    await getAccessToken();
 
     user.client_id = openEdClientId;
 
     if (!user.password) {
-        user.password = (yield generateRandomPassword());
+        user.password = (await generateRandomPassword());
     }
 
-    clientOptions.uri = openEdClientBaseUrl + url;
     clientOptions.body = params;
     clientOptions.method = 'POST';
 
-    response = yield request(clientOptions);
+    response = await got(openEdClientBaseUrl + url, clientOptions);
 
-    delete clientOptions.uri;
+    delete clientOptions.url;
     delete clientOptions.body;
     delete clientOptions.method;
 
@@ -519,18 +516,18 @@ function* createUser(user, ctx) {
     return response.body.user;
 }
 
-function* findUser(emailOrUsername) {
+async function findUser(emailOrUsername) {
     var url = '/users/search',
         response;
 
-    yield getAccessToken();
+    await getAccessToken();
 
     // TODO: use request qs option once clientOptions isn't shared
-    clientOptions.uri = openEdClientBaseUrl + url + '?' + qs.stringify({username: emailOrUsername});
+    clientOptions.url = openEdClientBaseUrl + url + '?' + qs.stringify({username: emailOrUsername});
 
-    response = yield request(clientOptions);
+    response = await got(clientOptions.url, clientOptions);
 
-    delete clientOptions.uri;
+    delete clientOptions.url;
     delete clientOptions.body;
     delete clientOptions.method;
 
@@ -550,7 +547,7 @@ function* findUser(emailOrUsername) {
     return response.body.user;
 }
 
-function* updateUser(userId, user = {}, ctx) {
+async function updateUser(userId, user = {}, ctx) {
     var updatedProperties = {},
         url = `/users/${userId}`,
         response;
@@ -570,15 +567,15 @@ function* updateUser(userId, user = {}, ctx) {
         }
     }
 
-    yield getAccessToken();
+    await getAccessToken();
 
-    clientOptions.uri = openEdClientBaseUrl + url;
+    clientOptions.url = openEdClientBaseUrl + url;
     clientOptions.body = updatedProperties;
     clientOptions.method = 'PUT';
 
-    response = yield request(clientOptions);
+    response = await got(clientOptions);
 
-    delete clientOptions.uri;
+    delete clientOptions.url;
     delete clientOptions.body;
     delete clientOptions.method;
 

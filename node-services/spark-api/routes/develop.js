@@ -1,6 +1,5 @@
 'use strict';
 
-const request = require('koa-request');
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
 var subdomainBySchema = {
