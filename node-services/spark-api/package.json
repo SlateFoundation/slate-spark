@@ -41,7 +41,7 @@
     "koa-router": "^5.4.0",
     "koa-sslify": "^1.0.1",
     "koa-statsd": "0.0.2",
-    "lodash": "^4.16.2",
+    "lodash": "^4.17.19",
     "markdown-table": "^0.4.0",
     "media-typer": "^0.3.0",
     "methods": "^1.1.2",
