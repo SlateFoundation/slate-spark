@@ -3,7 +3,7 @@
   "description": "spark stuff",
   "version": "0.0.1",
   "dependencies": {
-    "async": "^2.6.3",
+    "async": "^2.6.4",
     "bluebird": "^3.4.6",
     "buffer-writer": "^1.0.1",
     "cli-color": "^1.1.0",
