@@ -13,7 +13,7 @@
     "co-fs": "^1.2.0",
     "curl-trace-parser": "0.0.8",
     "forever": "^0.15.1",
-    "gavel": "^0.5.2",
+    "gavel": "^10.0.4",
     "generator-bind": "^1.0.1",
     "generic-pool": "^2.2.1",
     "git-promise": "^0.3.0",
