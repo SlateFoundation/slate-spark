@@ -48,7 +48,7 @@
     "mkdirp": "^0.5.1",
     "mkdirp-then": "^1.1.1",
     "monitor": "^0.6.10",
-    "ms": "^0.7.1",
+    "ms": "^2.0.0",
     "native-or-bluebird": "^1.2.0",
     "nats": "^0.6.4",
     "newrelic": "^1.30.3",
